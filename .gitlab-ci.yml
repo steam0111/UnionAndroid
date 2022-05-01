@@ -1,0 +1,189 @@
+image: jangrewe/gitlab-ci-android:30
+
+# Для перевода ключа подписи в строку (сразу копируется в буфер)
+# base64 release.jks | pbcopy
+
+
+# Количество последних коммитов при клонировании репозитория
+# Ускоряет время выполнения пайплайна
+variables:
+  GIT_DEPTH: 1
+
+  #stages:
+  #- printCertificates
+  #- buildAndTest
+  #- testCoverage
+  #- incrementVersionCode
+  #- deploy
+
+# Тригериться только на ручной запуск
+print certificates:
+  stage: printCertificates
+  script:
+    - mkdir -p ./keystore
+    - echo $KEY_STORE_FILE | base64 -d > ./keystore/release.jks
+    - keytool -keystore ./keystore/release.jks -storepass $STORE_PASSWORD -list -v
+    - keytool -keystore app/keystore/debug.jks -storepass password -list -v
+  when: manual
+
+# Триггер на:
+# - пуш или МР в девелоп
+# - пуш или МР в релиз ветку
+app unit tests:
+  stage: buildAndTest
+  tags:
+    - Android
+  script:
+    - ./gradlew -Pci --console=plain :app:testGooglePlayReleaseUnitTest
+  artifacts:
+    expire_in: 1h
+    paths:
+      - app/build/jacoco/*.exec
+      - app/build/tmp/kotlin-classes/googlePlayRelease
+      - app/build/intermediates/javac/googlePlayRelease/classes/live/cupcake/android/netwa
+  only:
+    refs:
+      - develop
+      - /^release\/.*$/i
+      - merge_requests
+    variables:
+      - $CI_COMMIT_BRANCH == "develop"
+      - $CI_COMMIT_BRANCH =~ /^release\/.*$/i
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^release\/.*$/i
+
+app test coverage verification:
+  stage: testCoverage
+  tags:
+    - Android
+  dependencies:
+    - app unit tests
+  script:
+    - ./gradlew -Pci --console=plain :app:testCoverageReport
+    - ./gradlew -Pci --console=plain :app:testCoverageVerification
+    -  mv app/build/reports/jacoco/testCoverageReport/html .
+  artifacts:
+    expire_in: 7d
+    when: always
+    paths:
+      - html
+  only:
+    refs:
+      - develop
+      - /^release\/.*$/i
+      - merge_requests
+    variables:
+      - $CI_COMMIT_BRANCH == "develop"
+      - $CI_COMMIT_BRANCH =~ /^release\/.*$/i
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^release\/.*$/i
+
+core test coverage verification:
+  stage: testCoverage
+  tags:
+    - Android
+  dependencies:
+    - core unit tests
+  script:
+    - ./gradlew -Pci --console=plain :netwa-core:testCoverageReport
+    - ./gradlew -Pci --console=plain :netwa-core:testCoverageVerification
+    -  mv netwa-core/build/reports/jacoco/testCoverageReport/html .
+  artifacts:
+    expire_in: 7d
+    when: always
+    paths:
+      - html
+  only:
+    refs:
+      - develop
+      - /^release\/.*$/i
+      - merge_requests
+    variables:
+      - $CI_COMMIT_BRANCH == "develop"
+      - $CI_COMMIT_BRANCH =~ /^release\/.*$/i
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^release\/.*$/i
+
+build develop with apk:
+  stage: buildAndTest
+  tags:
+    - Android
+  script:
+    - mkdir -p ./keystore
+    - echo $KEY_STORE_FILE | base64 -d > ./keystore/release.jks
+    - ./gradlew app:assembleGooglePlayRelease
+    - mv app/build/outputs/apk/googlePlay/release/* .
+  artifacts:
+    when: on_success
+    expire_in: 7d
+    paths:
+      - "*.apk"
+  only:
+    - develop
+
+build develop:
+  stage: buildAndTest
+  tags:
+    - Android
+  script:
+    - mkdir -p ./keystore
+    - echo $KEY_STORE_FILE | base64 -d > ./keystore/release.jks
+    - ./gradlew app:assembleGooglePlayRelease
+  only:
+    refs:
+      - merge_requests
+    variables:
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"
+
+increment version code:
+  stage: incrementVersionCode
+  tags:
+    - Android
+  before_script:
+    - git config --global user.email "gitlab@postuf.com"
+    - git config --global user.name "Gitlab CI"
+
+    # Установка ssh агента если он еще не установлен
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+    # Запуск  shh агента
+    - eval $(ssh-agent -s)
+
+    # Копируем приватный ключ из переменной CI в id_rsa
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+    - ssh-add ~/.ssh/id_rsa
+
+    # Записываем в ssh конфиг инфу о том чтобы он не проверял host, по другому на CI работать не будет
+    - echo -e "Host *\nStrictHostKeyChecking no" > ~/.ssh/config
+    - ssh-keyscan -H gitlab.pftech.xyz >> ~/.ssh/known_hosts
+  script:
+    - cd ..
+    - rm -rf netwa-android
+    - git clone -b develop --single-branch --depth 1 ssh://git@gitlab.pftech.xyz:2222/netwa/mobile/android/netwa-android.git
+    - cd netwa-android
+    - git checkout -B increment_version_code
+    - versionCode="$(./gradlew -Pci --console=plain -q incrementVersionCode)"
+    - git add .
+    - git commit -m "CI increment version code to ${versionCode}"
+    - git push origin increment_version_code:develop
+  only:
+    - develop
+  except:
+    variables:
+      # CI_COMMIT_MESSAGE - предустановленная переменная Gitlab CI.
+      # Все коммиты которые начинаются с CI, будут проигнорированы этой задачей
+      - $CI_COMMIT_MESSAGE =~ /^CI/
+
+upload to firebase app distribution:
+  stage: deploy
+  tags:
+    - Android
+  script:
+    - echo $GC_SERVICE_ACCOUNT_FILE | base64 -d > ./app/service_credentials.json
+    # Заменяет в манифесте приложения networkSecurityConfig на android:usesCleartextTraffic="true"
+    - ./gradlew -Pci --console=plain enableInsecureHttp
+    - ./gradlew -Pci --console=plain assembleGooglePlayDebug appDistributionUploadGooglePlayDebug
+  only:
+    - develop
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /^CI/

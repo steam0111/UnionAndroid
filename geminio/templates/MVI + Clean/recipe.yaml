@@ -1,0 +1,76 @@
+requiredParams:
+  name: MVI + Clean
+  description: Create MVI + Clean arch classes
+
+widgets:
+  - stringParameter:
+      id: featurePackageName
+      name: Название пакета для фичи
+      constraints:
+        - nonempty
+        - unique
+      default: students
+
+  - stringParameter:
+      id: featureName
+      name: Префикс для всех создаваемых классов в Presentation, Domain, Data слоях
+      constraints:
+        - nonempty
+        - unique
+      default: Students
+
+  - stringParameter:
+      id: basePackagePath
+      name: Базовый путь для генерации классов от app/src/main/kotlin/
+      constraints:
+        - nonempty
+        - unique
+      default: ru/interid/weatherford
+
+recipe:
+  - instantiateAndOpen:
+      from: root/src/app_package/Module.kt.ftl
+      to: app/src/main/kotlin/${basePackagePath}/${featurePackageName}/${featureName}Module.kt
+
+  - instantiateAndOpen:
+      from: root/src/app_package/presentation/view/Fragment.kt.ftl
+      to: app/src/main/kotlin/${basePackagePath}/${featurePackageName}/presentation/view/${featureName}ComposeFragment.kt
+
+  - instantiateAndOpen:
+      from: root/src/app_package/presentation/view/ComposeScreen.kt.ftl
+      to: app/src/main/kotlin/${basePackagePath}/${featurePackageName}/presentation/view/${featureName}Screen.kt
+
+  - instantiateAndOpen:
+      from: root/src/app_package/presentation/store/Arguments.kt.ftl
+      to: app/src/main/kotlin/${basePackagePath}/${featurePackageName}/presentation/store/${featureName}Arguments.kt
+
+  - instantiateAndOpen:
+      from: root/src/app_package/presentation/store/Store.kt.ftl
+      to: app/src/main/kotlin/${basePackagePath}/${featurePackageName}/presentation/store/${featureName}Store.kt
+
+  - instantiateAndOpen:
+      from: root/src/app_package/presentation/store/StoreFactory.kt.ftl
+      to: app/src/main/kotlin/${basePackagePath}/${featurePackageName}/presentation/store/${featureName}StoreFactory.kt
+
+  - instantiateAndOpen:
+      from: root/src/app_package/domain/Interactor.kt.ftl
+      to: app/src/main/kotlin/${basePackagePath}/${featurePackageName}/domain/${featureName}Interactor.kt
+
+  - instantiateAndOpen:
+      from: root/src/app_package/domain/entity/Entity.kt.ftl
+      to: app/src/main/kotlin/${basePackagePath}/${featurePackageName}/domain/entity/${featureName}Domain.kt
+
+  - instantiateAndOpen:
+      from: root/src/app_package/domain/dependencies/Repository.kt.ftl
+      to: app/src/main/kotlin/${basePackagePath}/${featurePackageName}/domain/dependencies/${featureName}Repository.kt
+
+  - instantiateAndOpen:
+      from: root/src/app_package/data/mapper/Mappers.kt.ftl
+      to: app/src/main/kotlin/${basePackagePath}/${featurePackageName}/data/mapper/${featureName}Mappers.kt
+
+  - instantiateAndOpen:
+      from: root/src/app_package/data/RepositoryImpl.kt.ftl
+      to: app/src/main/kotlin/${basePackagePath}/${featurePackageName}/data/${featureName}RepositoryImpl.kt
+
+  - addKoinModule:
+      file: app/src/main/kotlin/${basePackagePath}/di/Modules.kt

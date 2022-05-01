@@ -1,0 +1,63 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    id 'androidx.navigation.safeargs'
+}
+
+android {
+    compileSdk libs.versions.compileSdk.get().toInteger()
+
+    defaultConfig {
+        applicationId "com.itrocket.union"
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.toVersion(libs.versions.java.get().toInteger())
+        targetCompatibility JavaVersion.toVersion(libs.versions.java.get().toInteger())
+    }
+    kotlinOptions {
+        jvmTarget = libs.versions.java.get()
+        useIR = true
+    }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.get()
+    }
+}
+
+dependencies {
+
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.bundles.androidx.compose)
+    implementation(libs.bundles.koin.android)
+
+    implementation(libs.bundles.kotlinx.coroutines)
+    implementation(libs.bundles.mvi.kotlin)
+
+    implementation(libs.google.material)
+
+    implementation platform(libs.firebase.platform)
+    implementation (libs.firebase.analytics)
+    implementation (libs.firebase.crashlytics)
+
+    implementation(libs.bundles.androidx.navigation)
+    implementation(libs.itrocket.core)
+}

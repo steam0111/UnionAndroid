@@ -1,0 +1,24 @@
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            def propsFile = file('publish.properties')
+            def props = new Properties()
+            props.load(new FileInputStream(propsFile))
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/${props['holder_repository_name']}/${props['repository_name']}")
+            credentials {
+                username props['username']
+                password props['token']
+            }
+        }
+    }
+}
+
+enableFeaturePreview("VERSION_CATALOGS")
+
+rootProject.name = "Union"
+include ':app'
+
