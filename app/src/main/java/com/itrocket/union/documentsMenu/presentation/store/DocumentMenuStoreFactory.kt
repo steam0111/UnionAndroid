@@ -45,7 +45,7 @@ class DocumentMenuStoreFactory(
         ) {
             when (intent) {
                 is DocumentMenuStore.Intent.OnDocumentClicked -> {
-                    // no-op
+                    publish(DocumentMenuStore.Label.ShowDocumentDetail(intent.item))
                 }
                 DocumentMenuStore.Intent.OnProfileClicked -> {
                     // no-op
