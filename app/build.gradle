@@ -2,8 +2,6 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-parcelize'
-    id 'com.google.gms.google-services'
-    id 'com.google.firebase.crashlytics'
     id 'androidx.navigation.safeargs'
 }
 
@@ -54,10 +52,9 @@ dependencies {
 
     implementation(libs.google.material)
 
-    implementation platform(libs.firebase.platform)
-    implementation (libs.firebase.analytics)
-    implementation (libs.firebase.crashlytics)
-
     implementation(libs.bundles.androidx.navigation)
+
     implementation(libs.itrocket.core)
+    implementation(libs.itrocket.ui)
+    implementation(libs.itrocket.utils)
 }

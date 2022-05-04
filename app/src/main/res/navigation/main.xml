@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation android:id="@+id/main"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    app:startDestination="@id/documentsMenu">
 
-
+    <fragment
+        android:id="@+id/documentsMenu"
+        android:name="com.itrocket.union.documentsMenu.presentation.view.DocumentMenuComposeFragment" />
 </navigation>
