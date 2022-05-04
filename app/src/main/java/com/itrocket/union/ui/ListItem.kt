@@ -1,6 +1,5 @@
 package com.itrocket.union.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -50,7 +49,7 @@ fun AccountingObjectItem(
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(4.dp))
-            accountingObject.listInfo.take(MAX_LIST_INFO).forEach {
+            accountingObject.listMainInfo.take(MAX_LIST_INFO).forEach {
                 Text(
                     text = stringResource(R.string.common_two_dots, it.title, it.value),
                     style = AppTheme.typography.caption,
@@ -107,13 +106,7 @@ fun AccountingObjectItem(
         }
     }
     if (isShowBottomLine) {
-        Spacer(
-            modifier = Modifier
-                .height(1.dp)
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .background(psb4)
-        )
+        BottomLine()
     }
 }
 
@@ -126,7 +119,17 @@ fun AccountingObjectItemPreview() {
             isBarcode = true,
             title = "Ширикоформатный жидкокристалический монитор Samsung",
             status = ObjectStatus.UNDER_REVIEW,
-            listInfo = listOf(
+            listMainInfo = listOf(
+                ObjectInfoDomain(
+                    "Заводской номер",
+                    "таылватвлыавыалвыоалвыа"
+                ),
+                ObjectInfoDomain(
+                    "Инвентарный номер",
+                    "таылватвлыавыалвыоалвыа"
+                ),
+            ),
+            listAdditionallyInfo = listOf(
                 ObjectInfoDomain(
                     "Заводской номер",
                     "таылватвлыавыалвыоалвыа"

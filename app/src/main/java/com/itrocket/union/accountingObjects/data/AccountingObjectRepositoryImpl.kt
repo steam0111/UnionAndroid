@@ -14,7 +14,7 @@ class AccountingObjectRepositoryImpl : AccountingObjectRepository {
                 isBarcode = true,
                 title = "Ширикоформатный жидкокристалический монитор Samsung",
                 status = ObjectStatus.AVAILABLE,
-                listInfo = listOf(
+                listMainInfo = listOf(
                     ObjectInfoDomain(
                         "Заводской номер",
                         "таылватвлыавыалвыоалвыа"
@@ -53,6 +53,28 @@ class AccountingObjectRepositoryImpl : AccountingObjectRepository {
                     ),
                     ObjectInfoDomain(
                         "Инвентарный номер",
+                        "таылватвлыавыалвыоалвыа"
+                    ),
+                ),
+                listAdditionallyInfo = listOf(
+                    ObjectInfoDomain(
+                        "Заводской номер",
+                        "таылватвлыавыалвыоалвыа"
+                    ),
+                    ObjectInfoDomain(
+                        "Инвентарный номер",
+                        "таылватвлыавыалвыоалвыа"
+                    ),
+                    ObjectInfoDomain(
+                        "Заводской номер",
+                        "таылватвлыавыалвыоалвыа"
+                    ),
+                    ObjectInfoDomain(
+                        "Инвентарный номер",
+                        "таылватвлыавыалвыоалвыа"
+                    ),
+                    ObjectInfoDomain(
+                        "Заводской номер",
                         "таылватвлыавыалвыоалвыа"
                     ),
                 )
@@ -62,7 +84,7 @@ class AccountingObjectRepositoryImpl : AccountingObjectRepository {
                 isBarcode = true,
                 title = "Ширикоформатный жидкокристалический монитор Samsung",
                 status = ObjectStatus.DECOMMISSIONED,
-                listInfo = listOf(
+                listMainInfo = listOf(
                     ObjectInfoDomain(
                         "Заводской номер",
                         "таылватвлыавыалвыоалвыа"
@@ -71,13 +93,14 @@ class AccountingObjectRepositoryImpl : AccountingObjectRepository {
                         "Инвентарный номер",
                         "таылватвлыавыалвыоалвыа"
                     ),
-                )
+                ),
+                listAdditionallyInfo = listOf()
             ), AccountingObjectDomain(
                 id = "3",
                 isBarcode = true,
                 title = "Ширикоформатный жидкокристалический монитор Samsung",
                 status = ObjectStatus.UNDER_REPAIR,
-                listInfo = listOf(
+                listMainInfo = listOf(
                     ObjectInfoDomain(
                         "Заводской номер",
                         "таылватвлыавыалвыоалвыа"
@@ -86,14 +109,15 @@ class AccountingObjectRepositoryImpl : AccountingObjectRepository {
                         "Инвентарный номер",
                         "таылватвлыавыалвыоалвыа"
                     ),
-                )
+                ),
+                listAdditionallyInfo = listOf()
             ),
             AccountingObjectDomain(
                 id = "4",
                 isBarcode = true,
                 title = "Ширикоформатный жидкокристалический монитор Samsung",
                 status = ObjectStatus.UNDER_REVIEW,
-                listInfo = listOf(
+                listMainInfo = listOf(
                     ObjectInfoDomain(
                         "Заводской номер",
                         "таылватвлыавыалвыоалвыа"
@@ -102,14 +126,15 @@ class AccountingObjectRepositoryImpl : AccountingObjectRepository {
                         "Инвентарный номер",
                         "таылватвлыавыалвыоалвыа"
                     ),
-                )
+                ),
+                listAdditionallyInfo = listOf()
             ),
             AccountingObjectDomain(
                 id = "5",
                 isBarcode = true,
                 title = "Ширикоформатный жидкокристалический монитор Samsung",
                 status = ObjectStatus.UNDER_REPAIR,
-                listInfo = listOf(
+                listMainInfo = listOf(
                     ObjectInfoDomain(
                         "Заводской номер",
                         "таылватвлыавыалвыоалвыа"
@@ -118,14 +143,15 @@ class AccountingObjectRepositoryImpl : AccountingObjectRepository {
                         "Инвентарный номер",
                         "таылватвлыавыалвыоалвыа"
                     ),
-                )
+                ),
+                listAdditionallyInfo = listOf()
             ),
             AccountingObjectDomain(
                 id = "6",
                 isBarcode = true,
                 title = "Ширикоформатный жидкокристалический монитор Samsung",
                 status = ObjectStatus.DECOMMISSIONED,
-                listInfo = listOf(
+                listMainInfo = listOf(
                     ObjectInfoDomain(
                         "Заводской номер",
                         "123123123123123333"
@@ -134,7 +160,8 @@ class AccountingObjectRepositoryImpl : AccountingObjectRepository {
                         "Инвентарный номер",
                         "таылватвлыавыалвыоалвыа"
                     ),
-                )
+                ),
+                listAdditionallyInfo = listOf()
             )
         )
 

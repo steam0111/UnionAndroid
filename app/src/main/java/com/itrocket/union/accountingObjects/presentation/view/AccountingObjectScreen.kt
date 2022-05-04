@@ -123,7 +123,7 @@ fun AccountingObjectScreenPreview() {
                     isBarcode = true,
                     title = "Ширикоформатный жидкокристалический монитор Samsung2",
                     status = ObjectStatus.AVAILABLE,
-                    listInfo = listOf(
+                    listMainInfo = listOf(
                         ObjectInfoDomain(
                             "Заводской номер",
                             "таылватвлыавыалвыоалвыа"
@@ -132,14 +132,15 @@ fun AccountingObjectScreenPreview() {
                             "Инвентарный номер",
                             "таылватвлыавыалвыоалвыа"
                         ),
-                    )
+                    ),
+                    listAdditionallyInfo = listOf()
                 ),
                 AccountingObjectDomain(
                     id = "8",
                     isBarcode = true,
                     title = "Ширикоформатный жидкокристалический монитор Samsung2",
                     status = ObjectStatus.AVAILABLE,
-                    listInfo = listOf(
+                    listMainInfo = listOf(
                         ObjectInfoDomain(
                             "Заводской номер",
                             "таылватвлыавыалвыоалвыа"
@@ -148,7 +149,8 @@ fun AccountingObjectScreenPreview() {
                             "Инвентарный номер",
                             "таылватвлыавыалвыоалвыа"
                         ),
-                    )
+                    ),
+                    listAdditionallyInfo = listOf()
                 )
             )
         ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
