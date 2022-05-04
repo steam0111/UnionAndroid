@@ -1,3 +1,22 @@
 <resources>
-    <string name="app_name">TemplateApplication</string>
+    <string name="app_name">Union</string>
+
+    <!-- MainScreen -->
+    <string name="main_inventory">Инвентариз.</string>
+    <string name="main_identification">Идентификац.</string>
+    <string name="main_accounting_object">Объекты уч.</string>
+    <string name="main_reserves">Запасы</string>
+    <string name="main_commissioning">Ввод в экспл.</string>
+    <string name="main_employees">Сотрудники</string>
+    <string name="main_documents">Документы</string>
+    <string name="main_issue">Выдача</string>
+    <string name="main_return">Возврат</string>
+    <string name="main_moved">Перемещение</string>
+    <string name="main_reception">Прием</string>
+    <string name="main_write_off">Списание</string>
+    <string name="main_to_check">На проверку</string>
+    <string name="main_from_check">С проверки</string>
+    <string name="main_to_repair">В ремонт</string>
+    <string name="main_from_repair">Из ремонта</string>
+    <string name="main_marking">Маркировка</string>
 </resources>

@@ -13,21 +13,12 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-@Immutable
-data class Settings(
-    val mainColor: Color = Purple200
-)
-
-internal val LocalSettings = staticCompositionLocalOf { Settings() }
-
 private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple200,
+    primary = psb1,
 )
 
 private val LightColorPalette = lightColors(
-    primary = yellow200,
-    secondary = yellow500
+    primary = psb1,
 )
 
 @Composable
@@ -41,10 +32,11 @@ fun AppTheme(
         LightColorPalette
     }
 
-    CompositionLocalProvider(
-        LocalSettings provides Settings(blue700)
-    ) {
-
+    CompositionLocalProvider() {
+        MaterialTheme(
+            colors = colors,
+            content = content
+        )
     }
 }
 
@@ -60,8 +52,4 @@ object AppTheme {
     val shapes: Shapes
         @Composable
         get() = MaterialTheme.shapes
-
-    val settings: Settings
-        @Composable
-        get() = LocalSettings.current
 }
