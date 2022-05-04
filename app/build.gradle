@@ -54,7 +54,5 @@ dependencies {
 
     implementation(libs.bundles.androidx.navigation)
 
-    implementation(libs.itrocket.core)
-    implementation(libs.itrocket.ui)
-    implementation(libs.itrocket.utils)
+    implementation(libs.bundles.itrocket)
 }
