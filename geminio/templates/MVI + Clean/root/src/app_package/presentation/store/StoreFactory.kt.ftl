@@ -8,7 +8,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import ${packageName}.${featurePackageName}.domain.${featureName}Interactor
 import ${packageName}.${featurePackageName}.domain.entity.${featureName}Domain
-import ${packageName}.core.CoreDispatchers
+import com.itrocket.core.base.CoreDispatchers
 
 class ${featureName}StoreFactory(
     private val storeFactory: StoreFactory,

@@ -1,6 +1,6 @@
 package com.itrocket.union.documentsMenu.domain
 
-import com.itrocket.union.core.CoreDispatchers
+import com.itrocket.core.base.CoreDispatchers
 import kotlinx.coroutines.withContext
 import com.itrocket.union.documentsMenu.domain.dependencies.DocumentMenuRepository
 

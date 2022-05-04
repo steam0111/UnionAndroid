@@ -6,7 +6,7 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import com.itrocket.union.core.CoreDispatchers
+import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.documentsMenu.domain.DocumentMenuInteractor
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 
