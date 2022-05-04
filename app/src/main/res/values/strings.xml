@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Union</string>
 
+    <!-- Common -->
+    <string name="common_two_dots">%1$s: %2$s</string>
+    <string name="common_rfid">RFID</string>
+    <string name="common_barcode">ШК</string>
+
     <!-- MainScreen -->
     <string name="main_inventory">Инвентариз.</string>
     <string name="main_identification">Идентификац.</string>
@@ -19,4 +24,13 @@
     <string name="main_to_repair">В ремонт</string>
     <string name="main_from_repair">Из ремонта</string>
     <string name="main_marking">Маркировка</string>
+
+    <!-- AccountingObjectScreen -->
+    <string name="accounting_objects_title">Объекты учета</string>
+
+    <!-- Status -->
+    <string name="accounting_object_available">Доступен</string>
+    <string name="accounting_object_under_repair">В ремонте</string>
+    <string name="accounting_object_under_review">На проверке</string>
+    <string name="accounting_object_decommissioned">Списан</string>
 </resources>

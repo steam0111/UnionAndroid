@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,6 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.itrocket.utils.clickableUnbounded
+import com.itrocket.union.R
+
 
 @Composable
 fun BaseToolbar(
@@ -49,5 +52,34 @@ fun BaseToolbar(
         )
         Spacer(modifier = Modifier.weight(1f))
         content()
+    }
+}
+
+@Composable
+fun BlackToolbar(
+    title: String,
+    onBackClickListener: () -> Unit,
+    onSearchClickListener: () -> Unit,
+    onFilterClickListener: () -> Unit
+) {
+    BaseToolbar(
+        title = title,
+        startImageId = R.drawable.ic_arrow_back,
+        onStartImageClickListener = onBackClickListener,
+        backgroundColor = psb1,
+        textColor = white
+    ) {
+        Image(
+            painter = painterResource(R.drawable.ic_search_white),
+            contentDescription = null,
+            modifier = Modifier
+                .clickableUnbounded(onClick = onSearchClickListener)
+        )
+        Spacer(modifier = Modifier.width(28.dp))
+        Image(
+            painter = painterResource(R.drawable.ic_filter_white),
+            contentDescription = null,
+            modifier = Modifier.clickableUnbounded(onClick = onFilterClickListener)
+        )
     }
 }
