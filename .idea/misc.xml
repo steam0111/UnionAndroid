@@ -3,6 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/compose-model-1651422054102.xml" value="0.1" />
+        <entry key="../../../../layout/compose-model-1651422429113.xml" value="0.1" />
+        <entry key="../../../../layout/compose-model-1651424412626.xml" value="0.1" />
+        <entry key="../../../../layout/compose-model-1651689493552.xml" value="0.14738175675675674" />
+        <entry key="app/src/main/res/drawable-v24/ic_question.xml" value="0.157" />
+        <entry key="app/src/main/res/drawable/ic_accounting_object.xml" value="0.157" />
+        <entry key="app/src/main/res/drawable/ic_commisioning.xml" value="0.157" />
+        <entry key="app/src/main/res/drawable/ic_documentation.xml" value="0.157" />
+        <entry key="app/src/main/res/drawable/ic_employees.xml" value="0.157" />
+        <entry key="app/src/main/res/drawable/ic_from_check.xml" value="0.157" />
+        <entry key="app/src/main/res/drawable/ic_indentyfication.xml" value="0.157" />
+        <entry key="app/src/main/res/drawable/ic_issue.xml" value="0.157" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.157" />
         <entry key="app/src/main/res/drawable/ic_marking.xml" value="0.157" />
         <entry key="app/src/main/res/drawable/ic_moved.xml" value="0.157" />

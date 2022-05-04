@@ -3,7 +3,7 @@ package com.itrocket.union.accountingObjects.domain.entity
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-private const val MAX_SHORT_INFO_LIST = 6
+private const val MAX_SHORT_INFO_LIST = 11
 
 @Parcelize
 data class AccountingObjectDomain(
@@ -11,10 +11,12 @@ data class AccountingObjectDomain(
     val title: String,
     val status: ObjectStatus,
     val isBarcode: Boolean = false,
-    val listInfo: List<ObjectInfoDomain>,
+    val listMainInfo: List<ObjectInfoDomain>,
+    val listAdditionallyInfo: List<ObjectInfoDomain>,
     val maxItemsCount: Int = 50
 ) : Parcelable {
-    fun getShortInfoList() = listInfo.take(MAX_SHORT_INFO_LIST)
+    fun getShortMainInfoList() = listMainInfo.take(MAX_SHORT_INFO_LIST)
+    fun getShortAdditionallyInfoList() = listAdditionallyInfo.take(MAX_SHORT_INFO_LIST)
 }
 
 @Parcelize

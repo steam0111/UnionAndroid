@@ -14,5 +14,19 @@
 
     <fragment
         android:id="@+id/accountingObjects"
-        android:name="com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment" />
+        android:name="com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment">
+        <action
+            android:id="@+id/to_accountingObjectsDetails"
+            app:destination="@id/accountingObjectsDetails" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/accountingObjectsDetails"
+        android:name="com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailComposeFragment">
+
+        <argument
+            android:name="AccountingObjectDetailArguments"
+            app:argType="com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailArguments"
+            app:nullable="false" />
+    </fragment>
 </navigation>

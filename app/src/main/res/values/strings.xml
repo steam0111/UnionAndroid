@@ -28,6 +28,13 @@
     <!-- AccountingObjectScreen -->
     <string name="accounting_objects_title">Объекты учета</string>
 
+    <!-- AccountingObjectDetailScreen -->
+    <string name="accounting_object_detail_title">Основные средства</string>
+    <string name="accounting_object_detail_reading_mode">Режим считывания</string>
+    <string name="accounting_object_detail_show_full_characteristics">Показать все характеристики</string>
+    <string name="accounting_object_detail_main">Основные</string>
+    <string name="accounting_object_detail_additionally">Дополнительные</string>
+
     <!-- Status -->
     <string name="accounting_object_available">Доступен</string>
     <string name="accounting_object_under_repair">В ремонте</string>
