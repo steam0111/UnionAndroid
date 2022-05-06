@@ -3,8 +3,8 @@ package ${packageName}.${featurePackageName}.presentation.view
 import androidx.compose.ui.platform.ComposeView
 import ${packageName}.${featurePackageName}.${featureName}Module.${featureName?upper_case}_VIEW_MODEL_QUALIFIER
 import ${packageName}.${featurePackageName}.presentation.store.${featureName}Store
-import ${packageName}.core.BaseComposeFragment
-import ru.interid.weatherford.core.AppInsets
+import com.itrocket.core.base.BaseComposeFragment
+import com.itrocket.core.base.AppInsets
 import androidx.navigation.fragment.navArgs
 import ${packageName}.${featurePackageName}.presentation.view.${featureName}ComposeFragmentArgs
 

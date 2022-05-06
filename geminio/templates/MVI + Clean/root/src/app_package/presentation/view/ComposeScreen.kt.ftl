@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ${packageName}.R
 import ${packageName}.ui.AppTheme
-import ru.interid.weatherford.core.AppInsets
+import com.itrocket.core.base.AppInsets
 import ${packageName}.${featurePackageName}.presentation.store.${featureName}Store
 
 @Composable
