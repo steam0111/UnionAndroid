@@ -1,6 +1,6 @@
 package ${packageName}.${featurePackageName}.presentation.store
 
-import ru.interid.weatherford.core.GoBackNavigationLabel
+import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface ${featureName}Store : Store<${featureName}Store.Intent, ${featureName}Store.State, ${featureName}Store.Label> {

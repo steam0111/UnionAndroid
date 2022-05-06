@@ -11,7 +11,7 @@ import ${packageName}.${featurePackageName}.domain.dependencies.${featureName}Re
 import ${packageName}.${featurePackageName}.presentation.store.${featureName}Store
 import ${packageName}.${featurePackageName}.presentation.store.${featureName}StoreFactory
 import ${packageName}.${featurePackageName}.presentation.view.${featureName}ComposeFragmentArgs
-import ${packageName}.core.BaseViewModel
+import com.itrocket.core.base.BaseViewModel
 
 object ${featureName}Module {
     val ${featureName?upper_case}_VIEW_MODEL_QUALIFIER = named("${featureName?upper_case}_VIEW_MODEL")
