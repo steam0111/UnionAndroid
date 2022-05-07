@@ -1,5 +1,7 @@
 package com.itrocket.union.ui
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -71,4 +73,36 @@ fun ImageButtonPreview() {
 @Preview
 fun BaseButtonPreview() {
     BaseButton(text = "Title", onClick = { }, modifier = Modifier.fillMaxWidth())
+}
+
+@Composable
+fun TextButton(
+    text: String,
+    onClick: () -> Unit,
+    enabled: Boolean = true,
+    isTextUpperCased: Boolean = true
+) {
+    Box(
+        modifier = Modifier
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(vertical = 16.dp, horizontal = 12.dp)
+    ) {
+        Text(
+            text = if (isTextUpperCased) {
+                text.uppercase()
+            } else {
+                text
+            }, color = if (enabled) {
+                psb6
+            } else {
+                psb4
+            }, style = AppTheme.typography.body2
+        )
+    }
+}
+
+@Composable
+@Preview
+fun TextButtonPreview() {
+    TextButton(text = "Title", onClick = { })
 }

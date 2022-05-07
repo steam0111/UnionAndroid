@@ -6,15 +6,17 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import kotlinx.coroutines.delay
-import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.filter.domain.FilterInteractor
+import kotlinx.coroutines.delay
 
 class AccountingObjectStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val accountingObjectInteractor: AccountingObjectInteractor
+    private val accountingObjectInteractor: AccountingObjectInteractor,
+    private val filterInteractor: FilterInteractor,
 ) {
     fun create(): AccountingObjectStore =
         object : AccountingObjectStore,
@@ -53,7 +55,7 @@ class AccountingObjectStoreFactory(
                     AccountingObjectStore.Label.ShowSearch
                 )
                 AccountingObjectStore.Intent.OnFilterClicked -> publish(
-                    AccountingObjectStore.Label.ShowFilter
+                    AccountingObjectStore.Label.ShowFilter(filterInteractor.getFilters())
                 )
                 is AccountingObjectStore.Intent.OnItemClicked -> publish(
                     AccountingObjectStore.Label.ShowDetail(

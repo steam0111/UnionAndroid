@@ -1,18 +1,26 @@
 package com.itrocket.union.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.itrocket.union.R
+import com.itrocket.utils.clickableUnbounded
 
 @Composable
 fun ExpandedInfoField(
@@ -43,5 +51,124 @@ fun ExpandedInfoField(
         }
         Spacer(modifier = Modifier.height(12.dp))
         BottomLine()
+    }
+}
+
+@Composable
+fun SelectedBaseField(
+    isShowBottomLine: Boolean = true,
+    label: String,
+    value: String,
+    onFieldClickListener: () -> Unit,
+    clickable: Boolean = true,
+    underlineColor: Color = brightGray,
+    isCrossVisible: Boolean = false,
+    onCrossClickListener: () -> Unit = {}
+) {
+    Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .clickable(enabled = clickable) {
+                    onFieldClickListener()
+                }
+                .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp)) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(text = label, style = AppTheme.typography.caption, color = graphite5)
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(text = value, style = AppTheme.typography.body2)
+            }
+            if (isCrossVisible) {
+                Spacer(modifier = Modifier.width(16.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.ic_cross),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(10.dp)
+                        .clickableUnbounded(onClick = onCrossClickListener),
+                    colorFilter = ColorFilter.tint(graphite4),
+                )
+            }
+        }
+        if (isShowBottomLine) {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .padding(horizontal = 16.dp)
+                    .background(underlineColor)
+            )
+        }
+    }
+}
+
+@Composable
+fun UnselectedBaseField(
+    isShowBottomLine: Boolean = true,
+    label: String,
+    onFieldClickListener: () -> Unit,
+    underlineColor: Color = brightGray,
+    clickable: Boolean = true,
+    error: String = ""
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(enabled = clickable) {
+                onFieldClickListener()
+            }
+            .padding(start = 16.dp, top = 16.dp, end = 16.dp)
+    ) {
+        Text(text = label, style = AppTheme.typography.body2, color = graphite5)
+        Spacer(modifier = Modifier.height(16.dp))
+        if (isShowBottomLine) {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(underlineColor)
+            )
+        }
+        if (error.isNotBlank()) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = error, style = AppTheme.typography.caption, color = blue6)
+        }
+    }
+}
+
+@Composable
+fun RadioButtonField(
+    isShowBottomLine: Boolean = true,
+    label: String,
+    onFieldClickListener: () -> Unit,
+    isSelected: Boolean
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onFieldClickListener()
+            }
+            .padding(start = 16.dp, top = 16.dp, end = 16.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = label, style = AppTheme.typography.body2, color = psb1)
+            Spacer(modifier = Modifier.weight(1f))
+            BaseRadioButton(isSelected = isSelected, onClick = onFieldClickListener)
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        if (isShowBottomLine) {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(brightGray)
+            )
+        }
     }
 }
