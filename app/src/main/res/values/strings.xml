@@ -47,4 +47,6 @@
     <string name="reading_mode_barcode">Штрихкод</string>
     <string name="reading_mode_sn">SN</string>
     <string name="reading_mode_manual_input">Ручной ввод</string>
+
+    <string name="reserves_title">Запасы</string>
 </resources>

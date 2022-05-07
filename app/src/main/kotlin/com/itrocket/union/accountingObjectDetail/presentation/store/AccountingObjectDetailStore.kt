@@ -8,9 +8,9 @@ import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.store.ReadingModeArguments
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
-import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 
 interface AccountingObjectDetailStore :
     Store<AccountingObjectDetailStore.Intent, AccountingObjectDetailStore.State, AccountingObjectDetailStore.Label> {
