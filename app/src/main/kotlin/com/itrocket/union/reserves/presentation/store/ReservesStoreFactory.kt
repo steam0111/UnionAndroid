@@ -56,7 +56,7 @@ class ReservesStoreFactory(
                     ReservesStore.Label.ShowFilter
                 )
                 is ReservesStore.Intent.OnItemClicked -> publish(
-                    ReservesStore.Label.ShowDetail
+                    ReservesStore.Label.ShowDetail(intent.item)
                 )
             }
         }

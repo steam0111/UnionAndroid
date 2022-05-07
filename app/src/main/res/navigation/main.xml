@@ -39,7 +39,20 @@
 
     <fragment
         android:id="@+id/reserves"
-        android:name="com.itrocket.union.reserves.presentation.view.ReservesComposeFragment" />
+        android:name="com.itrocket.union.reserves.presentation.view.ReservesComposeFragment">
+        <action
+            android:id="@+id/to_reserveDetail"
+            app:destination="@id/reserveDetail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/reserveDetail"
+        android:name="com.itrocket.union.reserveDetail.presentation.view.ReserveDetailComposeFragment">
+        <argument
+            android:name="ReserveDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.reserveDetail.presentation.store.ReserveDetailArguments"
+            app:nullable="false" />
+    </fragment>
 
     <fragment
         android:id="@+id/filter"
