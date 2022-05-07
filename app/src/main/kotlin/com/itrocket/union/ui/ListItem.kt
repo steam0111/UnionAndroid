@@ -22,6 +22,7 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
+import com.itrocket.union.reserves.domain.entity.ReservesDomain
 
 private const val MAX_LIST_INFO = 3
 
@@ -45,8 +46,8 @@ fun AccountingObjectItem(
         ) {
             Text(
                 text = accountingObject.title,
-                style = AppTheme.typography.caption,
-                fontWeight = FontWeight.Bold
+                style = AppTheme.typography.body1,
+                fontWeight = FontWeight.Medium
             )
             Spacer(modifier = Modifier.height(4.dp))
             accountingObject.listMainInfo.take(MAX_LIST_INFO).forEach {
@@ -108,6 +109,93 @@ fun AccountingObjectItem(
     if (isShowBottomLine) {
         BottomLine()
     }
+}
+
+@Composable
+fun ReservesItem(
+    reserves: ReservesDomain,
+    onReservesListener: (ReservesDomain) -> Unit,
+    isShowBottomLine: Boolean
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = {
+                onReservesListener(reserves)
+            })
+            .padding(vertical = 12.dp, horizontal = 16.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+        ) {
+            Text(
+                text = reserves.title,
+                style = AppTheme.typography.body1,
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            reserves.listInfo.take(MAX_LIST_INFO).forEach {
+                Text(
+                    text = stringResource(R.string.common_two_dots, it.title, it.value),
+                    style = AppTheme.typography.caption,
+                    color = psb3
+                )
+            }
+        }
+        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
+            Text(
+                text = reserves.itemsCount.toString(),
+                style = AppTheme.typography.body2,
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                Text(
+                    text = stringResource(R.string.common_barcode),
+                    style = AppTheme.typography.caption,
+                    color = graphite5,
+                    modifier = Modifier.padding(end = 4.dp)
+                )
+                RadioButton(
+                    selected = reserves.isBarcode,
+                    onClick = null,
+                    colors = RadioButtonDefaults.colors(
+                        selectedColor = psb6,
+                        unselectedColor = graphite3
+                    )
+                )
+            }
+        }
+    }
+    if (isShowBottomLine) {
+        BottomLine()
+    }
+}
+
+@Preview
+@Composable
+fun ReservesItemPreview() {
+    ReservesItem(
+        reserves = ReservesDomain(
+            id = "1", title = "Авторучка «Зебра TR22»", isBarcode = true, listInfo =
+            listOf(
+                ObjectInfoDomain(
+                    "Заводской номер",
+                    "таылватвлыавыалвыоалвыа"
+                ),
+                ObjectInfoDomain(
+                    "Инвентарный номер",
+                    "таылватвлыавыалвыоалвыа"
+                )
+            ), itemsCount = 1200
+        ), onReservesListener = {},
+        isShowBottomLine = true
+    )
 }
 
 @Preview
