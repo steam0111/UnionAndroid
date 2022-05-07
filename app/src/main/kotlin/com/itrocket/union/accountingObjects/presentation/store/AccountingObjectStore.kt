@@ -7,6 +7,8 @@ import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailArguments
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragmentDirections
+import com.itrocket.union.filter.domain.entity.FilterDomain
+import com.itrocket.union.filter.presentation.store.FilterArguments
 
 interface AccountingObjectStore :
     Store<AccountingObjectStore.Intent, AccountingObjectStore.State, AccountingObjectStore.Label> {
@@ -28,7 +30,11 @@ interface AccountingObjectStore :
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
         object ShowSearch : Label()
-        object ShowFilter : Label()
+        data class ShowFilter(val filters: List<FilterDomain>) : Label(), ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = AccountingObjectComposeFragmentDirections.toFilter(FilterArguments(filters))
+        }
+
         data class ShowDetail(val item: AccountingObjectDomain) :
             Label(), ForwardNavigationLabel {
             override val directions: NavDirections

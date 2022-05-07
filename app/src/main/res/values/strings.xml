@@ -1,12 +1,24 @@
 <resources>
-    <string name="app_name">Union</string>
+    <plurals name="filter_result_show">
+        <item quantity="zero">Нет заявок</item>
+        <item quantity="one">Показать %d заявку</item>
+        <item quantity="two">Показать %d заявки</item>
+        <item quantity="few">Показать %d заявки</item>
+        <item quantity="many">Показать %d заявок</item>
+        <item quantity="other">Нет заявок</item>
+    </plurals>
 
     <!-- Common -->
+    <string name="app_name">Union</string>
     <string name="common_two_dots">%1$s: %2$s</string>
     <string name="common_rfid">RFID</string>
     <string name="common_barcode">ШК</string>
+    <string name="common_drop">Сбросить</string>
+    <string name="common_apply">Применить</string>
+    <string name="common_cancel">Отмена</string>
 
     <!-- MainScreen -->
+    <string name="common_hint">Введите значение</string>
     <string name="main_inventory">Инвентариз.</string>
     <string name="main_identification">Идентификац.</string>
     <string name="main_accounting_object">Объекты уч.</string>
@@ -23,23 +35,26 @@
     <string name="main_from_check">С проверки</string>
     <string name="main_to_repair">В ремонт</string>
     <string name="main_from_repair">Из ремонта</string>
-    <string name="main_marking">Маркировка</string>
 
     <!-- AccountingObjectScreen -->
-    <string name="accounting_objects_title">Объекты учета</string>
+    <string name="main_marking">Маркировка</string>
 
     <!-- AccountingObjectDetailScreen -->
+    <string name="accounting_objects_title">Объекты учета</string>
     <string name="accounting_object_detail_title">Основные средства</string>
     <string name="accounting_object_detail_reading_mode">Режим считывания</string>
     <string name="accounting_object_detail_show_full_characteristics">Показать все характеристики</string>
     <string name="accounting_object_detail_main">Основные</string>
-    <string name="accounting_object_detail_additionally">Дополнительные</string>
 
     <!-- Status -->
+    <string name="accounting_object_detail_additionally">Дополнительные</string>
     <string name="accounting_object_available">Доступен</string>
     <string name="accounting_object_under_repair">В ремонте</string>
     <string name="accounting_object_under_review">На проверке</string>
+
+    <!-- Filter -->
     <string name="accounting_object_decommissioned">Списан</string>
+    <string name="filter_title">Фильтр</string>
 
     <!-- ReadingModeScreen -->
     <string name="reading_mode_title">Режим считывания</string>

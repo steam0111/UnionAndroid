@@ -32,6 +32,7 @@ object AccountingObjectModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
+                get()
             ).create()
         }
     }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation android:id="@+id/main"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
     app:startDestination="@id/documentsMenu">
 
     <fragment
@@ -21,6 +21,10 @@
         <action
             android:id="@+id/to_accountingObjectsDetails"
             app:destination="@id/accountingObjectsDetails" />
+
+        <action
+            android:id="@+id/to_Filter"
+            app:destination="@id/filter" />
     </fragment>
 
     <fragment
@@ -36,4 +40,14 @@
     <fragment
         android:id="@+id/reserves"
         android:name="com.itrocket.union.reserves.presentation.view.ReservesComposeFragment" />
+
+    <fragment
+        android:id="@+id/filter"
+        android:name="com.itrocket.union.filter.presentation.view.FilterComposeFragment">
+
+        <argument
+            android:name="FilterArguments"
+            app:argType="com.itrocket.union.filter.presentation.store.FilterArguments"
+            app:nullable="false" />
+    </fragment>
 </navigation>
