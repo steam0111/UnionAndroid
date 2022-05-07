@@ -5,6 +5,7 @@ import com.itrocket.union.accountingObjects.AccountingObjectModule
 import com.itrocket.union.core.CoreModule
 import com.itrocket.union.documentsMenu.DocumentMenuModule
 import org.koin.core.module.Module
+import com.itrocket.union.readingMode.ReadingModeModule
 
 object Modules {
 
@@ -12,6 +13,7 @@ object Modules {
         CoreModule.module,
         DocumentMenuModule.module,
         AccountingObjectModule.module,
-        AccountingObjectDetailModule.module
+        AccountingObjectDetailModule.module,
+        ReadingModeModule.module
     )
 }

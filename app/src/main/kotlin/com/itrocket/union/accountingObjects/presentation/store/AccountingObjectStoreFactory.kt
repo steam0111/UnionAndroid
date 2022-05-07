@@ -6,9 +6,9 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import com.itrocket.core.base.CoreDispatchers
 import kotlinx.coroutines.delay
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
+import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 
 class AccountingObjectStoreFactory(
