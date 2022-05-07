@@ -1,7 +1,7 @@
 package com.itrocket.union.accountingObjectDetail.domain
 
-import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjectDetail.domain.dependencies.AccountingObjectDetailRepository
+import com.itrocket.core.base.CoreDispatchers
 
 class AccountingObjectDetailInteractor(
     private val repository: AccountingObjectDetailRepository,

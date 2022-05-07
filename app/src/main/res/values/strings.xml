@@ -40,4 +40,11 @@
     <string name="accounting_object_under_repair">В ремонте</string>
     <string name="accounting_object_under_review">На проверке</string>
     <string name="accounting_object_decommissioned">Списан</string>
+
+    <!-- ReadingModeScreen -->
+    <string name="reading_mode_title">Режим считывания</string>
+    <string name="reading_mode_rfid">RFID</string>
+    <string name="reading_mode_barcode">Штрихкод</string>
+    <string name="reading_mode_sn">SN</string>
+    <string name="reading_mode_manual_input">Ручной ввод</string>
 </resources>

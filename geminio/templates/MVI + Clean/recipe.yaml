@@ -25,7 +25,7 @@ widgets:
       constraints:
         - nonempty
         - unique
-      default: ru/interid/weatherford
+      default: com/itrocket/union
 
 recipe:
   - instantiateAndOpen:

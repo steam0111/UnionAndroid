@@ -2,8 +2,8 @@ package com.itrocket.union.accountingObjectDetail.presentation.store
 
 import com.arkivanov.mvikotlin.core.store.*
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjectDetail.domain.AccountingObjectDetailInteractor
+import com.itrocket.core.base.CoreDispatchers
 
 class AccountingObjectDetailStoreFactory(
     private val storeFactory: StoreFactory,
@@ -48,7 +48,7 @@ class AccountingObjectDetailStoreFactory(
                     Result.CheckedFullCharacteristics(intent.isChecked)
                 )
                 AccountingObjectDetailStore.Intent.OnReadingModeClicked -> {
-                    //no-op
+                    publish(AccountingObjectDetailStore.Label.ShowReadingMode(getState().readingMode))
                 }
                 AccountingObjectDetailStore.Intent.OnDocumentAddClicked -> {
                     //no-op
