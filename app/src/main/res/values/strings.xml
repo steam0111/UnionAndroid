@@ -13,6 +13,7 @@
     <string name="common_two_dots">%1$s: %2$s</string>
     <string name="common_rfid">RFID</string>
     <string name="common_barcode">ШК</string>
+    <string name="common_empty"></string>
     <string name="common_drop">Сбросить</string>
     <string name="common_apply">Применить</string>
     <string name="common_cancel">Отмена</string>
@@ -29,12 +30,7 @@
     <string name="main_issue">Выдача</string>
     <string name="main_return">Возврат</string>
     <string name="main_moved">Перемещение</string>
-    <string name="main_reception">Прием</string>
     <string name="main_write_off">Списание</string>
-    <string name="main_to_check">На проверку</string>
-    <string name="main_from_check">С проверки</string>
-    <string name="main_to_repair">В ремонт</string>
-    <string name="main_from_repair">Из ремонта</string>
 
     <!-- AccountingObjectScreen -->
     <string name="main_marking">Маркировка</string>
@@ -63,5 +59,16 @@
     <string name="reading_mode_sn">SN</string>
     <string name="reading_mode_manual_input">Ручной ввод</string>
 
+    <!-- Reserves -->
     <string name="reserves_title">Запасы</string>
+
+    <!-- Documents -->
+    <string name="documents_title">Документы %s</string>
+    <string name="documents_main_assets">ОС</string>
+    <string name="documents_reserves">Запасы</string>
+    <string name="documents_created">Создан</string>
+    <string name="documents_conducted">Проведен</string>
+    <string name="documents_create_issue">Создать заявку</string>
+    <string name="documents_today">Сегодня</string>
+    <string name="documents_yesterday">Вчера</string>
 </resources>

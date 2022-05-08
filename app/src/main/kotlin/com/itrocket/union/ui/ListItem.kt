@@ -1,30 +1,55 @@
 package com.itrocket.union.ui
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
+import com.itrocket.union.documents.domain.entity.DocumentDateType
+import com.itrocket.union.documents.domain.entity.DocumentStatus
+import com.itrocket.union.documents.domain.entity.ObjectType
+import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import com.itrocket.utils.clickableUnbounded
 
 private const val MAX_LIST_INFO = 3
+private const val DATE_ITEM_ROTATION_DURATION = 200
 
 @Composable
 fun AccountingObjectItem(
@@ -176,6 +201,209 @@ fun ReservesItem(
         BottomLine()
     }
 }
+
+@Composable
+fun DocumentInfoItem(
+    item: DocumentView.DocumentItemView,
+    onDocumentClickListener: (String) -> Unit,
+    isShowBottomLine: Boolean,
+    isShowStatus: Boolean = true
+) {
+    val numberId = "number"
+    val timeId = "time"
+    val statusId = "status"
+    val objectTypeId = "objectType"
+    val annotatedTitle = buildAnnotatedString {
+        appendInlineContent(numberId, "[icon1]")
+        append(item.number)
+        append("  ")
+
+        appendInlineContent(timeId, "[icon2]")
+        append(item.time)
+        append("  ")
+
+        appendInlineContent(statusId, "[icon3]")
+        append(stringResource(item.documentStatus.textId))
+        append("  ")
+
+        appendInlineContent(objectTypeId, "[icon4]")
+        append(stringResource(item.objectType.textId))
+    }
+    val numberContent = mapOf(
+        numberId to InlineTextContent(
+            Placeholder(
+                width = 20.sp,
+                height = 16.sp,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
+            )
+        ) {
+            Image(painter = painterResource(R.drawable.ic_number), contentDescription = null)
+        },
+        timeId to InlineTextContent(
+            Placeholder(
+                width = 20.sp,
+                height = 16.sp,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
+            )
+        ) {
+            Image(painter = painterResource(R.drawable.ic_clock), contentDescription = null)
+        },
+        statusId to InlineTextContent(
+            Placeholder(
+                width = 20.sp,
+                height = 16.sp,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+            )
+        ) {
+            Image(painter = painterResource(R.drawable.ic_document), contentDescription = null)
+        },
+        objectTypeId to InlineTextContent(
+            Placeholder(
+                width = 20.sp,
+                height = 16.sp,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+            )
+        ) {
+            Image(painter = painterResource(R.drawable.ic_category), contentDescription = null)
+        },
+    )
+    val annotatedInfo = buildAnnotatedString {
+        item.documentInfo.forEachIndexed { index, info ->
+            append(info)
+            if (index < item.documentInfo.lastIndex) {
+                append(" ")
+                withStyle(SpanStyle(color = psb6, fontWeight = FontWeight.ExtraBold)) {
+                    append("|")
+                }
+                append(" ")
+            }
+        }
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(white)
+            .clickable {
+                onDocumentClickListener(item.number)
+            }
+            .padding(horizontal = 16.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 18.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            Text(
+                text = annotatedTitle,
+                inlineContent = numberContent,
+                style = AppTheme.typography.body1,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 20.sp,
+                modifier = Modifier
+                    .padding(end = 40.dp)
+                    .fillMaxWidth(0.7f)
+            )
+            if (isShowStatus) {
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
+                    SmallStatusLabel(documentStatus = item.documentStatus)
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = annotatedInfo, style = AppTheme.typography.caption, color = graphite6)
+        Spacer(modifier = Modifier.height(12.dp))
+        if (isShowBottomLine) {
+            Spacer(
+                modifier = Modifier
+                    .height(1.dp)
+                    .fillMaxWidth()
+                    .background(psb4)
+            )
+        }
+    }
+}
+
+@Composable
+fun DocumentDateItem(
+    item: DocumentView.DocumentDateView,
+    onArrowClickListener: () -> Unit = {},
+    isRotated: Boolean = false
+) {
+    val angle: Float by animateFloatAsState(
+        targetValue = if (isRotated) 180F else 0F,
+        animationSpec = tween(
+            durationMillis = DATE_ITEM_ROTATION_DURATION,
+            easing = FastOutSlowInEasing
+        )
+    )
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(graphite2)
+            .padding(vertical = 11.dp, horizontal = 16.dp)
+    ) {
+        Text(
+            text = when (item.dayType) {
+                DocumentDateType.TODAY -> stringResource(id = R.string.documents_today)
+                DocumentDateType.YESTERDAY ->  stringResource(id = R.string.documents_yesterday)
+                DocumentDateType.OTHER -> item.dateUi
+            },
+            style = AppTheme.typography.subtitle2,
+            color = psb1
+        )
+        Spacer(modifier = Modifier.width(6.dp))
+        Text(
+            text = if (item.dayType != DocumentDateType.OTHER) {
+                "(${item.dateUi})"
+            } else {
+                ""
+            },
+            style = AppTheme.typography.body2,
+            color = graphite6
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Image(
+            painter = painterResource(R.drawable.ic_arrow_up_small),
+            contentDescription = null,
+            modifier = Modifier
+                .clickableUnbounded(onClick = {
+                    onArrowClickListener()
+                })
+                .rotate(angle)
+        )
+    }
+}
+
+@Preview
+@Composable
+fun DocumentDateItemPreview() {
+    DocumentDateItem(item = DocumentView.DocumentDateView("12.12.12", DocumentDateType.OTHER, "12.12.12"), {}, false)
+}
+
+@Preview
+@Composable
+fun DocumentInfoItemPreview() {
+    DocumentInfoItem(
+        item = DocumentView.DocumentItemView(
+            number = "БП-00001374",
+            time = "12:40",
+            objectStatus = ObjectStatus.AVAILABLE,
+            documentInfo = listOf(
+                "Систмный интегратор",
+                "Систмный интегратор",
+                "Систмный интегратор",
+                "Систмный интегратор",
+                "Систмный интегратор",
+            ),
+            documentStatus = DocumentStatus.CREATED,
+            objectType = ObjectType.MAIN_ASSETS,
+            date = ""
+        ), onDocumentClickListener = {}, isShowBottomLine = true
+    )
+}
+
 
 @Preview
 @Composable

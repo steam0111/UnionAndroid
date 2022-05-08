@@ -4,6 +4,8 @@ import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.union.R
+import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
+import com.itrocket.union.documents.presentation.store.DocumentArguments
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 import com.itrocket.union.documentsMenu.presentation.view.DocumentMenuComposeFragmentDirections
 
@@ -27,6 +29,24 @@ interface DocumentMenuStore :
                 get() = when (item.titleId) {
                     R.string.main_accounting_object -> DocumentMenuComposeFragmentDirections.toAccountingObjects()
                     R.string.main_reserves -> DocumentMenuComposeFragmentDirections.toReserves()
+                    R.string.main_documents -> DocumentMenuComposeFragmentDirections.toDocuments(
+                        DocumentArguments(DocumentTypeDomain.ALL)
+                    )
+                    R.string.main_commissioning -> DocumentMenuComposeFragmentDirections.toDocuments(
+                        DocumentArguments(DocumentTypeDomain.COMMISSIONING)
+                    )
+                    R.string.main_issue -> DocumentMenuComposeFragmentDirections.toDocuments(
+                        DocumentArguments(DocumentTypeDomain.EXTRADITION)
+                    )
+                    R.string.main_return -> DocumentMenuComposeFragmentDirections.toDocuments(
+                        DocumentArguments(DocumentTypeDomain.RETURN)
+                    )
+                    R.string.main_moved -> DocumentMenuComposeFragmentDirections.toDocuments(
+                        DocumentArguments(DocumentTypeDomain.MOVING)
+                    )
+                    R.string.main_write_off -> DocumentMenuComposeFragmentDirections.toDocuments(
+                        DocumentArguments(DocumentTypeDomain.WRITE_OFF)
+                    )
                     else -> DocumentMenuComposeFragmentDirections.toAccountingObjects()
                 }
         }
