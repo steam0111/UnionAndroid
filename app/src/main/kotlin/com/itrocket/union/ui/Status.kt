@@ -15,11 +15,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.documents.domain.entity.DocumentStatus
 
 @Composable
 fun SmallStatusLabel(objectStatus: ObjectStatus) {
     BaseLabel(
         objectStatus = objectStatus,
+        verticalPadding = 4.dp,
+        horizontalPadding = 8.dp,
+        textStyle = AppTheme.typography.caption
+    )
+}
+
+@Composable
+fun SmallStatusLabel(documentStatus: DocumentStatus) {
+    BaseLabel(
+        documentStatus = documentStatus,
         verticalPadding = 4.dp,
         horizontalPadding = 8.dp,
         textStyle = AppTheme.typography.caption
@@ -53,6 +64,26 @@ private fun BaseLabel(
         modifier = Modifier
             .background(
                 objectStatus.backgroundColor,
+                RoundedCornerShape(111.dp)
+            )
+            .padding(vertical = verticalPadding, horizontal = horizontalPadding)
+    )
+}
+
+@Composable
+private fun BaseLabel(
+    documentStatus: DocumentStatus,
+    verticalPadding: Dp,
+    horizontalPadding: Dp,
+    textStyle: TextStyle
+) {
+    Text(
+        text = stringResource(documentStatus.textId),
+        style = textStyle,
+        color = documentStatus.textColor,
+        modifier = Modifier
+            .background(
+                documentStatus.backgroundColor,
                 RoundedCornerShape(111.dp)
             )
             .padding(vertical = verticalPadding, horizontal = horizontalPadding)
