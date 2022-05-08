@@ -39,7 +39,7 @@ class FilterRepositoryImpl : FilterRepository {
             ),
             FilterDomain(
                 name = "Местоположение",
-                filterValueType = FilterValueType.INPUT
+                filterValueType = FilterValueType.LOCATION
             ),
             FilterDomain(
                 name = "Статус",
