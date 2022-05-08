@@ -42,10 +42,7 @@
     <string name="accounting_object_detail_reading_mode">Режим считывания</string>
     <string name="accounting_object_detail_show_full_characteristics">Показать все характеристики</string>
     <string name="accounting_object_detail_main">Основные</string>
-
-    <!-- Reserves -->
-    <string name="reserves_title">Запасы</string>
-
+    
     <!-- Status -->
     <string name="accounting_object_detail_additionally">Дополнительные</string>
     <string name="accounting_object_available">Доступен</string>
@@ -77,7 +74,7 @@
     <string name="documents_reserves">Запасы</string>
     <string name="documents_created">Создан</string>
     <string name="documents_conducted">Проведен</string>
-    <string name="documents_create_issue">Создать заявку</string>
+    <string name="documents_create_issue">Создать</string>
     <string name="documents_today">Сегодня</string>
     <string name="documents_yesterday">Вчера</string>
 </resources>

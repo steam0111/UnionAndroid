@@ -6,15 +6,17 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.reserves.domain.ReservesInteractor
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
-import com.itrocket.core.base.CoreDispatchers
 import kotlinx.coroutines.delay
 
 class ReservesStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val reservesInteractor: ReservesInteractor
+    private val reservesInteractor: ReservesInteractor,
+    private val filterInteractor: FilterInteractor
 ) {
     fun create(): ReservesStore =
         object : ReservesStore,
@@ -38,7 +40,7 @@ class ReservesStoreFactory(
             getState: () -> ReservesStore.State
         ) {
             dispatch(Result.Loading(true))
-            delay(1000)
+            delay(500)
             dispatch(Result.Reserves(reservesInteractor.getReserves()))
             dispatch(Result.Loading(false))
         }
@@ -53,7 +55,7 @@ class ReservesStoreFactory(
                     ReservesStore.Label.ShowSearch
                 )
                 ReservesStore.Intent.OnFilterClicked -> publish(
-                    ReservesStore.Label.ShowFilter
+                    ReservesStore.Label.ShowFilter(filterInteractor.getFilters())
                 )
                 is ReservesStore.Intent.OnItemClicked -> publish(
                     ReservesStore.Label.ShowDetail(intent.item)

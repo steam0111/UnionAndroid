@@ -16,8 +16,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.itrocket.utils.clickableUnbounded
 import com.itrocket.union.R
+import com.itrocket.utils.clickableUnbounded
 
 
 @Composable
@@ -69,12 +69,14 @@ fun BlackToolbar(
         backgroundColor = psb1,
         textColor = white
     ) {
-        Image(
-            painter = painterResource(R.drawable.ic_search_white),
-            contentDescription = null,
-            modifier = Modifier
-                .clickableUnbounded(onClick = onSearchClickListener)
-        )
+        if (false) {
+            Image(
+                painter = painterResource(R.drawable.ic_search_white),
+                contentDescription = null,
+                modifier = Modifier
+                    .clickableUnbounded(onClick = onSearchClickListener)
+            )
+        }
         Spacer(modifier = Modifier.width(28.dp))
         Image(
             painter = painterResource(R.drawable.ic_filter_white),

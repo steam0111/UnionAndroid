@@ -43,9 +43,14 @@
     <fragment
         android:id="@+id/reserves"
         android:name="com.itrocket.union.reserves.presentation.view.ReservesComposeFragment">
+
         <action
             android:id="@+id/to_reserveDetail"
             app:destination="@id/reserveDetail" />
+
+        <action
+            android:id="@+id/to_Filter"
+            app:destination="@id/filter" />
     </fragment>
 
     <fragment
