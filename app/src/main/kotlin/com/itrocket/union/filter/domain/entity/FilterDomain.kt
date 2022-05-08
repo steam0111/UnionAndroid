@@ -12,5 +12,5 @@ data class FilterDomain(
 ) : Parcelable
 
 enum class FilterValueType {
-    INPUT, MULTI_SELECT_LIST, SINGLE_SELECT_LIST, DATE
+    INPUT, MULTI_SELECT_LIST, SINGLE_SELECT_LIST, DATE, LOCATION
 }

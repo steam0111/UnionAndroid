@@ -17,6 +17,7 @@
     <string name="common_drop">Сбросить</string>
     <string name="common_apply">Применить</string>
     <string name="common_cancel">Отмена</string>
+    <string name="common_finish">Готово</string>
 
     <!-- MainScreen -->
     <string name="common_hint">Введите значение</string>
@@ -42,6 +43,9 @@
     <string name="accounting_object_detail_show_full_characteristics">Показать все характеристики</string>
     <string name="accounting_object_detail_main">Основные</string>
 
+    <!-- Reserves -->
+    <string name="reserves_title">Запасы</string>
+
     <!-- Status -->
     <string name="accounting_object_detail_additionally">Дополнительные</string>
     <string name="accounting_object_available">Доступен</string>
@@ -58,6 +62,11 @@
     <string name="reading_mode_barcode">Штрихкод</string>
     <string name="reading_mode_sn">SN</string>
     <string name="reading_mode_manual_input">Ручной ввод</string>
+
+    <!-- Location -->
+    <string name="location_level">Уровень местоположения</string>
+    <string name="location_select_place">Выберите %s</string>
+    <string name="location_hint">Введите запрос</string>
 
     <!-- Reserves -->
     <string name="reserves_title">Запасы</string>

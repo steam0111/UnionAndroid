@@ -9,6 +9,8 @@ import com.itrocket.union.filter.FilterModule.FILTER_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.filter.domain.entity.FilterDomain
 import com.itrocket.union.filter.presentation.store.FilterStore
 import com.itrocket.union.filterValues.presentation.view.FilterValueComposeFragment
+import com.itrocket.union.location.presentation.store.LocationResult
+import com.itrocket.union.location.presentation.view.LocationComposeFragment
 
 class FilterComposeFragment :
     BaseComposeFragment<FilterStore.Intent, FilterStore.State, FilterStore.Label>(
@@ -26,6 +28,17 @@ class FilterComposeFragment :
                     accept(
                         FilterStore.Intent.OnFilterChanged(
                             it as FilterDomain? ?: return@FragmentResult
+                        )
+                    )
+                }
+            ),
+            FragmentResult(
+                resultCode = LocationComposeFragment.LOCATION_RESULT_CODE,
+                resultLabel = LocationComposeFragment.LOCATION_RESULT,
+                resultAction = {
+                    accept(
+                        FilterStore.Intent.OnFilterLocationChanged(
+                            it as LocationResult? ?: return@FragmentResult
                         )
                     )
                 }

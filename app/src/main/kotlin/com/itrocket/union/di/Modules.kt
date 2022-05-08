@@ -9,6 +9,7 @@ import com.itrocket.union.filterValues.FilterValueModule
 import com.itrocket.union.readingMode.ReadingModeModule
 import com.itrocket.union.reserves.ReservesModule
 import com.itrocket.union.reserveDetail.ReserveDetailModule
+import com.itrocket.union.location.LocationModule
 import com.itrocket.union.documents.DocumentModule
 
 object Modules {
@@ -23,6 +24,8 @@ object Modules {
         AccountingObjectDetailModule.module,
         ReadingModeModule.module,
         ReservesModule.module,
+        ReserveDetailModule.module,
+        LocationModule.module,
         ReserveDetailModule.module,
         DocumentModule.module
     )

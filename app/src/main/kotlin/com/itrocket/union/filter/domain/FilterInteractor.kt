@@ -63,4 +63,19 @@ class FilterInteractor(
         }
     }
 
+    fun changeLocationFilter(filters: List<FilterDomain>, location: String): List<FilterDomain> {
+        val mutableFilters = filters.toMutableList()
+        val locationFilter = filters.find { it.filterValueType == FilterValueType.LOCATION }
+        val locationIndex = filters.indexOf(locationFilter)
+        if (locationIndex != NO_POSITION) {
+            mutableFilters[locationIndex] = mutableFilters[locationIndex].copy(
+                values = listOf(location)
+            )
+        }
+        return mutableFilters
+    }
+
+    companion object {
+        private const val NO_POSITION = -1
+    }
 }

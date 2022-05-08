@@ -9,6 +9,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.filter.domain.entity.FilterDomain
+import com.itrocket.union.filter.domain.entity.FilterValueType
 
 class FilterStoreFactory(
     private val storeFactory: StoreFactory,
@@ -45,7 +46,11 @@ class FilterStoreFactory(
         ) {
             when (intent) {
                 is FilterStore.Intent.OnFieldClicked -> {
-                    publish(FilterStore.Label.ShowFilterValues(intent.filter))
+                    if (intent.filter.filterValueType == FilterValueType.LOCATION) {
+                        publish(FilterStore.Label.ShowLocation)
+                    } else {
+                        publish(FilterStore.Label.ShowFilterValues(intent.filter))
+                    }
                 }
                 is FilterStore.Intent.OnShowClicked -> {
 
@@ -64,6 +69,16 @@ class FilterStoreFactory(
                         filterChange = intent.filter
                     )
                     dispatch(Result.Filters(filterList))
+                }
+                is FilterStore.Intent.OnFilterLocationChanged -> {
+                    dispatch(
+                        Result.Filters(
+                            filterInteractor.changeLocationFilter(
+                                filters = getState().filterFields,
+                                location = intent.locationResult.location
+                            )
+                        )
+                    )
                 }
             }
         }
