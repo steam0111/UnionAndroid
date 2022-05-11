@@ -138,10 +138,8 @@ fun AuthContent(title: String, subtitle: String, fields: List<@Composable () -> 
         Spacer(Modifier.height(12.dp))
         Text(text = subtitle, style = AppTheme.typography.body2, color = psb6)
         Spacer(Modifier.height(24.dp))
-        LazyColumn {
-            items(fields) {
-                it()
-            }
+        fields.forEach {
+            it()
         }
     }
 }
