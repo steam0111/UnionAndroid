@@ -5,11 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updatePadding
 import com.itrocket.union.auth.AuthModule.AUTH_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.auth.presentation.store.AuthStore
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
+import com.itrocket.utils.toDp
+import com.itrocket.utils.toPx
 
 class AuthComposeFragment : BaseComposeFragment<AuthStore.Intent, AuthStore.State, AuthStore.Label>(
     AUTH_VIEW_MODEL_QUALIFIER
@@ -33,6 +37,8 @@ class AuthComposeFragment : BaseComposeFragment<AuthStore.Intent, AuthStore.Stat
         composeView: ComposeView,
         appInsets: AppInsets
     ) {
+        val container = view?.findViewById<ConstraintLayout>(R.id.clAuth)
+        container?.updatePadding(top = appInsets.topInset.toPx, bottom = appInsets.bottomInset.toPx)
         composeView.setContent {
             AuthScreen(
                 state = state,
