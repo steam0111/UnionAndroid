@@ -18,6 +18,25 @@
     <string name="common_apply">Применить</string>
     <string name="common_cancel">Отмена</string>
     <string name="common_finish">Готово</string>
+    <string name="common_step">Шаг %s</string>
+    <string name="common_next">Далее</string>
+
+    <!-- Auth -->
+    <string name="auth_suggest">Это нужно сделать один раз</string>
+    <string name="auth_sign_in">Войти</string>
+
+    <string name="auth_and_license_title">Авторизация и лицензирование</string>
+    <string name="auth_and_license_device_name">Наименование устройства</string>
+    <string name="auth_and_license_client_code">Код клиента (Пользователь)</string>
+    <string name="auth_and_license_security_code">Код безопасности</string>
+
+    <string name="connect_to_server_title">Подключение к серверу</string>
+    <string name="connect_to_server_address">Адрес сервера</string>
+    <string name="connect_to_server_port">Порт</string>
+
+    <string name="auth_user_title">Аутентификация пользователя</string>
+    <string name="auth_user_login">Логин</string>
+    <string name="auth_user_password">Пароль</string>
 
     <!-- MainScreen -->
     <string name="common_hint">Введите значение</string>

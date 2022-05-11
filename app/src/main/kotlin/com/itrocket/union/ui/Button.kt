@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -64,15 +66,16 @@ fun ImageButton(@DrawableRes imageId: Int, paddings: PaddingValues, onClick: () 
 }
 
 @Composable
-@Preview
-fun ImageButtonPreview() {
-    ImageButton(imageId = R.drawable.ic_camera, onClick = {}, paddings = PaddingValues(12.dp))
-}
-
-@Composable
-@Preview
-fun BaseButtonPreview() {
-    BaseButton(text = "Title", onClick = { }, modifier = Modifier.fillMaxWidth())
+fun ButtonWithContent(content: @Composable () -> Unit, onClick: () -> Unit, modifier: Modifier) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(backgroundColor = psb6),
+        shape = RoundedCornerShape(8.dp),
+        contentPadding = PaddingValues(vertical = 16.dp),
+        modifier = modifier
+    ) {
+        content()
+    }
 }
 
 @Composable
@@ -99,6 +102,72 @@ fun TextButton(
             }, style = AppTheme.typography.body2
         )
     }
+}
+
+@Composable
+fun OutlinedImageButton(
+    imageId: Int,
+    onClick: () -> Unit,
+    enabled: Boolean,
+    modifier: Modifier,
+    paddingValues: PaddingValues
+) {
+    Box(
+        modifier = modifier
+            .background(
+                if (enabled) {
+                    graphite2
+                } else {
+                    timberWolf
+                }, RoundedCornerShape(8.dp)
+            )
+            .border(
+                width = 1.dp, color = if (enabled) {
+                    psb6
+                } else {
+                    timberWolf
+                }, shape = RoundedCornerShape(8.dp)
+            )
+            .clip(RoundedCornerShape(8.dp))
+            .clickable(onClick = onClick, enabled = enabled)
+            .padding(paddingValues)
+    ) {
+        Image(
+            painter = painterResource(imageId),
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(
+                if (enabled) {
+                    psb6
+                } else {
+                    white
+                }
+            )
+        )
+    }
+}
+
+@Composable
+@Preview
+fun ImageButtonPreview() {
+    ImageButton(imageId = R.drawable.ic_camera, onClick = {}, paddings = PaddingValues(12.dp))
+}
+
+@Composable
+@Preview
+fun BaseButtonPreview() {
+    BaseButton(text = "Title", onClick = { }, modifier = Modifier.fillMaxWidth())
+}
+
+@Composable
+@Preview
+fun OutlinedImageButtonPreview() {
+    OutlinedImageButton(
+        imageId = R.drawable.ic_arrow_back,
+        onClick = { },
+        modifier = Modifier,
+        paddingValues = PaddingValues(20.dp),
+        enabled = true
+    )
 }
 
 @Composable
