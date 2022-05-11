@@ -2,7 +2,11 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
-    app:startDestination="@id/documentsMenu">
+    app:startDestination="@id/auth">
+
+    <fragment
+        android:id="@+id/auth"
+        android:name="com.itrocket.union.auth.presentation.view.AuthComposeFragment" />
 
     <fragment
         android:id="@+id/documentsMenu"

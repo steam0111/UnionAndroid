@@ -20,11 +20,12 @@ class AuthComposeFragment : BaseComposeFragment<AuthStore.Intent, AuthStore.Stat
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_auth_host, container)
+        return inflater.inflate(R.layout.fragment_auth_host, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        val composeView = view.findViewById<ComposeView>(R.id.composeView)
+        super.onViewCreated(composeView, savedInstanceState)
     }
 
     override fun renderState(

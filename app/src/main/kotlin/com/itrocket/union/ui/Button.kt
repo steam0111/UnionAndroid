@@ -116,7 +116,7 @@ fun OutlinedImageButton(
         modifier = modifier
             .background(
                 if (enabled) {
-                    graphite2
+                    white
                 } else {
                     timberWolf
                 }, RoundedCornerShape(8.dp)
