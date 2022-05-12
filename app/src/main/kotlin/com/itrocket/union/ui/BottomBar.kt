@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,14 +47,15 @@ fun StepBottomBar(
     step: Int,
     stepCount: Int,
     stepText: String,
-    btnText: String,
+    buttonText: String,
     btnLastStepText: String,
-    onPrevClickListener: () -> Unit,
+    onBackClickListener: () -> Unit,
     onNextClickListener: () -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.background(white).padding(vertical = 16.dp)
+        modifier = Modifier.background(white).padding(vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         IndicatorWithText(
             text = stepText.uppercase(),
@@ -66,7 +66,7 @@ fun StepBottomBar(
         Spacer(modifier = Modifier.width(24.dp))
         OutlinedImageButton(
             imageId = R.drawable.ic_arrow_back,
-            onClick = onPrevClickListener,
+            onClick = onBackClickListener,
             enabled = step > MIN_STEP,
             modifier = Modifier,
             paddingValues = PaddingValues(16.dp)
@@ -83,7 +83,7 @@ fun StepBottomBar(
                         text = if (step == stepCount) {
                             btnLastStepText.uppercase()
                         } else {
-                            btnText.uppercase()
+                            buttonText.uppercase()
                         },
                         style = AppTheme.typography.body2,
                         fontWeight = FontWeight.Medium,
@@ -109,9 +109,9 @@ private fun StepBottomBarPreview() {
         step = 1,
         stepCount = 3,
         stepText = "ШАГ 1",
-        btnText = "Далее",
+        buttonText = "Далее",
         btnLastStepText = "Войти",
-        onPrevClickListener = { /*TODO*/ }) {
+        onBackClickListener = { /*TODO*/ }) {
 
     }
 }

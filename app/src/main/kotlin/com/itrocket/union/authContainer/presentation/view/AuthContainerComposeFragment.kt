@@ -1,4 +1,4 @@
-package com.itrocket.union.auth.presentation.view
+package com.itrocket.union.authContainer.presentation.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,8 +8,8 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commitNow
-import com.itrocket.union.auth.AuthModule.AUTH_VIEW_MODEL_QUALIFIER
-import com.itrocket.union.auth.presentation.store.AuthStore
+import com.itrocket.union.authContainer.AuthContainerModule.AUTH_VIEW_MODEL_QUALIFIER
+import com.itrocket.union.authContainer.presentation.store.AuthContainerStore
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
@@ -17,12 +17,12 @@ import com.itrocket.union.authAndLicense.presentation.view.AuthAndLicenseCompose
 import com.itrocket.utils.toDp
 import com.itrocket.utils.toPx
 
-class AuthComposeFragment : BaseComposeFragment<AuthStore.Intent, AuthStore.State, AuthStore.Label>(
+class AuthContainerComposeFragment : BaseComposeFragment<AuthContainerStore.Intent, AuthContainerStore.State, AuthContainerStore.Label>(
     AUTH_VIEW_MODEL_QUALIFIER
 ) {
 
-    private val container: ConstraintLayout? by lazy {
-        view?.findViewById(R.id.clAuth)
+    private val authContainer by lazy {
+        view?.findViewById<ConstraintLayout>(R.id.authContainer)
     }
 
     override fun onCreateView(
@@ -30,32 +30,32 @@ class AuthComposeFragment : BaseComposeFragment<AuthStore.Intent, AuthStore.Stat
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_auth_host, container, false)
+        return inflater.inflate(R.layout.fragment_auth_container, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val composeView = view.findViewById<ComposeView>(R.id.composeView)
         childFragmentManager.commitNow {
-            add(R.id.container, AuthAndLicenseComposeFragment())
+            add(R.id.navigationContainer, AuthAndLicenseComposeFragment())
         }
         super.onViewCreated(composeView, savedInstanceState)
     }
 
     override fun renderState(
-        state: AuthStore.State,
+        state: AuthContainerStore.State,
         composeView: ComposeView,
         appInsets: AppInsets
     ) {
-        container?.updatePadding(top = appInsets.topInset.toPx, bottom = appInsets.bottomInset.toPx)
+        authContainer?.updatePadding(top = appInsets.topInset.toPx, bottom = appInsets.bottomInset.toPx)
         composeView.setContent {
             AuthScreen(
                 state = state,
                 appInsets = appInsets,
-                onPrevClickListener = {
-                    accept(AuthStore.Intent.OnPrevClicked)
+                onBackClickListener = {
+                    accept(AuthContainerStore.Intent.OnBackClicked)
                 },
                 onNextClickListener = {
-                    accept(AuthStore.Intent.OnNextClicked)
+                    accept(AuthContainerStore.Intent.OnNextClicked)
                 }
             )
         }

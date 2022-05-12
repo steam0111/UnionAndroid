@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/auth"
-        android:name="com.itrocket.union.auth.presentation.view.AuthComposeFragment" />
+        android:name="com.itrocket.union.authContainer.presentation.view.AuthContainerComposeFragment" />
 
     <fragment
         android:id="@+id/documentsMenu"
