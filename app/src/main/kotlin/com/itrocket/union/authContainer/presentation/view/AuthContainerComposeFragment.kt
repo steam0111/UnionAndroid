@@ -7,16 +7,19 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updatePadding
+import androidx.fragment.app.commitNow
 import com.itrocket.union.authContainer.AuthContainerModule.AUTH_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.authContainer.presentation.store.AuthContainerStore
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
+import com.itrocket.union.serverConnect.presentation.view.ServerConnectComposeFragment
 import com.itrocket.utils.toPx
 
-class AuthContainerComposeFragment : BaseComposeFragment<AuthContainerStore.Intent, AuthContainerStore.State, AuthContainerStore.Label>(
-    AUTH_VIEW_MODEL_QUALIFIER
-) {
+class AuthContainerComposeFragment :
+    BaseComposeFragment<AuthContainerStore.Intent, AuthContainerStore.State, AuthContainerStore.Label>(
+        AUTH_VIEW_MODEL_QUALIFIER
+    ) {
 
     private val authContainer by lazy {
         view?.findViewById<ConstraintLayout>(R.id.authContainer)
@@ -32,6 +35,9 @@ class AuthContainerComposeFragment : BaseComposeFragment<AuthContainerStore.Inte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val composeView = view.findViewById<ComposeView>(R.id.composeView)
+        childFragmentManager.commitNow {
+            add(R.id.navigationContainer, ServerConnectComposeFragment())
+        }
         super.onViewCreated(composeView, savedInstanceState)
     }
 
@@ -40,7 +46,10 @@ class AuthContainerComposeFragment : BaseComposeFragment<AuthContainerStore.Inte
         composeView: ComposeView,
         appInsets: AppInsets
     ) {
-        authContainer?.updatePadding(top = appInsets.topInset.toPx, bottom = appInsets.bottomInset.toPx)
+        authContainer?.updatePadding(
+            top = appInsets.topInset.toPx,
+            bottom = appInsets.bottomInset.toPx
+        )
         composeView.setContent {
             AuthScreen(
                 state = state,
