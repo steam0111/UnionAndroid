@@ -44,22 +44,11 @@ class AuthContainerStoreFactory(
         ) {
             when (intent) {
                 AuthContainerStore.Intent.OnBackClicked -> dispatch(
-                    Result.Step(
-                        when (getState().currentStep) {
-                            AuthContainerStep.AUTH_AND_LICENSE -> AuthContainerStep.AUTH_AND_LICENSE
-                            AuthContainerStep.CONNECT_TO_SERVER -> AuthContainerStep.AUTH_AND_LICENSE
-                            AuthContainerStep.AUTH_USER -> AuthContainerStep.CONNECT_TO_SERVER
-                        }
-                    )
+                    Result.Step(authContainerInteractor.calculatePrevStep(getState().currentStep))
                 )
-                AuthContainerStore.Intent.OnNextClicked ->
-                    when (getState().currentStep) {
-                        AuthContainerStep.AUTH_AND_LICENSE -> dispatch(Result.Step(AuthContainerStep.CONNECT_TO_SERVER))
-                        AuthContainerStep.CONNECT_TO_SERVER -> dispatch(Result.Step(AuthContainerStep.AUTH_USER))
-                        AuthContainerStep.AUTH_USER -> {
-                            //no-op
-                        }
-                    }
+                AuthContainerStore.Intent.OnNextClicked -> dispatch(
+                    Result.Step(authContainerInteractor.calculateNextStep(getState().currentStep))
+                )
             }
         }
     }
