@@ -1,6 +1,6 @@
-package com.itrocket.union.auth.domain.entity
+package com.itrocket.union.authContainer.domain.entity
 
-enum class AuthStep(
+enum class AuthContainerStep(
     val stepNumber: Int,
 ) {
     AUTH_AND_LICENSE(

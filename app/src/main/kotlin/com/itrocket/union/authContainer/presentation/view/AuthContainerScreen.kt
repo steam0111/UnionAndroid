@@ -1,57 +1,44 @@
-package com.itrocket.union.auth.presentation.view
+package com.itrocket.union.authContainer.presentation.view
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.itrocket.union.R
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.core.base.AppInsets
-import com.itrocket.union.auth.domain.entity.AuthStep
-import com.itrocket.union.auth.presentation.store.AuthStore
+import com.itrocket.union.authContainer.domain.entity.AuthContainerStep
+import com.itrocket.union.authContainer.presentation.store.AuthContainerStore
 import com.itrocket.union.ui.StepBottomBar
 import com.itrocket.union.ui.psb6
 
 @Composable
 fun AuthScreen(
-    state: AuthStore.State,
+    state: AuthContainerStore.State,
     appInsets: AppInsets,
     onPrevClickListener: () -> Unit,
     onNextClickListener: () -> Unit
 ) {
     val step = state.currentStep.stepNumber
-    val stepCount = AuthStep.values().size
+    val stepCount = AuthContainerStep.values().size
 
     AppTheme {
         StepBottomBar(
@@ -121,5 +108,5 @@ fun AuthContent(title: String, subtitle: String, fields: List<@Composable () -> 
 @Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
 @Composable
 fun AuthScreenPreview() {
-    AuthScreen(AuthStore.State(), AppInsets(), {}, {})
+    AuthScreen(AuthContainerStore.State(), AppInsets(), {}, {})
 }

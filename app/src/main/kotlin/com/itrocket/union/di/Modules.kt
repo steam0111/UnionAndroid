@@ -11,7 +11,7 @@ import com.itrocket.union.reserves.ReservesModule
 import com.itrocket.union.reserveDetail.ReserveDetailModule
 import com.itrocket.union.location.LocationModule
 import com.itrocket.union.documents.DocumentModule
-import com.itrocket.union.auth.AuthModule
+import com.itrocket.union.authContainer.AuthContainerModule
 
 object Modules {
 
@@ -29,6 +29,6 @@ object Modules {
         LocationModule.module,
         ReserveDetailModule.module,
         DocumentModule.module,
-        AuthModule.module
+        AuthContainerModule.module
     )
 }
