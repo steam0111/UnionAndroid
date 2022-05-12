@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updatePadding
+import androidx.fragment.app.commitNow
 import com.itrocket.union.authContainer.AuthContainerModule.AUTH_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.authContainer.presentation.store.AuthContainerStore
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
+import com.itrocket.union.authUser.presentation.view.AuthUserComposeFragment
 import com.itrocket.utils.toPx
 
 class AuthContainerComposeFragment : BaseComposeFragment<AuthContainerStore.Intent, AuthContainerStore.State, AuthContainerStore.Label>(
@@ -32,6 +34,9 @@ class AuthContainerComposeFragment : BaseComposeFragment<AuthContainerStore.Inte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val composeView = view.findViewById<ComposeView>(R.id.composeView)
+        childFragmentManager.commitNow {
+            add(R.id.navigationContainer, AuthUserComposeFragment())
+        }
         super.onViewCreated(composeView, savedInstanceState)
     }
 
