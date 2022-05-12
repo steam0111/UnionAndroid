@@ -18,12 +18,16 @@ class AuthContainerComposeFragment : BaseComposeFragment<AuthContainerStore.Inte
     AUTH_VIEW_MODEL_QUALIFIER
 ) {
 
+    private val authContainer by lazy {
+        view?.findViewById<ConstraintLayout>(R.id.authContainer)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_auth_host, container, false)
+        return inflater.inflate(R.layout.fragment_auth_container, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,14 +40,13 @@ class AuthContainerComposeFragment : BaseComposeFragment<AuthContainerStore.Inte
         composeView: ComposeView,
         appInsets: AppInsets
     ) {
-        val container = view?.findViewById<ConstraintLayout>(R.id.clAuth)
-        container?.updatePadding(top = appInsets.topInset.toPx, bottom = appInsets.bottomInset.toPx)
+        authContainer?.updatePadding(top = appInsets.topInset.toPx, bottom = appInsets.bottomInset.toPx)
         composeView.setContent {
             AuthScreen(
                 state = state,
                 appInsets = appInsets,
-                onPrevClickListener = {
-                    accept(AuthContainerStore.Intent.OnPrevClicked)
+                onBackClickListener = {
+                    accept(AuthContainerStore.Intent.OnBackClicked)
                 },
                 onNextClickListener = {
                     accept(AuthContainerStore.Intent.OnNextClicked)

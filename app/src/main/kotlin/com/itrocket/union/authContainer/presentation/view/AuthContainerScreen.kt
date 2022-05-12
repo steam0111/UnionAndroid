@@ -34,10 +34,10 @@ import com.itrocket.union.ui.psb6
 fun AuthScreen(
     state: AuthContainerStore.State,
     appInsets: AppInsets,
-    onPrevClickListener: () -> Unit,
+    onBackClickListener: () -> Unit,
     onNextClickListener: () -> Unit
 ) {
-    val step = state.currentStep.stepNumber
+    val step = state.currentStep.ordinal + 1
     val stepCount = AuthContainerStep.values().size
 
     AppTheme {
@@ -48,49 +48,12 @@ fun AuthScreen(
                 id = R.string.common_step,
                 step.toString()
             ),
-            btnText = stringResource(R.string.common_next),
+            buttonText = stringResource(R.string.common_next),
             btnLastStepText = stringResource(R.string.auth_sign_in),
-            onPrevClickListener = onPrevClickListener,
+            onBackClickListener = onBackClickListener,
             onNextClickListener = onNextClickListener
         )
     }
-}
-
-@Composable
-private fun TopBar() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(painter = painterResource(R.drawable.ic_logo_small), contentDescription = null)
-    }
-}
-
-
-@Composable
-fun AuthContent(title: String, subtitle: String, fields: List<@Composable () -> Unit>) {
-    Scaffold(topBar = {
-        TopBar()
-    }, content = {
-        Column(
-            Modifier
-                .padding(it)
-                .padding(horizontal = 48.dp)
-        ) {
-            Spacer(Modifier.height(8.dp))
-            Text(text = title, style = AppTheme.typography.h5, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.height(12.dp))
-            Text(text = subtitle, style = AppTheme.typography.body2, color = psb6)
-            Spacer(Modifier.height(24.dp))
-            LazyColumn {
-                items(fields) {
-                    it()
-                }
-            }
-        }
-    })
 }
 
 @Preview(

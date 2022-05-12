@@ -43,7 +43,7 @@ class AuthContainerStoreFactory(
             getState: () -> AuthContainerStore.State
         ) {
             when (intent) {
-                AuthContainerStore.Intent.OnPrevClicked -> dispatch(
+                AuthContainerStore.Intent.OnBackClicked -> dispatch(
                     Result.Step(
                         when (getState().currentStep) {
                             AuthContainerStep.AUTH_AND_LICENSE -> AuthContainerStep.AUTH_AND_LICENSE

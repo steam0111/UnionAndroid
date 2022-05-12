@@ -7,7 +7,7 @@ import com.itrocket.union.authContainer.domain.entity.AuthContainerStep
 interface AuthContainerStore : Store<AuthContainerStore.Intent, AuthContainerStore.State, AuthContainerStore.Label> {
 
     sealed class Intent {
-        object OnPrevClicked : Intent()
+        object OnBackClicked : Intent()
         object OnNextClicked : Intent()
     }
 
