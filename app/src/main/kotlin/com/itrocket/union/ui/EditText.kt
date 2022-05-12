@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.itrocket.ui.EditText
 
@@ -18,7 +19,8 @@ fun AuthEditText(
     text: String,
     hint: String,
     onTextChanged: (String) -> Unit,
-    focusRequester: FocusRequester
+    focusRequester: FocusRequester,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
     var underlineColor by remember {
         mutableStateOf(brightGray)
@@ -32,6 +34,7 @@ fun AuthEditText(
         textStyle = AppTheme.typography.body1,
         hintStyle = AppTheme.typography.body1,
         hintColor = psb3,
+        visualTransformation = visualTransformation,
         onTextChanged = onTextChanged,
         focusRequester = focusRequester,
         onFocusChanged = {
