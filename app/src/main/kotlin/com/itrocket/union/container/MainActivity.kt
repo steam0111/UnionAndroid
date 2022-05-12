@@ -31,6 +31,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             insets
         }
 
-        navHostFragment.setGraph(R.navigation.main, R.id.auth)
+        navHostFragment.setGraph(R.navigation.main, R.id.documentsMenu)
     }
 }
