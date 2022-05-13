@@ -14,9 +14,11 @@ import com.itrocket.union.authContainer.presentation.store.AuthContainerStore
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
+import com.itrocket.union.addFragment
 import com.itrocket.union.authContainer.domain.entity.AuthContainerStep
 import com.itrocket.union.serverConnect.presentation.view.ServerConnectComposeFragment
 import com.itrocket.union.authUser.presentation.view.AuthUserComposeFragment
+import com.itrocket.union.replaceFragment
 import com.itrocket.utils.toPx
 
 class AuthContainerComposeFragment :
@@ -76,7 +78,7 @@ class AuthContainerComposeFragment :
                 navigateNext(label.currentStep)
             }
             is AuthContainerStore.Label.NavigateBack -> if (label.currentStep.ordinal > 0) {
-                childFragmentManager.popBackStackImmediate()
+                childFragmentManager.popBackStack()
             }
         }
     }
@@ -97,24 +99,13 @@ class AuthContainerComposeFragment :
     }
 
     private fun initStartFragment() {
-        childFragmentManager.beginTransaction()
-            .add(
-                R.id.navigationContainer,
-                ServerConnectComposeFragment(),
-                ServerConnectComposeFragment::class.java.name
-            )
-            .addToBackStack(ServerConnectComposeFragment::class.java.name)
-            .commit()
+        childFragmentManager.addFragment(
+            R.id.navigationContainer,
+            ServerConnectComposeFragment(),
+        )
     }
 
     private fun replaceFragment(fragment: Fragment) {
-        childFragmentManager.beginTransaction()
-            .replace(
-                R.id.navigationContainer,
-                fragment,
-                fragment::class.java.name
-            )
-            .addToBackStack(fragment::class.java.name)
-            .commit()
+        childFragmentManager.replaceFragment(R.id.navigationContainer, fragment)
     }
 }
