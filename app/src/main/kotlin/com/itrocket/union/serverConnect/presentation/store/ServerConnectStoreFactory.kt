@@ -8,11 +8,13 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.itrocket.union.serverConnect.domain.ServerConnectInteractor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.core.Prefs
 
 class ServerConnectStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val serverConnectInteractor: ServerConnectInteractor
+    private val serverConnectInteractor: ServerConnectInteractor,
+    private val prefs: Prefs
 ) {
     fun create(): ServerConnectStore =
         object : ServerConnectStore,
@@ -48,6 +50,11 @@ class ServerConnectStoreFactory(
                     )
                 )
                 is ServerConnectStore.Intent.OnPortChanged -> dispatch(Result.Port(intent.port))
+                ServerConnectStore.Intent.OnNextClicked -> {
+                    prefs.serverAddress = getState().serverAddress
+                    prefs.port = getState().port
+                    publish(ServerConnectStore.Label.NextFinish)
+                }
             }
         }
     }

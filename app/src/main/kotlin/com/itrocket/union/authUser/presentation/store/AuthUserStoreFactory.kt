@@ -47,6 +47,7 @@ class AuthUserStoreFactory(
                     Result.Login(intent.login)
                 )
                 is AuthUserStore.Intent.OnPasswordChanged -> dispatch(Result.Password(intent.password))
+                AuthUserStore.Intent.OnNextClicked -> publish(AuthUserStore.Label.NextFinish)
             }
         }
     }

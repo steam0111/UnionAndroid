@@ -1,6 +1,5 @@
 package com.itrocket.union.authUser.presentation.store
 
-import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface AuthUserStore : Store<AuthUserStore.Intent, AuthUserStore.State, AuthUserStore.Label> {
@@ -8,6 +7,7 @@ interface AuthUserStore : Store<AuthUserStore.Intent, AuthUserStore.State, AuthU
     sealed class Intent {
         data class OnLoginChanged(val login: String) : Intent()
         data class OnPasswordChanged(val password: String) : Intent()
+        object OnNextClicked : Intent()
     }
 
     data class State(
@@ -16,6 +16,6 @@ interface AuthUserStore : Store<AuthUserStore.Intent, AuthUserStore.State, AuthU
     )
 
     sealed class Label {
-        object GoBack : Label(), GoBackNavigationLabel
+        object NextFinish : Label()
     }
 }

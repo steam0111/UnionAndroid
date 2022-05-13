@@ -31,6 +31,7 @@ object ServerConnectModule {
             ServerConnectStoreFactory(
                 DefaultStoreFactory,
                 get(),
+                get(),
                 get()
             ).create()
         }

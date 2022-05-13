@@ -43,12 +43,19 @@ class AuthContainerStoreFactory(
             getState: () -> AuthContainerStore.State
         ) {
             when (intent) {
-                AuthContainerStore.Intent.OnBackClicked -> dispatch(
-                    Result.Step(authContainerInteractor.calculatePrevStep(getState().currentStep))
-                )
-                AuthContainerStore.Intent.OnNextClicked -> dispatch(
-                    Result.Step(authContainerInteractor.calculateNextStep(getState().currentStep))
-                )
+                AuthContainerStore.Intent.OnBackClicked -> {
+                    publish(AuthContainerStore.Label.NavigateBack(getState().currentStep))
+                    dispatch(
+                        Result.Step(authContainerInteractor.calculatePrevStep(getState().currentStep))
+                    )
+                }
+                AuthContainerStore.Intent.OnNextClicked -> publish(AuthContainerStore.Label.HandleNext)
+                AuthContainerStore.Intent.OnNextFinished -> {
+                    publish(AuthContainerStore.Label.NavigateNext(getState().currentStep))
+                    dispatch(
+                        Result.Step(authContainerInteractor.calculateNextStep(getState().currentStep))
+                    )
+                }
             }
         }
     }

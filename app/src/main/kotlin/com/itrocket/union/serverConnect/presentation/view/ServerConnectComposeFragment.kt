@@ -3,13 +3,15 @@ package com.itrocket.union.serverConnect.presentation.view
 import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
+import com.itrocket.union.authContainer.presentation.view.NextClickHandler
+import com.itrocket.union.authContainer.presentation.view.NextFinishHandler
 import com.itrocket.union.serverConnect.ServerConnectModule.SERVERCONNECT_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.serverConnect.presentation.store.ServerConnectStore
 
 class ServerConnectComposeFragment :
     BaseComposeFragment<ServerConnectStore.Intent, ServerConnectStore.State, ServerConnectStore.Label>(
         SERVERCONNECT_VIEW_MODEL_QUALIFIER
-    ) {
+    ), NextClickHandler {
 
     override fun renderState(
         state: ServerConnectStore.State,
@@ -27,6 +29,16 @@ class ServerConnectComposeFragment :
                     accept(ServerConnectStore.Intent.OnPortChanged(it))
                 }
             )
+        }
+    }
+
+    override fun onNext() {
+        accept(ServerConnectStore.Intent.OnNextClicked)
+    }
+
+    override fun handleLabel(label: ServerConnectStore.Label) {
+        when (label) {
+            ServerConnectStore.Label.NextFinish -> (parentFragment as? NextFinishHandler)?.onNextFinished()
         }
     }
 }
