@@ -14,6 +14,7 @@ import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
 import com.itrocket.union.serverConnect.presentation.view.ServerConnectComposeFragment
+import com.itrocket.union.authUser.presentation.view.AuthUserComposeFragment
 import com.itrocket.utils.toPx
 
 class AuthContainerComposeFragment :

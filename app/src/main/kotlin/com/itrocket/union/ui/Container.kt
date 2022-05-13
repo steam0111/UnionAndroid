@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,7 +18,6 @@ fun AuthContent(title: String, subtitle: String, fields: List<@Composable () -> 
             .wrapContentHeight()
             .padding(horizontal = 48.dp)
     ) {
-
         LogoToolbar()
         Spacer(Modifier.height(8.dp))
         Text(text = title, style = AppTheme.typography.h5, fontWeight = FontWeight.Bold)
