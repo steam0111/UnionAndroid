@@ -27,6 +27,9 @@ class AuthUserComposeFragment :
                 },
                 onPasswordChanged = {
                     accept(AuthUserStore.Intent.OnPasswordChanged(it))
+                },
+                onPasswordVisibilityClickListener = {
+                    accept(AuthUserStore.Intent.OnPasswordVisibilityClicked(it))
                 }
             )
         }

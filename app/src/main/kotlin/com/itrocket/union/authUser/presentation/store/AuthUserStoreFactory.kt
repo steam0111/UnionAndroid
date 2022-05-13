@@ -1,5 +1,7 @@
 package com.itrocket.union.authUser.presentation.store
 
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -48,6 +50,15 @@ class AuthUserStoreFactory(
                 )
                 is AuthUserStore.Intent.OnPasswordChanged -> dispatch(Result.Password(intent.password))
                 AuthUserStore.Intent.OnNextClicked -> publish(AuthUserStore.Label.NextFinish)
+                is AuthUserStore.Intent.OnPasswordVisibilityClicked -> dispatch(
+                    Result.PasswordVisualTransformation(
+                        if (intent.passwordVisualTransformation is PasswordVisualTransformation) {
+                            VisualTransformation.None
+                        } else {
+                            PasswordVisualTransformation()
+                        }
+                    )
+                )
             }
         }
     }
@@ -55,6 +66,8 @@ class AuthUserStoreFactory(
     private sealed class Result {
         data class Login(val login: String) : Result()
         data class Password(val password: String) : Result()
+        data class PasswordVisualTransformation(val visualTransformation: VisualTransformation) :
+            Result()
     }
 
     private object ReducerImpl : Reducer<AuthUserStore.State, Result> {
@@ -62,6 +75,7 @@ class AuthUserStoreFactory(
             when (result) {
                 is Result.Login -> copy(login = result.login)
                 is Result.Password -> copy(password = result.password)
+                is Result.PasswordVisualTransformation -> copy(passwordVisualTransformation = result.visualTransformation)
             }
     }
 }
