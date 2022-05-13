@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commitNow
+import androidx.navigation.fragment.findNavController
 import com.itrocket.union.authContainer.AuthContainerModule.AUTH_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.authContainer.presentation.store.AuthContainerStore
 import com.itrocket.core.base.BaseComposeFragment
@@ -40,7 +41,6 @@ class AuthContainerComposeFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val composeView = view.findViewById<ComposeView>(R.id.composeView)
-        initStartFragment()
         super.onViewCreated(composeView, savedInstanceState)
     }
 
@@ -53,6 +53,7 @@ class AuthContainerComposeFragment :
             top = appInsets.topInset.toPx,
             bottom = appInsets.bottomInset.toPx
         )
+        initStartFragment()
         composeView.setContent {
             AuthScreen(
                 state = state,
@@ -68,6 +69,7 @@ class AuthContainerComposeFragment :
     }
 
     override fun handleLabel(label: AuthContainerStore.Label) {
+        super.handleLabel(label)
         when (label) {
             AuthContainerStore.Label.HandleNext -> {
                 val nextClickHandler =
@@ -92,17 +94,16 @@ class AuthContainerComposeFragment :
             AuthContainerStep.CONNECT_TO_SERVER -> {
                 replaceFragment(AuthUserComposeFragment())
             }
-            AuthContainerStep.AUTH_USER -> {
-                //Add navigate to Hi, {username} screen
-            }
         }
     }
 
     private fun initStartFragment() {
-        childFragmentManager.addFragment(
-            R.id.navigationContainer,
-            ServerConnectComposeFragment(),
-        )
+        if (childFragmentManager.fragments.isEmpty()) {
+            childFragmentManager.addFragment(
+                R.id.navigationContainer,
+                ServerConnectComposeFragment(),
+            )
+        }
     }
 
     private fun replaceFragment(fragment: Fragment) {

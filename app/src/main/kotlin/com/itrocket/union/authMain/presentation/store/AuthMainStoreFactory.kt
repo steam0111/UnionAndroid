@@ -1,4 +1,4 @@
-package com.itrocket.union.authUser.presentation.store
+package com.itrocket.union.authMain.presentation.store
 
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -8,54 +8,47 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import com.itrocket.union.authUser.domain.AuthUserInteractor
-import com.itrocket.union.authUser.domain.entity.AuthUserDomain
+import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.core.base.CoreDispatchers
 
-class AuthUserStoreFactory(
+class AuthMainStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val authUserInteractor: AuthUserInteractor
+    private val authMainInteractor: AuthMainInteractor,
+    private val authMainArguments: AuthMainArguments
 ) {
-    fun create(): AuthUserStore =
-        object : AuthUserStore,
-            Store<AuthUserStore.Intent, AuthUserStore.State, AuthUserStore.Label> by storeFactory.create(
-                name = "AuthUserStore",
-                initialState = AuthUserStore.State(),
+    fun create(): AuthMainStore =
+        object : AuthMainStore,
+            Store<AuthMainStore.Intent, AuthMainStore.State, AuthMainStore.Label> by storeFactory.create(
+                name = "AuthMainStore",
+                initialState = AuthMainStore.State(
+                    login = authMainArguments.login,
+                    password = authMainArguments.password
+                ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
             ) {}
 
-    private fun createExecutor(): Executor<AuthUserStore.Intent, Unit, AuthUserStore.State, Result, AuthUserStore.Label> =
-        AuthUserExecutor()
+    private fun createExecutor(): Executor<AuthMainStore.Intent, Unit, AuthMainStore.State, Result, AuthMainStore.Label> =
+        AuthMainExecutor()
 
-    private inner class AuthUserExecutor :
-        SuspendExecutor<AuthUserStore.Intent, Unit, AuthUserStore.State, Result, AuthUserStore.Label>(
+    private inner class AuthMainExecutor :
+        SuspendExecutor<AuthMainStore.Intent, Unit, AuthMainStore.State, Result, AuthMainStore.Label>(
             mainContext = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
             action: Unit,
-            getState: () -> AuthUserStore.State
+            getState: () -> AuthMainStore.State
         ) {
         }
 
         override suspend fun executeIntent(
-            intent: AuthUserStore.Intent,
-            getState: () -> AuthUserStore.State
+            intent: AuthMainStore.Intent,
+            getState: () -> AuthMainStore.State
         ) {
             when (intent) {
-                is AuthUserStore.Intent.OnLoginChanged -> dispatch(
-                    Result.Login(intent.login)
-                )
-                is AuthUserStore.Intent.OnPasswordChanged -> dispatch(Result.Password(intent.password))
-                AuthUserStore.Intent.OnNextClicked -> publish(
-                    AuthUserStore.Label.ShowAuthMain(
-                        login = getState().login,
-                        password = getState().password
-                    )
-                )
-                is AuthUserStore.Intent.OnPasswordVisibilityClicked -> dispatch(
+                is AuthMainStore.Intent.OnPasswordVisibilityClicked -> dispatch(
                     Result.PasswordVisualTransformation(
                         if (intent.passwordVisualTransformation is PasswordVisualTransformation) {
                             VisualTransformation.None
@@ -64,21 +57,31 @@ class AuthUserStoreFactory(
                         }
                     )
                 )
+                is AuthMainStore.Intent.OnPasswordChanged -> dispatch(Result.Password(intent.password))
+                AuthMainStore.Intent.OnUserChangeClicked -> {
+
+                }
+                AuthMainStore.Intent.OnDatabaseSettingsClicked -> {
+
+                }
+                AuthMainStore.Intent.OnSignInClicked -> {
+
+                }
             }
         }
     }
 
     private sealed class Result {
-        data class Login(val login: String) : Result()
+        data class Loading(val isLoading: Boolean) : Result()
         data class Password(val password: String) : Result()
         data class PasswordVisualTransformation(val visualTransformation: VisualTransformation) :
             Result()
     }
 
-    private object ReducerImpl : Reducer<AuthUserStore.State, Result> {
-        override fun AuthUserStore.State.reduce(result: Result) =
+    private object ReducerImpl : Reducer<AuthMainStore.State, Result> {
+        override fun AuthMainStore.State.reduce(result: Result) =
             when (result) {
-                is Result.Login -> copy(login = result.login)
+                is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.Password -> copy(password = result.password)
                 is Result.PasswordVisualTransformation -> copy(passwordVisualTransformation = result.visualTransformation)
             }

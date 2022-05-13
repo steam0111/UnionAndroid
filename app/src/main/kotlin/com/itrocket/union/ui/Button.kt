@@ -3,6 +3,7 @@ package com.itrocket.union.ui
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,21 +15,30 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ButtonElevation
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.itrocket.union.R
 
 @Composable
-fun BaseButton(text: String, onClick: () -> Unit, modifier: Modifier, enabled: Boolean = true) {
+fun BaseButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier,
+    enabled: Boolean = true,
+    isAllUppercase: Boolean = true
+) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
@@ -41,10 +51,41 @@ fun BaseButton(text: String, onClick: () -> Unit, modifier: Modifier, enabled: B
         modifier = modifier
     ) {
         Text(
-            text = text.uppercase(),
+            text = if (isAllUppercase) {
+                text.uppercase()
+            } else {
+                text
+            },
             style = AppTheme.typography.body2,
             color = white,
             fontWeight = FontWeight.Medium
+        )
+    }
+}
+
+@Composable
+fun OutlinedButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier,
+    textStyle: TextStyle = AppTheme.typography.body2,
+    textColor: Color = psb6,
+    fontWeight: FontWeight = FontWeight.Medium,
+    outlineColor: Color = psb6
+) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(backgroundColor = white),
+        shape = RoundedCornerShape(8.dp),
+        border = BorderStroke(1.dp, outlineColor),
+        contentPadding = PaddingValues(vertical = 16.dp),
+        modifier = modifier
+    ) {
+        Text(
+            text = text,
+            style = textStyle,
+            color = textColor,
+            fontWeight = fontWeight
         )
     }
 }
@@ -156,6 +197,12 @@ fun ImageButtonPreview() {
 @Preview
 fun BaseButtonPreview() {
     BaseButton(text = "Title", onClick = { }, modifier = Modifier.fillMaxWidth())
+}
+
+@Composable
+@Preview
+fun OutlinedButtonPreview() {
+    OutlinedButton(text = "Title", onClick = { }, modifier = Modifier.fillMaxWidth())
 }
 
 @Composable

@@ -14,6 +14,7 @@ import com.itrocket.union.documents.DocumentModule
 import com.itrocket.union.authContainer.AuthContainerModule
 import com.itrocket.union.authUser.AuthUserModule
 import com.itrocket.union.serverConnect.ServerConnectModule
+import com.itrocket.union.authMain.AuthMainModule
 
 object Modules {
 
@@ -33,6 +34,7 @@ object Modules {
         DocumentModule.module,
         AuthContainerModule.module,
         ServerConnectModule.module,
-        AuthUserModule.module
+        AuthUserModule.module,
+        AuthMainModule.module
     )
 }

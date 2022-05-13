@@ -39,10 +39,4 @@ class AuthUserComposeFragment :
         accept(AuthUserStore.Intent.OnNextClicked)
     }
 
-    override fun handleLabel(label: AuthUserStore.Label) {
-        when (label) {
-            AuthUserStore.Label.NextFinish -> (parentFragment as? NextFinishHandler)?.onNextFinished()
-        }
-    }
-
 }
