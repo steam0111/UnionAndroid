@@ -3,6 +3,7 @@ package com.itrocket.union.ui
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -83,5 +84,17 @@ fun BlackToolbar(
             contentDescription = null,
             modifier = Modifier.clickableUnbounded(onClick = onFilterClickListener)
         )
+    }
+}
+
+@Composable
+fun LogoToolbar() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(painter = painterResource(R.drawable.ic_logo_small), contentDescription = null)
     }
 }
