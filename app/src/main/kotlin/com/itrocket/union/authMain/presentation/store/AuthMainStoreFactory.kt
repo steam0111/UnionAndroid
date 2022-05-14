@@ -1,5 +1,6 @@
 package com.itrocket.union.authMain.presentation.store
 
+import android.util.Log
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.arkivanov.mvikotlin.core.store.Executor
@@ -65,7 +66,15 @@ class AuthMainStoreFactory(
 
                 }
                 AuthMainStore.Intent.OnSignInClicked -> {
-
+                    try {
+                        authMainInteractor.signIn(
+                            login = getState().login,
+                            password = getState().password
+                        )
+                        publish(AuthMainStore.Label.ShowDocumentMenu)
+                    } catch (t: Throwable) {
+                        Log.e("AuthError", t.toString())
+                    }
                 }
             }
         }

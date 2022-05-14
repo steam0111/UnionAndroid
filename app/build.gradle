@@ -47,6 +47,9 @@ dependencies {
     implementation(libs.bundles.androidx.compose)
     implementation(libs.bundles.koin.android)
 
+    implementation(libs.bundles.retrofit)
+    implementation(libs.okhttp3.logging)
+
     implementation(libs.bundles.kotlinx.coroutines)
     implementation(libs.bundles.mvi.kotlin)
 

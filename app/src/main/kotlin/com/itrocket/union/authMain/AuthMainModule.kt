@@ -24,11 +24,11 @@ object AuthMainModule {
         }
 
         factory<AuthMainRepository> {
-            AuthMainRepositoryImpl()
+            AuthMainRepositoryImpl(get())
         }
 
         factory {
-            AuthMainInteractor(get(), get())
+            AuthMainInteractor(get(), get(), get())
         }
 
         factory { (args: AuthMainComposeFragmentArgs) ->
