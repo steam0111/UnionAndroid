@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,6 +44,32 @@ fun ButtonBottomBar(
 }
 
 @Composable
+fun TwoTextButtonBottomBar(
+    firstButtonText: String,
+    secondButtonText: String,
+    onFirstButtonClickListener: () -> Unit,
+    onSecondButtonClickListener: () -> Unit
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(white),
+        horizontalArrangement = Arrangement.End
+    ) {
+        TextButton(
+            text = firstButtonText,
+            onClick = onFirstButtonClickListener
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        TextButton(
+            text = secondButtonText,
+            onClick = onSecondButtonClickListener
+        )
+    }
+}
+
+@Composable
 fun StepBottomBar(
     step: Int,
     stepCount: Int,
@@ -54,7 +81,9 @@ fun StepBottomBar(
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.background(white).padding(vertical = 16.dp),
+        modifier = Modifier
+            .background(white)
+            .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IndicatorWithText(
@@ -75,7 +104,9 @@ fun StepBottomBar(
         ButtonWithContent(
             content = {
                 Row(
-                    modifier = Modifier.wrapContentWidth().padding(start = 24.dp,end = 16.dp),
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .padding(start = 24.dp, end = 16.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -100,6 +131,17 @@ fun StepBottomBar(
             modifier = Modifier
         )
     }
+}
+
+@Composable
+@Preview
+private fun TwoTextButtonBottomBarPreview() {
+    TwoTextButtonBottomBar(
+        firstButtonText = "Отмена",
+        secondButtonText = "Применить",
+        onFirstButtonClickListener = {},
+        onSecondButtonClickListener = {}
+    )
 }
 
 @Composable

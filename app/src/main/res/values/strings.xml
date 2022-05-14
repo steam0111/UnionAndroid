@@ -45,6 +45,9 @@
     <string name="auth_main_user_change">Сменить пользователя</string>
     <string name="auth_main_database_settings">Настройки БД</string>
 
+    <string name="auth_select_user_title">Пользователи</string>
+    <string name="auth_select_user_hint">Введите или выберите пользователя</string>
+
     <!-- MainScreen -->
     <string name="common_hint">Введите значение</string>
     <string name="main_inventory">Инвентариз.</string>

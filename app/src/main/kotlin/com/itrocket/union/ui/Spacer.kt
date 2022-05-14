@@ -15,7 +15,7 @@ fun MediumSpacer() {
         modifier = Modifier
             .height(8.dp)
             .fillMaxWidth()
-            .background(graphite1)
+            .background(graphite2)
     )
 }
 

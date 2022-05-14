@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -73,4 +74,36 @@ fun AuthEditText(
             )
         }
     }
+}
+
+@Composable
+fun DefaultEditText(
+    text: String,
+    hint: String,
+    focusRequester: FocusRequester,
+    onSearchTextChanged: (String) -> Unit,
+) {
+    var underlineColor by remember {
+        mutableStateOf(brightGray)
+    }
+    EditText(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 4.dp),
+        text = text,
+        hint = hint,
+        textStyle = AppTheme.typography.body1,
+        hintStyle = AppTheme.typography.body2,
+        hintColor = psb3,
+        onTextChanged = onSearchTextChanged,
+        focusRequester = focusRequester,
+        onFocusChanged = {
+            underlineColor = if (it.hasFocus) {
+                psb6
+            } else {
+                brightGray
+            }
+        },
+        underlineColor = underlineColor
+    )
 }

@@ -59,9 +59,7 @@ class AuthMainStoreFactory(
                     )
                 )
                 is AuthMainStore.Intent.OnPasswordChanged -> dispatch(Result.Password(intent.password))
-                AuthMainStore.Intent.OnUserChangeClicked -> {
-
-                }
+                AuthMainStore.Intent.OnUserChangeClicked -> publish(AuthMainStore.Label.ShowSelectUser)
                 AuthMainStore.Intent.OnDatabaseSettingsClicked -> {
 
                 }
@@ -76,12 +74,14 @@ class AuthMainStoreFactory(
                         Log.e("AuthError", t.toString())
                     }
                 }
+                is AuthMainStore.Intent.OnUserChanged -> dispatch(Result.Login(intent.result.user))
             }
         }
     }
 
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
+        data class Login(val login: String) : Result()
         data class Password(val password: String) : Result()
         data class PasswordVisualTransformation(val visualTransformation: VisualTransformation) :
             Result()
@@ -93,6 +93,7 @@ class AuthMainStoreFactory(
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.Password -> copy(password = result.password)
                 is Result.PasswordVisualTransformation -> copy(passwordVisualTransformation = result.visualTransformation)
+                is Result.Login -> copy(login = result.login)
             }
     }
 }

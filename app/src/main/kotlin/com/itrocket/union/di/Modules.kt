@@ -16,6 +16,7 @@ import com.itrocket.union.authUser.AuthUserModule
 import com.itrocket.union.serverConnect.ServerConnectModule
 import com.itrocket.union.authMain.AuthMainModule
 import com.itrocket.union.network.NetworkModule
+import com.itrocket.union.authSelectUser.AuthSelectUserModule
 
 object Modules {
 
@@ -37,6 +38,7 @@ object Modules {
         AuthContainerModule.module,
         ServerConnectModule.module,
         AuthUserModule.module,
-        AuthMainModule.module
+        AuthMainModule.module,
+        AuthSelectUserModule.module
     )
 }
