@@ -14,13 +14,12 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
 import com.itrocket.utils.toPx
 
-class AuthContainerComposeFragment : BaseComposeFragment<AuthContainerStore.Intent, AuthContainerStore.State, AuthContainerStore.Label>(
-    AUTH_VIEW_MODEL_QUALIFIER
-) {
+class AuthContainerComposeFragment :
+    BaseComposeFragment<AuthContainerStore.Intent, AuthContainerStore.State, AuthContainerStore.Label>(
+        AUTH_VIEW_MODEL_QUALIFIER
+    ) {
 
-    private val authContainer by lazy {
-        view?.findViewById<ConstraintLayout>(R.id.authContainer)
-    }
+    private var authContainer: ConstraintLayout? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,6 +31,7 @@ class AuthContainerComposeFragment : BaseComposeFragment<AuthContainerStore.Inte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val composeView = view.findViewById<ComposeView>(R.id.composeView)
+        authContainer = view.findViewById(R.id.authContainer)
         super.onViewCreated(composeView, savedInstanceState)
     }
 
@@ -40,7 +40,10 @@ class AuthContainerComposeFragment : BaseComposeFragment<AuthContainerStore.Inte
         composeView: ComposeView,
         appInsets: AppInsets
     ) {
-        authContainer?.updatePadding(top = appInsets.topInset.toPx, bottom = appInsets.bottomInset.toPx)
+        authContainer?.updatePadding(
+            top = appInsets.topInset.toPx,
+            bottom = appInsets.bottomInset.toPx
+        )
         composeView.setContent {
             AuthScreen(
                 state = state,
