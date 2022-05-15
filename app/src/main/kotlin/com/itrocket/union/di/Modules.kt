@@ -12,6 +12,7 @@ import com.itrocket.union.reserveDetail.ReserveDetailModule
 import com.itrocket.union.location.LocationModule
 import com.itrocket.union.documents.DocumentModule
 import com.itrocket.union.authContainer.AuthContainerModule
+import com.itrocket.union.authUser.AuthUserModule
 
 object Modules {
 
@@ -29,6 +30,7 @@ object Modules {
         LocationModule.module,
         ReserveDetailModule.module,
         DocumentModule.module,
-        AuthContainerModule.module
+        AuthContainerModule.module,
+        AuthUserModule.module
     )
 }
