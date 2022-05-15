@@ -91,7 +91,6 @@ datastore = { module = "androidx.datastore:datastore-preferences", version.ref =
 itrocket-core = { module = "ru.itrocket:core", version.ref = "core"}
 itrocket-ui = { module = "ru.itrocket:ui", version.ref = "ui"}
 itrocket-utils = { module = "ru.itrocket:utils", version.ref = "utils"}
-
 [bundles]
 android-ext = ["android-ext-lifecycle", "android-ext-fragment"]
 
@@ -121,8 +120,7 @@ itrocket = [
 
 koin-android = [
     "koin-android",
-    "koin-navigation",
-    "koin-compose"
+    "koin-navigation"
 ]
 
 retrofit = [

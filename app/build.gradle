@@ -55,4 +55,5 @@ dependencies {
     implementation(libs.bundles.androidx.navigation)
 
     implementation(libs.bundles.itrocket)
+    implementation(libs.datastore)
 }

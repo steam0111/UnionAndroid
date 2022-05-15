@@ -13,7 +13,7 @@ import com.itrocket.union.authContainer.presentation.store.AuthContainerStore
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
-import com.itrocket.union.authUser.presentation.view.AuthUserComposeFragment
+import com.itrocket.union.serverConnect.presentation.view.ServerConnectComposeFragment
 import com.itrocket.utils.toPx
 
 class AuthContainerComposeFragment :
@@ -27,7 +27,7 @@ class AuthContainerComposeFragment :
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
             childFragmentManager.commitNow {
-                add(R.id.navigationContainer, AuthUserComposeFragment())
+                add(R.id.navigationContainer, ServerConnectComposeFragment())
             }
         }
     }
