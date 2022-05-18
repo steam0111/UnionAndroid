@@ -2,11 +2,17 @@ package com.itrocket.union.authContainer
 
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.itrocket.core.base.BaseViewModel
+import com.itrocket.core.state.InMemoryStateSaver
+import com.itrocket.core.state.StateSaver
 import com.itrocket.union.authContainer.data.AuthContainerRepositoryImpl
 import com.itrocket.union.authContainer.domain.AuthContainerInteractor
 import com.itrocket.union.authContainer.domain.dependencies.AuthContainerRepository
 import com.itrocket.union.authContainer.presentation.store.AuthContainerStore
 import com.itrocket.union.authContainer.presentation.store.AuthContainerStoreFactory
+import com.itrocket.union.authUser.AuthUserModule.AUTHUSER_STATE_SAVER
+import com.itrocket.union.authUser.presentation.store.AuthUserStore
+import com.itrocket.union.serverConnect.ServerConnectModule.SERVERCONNECT_STATE_SAVER
+import com.itrocket.union.serverConnect.presentation.store.ServerConnectStore
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -16,7 +22,10 @@ object AuthContainerModule {
 
     val module = module {
         viewModel(AUTH_VIEW_MODEL_QUALIFIER) {
-            BaseViewModel(get<AuthContainerStore>())
+            BaseViewModel(
+                get<AuthContainerStore>(),
+                scopeQualifier = named<AuthContainerModule>()
+            )
         }
 
         factory<AuthContainerRepository> {
@@ -33,6 +42,15 @@ object AuthContainerModule {
                 get(),
                 get()
             ).create()
+        }
+
+        scope<AuthContainerModule> {
+            scoped<StateSaver<ServerConnectStore.State>>(SERVERCONNECT_STATE_SAVER) {
+                InMemoryStateSaver()
+            }
+            scoped<StateSaver<AuthUserStore.State>>(AUTHUSER_STATE_SAVER) {
+                InMemoryStateSaver()
+            }
         }
     }
 }

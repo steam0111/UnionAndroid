@@ -43,12 +43,22 @@ class AuthContainerStoreFactory(
             getState: () -> AuthContainerStore.State
         ) {
             when (intent) {
-                AuthContainerStore.Intent.OnBackClicked -> dispatch(
-                    Result.Step(authContainerInteractor.calculatePrevStep(getState().currentStep))
-                )
-                AuthContainerStore.Intent.OnNextClicked -> dispatch(
-                    Result.Step(authContainerInteractor.calculateNextStep(getState().currentStep))
-                )
+                AuthContainerStore.Intent.OnBackClicked -> {
+                    if (getState().currentStep.ordinal > 0) {
+                        publish(AuthContainerStore.Label.NavigateBack)
+                        dispatch(
+                            Result.Step(authContainerInteractor.calculatePrevStep(getState().currentStep))
+                        )
+                    }
+                }
+                AuthContainerStore.Intent.OnNextClicked -> publish(AuthContainerStore.Label.HandleNext)
+                AuthContainerStore.Intent.OnNextFinished -> {
+                    val nextStep = authContainerInteractor.calculateNextStep(getState().currentStep)
+                    if (nextStep != getState().currentStep) {
+                        publish(AuthContainerStore.Label.NavigateNext(nextStep))
+                        dispatch(Result.Step(nextStep))
+                    }
+                }
             }
         }
     }
