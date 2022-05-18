@@ -3,6 +3,9 @@ package com.itrocket.union.serverConnect
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.itrocket.core.base.BaseViewModel
+import com.itrocket.core.utils.getExternalStateSaver
+import com.itrocket.core.utils.getSavedState
+import com.itrocket.union.authContainer.AuthContainerModule
 import com.itrocket.union.serverConnect.data.ServerConnectRepositoryImpl
 import com.itrocket.union.serverConnect.domain.ServerConnectInteractor
 import com.itrocket.union.serverConnect.domain.dependencies.ServerConnectRepository
@@ -14,12 +17,18 @@ import org.koin.dsl.module
 
 object ServerConnectModule {
     val SERVERCONNECT_VIEW_MODEL_QUALIFIER = named("SERVERCONNECT_VIEW_MODEL")
+    val SERVERCONNECT_STATE_SAVER = named("SERVERCONNECT_VIEW_MODEL")
     val BASE_URL_PREFERENCE_KEY = named("BASE_URL_PREFERENCE_KEY")
     val PORT_PREFERENCE_KEY = named("PORT_PREFERENCE_KEY")
 
     val module = module {
         viewModel(SERVERCONNECT_VIEW_MODEL_QUALIFIER) {
-            BaseViewModel(get<ServerConnectStore>())
+            BaseViewModel(
+                store = get<ServerConnectStore>(),
+                stateSaver = getExternalStateSaver<ServerConnectStore.State, AuthContainerModule>(
+                    SERVERCONNECT_STATE_SAVER
+                )
+            )
         }
 
         factory<ServerConnectRepository> {
@@ -38,7 +47,10 @@ object ServerConnectModule {
             ServerConnectStoreFactory(
                 DefaultStoreFactory,
                 get(),
-                get()
+                get(),
+                initialState = getSavedState<ServerConnectStore.State, AuthContainerModule>(
+                    SERVERCONNECT_STATE_SAVER
+                )
             ).create()
         }
 

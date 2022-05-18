@@ -12,13 +12,14 @@ import com.itrocket.core.base.CoreDispatchers
 class ServerConnectStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val serverConnectInteractor: ServerConnectInteractor
+    private val serverConnectInteractor: ServerConnectInteractor,
+    private val initialState: ServerConnectStore.State?
 ) {
     fun create(): ServerConnectStore =
         object : ServerConnectStore,
             Store<ServerConnectStore.Intent, ServerConnectStore.State, ServerConnectStore.Label> by storeFactory.create(
                 name = "ServerConnectStore",
-                initialState = ServerConnectStore.State(),
+                initialState = initialState ?: ServerConnectStore.State(),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
@@ -48,6 +49,11 @@ class ServerConnectStoreFactory(
                     )
                 )
                 is ServerConnectStore.Intent.OnPortChanged -> dispatch(Result.Port(intent.port))
+                ServerConnectStore.Intent.OnNextClicked -> {
+                    serverConnectInteractor.saveBaseUrl(getState().serverAddress)
+                    serverConnectInteractor.savePort(getState().port)
+                    publish(ServerConnectStore.Label.NextFinish)
+                }
             }
         }
     }

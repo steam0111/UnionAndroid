@@ -1,7 +1,8 @@
 package com.itrocket.union.serverConnect.domain.dependencies
 
-import com.itrocket.union.serverConnect.domain.entity.ServerConnectDomain
 
 interface ServerConnectRepository {
+    suspend fun saveBaseUrl(baseUrl: String)
 
+    suspend fun savePort(port: String)
 }

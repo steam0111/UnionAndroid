@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.itrocket.core.base.AppInsets
@@ -21,9 +22,11 @@ fun AuthUserScreen(
     state: AuthUserStore.State,
     appInsets: AppInsets,
     onLoginChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit
+    onPasswordChanged: (String) -> Unit,
+    onPasswordVisibilityClickListener: () -> Unit
 ) {
     AppTheme {
+
         val focusRequest = remember {
             FocusRequester()
         }
@@ -45,7 +48,8 @@ fun AuthUserScreen(
                         hint = stringResource(id = R.string.auth_user_password),
                         onTextChanged = onPasswordChanged,
                         focusRequester = focusRequest,
-                        visualTransformation = PasswordVisualTransformation()
+                        isShowVisibilityButton = true,
+                        onVisibilityClickListener = onPasswordVisibilityClickListener
                     )
                 }
             )
@@ -68,5 +72,5 @@ fun AuthUserScreen(
 @Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
 @Composable
 fun AuthUserScreenPreview() {
-    AuthUserScreen(AuthUserStore.State(), AppInsets(), {}, {})
+    AuthUserScreen(AuthUserStore.State(), AppInsets(), {}, {}, {})
 }

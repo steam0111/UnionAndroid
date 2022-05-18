@@ -1,6 +1,5 @@
 package com.itrocket.union.serverConnect.presentation.store
 
-import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface ServerConnectStore :
@@ -9,6 +8,7 @@ interface ServerConnectStore :
     sealed class Intent {
         data class OnServerAddressChanged(val serverAddress: String) : Intent()
         data class OnPortChanged(val port: String) : Intent()
+        object OnNextClicked : Intent()
     }
 
     data class State(
@@ -17,6 +17,6 @@ interface ServerConnectStore :
     )
 
     sealed class Label {
-        object GoBack : Label(), GoBackNavigationLabel
+        object NextFinish : Label()
     }
 }

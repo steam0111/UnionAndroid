@@ -11,13 +11,13 @@ class ServerConnectRepositoryImpl(
     private val dataStore: DataStore<Preferences>
 ) : ServerConnectRepository {
 
-    suspend fun saveBaseUrl(baseUrl: String) {
+    override suspend fun saveBaseUrl(baseUrl: String) {
         dataStore.edit { preferences ->
             preferences[baseUrlPreferencesKey] = baseUrl
         }
     }
 
-    suspend fun savePort(port: String) {
+    override suspend fun savePort(port: String) {
         dataStore.edit { preferences ->
             preferences[portPreferencesKey] = port
         }
