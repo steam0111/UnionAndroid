@@ -14,11 +14,16 @@ import com.itrocket.union.documents.DocumentModule
 import com.itrocket.union.authContainer.AuthContainerModule
 import com.itrocket.union.authUser.AuthUserModule
 import com.itrocket.union.serverConnect.ServerConnectModule
+import com.itrocket.union.authMain.AuthMainModule
+import com.itrocket.union.container.ContainerModule
+import com.itrocket.union.network.NetworkModule
 
 object Modules {
 
     val modules = listOf(
         CoreModule.module,
+        NetworkModule.module,
+        ContainerModule.module,
         DocumentMenuModule.module,
         AccountingObjectModule.module,
         AccountingObjectDetailModule.module,
@@ -33,6 +38,7 @@ object Modules {
         DocumentModule.module,
         AuthContainerModule.module,
         ServerConnectModule.module,
-        AuthUserModule.module
+        AuthUserModule.module,
+        AuthMainModule.module
     )
 }

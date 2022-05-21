@@ -36,6 +36,14 @@ class AuthUserStoreFactory(
             action: Unit,
             getState: () -> AuthUserStore.State
         ) {
+            publish(
+                AuthUserStore.Label.ChangeEnable(
+                    isEnabled(
+                        getState().login,
+                        getState().password
+                    )
+                )
+            )
         }
 
         override suspend fun executeIntent(
@@ -43,11 +51,36 @@ class AuthUserStoreFactory(
             getState: () -> AuthUserStore.State
         ) {
             when (intent) {
-                is AuthUserStore.Intent.OnLoginChanged -> dispatch(
-                    Result.Login(intent.login)
+                is AuthUserStore.Intent.OnLoginChanged -> {
+                    dispatch(
+                        Result.Login(intent.login)
+                    )
+                    publish(
+                        AuthUserStore.Label.ChangeEnable(
+                            isEnabled(
+                                getState().login,
+                                getState().password
+                            )
+                        )
+                    )
+                }
+                is AuthUserStore.Intent.OnPasswordChanged -> {
+                    dispatch(Result.Password(intent.password))
+                    publish(
+                        AuthUserStore.Label.ChangeEnable(
+                            isEnabled(
+                                getState().login,
+                                getState().password
+                            )
+                        )
+                    )
+                }
+                AuthUserStore.Intent.OnNextClicked -> publish(
+                    AuthUserStore.Label.ShowAuthMain(
+                        login = getState().login,
+                        password = getState().password
+                    )
                 )
-                is AuthUserStore.Intent.OnPasswordChanged -> dispatch(Result.Password(intent.password))
-                AuthUserStore.Intent.OnNextClicked -> publish(AuthUserStore.Label.NextFinish)
                 is AuthUserStore.Intent.OnPasswordVisibilityClicked -> dispatch(
                     Result.PasswordVisible(!getState().isPasswordVisible)
                 )
@@ -55,11 +88,13 @@ class AuthUserStoreFactory(
         }
     }
 
+    private fun isEnabled(login: String, password: String) =
+        authUserInteractor.validateLogin(login) && authUserInteractor.validatePassword(password)
+
     private sealed class Result {
         data class Login(val login: String) : Result()
         data class Password(val password: String) : Result()
-        data class PasswordVisible(val isPasswordVisible: Boolean) :
-            Result()
+        data class PasswordVisible(val isPasswordVisible: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<AuthUserStore.State, Result> {

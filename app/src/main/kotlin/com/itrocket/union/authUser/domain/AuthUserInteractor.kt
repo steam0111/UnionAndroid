@@ -9,4 +9,12 @@ class AuthUserInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
+    fun validateLogin(login: String): Boolean {
+        return login.isNotBlank()
+    }
+
+    fun validatePassword(password: String): Boolean {
+        return password.isNotBlank()
+    }
+
 }

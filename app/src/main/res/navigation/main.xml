@@ -6,7 +6,11 @@
 
     <fragment
         android:id="@+id/auth"
-        android:name="com.itrocket.union.authContainer.presentation.view.AuthContainerComposeFragment" />
+        android:name="com.itrocket.union.authContainer.presentation.view.AuthContainerComposeFragment">
+        <action
+            android:id="@+id/to_authMain"
+            app:destination="@id/authMain" />
+    </fragment>
 
     <fragment
         android:id="@+id/documentsMenu"
@@ -91,4 +95,20 @@
     <fragment
         android:id="@+id/location"
         android:name="com.itrocket.union.location.presentation.view.LocationComposeFragment" />
+
+    <fragment
+        android:id="@+id/authMain"
+        android:name="com.itrocket.union.authMain.presentation.view.AuthMainComposeFragment">
+        <argument
+            android:name="AuthMainComposeFragmentArgs"
+            app:argType="com.itrocket.union.authMain.presentation.store.AuthMainArguments"
+            app:nullable="false" />
+
+        <action
+            android:id="@+id/to_documentsMenu"
+            app:destination="@id/documentsMenu"
+            app:popUpToInclusive="true"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/main"/>
+    </fragment>
 </navigation>

@@ -7,6 +7,7 @@ interface AuthContainerStore :
     Store<AuthContainerStore.Intent, AuthContainerStore.State, AuthContainerStore.Label> {
 
     sealed class Intent {
+        data class OnEnableChanged(val enabled: Boolean) : Intent()
         object OnBackClicked : Intent()
         object OnNextClicked : Intent()
         object OnNextFinished : Intent()
@@ -14,6 +15,7 @@ interface AuthContainerStore :
 
     data class State(
         val isLoading: Boolean = false,
+        val isEnable: Boolean = false,
         val currentStep: AuthContainerStep = AuthContainerStep.CONNECT_TO_SERVER
     )
 

@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +28,9 @@ fun AuthEditText(
     onTextChanged: (String) -> Unit,
     focusRequester: FocusRequester,
     isShowVisibilityButton: Boolean = false,
+    isTextVisible: Boolean = true,
+    singleLine: Boolean = true,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onVisibilityClickListener: () -> Unit = {}
 ) {
     var underlineColor by remember {
@@ -42,12 +46,13 @@ fun AuthEditText(
             textStyle = AppTheme.typography.body1,
             hintStyle = AppTheme.typography.body1,
             hintColor = psb3,
-            visualTransformation = if (isShowVisibilityButton) {
+            keyboardOptions = keyboardOptions,
+            visualTransformation = if (isTextVisible) {
                 VisualTransformation.None
             } else {
                 PasswordVisualTransformation()
             },
-
+            singleLine = singleLine,
             onTextChanged = onTextChanged,
             focusRequester = focusRequester,
             onFocusChanged = {
@@ -62,10 +67,10 @@ fun AuthEditText(
         if (isShowVisibilityButton) {
             Image(
                 painter = painterResource(
-                    id = if (isShowVisibilityButton) {
-                        R.drawable.ic_visibility
-                    } else {
+                    id = if (isTextVisible) {
                         R.drawable.ic_visibility_off
+                    } else {
+                        R.drawable.ic_visibility
                     }
                 ),
                 contentDescription = null,

@@ -20,6 +20,7 @@
     <string name="common_finish">Готово</string>
     <string name="common_step">Шаг %s</string>
     <string name="common_next">Далее</string>
+    <string name="common_sign_in">Войти</string>
 
     <!-- Auth -->
     <string name="auth_suggest">Это нужно сделать один раз</string>
@@ -37,6 +38,12 @@
     <string name="auth_user_title">Аутентификация пользователя</string>
     <string name="auth_user_login">Логин</string>
     <string name="auth_user_password">Пароль</string>
+
+    <string name="auth_main_title">Здраствуйте, %s</string>
+    <string name="auth_main_subtitle">Введите пароль для входа</string>
+    <string name="auth_main_password">Пароль</string>
+    <string name="auth_main_user_change">Сменить пользователя</string>
+    <string name="auth_main_database_settings">Настройки БД</string>
 
     <!-- MainScreen -->
     <string name="common_hint">Введите значение</string>
