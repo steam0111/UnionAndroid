@@ -51,7 +51,8 @@ fun AuthScreen(
             buttonText = stringResource(R.string.common_next),
             btnLastStepText = stringResource(R.string.auth_sign_in),
             onBackClickListener = onBackClickListener,
-            onNextClickListener = onNextClickListener
+            onNextClickListener = onNextClickListener,
+            isButtonNextEnabled = state.isEnable
         )
     }
 }

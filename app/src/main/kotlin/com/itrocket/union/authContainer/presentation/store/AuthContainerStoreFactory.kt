@@ -46,7 +46,8 @@ class AuthContainerStoreFactory(
                 AuthContainerStore.Intent.OnBackClicked -> {
                     if (getState().currentStep.ordinal > 0) {
                         publish(AuthContainerStore.Label.NavigateBack)
-                        dispatch(
+                        dispatch(Result.Enabled(true))
+                    dispatch(
                             Result.Step(authContainerInteractor.calculatePrevStep(getState().currentStep))
                         )
                     }
@@ -59,11 +60,13 @@ class AuthContainerStoreFactory(
                         dispatch(Result.Step(nextStep))
                     }
                 }
+                is AuthContainerStore.Intent.OnEnableChanged -> dispatch(Result.Enabled(intent.enabled))
             }
         }
     }
 
     private sealed class Result {
+        data class Enabled(val enabled: Boolean) : Result()
         data class Step(val step: AuthContainerStep) : Result()
     }
 
@@ -71,6 +74,7 @@ class AuthContainerStoreFactory(
         override fun AuthContainerStore.State.reduce(result: Result) =
             when (result) {
                 is Result.Step -> copy(currentStep = result.step)
+                is Result.Enabled -> copy(isEnable = result.enabled)
             }
     }
 }

@@ -1,15 +1,17 @@
 package com.itrocket.union.authUser.presentation.store
 
+import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
+import com.itrocket.core.navigation.ForwardNavigationLabel
+import com.itrocket.union.authContainer.presentation.view.AuthContainerComposeFragmentDirections
+import com.itrocket.union.authMain.presentation.store.AuthMainArguments
 
 interface AuthUserStore : Store<AuthUserStore.Intent, AuthUserStore.State, AuthUserStore.Label> {
 
     sealed class Intent {
         data class OnLoginChanged(val login: String) : Intent()
         data class OnPasswordChanged(val password: String) : Intent()
-        object OnPasswordVisibilityClicked :
-            Intent()
-
+        object OnPasswordVisibilityClicked : Intent()
         object OnNextClicked : Intent()
     }
 
@@ -20,6 +22,17 @@ interface AuthUserStore : Store<AuthUserStore.Intent, AuthUserStore.State, AuthU
     )
 
     sealed class Label {
-        object NextFinish : Label()
+        data class ChangeEnable(val enabled: Boolean) : Label()
+        data class ShowAuthMain(val login: String, val password: String) : Label(),
+            ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = AuthContainerComposeFragmentDirections.toAuthMain(
+                    AuthMainArguments(
+                        login = login,
+                        password = password
+                    )
+                )
+
+        }
     }
 }

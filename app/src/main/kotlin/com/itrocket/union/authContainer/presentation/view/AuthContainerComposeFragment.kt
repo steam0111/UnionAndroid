@@ -8,24 +8,22 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commitNow
-import androidx.fragment.app.commitNow
-import com.itrocket.union.authContainer.AuthContainerModule.AUTH_VIEW_MODEL_QUALIFIER
-import com.itrocket.union.authContainer.presentation.store.AuthContainerStore
-import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.base.AppInsets
+import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.union.R
 import com.itrocket.union.addFragment
+import com.itrocket.union.authContainer.AuthContainerModule.AUTH_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.authContainer.domain.entity.AuthContainerStep
-import com.itrocket.union.serverConnect.presentation.view.ServerConnectComposeFragment
+import com.itrocket.union.authContainer.presentation.store.AuthContainerStore
 import com.itrocket.union.authUser.presentation.view.AuthUserComposeFragment
 import com.itrocket.union.replaceFragment
+import com.itrocket.union.serverConnect.presentation.view.ServerConnectComposeFragment
 import com.itrocket.utils.toPx
 
 class AuthContainerComposeFragment :
     BaseComposeFragment<AuthContainerStore.Intent, AuthContainerStore.State, AuthContainerStore.Label>(
         AUTH_VIEW_MODEL_QUALIFIER
-    ), NextFinishHandler {
+    ), NextFinishHandler, ButtonEnableHandler {
 
     private var authContainer: ConstraintLayout? = null
 
@@ -74,6 +72,7 @@ class AuthContainerComposeFragment :
     }
 
     override fun handleLabel(label: AuthContainerStore.Label) {
+        super.handleLabel(label)
         when (label) {
             AuthContainerStore.Label.HandleNext -> {
                 val nextClickHandler =
@@ -113,5 +112,9 @@ class AuthContainerComposeFragment :
 
     private fun replaceFragment(fragment: Fragment) {
         childFragmentManager.replaceFragment(R.id.navigationContainer, fragment)
+    }
+
+    override fun isButtonEnable(enabled: Boolean) {
+        accept(AuthContainerStore.Intent.OnEnableChanged(enabled))
     }
 }

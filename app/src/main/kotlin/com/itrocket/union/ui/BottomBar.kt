@@ -47,6 +47,7 @@ fun StepBottomBar(
     step: Int,
     stepCount: Int,
     stepText: String,
+    isButtonNextEnabled: Boolean,
     buttonText: String,
     btnLastStepText: String,
     onBackClickListener: () -> Unit,
@@ -54,7 +55,9 @@ fun StepBottomBar(
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.background(white).padding(vertical = 16.dp),
+        modifier = Modifier
+            .background(white)
+            .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IndicatorWithText(
@@ -75,7 +78,9 @@ fun StepBottomBar(
         ButtonWithContent(
             content = {
                 Row(
-                    modifier = Modifier.wrapContentWidth().padding(start = 24.dp,end = 16.dp),
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .padding(start = 24.dp, end = 16.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -96,6 +101,7 @@ fun StepBottomBar(
                     )
                 }
             },
+            isEnabled = isButtonNextEnabled,
             onClick = onNextClickListener,
             modifier = Modifier
         )
@@ -111,7 +117,9 @@ private fun StepBottomBarPreview() {
         stepText = "ШАГ 1",
         buttonText = "Далее",
         btnLastStepText = "Войти",
-        onBackClickListener = { /*TODO*/ }) {
+        onBackClickListener = { /*TODO*/ },
+        isButtonNextEnabled = true
+    ) {
 
     }
 }

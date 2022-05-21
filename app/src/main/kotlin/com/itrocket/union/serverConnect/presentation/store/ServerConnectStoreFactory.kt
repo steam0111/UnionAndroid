@@ -36,6 +36,14 @@ class ServerConnectStoreFactory(
             action: Unit,
             getState: () -> ServerConnectStore.State
         ) {
+            publish(
+                ServerConnectStore.Label.ChangeEnable(
+                    isEnabled(
+                        getState().serverAddress,
+                        getState().port
+                    )
+                )
+            )
         }
 
         override suspend fun executeIntent(
@@ -43,12 +51,34 @@ class ServerConnectStoreFactory(
             getState: () -> ServerConnectStore.State
         ) {
             when (intent) {
-                is ServerConnectStore.Intent.OnServerAddressChanged -> dispatch(
-                    Result.ServerAddress(
-                        intent.serverAddress
+                is ServerConnectStore.Intent.OnServerAddressChanged -> {
+                    dispatch(
+                        Result.ServerAddress(
+                            intent.serverAddress
+                        )
                     )
-                )
-                is ServerConnectStore.Intent.OnPortChanged -> dispatch(Result.Port(intent.port))
+                    publish(
+                        ServerConnectStore.Label.ChangeEnable(
+                            isEnabled(
+                                getState().serverAddress,
+                                getState().port
+                            )
+                        )
+                    )
+                }
+                is ServerConnectStore.Intent.OnPortChanged -> {
+                    if (intent.port.length <= ServerConnectInteractor.MAX_PORT_LENGTH) {
+                        dispatch(Result.Port(intent.port))
+                        publish(
+                            ServerConnectStore.Label.ChangeEnable(
+                                isEnabled(
+                                    getState().serverAddress,
+                                    getState().port
+                                )
+                            )
+                        )
+                    }
+                }
                 ServerConnectStore.Intent.OnNextClicked -> {
                     serverConnectInteractor.saveBaseUrl(getState().serverAddress)
                     serverConnectInteractor.savePort(getState().port)
@@ -57,6 +87,10 @@ class ServerConnectStoreFactory(
             }
         }
     }
+
+    private fun isEnabled(serverAddress: String, port: String) =
+        serverConnectInteractor.validatePort(port) &&
+                serverConnectInteractor.validateServerAddress(serverAddress)
 
     private sealed class Result {
         data class ServerAddress(val serverAddress: String) : Result()

@@ -2,10 +2,12 @@ package com.itrocket.union.authUser.presentation.view
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Devices
@@ -49,6 +51,8 @@ fun AuthUserScreen(
                         onTextChanged = onPasswordChanged,
                         focusRequester = focusRequest,
                         isShowVisibilityButton = true,
+                        isTextVisible = state.isPasswordVisible,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         onVisibilityClickListener = onPasswordVisibilityClickListener
                     )
                 }

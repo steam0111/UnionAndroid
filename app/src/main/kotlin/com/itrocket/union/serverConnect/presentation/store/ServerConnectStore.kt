@@ -17,6 +17,7 @@ interface ServerConnectStore :
     )
 
     sealed class Label {
+        data class ChangeEnable(val enabled: Boolean) : Label()
         object NextFinish : Label()
     }
 }
