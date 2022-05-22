@@ -2,15 +2,13 @@ package com.itrocket.union.container.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.itrocket.union.authMain.domain.AuthMainInteractor
-import com.itrocket.union.authMain.domain.dependencies.AuthMainRepository
+import com.itrocket.union.container.domain.IsUserAuthorizedUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val authMainInteractor: AuthMainInteractor,
+    private val isUserAuthorizedUseCase: IsUserAuthorizedUseCase
 ) : ViewModel() {
 
     private val _initialScreen = MutableSharedFlow<InitialScreen>(extraBufferCapacity = 4)
@@ -22,12 +20,13 @@ class MainViewModel(
 
     private fun getAccessToken() {
         viewModelScope.launch {
-            val token = authMainInteractor.subscribeAccessToken().firstOrNull().orEmpty()
+            val isUserAuthorized = isUserAuthorizedUseCase.execute()
+
             _initialScreen.emit(
-                if (token.isBlank()) {
-                    InitialScreen.AUTH
-                } else {
+                if (isUserAuthorized) {
                     InitialScreen.DOCUMENTS_MENU
+                } else {
+                    InitialScreen.AUTH
                 }
             )
         }
