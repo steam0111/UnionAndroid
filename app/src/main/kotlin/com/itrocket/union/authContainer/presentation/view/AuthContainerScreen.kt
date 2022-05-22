@@ -48,6 +48,7 @@ fun AuthScreen(
                 id = R.string.common_step,
                 step.toString()
             ),
+            isLoading = state.isLoading,
             buttonText = stringResource(R.string.common_next),
             btnLastStepText = stringResource(R.string.auth_sign_in),
             onBackClickListener = onBackClickListener,

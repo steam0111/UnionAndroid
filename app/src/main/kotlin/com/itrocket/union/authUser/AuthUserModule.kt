@@ -41,6 +41,7 @@ object AuthUserModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
+                get(),
                 initialState = getSavedState<AuthUserStore.State, AuthContainerModule>(
                     AUTHUSER_STATE_SAVER
                 )

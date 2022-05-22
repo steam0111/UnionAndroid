@@ -8,8 +8,8 @@
         android:id="@+id/auth"
         android:name="com.itrocket.union.authContainer.presentation.view.AuthContainerComposeFragment">
         <action
-            android:id="@+id/to_authMain"
-            app:destination="@id/authMain" />
+            android:id="@+id/to_documentsMenu"
+            app:destination="@id/documentsMenu" />
     </fragment>
 
     <fragment

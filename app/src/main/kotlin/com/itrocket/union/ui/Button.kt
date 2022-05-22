@@ -136,8 +136,8 @@ fun ButtonWithLoader(
     onClick: () -> Unit,
     modifier: Modifier,
     isEnabled: Boolean,
-    text: String,
-    isLoading: Boolean
+    isLoading: Boolean,
+    content: @Composable () -> Unit
 ) {
     ButtonWithContent(
         onClick = onClick,
@@ -152,12 +152,7 @@ fun ButtonWithLoader(
                 if (isLoading) {
                     DottedLoader(modifier = Modifier.fillMaxHeight())
                 } else {
-                    Text(
-                        text = text,
-                        style = AppTheme.typography.body2,
-                        color = white,
-                        fontWeight = FontWeight.Medium
-                    )
+                    content()
                 }
             }
         },

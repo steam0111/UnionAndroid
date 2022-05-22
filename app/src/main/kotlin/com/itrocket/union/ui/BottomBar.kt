@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.itrocket.union.R
@@ -50,14 +51,16 @@ fun StepBottomBar(
     isButtonNextEnabled: Boolean,
     buttonText: String,
     btnLastStepText: String,
+    isLoading: Boolean = false,
     onBackClickListener: () -> Unit,
     onNextClickListener: () -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
+            .fillMaxWidth()
             .background(white)
-            .padding(vertical = 16.dp),
+            .padding(vertical = 16.dp,horizontal = 48.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IndicatorWithText(
@@ -72,10 +75,10 @@ fun StepBottomBar(
             onClick = onBackClickListener,
             enabled = step > MIN_STEP,
             modifier = Modifier,
-            paddingValues = PaddingValues(16.dp)
+            paddingValues = PaddingValues(12.dp)
         )
         Spacer(modifier = Modifier.width(16.dp))
-        ButtonWithContent(
+        ButtonWithLoader(
             content = {
                 Row(
                     modifier = Modifier
@@ -90,6 +93,7 @@ fun StepBottomBar(
                         } else {
                             buttonText.uppercase()
                         },
+                        textAlign = TextAlign.Center,
                         style = AppTheme.typography.body2,
                         fontWeight = FontWeight.Medium,
                         color = white
@@ -97,13 +101,14 @@ fun StepBottomBar(
                     Spacer(modifier = Modifier.width(8.dp))
                     Image(
                         painter = painterResource(R.drawable.ic_arrow_right),
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 }
             },
             isEnabled = isButtonNextEnabled,
             onClick = onNextClickListener,
-            modifier = Modifier
+            modifier = Modifier.weight(1f),
+            isLoading = isLoading
         )
     }
 }

@@ -3,9 +3,8 @@ package com.itrocket.union.serverConnect.presentation.view
 import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
-import com.itrocket.union.authContainer.presentation.view.ButtonEnableHandler
+import com.itrocket.union.authContainer.presentation.view.AuthContainer
 import com.itrocket.union.authContainer.presentation.view.NextClickHandler
-import com.itrocket.union.authContainer.presentation.view.NextFinishHandler
 import com.itrocket.union.serverConnect.ServerConnectModule.SERVERCONNECT_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.serverConnect.presentation.store.ServerConnectStore
 
@@ -39,8 +38,8 @@ class ServerConnectComposeFragment :
 
     override fun handleLabel(label: ServerConnectStore.Label) {
         when (label) {
-            ServerConnectStore.Label.NextFinish -> (parentFragment as? NextFinishHandler)?.onNextFinished()
-            is ServerConnectStore.Label.ChangeEnable -> (parentFragment as? ButtonEnableHandler)?.isButtonEnable(
+            ServerConnectStore.Label.NextFinish -> (parentFragment as? AuthContainer)?.onNextFinished()
+            is ServerConnectStore.Label.ChangeEnable -> (parentFragment as? AuthContainer)?.isButtonEnable(
                 label.enabled
             )
         }
