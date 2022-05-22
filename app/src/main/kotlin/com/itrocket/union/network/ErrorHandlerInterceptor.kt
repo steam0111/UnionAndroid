@@ -2,6 +2,8 @@ package com.itrocket.union.network
 
 import okhttp3.Interceptor
 import okhttp3.Response
+import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 
 class ErrorHandlerInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -13,6 +15,7 @@ class ErrorHandlerInterceptor : Interceptor {
         if (networkException != null && !networkException.code.isNullOrBlank()) {
             throw networkException
         }
-        return chain.proceed(request)
+        val body = responseBodyString.toResponseBody(response.body?.contentType())
+        return response.newBuilder().body(body).build()
     }
 }

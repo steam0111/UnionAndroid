@@ -50,7 +50,9 @@ object NetworkModule {
         single(AUTHORIZED_CLIENT_QUALIFIER) {
             OkHttpClient()
                 .newBuilder()
+                .authenticator(get<Authenticator>())
                 .addInterceptor(get<ErrorHandlerInterceptor>())
+                .addInterceptor(get<TokenInterceptor>())
                 .addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BODY
                 })
