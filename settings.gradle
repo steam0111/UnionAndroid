@@ -22,4 +22,4 @@ enableFeaturePreview("VERSION_CATALOGS")
 rootProject.name = "Union"
 include ':app'
 include ':union-api-client'
-
+include ':token_auth'

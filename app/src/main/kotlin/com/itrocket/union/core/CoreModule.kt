@@ -33,5 +33,8 @@ object CoreModule {
         single(createdAtStart = true) {
             ServerConnectManager(get(), get(), get())
         }
+        single(createdAtStart = true) {
+            AuthCredentialsManager(get(), get(), get())
+        }
     }
 }
