@@ -123,7 +123,6 @@ fun ButtonWithContent(
             disabledBackgroundColor = graphite3
         ),
         shape = RoundedCornerShape(8.dp),
-        contentPadding = PaddingValues(vertical = 16.dp),
         enabled = isEnabled,
         modifier = modifier
     ) {
