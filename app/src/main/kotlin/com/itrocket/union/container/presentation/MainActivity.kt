@@ -10,13 +10,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import com.itrocket.core.base.AppInsetsStateHolder
 import com.itrocket.union.R
-import com.itrocket.union.network.NetworkModule
 import com.itrocket.utils.setGraph
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.context.loadKoinModules
-import org.koin.core.context.unloadKoinModules
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
@@ -46,7 +44,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private fun initObservers() {
-        lifecycleScope.launchWhenCreated {
+        lifecycleScope.launch {
             viewModel.initialScreen.collect {
                 initGraph(it.initialScreenId)
             }

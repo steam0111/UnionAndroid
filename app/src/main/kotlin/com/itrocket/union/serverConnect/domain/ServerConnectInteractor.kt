@@ -30,7 +30,11 @@ class ServerConnectInteractor(
 
     fun getServerAddress(): Flow<String> {
         return repository.getBaseUrl().combine(repository.getPort()) { baseUrl, port ->
-            "$baseUrl:$port/"
+            if(baseUrl.isNotBlank()) {
+                "$baseUrl:$port/"
+            } else {
+                ""
+            }
         }
     }
 

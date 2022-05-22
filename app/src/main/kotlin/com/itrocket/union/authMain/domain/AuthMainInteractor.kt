@@ -4,6 +4,8 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.authMain.domain.dependencies.AuthMainRepository
 import com.itrocket.union.authMain.domain.entity.AuthCredsDomain
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.withContext
 
 class AuthMainInteractor(
@@ -22,7 +24,11 @@ class AuthMainInteractor(
         return password.isNotBlank()
     }
 
-    suspend fun getAccessToken() = withContext(Dispatchers.IO) {
-        repository.getAccessToken()
+    fun subscribeAccessToken(): Flow<String> {
+        return repository.subscribeAccessToken().distinctUntilChanged()
+    }
+
+    fun subscribeRefreshToken(): Flow<String> {
+        return repository.subscribeRefreshToken().distinctUntilChanged()
     }
 }
