@@ -1,11 +1,12 @@
 package com.itrocket.union.authUser.presentation.view
 
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.union.authContainer.presentation.view.ButtonEnableHandler
+import com.itrocket.union.authContainer.presentation.view.ChildBackPressedHandler
 import com.itrocket.union.authContainer.presentation.view.NextClickHandler
-import com.itrocket.union.authContainer.presentation.view.NextFinishHandler
 import com.itrocket.union.authUser.AuthUserModule.AUTHUSER_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.authUser.presentation.store.AuthUserStore
 
@@ -13,6 +14,14 @@ class AuthUserComposeFragment :
     BaseComposeFragment<AuthUserStore.Intent, AuthUserStore.State, AuthUserStore.Label>(
         AUTHUSER_VIEW_MODEL_QUALIFIER
     ), NextClickHandler {
+
+    override val onBackPressedCallback by lazy {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                (parentFragment as? ChildBackPressedHandler)?.onChildBackPressed()
+            }
+        }
+    }
 
     override fun renderState(
         state: AuthUserStore.State,
@@ -48,5 +57,4 @@ class AuthUserComposeFragment :
     override fun onNext() {
         accept(AuthUserStore.Intent.OnNextClicked)
     }
-
 }

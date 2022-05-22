@@ -6,8 +6,8 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import com.itrocket.union.authContainer.domain.AuthContainerInteractor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.authContainer.domain.AuthContainerInteractor
 import com.itrocket.union.authContainer.domain.entity.AuthContainerStep
 
 class AuthContainerStoreFactory(
@@ -44,12 +44,17 @@ class AuthContainerStoreFactory(
         ) {
             when (intent) {
                 AuthContainerStore.Intent.OnBackClicked -> {
-                    if (getState().currentStep.ordinal > 0) {
-                        publish(AuthContainerStore.Label.NavigateBack)
-                        dispatch(Result.Enabled(true))
-                    dispatch(
-                            Result.Step(authContainerInteractor.calculatePrevStep(getState().currentStep))
-                        )
+                    when {
+                        getState().currentStep.ordinal > 0 -> {
+                            publish(AuthContainerStore.Label.NavigateBack)
+                            dispatch(Result.Enabled(true))
+                            dispatch(
+                                Result.Step(authContainerInteractor.calculatePrevStep(getState().currentStep))
+                            )
+                        }
+                        getState().currentStep.ordinal == 0 -> {
+                            publish(AuthContainerStore.Label.CloseAuthContainer)
+                        }
                     }
                 }
                 AuthContainerStore.Intent.OnNextClicked -> publish(AuthContainerStore.Label.HandleNext)
