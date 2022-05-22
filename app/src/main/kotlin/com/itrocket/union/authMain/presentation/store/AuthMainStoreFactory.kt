@@ -1,15 +1,13 @@
 package com.itrocket.union.authMain.presentation.store
 
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import com.itrocket.union.authMain.domain.AuthMainInteractor
+import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.authMain.domain.AuthMainInteractor
 
 class AuthMainStoreFactory(
     private val storeFactory: StoreFactory,
@@ -34,8 +32,8 @@ class AuthMainStoreFactory(
         AuthMainExecutor()
 
     private inner class AuthMainExecutor :
-        SuspendExecutor<AuthMainStore.Intent, Unit, AuthMainStore.State, Result, AuthMainStore.Label>(
-            mainContext = coreDispatchers.ui
+        BaseExecutor<AuthMainStore.Intent, Unit, AuthMainStore.State, Result, AuthMainStore.Label>(
+            context = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
             action: Unit,
@@ -64,18 +62,20 @@ class AuthMainStoreFactory(
                 }
                 AuthMainStore.Intent.OnSignInClicked -> {
                     dispatch(Result.Loading(true))
-                    try {
+                    catchException {
                         authMainInteractor.signIn(
                             login = getState().login,
                             password = getState().password
                         )
                         publish(AuthMainStore.Label.ShowDocumentMenu)
-                    } catch (t: Throwable) {
-                        publish(AuthMainStore.Label.Error(t.message.orEmpty()))
                     }
                     dispatch(Result.Loading(false))
                 }
             }
+        }
+
+        override fun handleError(throwable: Throwable) {
+            publish(AuthMainStore.Label.Error(throwable.message.orEmpty()))
         }
     }
 
