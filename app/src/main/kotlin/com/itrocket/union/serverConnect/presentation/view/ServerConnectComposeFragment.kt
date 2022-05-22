@@ -1,9 +1,11 @@
 package com.itrocket.union.serverConnect.presentation.view
 
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.union.authContainer.presentation.view.ButtonEnableHandler
+import com.itrocket.union.authContainer.presentation.view.ChildBackPressedHandler
 import com.itrocket.union.authContainer.presentation.view.NextClickHandler
 import com.itrocket.union.authContainer.presentation.view.NextFinishHandler
 import com.itrocket.union.serverConnect.ServerConnectModule.SERVERCONNECT_VIEW_MODEL_QUALIFIER
@@ -13,6 +15,14 @@ class ServerConnectComposeFragment :
     BaseComposeFragment<ServerConnectStore.Intent, ServerConnectStore.State, ServerConnectStore.Label>(
         SERVERCONNECT_VIEW_MODEL_QUALIFIER
     ), NextClickHandler {
+
+    override val onBackPressedCallback by lazy {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                (parentFragment as? ChildBackPressedHandler)?.onChildBackPressed()
+            }
+        }
+    }
 
     override fun renderState(
         state: ServerConnectStore.State,

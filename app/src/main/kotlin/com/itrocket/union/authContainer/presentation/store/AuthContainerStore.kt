@@ -1,6 +1,7 @@
 package com.itrocket.union.authContainer.presentation.store
 
 import com.arkivanov.mvikotlin.core.store.Store
+import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.authContainer.domain.entity.AuthContainerStep
 
 interface AuthContainerStore :
@@ -22,6 +23,7 @@ interface AuthContainerStore :
     sealed class Label {
         object HandleNext : Label()
         object NavigateBack : Label()
+        object CloseAuthContainer : Label(), GoBackNavigationLabel
         data class NavigateNext(val step: AuthContainerStep) : Label()
     }
 }

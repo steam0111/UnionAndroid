@@ -23,7 +23,7 @@ import com.itrocket.utils.toPx
 class AuthContainerComposeFragment :
     BaseComposeFragment<AuthContainerStore.Intent, AuthContainerStore.State, AuthContainerStore.Label>(
         AUTH_VIEW_MODEL_QUALIFIER
-    ), NextFinishHandler, ButtonEnableHandler {
+    ), NextFinishHandler, ButtonEnableHandler, ChildBackPressedHandler {
 
     private var authContainer: ConstraintLayout? = null
 
@@ -116,5 +116,9 @@ class AuthContainerComposeFragment :
 
     override fun isButtonEnable(enabled: Boolean) {
         accept(AuthContainerStore.Intent.OnEnableChanged(enabled))
+    }
+
+    override fun onChildBackPressed() {
+        accept(AuthContainerStore.Intent.OnBackClicked)
     }
 }
