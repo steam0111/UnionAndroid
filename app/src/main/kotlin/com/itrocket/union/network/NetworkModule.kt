@@ -15,11 +15,11 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 
 object NetworkModule {
 
-    val AUTHORIZED_CLIENT_QUALIFIER = named("authorizedClient")
-    val AUTHORIZED_RETROFIT_QUALIFIER = named("authorizedRetrofit")
+    private val AUTHORIZED_CLIENT_QUALIFIER = named("authorizedClient")
+    private val AUTHORIZED_RETROFIT_QUALIFIER = named("authorizedRetrofit")
 
-    val UNAUTHORIZED_CLIENT_QUALIFIER = named("unauthorizedClient")
-    val UNAUTHORIZED_RETROFIT_QUALIFIER = named("unauthorizedRetrofit")
+    private val UNAUTHORIZED_CLIENT_QUALIFIER = named("unauthorizedClient")
+    private val UNAUTHORIZED_RETROFIT_QUALIFIER = named("unauthorizedRetrofit")
 
     val module = module {
         single<Retrofit>(UNAUTHORIZED_RETROFIT_QUALIFIER) {

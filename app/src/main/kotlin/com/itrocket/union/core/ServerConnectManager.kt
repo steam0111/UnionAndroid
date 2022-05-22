@@ -23,7 +23,7 @@ class ServerConnectManager(
         subscribeServerAddress()
     }
 
-    fun subscribeServerAddress() {
+    private fun subscribeServerAddress() {
         coroutineScope.launch {
             serverConnectInteractor.getServerAddress().collect {
                 networkInfo.serverAddress = it
