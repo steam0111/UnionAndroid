@@ -5,14 +5,16 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.authUser.domain.AuthUserInteractor
 
 class AuthUserStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val authUserInteractor: AuthUserInteractor,
+    private val authMainInteractor: AuthMainInteractor,
     private val initialState: AuthUserStore.State?
 ) {
     fun create(): AuthUserStore =
@@ -29,8 +31,8 @@ class AuthUserStoreFactory(
         AuthUserExecutor()
 
     private inner class AuthUserExecutor :
-        SuspendExecutor<AuthUserStore.Intent, Unit, AuthUserStore.State, Result, AuthUserStore.Label>(
-            mainContext = coreDispatchers.ui
+        BaseExecutor<AuthUserStore.Intent, Unit, AuthUserStore.State, Result, AuthUserStore.Label>(
+            context = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
             action: Unit,
@@ -75,16 +77,25 @@ class AuthUserStoreFactory(
                         )
                     )
                 }
-                AuthUserStore.Intent.OnNextClicked -> publish(
-                    AuthUserStore.Label.ShowAuthMain(
-                        login = getState().login,
-                        password = getState().password
-                    )
-                )
+                AuthUserStore.Intent.OnNextClicked -> {
+                    publish(AuthUserStore.Label.ParentLoading(true))
+                    catchException {
+                        authMainInteractor.signIn(
+                            login = getState().login,
+                            password = getState().password
+                        )
+                        publish(AuthUserStore.Label.ShowDocumentMenu)
+                    }
+                    publish(AuthUserStore.Label.ParentLoading(false))
+                }
                 is AuthUserStore.Intent.OnPasswordVisibilityClicked -> dispatch(
                     Result.PasswordVisible(!getState().isPasswordVisible)
                 )
             }
+        }
+
+        override fun handleError(throwable: Throwable) {
+            publish(AuthUserStore.Label.Error(throwable.message.orEmpty()))
         }
     }
 

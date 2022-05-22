@@ -66,11 +66,13 @@ class AuthContainerStoreFactory(
                     }
                 }
                 is AuthContainerStore.Intent.OnEnableChanged -> dispatch(Result.Enabled(intent.enabled))
+                is AuthContainerStore.Intent.OnLoadingChanged -> dispatch(Result.IsLoading(intent.isLoading))
             }
         }
     }
 
     private sealed class Result {
+        data class IsLoading(val isLoading: Boolean) : Result()
         data class Enabled(val enabled: Boolean) : Result()
         data class Step(val step: AuthContainerStep) : Result()
     }
@@ -80,6 +82,7 @@ class AuthContainerStoreFactory(
             when (result) {
                 is Result.Step -> copy(currentStep = result.step)
                 is Result.Enabled -> copy(isEnable = result.enabled)
+                is Result.IsLoading -> copy(isLoading = result.isLoading)
             }
     }
 }

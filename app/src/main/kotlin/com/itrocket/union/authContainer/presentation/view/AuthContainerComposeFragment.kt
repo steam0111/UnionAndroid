@@ -23,7 +23,7 @@ import com.itrocket.utils.toPx
 class AuthContainerComposeFragment :
     BaseComposeFragment<AuthContainerStore.Intent, AuthContainerStore.State, AuthContainerStore.Label>(
         AUTH_VIEW_MODEL_QUALIFIER
-    ), NextFinishHandler, ButtonEnableHandler, ChildBackPressedHandler {
+    ), AuthContainer, ChildBackPressedHandler {
 
     private var authContainer: ConstraintLayout? = null
 
@@ -90,6 +90,10 @@ class AuthContainerComposeFragment :
 
     override fun onNextFinished() {
         accept(AuthContainerStore.Intent.OnNextFinished)
+    }
+
+    override fun isLoading(isLoading: Boolean) {
+        accept(AuthContainerStore.Intent.OnLoadingChanged(isLoading))
     }
 
     private fun navigateNext(currentStep: AuthContainerStep) {

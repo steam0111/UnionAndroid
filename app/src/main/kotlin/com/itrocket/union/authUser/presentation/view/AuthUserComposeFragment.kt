@@ -4,7 +4,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
-import com.itrocket.union.authContainer.presentation.view.ButtonEnableHandler
+import com.itrocket.union.authContainer.presentation.view.AuthContainer
 import com.itrocket.union.authContainer.presentation.view.ChildBackPressedHandler
 import com.itrocket.union.authContainer.presentation.view.NextClickHandler
 import com.itrocket.union.authUser.AuthUserModule.AUTHUSER_VIEW_MODEL_QUALIFIER
@@ -48,8 +48,11 @@ class AuthUserComposeFragment :
     override fun handleLabel(label: AuthUserStore.Label) {
         super.handleLabel(label)
         when (label) {
-            is AuthUserStore.Label.ChangeEnable -> (parentFragment as? ButtonEnableHandler)?.isButtonEnable(
+            is AuthUserStore.Label.ChangeEnable -> (parentFragment as? AuthContainer)?.isButtonEnable(
                 label.enabled
+            )
+            is AuthUserStore.Label.ParentLoading -> (parentFragment as? AuthContainer)?.isLoading(
+                label.isLoading
             )
         }
     }

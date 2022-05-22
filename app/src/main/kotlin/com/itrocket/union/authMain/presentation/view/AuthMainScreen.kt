@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +30,7 @@ import com.itrocket.union.ui.ButtonWithLoader
 import com.itrocket.union.ui.OutlinedButton
 import com.itrocket.union.ui.psb3
 import com.itrocket.union.ui.psb4
+import com.itrocket.union.ui.white
 
 @Composable
 fun AuthMainScreen(
@@ -70,8 +73,15 @@ fun AuthMainScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 48.dp),
                 isEnabled = state.enabled,
-                text = stringResource(R.string.common_sign_in),
-                isLoading = state.isLoading
+                isLoading = state.isLoading,
+                content = {
+                    Text(
+                        text = stringResource(R.string.common_sign_in),
+                        style = AppTheme.typography.body2,
+                        color = white,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
             )
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedButton(

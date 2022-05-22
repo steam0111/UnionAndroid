@@ -18,20 +18,18 @@ interface AuthUserStore : Store<AuthUserStore.Intent, AuthUserStore.State, AuthU
     data class State(
         val login: String = "",
         val password: String = "",
-        val isPasswordVisible: Boolean = false
+        val isPasswordVisible: Boolean = false,
+        val isLoading: Boolean = false
     )
 
     sealed class Label {
         data class ChangeEnable(val enabled: Boolean) : Label()
-        data class ShowAuthMain(val login: String, val password: String) : Label(),
+        data class ParentLoading(val isLoading: Boolean) : Label()
+        data class Error(val message: String) : Label()
+        object ShowDocumentMenu : Label(),
             ForwardNavigationLabel {
             override val directions: NavDirections
-                get() = AuthContainerComposeFragmentDirections.toAuthMain(
-                    AuthMainArguments(
-                        login = login,
-                        password = password
-                    )
-                )
+                get() = AuthContainerComposeFragmentDirections.toDocumentsMenu()
 
         }
     }
