@@ -9,7 +9,8 @@
         android:name="com.itrocket.union.authContainer.presentation.view.AuthContainerComposeFragment">
         <action
             android:id="@+id/to_documentsMenu"
-            app:destination="@id/documentsMenu" />
+            app:destination="@id/documentsMenu"
+            app:popUpTo="@id/main" />
     </fragment>
 
     <fragment
