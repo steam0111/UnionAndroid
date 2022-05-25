@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-parcelize'
     id 'androidx.navigation.safeargs'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -43,6 +44,8 @@ android {
 dependencies {
     implementation project(":union-api-client")
     implementation project(":token_auth")
+    implementation project(":union_sync_api")
+    implementation project(":union_sync_impl")
 
     implementation(libs.androidx.core)
     implementation(libs.androidx.appcompat)
@@ -61,4 +64,7 @@ dependencies {
 
     implementation(libs.bundles.itrocket)
     implementation(libs.datastore)
+
+    implementation(libs.database.runtime)
+    kapt(libs.database.compiler)
 }

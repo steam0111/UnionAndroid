@@ -23,3 +23,5 @@ rootProject.name = "Union"
 include ':app'
 include ':union-api-client'
 include ':token_auth'
+include ':union_sync_api'
+include ':union_sync_impl'
