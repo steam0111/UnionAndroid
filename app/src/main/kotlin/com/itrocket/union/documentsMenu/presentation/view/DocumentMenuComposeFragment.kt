@@ -36,6 +36,9 @@ class DocumentMenuComposeFragment :
                 },
                 onDocumentItemClick = {
                     accept(DocumentMenuStore.Intent.OnDocumentClicked(it))
+                },
+                onLogoutClickListener = {
+                    accept(DocumentMenuStore.Intent.OnLogoutClicked)
                 })
         }
     }

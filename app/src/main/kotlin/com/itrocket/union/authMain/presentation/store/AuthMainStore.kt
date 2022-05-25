@@ -2,6 +2,7 @@ package com.itrocket.union.authMain.presentation.store
 
 import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
+import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.union.authMain.presentation.view.AuthMainComposeFragmentDirections
 
@@ -30,6 +31,6 @@ interface AuthMainStore : Store<AuthMainStore.Intent, AuthMainStore.State, AuthM
 
         }
 
-        data class Error(val message: String) : Label()
+        data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
     }
 }

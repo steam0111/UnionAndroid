@@ -27,8 +27,8 @@ class AuthMainRepositoryImpl(
             ?: throw InvalidNetworkDataException()).toAuthDomain()
     }
 
-    override suspend fun refreshToken(refreshToken: String): AuthCredentials {
-        return (api.apiAuthRefreshTokenPost(RefreshJwtRequest(refreshToken)).body()
+    override suspend fun refreshToken(refreshToken: String, accessToken: String): AuthCredentials {
+        return (api.apiAuthRefreshTokenPost(RefreshJwtRequest(refreshToken), "$BEARER_TOKEN $accessToken").body()
             ?: throw InvalidNetworkDataException()).toAuthCredentials()
     }
 
@@ -56,5 +56,13 @@ class AuthMainRepositoryImpl(
             preferences[accessTokenPreferencesKey] = ""
             preferences[refreshTokenPreferencesKey] = ""
         }
+    }
+
+    override suspend fun invalidateToken(accessToken: String): Boolean {
+        return api.apiAuthInvalidateTokenPost("$BEARER_TOKEN $accessToken").body()?.success ?: false
+    }
+
+    companion object {
+        private const val BEARER_TOKEN = "Bearer"
     }
 }

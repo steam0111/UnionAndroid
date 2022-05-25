@@ -21,6 +21,7 @@
     <string name="common_step">Шаг %s</string>
     <string name="common_next">Далее</string>
     <string name="common_sign_in">Войти</string>
+    <string name="common_exit">Выйти</string>
 
     <!-- Auth -->
     <string name="auth_suggest">Это нужно сделать один раз</string>

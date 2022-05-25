@@ -25,6 +25,12 @@
         <action
             android:id="@+id/to_documents"
             app:destination="@id/documents" />
+        <action
+            android:id="@+id/to_auth"
+            app:destination="@id/auth"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/main"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment

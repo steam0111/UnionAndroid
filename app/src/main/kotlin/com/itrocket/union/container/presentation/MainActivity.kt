@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import com.itrocket.core.base.AppInsetsStateHolder
 import com.itrocket.union.R
+import com.itrocket.union.network.NetworkModule
 import com.itrocket.utils.setGraph
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

@@ -36,7 +36,7 @@ object AuthMainModule {
         }
 
         factory {
-            AuthMainInteractor(get(), get())
+            AuthMainInteractor(get(), get(), get())
         }
 
         factory { (args: AuthMainComposeFragmentArgs) ->
