@@ -5,17 +5,22 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -33,7 +38,9 @@ import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 import com.itrocket.union.documentsMenu.presentation.store.DocumentMenuStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseToolbar
+import com.itrocket.union.ui.TextButton
 import com.itrocket.union.ui.psb1
+import com.itrocket.union.ui.psb6
 import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
 
@@ -43,7 +50,8 @@ fun DocumentMenuScreen(
     state: DocumentMenuStore.State,
     appInsets: AppInsets,
     onDocumentItemClick: (DocumentMenuDomain) -> Unit,
-    onProfileIconClick: () -> Unit
+    onProfileIconClick: () -> Unit,
+    onLogoutClickListener: () -> Unit
 ) {
     AppTheme {
         Scaffold(topBar = {
@@ -56,6 +64,13 @@ fun DocumentMenuScreen(
                     painter = painterResource(R.drawable.ic_question),
                     contentDescription = null
                 )
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = stringResource(R.string.common_exit),
+                    style = AppTheme.typography.body2,
+                    color = psb6,
+                    modifier = Modifier.clickable(onClick = onLogoutClickListener)
+                )
             }
         }, content = {
             if (state.documents.isNotEmpty()) {
@@ -65,10 +80,25 @@ fun DocumentMenuScreen(
                     contentPadding = it
                 )
             }
+            if (state.loading) {
+                Loading(it)
+            }
         }, modifier = Modifier
             .background(white)
             .padding(top = appInsets.topInset.dp, bottom = appInsets.bottomInset.dp)
         )
+    }
+}
+
+@Composable
+private fun Loading(paddingValues: PaddingValues) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+    ) {
+        CircularProgressIndicator()
     }
 }
 
@@ -184,5 +214,5 @@ fun DocumentMenuScreenPreview() {
                     iconId = R.drawable.ic_inventory
                 ),
             )
-        ), AppInsets(topInset = previewTopInsetDp), {}) {}
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {})
 }

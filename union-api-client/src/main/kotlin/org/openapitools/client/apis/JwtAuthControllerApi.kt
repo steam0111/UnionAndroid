@@ -12,6 +12,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.HEAD
+import retrofit2.http.Header
 import retrofit2.http.OPTIONS
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -19,8 +20,8 @@ import retrofit2.http.PUT
 
 interface JwtAuthControllerApi {
     /**
-     * 
-     * 
+     *
+     *
      * Responses:
      *  - 200: OK
      *
@@ -30,8 +31,8 @@ interface JwtAuthControllerApi {
     suspend fun apiAuth403Delete(): Response<kotlin.String>
 
     /**
-     * 
-     * 
+     *
+     *
      * Responses:
      *  - 200: OK
      *
@@ -41,8 +42,8 @@ interface JwtAuthControllerApi {
     suspend fun apiAuth403Get(): Response<kotlin.String>
 
     /**
-     * 
-     * 
+     *
+     *
      * Responses:
      *  - 200: OK
      *
@@ -52,8 +53,8 @@ interface JwtAuthControllerApi {
     suspend fun apiAuth403Head(): Response<kotlin.String>
 
     /**
-     * 
-     * 
+     *
+     *
      * Responses:
      *  - 200: OK
      *
@@ -63,8 +64,8 @@ interface JwtAuthControllerApi {
     suspend fun apiAuth403Options(): Response<kotlin.String>
 
     /**
-     * 
-     * 
+     *
+     *
      * Responses:
      *  - 200: OK
      *
@@ -74,8 +75,8 @@ interface JwtAuthControllerApi {
     suspend fun apiAuth403Patch(): Response<kotlin.String>
 
     /**
-     * 
-     * 
+     *
+     *
      * Responses:
      *  - 200: OK
      *
@@ -85,8 +86,8 @@ interface JwtAuthControllerApi {
     suspend fun apiAuth403Post(): Response<kotlin.String>
 
     /**
-     * 
-     * 
+     *
+     *
      * Responses:
      *  - 200: OK
      *
@@ -96,43 +97,46 @@ interface JwtAuthControllerApi {
     suspend fun apiAuth403Put(): Response<kotlin.String>
 
     /**
-     * 
-     * 
+     *
+     *
      * Responses:
      *  - 200: OK
      *
-     * @param invalidateAllJwtRequest  
+     * @param invalidateAllJwtRequest
      * @return [JwtOperationResponse]
      */
     @POST("api/auth/invalidate-all-tokens")
     suspend fun apiAuthInvalidateAllTokensPost(@Body invalidateAllJwtRequest: InvalidateAllJwtRequest): Response<JwtOperationResponse>
 
     /**
-     * 
-     * 
+     *
+     *
      * Responses:
      *  - 200: OK
      *
      * @return [JwtOperationResponse]
      */
     @POST("api/auth/invalidate-token")
-    suspend fun apiAuthInvalidateTokenPost(): Response<JwtOperationResponse>
+    suspend fun apiAuthInvalidateTokenPost(@Header("Authorization") bearerToken: String): Response<JwtOperationResponse>
 
     /**
-     * 
-     * 
+     *
+     *
      * Responses:
      *  - 200: OK
      *
-     * @param refreshJwtRequest  
+     * @param refreshJwtRequest
      * @return [RefreshJwtResponse]
      */
     @POST("api/auth/refresh-token")
-    suspend fun apiAuthRefreshTokenPost(@Body refreshJwtRequest: RefreshJwtRequest): Response<RefreshJwtResponse>
+    suspend fun apiAuthRefreshTokenPost(
+        @Body refreshJwtRequest: RefreshJwtRequest,
+        @Header("Authorization") bearerToken: String
+    ): Response<RefreshJwtResponse>
 
     /**
-     * 
-     * 
+     *
+     *
      * Responses:
      *  - 200: OK
      *
@@ -143,8 +147,8 @@ interface JwtAuthControllerApi {
     suspend fun apiAuthSignInFromActiveDirectoryPost(@Body authJwtRequest: AuthJwtRequest? = null): Response<AuthJwtResponse>
 
     /**
-     * 
-     * 
+     *
+     *
      * Responses:
      *  - 200: OK
      *
@@ -155,12 +159,12 @@ interface JwtAuthControllerApi {
     suspend fun apiAuthSignInPost(@Body authJwtRequest: AuthJwtRequest? = null): Response<AuthJwtResponse>
 
     /**
-     * 
-     * 
+     *
+     *
      * Responses:
      *  - 200: OK
      *
-     * @param verifyJwtRequest  
+     * @param verifyJwtRequest
      * @return [JwtOperationResponse]
      */
     @POST("api/auth/verify")

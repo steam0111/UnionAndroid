@@ -9,6 +9,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import ${packageName}.${featurePackageName}.domain.${featureName}Interactor
 import ${packageName}.${featurePackageName}.domain.entity.${featureName}Domain
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.core.base.BaseExecutor
 
 class ${featureName}StoreFactory(
     private val storeFactory: StoreFactory,
@@ -30,8 +31,8 @@ class ${featureName}StoreFactory(
         ${featureName}Executor()
 
     private inner class ${featureName}Executor :
-        SuspendExecutor<${featureName}Store.Intent, Unit, ${featureName}Store.State, Result, ${featureName}Store.Label>(
-            mainContext = coreDispatchers.ui
+        BaseExecutor<${featureName}Store.Intent, Unit, ${featureName}Store.State, Result, ${featureName}Store.Label>(
+            context = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
             action: Unit,
@@ -46,6 +47,10 @@ class ${featureName}StoreFactory(
             when (intent) {
                  ${featureName}Store.Intent.OnBackClicked -> publish(${featureName}Store.Label.GoBack)
             }
+        }
+
+        override fun handleError(throwable: Throwable) {
+            publish(${featureName}Store.Label.Error(throwable.message.orEmpty()))
         }
     }
 

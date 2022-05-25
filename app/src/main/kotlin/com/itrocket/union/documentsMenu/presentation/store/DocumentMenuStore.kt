@@ -2,6 +2,7 @@ package com.itrocket.union.documentsMenu.presentation.store
 
 import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
+import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
@@ -15,14 +16,21 @@ interface DocumentMenuStore :
     sealed class Intent {
         data class OnDocumentClicked(val item: DocumentMenuDomain) : Intent()
         object OnProfileClicked : Intent()
+        object OnLogoutClicked : Intent()
     }
 
     data class State(
         val documents: List<DocumentMenuDomain> = listOf(),
-        val userName: String = ""
+        val userName: String = "",
+        val loading: Boolean = false
     )
 
     sealed class Label {
+        object ShowAuth : Label(), ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = DocumentMenuComposeFragmentDirections.toAuth()
+        }
+
         data class ShowDocumentDetail(val item: DocumentMenuDomain) : Label(),
             ForwardNavigationLabel {
             override val directions: NavDirections
@@ -50,5 +58,7 @@ interface DocumentMenuStore :
                     else -> DocumentMenuComposeFragmentDirections.toAccountingObjects()
                 }
         }
+
+        data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
     }
 }

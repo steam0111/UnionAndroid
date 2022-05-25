@@ -15,7 +15,7 @@ class TokenManagerImpl(
     }
 
     override suspend fun refreshToken(refreshToken: String): AuthCredentials {
-        return authMainRepository.refreshToken(refreshToken)
+        return authMainRepository.refreshToken(refreshToken, networkInfo.accessToken)
     }
 
     override fun getAccessToken(): String {

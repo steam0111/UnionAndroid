@@ -11,7 +11,7 @@ interface AuthMainRepository {
 
     suspend fun signIn(authCreds: AuthCredsDomain): AuthDomain
 
-    suspend fun refreshToken(refreshToken: String): AuthCredentials
+    suspend fun refreshToken(refreshToken: String, accessToken: String): AuthCredentials
 
     suspend fun saveAuthCredentials(credentials: AuthDomain)
 
@@ -20,4 +20,6 @@ interface AuthMainRepository {
     fun subscribeRefreshToken(): Flow<String>
 
     suspend fun clearAuthCredentials()
+
+    suspend fun invalidateToken(accessToken: String): Boolean
 }

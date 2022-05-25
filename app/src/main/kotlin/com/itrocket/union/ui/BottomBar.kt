@@ -59,8 +59,7 @@ fun StepBottomBar(
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
-            .fillMaxWidth()
-            .background(white)
+            .fillMaxWidth().background(white)
             .padding(vertical = 16.dp, horizontal = 48.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
