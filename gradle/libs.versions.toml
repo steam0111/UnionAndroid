@@ -39,6 +39,8 @@ datastore = "1.0.0"
 core = "1.1.4"
 ui = "1.0.1"
 utils = "1.0.0"
+
+database = "2.4.2"
 [libraries]
 
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
@@ -91,6 +93,10 @@ datastore = { module = "androidx.datastore:datastore-preferences", version.ref =
 itrocket-core = { module = "ru.itrocket:core", version.ref = "core"}
 itrocket-ui = { module = "ru.itrocket:ui", version.ref = "ui"}
 itrocket-utils = { module = "ru.itrocket:utils", version.ref = "utils"}
+
+database-runtime = { module = "androidx.room:room-ktx", version.ref = "database"}
+database-compiler = { module = "androidx.room:room-compiler", version.ref = "database"}
+
 [bundles]
 android-ext = ["android-ext-lifecycle", "android-ext-fragment"]
 

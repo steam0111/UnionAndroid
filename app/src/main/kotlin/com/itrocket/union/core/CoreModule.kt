@@ -3,6 +3,8 @@ package com.itrocket.union.core
 import android.content.Context
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.room.Room
+import com.example.union_sync_impl.UnionDatabase
 import com.itrocket.core.base.AppInsetsStateHolder
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.network.NetworkInfo
@@ -35,6 +37,15 @@ object CoreModule {
         }
         single(createdAtStart = true) {
             AuthCredentialsManager(get(), get(), get())
+        }
+        single {
+            Room.databaseBuilder(
+                get(),
+                UnionDatabase::class.java, "union_database"
+            ).fallbackToDestructiveMigration().build()
+        }
+        factory {
+            get<UnionDatabase>().nomenclatureGroupDao()
         }
     }
 }
