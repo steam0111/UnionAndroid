@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-parcelize'
     id 'androidx.navigation.safeargs'
     id 'kotlin-kapt'
+    id 'shot'
 }
 
 android {
@@ -16,7 +17,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.karumi.shot.ShotTestRunner"
     }
 
     buildTypes {
@@ -38,6 +39,9 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.compose.get()
+    }
+    packagingOptions {
+        resources.excludes.add("META-INF/*")
     }
 }
 
@@ -67,4 +71,7 @@ dependencies {
 
     implementation(libs.database.runtime)
     kapt(libs.database.compiler)
+
+    androidTestImplementation(libs.androidx.compose.junit4)
+    debugImplementation(libs.androidx.compose.manifest)
 }

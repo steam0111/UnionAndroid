@@ -42,7 +42,12 @@ import androidx.compose.ui.unit.dp
 import com.itrocket.union.R
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.core.base.AppInsets
+import com.itrocket.core.utils.previewTopInsetDp
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.documents.domain.entity.DocumentDateType
+import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
+import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.store.DocumentStore
 import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.ButtonBottomBar
@@ -168,8 +173,47 @@ private fun Content(
 @Composable
 fun DocumentScreenPreview() {
     DocumentScreen(
-        DocumentStore.State(type = DocumentTypeDomain.ALL),
-        AppInsets(),
+        DocumentStore.State(
+            type = DocumentTypeDomain.ALL, documents = listOf(
+                DocumentView.DocumentDateView(date = "12.12.12", dateUi = "12.12.12", dayType = DocumentDateType.OTHER),
+                DocumentView.DocumentItemView(
+                    date = "12.12.12",
+                    number = "123213",
+                    time = "123123",
+                    objectStatus = ObjectStatus.AVAILABLE,
+                    documentInfo = listOf("DocumentInfo1", "DocumentInfo2", "DocumentInfo3"),
+                    documentStatus = DocumentStatus.CREATED,
+                    objectType = ObjectType.MAIN_ASSETS
+                ),
+                DocumentView.DocumentItemView(
+                    date = "12.12.12",
+                    number = "1232132",
+                    time = "123123",
+                    objectStatus = ObjectStatus.AVAILABLE,
+                    documentInfo = listOf("DocumentInfo1", "DocumentInfo2", "DocumentInfo3"),
+                    documentStatus = DocumentStatus.CREATED,
+                    objectType = ObjectType.MAIN_ASSETS
+                ), DocumentView.DocumentItemView(
+                    date = "12.12.12",
+                    number = "1232133",
+                    time = "123123",
+                    objectStatus = ObjectStatus.AVAILABLE,
+                    documentInfo = listOf("DocumentInfo1", "DocumentInfo2", "DocumentInfo3"),
+                    documentStatus = DocumentStatus.CREATED,
+                    objectType = ObjectType.MAIN_ASSETS
+                ),
+                DocumentView.DocumentItemView(
+                    date = "12.12.12",
+                    number = "1232134",
+                    time = "123123",
+                    objectStatus = ObjectStatus.AVAILABLE,
+                    documentInfo = listOf("DocumentInfo1", "DocumentInfo2", "DocumentInfo3"),
+                    documentStatus = DocumentStatus.CREATED,
+                    objectType = ObjectType.MAIN_ASSETS
+                )
+            )
+        ),
+        AppInsets(topInset = previewTopInsetDp),
         {},
         {},
         {},
