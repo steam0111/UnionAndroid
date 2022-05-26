@@ -10,6 +10,7 @@ buildscript {
         classpath "com.google.gms:google-services:${libs.versions.google.services.get()}"
         classpath "com.google.firebase:firebase-crashlytics-gradle:${libs.versions.firebase.crashlytics.get()}"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:${libs.versions.androidx.navigation.get()}"
+        classpath "com.karumi:shot:${libs.versions.shot.get()}"
     }
 }
 

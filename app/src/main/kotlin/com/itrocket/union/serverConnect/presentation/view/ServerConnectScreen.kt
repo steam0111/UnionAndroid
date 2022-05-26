@@ -36,6 +36,7 @@ import androidx.core.text.isDigitsOnly
 import com.itrocket.union.R
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.core.base.AppInsets
+import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.serverConnect.presentation.store.ServerConnectStore
 import com.itrocket.union.ui.AuthContent
 import com.itrocket.union.ui.AuthEditText
@@ -96,5 +97,7 @@ fun ServerConnectScreen(
 @Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
 @Composable
 fun ServerConnectScreenPreview() {
-    ServerConnectScreen(ServerConnectStore.State(), AppInsets(), {}, {})
+    Column(modifier = Modifier.padding(top = previewTopInsetDp.dp)) {
+        ServerConnectScreen(ServerConnectStore.State(), AppInsets(), {}, {})
+    }
 }

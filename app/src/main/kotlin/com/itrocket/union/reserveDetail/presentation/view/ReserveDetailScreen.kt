@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.itrocket.core.base.AppInsets
+import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.reserveDetail.presentation.store.ReserveDetailStore
@@ -173,5 +174,5 @@ fun ReserveDetailScreenPreview() {
                 )
             ), itemsCount = 1200
         )
-    ), AppInsets(), {}, {}, {}, {})
+    ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
 }

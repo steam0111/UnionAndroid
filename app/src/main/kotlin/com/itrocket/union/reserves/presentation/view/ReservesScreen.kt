@@ -35,7 +35,9 @@ import androidx.compose.ui.unit.dp
 import com.itrocket.union.R
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.core.base.AppInsets
+import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.reserves.presentation.store.ReservesStore
 import com.itrocket.union.ui.AccountingObjectItem
@@ -125,5 +127,55 @@ private fun ReservesList(
 @Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
 @Composable
 fun ReservesScreenPreview() {
-    ReservesScreen(ReservesStore.State(), AppInsets(), {}, {}, {}, {})
+    ReservesScreen(ReservesStore.State(
+        reserves = listOf(
+            ReservesDomain(
+                id = "1", title = "Авторучка «Зебра TR22»", isBarcode = true, listInfo =
+                listOf(
+                    ObjectInfoDomain(
+                        "Заводской номер",
+                        "таылватвлыавыалвыоалвыа"
+                    ),
+                    ObjectInfoDomain(
+                        "Инвентарный номер",
+                        "таылватвлыавыалвыоалвыа"
+                    )
+                ), itemsCount = 1200
+            ),
+            ReservesDomain(
+                id = "2",
+                title = "Бумага А4 «Русалочка-500 листов»",
+                isBarcode = false,
+                listInfo =
+                listOf(
+                    ObjectInfoDomain(
+                        "Заводской номер",
+                        "таылватвлыавыалвыоалвыа"
+                    ),
+                    ObjectInfoDomain(
+                        "Инвентарный номер",
+                        "таылватвлыавыалвыоалвыа"
+                    )
+                ),
+                itemsCount = 56
+            ),
+            ReservesDomain(
+                id = "3",
+                title = "Бумага А4 «Русалочка-250 листов»",
+                isBarcode = true,
+                listInfo =
+                listOf(
+                    ObjectInfoDomain(
+                        "Заводской номер",
+                        "таылватвлыавыалвыоалвыа"
+                    ),
+                    ObjectInfoDomain(
+                        "Инвентарный номер",
+                        "таылватвлыавыалвыоалвыа"
+                    )
+                ),
+                itemsCount = 167
+            )
+        )
+    ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
 }
