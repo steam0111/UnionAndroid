@@ -68,6 +68,9 @@
     <!-- NomenclatureGroup -->
     <string name="nomenclature_group_title">Номенклатурные группы</string>
 
+    <!-- Nomenclature -->
+    <string name="nomenclature_title">Номенклатура</string>
+
     <!-- AccountingObjectDetailScreen -->
     <string name="accounting_objects_title">Объекты учета</string>
     <string name="accounting_object_detail_title">Основные средства</string>

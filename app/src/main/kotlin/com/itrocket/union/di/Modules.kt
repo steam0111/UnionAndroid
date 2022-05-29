@@ -13,6 +13,7 @@ import com.itrocket.union.filter.FilterModule
 import com.itrocket.union.filterValues.FilterValueModule
 import com.itrocket.union.location.LocationModule
 import com.itrocket.union.network.NetworkModule
+import com.itrocket.union.nomenclature.NomenclatureModule
 import com.itrocket.union.nomenclatureGroup.NomenclatureGroupModule
 import com.itrocket.union.readingMode.ReadingModeModule
 import com.itrocket.union.reserveDetail.ReserveDetailModule
@@ -41,6 +42,7 @@ object Modules {
         ServerConnectModule.module,
         AuthUserModule.module,
         AuthMainModule.module,
-        NomenclatureGroupModule.module
+        NomenclatureGroupModule.module,
+        NomenclatureModule.module
     )
 }

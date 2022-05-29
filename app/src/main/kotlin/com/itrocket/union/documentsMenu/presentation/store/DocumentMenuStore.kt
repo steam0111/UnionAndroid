@@ -9,6 +9,7 @@ import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.presentation.store.DocumentArguments
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 import com.itrocket.union.documentsMenu.presentation.view.DocumentMenuComposeFragmentDirections
+import com.itrocket.union.nomenclature.presentation.store.NomenclatureArguments
 import com.itrocket.union.nomenclatureGroup.presentation.store.NomenclatureGroupArguments
 
 interface DocumentMenuStore :
@@ -58,6 +59,9 @@ interface DocumentMenuStore :
                     )
                     R.string.nomenclature_group -> DocumentMenuComposeFragmentDirections.toNomenclatureGroup(
                         NomenclatureGroupArguments(0)
+                    )
+                    R.string.nomenclature -> DocumentMenuComposeFragmentDirections.toNomenclature(
+                        NomenclatureArguments(0)
                     )
                     else -> DocumentMenuComposeFragmentDirections.toAccountingObjects()
                 }

@@ -24,7 +24,7 @@ object ${featureName}Module {
         }
 
         factory<${featureName}Repository> {
-            ${featureName}RepositoryImpl()
+            ${featureName}RepositoryImpl(get())
         }
 
         factory {

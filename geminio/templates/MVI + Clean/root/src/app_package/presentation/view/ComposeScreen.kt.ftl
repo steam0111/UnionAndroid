@@ -31,6 +31,7 @@ import ${packageName}.R
 import ${packageName}.ui.AppTheme
 import com.itrocket.core.base.AppInsets
 import ${packageName}.${featurePackageName}.presentation.store.${featureName}Store
+import androidx.compose.foundation.layout.fillMaxSize
 
 @Composable
 fun ${featureName}Screen(

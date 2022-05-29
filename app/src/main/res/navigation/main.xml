@@ -29,6 +29,9 @@
             android:id="@+id/to_nomenclatureGroup"
             app:destination="@id/nomenclatureGroup" />
         <action
+            android:id="@+id/to_nomenclature"
+            app:destination="@id/nomenclature" />
+        <action
             android:id="@+id/to_auth"
             app:destination="@id/auth"
             app:launchSingleTop="true"
@@ -130,5 +133,15 @@
         <argument
             android:name="NomenclatureGroupArguments"
             app:argType="com.itrocket.union.nomenclatureGroup.presentation.store.NomenclatureGroupArguments" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nomenclature"
+        android:name="com.itrocket.union.nomenclature.presentation.view.NomenclatureComposeFragment"
+        android:label="Nomenclature">
+
+        <argument
+            android:name="NomenclatureArguments"
+            app:argType="com.itrocket.union.nomenclature.presentation.store.NomenclatureArguments" />
     </fragment>
 </navigation>
