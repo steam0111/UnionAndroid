@@ -59,9 +59,14 @@
     <string name="main_return">Возврат</string>
     <string name="main_moved">Перемещение</string>
     <string name="main_write_off">Списание</string>
+    <string name="nomenclature_group">Ном. группа</string>
+    <string name="nomenclature">Номенклатура</string>
 
     <!-- AccountingObjectScreen -->
     <string name="main_marking">Маркировка</string>
+
+    <!-- NomenclatureGroup -->
+    <string name="nomenclature_group_title">Номенклатурные группы</string>
 
     <!-- AccountingObjectDetailScreen -->
     <string name="accounting_objects_title">Объекты учета</string>
@@ -69,7 +74,7 @@
     <string name="accounting_object_detail_reading_mode">Режим считывания</string>
     <string name="accounting_object_detail_show_full_characteristics">Показать все характеристики</string>
     <string name="accounting_object_detail_main">Основные</string>
-    
+
     <!-- Status -->
     <string name="accounting_object_detail_additionally">Дополнительные</string>
     <string name="accounting_object_available">Доступен</string>

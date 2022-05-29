@@ -1,16 +1,18 @@
-package ${packageName}.${featurePackageName}.presentation.store
+package com.itrocket.union.nomenclatureGroup.presentation.store
 
-import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
+import com.itrocket.core.navigation.GoBackNavigationLabel
+import com.itrocket.union.nomenclatureGroup.domain.entity.NomenclatureGroupDomain
 
-interface ${featureName}Store : Store<${featureName}Store.Intent, ${featureName}Store.State, ${featureName}Store.Label> {
+interface NomenclatureGroupStore : Store<NomenclatureGroupStore.Intent, NomenclatureGroupStore.State, NomenclatureGroupStore.Label> {
 
     sealed class Intent {
         object OnBackClicked : Intent()
     }
 
     data class State(
+        val nomenclatureGroups: List<NomenclatureGroupDomain> = emptyList(),
         val isLoading: Boolean = false
     )
 

@@ -18,7 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
@@ -38,7 +38,6 @@ import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 import com.itrocket.union.documentsMenu.presentation.store.DocumentMenuStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseToolbar
-import com.itrocket.union.ui.TextButton
 import com.itrocket.union.ui.psb1
 import com.itrocket.union.ui.psb6
 import com.itrocket.union.ui.white
@@ -116,8 +115,12 @@ private fun DocumentList(
             .background(white)
             .fillMaxWidth()
     ) {
-        items(documents) { item ->
-            DocumentItem(documentMenuItem = item, onClick = onDocumentItemClick)
+        itemsIndexed(documents) { index, item ->
+            DocumentItem(
+                documentMenuItem = item,
+                onClick = onDocumentItemClick,
+                documents.lastIndex == index
+            )
         }
         item {
             Spacer(modifier = Modifier.height(32.dp))
@@ -128,13 +131,14 @@ private fun DocumentList(
 @Composable
 private fun DocumentItem(
     documentMenuItem: DocumentMenuDomain,
-    onClick: (DocumentMenuDomain) -> Unit
+    onClick: (DocumentMenuDomain) -> Unit,
+    isLast: Boolean
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(top = 32.dp)
+            .padding(top = 32.dp, bottom = if (isLast) 32.dp else 0.dp)
             .clickableUnbounded {
                 onClick(documentMenuItem)
             }

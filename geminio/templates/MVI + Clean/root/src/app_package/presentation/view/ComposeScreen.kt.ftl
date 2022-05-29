@@ -39,7 +39,13 @@ fun ${featureName}Screen(
     onBackClickListener: () -> Unit
 ) {
     AppTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = appInsets.topInset.dp)
+        ) {
 
+        }
     }
 }
 

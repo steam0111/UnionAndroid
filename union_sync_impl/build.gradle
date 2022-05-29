@@ -32,8 +32,6 @@ android {
 }
 
 dependencies {
-    implementation project(":union_sync_api")
-
     implementation(libs.database.runtime)
     kapt(libs.database.compiler)
 }

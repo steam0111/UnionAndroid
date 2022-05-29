@@ -74,3 +74,6 @@ recipe:
 
   - addKoinModule:
       file: app/src/main/kotlin/${basePackagePath}/di/Modules.kt
+
+  - addNavigation:
+      file: app/src/main/res/navigation/main.xml

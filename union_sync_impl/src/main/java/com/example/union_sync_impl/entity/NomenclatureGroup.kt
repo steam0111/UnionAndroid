@@ -1,6 +1,7 @@
 package com.example.union_sync_impl.entity
 
 import androidx.room.Entity
+import com.example.union_sync_impl.entity.core.CatalogItem
 
 @Entity(tableName = "nomenclature_group")
-data class NomenclatureGroup(val name: String) : DatabaseItem()
+class NomenclatureGroup(override var catalogItemName: String) : CatalogItem()

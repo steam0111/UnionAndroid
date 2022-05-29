@@ -4,7 +4,7 @@ import com.itrocket.union.R
 import com.itrocket.union.documentsMenu.domain.dependencies.DocumentMenuRepository
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 
-class DocumentMenuRepositoryImpl: DocumentMenuRepository {
+class DocumentMenuRepositoryImpl : DocumentMenuRepository {
 
     override suspend fun getDocuments(): List<DocumentMenuDomain> {
         return listOf(
@@ -33,6 +33,8 @@ class DocumentMenuRepositoryImpl: DocumentMenuRepository {
             DocumentMenuDomain(titleId = R.string.main_moved, iconId = R.drawable.ic_moved),
             DocumentMenuDomain(titleId = R.string.main_write_off, iconId = R.drawable.ic_write_off),
             DocumentMenuDomain(titleId = R.string.main_inventory, iconId = R.drawable.ic_inventory),
+            DocumentMenuDomain(titleId = R.string.nomenclature_group, iconId = R.drawable.ic_inventory),
+            DocumentMenuDomain(titleId = R.string.nomenclature, iconId = R.drawable.ic_inventory),
         )
     }
 }

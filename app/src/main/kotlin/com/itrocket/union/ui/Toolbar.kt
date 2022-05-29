@@ -60,8 +60,8 @@ fun BaseToolbar(
 fun BlackToolbar(
     title: String,
     onBackClickListener: () -> Unit,
-    onSearchClickListener: () -> Unit,
-    onFilterClickListener: () -> Unit
+    onSearchClickListener: () -> Unit = {},
+    onFilterClickListener: () -> Unit = {}
 ) {
     BaseToolbar(
         title = title,

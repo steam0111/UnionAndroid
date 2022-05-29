@@ -11,7 +11,8 @@ object ContainerModule {
         factory {
             IsUserAuthorizedUseCase(
                 get(),
-                get(AuthMainModule.ACCESS_TOKEN_PREFERENCE_KEY)
+                get(AuthMainModule.ACCESS_TOKEN_PREFERENCE_KEY),
+                get()
             )
         }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation android:id="@+id/main"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
     app:startDestination="@id/auth">
 
     <fragment
@@ -25,6 +25,9 @@
         <action
             android:id="@+id/to_documents"
             app:destination="@id/documents" />
+        <action
+            android:id="@+id/to_nomenclatureGroup"
+            app:destination="@id/nomenclatureGroup" />
         <action
             android:id="@+id/to_auth"
             app:destination="@id/auth"
@@ -90,13 +93,13 @@
         android:id="@+id/filter"
         android:name="com.itrocket.union.filter.presentation.view.FilterComposeFragment">
 
+        <action
+            android:id="@+id/to_location"
+            app:destination="@id/location" />
         <argument
             android:name="FilterArguments"
             app:argType="com.itrocket.union.filter.presentation.store.FilterArguments"
             app:nullable="false" />
-        <action
-            android:id="@+id/to_location"
-            app:destination="@id/location" />
     </fragment>
 
     <fragment
@@ -106,16 +109,26 @@
     <fragment
         android:id="@+id/authMain"
         android:name="com.itrocket.union.authMain.presentation.view.AuthMainComposeFragment">
+        <action
+            android:id="@+id/to_documentsMenu"
+            app:destination="@id/documentsMenu"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/main"
+            app:popUpToInclusive="true" />
+
         <argument
             android:name="AuthMainComposeFragmentArgs"
             app:argType="com.itrocket.union.authMain.presentation.store.AuthMainArguments"
             app:nullable="false" />
+    </fragment>
 
-        <action
-            android:id="@+id/to_documentsMenu"
-            app:destination="@id/documentsMenu"
-            app:popUpToInclusive="true"
-            app:launchSingleTop="true"
-            app:popUpTo="@id/main"/>
+    <fragment
+        android:id="@+id/nomenclatureGroup"
+        android:name="com.itrocket.union.nomenclatureGroup.presentation.view.NomenclatureGroupComposeFragment"
+        android:label="NomenclatureGroup">
+
+        <argument
+            android:name="NomenclatureGroupArguments"
+            app:argType="com.itrocket.union.nomenclatureGroup.presentation.store.NomenclatureGroupArguments" />
     </fragment>
 </navigation>

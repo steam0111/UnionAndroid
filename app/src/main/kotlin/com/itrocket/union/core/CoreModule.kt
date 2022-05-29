@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.example.union_sync_impl.UnionDatabase
+import com.example.union_sync_impl.data.PrePopulateRepository
 import com.itrocket.core.base.AppInsetsStateHolder
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.network.NetworkInfo
@@ -46,6 +47,12 @@ object CoreModule {
         }
         factory {
             get<UnionDatabase>().nomenclatureGroupDao()
+        }
+        factory {
+            get<UnionDatabase>().nomenclatureDao()
+        }
+        single(createdAtStart = true) {
+            PrePopulateRepository(get(), get(), get())
         }
     }
 }
