@@ -61,6 +61,7 @@ class DocumentMenuStoreFactory(
                     }
                     dispatch(Result.Loading(false))
                 }
+                DocumentMenuStore.Intent.OnSettingsClicked -> publish(DocumentMenuStore.Label.ShowSettings)
             }
         }
 

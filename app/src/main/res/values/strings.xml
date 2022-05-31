@@ -22,6 +22,7 @@
     <string name="common_next">Далее</string>
     <string name="common_sign_in">Войти</string>
     <string name="common_exit">Выйти</string>
+    <string name="common_save">Сохранить</string>
 
     <!-- Auth -->
     <string name="auth_suggest">Это нужно сделать один раз</string>
@@ -112,4 +113,9 @@
     <string name="documents_create_issue">Создать</string>
     <string name="documents_today">Сегодня</string>
     <string name="documents_yesterday">Вчера</string>
+
+    <!-- ModuleSettings -->
+    <string name="module_settings_title">Модули</string>
+    <string name="module_settings_define_cursor">Определить курок</string>
+    <string name="module_settings_cursor_click">Нажмите на курок</string>
 </resources>

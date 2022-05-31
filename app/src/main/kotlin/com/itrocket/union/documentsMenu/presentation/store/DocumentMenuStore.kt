@@ -19,6 +19,7 @@ interface DocumentMenuStore :
         data class OnDocumentClicked(val item: DocumentMenuDomain) : Intent()
         object OnProfileClicked : Intent()
         object OnLogoutClicked : Intent()
+        object OnSettingsClicked : Intent()
     }
 
     data class State(
@@ -31,6 +32,11 @@ interface DocumentMenuStore :
         object ShowAuth : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = DocumentMenuComposeFragmentDirections.toAuth()
+        }
+
+        object ShowSettings : Label(), ForwardNavigationLabel{
+            override val directions: NavDirections
+                get() = DocumentMenuComposeFragmentDirections.toModuleSettings()
         }
 
         data class ShowDocumentDetail(val item: DocumentMenuDomain) : Label(),
