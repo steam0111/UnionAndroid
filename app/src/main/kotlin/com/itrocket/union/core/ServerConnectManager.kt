@@ -26,9 +26,11 @@ class ServerConnectManager(
     private fun subscribeServerAddress() {
         coroutineScope.launch {
             serverConnectInteractor.getServerAddress().collect {
-                networkInfo.serverAddress = it
-                unloadKoinModules(NetworkModule.module)
-                loadKoinModules(NetworkModule.module)
+                if (it.isNotBlank()) {
+                    networkInfo.serverAddress = it
+                    unloadKoinModules(NetworkModule.module)
+                    loadKoinModules(NetworkModule.module)
+                }
             }
         }
     }

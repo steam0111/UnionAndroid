@@ -17,7 +17,7 @@ object ContainerModule {
         }
 
         viewModel {
-            MainViewModel(get())
+            MainViewModel(get(), get())
         }
     }
 }

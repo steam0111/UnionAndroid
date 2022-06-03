@@ -7,6 +7,7 @@ import com.itrocket.union.network.NetworkInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.withContext
 
 class AuthMainInteractor(
@@ -26,6 +27,10 @@ class AuthMainInteractor(
         return password.isNotBlank()
     }
 
+    fun checkAccessTokenExpired(): Flow<String> {
+        return subscribeAccessToken().drop(TOKEN_VALUE_DROP_COUNT)
+    }
+
     fun subscribeAccessToken(): Flow<String> {
         return repository.subscribeAccessToken().distinctUntilChanged()
     }
@@ -40,5 +45,10 @@ class AuthMainInteractor(
             repository.clearAuthCredentials()
             repository.invalidateToken(accessToken)
         }
+    }
+
+    companion object {
+        // Первый элемент пропускаем, потому что это инитовое значение для показа auth/documentMenu
+        private const val TOKEN_VALUE_DROP_COUNT = 1
     }
 }
