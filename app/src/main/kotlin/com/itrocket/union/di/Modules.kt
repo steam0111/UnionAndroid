@@ -24,8 +24,8 @@ import com.itrocket.union.moduleSettings.ModuleSettingsModule
 object Modules {
 
     val modules = listOf(
-        CoreModule.module,
         NetworkModule.module,
+        CoreModule.module,
         ContainerModule.module,
         DocumentMenuModule.module,
         AccountingObjectModule.module,
