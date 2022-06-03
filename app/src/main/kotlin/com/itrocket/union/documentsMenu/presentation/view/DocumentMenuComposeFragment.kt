@@ -39,7 +39,11 @@ class DocumentMenuComposeFragment :
                 },
                 onLogoutClickListener = {
                     accept(DocumentMenuStore.Intent.OnLogoutClicked)
-                })
+                },
+                onSettingsClickListener = {
+                    accept(DocumentMenuStore.Intent.OnSettingsClicked)
+                }
+            )
         }
     }
 }

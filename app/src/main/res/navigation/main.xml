@@ -37,6 +37,9 @@
             app:launchSingleTop="true"
             app:popUpTo="@id/main"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/to_moduleSettings"
+            app:destination="@id/moduleSettings" />
     </fragment>
 
     <fragment
@@ -144,4 +147,9 @@
             android:name="NomenclatureArguments"
             app:argType="com.itrocket.union.nomenclature.presentation.store.NomenclatureArguments" />
     </fragment>
+
+    <fragment
+        android:id="@+id/moduleSettings"
+        android:name="com.itrocket.union.moduleSettings.presentation.view.ModuleSettingsComposeFragment"
+        android:label="ModuleSettings"/>
 </navigation>

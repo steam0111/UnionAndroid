@@ -19,6 +19,7 @@ import com.itrocket.union.readingMode.ReadingModeModule
 import com.itrocket.union.reserveDetail.ReserveDetailModule
 import com.itrocket.union.reserves.ReservesModule
 import com.itrocket.union.serverConnect.ServerConnectModule
+import com.itrocket.union.moduleSettings.ModuleSettingsModule
 
 object Modules {
 
@@ -43,6 +44,7 @@ object Modules {
         AuthUserModule.module,
         AuthMainModule.module,
         NomenclatureGroupModule.module,
-        NomenclatureModule.module
+        NomenclatureModule.module,
+        ModuleSettingsModule.module
     )
 }

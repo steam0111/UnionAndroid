@@ -26,6 +26,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
@@ -50,7 +51,8 @@ fun DocumentMenuScreen(
     appInsets: AppInsets,
     onDocumentItemClick: (DocumentMenuDomain) -> Unit,
     onProfileIconClick: () -> Unit,
-    onLogoutClickListener: () -> Unit
+    onLogoutClickListener: () -> Unit,
+    onSettingsClickListener: () -> Unit
 ) {
     AppTheme {
         Scaffold(topBar = {
@@ -62,6 +64,13 @@ fun DocumentMenuScreen(
                 Image(
                     painter = painterResource(R.drawable.ic_question),
                     contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Image(
+                    painter = painterResource(R.drawable.ic_settings),
+                    colorFilter = ColorFilter.tint(psb6),
+                    contentDescription = null,
+                    modifier = Modifier.clickableUnbounded(onClick = onSettingsClickListener)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
@@ -218,5 +227,5 @@ fun DocumentMenuScreenPreview() {
                     iconId = R.drawable.ic_inventory
                 ),
             )
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
 }
