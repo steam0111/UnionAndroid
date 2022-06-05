@@ -20,6 +20,7 @@ import com.itrocket.union.reserveDetail.ReserveDetailModule
 import com.itrocket.union.reserves.ReservesModule
 import com.itrocket.union.serverConnect.ServerConnectModule
 import com.itrocket.union.moduleSettings.ModuleSettingsModule
+import com.itrocket.union.scanner.ScannerModule
 
 object Modules {
 
@@ -45,6 +46,7 @@ object Modules {
         AuthMainModule.module,
         NomenclatureGroupModule.module,
         NomenclatureModule.module,
-        ModuleSettingsModule.module
+        ModuleSettingsModule.module,
+        ScannerModule.module
     )
 }

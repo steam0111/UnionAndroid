@@ -5,24 +5,23 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
-import com.itrocket.union.moduleSettings.domain.entity.ModuleSettingsDomain
-import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.core.base.BaseExecutor
+import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class ModuleSettingsStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val moduleSettingsInteractor: ModuleSettingsInteractor
+    private val moduleSettingsInteractor: ModuleSettingsInteractor,
 ) {
     fun create(): ModuleSettingsStore =
         object : ModuleSettingsStore,
             Store<ModuleSettingsStore.Intent, ModuleSettingsStore.State, ModuleSettingsStore.Label> by storeFactory.create(
                 name = "ModuleSettingsStore",
-                initialState = ModuleSettingsStore.State(
-
-                ),
+                initialState = ModuleSettingsStore.State(),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
@@ -39,6 +38,9 @@ class ModuleSettingsStoreFactory(
             action: Unit,
             getState: () -> ModuleSettingsStore.State
         ) {
+            withContext(Dispatchers.Main) {
+                moduleSettingsInteractor.checkInstalledService()
+            }
             dispatch(
                 Result.KeyCode(
                     moduleSettingsInteractor.getKeyCode() ?: 0
@@ -54,14 +56,24 @@ class ModuleSettingsStoreFactory(
                 ModuleSettingsStore.Intent.OnBackClicked -> publish(ModuleSettingsStore.Label.GoBack)
                 is ModuleSettingsStore.Intent.OnCursorDefined -> {
                     dispatch(Result.KeyCode(intent.keyCode))
+                    moduleSettingsInteractor.changeWaitingKeyCode(true)
                     dispatch(Result.WaitDefine(false))
                 }
                 ModuleSettingsStore.Intent.OnDefineCursorClicked -> {
+                    moduleSettingsInteractor.changeWaitingKeyCode(true)
                     dispatch(Result.WaitDefine(true))
                 }
                 ModuleSettingsStore.Intent.OnSaveClicked -> {
-                    moduleSettingsInteractor.saveKeyCode(getState().keyCode)
+                    moduleSettingsInteractor.applyChanges(
+                        defaultService = getState().defaultService,
+                        keyCode = getState().keyCode
+                    )
                 }
+                is ModuleSettingsStore.Intent.OnDefaultServiceChanged -> dispatch(
+                    Result.Service(
+                        intent.service
+                    )
+                )
             }
         }
 
@@ -74,6 +86,7 @@ class ModuleSettingsStoreFactory(
         data class Loading(val isLoading: Boolean) : Result()
         data class KeyCode(val keyCode: Int) : Result()
         data class WaitDefine(val waitDefine: Boolean) : Result()
+        data class Service(val service: String) : Result()
     }
 
     private object ReducerImpl : Reducer<ModuleSettingsStore.State, Result> {
@@ -82,6 +95,7 @@ class ModuleSettingsStoreFactory(
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.KeyCode -> copy(keyCode = result.keyCode)
                 is Result.WaitDefine -> copy(isDefineWait = result.waitDefine)
+                is Result.Service -> copy(defaultService = result.service)
             }
     }
 }

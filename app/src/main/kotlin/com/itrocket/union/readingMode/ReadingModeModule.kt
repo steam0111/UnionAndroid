@@ -30,7 +30,7 @@ object ReadingModeModule {
         }
 
         factory {
-            ReadingModeInteractor(get(), get())
+            ReadingModeInteractor(get(), get(), get())
         }
 
         factory { (args: ReadingModeArguments) ->
@@ -38,7 +38,8 @@ object ReadingModeModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args
+                args,
+                get()
             ).create()
         }
     }

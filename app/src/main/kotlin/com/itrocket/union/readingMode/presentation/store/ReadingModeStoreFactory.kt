@@ -9,12 +9,15 @@ import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.readingMode.domain.ReadingModeInteractor
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
+import com.itrocket.union.readingMode.presentation.view.toReaderMode
+import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class ReadingModeStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val readingModeInteractor: ReadingModeInteractor,
-    private val readingModeArguments: ReadingModeArguments
+    private val readingModeArguments: ReadingModeArguments,
+    private val serviceEntryManager: ServiceEntryManager
 ) {
     fun create(): ReadingModeStore =
         object : ReadingModeStore,
@@ -58,6 +61,7 @@ class ReadingModeStoreFactory(
                     //no-op
                 }
                 is ReadingModeStore.Intent.OnReadingModeSelected -> {
+                    readingModeInteractor.changeScanMode(intent.readingMode.toReaderMode())
                     dispatch(Result.ReadingModeSelected(intent.readingMode))
                     dispatch(Result.IsManualInputEnabled(intent.readingMode != ReadingModeTab.RFID))
                 }

@@ -41,6 +41,10 @@ ui = "1.0.1"
 utils = "1.0.0"
 
 database = "2.4.2"
+
+scannerclient = "1.0.9"
+scannerclient_impl = "1.1.0"
+
 [libraries]
 
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
@@ -96,6 +100,9 @@ itrocket-utils = { module = "ru.itrocket:utils", version.ref = "utils"}
 
 database-runtime = { module = "androidx.room:room-ktx", version.ref = "database"}
 database-compiler = { module = "androidx.room:room-compiler", version.ref = "database"}
+
+scannerclient-impl = { module = "ru.interid:scannerclient-impl", version.ref = "scannerclient_impl"}
+scannerclient = { module = "ru.interid:scanner_client", version.ref = "scannerclient"}
 
 [bundles]
 android-ext = ["android-ext-lifecycle", "android-ext-fragment"]
