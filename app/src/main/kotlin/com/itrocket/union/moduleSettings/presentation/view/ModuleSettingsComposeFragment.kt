@@ -1,15 +1,32 @@
 package com.itrocket.union.moduleSettings.presentation.view
 
+import android.os.Bundle
+import android.view.View
 import androidx.compose.ui.platform.ComposeView
+import androidx.lifecycle.lifecycleScope
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.union.moduleSettings.ModuleSettingsModule.MODULESETTINGS_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.moduleSettings.presentation.store.ModuleSettingsStore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.inject
+import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class ModuleSettingsComposeFragment :
     BaseComposeFragment<ModuleSettingsStore.Intent, ModuleSettingsStore.State, ModuleSettingsStore.Label>(
         MODULESETTINGS_VIEW_MODEL_QUALIFIER
     ) {
+
+    private val serviceEntryManager: ServiceEntryManager by inject()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeKeyCode()
+    }
 
     override fun renderState(
         state: ModuleSettingsStore.State,
@@ -31,5 +48,32 @@ class ModuleSettingsComposeFragment :
                 }
             )
         }
+    }
+
+    private fun observeKeyCode() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            launch {
+                serviceEntryManager.keyCode.collect {
+                    withContext(Dispatchers.Main) {
+                        accept(ModuleSettingsStore.Intent.OnCursorDefined(it ?: 0))
+                    }
+                }
+            }
+            launch {
+                serviceEntryManager.installedServices.collect {
+                    withContext(Dispatchers.Main) {
+                        accept(
+                            ModuleSettingsStore.Intent.OnDefaultServiceChanged(
+                                it.firstOrNull() ?: DEFAULT_SERVICE
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    companion object {
+        private const val DEFAULT_SERVICE = "ru.interid.chainwayservice"
     }
 }

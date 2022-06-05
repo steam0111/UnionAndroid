@@ -68,6 +68,9 @@ dependencies {
     implementation(libs.bundles.itrocket)
     implementation(libs.datastore)
 
+    implementation(libs.scannerclient)
+    implementation(libs.scannerclient.impl)
+
     implementation(libs.database.runtime)
     kapt(libs.database.compiler)
 

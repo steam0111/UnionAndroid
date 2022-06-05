@@ -11,12 +11,14 @@ interface ModuleSettingsStore :
         object OnBackClicked : Intent()
         object OnDefineCursorClicked : Intent()
         object OnSaveClicked : Intent()
+        data class OnDefaultServiceChanged(val service: String) : Intent()
         data class OnCursorDefined(val keyCode: Int) : Intent()
     }
 
     data class State(
         val isLoading: Boolean = false,
         val isDefineWait: Boolean = false,
+        val defaultService: String = "",
         val keyCode: Int = 0
     )
 

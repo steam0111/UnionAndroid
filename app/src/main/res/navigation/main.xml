@@ -151,5 +151,5 @@
     <fragment
         android:id="@+id/moduleSettings"
         android:name="com.itrocket.union.moduleSettings.presentation.view.ModuleSettingsComposeFragment"
-        android:label="ModuleSettings"/>
+        android:label="@string/module_settings_label"/>
 </navigation>

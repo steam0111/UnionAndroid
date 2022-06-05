@@ -27,14 +27,14 @@ object ModuleSettingsModule {
         }
 
         factory {
-            ModuleSettingsInteractor(get(), get())
+            ModuleSettingsInteractor(get(), get(), get())
         }
 
         factory {
             ModuleSettingsStoreFactory(
                 DefaultStoreFactory,
                 get(),
-                get()
+                get(),
             ).create()
         }
 
