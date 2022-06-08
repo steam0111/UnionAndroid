@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation android:id="@+id/main"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     app:startDestination="@id/auth">
 
     <fragment
@@ -40,6 +40,9 @@
         <action
             android:id="@+id/to_moduleSettings"
             app:destination="@id/moduleSettings" />
+        <action
+            android:id="@+id/to_inventory"
+            app:destination="@id/inventory" />
     </fragment>
 
     <fragment
@@ -110,7 +113,13 @@
 
     <fragment
         android:id="@+id/location"
-        android:name="com.itrocket.union.location.presentation.view.LocationComposeFragment" />
+        android:name="com.itrocket.union.location.presentation.view.LocationComposeFragment">
+
+        <argument
+            android:name="LocationArguments"
+            app:argType="com.itrocket.union.location.presentation.store.LocationArguments"
+            app:nullable="false" />
+    </fragment>
 
     <fragment
         android:id="@+id/authMain"
@@ -151,16 +160,21 @@
     <fragment
         android:id="@+id/moduleSettings"
         android:name="com.itrocket.union.moduleSettings.presentation.view.ModuleSettingsComposeFragment"
-        android:label="@string/module_settings_label"/>
+        android:label="@string/module_settings_label" />
 
     <fragment
         android:id="@+id/inventory"
         android:name="com.itrocket.union.inventory.presentation.view.InventoryComposeFragment"
         android:label="Inventory">
-
-        <argument
-            android:name="InventoryArguments"
-            app:argType="com.itrocket.union.inventory.presentation.store.InventoryArguments" />
+        <action
+            android:id="@+id/to_selectParams"
+            app:destination="@id/selectParams" />
+        <action
+            android:id="@+id/to_location"
+            app:destination="@id/location" />
+        <action
+            android:id="@+id/to_accountingObjectsDetails"
+            app:destination="@id/accountingObjectsDetails" />
     </fragment>
 
     <fragment

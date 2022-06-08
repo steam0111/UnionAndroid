@@ -36,6 +36,9 @@ class SelectParamsComposeFragment :
                 },
                 onItemSelected = {
                     accept(SelectParamsStore.Intent.OnItemSelected(it))
+                },
+                onSearchTextChanged = {
+                    accept(SelectParamsStore.Intent.OnSearchTextChanged(it))
                 }
             )
         }

@@ -1,8 +1,9 @@
 package com.itrocket.union.selectParams.presentation.store
 
+import androidx.compose.ui.text.input.TextFieldValue
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.GoBackNavigationLabel
-import com.itrocket.union.selectParams.domain.ParamDomain
+import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFragment
 
 interface SelectParamsStore :
@@ -10,6 +11,7 @@ interface SelectParamsStore :
 
     sealed class Intent {
         data class OnItemSelected(val item: String) : Intent()
+        data class OnSearchTextChanged(val searchText: TextFieldValue) : Intent()
         object OnCrossClicked : Intent()
         object OnAcceptClicked : Intent()
         object OnNextClicked : Intent()
@@ -20,7 +22,8 @@ interface SelectParamsStore :
         val isLoading: Boolean = false,
         val currentStep: Int,
         val params: List<ParamDomain>,
-        val currentParamValues: List<String> = listOf()
+        val currentParamValues: List<String> = listOf(),
+        val searchText: TextFieldValue = TextFieldValue(),
     )
 
     sealed class Label {

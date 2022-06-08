@@ -64,6 +64,11 @@
     <string name="nomenclature_group">Ном. группа</string>
     <string name="nomenclature">Номенклатура</string>
 
+    <!-- Manual -->
+    <string name="manual_organization">Организация</string>
+    <string name="manual_mol">МОЛ</string>
+    <string name="manual_location">Местоположение</string>
+
     <!-- AccountingObjectScreen -->
     <string name="main_marking">Маркировка</string>
 
