@@ -60,9 +60,6 @@ class InventoryComposeFragment :
                 onParamClickListener = {
                     accept(InventoryStore.Intent.OnParamClicked(it))
                 },
-                onAccountingObjectClickListener = {
-                    accept(InventoryStore.Intent.OnAccountingObjectClicked(it))
-                },
                 onInventoryCreateClickListener = {
                     accept(InventoryStore.Intent.OnCreateDocumentClicked)
                 },

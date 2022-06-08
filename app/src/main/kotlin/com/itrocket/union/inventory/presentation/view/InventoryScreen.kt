@@ -70,8 +70,7 @@ fun InventoryScreen(
     onInventoryCreateClickListener: () -> Unit,
     onPageChanged: (Int) -> Unit,
     onParamClickListener: (ParamDomain) -> Unit,
-    onParamCrossClickListener: (ParamDomain) -> Unit,
-    onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit
+    onParamCrossClickListener: (ParamDomain) -> Unit
 ) {
     val pagerState = rememberPagerState(state.selectedPage)
     val coroutineScope = rememberCoroutineScope()
@@ -92,7 +91,7 @@ fun InventoryScreen(
                 AccountingObjectScreen(
                     isLoading = state.isLoading,
                     accountingObjectList = state.accountingObjectList,
-                    onAccountingObjectClickListener = onAccountingObjectClickListener
+                    onAccountingObjectClickListener = {}
                 )
             }
         )
@@ -359,7 +358,6 @@ fun InventoryScreenPreview() {
             selectedPage = 1,
         ),
         AppInsets(topInset = previewTopInsetDp),
-        {},
         {},
         {},
         {},

@@ -50,11 +50,6 @@ class InventoryStoreFactory(
         ) {
             when (intent) {
                 InventoryStore.Intent.OnBackClicked -> publish(InventoryStore.Label.GoBack)
-                is InventoryStore.Intent.OnAccountingObjectClicked -> publish(
-                    InventoryStore.Label.ShowAccountingObject(
-                        intent.accountingObject
-                    )
-                )
                 InventoryStore.Intent.OnCreateDocumentClicked -> {
                     inventoryInteractor.createInventory(getState().accountingObjectList)
                     publish(InventoryStore.Label.ShowCreateInventory)

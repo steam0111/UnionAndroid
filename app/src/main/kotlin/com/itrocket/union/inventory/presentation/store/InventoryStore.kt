@@ -21,9 +21,6 @@ interface InventoryStore :
         object OnBackClicked : Intent()
         object OnDropClicked : Intent()
         object OnCreateDocumentClicked : Intent()
-        data class OnAccountingObjectClicked(val accountingObject: AccountingObjectDomain) :
-            Intent()
-
         data class OnSelectPage(val selectedPage: Int) : Intent()
         data class OnParamClicked(val param: ParamDomain) : Intent()
         data class OnParamCrossClicked(val param: ParamDomain) : Intent()
@@ -45,13 +42,6 @@ interface InventoryStore :
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
         object ShowCreateInventory : Label()
-        data class ShowAccountingObject(val accountingObject: AccountingObjectDomain) : Label(),
-            ForwardNavigationLabel {
-            override val directions: NavDirections
-                get() = InventoryComposeFragmentDirections.toAccountingObjectsDetails(
-                    AccountingObjectDetailArguments(accountingObject)
-                )
-        }
 
         data class ShowLocation(val location: String) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
