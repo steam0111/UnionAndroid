@@ -152,23 +152,4 @@
         android:id="@+id/moduleSettings"
         android:name="com.itrocket.union.moduleSettings.presentation.view.ModuleSettingsComposeFragment"
         android:label="@string/module_settings_label"/>
-
-    <fragment
-        android:id="@+id/inventory"
-        android:name="com.itrocket.union.inventory.presentation.view.InventoryComposeFragment"
-        android:label="Inventory">
-
-        <argument
-            android:name="InventoryArguments"
-            app:argType="com.itrocket.union.inventory.presentation.store.InventoryArguments" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/selectParams"
-        android:name="com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFragment">
-
-        <argument
-            android:name="SelectParamsComposeFragmentArgs"
-            app:argType="com.itrocket.union.selectParams.presentation.store.SelectParamsArguments" />
-    </fragment>
 </navigation>

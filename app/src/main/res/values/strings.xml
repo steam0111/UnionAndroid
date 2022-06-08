@@ -23,7 +23,6 @@
     <string name="common_sign_in">Войти</string>
     <string name="common_exit">Выйти</string>
     <string name="common_save">Сохранить</string>
-    <string name="common_create">Создать</string>
 
     <!-- Auth -->
     <string name="auth_suggest">Это нужно сделать один раз</string>
@@ -120,9 +119,4 @@
     <string name="module_settings_label">ModuleSettings</string>
     <string name="module_settings_define_cursor">Определить курок</string>
     <string name="module_settings_cursor_click">Нажмите на курок</string>
-
-    <!-- Inventory -->
-    <string name="inventory_ao_title">Инвентаризация «ОС»</string>
-    <string name="inventory_params">Параметры</string>
-    <string name="inventory_accounting_object">Объекты учета</string>
 </resources>
