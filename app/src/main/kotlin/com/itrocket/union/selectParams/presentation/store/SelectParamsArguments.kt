@@ -1,7 +1,7 @@
 package com.itrocket.union.selectParams.presentation.store
 
 import android.os.Parcelable
-import com.itrocket.union.selectParams.domain.ParamDomain
+import com.itrocket.union.manual.ParamDomain
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
