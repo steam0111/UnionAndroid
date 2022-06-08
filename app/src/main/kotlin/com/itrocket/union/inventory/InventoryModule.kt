@@ -10,14 +10,17 @@ import com.itrocket.union.inventory.domain.InventoryInteractor
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.inventory.presentation.store.InventoryStore
 import com.itrocket.union.inventory.presentation.store.InventoryStoreFactory
+import com.itrocket.union.inventory.presentation.view.InventoryComposeFragmentArgs
 import com.itrocket.core.base.BaseViewModel
 
 object InventoryModule {
     val INVENTORY_VIEW_MODEL_QUALIFIER = named("INVENTORY_VIEW_MODEL")
 
     val module = module {
-        viewModel(INVENTORY_VIEW_MODEL_QUALIFIER) {
-            BaseViewModel(get<InventoryStore>())
+        viewModel(INVENTORY_VIEW_MODEL_QUALIFIER) { (args: InventoryComposeFragmentArgs) ->
+            BaseViewModel(get<InventoryStore>() {
+                parametersOf(args)
+            })
         }
 
         factory<InventoryRepository> {
@@ -28,12 +31,12 @@ object InventoryModule {
             InventoryInteractor(get(), get())
         }
 
-        factory {
+        factory { (args: InventoryComposeFragmentArgs) ->
             InventoryStoreFactory(
                 DefaultStoreFactory,
                 get(),
                 get(),
-                get()
+                args.inventoryArguments
             ).create()
         }
     }

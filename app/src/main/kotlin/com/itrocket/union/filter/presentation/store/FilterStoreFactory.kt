@@ -47,7 +47,7 @@ class FilterStoreFactory(
             when (intent) {
                 is FilterStore.Intent.OnFieldClicked -> {
                     if (intent.filter.filterValueType == FilterValueType.LOCATION) {
-                        publish(FilterStore.Label.ShowLocation(intent.filter.values.joinToString()))
+                        publish(FilterStore.Label.ShowLocation)
                     } else {
                         publish(FilterStore.Label.ShowFilterValues(intent.filter))
                     }

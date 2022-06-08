@@ -1,8 +1,6 @@
 package com.itrocket.union.selectParams.domain
 
 import com.itrocket.core.base.CoreDispatchers
-import com.itrocket.union.manual.ManualType
-import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.selectParams.domain.dependencies.SelectParamsRepository
 import kotlinx.coroutines.withContext
 
@@ -11,8 +9,8 @@ class SelectParamsInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    suspend fun getParamValues(type: ManualType, searchText: String) = withContext(coreDispatchers.io) {
-        selectParamsRepository.getParamValues(type, searchText)
+    suspend fun getParamValues(param: String) = withContext(coreDispatchers.io) {
+        selectParamsRepository.getParamValues(param)
     }
 
     fun changeParamValue(
