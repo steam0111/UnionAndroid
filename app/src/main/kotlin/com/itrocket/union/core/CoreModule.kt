@@ -51,8 +51,14 @@ object CoreModule {
         factory {
             get<UnionDatabase>().nomenclatureDao()
         }
+        factory {
+            get<UnionDatabase>().locationDao()
+        }
+        factory {
+            get<UnionDatabase>().locationPathDao()
+        }
         single(createdAtStart = true) {
-            PrePopulateRepository(get(), get(), get())
+            PrePopulateRepository(get(), get(), get(), get(), get())
         }
     }
 }
