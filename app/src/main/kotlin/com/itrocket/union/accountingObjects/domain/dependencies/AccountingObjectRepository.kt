@@ -7,5 +7,5 @@ interface AccountingObjectRepository {
 
     suspend fun getAccountingObjects(): List<AccountingObjectDomain>
 
-    suspend fun filterAccountingObjectsByParams(params: List<ParamDomain>): List<AccountingObjectDomain>
+    suspend fun getAccountingObjectsByParams(params: List<ParamDomain>): List<AccountingObjectDomain>
 }

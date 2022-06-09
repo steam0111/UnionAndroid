@@ -22,22 +22,22 @@ class InventoryComposeFragment :
                 resultCode = SelectParamsComposeFragment.SELECT_PARAMS_RESULT_CODE,
                 resultLabel = SelectParamsComposeFragment.SELECT_PARAMS_RESULT,
                 resultAction = {
-                    accept(
-                        InventoryStore.Intent.OnParamsChanged(
-                            (it as SelectParamsResult?)?.params ?: return@FragmentResult
+                    (it as SelectParamsResult?)?.params?.let {
+                        accept(
+                            InventoryStore.Intent.OnParamsChanged(it)
                         )
-                    )
+                    }
                 }
             ),
             FragmentResult(
                 resultCode = LocationComposeFragment.LOCATION_RESULT_CODE,
                 resultLabel = LocationComposeFragment.LOCATION_RESULT,
                 resultAction = {
-                    accept(
-                        InventoryStore.Intent.OnLocationChanged(
-                            it as LocationResult? ?: return@FragmentResult
+                    (it as LocationResult?)?.let {
+                        accept(
+                            InventoryStore.Intent.OnLocationChanged(it)
                         )
-                    )
+                    }
                 }
             )
         )

@@ -29,15 +29,14 @@ class InventoryInteractor(
     fun changeLocation(params: List<ParamDomain>, location: String): List<ParamDomain> {
         val mutableParams = params.toMutableList()
         val locationParam = params.find { it.type == ManualType.LOCATION }
-        val locationIndex = params.indexOf(locationParam)
+        val locationIndex = params.indexOfFirst { it.type == ManualType.LOCATION }
         mutableParams[locationIndex] = mutableParams[locationIndex].copy(value = location)
         return mutableParams
     }
 
     fun clearParam(list: List<ParamDomain>, param: ParamDomain): List<ParamDomain> {
         val mutableList = list.toMutableList()
-        val currentParam = mutableList.find { it.type == param.type }
-        val currentIndex = mutableList.indexOf(currentParam)
+        val currentIndex = mutableList.indexOfFirst { it.type == param.type }
         mutableList[currentIndex] = mutableList[currentIndex].copy(value = "")
         return mutableList
     }

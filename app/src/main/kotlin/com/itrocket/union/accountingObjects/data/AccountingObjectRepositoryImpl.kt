@@ -170,7 +170,7 @@ class AccountingObjectRepositoryImpl : AccountingObjectRepository {
     // Надо добавить фильтрацию по параметрам.
     // У параметра есть тип, который показывает, значение какого справочника там лежит.
     // Если необходимо, для локации можно создать наследника от ParamDomain, который будет содержать дерево.
-    override suspend fun filterAccountingObjectsByParams(params: List<ParamDomain>): List<AccountingObjectDomain> {
+    override suspend fun getAccountingObjectsByParams(params: List<ParamDomain>): List<AccountingObjectDomain> {
         return listOf(
             AccountingObjectDomain(
                 id = "5",
