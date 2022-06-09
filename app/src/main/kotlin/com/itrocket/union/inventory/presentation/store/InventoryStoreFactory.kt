@@ -49,8 +49,14 @@ class InventoryStoreFactory(
             when (intent) {
                 InventoryStore.Intent.OnBackClicked -> publish(InventoryStore.Label.GoBack)
                 InventoryStore.Intent.OnCreateDocumentClicked -> {
-                    inventoryInteractor.createInventory(getState().accountingObjectList)
-                    publish(InventoryStore.Label.ShowCreateInventory)
+                    val inventoryCreate =
+                        inventoryInteractor.createInventory(getState().accountingObjectList)
+                    publish(
+                        InventoryStore.Label.ShowCreateInventory(
+                            inventoryCreate = inventoryCreate,
+                            accountingObjectList = getState().accountingObjectList
+                        )
+                    )
                 }
                 InventoryStore.Intent.OnDropClicked -> {
                     dispatch(

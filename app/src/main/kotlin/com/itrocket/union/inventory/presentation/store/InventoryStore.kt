@@ -8,6 +8,8 @@ import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailArguments
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragmentDirections
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
+import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateArguments
 import com.itrocket.union.location.presentation.store.LocationArguments
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.manual.ManualType
@@ -41,7 +43,19 @@ interface InventoryStore :
 
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
-        object ShowCreateInventory : Label()
+        data class ShowCreateInventory(
+            val accountingObjectList: List<AccountingObjectDomain>,
+            val inventoryCreate: InventoryCreateDomain
+        ) : Label(), ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = InventoryComposeFragmentDirections.toInventoryCreate(
+                    InventoryCreateArguments(
+                        inventoryDocument = inventoryCreate,
+                        accountingObjects = accountingObjectList
+                    )
+                )
+
+        }
 
         data class ShowLocation(val location: String) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections

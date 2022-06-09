@@ -119,7 +119,8 @@ private fun Content(
                 AccountingObjectItem(
                     accountingObject = item,
                     onAccountingObjectListener = onAccountingObjectClickListener,
-                    isShowBottomLine = isShowBottomLine
+                    isShowBottomLine = isShowBottomLine,
+                    status = item.inventoryStatus
                 )
             }
         }
@@ -137,7 +138,8 @@ fun SettingsBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(white)
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
             modifier = Modifier.weight(1f),
@@ -149,7 +151,10 @@ fun SettingsBar(
                 onCheckClickListener = onHideFoundAccountingObjectChanged
             )
             Spacer(modifier = Modifier.width(12.dp))
-            Text(text = stringResource(R.string.inventory_create_hide_found_ao))
+            Text(
+                text = stringResource(R.string.inventory_create_hide_found_ao),
+                style = AppTheme.typography.body2
+            )
         }
         Spacer(modifier = Modifier.width(16.dp))
         Row(
@@ -162,7 +167,10 @@ fun SettingsBar(
                 onCheckClickListener = onAddNewChanged
             )
             Spacer(modifier = Modifier.width(12.dp))
-            Text(text = stringResource(R.string.inventory_create_add_new))
+            Text(
+                text = stringResource(R.string.inventory_create_add_new),
+                style = AppTheme.typography.body2
+            )
         }
     }
 }

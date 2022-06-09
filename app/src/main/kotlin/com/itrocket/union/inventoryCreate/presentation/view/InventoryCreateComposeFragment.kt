@@ -27,22 +27,22 @@ class InventoryCreateComposeFragment :
                     accept(InventoryCreateStore.Intent.OnBackClicked)
                 },
                 onAccountingObjectClickListener = {
-
+                    accept(InventoryCreateStore.Intent.OnAccountingObjectClicked(it))
                 },
                 onSaveClickListener = {
-
+                    accept(InventoryCreateStore.Intent.OnSaveClicked)
                 },
                 onAddNewChanged = {
-
+                    accept(InventoryCreateStore.Intent.OnAddNewClicked)
                 },
                 onDropClickListener = {
-
+                    accept(InventoryCreateStore.Intent.OnDropClicked)
                 },
                 onHideFoundAccountingObjectChanged = {
-
+                    accept(InventoryCreateStore.Intent.OnHideFoundAccountingObjectClicked)
                 },
                 onReadingClickListener = {
-
+                    accept(InventoryCreateStore.Intent.OnReadingClicked)
                 }
             )
         }

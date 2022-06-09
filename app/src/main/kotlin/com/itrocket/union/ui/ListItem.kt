@@ -40,6 +40,7 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.Status
 import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.ObjectType
@@ -79,6 +80,7 @@ fun DefaultListItem(
 fun AccountingObjectItem(
     accountingObject: AccountingObjectDomain,
     onAccountingObjectListener: (AccountingObjectDomain) -> Unit,
+    status: Status,
     isShowBottomLine: Boolean
 ) {
     Row(
@@ -108,29 +110,8 @@ fun AccountingObjectItem(
             }
         }
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
-            SmallStatusLabel(objectStatus = accountingObject.status)
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                Text(
-                    text = stringResource(R.string.common_barcode),
-                    style = AppTheme.typography.caption,
-                    color = graphite5,
-                    modifier = Modifier.padding(end = 4.dp)
-                )
-                RadioButton(
-                    selected = accountingObject.isBarcode,
-                    onClick = null,
-                    colors = RadioButtonDefaults.colors(
-                        selectedColor = psb6,
-                        unselectedColor = graphite3
-                    )
-                )
-            }
-            if (accountingObject.status == ObjectStatus.AVAILABLE) {
+            SmallStatusLabel(status = status)
+            if(status is ObjectStatus) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -138,7 +119,7 @@ fun AccountingObjectItem(
                     horizontalArrangement = Arrangement.End
                 ) {
                     Text(
-                        text = stringResource(R.string.common_rfid),
+                        text = stringResource(R.string.common_barcode),
                         style = AppTheme.typography.caption,
                         color = graphite5,
                         modifier = Modifier.padding(end = 4.dp)
@@ -151,6 +132,29 @@ fun AccountingObjectItem(
                             unselectedColor = graphite3
                         )
                     )
+                }
+                if (accountingObject.status == ObjectStatus.AVAILABLE) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Text(
+                            text = stringResource(R.string.common_rfid),
+                            style = AppTheme.typography.caption,
+                            color = graphite5,
+                            modifier = Modifier.padding(end = 4.dp)
+                        )
+                        RadioButton(
+                            selected = accountingObject.isBarcode,
+                            onClick = null,
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = psb6,
+                                unselectedColor = graphite3
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -420,7 +424,7 @@ fun DocumentInfoItem(
             )
             if (isShowStatus) {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
-                    SmallStatusLabel(documentStatus = item.documentStatus)
+                    SmallStatusLabel(status = item.documentStatus)
                 }
             }
         }
@@ -575,7 +579,8 @@ fun AccountingObjectItemPreview() {
                     "таылватвлыавыалвыоалвыа"
                 ),
             )
-        ), onAccountingObjectListener = {}, isShowBottomLine = true
+        ), onAccountingObjectListener = {}, isShowBottomLine = true,
+        status = ObjectStatus.UNDER_REVIEW
     )
 }
 

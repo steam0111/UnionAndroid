@@ -224,7 +224,8 @@ private fun AccountingObjectScreen(
                 AccountingObjectItem(
                     accountingObject = item,
                     onAccountingObjectListener = onAccountingObjectClickListener,
-                    isShowBottomLine = isShowBottomLine
+                    isShowBottomLine = isShowBottomLine,
+                    status = item.inventoryStatus
                 )
             }
         }

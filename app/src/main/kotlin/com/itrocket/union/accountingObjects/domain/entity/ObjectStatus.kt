@@ -11,10 +11,10 @@ import com.itrocket.union.ui.violet5
 import com.itrocket.union.ui.white
 
 enum class ObjectStatus(
-    val backgroundColor: Color,
-    @StringRes val textId: Int,
-    val textColor: Color = white
-) {
+    override val backgroundColor: Color,
+    @StringRes override val textId: Int,
+    override val textColor: Color = white
+): Status {
     AVAILABLE(backgroundColor = green7, textId = R.string.accounting_object_available),
     UNDER_REVIEW(backgroundColor = burntSienna, textId = R.string.accounting_object_under_review),
     UNDER_REPAIR(backgroundColor = violet5, textId = R.string.accounting_object_under_repair),

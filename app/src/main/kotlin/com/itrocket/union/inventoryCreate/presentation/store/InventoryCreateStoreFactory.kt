@@ -61,7 +61,7 @@ class InventoryCreateStoreFactory(
                     dispatch(Result.AddNew(!getState().isAddNew))
                 }
                 InventoryCreateStore.Intent.OnDropClicked -> {
-                    //drop
+                    drop(getState())
                 }
                 InventoryCreateStore.Intent.OnHideFoundAccountingObjectClicked -> {
                     dispatch(Result.HideFoundedAccountingObjects(!getState().isHideFoundAccountingObjects))
@@ -70,9 +70,27 @@ class InventoryCreateStoreFactory(
                     publish(InventoryCreateStore.Label.ShowReading)
                 }
                 InventoryCreateStore.Intent.OnSaveClicked -> {
-                    //save
+                    dispatch(Result.Loading(true))
+                    inventoryCreateInteractor.saveInventoryDocument(
+                        getState().inventoryDocument,
+                        getState().accountingObjects
+                    )
+                    dispatch(Result.Loading(false))
                 }
             }
+        }
+
+        private fun drop(state: InventoryCreateStore.State) {
+            dispatch(Result.NewAccountingObjects(listOf()))
+            dispatch(
+                Result.AccountingObjects(
+                    inventoryCreateInteractor.dropAccountingObjects(
+                        state.accountingObjects
+                    )
+                )
+            )
+            dispatch(Result.AddNew(false))
+            dispatch(Result.HideFoundedAccountingObjects(false))
         }
 
         override fun handleError(throwable: Throwable) {
