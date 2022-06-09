@@ -44,6 +44,7 @@ import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.utils.clickableUnbounded
 
@@ -226,6 +227,96 @@ fun ReservesItem(
 }
 
 @Composable
+fun InventoryDocumentItem(
+    item: InventoryCreateDomain
+) {
+    val numberId = "number"
+    val dateId = "date"
+    val timeId = "time"
+    val annotatedTitle = buildAnnotatedString {
+        appendInlineContent(numberId, "[icon1]")
+        append(item.number)
+        append("  ")
+
+        appendInlineContent(timeId, "[icon3]")
+        append(item.getTextDate())
+        append("  ")
+
+        appendInlineContent(timeId, "[icon3]")
+        append(item.time)
+        append("  ")
+
+    }
+    val numberContent = mapOf(
+        numberId to InlineTextContent(
+            Placeholder(
+                width = 20.sp,
+                height = 16.sp,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
+            )
+        ) {
+            Image(painter = painterResource(R.drawable.ic_number), contentDescription = null)
+        },
+        dateId to InlineTextContent(
+            Placeholder(
+                width = 20.sp,
+                height = 16.sp,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
+            )
+        ) {
+            Image(painter = painterResource(R.drawable.ic_calendar), contentDescription = null)
+        },
+        timeId to InlineTextContent(
+            Placeholder(
+                width = 20.sp,
+                height = 16.sp,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
+            )
+        ) {
+            Image(painter = painterResource(R.drawable.ic_clock), contentDescription = null)
+        },
+    )
+    val annotatedInfo = buildAnnotatedString {
+        item.documentInfo.forEachIndexed { index, info ->
+            append(info)
+            if (index < item.documentInfo.lastIndex) {
+                append(" ")
+                withStyle(SpanStyle(color = psb6, fontWeight = FontWeight.ExtraBold)) {
+                    append("|")
+                }
+                append(" ")
+            }
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(white)
+            .padding(horizontal = 16.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 18.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            Text(
+                text = annotatedTitle,
+                inlineContent = numberContent,
+                style = AppTheme.typography.body1,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 20.sp,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = annotatedInfo, style = AppTheme.typography.caption, color = graphite6)
+        Spacer(modifier = Modifier.height(12.dp))
+    }
+}
+
+@Composable
 fun DocumentInfoItem(
     item: DocumentView.DocumentItemView,
     onDocumentClickListener: (String) -> Unit,
@@ -402,7 +493,13 @@ fun DocumentDateItem(
 @Preview
 @Composable
 fun DocumentDateItemPreview() {
-    DocumentDateItem(item = DocumentView.DocumentDateView("12.12.12", DocumentDateType.OTHER, "12.12.12"), {}, false)
+    DocumentDateItem(
+        item = DocumentView.DocumentDateView(
+            "12.12.12",
+            DocumentDateType.OTHER,
+            "12.12.12"
+        ), {}, false
+    )
 }
 
 @Preview
@@ -485,5 +582,27 @@ fun AccountingObjectItemPreview() {
 @Preview
 @Composable
 fun DefaultItemPreview() {
-    DefaultListItem(title = "title title title title title title title title title", isShowBottomLine = true)
+    DefaultListItem(
+        title = "title title title title title title title title title",
+        isShowBottomLine = true
+    )
+}
+
+@Preview
+@Composable
+fun InventoryDocumentItemPreview() {
+    InventoryDocumentItem(
+        item = InventoryCreateDomain(
+            number = "БП-00001374",
+            time = "12:40",
+            date = "12.12.12",
+            documentInfo = listOf(
+                "Систмный интегратор",
+                "Систмный интегратор",
+                "Систмный интегратор",
+                "Систмный интегратор",
+                "Систмный интегратор",
+            )
+        )
+    )
 }

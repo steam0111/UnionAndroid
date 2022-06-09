@@ -45,6 +45,7 @@ import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
+import com.itrocket.union.ui.ButtonBottomBar
 import com.itrocket.union.ui.DoubleTabRow
 import com.itrocket.union.ui.Loader
 import com.itrocket.union.ui.MediumSpacer
@@ -106,7 +107,10 @@ fun InventoryScreen(
                 )
             },
             bottomBar = {
-                BottomBar(onInventoryCreateClickListener = onInventoryCreateClickListener)
+                ButtonBottomBar(
+                    onClick = onInventoryCreateClickListener,
+                    text = stringResource(R.string.common_create)
+                )
             },
             content = {
                 Content(
@@ -247,21 +251,6 @@ private fun Toolbar(
             )
         }
     )
-}
-
-@Composable
-private fun BottomBar(onInventoryCreateClickListener: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .background(graphite2)
-            .padding(16.dp)
-    ) {
-        BaseButton(
-            text = stringResource(R.string.common_create),
-            onClick = onInventoryCreateClickListener,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
 }
 
 @Preview(

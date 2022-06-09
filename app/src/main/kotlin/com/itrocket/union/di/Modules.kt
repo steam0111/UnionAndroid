@@ -23,6 +23,7 @@ import com.itrocket.union.moduleSettings.ModuleSettingsModule
 import com.itrocket.union.scanner.ScannerModule
 import com.itrocket.union.inventory.InventoryModule
 import ru.interid.weatherford.selectParams.SelectParamsModule
+import com.itrocket.union.inventoryCreate.InventoryCreateModule
 
 object Modules {
 
@@ -51,6 +52,7 @@ object Modules {
         ModuleSettingsModule.module,
         ScannerModule.module,
         InventoryModule.module,
-        SelectParamsModule.module
+        SelectParamsModule.module,
+        InventoryCreateModule.module
     )
 }

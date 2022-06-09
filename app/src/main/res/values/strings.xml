@@ -24,6 +24,7 @@
     <string name="common_exit">Выйти</string>
     <string name="common_save">Сохранить</string>
     <string name="common_create">Создать</string>
+    <string name="common_reading">Считывание</string>
 
     <!-- Auth -->
     <string name="auth_suggest">Это нужно сделать один раз</string>
@@ -130,4 +131,7 @@
     <string name="inventory_ao_title">Инвентаризация «ОС»</string>
     <string name="inventory_params">Параметры</string>
     <string name="inventory_accounting_object">Объекты учета</string>
+
+    <string name="inventory_create_hide_found_ao">Скрывать найденные ОС</string>
+    <string name="inventory_create_add_new">Добавлять новое</string>
 </resources>
