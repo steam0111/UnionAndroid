@@ -14,7 +14,7 @@ import com.itrocket.union.network.InvalidNetworkDataException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import org.openapitools.client.custom_auth.AuthApi
+import org.openapitools.client.custom_api.AuthApi
 import org.openapitools.client.models.RefreshJwtRequest
 
 class AuthMainRepositoryImpl(

@@ -21,6 +21,7 @@ import com.itrocket.union.reserveDetail.ReserveDetailModule
 import com.itrocket.union.reserves.ReservesModule
 import com.itrocket.union.scanner.ScannerModule
 import com.itrocket.union.serverConnect.ServerConnectModule
+import com.itrocket.union.sync.SyncModule
 import com.itrocket.union.token.TokenModule
 
 object Modules {
@@ -49,6 +50,7 @@ object Modules {
         NomenclatureModule.module,
         ModuleSettingsModule.module,
         ScannerModule.module,
-        TokenModule.module
+        TokenModule.module,
+        SyncModule.module
     )
 }

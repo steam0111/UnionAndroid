@@ -17,15 +17,12 @@ object ContainerModule {
                 get()
             )
         }
-
         factory {
             OnSessionExpiredUseCase(get())
         }
-
         viewModel {
             MainViewModel(get(), get())
         }
-
         single {
             ScannerManager(get(), get(), get())
         }

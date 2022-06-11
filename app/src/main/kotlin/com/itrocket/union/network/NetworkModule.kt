@@ -9,8 +9,8 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.openapitools.client.custom_auth.AuthApi
-import org.openapitools.client.custom_auth.NomenclatureGroupApi
+import org.openapitools.client.custom_api.AuthApi
+import org.openapitools.client.custom_api.NomenclatureGroupApi
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
