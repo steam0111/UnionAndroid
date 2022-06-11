@@ -11,4 +11,8 @@ interface ServerConnectRepository {
     fun getBaseUrl(): Flow<String>
 
     fun getPort(): Flow<String>
+
+    fun getServerAddress(): Flow<String>
+
+    fun getReadyServerUrl(): String
 }

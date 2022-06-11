@@ -12,12 +12,13 @@ import com.itrocket.union.authMain.domain.entity.AuthCredsDomain
 import com.itrocket.union.authMain.domain.entity.AuthDomain
 import com.itrocket.union.network.InvalidNetworkDataException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import org.openapitools.client.apis.JwtAuthControllerApi
+import org.openapitools.client.custom_auth.AuthApi
 import org.openapitools.client.models.RefreshJwtRequest
 
 class AuthMainRepositoryImpl(
-    private val api: JwtAuthControllerApi,
+    private val api: AuthApi,
     private val dataStore: DataStore<Preferences>,
     private val accessTokenPreferencesKey: Preferences.Key<String>,
     private val refreshTokenPreferencesKey: Preferences.Key<String>,
@@ -39,12 +40,6 @@ class AuthMainRepositoryImpl(
         }
     }
 
-    override fun subscribeAccessToken(): Flow<String> {
-        return dataStore.data.map {
-            it[accessTokenPreferencesKey].orEmpty()
-        }
-    }
-
     override fun subscribeRefreshToken(): Flow<String> {
         return dataStore.data.map {
             it[refreshTokenPreferencesKey].orEmpty()
@@ -60,6 +55,12 @@ class AuthMainRepositoryImpl(
 
     override suspend fun invalidateToken(accessToken: String): Boolean {
         return api.apiAuthInvalidateTokenPost("$BEARER_TOKEN $accessToken").body()?.success ?: false
+    }
+
+    override suspend fun getAccessTokenOrEmpty(): String {
+        return dataStore.data.map {
+            it[refreshTokenPreferencesKey].orEmpty()
+        }.firstOrNull().orEmpty()
     }
 
     companion object {

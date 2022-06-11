@@ -54,6 +54,8 @@ import com.squareup.moshi.Json
  * @param extendedActionType 
  * @param extendedDepartmentFrom 
  * @param extendedDepartmentTo 
+ * @param actionBaseId 
+ * @param extendedActionBase 
  * @param records 
  */
 
@@ -145,6 +147,12 @@ data class ExtendedActionDto (
 
     @Json(name = "extendedDepartmentTo")
     val extendedDepartmentTo: DepartmentDto? = null,
+
+    @Json(name = "actionBaseId")
+    val actionBaseId: kotlin.String? = null,
+
+    @Json(name = "extendedActionBase")
+    val extendedActionBase: ActionBaseDto? = null,
 
     @Json(name = "records")
     val records: kotlin.collections.List<kotlin.String>? = null
