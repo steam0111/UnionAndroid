@@ -22,6 +22,7 @@ import com.itrocket.union.nomenclatureGroup.presentation.store.NomenclatureGroup
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.DefaultListItem
+import com.itrocket.union.ui.LoadingContent
 
 @Composable
 fun NomenclatureGroupScreen(
@@ -39,7 +40,12 @@ fun NomenclatureGroupScreen(
                 title = stringResource(id = R.string.nomenclature_group_title),
                 onBackClickListener = onBackClickListener
             )
-            Content(nomenclatureGroupsDomain = state.nomenclatureGroups, navBarPadding = appInsets.bottomInset)
+            LoadingContent(isLoading = state.isLoading) {
+                Content(
+                    nomenclatureGroupsDomain = state.nomenclatureGroups,
+                    navBarPadding = appInsets.bottomInset
+                )
+            }
         }
     }
 }

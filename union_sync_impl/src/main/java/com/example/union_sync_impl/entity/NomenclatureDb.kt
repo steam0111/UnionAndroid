@@ -2,12 +2,12 @@ package com.example.union_sync_impl.entity
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import com.example.union_sync_impl.entity.core.CatalogItem
+import com.example.union_sync_impl.entity.core.CatalogItemDb
 
 @Entity(
     foreignKeys = [
         ForeignKey(
-            entity = NomenclatureGroup::class,
+            entity = NomenclatureGroupDb::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("nomenclatureGroupId"),
             //onDelete = ForeignKey.CASCADE TODO выставить посже когда появиться больше требования к бд
@@ -15,8 +15,8 @@ import com.example.union_sync_impl.entity.core.CatalogItem
     ],
     tableName = "nomenclature"
 )
-class Nomenclature(
+class NomenclatureDb(
     override var catalogItemName: String,
     var number: String,
     var nomenclatureGroupId: Long
-) : CatalogItem()
+) : CatalogItemDb()

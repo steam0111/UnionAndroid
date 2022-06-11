@@ -1,4 +1,4 @@
-package org.openapitools.client.custom_auth
+package org.openapitools.client.custom_api
 
 import org.openapitools.client.models.AuthJwtRequest
 import org.openapitools.client.models.AuthJwtResponse
