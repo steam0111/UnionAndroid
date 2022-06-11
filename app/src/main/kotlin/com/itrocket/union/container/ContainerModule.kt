@@ -2,6 +2,7 @@ package com.itrocket.union.container
 
 import com.itrocket.union.authMain.AuthMainModule
 import com.itrocket.union.container.domain.IsUserAuthorizedUseCase
+import com.itrocket.union.container.domain.OnSessionExpiredUseCase
 import com.itrocket.union.container.domain.ScannerManager
 import com.itrocket.union.container.presentation.MainViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -15,6 +16,10 @@ object ContainerModule {
                 get(AuthMainModule.ACCESS_TOKEN_PREFERENCE_KEY),
                 get()
             )
+        }
+
+        factory {
+            OnSessionExpiredUseCase(get())
         }
 
         viewModel {

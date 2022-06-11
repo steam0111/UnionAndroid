@@ -33,6 +33,7 @@ import com.squareup.moshi.Json
  * @param catalogItemName 
  * @param actionId 
  * @param accountingObjectId 
+ * @param extendedAction 
  * @param extendedAccountingObject 
  */
 
@@ -61,6 +62,9 @@ data class ActionRecordDto (
 
     @Json(name = "accountingObjectId")
     val accountingObjectId: kotlin.String? = null,
+
+    @Json(name = "extendedAction")
+    val extendedAction: ActionDto? = null,
 
     @Json(name = "extendedAccountingObject")
     val extendedAccountingObject: AccountingObjectDto? = null

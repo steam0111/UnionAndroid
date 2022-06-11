@@ -2,16 +2,15 @@ package com.itrocket.union.container.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.container.domain.IsUserAuthorizedUseCase
+import com.itrocket.union.container.domain.OnSessionExpiredUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val authMainInteractor: AuthMainInteractor,
+    private val onSessionExpiredUseCase: OnSessionExpiredUseCase,
     private val isUserAuthorizedUseCase: IsUserAuthorizedUseCase,
 ) : ViewModel() {
 
@@ -20,7 +19,7 @@ class MainViewModel(
 
     init {
         getAccessToken()
-        listenLogout()
+        subscribeOnSessionExpired()
     }
 
     private fun getAccessToken() {
@@ -37,14 +36,11 @@ class MainViewModel(
         }
     }
 
-    private fun listenLogout() {
+    private fun subscribeOnSessionExpired() {
         viewModelScope.launch {
-            authMainInteractor.checkAccessTokenExpired().collect {
-                if (it.isBlank()) {
-                    _initialScreen.emit(InitialScreen.AUTH)
-                }
+            onSessionExpiredUseCase.execute().collect {
+                _initialScreen.emit(InitialScreen.AUTH)
             }
         }
     }
-
 }

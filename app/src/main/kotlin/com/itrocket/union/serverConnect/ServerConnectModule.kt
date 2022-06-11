@@ -31,7 +31,7 @@ object ServerConnectModule {
             )
         }
 
-        factory<ServerConnectRepository> {
+        single<ServerConnectRepository> {
             ServerConnectRepositoryImpl(
                 baseUrlPreferencesKey = get(BASE_URL_PREFERENCE_KEY),
                 portPreferencesKey = get(PORT_PREFERENCE_KEY),

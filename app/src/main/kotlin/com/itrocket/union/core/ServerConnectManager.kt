@@ -1,9 +1,8 @@
 package com.itrocket.union.core
 
 import com.itrocket.core.base.CoreDispatchers
-import com.itrocket.union.network.NetworkInfo
 import com.itrocket.union.network.NetworkModule
-import com.itrocket.union.serverConnect.domain.ServerConnectInteractor
+import com.itrocket.union.serverConnect.domain.dependencies.ServerConnectRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
@@ -12,9 +11,8 @@ import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
 
 class ServerConnectManager(
-    private val serverConnectInteractor: ServerConnectInteractor,
-    private val networkInfo: NetworkInfo,
-    coreDispatchers: CoreDispatchers,
+    private val serverConnectRepository: ServerConnectRepository,
+    coreDispatchers: CoreDispatchers
 ) {
 
     private val coroutineScope = CoroutineScope(coreDispatchers.io + SupervisorJob())
@@ -25,12 +23,9 @@ class ServerConnectManager(
 
     private fun subscribeServerAddress() {
         coroutineScope.launch {
-            serverConnectInteractor.getServerAddress().collect {
-                if (it.isNotBlank()) {
-                    networkInfo.serverAddress = it
-                    unloadKoinModules(NetworkModule.module)
-                    loadKoinModules(NetworkModule.module)
-                }
+            serverConnectRepository.getServerAddress().collect {
+                unloadKoinModules(NetworkModule.module)
+                loadKoinModules(NetworkModule.module)
             }
         }
     }

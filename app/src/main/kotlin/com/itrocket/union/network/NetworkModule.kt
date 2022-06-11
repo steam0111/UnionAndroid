@@ -4,11 +4,13 @@ import com.itrocket.token_auth.Authenticator
 import com.itrocket.token_auth.TokenInterceptor
 import com.itrocket.token_auth.TokenManager
 import com.itrocket.union.authMain.domain.TokenManagerImpl
+import com.itrocket.union.serverConnect.domain.dependencies.ServerConnectRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.openapitools.client.apis.JwtAuthControllerApi
+import org.openapitools.client.custom_auth.AuthApi
+import org.openapitools.client.custom_auth.NomenclatureGroupApi
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -24,7 +26,7 @@ object NetworkModule {
     val module = module {
         single<Retrofit>(UNAUTHORIZED_RETROFIT_QUALIFIER) {
             Retrofit.Builder()
-                .baseUrl(get<NetworkInfo>().serverAddress)
+                .baseUrl(get<ServerConnectRepository>().getReadyServerUrl())
                 .client(get(UNAUTHORIZED_CLIENT_QUALIFIER))
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(MoshiConverterFactory.create())
@@ -41,7 +43,7 @@ object NetworkModule {
         }
         single<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER) {
             Retrofit.Builder()
-                .baseUrl(get<NetworkInfo>().serverAddress)
+                .baseUrl(get<ServerConnectRepository>().getReadyServerUrl())
                 .client(get(AUTHORIZED_CLIENT_QUALIFIER))
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(MoshiConverterFactory.create())
@@ -62,7 +64,7 @@ object NetworkModule {
             ErrorHandlerInterceptor()
         }
         single<TokenManager> {
-            TokenManagerImpl(get(), get())
+            TokenManagerImpl(get())
         }
         single {
             TokenInterceptor(get())
@@ -70,9 +72,13 @@ object NetworkModule {
         single {
             Authenticator(get())
         }
-        single<JwtAuthControllerApi> {
+        single<AuthApi> {
             get<Retrofit>(UNAUTHORIZED_RETROFIT_QUALIFIER)
-                .create(JwtAuthControllerApi::class.java)
+                .create(AuthApi::class.java)
+        }
+        single<NomenclatureGroupApi> {
+            get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
+                .create(NomenclatureGroupApi::class.java)
         }
     }
 }

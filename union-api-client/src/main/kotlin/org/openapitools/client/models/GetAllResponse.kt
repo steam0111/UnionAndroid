@@ -25,6 +25,7 @@ import com.squareup.moshi.Json
 
 /**
  * 
+ * Кастомизировано и добавлено в игнор, обновляться при генерации апи не будет !!!
  *
  * @param extended 
  * @param errorCode 
@@ -34,7 +35,7 @@ import com.squareup.moshi.Json
  * @param total 
  */
 
-data class GetAllResponse (
+data class GetAllResponse<T> (
 
     @Json(name = "extended")
     val extended: kotlin.Boolean? = null,
@@ -43,7 +44,7 @@ data class GetAllResponse (
     val errorCode: kotlin.String? = null,
 
     @Json(name = "list")
-    val list: kotlin.Any? = null,
+    val list: List<T>? = null,
 
     @Json(name = "page")
     val page: kotlin.Long? = null,

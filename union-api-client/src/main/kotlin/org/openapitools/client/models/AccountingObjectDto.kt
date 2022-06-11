@@ -31,6 +31,7 @@ import com.squareup.moshi.Json
  * @param dateInsert 
  * @param dateUpdate 
  * @param catalogItemName 
+ * @param subName 
  * @param actualPrice 
  * @param startingPrice 
  * @param name 
@@ -61,7 +62,6 @@ import com.squareup.moshi.Json
  * @param commissioningDate 
  * @param arrivalDate 
  * @param writeOffDate 
- * @param nomenclatureGroup 
  * @param category 
  * @param count 
  * @param unit 
@@ -69,6 +69,8 @@ import com.squareup.moshi.Json
  * @param commissioned 
  * @param subNumber 
  * @param balanceUnit 
+ * @param nomenclatureId 
+ * @param nomenclatureGroupId 
  * @param extendedOrganization 
  * @param extendedLocation 
  * @param extendedMol 
@@ -81,6 +83,12 @@ import com.squareup.moshi.Json
  * @param extendedDepartment 
  * @param extendedRegion 
  * @param extendedBranch 
+ * @param extendedNomenclature 
+ * @param extendedNomenclatureGroup 
+ * @param commissioningId 
+ * @param extendedCommissioning 
+ * @param actionId 
+ * @param extendedAction 
  */
 
 data class AccountingObjectDto (
@@ -102,6 +110,9 @@ data class AccountingObjectDto (
 
     @Json(name = "catalogItemName")
     val catalogItemName: kotlin.String? = null,
+
+    @Json(name = "subName")
+    val subName: kotlin.String? = null,
 
     @Json(name = "actualPrice")
     val actualPrice: kotlin.String? = null,
@@ -193,14 +204,11 @@ data class AccountingObjectDto (
     @Json(name = "writeOffDate")
     val writeOffDate: kotlin.String? = null,
 
-    @Json(name = "nomenclatureGroup")
-    val nomenclatureGroup: kotlin.String? = null,
-
     @Json(name = "category")
     val category: kotlin.String? = null,
 
     @Json(name = "count")
-    val count: kotlin.String? = null,
+    val count: java.math.BigDecimal? = null,
 
     @Json(name = "unit")
     val unit: kotlin.String? = null,
@@ -216,6 +224,12 @@ data class AccountingObjectDto (
 
     @Json(name = "balanceUnit")
     val balanceUnit: kotlin.String? = null,
+
+    @Json(name = "nomenclatureId")
+    val nomenclatureId: kotlin.String? = null,
+
+    @Json(name = "nomenclatureGroupId")
+    val nomenclatureGroupId: kotlin.String? = null,
 
     @Json(name = "extendedOrganization")
     val extendedOrganization: OrganizationDto? = null,
@@ -251,7 +265,25 @@ data class AccountingObjectDto (
     val extendedRegion: RegionDto? = null,
 
     @Json(name = "extendedBranch")
-    val extendedBranch: BranchDto? = null
+    val extendedBranch: BranchDto? = null,
+
+    @Json(name = "extendedNomenclature")
+    val extendedNomenclature: NomenclatureDto? = null,
+
+    @Json(name = "extendedNomenclatureGroup")
+    val extendedNomenclatureGroup: NomenclatureGroupDto? = null,
+
+    @Json(name = "commissioningId")
+    val commissioningId: kotlin.String? = null,
+
+    @Json(name = "extendedCommissioning")
+    val extendedCommissioning: CommissioningDto? = null,
+
+    @Json(name = "actionId")
+    val actionId: kotlin.String? = null,
+
+    @Json(name = "extendedAction")
+    val extendedAction: ActionDto? = null
 
 )
 
