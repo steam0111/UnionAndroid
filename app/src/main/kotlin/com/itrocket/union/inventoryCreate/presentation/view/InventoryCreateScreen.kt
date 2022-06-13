@@ -97,6 +97,8 @@ private fun Content(
     onHideFoundAccountingObjectChanged: () -> Unit,
     onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit
 ) {
+    val accountingObjectList = state.newAccountingObjects + state.accountingObjects
+
     Column(
         Modifier
             .fillMaxSize()
@@ -112,10 +114,10 @@ private fun Content(
         )
         MediumSpacer()
         LazyColumn {
-            itemsIndexed(items = state.accountingObjects, key = { index, item ->
+            itemsIndexed(items = accountingObjectList, key = { index, item ->
                 item.id
             }) { index, item ->
-                val isShowBottomLine = state.accountingObjects.lastIndex != index
+                val isShowBottomLine = accountingObjectList.lastIndex != index
                 AccountingObjectItem(
                     accountingObject = item,
                     onAccountingObjectListener = onAccountingObjectClickListener,

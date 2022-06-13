@@ -1,17 +1,28 @@
 package com.itrocket.union.inventoryCreate.presentation.store
 
+import android.os.Bundle
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
+import com.itrocket.core.navigation.NavigationLabel
+import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
+import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventory.domain.entity.InventoryDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
+import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
+import com.itrocket.union.newAccountingObject.presentation.view.NewAccountingObjectComposeFragment
 
 interface InventoryCreateStore :
     Store<InventoryCreateStore.Intent, InventoryCreateStore.State, InventoryCreateStore.Label> {
 
     sealed class Intent {
         data class OnAccountingObjectClicked(val accountingObject: AccountingObjectDomain) :
+            Intent()
+
+        data class OnNewAccountingObjectAdded(val accountingObject: AccountingObjectDomain) :
             Intent()
 
         object OnBackClicked : Intent()
@@ -35,7 +46,20 @@ interface InventoryCreateStore :
         object GoBack : Label(), GoBackNavigationLabel
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
         object ShowChangeStatus : Label()
-        object ShowNewAccountingObjectDetail : Label()
+        data class ShowNewAccountingObjectDetail(val newAccountingObjectArgument: NewAccountingObjectArguments) :
+            Label(),
+            ShowBottomSheetNavigationLabel {
+            override val arguments: Bundle
+                get() = bundleOf(
+                    NewAccountingObjectComposeFragment.NEW_ACCOUNTING_OBJECT_ARGUMENT to newAccountingObjectArgument
+                )
+            override val containerId: Int
+                get() = R.id.mainActivityNavHostFragment
+            override val fragment: Fragment
+                get() = NewAccountingObjectComposeFragment()
+
+        }
+
         object ShowLeaveWithoutSave : Label()
         object ShowReading : Label()
     }

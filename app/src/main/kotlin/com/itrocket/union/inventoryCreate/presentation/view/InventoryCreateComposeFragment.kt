@@ -6,13 +6,31 @@ import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStor
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.base.AppInsets
 import androidx.navigation.fragment.navArgs
+import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateComposeFragmentArgs
+import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectResult
+import com.itrocket.union.newAccountingObject.presentation.view.NewAccountingObjectComposeFragment
 
 class InventoryCreateComposeFragment :
     BaseComposeFragment<InventoryCreateStore.Intent, InventoryCreateStore.State, InventoryCreateStore.Label>(
         INVENTORYCREATE_VIEW_MODEL_QUALIFIER
     ) {
     override val navArgs by navArgs<InventoryCreateComposeFragmentArgs>()
+
+    override val fragmentResultList: List<FragmentResult>
+        get() = listOf(
+            FragmentResult(
+                resultCode = NewAccountingObjectComposeFragment.NEW_ACCOUNTING_OBJECT_RESULT_CODE,
+                resultLabel = NewAccountingObjectComposeFragment.NEW_ACCOUNTING_OBJECT_RESULT,
+                resultAction = {
+                    (it as NewAccountingObjectResult?)?.accountingObject?.let {
+                        accept(
+                            InventoryCreateStore.Intent.OnNewAccountingObjectAdded(it)
+                        )
+                    }
+                }
+            )
+        )
 
     override fun renderState(
         state: InventoryCreateStore.State,

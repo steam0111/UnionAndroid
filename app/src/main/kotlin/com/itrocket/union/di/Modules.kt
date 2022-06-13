@@ -26,6 +26,7 @@ import com.itrocket.union.serverConnect.ServerConnectModule
 import com.itrocket.union.sync.SyncModule
 import com.itrocket.union.token.TokenModule
 import com.itrocket.union.inventoryCreate.InventoryCreateModule
+import com.itrocket.union.newAccountingObject.NewAccountingObjectModule
 
 object Modules {
 
@@ -57,6 +58,7 @@ object Modules {
         SelectParamsModule.module,
         TokenModule.module,
         SyncModule.module,
-        InventoryCreateModule.module
+        InventoryCreateModule.module,
+        NewAccountingObjectModule.module
     )
 }
