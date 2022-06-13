@@ -5,15 +5,10 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryStatus
 import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
 
 class InventoryCreateStoreFactory(
@@ -27,42 +22,6 @@ class InventoryCreateStoreFactory(
             Store<InventoryCreateStore.Intent, InventoryCreateStore.State, InventoryCreateStore.Label> by storeFactory.create(
                 name = "InventoryCreateStore",
                 initialState = InventoryCreateStore.State(
-                    newAccountingObjects = listOf(
-                        AccountingObjectDomain(
-                            id = "8",
-                            isBarcode = true,
-                            title = "Ширикоформатный жидкокристалический монитор Samsung ЕК288, 23 дюйма",
-                            status = ObjectStatus.AVAILABLE,
-                            inventoryStatus = InventoryStatus.NEW,
-                            listMainInfo = listOf(
-                                ObjectInfoDomain(
-                                    "Заводской №",
-                                    "AV169V100E00442"
-                                ),
-                                ObjectInfoDomain(
-                                    "Инвентарный №",
-                                    "6134509345098749"
-                                ),
-                                ObjectInfoDomain(
-                                    "Местоположение",
-                                    "Склад хранения"
-                                ),
-                                ObjectInfoDomain(
-                                    "МОЛ",
-                                    "Иванов Иван Иванович"
-                                ),
-                                ObjectInfoDomain(
-                                    "Эксплуатирующий",
-                                    "Иванов Иван Иванович"
-                                ),
-                                ObjectInfoDomain(
-                                    "Организация",
-                                    "ОАО «Вымпелком»"
-                                ),
-                            ),
-                            listAdditionallyInfo = listOf()
-                        )
-                    ),
                     accountingObjects = inventoryCreateArguments.accountingObjects,
                     inventoryDocument = inventoryCreateArguments.inventoryDocument
                 ),
@@ -123,19 +82,35 @@ class InventoryCreateStoreFactory(
                     )
                     dispatch(Result.Loading(false))
                 }
-                is InventoryCreateStore.Intent.OnNewAccountingObjectAdded -> dispatch(
-                    Result.NewAccountingObjects(
-                        inventoryCreateInteractor.addNewAccountingObject(
-                            getState().newAccountingObjects,
-                            intent.accountingObject
-                        )
-                    )
+                is InventoryCreateStore.Intent.OnNewAccountingObjectsHandled -> handleNewAccountingObjects(
+                    accountingObjects = getState().accountingObjects,
+                    newAccountingObjects = getState().newAccountingObjects.toList(),
+                    handledAccountingObjectIds = intent.handledAccountingObjectIds,
                 )
             }
         }
 
+        private suspend fun handleNewAccountingObjects(
+            accountingObjects: List<AccountingObjectDomain>,
+            handledAccountingObjectIds: List<String>,
+            newAccountingObjects: List<AccountingObjectDomain>
+        ) {
+            dispatch(Result.Loading(true))
+            catchException {
+                val allAccountingObjects = inventoryCreateInteractor.handleNewAccountingObjects(
+                    accountingObjects = accountingObjects,
+                    handledAccountingObjectIds = handledAccountingObjectIds
+                )
+                dispatch(Result.AccountingObjects(allAccountingObjects.first))
+                dispatch(
+                    Result.NewAccountingObjects((newAccountingObjects + allAccountingObjects.second).toSet())
+                )
+            }
+            dispatch(Result.Loading(true))
+        }
+
         private fun drop(state: InventoryCreateStore.State) {
-            dispatch(Result.NewAccountingObjects(listOf()))
+            dispatch(Result.NewAccountingObjects(setOf()))
             dispatch(
                 Result.AccountingObjects(
                     inventoryCreateInteractor.dropAccountingObjects(
@@ -159,7 +134,7 @@ class InventoryCreateStoreFactory(
             Result()
 
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
-        data class NewAccountingObjects(val newAccountingObjects: List<AccountingObjectDomain>) :
+        data class NewAccountingObjects(val newAccountingObjects: Set<AccountingObjectDomain>) :
             Result()
     }
 

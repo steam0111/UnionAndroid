@@ -11,8 +11,6 @@ interface NewAccountingObjectStore :
 
     sealed class Intent {
         object OnCrossClicked : Intent()
-        object OnAddClicked : Intent()
-        object OnCancelClicked : Intent()
     }
 
     data class State(

@@ -45,14 +45,6 @@ class NewAccountingObjectStoreFactory(
             getState: () -> NewAccountingObjectStore.State
         ) {
             when (intent) {
-                NewAccountingObjectStore.Intent.OnAddClicked -> publish(
-                    NewAccountingObjectStore.Label.GoBack(
-                        NewAccountingObjectResult(
-                            getState().accountingObject
-                        )
-                    )
-                )
-                NewAccountingObjectStore.Intent.OnCancelClicked -> publish(NewAccountingObjectStore.Label.GoBack())
                 NewAccountingObjectStore.Intent.OnCrossClicked -> publish(NewAccountingObjectStore.Label.GoBack())
             }
         }

@@ -5,7 +5,7 @@ import com.itrocket.union.inventoryCreate.domain.dependencies.InventoryCreateRep
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
-import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectResult
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryStatus
 
 class InventoryCreateInteractor(
     private val repository: InventoryCreateRepository,
@@ -19,16 +19,33 @@ class InventoryCreateInteractor(
         // map in entity and save in db
     }
 
-    fun addNewAccountingObject(
-        newAccountingObjects: List<AccountingObjectDomain>,
-        newAccountingObject: AccountingObjectDomain
-    ): List<AccountingObjectDomain> {
-        val mutableList = newAccountingObjects.toMutableList()
-        mutableList.add(0, newAccountingObject)
-        return mutableList
+    suspend fun handleNewAccountingObjects(
+        accountingObjects: List<AccountingObjectDomain>,
+        handledAccountingObjectIds: List<String>
+    ): Pair<List<AccountingObjectDomain>, List<AccountingObjectDomain>> {
+        return withContext(coreDispatchers.io) {
+            val newAccountingObjectIds = mutableListOf<String>()
+            val mutableAccountingObjects = accountingObjects.toMutableList()
+            handledAccountingObjectIds.forEach { id ->
+                val index = mutableAccountingObjects.indexOfFirst { it.id == id }
+                if (index != NO_INDEX) {
+                    mutableAccountingObjects[index] =
+                        mutableAccountingObjects[index].copy(inventoryStatus = InventoryStatus.FOUND)
+                } else {
+                    newAccountingObjectIds.add(id)
+                }
+            }
+            val newAccountingObjects =
+                repository.getAccountingObjectsByIds(newAccountingObjectIds)
+            mutableAccountingObjects to newAccountingObjects
+        }
     }
 
     fun dropAccountingObjects(accountingObjects: List<AccountingObjectDomain>): List<AccountingObjectDomain> {
         return accountingObjects.map { it.copy() }
+    }
+
+    companion object {
+        private const val NO_INDEX = -1
     }
 }

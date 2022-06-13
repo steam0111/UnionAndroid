@@ -22,7 +22,7 @@ interface InventoryCreateStore :
         data class OnAccountingObjectClicked(val accountingObject: AccountingObjectDomain) :
             Intent()
 
-        data class OnNewAccountingObjectAdded(val accountingObject: AccountingObjectDomain) :
+        data class OnNewAccountingObjectsHandled(val handledAccountingObjectIds: List<String>) :
             Intent()
 
         object OnBackClicked : Intent()
@@ -37,7 +37,7 @@ interface InventoryCreateStore :
         val inventoryDocument: InventoryCreateDomain,
         val accountingObjects: List<AccountingObjectDomain>,
         val isHideFoundAccountingObjects: Boolean = false,
-        val newAccountingObjects: List<AccountingObjectDomain> = listOf(),
+        val newAccountingObjects: Set<AccountingObjectDomain> = setOf(),
         val isAddNew: Boolean = false,
         val isLoading: Boolean = false
     )

@@ -97,7 +97,7 @@ private fun Content(
     onHideFoundAccountingObjectChanged: () -> Unit,
     onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit
 ) {
-    val accountingObjectList = state.newAccountingObjects + state.accountingObjects
+    val accountingObjectList = state.newAccountingObjects.toList() + state.accountingObjects
 
     Column(
         Modifier

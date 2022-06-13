@@ -21,14 +21,8 @@ class NewAccountingObjectComposeFragment :
             NewAccountingObjectScreen(
                 state = state,
                 appInsets = appInsets,
-                onAddClickListener = {
-                    accept(NewAccountingObjectStore.Intent.OnAddClicked)
-                },
                 onCrossClickListener = {
                     accept(NewAccountingObjectStore.Intent.OnCrossClicked)
-                },
-                onCancelClickListener = {
-                    accept(NewAccountingObjectStore.Intent.OnCancelClicked)
                 }
             )
         }

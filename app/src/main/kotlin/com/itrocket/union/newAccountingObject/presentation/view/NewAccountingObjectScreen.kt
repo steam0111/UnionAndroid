@@ -4,6 +4,8 @@ import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,9 +39,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Surface
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.itrocket.core.utils.previewTopInsetDp
@@ -53,33 +58,40 @@ import com.itrocket.union.ui.graphite4
 import com.itrocket.union.ui.psb4
 import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
+import com.itrocket.utils.rememberViewInteropNestedScrollConnection
 
 @Composable
 fun NewAccountingObjectScreen(
     state: NewAccountingObjectStore.State,
     appInsets: AppInsets,
-    onCrossClickListener: () -> Unit,
-    onCancelClickListener: () -> Unit,
-    onAddClickListener: () -> Unit
+    onCrossClickListener: () -> Unit
 ) {
     AppTheme {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = appInsets.bottomInset.dp, top = appInsets.topInset.dp),
-            contentAlignment = Alignment.BottomStart
+        Surface(
+            // Добавляет возможность скроллить внутренний компонент без скролла внешнего.
+            // Когда скролл внутреннего компонента дошел до конца,
+            // начинается скролл внешнего компонента
+            modifier = Modifier.nestedScroll(rememberViewInteropNestedScrollConnection())
         ) {
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight()
-                    .background(white, RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                    .padding(top = 16.dp),
+                    .padding(bottom = appInsets.bottomInset.dp, top = appInsets.topInset.dp)
+                    .scrollable(state = rememberScrollState(), orientation = Orientation.Vertical),
+                contentAlignment = Alignment.BottomStart
             ) {
-                Content(
-                    accountingObject = state.accountingObject,
-                    onCrossClickListener = onCrossClickListener
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .background(white, RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                        .padding(top = 16.dp),
+                ) {
+                    Content(
+                        accountingObject = state.accountingObject,
+                        onCrossClickListener = onCrossClickListener
+                    )
+                }
             }
         }
     }
@@ -137,27 +149,6 @@ private fun Content(accountingObject: AccountingObjectDomain, onCrossClickListen
     }
 }
 
-/*@Composable
-private fun BottomBar(
-    onCancelClickListener: () -> Unit,
-    onAddClickListener: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 1.dp)
-            .shadow(14.dp, clip = false)
-            .background(white)
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.End
-    ) {
-        TextButton(text = stringResource(R.string.common_cancel), onClick = onCancelClickListener)
-        Spacer(modifier = Modifier.width(16.dp))
-        TextButton(text = stringResource(R.string.common_add), onClick = onAddClickListener)
-        Spacer(modifier = Modifier.width(24.dp))
-    }
-}*/
-
 @Preview(
     name = "светлая тема экран - 6.3 (3040x1440)",
     showSystemUi = true,
@@ -191,5 +182,5 @@ fun NewAccountingObjectScreenPreview() {
             ),
             listAdditionallyInfo = listOf()
         )
-    ), AppInsets(topInset = previewTopInsetDp), {}, {}, {})
+    ), AppInsets(topInset = previewTopInsetDp), {})
 }
