@@ -2,6 +2,7 @@ package com.example.union_sync_impl.entity.location
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import com.example.union_sync_impl.entity.core.CatalogItemDb
 
 @Entity(
@@ -15,4 +16,8 @@ import com.example.union_sync_impl.entity.core.CatalogItemDb
     ],
     tableName = "location"
 )
-class LocationDb(override var catalogItemName: String, var parentId: Long? = null) : CatalogItemDb()
+class LocationDb(
+    id: String,
+    override var catalogItemName: String,
+    var parentId: String? = null
+) : CatalogItemDb(id)

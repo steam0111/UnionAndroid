@@ -64,6 +64,7 @@
     <string name="main_write_off">Списание</string>
     <string name="nomenclature_group">Ном. группа</string>
     <string name="nomenclature">Номенклатура</string>
+    <string name="organizations">Организации</string>
 
     <!-- Manual -->
     <string name="manual_organization">Организация</string>
@@ -138,4 +139,7 @@
     <string name="inventory_create_new">Новый</string>
     <string name="inventory_create_found">Найден</string>
     <string name="inventory_create_not_found">Не найден</string>
+
+    <!-- Organizations -->
+    <string name="organizations_title">Организации</string>
 </resources>

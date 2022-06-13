@@ -6,9 +6,11 @@ import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.LocationPathDao
 import com.example.union_sync_impl.dao.NomenclatureDao
 import com.example.union_sync_impl.dao.NomenclatureGroupDao
+import com.example.union_sync_impl.dao.OrganizationDao
 import com.example.union_sync_impl.entity.NomenclatureDb
 import com.example.union_sync_impl.entity.NomenclatureGroupDb
 import com.example.union_sync_impl.entity.location.LocationDb
+import com.example.union_sync_impl.entity.OrganizationDb
 import com.example.union_sync_impl.entity.location.LocationPath
 
 @Database(
@@ -16,12 +18,14 @@ import com.example.union_sync_impl.entity.location.LocationPath
         NomenclatureGroupDb::class,
         NomenclatureDb::class,
         LocationDb::class,
-        LocationPath::class
-    ], version = 11
+        LocationPath::class,
+        OrganizationDb::class
+    ], version = 12
 )
 abstract class UnionDatabase : RoomDatabase() {
     abstract fun nomenclatureGroupDao(): NomenclatureGroupDao
     abstract fun nomenclatureDao(): NomenclatureDao
     abstract fun locationDao(): LocationDao
     abstract fun locationPathDao(): LocationPathDao
+    abstract fun organizationDao(): OrganizationDao
 }

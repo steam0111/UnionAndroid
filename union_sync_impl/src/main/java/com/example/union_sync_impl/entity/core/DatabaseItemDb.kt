@@ -4,8 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-open class DatabaseItemDb {
-    @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
+open class DatabaseItemDb(
+    @PrimaryKey(autoGenerate = false)
+    val id: String
+) {
     var isDeleted: Boolean = false
 }

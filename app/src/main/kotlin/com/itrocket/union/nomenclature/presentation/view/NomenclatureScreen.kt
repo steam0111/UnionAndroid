@@ -17,7 +17,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
+import com.itrocket.union.common.DefaultItem
 import com.itrocket.union.nomenclature.domain.entity.NomenclatureDomain
+import com.itrocket.union.nomenclature.domain.entity.toDefaultItem
 import com.itrocket.union.nomenclature.presentation.store.NomenclatureStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BlackToolbar
@@ -27,7 +29,8 @@ import com.itrocket.union.ui.DefaultListItem
 fun NomenclatureScreen(
     state: NomenclatureStore.State,
     appInsets: AppInsets,
-    onBackClickListener: () -> Unit
+    onBackClickListener: () -> Unit,
+    onItemClickListener: (DefaultItem) -> Unit,
 ) {
     AppTheme {
         Column(
@@ -41,7 +44,8 @@ fun NomenclatureScreen(
             )
             Content(
                 nomenclatureGroupsDomain = state.nomenclatures,
-                navBarPadding = appInsets.bottomInset
+                navBarPadding = appInsets.bottomInset,
+                onItemClickListener = onItemClickListener
             )
         }
     }
@@ -50,6 +54,7 @@ fun NomenclatureScreen(
 @Composable
 private fun Content(
     nomenclatureGroupsDomain: List<NomenclatureDomain>,
+    onItemClickListener: (DefaultItem) -> Unit,
     navBarPadding: Int
 ) {
     LazyColumn(Modifier.fillMaxSize()) {
@@ -58,7 +63,8 @@ private fun Content(
         }) { index, item ->
             val isShowBottomLine = nomenclatureGroupsDomain.lastIndex != index
             DefaultListItem(
-                title = item.name,
+                item = item.toDefaultItem(),
+                onItemClickListener = onItemClickListener,
                 isShowBottomLine = isShowBottomLine
             )
         }
@@ -68,10 +74,20 @@ private fun Content(
     }
 }
 
-@Preview(name = "светлая тема экран - 6.3 (3040x1440)", showSystemUi = true, device = Devices.PIXEL_4_XL, uiMode = UI_MODE_NIGHT_NO)
-@Preview(name = "темная тема экран - 4,95 (1920 × 1080)", showSystemUi = true, device = Devices.NEXUS_5, uiMode = UI_MODE_NIGHT_YES)
+@Preview(
+    name = "светлая тема экран - 6.3 (3040x1440)",
+    showSystemUi = true,
+    device = Devices.PIXEL_4_XL,
+    uiMode = UI_MODE_NIGHT_NO
+)
+@Preview(
+    name = "темная тема экран - 4,95 (1920 × 1080)",
+    showSystemUi = true,
+    device = Devices.NEXUS_5,
+    uiMode = UI_MODE_NIGHT_YES
+)
 @Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
 @Composable
 fun NomenclatureScreenPreview() {
-    NomenclatureScreen(NomenclatureStore.State(), AppInsets(), {})
+    NomenclatureScreen(NomenclatureStore.State(), AppInsets(), {}, {})
 }

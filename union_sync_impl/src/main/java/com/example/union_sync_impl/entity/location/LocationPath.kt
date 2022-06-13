@@ -2,7 +2,7 @@ package com.example.union_sync_impl.entity.location
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import com.example.union_sync_impl.entity.core.SyncItemDb
+import androidx.room.PrimaryKey
 
 @Entity(
     foreignKeys = [
@@ -22,6 +22,8 @@ import com.example.union_sync_impl.entity.core.SyncItemDb
     tableName = "locationPath"
 )
 class LocationPath(
-    var ancestorLocationId: Long? = null,
-    var descendantLocationId: Long,
-) : SyncItemDb()
+    @PrimaryKey(autoGenerate = true)
+    val id: Long,
+    var ancestorLocationId: String? = null,
+    var descendantLocationId: String
+)
