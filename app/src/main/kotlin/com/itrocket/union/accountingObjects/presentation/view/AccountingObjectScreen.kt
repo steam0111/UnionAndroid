@@ -90,7 +90,8 @@ private fun AccountingObjectList(
             AccountingObjectItem(
                 accountingObject = item,
                 onAccountingObjectListener = onAccountingObjectListener,
-                isShowBottomLine = isShowBottomLine
+                isShowBottomLine = isShowBottomLine,
+                status = item.status
             )
         }
         item {

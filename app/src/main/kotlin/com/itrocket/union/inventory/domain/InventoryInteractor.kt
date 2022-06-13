@@ -3,6 +3,7 @@ package com.itrocket.union.inventory.domain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 
@@ -11,8 +12,20 @@ class InventoryInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    fun createInventory(accountingObjects: List<AccountingObjectDomain>) {
+    fun createInventory(accountingObjects: List<AccountingObjectDomain>): InventoryCreateDomain {
         // add request
+        return InventoryCreateDomain(
+            number = "БП-00001374",
+            time = "12:40",
+            date = "12.12.12",
+            documentInfo = listOf(
+                "Систмный интегратор",
+                "Систмный интегратор",
+                "Систмный интегратор",
+                "Систмный интегратор",
+                "Систмный интегратор",
+            )
+        )
     }
 
     fun changeParams(params: List<ParamDomain>, newParams: List<ParamDomain>): List<ParamDomain> {
