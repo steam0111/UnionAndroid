@@ -25,6 +25,7 @@ import ru.interid.weatherford.selectParams.SelectParamsModule
 import com.itrocket.union.serverConnect.ServerConnectModule
 import com.itrocket.union.sync.SyncModule
 import com.itrocket.union.token.TokenModule
+import com.itrocket.union.inventoryCreate.InventoryCreateModule
 
 object Modules {
 
@@ -55,6 +56,7 @@ object Modules {
         InventoryModule.module,
         SelectParamsModule.module,
         TokenModule.module,
-        SyncModule.module
+        SyncModule.module,
+        InventoryCreateModule.module
     )
 }

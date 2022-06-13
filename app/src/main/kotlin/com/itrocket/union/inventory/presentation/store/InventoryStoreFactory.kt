@@ -48,10 +48,7 @@ class InventoryStoreFactory(
         ) {
             when (intent) {
                 InventoryStore.Intent.OnBackClicked -> publish(InventoryStore.Label.GoBack)
-                InventoryStore.Intent.OnCreateDocumentClicked -> {
-                    inventoryInteractor.createInventory(getState().accountingObjectList)
-                    publish(InventoryStore.Label.ShowCreateInventory)
-                }
+                InventoryStore.Intent.OnCreateDocumentClicked -> createInventory(getState().accountingObjectList)
                 InventoryStore.Intent.OnDropClicked -> {
                     dispatch(
                         Result.Params(
@@ -60,20 +57,10 @@ class InventoryStoreFactory(
                     )
                     filterAccountingObjects(getState().params)
                 }
-                is InventoryStore.Intent.OnParamClicked -> {
-                    if (intent.param.type == ManualType.LOCATION) {
-                        publish(
-                            InventoryStore.Label.ShowLocation(intent.param.value)
-                        )
-                    } else {
-                        publish(
-                            InventoryStore.Label.ShowParamSteps(
-                                currentStep = getState().params.indexOf(intent.param) + 1,
-                                params = getState().params.filter { it.type != ManualType.LOCATION }
-                            )
-                        )
-                    }
-                }
+                is InventoryStore.Intent.OnParamClicked -> showParams(
+                    params = getState().params,
+                    param = intent.param
+                )
                 is InventoryStore.Intent.OnParamCrossClicked -> {
                     dispatch(
                         Result.Params(
@@ -110,6 +97,36 @@ class InventoryStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             publish(InventoryStore.Label.Error(throwable.message.orEmpty()))
+        }
+
+        private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
+            if (param.type == ManualType.LOCATION) {
+                publish(
+                    InventoryStore.Label.ShowLocation(param.value)
+                )
+            } else {
+                publish(
+                    InventoryStore.Label.ShowParamSteps(
+                        currentStep = params.indexOf(param) + 1,
+                        params = params.filter { it.type != ManualType.LOCATION }
+                    )
+                )
+            }
+        }
+
+        private suspend fun createInventory(accountingObjects: List<AccountingObjectDomain>) {
+            dispatch(Result.Loading(true))
+            catchException {
+                val inventoryCreate =
+                    inventoryInteractor.createInventory(accountingObjects)
+                publish(
+                    InventoryStore.Label.ShowCreateInventory(
+                        inventoryCreate = inventoryCreate,
+                        accountingObjectList = accountingObjects
+                    )
+                )
+            }
+            dispatch(Result.Loading(false))
         }
 
         private suspend fun filterAccountingObjects(params: List<ParamDomain>) {

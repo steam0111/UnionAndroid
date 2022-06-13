@@ -175,6 +175,9 @@
         <action
             android:id="@+id/to_accountingObjectsDetails"
             app:destination="@id/accountingObjectsDetails" />
+        <action
+            android:id="@+id/to_inventoryCreate"
+            app:destination="@id/inventoryCreate" />
     </fragment>
 
     <fragment
@@ -184,5 +187,15 @@
         <argument
             android:name="SelectParamsComposeFragmentArgs"
             app:argType="com.itrocket.union.selectParams.presentation.store.SelectParamsArguments" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/inventoryCreate"
+        android:name="com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateComposeFragment"
+        android:label="InventoryCreate">
+
+        <argument
+            android:name="InventoryCreateArguments"
+            app:argType="com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateArguments" />
     </fragment>
 </navigation>

@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.SpanStyle
@@ -40,10 +41,12 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.Status
 import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.utils.clickableUnbounded
 
@@ -78,6 +81,7 @@ fun DefaultListItem(
 fun AccountingObjectItem(
     accountingObject: AccountingObjectDomain,
     onAccountingObjectListener: (AccountingObjectDomain) -> Unit,
+    status: Status,
     isShowBottomLine: Boolean
 ) {
     Row(
@@ -107,29 +111,8 @@ fun AccountingObjectItem(
             }
         }
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
-            SmallStatusLabel(objectStatus = accountingObject.status)
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                Text(
-                    text = stringResource(R.string.common_barcode),
-                    style = AppTheme.typography.caption,
-                    color = graphite5,
-                    modifier = Modifier.padding(end = 4.dp)
-                )
-                RadioButton(
-                    selected = accountingObject.isBarcode,
-                    onClick = null,
-                    colors = RadioButtonDefaults.colors(
-                        selectedColor = psb6,
-                        unselectedColor = graphite3
-                    )
-                )
-            }
-            if (accountingObject.status == ObjectStatus.AVAILABLE) {
+            SmallStatusLabel(status = status)
+            if (status is ObjectStatus) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -137,7 +120,7 @@ fun AccountingObjectItem(
                     horizontalArrangement = Arrangement.End
                 ) {
                     Text(
-                        text = stringResource(R.string.common_rfid),
+                        text = stringResource(R.string.common_barcode),
                         style = AppTheme.typography.caption,
                         color = graphite5,
                         modifier = Modifier.padding(end = 4.dp)
@@ -150,6 +133,29 @@ fun AccountingObjectItem(
                             unselectedColor = graphite3
                         )
                     )
+                }
+                if (accountingObject.status == ObjectStatus.AVAILABLE) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Text(
+                            text = stringResource(R.string.common_rfid),
+                            style = AppTheme.typography.caption,
+                            color = graphite5,
+                            modifier = Modifier.padding(end = 4.dp)
+                        )
+                        RadioButton(
+                            selected = accountingObject.isBarcode,
+                            onClick = null,
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = psb6,
+                                unselectedColor = graphite3
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -223,6 +229,101 @@ fun ReservesItem(
     if (isShowBottomLine) {
         BottomLine()
     }
+}
+
+@Composable
+fun InventoryDocumentItem(
+    item: InventoryCreateDomain
+) {
+    val annotatedTitle = getInventoryAnnotatedTitle(item)
+    val annotatedInfo = buildAnnotatedString {
+        item.documentInfo.forEachIndexed { index, info ->
+            append(info)
+            if (index < item.documentInfo.lastIndex) {
+                append(" ")
+                withStyle(SpanStyle(color = psb6, fontWeight = FontWeight.ExtraBold)) {
+                    append("|")
+                }
+                append(" ")
+            }
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(white)
+            .padding(horizontal = 16.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 18.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            Text(
+                text = annotatedTitle.first,
+                inlineContent = annotatedTitle.second,
+                style = AppTheme.typography.body1,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 20.sp,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = annotatedInfo, style = AppTheme.typography.caption, color = graphite6)
+        Spacer(modifier = Modifier.height(12.dp))
+    }
+}
+
+private fun getInventoryAnnotatedTitle(item: InventoryCreateDomain): Pair<AnnotatedString, Map<String, InlineTextContent>> {
+    val numberId = "number"
+    val dateId = "date"
+    val timeId = "time"
+    val annotatedTitle = buildAnnotatedString {
+        appendInlineContent(numberId, "[icon1]")
+        append(item.number)
+        append("  ")
+
+        appendInlineContent(timeId, "[icon3]")
+        append(item.getTextDate())
+        append("  ")
+
+        appendInlineContent(timeId, "[icon3]")
+        append(item.time)
+        append("  ")
+
+    }
+    val numberContent = mapOf(
+        numberId to InlineTextContent(
+            Placeholder(
+                width = 20.sp,
+                height = 16.sp,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
+            )
+        ) {
+            Image(painter = painterResource(R.drawable.ic_number), contentDescription = null)
+        },
+        dateId to InlineTextContent(
+            Placeholder(
+                width = 20.sp,
+                height = 16.sp,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
+            )
+        ) {
+            Image(painter = painterResource(R.drawable.ic_calendar), contentDescription = null)
+        },
+        timeId to InlineTextContent(
+            Placeholder(
+                width = 20.sp,
+                height = 16.sp,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
+            )
+        ) {
+            Image(painter = painterResource(R.drawable.ic_clock), contentDescription = null)
+        },
+    )
+    return annotatedTitle to numberContent
 }
 
 @Composable
@@ -329,7 +430,7 @@ fun DocumentInfoItem(
             )
             if (isShowStatus) {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
-                    SmallStatusLabel(documentStatus = item.documentStatus)
+                    SmallStatusLabel(status = item.documentStatus)
                 }
             }
         }
@@ -402,7 +503,13 @@ fun DocumentDateItem(
 @Preview
 @Composable
 fun DocumentDateItemPreview() {
-    DocumentDateItem(item = DocumentView.DocumentDateView("12.12.12", DocumentDateType.OTHER, "12.12.12"), {}, false)
+    DocumentDateItem(
+        item = DocumentView.DocumentDateView(
+            "12.12.12",
+            DocumentDateType.OTHER,
+            "12.12.12"
+        ), {}, false
+    )
 }
 
 @Preview
@@ -478,12 +585,35 @@ fun AccountingObjectItemPreview() {
                     "таылватвлыавыалвыоалвыа"
                 ),
             )
-        ), onAccountingObjectListener = {}, isShowBottomLine = true
+        ), onAccountingObjectListener = {}, isShowBottomLine = true,
+        status = ObjectStatus.UNDER_REVIEW
     )
 }
 
 @Preview
 @Composable
 fun DefaultItemPreview() {
-    DefaultListItem(title = "title title title title title title title title title", isShowBottomLine = true)
+    DefaultListItem(
+        title = "title title title title title title title title title",
+        isShowBottomLine = true
+    )
+}
+
+@Preview
+@Composable
+fun InventoryDocumentItemPreview() {
+    InventoryDocumentItem(
+        item = InventoryCreateDomain(
+            number = "БП-00001374",
+            time = "12:40",
+            date = "12.12.12",
+            documentInfo = listOf(
+                "Систмный интегратор",
+                "Систмный интегратор",
+                "Систмный интегратор",
+                "Систмный интегратор",
+                "Систмный интегратор",
+            )
+        )
+    )
 }
