@@ -16,7 +16,8 @@ import com.example.union_sync_impl.entity.core.CatalogItemDb
     tableName = "nomenclature"
 )
 class NomenclatureDb(
+    id: String,
     override var catalogItemName: String,
     var number: String,
-    var nomenclatureGroupId: Long
-) : CatalogItemDb()
+    var nomenclatureGroupId: String,
+) : CatalogItemDb(id)

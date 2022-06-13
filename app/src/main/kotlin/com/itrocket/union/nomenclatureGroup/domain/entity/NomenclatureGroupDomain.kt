@@ -1,3 +1,11 @@
 package com.itrocket.union.nomenclatureGroup.domain.entity
 
-data class NomenclatureGroupDomain(val id: Long, val name: String = "")
+import com.itrocket.union.common.DefaultItem
+
+data class NomenclatureGroupDomain(val id: String, val name: String = "")
+
+fun NomenclatureGroupDomain.toDefaultItem() =
+    DefaultItem(
+        id = id,
+        title = name
+    )

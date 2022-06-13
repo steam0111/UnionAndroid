@@ -43,6 +43,9 @@
         <action
             android:id="@+id/to_inventory"
             app:destination="@id/inventory" />
+        <action
+            android:id="@+id/to_organizations"
+            app:destination="@id/organization" />
     </fragment>
 
     <fragment
@@ -198,4 +201,8 @@
             android:name="InventoryCreateArguments"
             app:argType="com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateArguments" />
     </fragment>
+
+    <fragment
+        android:id="@+id/organization"
+        android:name="com.itrocket.union.organizations.presentation.view.OrganizationComposeFragment" />
 </navigation>

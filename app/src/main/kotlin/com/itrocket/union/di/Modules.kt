@@ -7,6 +7,7 @@ import com.itrocket.union.authMain.AuthMainModule
 import com.itrocket.union.authUser.AuthUserModule
 import com.itrocket.union.container.ContainerModule
 import com.itrocket.union.core.CoreModule
+import com.itrocket.union.organizations.OrganizationModule
 import com.itrocket.union.documents.DocumentModule
 import com.itrocket.union.documentsMenu.DocumentMenuModule
 import com.itrocket.union.filter.FilterModule
@@ -57,6 +58,7 @@ object Modules {
         SelectParamsModule.module,
         TokenModule.module,
         SyncModule.module,
-        InventoryCreateModule.module
+        InventoryCreateModule.module,
+        OrganizationModule.module
     )
 }

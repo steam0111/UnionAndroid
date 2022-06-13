@@ -8,7 +8,7 @@ import com.example.union_sync_impl.entity.location.LocationDb
 @Dao
 interface LocationDao {
     @Query("SELECT * FROM location WHERE parentId is :parentId")
-    suspend fun getAll(parentId: Long?): List<LocationDb>
+    suspend fun getAll(parentId: String?): List<LocationDb>
 
     @Insert
     suspend fun insertAll(vararg locationDbs: LocationDb)

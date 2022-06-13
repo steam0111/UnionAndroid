@@ -42,6 +42,7 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.accountingObjects.domain.entity.Status
+import com.itrocket.union.common.DefaultItem
 import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.ObjectType
@@ -52,30 +53,6 @@ import com.itrocket.utils.clickableUnbounded
 
 private const val MAX_LIST_INFO = 3
 private const val DATE_ITEM_ROTATION_DURATION = 200
-
-@Composable
-fun DefaultListItem(
-    title: String,
-    isShowBottomLine: Boolean
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp, horizontal = 16.dp)
-    ) {
-        Column {
-            Text(
-                text = title,
-                style = AppTheme.typography.body1,
-                fontWeight = FontWeight.Medium
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-        }
-    }
-    if (isShowBottomLine) {
-        BottomLine()
-    }
-}
 
 @Composable
 fun AccountingObjectItem(
@@ -500,6 +477,43 @@ fun DocumentDateItem(
     }
 }
 
+@Composable
+fun DefaultListItem(
+    item: DefaultItem,
+    onItemClickListener: (DefaultItem) -> Unit,
+    isShowBottomLine: Boolean
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = {
+                onItemClickListener(item)
+            })
+            .padding(vertical = 12.dp, horizontal = 16.dp)
+    ) {
+        Column {
+            Text(
+                text = item.title,
+                style = AppTheme.typography.body1,
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            item.subtitles.forEach {
+                if (!it.value.isNullOrBlank()) {
+                    Text(
+                        text = stringResource(R.string.common_two_dots, it.key, it.value.orEmpty()),
+                        style = AppTheme.typography.caption,
+                        color = psb3
+                    )
+                }
+            }
+        }
+    }
+    if (isShowBottomLine) {
+        BottomLine()
+    }
+}
+
 @Preview
 @Composable
 fun DocumentDateItemPreview() {
@@ -592,9 +606,16 @@ fun AccountingObjectItemPreview() {
 
 @Preview
 @Composable
-fun DefaultItemPreview() {
+fun DefaultListItemPreview() {
     DefaultListItem(
-        title = "title title title title title title title title title",
+        item = DefaultItem(
+            id = "1",
+            title = "Organization",
+            subtitles = mapOf(
+                "Subtitle1" to "value1", "Subtitle2" to "value2"
+            ),
+
+            ), onItemClickListener = {},
         isShowBottomLine = true
     )
 }

@@ -10,6 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.openapitools.client.custom_api.AuthApi
+import org.openapitools.client.custom_api.OrganizationApi
 import org.openapitools.client.custom_api.NomenclatureGroupApi
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -79,6 +80,10 @@ object NetworkModule {
         single<NomenclatureGroupApi> {
             get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
                 .create(NomenclatureGroupApi::class.java)
+        }
+        single<OrganizationApi> {
+            get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
+                .create(OrganizationApi::class.java)
         }
     }
 }

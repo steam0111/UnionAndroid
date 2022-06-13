@@ -15,6 +15,7 @@ import com.itrocket.union.filter.domain.entity.FilterValueType
 import com.itrocket.union.filter.presentation.view.FilterScreenPreview
 import com.itrocket.union.filterValues.presentation.view.FilterValueScreenPreview
 import com.itrocket.union.location.presentation.view.LocationScreenPreview
+import com.itrocket.union.organizations.presentation.view.OrganizationsScreenPreview
 import com.itrocket.union.readingMode.presentation.view.ReadingModeScreenPreview
 import com.itrocket.union.reserveDetail.presentation.view.ReserveDetailScreenPreview
 import com.itrocket.union.reserves.presentation.view.ReservesScreenPreview
@@ -144,6 +145,13 @@ class ScreensTest : ScreenshotTest {
     fun `ReservesDetailScreen`() {
         takeScreenShot {
             ReserveDetailScreenPreview()
+        }
+    }
+
+    @Test
+    fun `OrganizationsScreen`() {
+        takeScreenShot {
+            OrganizationsScreenPreview()
         }
     }
 }

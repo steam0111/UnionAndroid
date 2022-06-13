@@ -6,13 +6,16 @@ import org.openapitools.client.models.NomenclatureGroupDto
 
 fun NomenclatureGroupDto.toNomenclatureDb(): NomenclatureGroupDb {
     return NomenclatureGroupDb(
-        catalogItemName = catalogItemName ?: ""
+        id = id,
+        catalogItemName = catalogItemName.orEmpty(),
+        name = name.orEmpty()
     )
 }
 
 fun NomenclatureGroupDb.toSyncEntity(): NomenclatureGroupSyncEntity {
     return NomenclatureGroupSyncEntity(
         id = id,
-        name = catalogItemName
+        name = name,
+        catalogItemName = catalogItemName
     )
 }

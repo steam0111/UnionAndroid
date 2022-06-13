@@ -70,6 +70,7 @@ interface DocumentMenuStore :
                         NomenclatureArguments(0)
                     )
                     R.string.main_inventory -> DocumentMenuComposeFragmentDirections.toInventory()
+                    R.string.organizations -> DocumentMenuComposeFragmentDirections.toOrganizations()
                     else -> DocumentMenuComposeFragmentDirections.toAccountingObjects()
                 }
         }
