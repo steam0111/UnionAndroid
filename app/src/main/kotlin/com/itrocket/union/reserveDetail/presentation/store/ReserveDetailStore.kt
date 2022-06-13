@@ -35,9 +35,7 @@ interface ReserveDetailStore :
             ShowBottomSheetNavigationLabel {
 
             override val arguments: Bundle
-                get() = bundleOf(
-                    ReadingModeComposeFragment.READING_MODE_ARGS to ReadingModeArguments(readingMode)
-                )
+                get() = bundleOf()
 
             override val containerId: Int = R.id.mainActivityNavHostFragment
 

@@ -48,17 +48,4 @@ class AccountingObjectDetailComposeFragment :
             )
         }
     }
-
-    override fun handleLabel(label: AccountingObjectDetailStore.Label) {
-        super.handleLabel(label)
-        when (label) {
-            is AccountingObjectDetailStore.Label.ShowReadingMode -> requireActivity().showBottomSheet(
-                containerId = R.id.mainActivityNavHostFragment,
-                bottomSheetFragment = ReadingModeComposeFragment(),
-                args = bundleOf(
-                    ReadingModeComposeFragment.READING_MODE_ARGS to ReadingModeArguments(label.readingMode)
-                )
-            )
-        }
-    }
 }

@@ -48,7 +48,7 @@ class AccountingObjectDetailStoreFactory(
                     Result.CheckedFullCharacteristics(intent.isChecked)
                 )
                 AccountingObjectDetailStore.Intent.OnReadingModeClicked -> {
-                    publish(AccountingObjectDetailStore.Label.ShowReadingMode(getState().readingMode))
+                    publish(AccountingObjectDetailStore.Label.ShowReadingMode)
                 }
                 AccountingObjectDetailStore.Intent.OnDocumentAddClicked -> {
                     //no-op

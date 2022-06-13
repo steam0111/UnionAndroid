@@ -14,6 +14,7 @@ import com.itrocket.union.inventory.domain.entity.InventoryDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
 import com.itrocket.union.newAccountingObject.presentation.view.NewAccountingObjectComposeFragment
+import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 
 interface InventoryCreateStore :
     Store<InventoryCreateStore.Intent, InventoryCreateStore.State, InventoryCreateStore.Label> {
@@ -61,6 +62,16 @@ interface InventoryCreateStore :
         }
 
         object ShowLeaveWithoutSave : Label()
-        object ShowReading : Label()
+        object ShowReadingMode : Label(),
+            ShowBottomSheetNavigationLabel {
+
+            override val arguments: Bundle
+                get() = bundleOf()
+
+            override val containerId: Int = R.id.mainActivityNavHostFragment
+
+            override val fragment: Fragment
+                get() = ReadingModeComposeFragment()
+        }
     }
 }

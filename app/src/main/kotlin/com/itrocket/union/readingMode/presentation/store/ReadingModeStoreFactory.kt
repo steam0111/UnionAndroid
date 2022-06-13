@@ -10,13 +10,13 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.readingMode.domain.ReadingModeInteractor
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.toReaderMode
+import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class ReadingModeStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val readingModeInteractor: ReadingModeInteractor,
-    private val readingModeArguments: ReadingModeArguments,
     private val serviceEntryManager: ServiceEntryManager
 ) {
     fun create(): ReadingModeStore =
@@ -28,8 +28,7 @@ class ReadingModeStoreFactory(
                         ReadingModeTab.RFID,
                         ReadingModeTab.BARCODE,
                         ReadingModeTab.SN
-                    ),
-                    selectedTab = readingModeArguments.selectedReadingMode
+                    )
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
@@ -47,6 +46,9 @@ class ReadingModeStoreFactory(
             action: Unit,
             getState: () -> ReadingModeStore.State
         ) {
+            dispatch(Result.ReadingModeSelected(serviceEntryManager.currentMode.toReadingModeTab()))
+            readingModeInteractor.changeScanMode(getState().selectedTab.toReaderMode())
+            dispatch(Result.IsManualInputEnabled(getState().selectedTab != ReadingModeTab.RFID))
         }
 
         override suspend fun executeIntent(

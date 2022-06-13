@@ -72,7 +72,7 @@ class InventoryCreateStoreFactory(
                     dispatch(Result.HideFoundedAccountingObjects(!getState().isHideFoundAccountingObjects))
                 }
                 InventoryCreateStore.Intent.OnReadingClicked -> {
-                    publish(InventoryCreateStore.Label.ShowReading)
+                    publish(InventoryCreateStore.Label.ShowReadingMode)
                 }
                 InventoryCreateStore.Intent.OnSaveClicked -> {
                     dispatch(Result.Loading(true))

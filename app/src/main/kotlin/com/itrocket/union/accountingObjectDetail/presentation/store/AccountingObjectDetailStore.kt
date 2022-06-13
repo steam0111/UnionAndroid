@@ -28,19 +28,16 @@ interface AccountingObjectDetailStore :
         val accountingObjectDomain: AccountingObjectDomain,
         val isLoading: Boolean = false,
         val isFullCharacteristicChecked: Boolean = false,
-        val readingMode: ReadingModeTab = ReadingModeTab.RFID,
         val selectedPage: Int = 0
     )
 
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
-        data class ShowReadingMode(val readingMode: ReadingModeTab) : Label(),
+        object ShowReadingMode : Label(),
             ShowBottomSheetNavigationLabel {
 
             override val arguments: Bundle
-                get() = bundleOf(
-                    ReadingModeComposeFragment.READING_MODE_ARGS to ReadingModeArguments(readingMode)
-                )
+                get() = bundleOf()
 
             override val containerId: Int = R.id.mainActivityNavHostFragment
 
