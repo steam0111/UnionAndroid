@@ -1,5 +1,6 @@
 package com.itrocket.union.container.domain
 
+import android.util.Log
 import android.view.KeyEvent
 import com.itrocket.core.base.CoreDispatchers
 import kotlinx.coroutines.CoroutineScope
@@ -22,8 +23,8 @@ class ScannerManager(
     init {
         coroutineScope.launch {
             serviceEntry.initialize()
-            serviceEntryManager.changeScanMode(ReaderMode.RFID)
             serviceEntryManager.checkKeyCode()
+            serviceEntryManager.changeScanMode(ReaderMode.RFID)
 
             launch {
                 serviceEntryManager.keyCode.collect {

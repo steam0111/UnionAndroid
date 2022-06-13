@@ -1,5 +1,6 @@
 package com.itrocket.union.readingMode.presentation.store
 
+import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -46,7 +47,9 @@ class ReadingModeStoreFactory(
             action: Unit,
             getState: () -> ReadingModeStore.State
         ) {
+            Log.e("Tabs","${serviceEntryManager.currentMode.toReadingModeTab()}")
             dispatch(Result.ReadingModeSelected(serviceEntryManager.currentMode.toReadingModeTab()))
+            Log.e("Tabs","${getState().selectedTab.toReaderMode()}")
             readingModeInteractor.changeScanMode(getState().selectedTab.toReaderMode())
             dispatch(Result.IsManualInputEnabled(getState().selectedTab != ReadingModeTab.RFID))
         }
