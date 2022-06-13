@@ -36,6 +36,7 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
             DocumentMenuDomain(titleId = R.string.nomenclature_group, iconId = R.drawable.ic_inventory),
             DocumentMenuDomain(titleId = R.string.nomenclature, iconId = R.drawable.ic_inventory),
             DocumentMenuDomain(titleId = R.string.organizations, iconId = R.drawable.ic_inventory),
-        )
+            DocumentMenuDomain(titleId = R.string.departments, iconId = R.drawable.ic_inventory),
+            )
     }
 }

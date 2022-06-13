@@ -501,7 +501,7 @@ fun DefaultListItem(
             item.subtitles.forEach {
                 if (!it.value.isNullOrBlank()) {
                     Text(
-                        text = stringResource(R.string.common_two_dots, it.key, it.value.orEmpty()),
+                        text = stringResource(R.string.common_two_dots, stringResource(it.key), it.value.orEmpty()),
                         style = AppTheme.typography.caption,
                         color = psb3
                     )
@@ -612,7 +612,7 @@ fun DefaultListItemPreview() {
             id = "1",
             title = "Organization",
             subtitles = mapOf(
-                "Subtitle1" to "value1", "Subtitle2" to "value2"
+                R.string.department_code to "value1",  R.string.department_code to "value2"
             ),
 
             ), onItemClickListener = {},
