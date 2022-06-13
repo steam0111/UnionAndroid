@@ -65,6 +65,7 @@
     <string name="nomenclature_group">Ном. группа</string>
     <string name="nomenclature">Номенклатура</string>
     <string name="organizations">Организации</string>
+    <string name="departments">Подразделения</string>
 
     <!-- Manual -->
     <string name="manual_organization">Организация</string>
@@ -142,4 +143,10 @@
 
     <!-- Organizations -->
     <string name="organizations_title">Организации</string>
+    <string name="organization_actual_address">Фактический адрес</string>
+    <string name="organization_legal_address">"Юридический адрес</string>
+
+    <!-- Departments -->
+    <string name="departments_title">Подразделения</string>
+    <string name="department_code">Код подразделения</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.itrocket.union.organizations.domain.entity
 
+import com.itrocket.union.R
 import com.itrocket.union.common.DefaultItem
 
 data class OrganizationDomain(
@@ -13,5 +14,8 @@ fun OrganizationDomain.toDefaultItem() =
     DefaultItem(
         id = id,
         title = name,
-        subtitles = mapOf("Фактический адрес" to actualAddress, "Юридический адрес" to legalAddress)
+        subtitles = mapOf(
+            R.string.organization_actual_address to actualAddress,
+            R.string.organization_legal_address to legalAddress
+        )
     )

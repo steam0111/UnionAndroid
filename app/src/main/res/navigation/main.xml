@@ -46,6 +46,9 @@
         <action
             android:id="@+id/to_organizations"
             app:destination="@id/organization" />
+        <action
+            android:id="@+id/to_departments"
+            app:destination="@id/departments" />
     </fragment>
 
     <fragment
@@ -205,4 +208,8 @@
     <fragment
         android:id="@+id/organization"
         android:name="com.itrocket.union.organizations.presentation.view.OrganizationComposeFragment" />
+
+    <fragment
+        android:id="@+id/departments"
+        android:name="com.itrocket.union.departments.presentation.view.DepartmentComposeFragment" />
 </navigation>

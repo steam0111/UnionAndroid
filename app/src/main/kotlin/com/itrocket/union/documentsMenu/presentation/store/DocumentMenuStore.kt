@@ -71,6 +71,7 @@ interface DocumentMenuStore :
                     )
                     R.string.main_inventory -> DocumentMenuComposeFragmentDirections.toInventory()
                     R.string.organizations -> DocumentMenuComposeFragmentDirections.toOrganizations()
+                    R.string.departments -> DocumentMenuComposeFragmentDirections.toDepartments()
                     else -> DocumentMenuComposeFragmentDirections.toAccountingObjects()
                 }
         }

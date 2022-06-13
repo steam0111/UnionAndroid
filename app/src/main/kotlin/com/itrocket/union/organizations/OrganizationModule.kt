@@ -12,7 +12,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 object OrganizationModule {
-    val ORGANIZATION_VIEW_MODEL_QUALIFIER = named("DEPARTMENT_VIEW_MODEL")
+    val ORGANIZATION_VIEW_MODEL_QUALIFIER = named("ORGANIZATION_VIEW_MODEL")
 
     val module = module {
         viewModel(ORGANIZATION_VIEW_MODEL_QUALIFIER) {
