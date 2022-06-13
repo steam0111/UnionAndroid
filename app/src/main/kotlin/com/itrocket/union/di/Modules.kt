@@ -20,6 +20,8 @@ import com.itrocket.union.readingMode.ReadingModeModule
 import com.itrocket.union.reserveDetail.ReserveDetailModule
 import com.itrocket.union.reserves.ReservesModule
 import com.itrocket.union.scanner.ScannerModule
+import com.itrocket.union.inventory.InventoryModule
+import ru.interid.weatherford.selectParams.SelectParamsModule
 import com.itrocket.union.serverConnect.ServerConnectModule
 import com.itrocket.union.sync.SyncModule
 import com.itrocket.union.token.TokenModule
@@ -50,6 +52,8 @@ object Modules {
         NomenclatureModule.module,
         ModuleSettingsModule.module,
         ScannerModule.module,
+        InventoryModule.module,
+        SelectParamsModule.module,
         TokenModule.module,
         SyncModule.module
     )

@@ -62,7 +62,7 @@ fun DoubleTabRow(
                     unselectedTextColor
                 },
                 modifier = Modifier
-                    .padding(3.dp)
+                    .padding(6.dp)
                     .clip(RoundedCornerShape(6.dp))
                     .clickable(enabled = enabled) {
                         onTabClickListener(index)
