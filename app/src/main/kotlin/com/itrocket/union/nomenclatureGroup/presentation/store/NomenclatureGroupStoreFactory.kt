@@ -37,9 +37,11 @@ class NomenclatureGroupStoreFactory(
             action: Unit,
             getState: () -> NomenclatureGroupStore.State
         ) {
+            dispatch(Result.Loading(true))
             catchException {
                 dispatch(Result.NomenclatureGroups(nomenclatureGroupInteractor.getNomenclatureGroups()))
             }
+            dispatch(Result.Loading(false))
         }
 
         override suspend fun executeIntent(

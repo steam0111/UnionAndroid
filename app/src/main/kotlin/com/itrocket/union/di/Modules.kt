@@ -12,17 +12,19 @@ import com.itrocket.union.documentsMenu.DocumentMenuModule
 import com.itrocket.union.filter.FilterModule
 import com.itrocket.union.filterValues.FilterValueModule
 import com.itrocket.union.location.LocationModule
+import com.itrocket.union.moduleSettings.ModuleSettingsModule
 import com.itrocket.union.network.NetworkModule
 import com.itrocket.union.nomenclature.NomenclatureModule
 import com.itrocket.union.nomenclatureGroup.NomenclatureGroupModule
 import com.itrocket.union.readingMode.ReadingModeModule
 import com.itrocket.union.reserveDetail.ReserveDetailModule
 import com.itrocket.union.reserves.ReservesModule
-import com.itrocket.union.serverConnect.ServerConnectModule
-import com.itrocket.union.moduleSettings.ModuleSettingsModule
 import com.itrocket.union.scanner.ScannerModule
 import com.itrocket.union.inventory.InventoryModule
 import ru.interid.weatherford.selectParams.SelectParamsModule
+import com.itrocket.union.serverConnect.ServerConnectModule
+import com.itrocket.union.sync.SyncModule
+import com.itrocket.union.token.TokenModule
 import com.itrocket.union.inventoryCreate.InventoryCreateModule
 
 object Modules {
@@ -53,6 +55,8 @@ object Modules {
         ScannerModule.module,
         InventoryModule.module,
         SelectParamsModule.module,
+        TokenModule.module,
+        SyncModule.module,
         InventoryCreateModule.module
     )
 }
