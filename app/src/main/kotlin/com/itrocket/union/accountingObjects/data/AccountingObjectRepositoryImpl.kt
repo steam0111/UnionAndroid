@@ -4,6 +4,7 @@ import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObject
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.manual.ParamDomain
 
 class AccountingObjectRepositoryImpl : AccountingObjectRepository {
 
@@ -164,5 +165,31 @@ class AccountingObjectRepositoryImpl : AccountingObjectRepository {
                 listAdditionallyInfo = listOf()
             )
         )
+
+
+    // Надо добавить фильтрацию по параметрам.
+    // У параметра есть тип, который показывает, значение какого справочника там лежит.
+    // Если необходимо, для локации можно создать наследника от ParamDomain, который будет содержать дерево.
+    override suspend fun getAccountingObjectsByParams(params: List<ParamDomain>): List<AccountingObjectDomain> {
+        return listOf(
+            AccountingObjectDomain(
+                id = "5",
+                isBarcode = true,
+                title = "Ширикоформатный жидкокристалический монитор Samsung",
+                status = ObjectStatus.UNDER_REPAIR,
+                listMainInfo = listOf(
+                    ObjectInfoDomain(
+                        "Заводской номер",
+                        "таылватвлыавыалвыоалвыа"
+                    ),
+                    ObjectInfoDomain(
+                        "Инвентарный номер",
+                        "таылватвлыавыалвыоалвыа"
+                    ),
+                ),
+                listAdditionallyInfo = listOf()
+            )
+        )
+    }
 
 }
