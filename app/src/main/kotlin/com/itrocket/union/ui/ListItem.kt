@@ -90,7 +90,7 @@ fun AccountingObjectItem(
         }
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             SmallStatusLabel(status = status)
-            if (status is ObjectStatus) {
+            if(status is ObjectStatus) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
