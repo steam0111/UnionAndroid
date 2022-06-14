@@ -15,6 +15,11 @@ class ErrorHandlerInterceptor : Interceptor {
         if (networkException != null && !networkException.code.isNullOrBlank()) {
             throw networkException
         }
+
+        val httpException = HttpException.parseFromString(responseBodyString)
+        if (httpException != null && !httpException.error.isNullOrBlank()) {
+            throw httpException
+        }
         val body = responseBodyString.toResponseBody(response.body?.contentType())
         return response.newBuilder().body(body).build()
     }
