@@ -1,6 +1,6 @@
 package com.example.union_sync_api.entity
 
-class OrganizationSyncEntity(
+data class OrganizationSyncEntity(
     val id: String,
     val name: String,
     val catalogItemName: String,

@@ -48,6 +48,7 @@ import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
+import com.itrocket.union.employees.domain.entity.EmployeeDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.utils.clickableUnbounded
 
@@ -636,5 +637,79 @@ fun InventoryDocumentItemPreview() {
                 "Систмный интегратор",
             )
         )
+    )
+}
+
+@Composable
+fun EmployeeItem(
+    item: EmployeeDomain,
+    onEmployeeClickListener: (EmployeeDomain) -> Unit,
+    isShowBottomLine: Boolean
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = { onEmployeeClickListener(item) })
+            .padding(vertical = 12.dp, horizontal = 16.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(0.7f)
+        ) {
+            Text(
+                text = item.fullName,
+                style = AppTheme.typography.body1,
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(
+                    R.string.employees_service_number,
+                    item.number
+                ),
+                style = AppTheme.typography.caption,
+                color = psb3
+            )
+        }
+        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                Text(
+                    text = stringResource(R.string.employees_nfc),
+                    style = AppTheme.typography.caption,
+                    color = graphite5,
+                    modifier = Modifier.padding(end = 4.dp)
+                )
+                RadioButton(
+                    selected = item.hasNfc,
+                    onClick = null,
+                    colors = RadioButtonDefaults.colors(
+                        selectedColor = psb6,
+                        unselectedColor = graphite3
+                    )
+                )
+            }
+        }
+    }
+    if (isShowBottomLine) {
+        BottomLine()
+    }
+}
+
+@Preview
+@Composable
+fun EmployeeItemPreview() {
+    EmployeeItem(
+        item = EmployeeDomain(
+            id = "1",
+            nfc = null,
+            catalogItemName = "Ким У Бин",
+            number = "BO_173470001290",
+            firstname = "Ким",
+            lastname = "У",
+            patronymic = "Бин"
+        ), onEmployeeClickListener = {}, isShowBottomLine = true
     )
 }

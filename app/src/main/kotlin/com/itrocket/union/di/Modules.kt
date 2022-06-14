@@ -11,6 +11,7 @@ import com.itrocket.union.organizations.OrganizationModule
 import com.itrocket.union.departments.DepartmentModule
 import com.itrocket.union.documents.DocumentModule
 import com.itrocket.union.documentsMenu.DocumentMenuModule
+import com.itrocket.union.employees.EmployeeModule
 import com.itrocket.union.filter.FilterModule
 import com.itrocket.union.filterValues.FilterValueModule
 import com.itrocket.union.location.LocationModule
@@ -61,6 +62,7 @@ object Modules {
         SyncModule.module,
         InventoryCreateModule.module,
         OrganizationModule.module,
-        DepartmentModule.module
+        DepartmentModule.module,
+        EmployeeModule.module
     )
 }

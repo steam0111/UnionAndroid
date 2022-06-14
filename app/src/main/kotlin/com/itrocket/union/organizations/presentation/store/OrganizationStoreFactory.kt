@@ -3,9 +3,10 @@ package com.itrocket.union.organizations.presentation.store
 import com.arkivanov.mvikotlin.core.store.*
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
-import com.itrocket.union.authUser.presentation.store.AuthUserStore
 import com.itrocket.union.organizations.domain.OrganizationInteractor
 import com.itrocket.union.organizations.domain.entity.OrganizationDomain
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 
 class OrganizationStoreFactory(
     private val storeFactory: StoreFactory,
@@ -33,11 +34,16 @@ class OrganizationStoreFactory(
             action: Unit,
             getState: () -> OrganizationStore.State
         ) {
-            dispatch(Result.Loading(true))
             catchException {
-                dispatch(Result.Organizations(organizationInteractor.getOrganizations()))
+                dispatch(Result.Loading(true))
+                organizationInteractor.getOrganizations()
+                    .catch { dispatch(Result.Loading(false)) }
+                    .collect {
+                        dispatch(Result.Organizations(it))
+                        dispatch(Result.Loading(false))
+                    }
             }
-            dispatch(Result.Loading(false))
+
         }
 
         override suspend fun executeIntent(
@@ -53,6 +59,7 @@ class OrganizationStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
+            dispatch(Result.Loading(false))
             publish(OrganizationStore.Label.Error(throwable.message.orEmpty()))
         }
     }

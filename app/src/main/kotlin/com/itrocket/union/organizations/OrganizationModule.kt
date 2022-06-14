@@ -20,11 +20,11 @@ object OrganizationModule {
         }
 
         factory<OrganizationRepository> {
-            OrganizationRepositoryImpl(get(), get())
+            OrganizationRepositoryImpl(get())
         }
 
         factory {
-            OrganizationInteractor(get(), get())
+            OrganizationInteractor(get())
         }
 
         factory {

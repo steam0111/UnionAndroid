@@ -3,10 +3,12 @@ package com.itrocket.union.sync
 import androidx.room.Room
 import com.example.union_sync_api.data.DepartmentSyncApi
 import com.example.union_sync_api.data.OrganizationSyncApi
+import com.example.union_sync_api.data.EmployeeSyncApi
 import com.example.union_sync_api.data.NomenclatureGroupSyncApi
 import com.example.union_sync_impl.UnionDatabase
 import com.example.union_sync_impl.data.DepartmentSyncApiImpl
 import com.example.union_sync_impl.data.OrganizationSyncApiImpl
+import com.example.union_sync_impl.data.EmployeeSyncApiImpl
 import com.example.union_sync_impl.data.NomenclatureGroupSyncApiImpl
 import org.koin.dsl.module
 
@@ -28,6 +30,13 @@ object SyncModule {
             DepartmentSyncApiImpl(
                 departmentApi = get(),
                 departmentDao = get(),
+                organizationDao = get()
+            )
+        }
+        factory<EmployeeSyncApi> {
+            EmployeeSyncApiImpl(
+                employeeApi = get(),
+                employeeDao = get(),
                 organizationDao = get()
             )
         }
@@ -54,6 +63,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().departmentDao()
+        }
+        factory {
+            get<UnionDatabase>().employeeDao()
         }
     }
 }

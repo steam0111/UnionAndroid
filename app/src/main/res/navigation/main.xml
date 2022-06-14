@@ -49,6 +49,9 @@
         <action
             android:id="@+id/to_departments"
             app:destination="@id/departments" />
+        <action
+            android:id="@+id/to_employees"
+            app:destination="@+id/employees" />
     </fragment>
 
     <fragment
@@ -103,6 +106,10 @@
             app:argType="com.itrocket.union.documents.presentation.store.DocumentArguments"
             app:nullable="false" />
     </fragment>
+
+    <fragment
+        android:id="@+id/employees"
+        android:name="com.itrocket.union.employees.presentation.view.EmployeeComposeFragment"></fragment>
 
     <fragment
         android:id="@+id/filter"
