@@ -102,7 +102,7 @@ class InventoryStoreFactory(
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
             if (param.type == ManualType.LOCATION) {
                 publish(
-                    InventoryStore.Label.ShowLocation(param.value)
+                    InventoryStore.Label.ShowLocation(param.paramValue?.value.orEmpty())
                 )
             } else {
                 publish(

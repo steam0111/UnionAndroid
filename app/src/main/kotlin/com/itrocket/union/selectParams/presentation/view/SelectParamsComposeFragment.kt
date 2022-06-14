@@ -4,7 +4,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.navArgs
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
-import ru.interid.weatherford.selectParams.SelectParamsModule.SELECTPARAMS_VIEW_MODEL_QUALIFIER
+import com.itrocket.union.selectParams.SelectParamsModule.SELECTPARAMS_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.selectParams.presentation.store.SelectParamsStore
 
 class SelectParamsComposeFragment :
