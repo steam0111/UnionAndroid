@@ -3,23 +3,28 @@ package com.itrocket.union.inventoryCreate.presentation.store
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
-import com.itrocket.core.navigation.NavigationLabel
+import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.inventory.domain.entity.InventoryDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
 import com.itrocket.union.newAccountingObject.presentation.view.NewAccountingObjectComposeFragment
+import com.itrocket.union.switcher.domain.entity.SwitcherDomain
+import com.itrocket.union.switcher.presentation.store.SwitcherArguments
+import com.itrocket.union.switcher.presentation.store.SwitcherResult
+import com.itrocket.union.switcher.presentation.view.SwitcherComposeFragment
 
 interface InventoryCreateStore :
     Store<InventoryCreateStore.Intent, InventoryCreateStore.State, InventoryCreateStore.Label> {
 
     sealed class Intent {
         data class OnAccountingObjectClicked(val accountingObject: AccountingObjectDomain) :
+            Intent()
+
+        data class OnAccountingObjectStatusChanged(val switcherResult: SwitcherResult) :
             Intent()
 
         data class OnNewAccountingObjectsHandled(val handledAccountingObjectIds: List<String>) :
@@ -45,7 +50,21 @@ interface InventoryCreateStore :
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
-        object ShowChangeStatus : Label()
+        data class ShowChangeStatus(val switcherData: SwitcherDomain) : Label(),
+            ShowBottomSheetNavigationLabel {
+            override val arguments: Bundle
+                get() = bundleOf(
+                    SwitcherComposeFragment.SWITCHER_ARG to SwitcherArguments(
+                        switcherData
+                    )
+                )
+            override val containerId: Int
+                get() = R.id.mainActivityNavHostFragment
+            override val fragment: Fragment
+                get() = SwitcherComposeFragment()
+
+        }
+
         data class ShowNewAccountingObjectDetail(val newAccountingObjectArgument: NewAccountingObjectArguments) :
             Label(),
             ShowBottomSheetNavigationLabel {
@@ -59,7 +78,6 @@ interface InventoryCreateStore :
                 get() = NewAccountingObjectComposeFragment()
 
         }
-
         object ShowLeaveWithoutSave : Label()
         object ShowReading : Label()
     }

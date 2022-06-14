@@ -21,12 +21,27 @@ import org.koin.android.ext.android.inject
 import ru.interid.scannerclient.domain.reader.ReaderMode
 import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
+import com.itrocket.union.switcher.presentation.store.SwitcherResult
+import com.itrocket.union.switcher.presentation.view.SwitcherComposeFragment
 
 class InventoryCreateComposeFragment :
     BaseComposeFragment<InventoryCreateStore.Intent, InventoryCreateStore.State, InventoryCreateStore.Label>(
         INVENTORYCREATE_VIEW_MODEL_QUALIFIER
     ) {
     override val navArgs by navArgs<InventoryCreateComposeFragmentArgs>()
+
+    override val fragmentResultList: List<FragmentResult>
+        get() = listOf(
+            FragmentResult(
+                resultLabel = SwitcherComposeFragment.SWITCHER_RESULT,
+                resultCode = SwitcherComposeFragment.SWITCHER_RESULT_CODE,
+                resultAction = {
+                    (it as? SwitcherResult?)?.let {
+                        accept(InventoryCreateStore.Intent.OnAccountingObjectStatusChanged(it))
+                    }
+                }
+            )
+        )
 
     private val serviceEntryManager: ServiceEntryManager by inject()
 

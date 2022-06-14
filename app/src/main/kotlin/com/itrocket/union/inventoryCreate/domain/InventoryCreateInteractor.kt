@@ -7,6 +7,7 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectsDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryStatus
+import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 
 class InventoryCreateInteractor(
     private val repository: InventoryCreateRepository,
@@ -46,11 +47,22 @@ class InventoryCreateInteractor(
         return accountingObjects.map { it.copy() }
     }
 
+    fun changeAccountingObjectInventoryStatus(
+        accountingObjects: List<AccountingObjectDomain>,
+        switcherDomain: SwitcherDomain
+    ): List<AccountingObjectDomain> {
+        val mutableList = accountingObjects.toMutableList()
+        val newStatus = switcherDomain.currentValue
+        val index = accountingObjects.indexOfFirst { it.id == switcherDomain.entityId }
+        mutableList[index] = mutableList[index].copy(inventoryStatus = newStatus as InventoryStatus)
+        return mutableList
+    }
+
     fun isNewAccountingObject(
         accountingObjects: List<AccountingObjectDomain>,
         newAccountingObject: AccountingObjectDomain
     ): Boolean {
-        return accountingObjects.contains(newAccountingObject)
+        return !accountingObjects.contains(newAccountingObject)
     }
 
     companion object {
