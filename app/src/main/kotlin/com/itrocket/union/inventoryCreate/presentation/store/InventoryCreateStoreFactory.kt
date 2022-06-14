@@ -7,10 +7,13 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryStatus
 import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
+import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 
 class InventoryCreateStoreFactory(
     private val storeFactory: StoreFactory,
@@ -75,6 +78,16 @@ class InventoryCreateStoreFactory(
                     newAccountingObjects = getState().newAccountingObjects.toList(),
                     handledAccountingObjectIds = intent.handledAccountingObjectIds,
                 )
+                is InventoryCreateStore.Intent.OnAccountingObjectStatusChanged -> {
+                    dispatch(
+                        Result.AccountingObjects(
+                            inventoryCreateInteractor.changeAccountingObjectInventoryStatus(
+                                getState().accountingObjects,
+                                intent.switcherResult.result
+                            )
+                        )
+                    )
+                }
             }
         }
 
@@ -101,12 +114,24 @@ class InventoryCreateStoreFactory(
             accountingObjects: List<AccountingObjectDomain>,
             accountingObject: AccountingObjectDomain
         ) {
-            if (inventoryCreateInteractor.isNewAccountingObject(
+            if (!inventoryCreateInteractor.isNewAccountingObject(
                     accountingObjects = accountingObjects,
                     newAccountingObject = accountingObject
                 )
             ) {
-                publish(InventoryCreateStore.Label.ShowChangeStatus)
+                publish(
+                    InventoryCreateStore.Label.ShowChangeStatus(
+                        SwitcherDomain(
+                            titleId = R.string.switcher_accounting_object_status,
+                            values = listOf(
+                                InventoryStatus.NOT_FOUND,
+                                InventoryStatus.FOUND
+                            ),
+                            currentValue = accountingObject.inventoryStatus,
+                            entityId = accountingObject.id
+                        )
+                    )
+                )
             } else {
                 publish(
                     InventoryCreateStore.Label.ShowNewAccountingObjectDetail(

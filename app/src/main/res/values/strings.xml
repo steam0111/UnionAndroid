@@ -17,6 +17,7 @@
     <string name="common_drop">Сбросить</string>
     <string name="common_apply">Применить</string>
     <string name="common_cancel">Отмена</string>
+    <string name="common_continue">Продолжить</string>
     <string name="common_finish">Готово</string>
     <string name="common_step">Шаг %s</string>
     <string name="common_next">Далее</string>
@@ -141,6 +142,9 @@
     <string name="inventory_create_new">Новый</string>
     <string name="inventory_create_found">Найден</string>
     <string name="inventory_create_not_found">Не найден</string>
+
+    <!-- Switcher -->
+    <string name="switcher_accounting_object_status">Статус ОС</string>
 
     <!-- NewAccountingObject -->
     <string name="new_accounting_object_title">Новый ОУ</string>
