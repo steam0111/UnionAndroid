@@ -26,7 +26,7 @@ import com.example.union_sync_impl.entity.location.LocationPath
         OrganizationDb::class,
         DepartmentDb::class,
         EmployeeDb::class
-    ], version = 14
+    ], version = 15
 )
 abstract class UnionDatabase : RoomDatabase() {
     abstract fun nomenclatureGroupDao(): NomenclatureGroupDao
