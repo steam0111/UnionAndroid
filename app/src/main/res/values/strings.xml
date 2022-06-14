@@ -25,6 +25,7 @@
     <string name="common_save">Сохранить</string>
     <string name="common_create">Создать</string>
     <string name="common_reading">Считывание</string>
+    <string name="common_add">Добавить</string>
 
     <!-- Auth -->
     <string name="auth_suggest">Это нужно сделать один раз</string>
@@ -140,6 +141,9 @@
     <string name="inventory_create_new">Новый</string>
     <string name="inventory_create_found">Найден</string>
     <string name="inventory_create_not_found">Не найден</string>
+
+    <!-- NewAccountingObject -->
+    <string name="new_accounting_object_title">Новый ОУ</string>
 
     <!-- Organizations -->
     <string name="organizations_title">Организации</string>

@@ -5,12 +5,12 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.itrocket.core.base.BaseExecutor
+import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
-import com.itrocket.core.base.CoreDispatchers
-import com.itrocket.core.base.BaseExecutor
-import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
 
 class InventoryCreateStoreFactory(
     private val storeFactory: StoreFactory,
@@ -24,7 +24,7 @@ class InventoryCreateStoreFactory(
                 name = "InventoryCreateStore",
                 initialState = InventoryCreateStore.State(
                     accountingObjects = inventoryCreateArguments.accountingObjects,
-                    inventoryDocument = inventoryCreateArguments.inventoryDocument
+                    inventoryDocument = inventoryCreateArguments.inventoryDocument,
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
@@ -70,7 +70,31 @@ class InventoryCreateStoreFactory(
                     inventoryDocument = getState().inventoryDocument,
                     accountingObjects = getState().accountingObjects
                 )
+                is InventoryCreateStore.Intent.OnNewAccountingObjectsHandled -> handleNewAccountingObjects(
+                    accountingObjects = getState().accountingObjects,
+                    newAccountingObjects = getState().newAccountingObjects.toList(),
+                    handledAccountingObjectIds = intent.handledAccountingObjectIds,
+                )
             }
+        }
+
+        private suspend fun handleNewAccountingObjects(
+            accountingObjects: List<AccountingObjectDomain>,
+            handledAccountingObjectIds: List<String>,
+            newAccountingObjects: List<AccountingObjectDomain>
+        ) {
+            dispatch(Result.Loading(true))
+            catchException {
+                val inventoryAccountingObjects = inventoryCreateInteractor.handleNewAccountingObjects(
+                    accountingObjects = accountingObjects,
+                    handledAccountingObjectIds = handledAccountingObjectIds
+                )
+                dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
+                dispatch(
+                    Result.NewAccountingObjects((newAccountingObjects + inventoryAccountingObjects.newAccountingObjects).toSet())
+                )
+            }
+            dispatch(Result.Loading(true))
         }
 
         private fun handleAccountingObjectClicked(
@@ -84,7 +108,13 @@ class InventoryCreateStoreFactory(
             ) {
                 publish(InventoryCreateStore.Label.ShowChangeStatus)
             } else {
-                publish(InventoryCreateStore.Label.ShowNewAccountingObjectDetail)
+                publish(
+                    InventoryCreateStore.Label.ShowNewAccountingObjectDetail(
+                        NewAccountingObjectArguments(
+                            accountingObject
+                        )
+                    )
+                )
             }
         }
 
@@ -101,7 +131,7 @@ class InventoryCreateStoreFactory(
         }
 
         private fun drop(state: InventoryCreateStore.State) {
-            dispatch(Result.NewAccountingObjects(listOf()))
+            dispatch(Result.NewAccountingObjects(setOf()))
             dispatch(
                 Result.AccountingObjects(
                     inventoryCreateInteractor.dropAccountingObjects(
@@ -125,7 +155,7 @@ class InventoryCreateStoreFactory(
             Result()
 
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
-        data class NewAccountingObjects(val newAccountingObjects: List<AccountingObjectDomain>) :
+        data class NewAccountingObjects(val newAccountingObjects: Set<AccountingObjectDomain>) :
             Result()
     }
 
