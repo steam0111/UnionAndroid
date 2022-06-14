@@ -23,7 +23,8 @@ object SyncModule {
         factory<OrganizationSyncApi> {
             OrganizationSyncApiImpl(
                 organizationApi = get(),
-                organizationDao = get()
+                organizationDao = get(),
+                networkSyncDao = get()
             )
         }
         factory<DepartmentSyncApi> {
@@ -66,6 +67,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().employeeDao()
+        }
+        factory {
+            get<UnionDatabase>().networkSyncDao()
         }
     }
 }
