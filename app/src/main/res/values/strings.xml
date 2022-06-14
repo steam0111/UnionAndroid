@@ -149,4 +149,9 @@
     <!-- Departments -->
     <string name="departments_title">Подразделения</string>
     <string name="department_code">Код подразделения</string>
+
+    <!-- Employees -->
+    <string name="employees_nfc">NFC</string>
+    <string name="employees_title">Сотрудники</string>
+    <string name="employees_service_number">Табельный номер: %s</string>
 </resources>
