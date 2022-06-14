@@ -131,6 +131,7 @@
 
     <!-- Inventory -->
     <string name="inventory_ao_title">Инвентаризация «ОС»</string>
+    <string name="inventory_reserves_title">Инвентаризация «Запасы»</string>
     <string name="inventory_params">Параметры</string>
     <string name="inventory_accounting_object">Объекты учета</string>
 

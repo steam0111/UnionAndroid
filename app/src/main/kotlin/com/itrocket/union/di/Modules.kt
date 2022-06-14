@@ -28,6 +28,7 @@ import com.itrocket.union.serverConnect.ServerConnectModule
 import com.itrocket.union.sync.SyncModule
 import com.itrocket.union.token.TokenModule
 import com.itrocket.union.inventoryCreate.InventoryCreateModule
+import com.itrocket.union.inventoryReserves.InventoryReservesModule
 
 object Modules {
 
@@ -61,6 +62,7 @@ object Modules {
         SyncModule.module,
         InventoryCreateModule.module,
         OrganizationModule.module,
-        DepartmentModule.module
+        DepartmentModule.module,
+        InventoryReservesModule.module
     )
 }

@@ -212,4 +212,14 @@
     <fragment
         android:id="@+id/departments"
         android:name="com.itrocket.union.departments.presentation.view.DepartmentComposeFragment" />
+
+    <fragment
+        android:id="@+id/inventoryReserves"
+        android:name="com.itrocket.union.inventoryReserves.presentation.view.InventoryReservesComposeFragment"
+        android:label="InventoryReserves">
+
+        <argument
+            android:name="InventoryReservesArguments"
+            app:argType="com.itrocket.union.inventoryReserves.presentation.store.InventoryReservesArguments" />
+    </fragment>
 </navigation>
