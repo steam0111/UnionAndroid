@@ -10,8 +10,10 @@ import com.example.union_sync_impl.dao.NomenclatureGroupDao
 import com.example.union_sync_impl.dao.OrganizationDao
 import com.example.union_sync_impl.entity.DepartmentDb
 import com.example.union_sync_impl.dao.EmployeeDao
+import com.example.union_sync_impl.dao.NetworkSyncDao
 import com.example.union_sync_impl.entity.NomenclatureDb
 import com.example.union_sync_impl.entity.EmployeeDb
+import com.example.union_sync_impl.entity.NetworkSyncDb
 import com.example.union_sync_impl.entity.NomenclatureGroupDb
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.OrganizationDb
@@ -25,8 +27,9 @@ import com.example.union_sync_impl.entity.location.LocationPath
         LocationPath::class,
         OrganizationDb::class,
         DepartmentDb::class,
-        EmployeeDb::class
-    ], version = 15
+        EmployeeDb::class,
+        NetworkSyncDb::class
+    ], version = 16
 )
 abstract class UnionDatabase : RoomDatabase() {
     abstract fun nomenclatureGroupDao(): NomenclatureGroupDao
@@ -36,4 +39,5 @@ abstract class UnionDatabase : RoomDatabase() {
     abstract fun organizationDao(): OrganizationDao
     abstract fun departmentDao(): DepartmentDao
     abstract fun employeeDao(): EmployeeDao
+    abstract fun networkSyncDao(): NetworkSyncDao
 }
