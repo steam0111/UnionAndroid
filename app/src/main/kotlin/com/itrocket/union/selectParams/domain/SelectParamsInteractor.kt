@@ -11,9 +11,15 @@ class SelectParamsInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    suspend fun getParamValues(type: ManualType, searchText: String) = withContext(coreDispatchers.io) {
-        selectParamsRepository.getParamValues(type, searchText)
-    }
+    suspend fun getParamValues(type: ManualType, searchText: String) =
+        withContext(coreDispatchers.io) {
+            when (type) {
+                ManualType.ORGANIZATION -> selectParamsRepository.getOrganizationList()
+                    .filter { it.lowercase().contains(searchText.lowercase()) }
+                ManualType.MOL -> selectParamsRepository.getParamValues(type, searchText)
+                ManualType.LOCATION -> selectParamsRepository.getParamValues(type, searchText)
+            }
+        }
 
     fun changeParamValue(
         params: List<ParamDomain>,

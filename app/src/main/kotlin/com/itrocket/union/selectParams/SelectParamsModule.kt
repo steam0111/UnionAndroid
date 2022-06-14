@@ -1,4 +1,4 @@
-package ru.interid.weatherford.selectParams
+package com.itrocket.union.selectParams
 
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.itrocket.core.base.BaseViewModel
@@ -24,7 +24,7 @@ object SelectParamsModule {
         }
 
         factory<SelectParamsRepository> {
-            SelectParamsRepositoryImpl()
+            SelectParamsRepositoryImpl(get(), get())
         }
 
         factory {

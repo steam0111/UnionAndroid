@@ -44,6 +44,7 @@ import com.itrocket.union.selectParams.presentation.store.SelectParamsStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.ButtonWithContent
 import com.itrocket.union.ui.IndicatorWithText
+import com.itrocket.union.ui.LoadingContent
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.OutlinedImageButton
 import com.itrocket.union.ui.RadioButtonField
@@ -85,14 +86,16 @@ fun SelectParamsScreen(
                 )
             },
             content = {
-                Content(
-                    currentParam = state.params[state.currentStep - 1],
-                    currentParamValues = state.currentParamValues,
-                    paddingValues = it,
-                    onItemSelected = onItemSelected,
-                    onSearchTextChanged = onSearchTextChanged,
-                    searchText = state.searchText
-                )
+                LoadingContent(isLoading = state.isLoading) {
+                    Content(
+                        currentParam = state.params[state.currentStep - 1],
+                        currentParamValues = state.currentParamValues,
+                        paddingValues = it,
+                        onItemSelected = onItemSelected,
+                        onSearchTextChanged = onSearchTextChanged,
+                        searchText = state.searchText
+                    )
+                }
             },
             modifier = Modifier.padding(
                 top = appInsets.topInset.dp,
