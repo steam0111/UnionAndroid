@@ -11,9 +11,13 @@ import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.ParamValueDomain
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor.Companion.MIN_CURRENT_STEP
 import kotlin.math.max
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 class SelectParamsStoreFactory(
     private val storeFactory: StoreFactory,
@@ -41,29 +45,14 @@ class SelectParamsStoreFactory(
         SuspendExecutor<SelectParamsStore.Intent, Unit, SelectParamsStore.State, Result, SelectParamsStore.Label>(
             mainContext = coreDispatchers.ui
         ) {
+
+        private var searchJob: Job = Job()
+
         override suspend fun executeAction(
             action: Unit,
             getState: () -> SelectParamsStore.State
         ) {
-            val currentParam = getState().params[getState().currentStep - 1]
-            dispatch(Result.Loading(true))
-            dispatch(
-                Result.SearchText(
-                    TextFieldValue(
-                        text = currentParam.value,
-                        selection = TextRange(currentParam.value.length)
-                    )
-                )
-            )
-            dispatch(
-                Result.Values(
-                    selectParamsInteractor.getParamValues(
-                        currentParam.type,
-                        currentParam.value
-                    )
-                )
-            )
-            dispatch(Result.Loading(false))
+            initialAction(getState)
         }
 
         override suspend fun executeIntent(
@@ -79,70 +68,123 @@ class SelectParamsStoreFactory(
                     )
                 }
                 is SelectParamsStore.Intent.OnSearchTextChanged -> {
-                    dispatch(Result.Loading(true))
-                    dispatch(Result.SearchText(intent.searchText))
-
-                    val currentParam = getState().params[getState().currentStep - 1]
-
-                    dispatchValues(currentParam.type, intent.searchText.text)
-                    dispatch(Result.Loading(false))
+                    onSearchTextChanged(getState, intent.searchText)
                 }
                 SelectParamsStore.Intent.OnCrossClicked -> {
                     publish(SelectParamsStore.Label.GoBack())
                 }
                 is SelectParamsStore.Intent.OnItemSelected -> {
-                    dispatch(Result.Loading(true))
-
-                    val newParams = selectParamsInteractor.changeParamValue(
-                        params = getState().params,
-                        currentStep = getState().currentStep,
-                        paramValue = intent.item
-                    )
-                    dispatch(Result.Params(newParams))
-
-                    val currentParam = getState().params[getState().currentStep - 1]
-
-                    dispatchSearchText(currentParam.value)
-                    dispatchValues(
-                        currentParam.type,
-                        currentParam.value
-                    )
-                    dispatch(Result.Loading(false))
+                    onItemSelected(getState, intent.item)
                 }
                 SelectParamsStore.Intent.OnNextClicked -> {
-                    if (getState().currentStep == getState().params.size) {
-                        publish(
-                            SelectParamsStore.Label.GoBack(
-                                result = SelectParamsResult(getState().params)
-                            )
-                        )
-                    } else {
-                        dispatch(Result.Loading(true))
-                        dispatch(Result.Step(getState().currentStep + 1))
+                    onNextClicked(getState)
+                }
+                SelectParamsStore.Intent.OnPrevClicked -> {
+                    onPrevClicked(getState)
+                }
+            }
+        }
 
+        private suspend fun initialAction(getState: () -> SelectParamsStore.State) {
+            val currentParam = getState().params[getState().currentStep - 1]
+            dispatch(Result.Loading(true))
+            dispatch(
+                Result.SearchText(
+                    TextFieldValue(
+                        text = currentParam.paramValue?.value.orEmpty(),
+                        selection = TextRange(currentParam.paramValue?.value?.length ?: 0)
+                    )
+                )
+            )
+            dispatch(
+                Result.Values(
+                    selectParamsInteractor.getParamValues(
+                        currentParam.type,
+                        currentParam.paramValue?.value.orEmpty()
+                    )
+                )
+            )
+            dispatch(Result.Loading(false))
+        }
+
+        private suspend fun onSearchTextChanged(
+            getState: () -> SelectParamsStore.State,
+            searchText: TextFieldValue
+        ) {
+            if (searchText.text != getState().searchText.text) {
+                dispatch(Result.SearchText(searchText))
+
+                dispatch(Result.Loading(true))
+                searchJob.cancel()
+                searchJob = Job()
+                withContext(searchJob + coreDispatchers.io) {
+                    delay(SEARCH_DELAY)
+                    withContext(coreDispatchers.ui) {
                         val currentParam = getState().params[getState().currentStep - 1]
 
-                        dispatchSearchText(currentParam.value)
-                        dispatchValues(
-                            currentParam.type,
-                            currentParam.value
-                        )
+                        dispatchValues(currentParam.type, searchText.text)
                         dispatch(Result.Loading(false))
                     }
                 }
-                SelectParamsStore.Intent.OnPrevClicked -> {
-                    dispatch(Result.Loading(true))
-                    dispatch(Result.Step(max(getState().currentStep - 1, MIN_CURRENT_STEP)))
+            }
+        }
 
-                    val currentParam = getState().params[getState().currentStep - 1]
+        private suspend fun onItemSelected(
+            getState: () -> SelectParamsStore.State,
+            item: ParamValueDomain
+        ) {
+            dispatch(Result.Loading(true))
 
-                    dispatchSearchText(currentParam.value)
-                    dispatchValues(
-                        currentParam.type,
-                        currentParam.value
+            val newParams = selectParamsInteractor.changeParamValue(
+                params = getState().params,
+                currentStep = getState().currentStep,
+                paramValue = item
+            )
+            dispatch(Result.Params(newParams))
+
+            val currentParam = getState().params[getState().currentStep - 1]
+
+            dispatchSearchText(currentParam.paramValue?.value.orEmpty())
+            dispatchValues(
+                currentParam.type,
+                currentParam.paramValue?.value.orEmpty()
+            )
+            dispatch(Result.Loading(false))
+        }
+
+        private suspend fun onPrevClicked(getState: () -> SelectParamsStore.State) {
+            dispatch(Result.Loading(true))
+            dispatch(Result.Step(max(getState().currentStep - 1, MIN_CURRENT_STEP)))
+
+            val currentParam = getState().params[getState().currentStep - 1]
+
+            dispatchSearchText(currentParam.paramValue?.value.orEmpty())
+            dispatchValues(
+                currentParam.type,
+                currentParam.paramValue?.value.orEmpty()
+            )
+            dispatch(Result.Loading(false))
+        }
+
+        private suspend fun onNextClicked(getState: () -> SelectParamsStore.State) {
+            if (getState().currentStep == getState().params.size) {
+                publish(
+                    SelectParamsStore.Label.GoBack(
+                        result = SelectParamsResult(getState().params)
                     )
-                    dispatch(Result.Loading(false))
-                }
+                )
+            } else {
+                dispatch(Result.Loading(true))
+                dispatch(Result.Step(getState().currentStep + 1))
+
+                val currentParam = getState().params[getState().currentStep - 1]
+
+                dispatchSearchText(currentParam.paramValue?.value.orEmpty())
+                dispatchValues(
+                    currentParam.type,
+                    currentParam.paramValue?.value.orEmpty()
+                )
+                dispatch(Result.Loading(false))
             }
         }
 
@@ -167,13 +209,14 @@ class SelectParamsStoreFactory(
                 )
             )
         }
+
     }
 
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class Step(val currentStep: Int) : Result()
         data class Params(val params: List<ParamDomain>) : Result()
-        data class Values(val values: List<String>) : Result()
+        data class Values(val values: List<ParamValueDomain>) : Result()
         data class SearchText(val searchText: TextFieldValue) : Result()
     }
 
@@ -186,5 +229,9 @@ class SelectParamsStoreFactory(
                 is Result.SearchText -> copy(searchText = result.searchText)
                 is Result.Values -> copy(currentParamValues = result.values)
             }
+    }
+
+    companion object {
+        private const val SEARCH_DELAY = 200L
     }
 }

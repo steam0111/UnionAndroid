@@ -39,6 +39,7 @@ import com.itrocket.ui.EditText
 import com.itrocket.union.R
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.ParamValueDomain
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor.Companion.MIN_CURRENT_STEP
 import com.itrocket.union.selectParams.presentation.store.SelectParamsStore
 import com.itrocket.union.ui.AppTheme
@@ -67,7 +68,7 @@ fun SelectParamsScreen(
     onNextClickListener: () -> Unit,
     onPrevClickListener: () -> Unit,
     onSearchTextChanged: (TextFieldValue) -> Unit,
-    onItemSelected: (String) -> Unit
+    onItemSelected: (ParamValueDomain) -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -86,16 +87,15 @@ fun SelectParamsScreen(
                 )
             },
             content = {
-                LoadingContent(isLoading = state.isLoading) {
-                    Content(
-                        currentParam = state.params[state.currentStep - 1],
-                        currentParamValues = state.currentParamValues,
-                        paddingValues = it,
-                        onItemSelected = onItemSelected,
-                        onSearchTextChanged = onSearchTextChanged,
-                        searchText = state.searchText
-                    )
-                }
+                Content(
+                    currentParam = state.params[state.currentStep - 1],
+                    currentParamValues = state.currentParamValues,
+                    paddingValues = it,
+                    onItemSelected = onItemSelected,
+                    onSearchTextChanged = onSearchTextChanged,
+                    searchText = state.searchText,
+                    isLoading = state.isLoading
+                )
             },
             modifier = Modifier.padding(
                 top = appInsets.topInset.dp,
@@ -133,11 +133,12 @@ private fun TopBar(
 @Composable
 private fun Content(
     currentParam: ParamDomain,
-    currentParamValues: List<String>,
+    currentParamValues: List<ParamValueDomain>,
     paddingValues: PaddingValues,
     searchText: TextFieldValue,
+    isLoading: Boolean,
     onSearchTextChanged: (TextFieldValue) -> Unit,
-    onItemSelected: (String) -> Unit
+    onItemSelected: (ParamValueDomain) -> Unit
 ) {
     var underlineColor by remember {
         mutableStateOf(brightGray)
@@ -174,15 +175,17 @@ private fun Content(
             )
         }
         MediumSpacer()
-        LazyColumn {
-            itemsIndexed(currentParamValues) { index, item ->
-                val isShowBottomLine = index != currentParamValues.lastIndex
-                RadioButtonField(
-                    label = item,
-                    onFieldClickListener = { onItemSelected(item) },
-                    isSelected = item == currentParam.value,
-                    isShowBottomLine = isShowBottomLine
-                )
+        LoadingContent(isLoading = isLoading) {
+            LazyColumn {
+                itemsIndexed(currentParamValues) { index, item ->
+                    val isShowBottomLine = index != currentParamValues.lastIndex
+                    RadioButtonField(
+                        label = item.value,
+                        onFieldClickListener = { onItemSelected(item) },
+                        isSelected = item.id == currentParam.paramValue?.id,
+                        isShowBottomLine = isShowBottomLine
+                    )
+                }
             }
         }
     }
@@ -276,9 +279,9 @@ fun SelectParamsScreenPreview() {
         SelectParamsStore.State(
             currentStep = 1,
             params = listOf(
-                ParamDomain("param", ManualType.ORGANIZATION),
-                ParamDomain("param", ManualType.MOL),
-                ParamDomain("param", ManualType.LOCATION)
+                ParamDomain(ParamValueDomain("1", "param"), ManualType.ORGANIZATION),
+                ParamDomain(ParamValueDomain("2", "param"), ManualType.MOL),
+                ParamDomain(ParamValueDomain("3", "param"), ManualType.LOCATION)
             )
         ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {})
 }

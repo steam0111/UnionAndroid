@@ -41,6 +41,7 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.inventory.presentation.store.InventoryStore
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.ParamValueDomain
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
@@ -183,10 +184,10 @@ private fun ParamContent(
         items(params, key = {
             it.type
         }) {
-            if (it.value.isNotBlank()) {
+            if (!it.paramValue?.value.isNullOrBlank()) {
                 SelectedBaseField(
                     label = stringResource(it.type.titleId),
-                    value = it.value,
+                    value = it.paramValue?.value.orEmpty(),
                     onFieldClickListener = {
                         onParamClickListener(it)
                     },
@@ -272,9 +273,17 @@ fun InventoryScreenPreview() {
     InventoryScreen(
         InventoryStore.State(
             params = listOf(
-                ParamDomain(value = "ООО «Грандмастер — Юниор»", type = ManualType.ORGANIZATION),
-                ParamDomain(value = "Колесников Виталий Константинович ", type = ManualType.MOL),
-                ParamDomain(value = "", type = ManualType.LOCATION),
+                ParamDomain(
+                    paramValue = ParamValueDomain("1", "ООО «Грандмастер — Юниор»"),
+                    type = ManualType.ORGANIZATION
+                ),
+                ParamDomain(
+                    paramValue = ParamValueDomain(
+                        "2",
+                        "Колесников Виталий Константинович "
+                    ), type = ManualType.MOL
+                ),
+                ParamDomain(paramValue = ParamValueDomain("3", ""), type = ManualType.LOCATION),
             ),
             accountingObjectList = listOf(
                 AccountingObjectDomain(

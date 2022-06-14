@@ -4,4 +4,4 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ParamDomain(val paramValue: ParamValueDomain?, val type: ManualType) : Parcelable
+data class ParamValueDomain(val id: String, val value: String): Parcelable
