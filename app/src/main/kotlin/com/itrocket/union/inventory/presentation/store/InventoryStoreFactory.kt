@@ -5,11 +5,11 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.itrocket.union.inventory.domain.InventoryInteractor
-import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.core.base.BaseExecutor
+import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.inventory.domain.InventoryInteractor
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 
@@ -115,7 +115,7 @@ class InventoryStoreFactory(
         }
 
         private suspend fun createInventory(accountingObjects: List<AccountingObjectDomain>) {
-            dispatch(Result.Loading(true))
+            dispatch(Result.IsAccountingObjectsLoading(true))
             catchException {
                 val inventoryCreate =
                     inventoryInteractor.createInventory(accountingObjects)
@@ -126,22 +126,23 @@ class InventoryStoreFactory(
                     )
                 )
             }
-            dispatch(Result.Loading(false))
+            dispatch(Result.IsAccountingObjectsLoading(false))
         }
 
         private suspend fun filterAccountingObjects(params: List<ParamDomain>) {
-            dispatch(Result.Loading(true))
+            dispatch(Result.IsAccountingObjectsLoading(true))
             dispatch(
                 Result.AccountingObjects(
                     accountingObjectInteractor.getAccountingObjectsByParams(params)
                 )
             )
-            dispatch(Result.Loading(false))
+            dispatch(Result.IsAccountingObjectsLoading(false))
         }
     }
 
     private sealed class Result {
-        data class Loading(val isLoading: Boolean) : Result()
+        data class IsAccountingObjectsLoading(val isLoading: Boolean) : Result()
+        data class IsCreateInventoryLoading(val isLoading: Boolean) : Result()
         data class Params(val params: List<ParamDomain>) : Result()
         data class SelectPage(val page: Int) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
@@ -150,10 +151,11 @@ class InventoryStoreFactory(
     private object ReducerImpl : Reducer<InventoryStore.State, Result> {
         override fun InventoryStore.State.reduce(result: Result) =
             when (result) {
-                is Result.Loading -> copy(isLoading = result.isLoading)
+                is Result.IsAccountingObjectsLoading -> copy(isAccountingObjectsLoading = result.isLoading)
                 is Result.Params -> copy(params = result.params)
                 is Result.SelectPage -> copy(selectedPage = result.page)
                 is Result.AccountingObjects -> copy(accountingObjectList = result.accountingObjects)
+                is Result.IsCreateInventoryLoading -> copy(isCreateInventoryLoading = result.isLoading)
             }
     }
 }

@@ -1,6 +1,10 @@
 package com.itrocket.union.organizations.presentation.store
 
-import com.arkivanov.mvikotlin.core.store.*
+import com.arkivanov.mvikotlin.core.store.Executor
+import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
+import com.arkivanov.mvikotlin.core.store.Store
+import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.organizations.domain.OrganizationInteractor
@@ -37,7 +41,9 @@ class OrganizationStoreFactory(
             catchException {
                 dispatch(Result.Loading(true))
                 organizationInteractor.getOrganizations()
-                    .catch { dispatch(Result.Loading(false)) }
+                    .catch {
+                        dispatch(Result.Loading(false))
+                    }
                     .collect {
                         dispatch(Result.Organizations(it))
                         dispatch(Result.Loading(false))

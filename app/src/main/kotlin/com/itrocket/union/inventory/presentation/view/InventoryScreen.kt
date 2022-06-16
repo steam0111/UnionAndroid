@@ -2,15 +2,12 @@ package com.itrocket.union.inventory.presentation.view
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -44,7 +41,6 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.ParamValueDomain
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ButtonBottomBar
 import com.itrocket.union.ui.DoubleTabRow
@@ -91,7 +87,7 @@ fun InventoryScreen(
             title = stringResource(R.string.inventory_ao_title),
             screen = {
                 AccountingObjectScreen(
-                    isLoading = state.isLoading,
+                    isLoading = state.isAccountingObjectsLoading,
                     accountingObjectList = state.accountingObjectList,
                     onAccountingObjectClickListener = {}
                 )
@@ -110,7 +106,8 @@ fun InventoryScreen(
             bottomBar = {
                 ButtonBottomBar(
                     onClick = onInventoryCreateClickListener,
-                    text = stringResource(R.string.common_create)
+                    text = stringResource(R.string.common_create),
+                    isLoading = state.isCreateInventoryLoading
                 )
             },
             content = {
