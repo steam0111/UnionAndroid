@@ -68,6 +68,7 @@
     <string name="nomenclature">Номенклатура</string>
     <string name="organizations">Организации</string>
     <string name="departments">Подразделения</string>
+    <string name="inventories">Инв. ведомости</string>
 
     <!-- Manual -->
     <string name="manual_organization">Организация</string>
@@ -162,4 +163,7 @@
     <string name="employees_nfc">NFC</string>
     <string name="employees_title">Сотрудники</string>
     <string name="employees_service_number">Табельный номер: %s</string>
+
+    <!-- Inventories -->
+    <string name="inventories_title">Список инв. ведомостей</string>
 </resources>

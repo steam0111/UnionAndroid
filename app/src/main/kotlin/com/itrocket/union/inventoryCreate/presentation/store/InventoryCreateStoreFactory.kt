@@ -11,7 +11,7 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryStatus
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 
@@ -26,7 +26,6 @@ class InventoryCreateStoreFactory(
             Store<InventoryCreateStore.Intent, InventoryCreateStore.State, InventoryCreateStore.Label> by storeFactory.create(
                 name = "InventoryCreateStore",
                 initialState = InventoryCreateStore.State(
-                    accountingObjects = inventoryCreateArguments.accountingObjects,
                     inventoryDocument = inventoryCreateArguments.inventoryDocument,
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
@@ -54,7 +53,7 @@ class InventoryCreateStoreFactory(
             when (intent) {
                 InventoryCreateStore.Intent.OnBackClicked -> publish(InventoryCreateStore.Label.GoBack)
                 is InventoryCreateStore.Intent.OnAccountingObjectClicked -> handleAccountingObjectClicked(
-                    accountingObjects = getState().accountingObjects,
+                    accountingObjects = getState().inventoryDocument.accountingObjectList,
                     accountingObject = intent.accountingObject
                 )
                 InventoryCreateStore.Intent.OnAddNewClicked -> {
@@ -71,10 +70,10 @@ class InventoryCreateStoreFactory(
                 }
                 InventoryCreateStore.Intent.OnSaveClicked -> saveInventory(
                     inventoryDocument = getState().inventoryDocument,
-                    accountingObjects = getState().accountingObjects
+                    accountingObjects = getState().inventoryDocument.accountingObjectList
                 )
                 is InventoryCreateStore.Intent.OnNewAccountingObjectsHandled -> handleNewAccountingObjects(
-                    accountingObjects = getState().accountingObjects,
+                    accountingObjects = getState().inventoryDocument.accountingObjectList,
                     newAccountingObjects = getState().newAccountingObjects.toList(),
                     handledAccountingObjectIds = intent.handledAccountingObjectIds,
                 )
@@ -82,7 +81,7 @@ class InventoryCreateStoreFactory(
                     dispatch(
                         Result.AccountingObjects(
                             inventoryCreateInteractor.changeAccountingObjectInventoryStatus(
-                                getState().accountingObjects,
+                                getState().inventoryDocument.accountingObjectList,
                                 intent.switcherResult.result
                             )
                         )
@@ -124,8 +123,8 @@ class InventoryCreateStoreFactory(
                         SwitcherDomain(
                             titleId = R.string.switcher_accounting_object_status,
                             values = listOf(
-                                InventoryStatus.NOT_FOUND,
-                                InventoryStatus.FOUND
+                                InventoryAccountingObjectStatus.NOT_FOUND,
+                                InventoryAccountingObjectStatus.FOUND
                             ),
                             currentValue = accountingObject.inventoryStatus,
                             entityId = accountingObject.id
@@ -160,7 +159,7 @@ class InventoryCreateStoreFactory(
             dispatch(
                 Result.AccountingObjects(
                     inventoryCreateInteractor.dropAccountingObjects(
-                        state.accountingObjects
+                        state.inventoryDocument.accountingObjectList
                     )
                 )
             )
@@ -190,7 +189,11 @@ class InventoryCreateStoreFactory(
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.AddNew -> copy(isAddNew = result.addNew)
                 is Result.HideFoundedAccountingObjects -> copy(isHideFoundAccountingObjects = result.hideFoundedAccountingObjects)
-                is Result.AccountingObjects -> copy(accountingObjects = result.accountingObjects)
+                is Result.AccountingObjects -> copy(
+                    inventoryDocument = inventoryDocument.copy(
+                        accountingObjectList = result.accountingObjects
+                    )
+                )
                 is Result.NewAccountingObjects -> copy(newAccountingObjects = result.newAccountingObjects)
             }
     }

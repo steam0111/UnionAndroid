@@ -47,7 +47,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.itrocket.ui.BaseTab
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryStatus
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 import com.itrocket.union.ui.DoubleTabRow
 import com.itrocket.union.ui.MediumSpacer
@@ -176,8 +176,8 @@ fun SwitcherScreenPreview() {
         SwitcherStore.State(
             switcherData = SwitcherDomain(
                 titleId = R.string.switcher_accounting_object_status,
-                values = listOf(InventoryStatus.NOT_FOUND, InventoryStatus.FOUND),
-                currentValue = InventoryStatus.FOUND,
+                values = listOf(InventoryAccountingObjectStatus.NOT_FOUND, InventoryAccountingObjectStatus.FOUND),
+                currentValue = InventoryAccountingObjectStatus.FOUND,
                 entityId = "123"
             ),
             selectedPage = 1,

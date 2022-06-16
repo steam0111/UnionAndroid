@@ -16,12 +16,17 @@ import com.itrocket.union.filter.domain.entity.FilterDomain
 import com.itrocket.union.filter.domain.entity.FilterValueType
 import com.itrocket.union.filter.presentation.view.FilterScreenPreview
 import com.itrocket.union.filterValues.presentation.view.FilterValueScreenPreview
+import com.itrocket.union.inventories.presentation.view.InventoriesScreenPreview
+import com.itrocket.union.inventory.presentation.view.InventoryScreenPreview
+import com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateScreenPreview
 import com.itrocket.union.location.presentation.view.LocationScreenPreview
+import com.itrocket.union.newAccountingObject.presentation.view.NewAccountingObjectScreenPreview
 import com.itrocket.union.organizations.presentation.view.OrganizationsScreenPreview
 import com.itrocket.union.readingMode.presentation.view.ReadingModeScreenPreview
 import com.itrocket.union.reserveDetail.presentation.view.ReserveDetailScreenPreview
 import com.itrocket.union.reserves.presentation.view.ReservesScreenPreview
 import com.itrocket.union.serverConnect.presentation.view.ServerConnectScreenPreview
+import com.itrocket.union.switcher.presentation.view.SwitcherScreenPreview
 import com.karumi.shot.ScreenshotTest
 import org.junit.Rule
 import org.junit.Test
@@ -168,6 +173,41 @@ class ScreensTest : ScreenshotTest {
     fun `EmployeesScreen`() {
         takeScreenShot {
             EmployeeScreenPreview()
+        }
+    }
+
+    @Test
+    fun `InventoryCreate`() {
+        takeScreenShot {
+            InventoryCreateScreenPreview()
+        }
+    }
+
+    @Test
+    fun `InventoriesCreate`() {
+        takeScreenShot {
+            InventoriesScreenPreview()
+        }
+    }
+
+    @Test
+    fun `Inventory`() {
+        takeScreenShot {
+            InventoryScreenPreview()
+        }
+    }
+
+    @Test
+    fun `NewAccountingObject`() {
+        takeScreenShot {
+            NewAccountingObjectScreenPreview()
+        }
+    }
+
+    @Test
+    fun `Switcher`() {
+        takeScreenShot {
+            SwitcherScreenPreview()
         }
     }
 }

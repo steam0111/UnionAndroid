@@ -52,6 +52,9 @@
         <action
             android:id="@+id/to_employees"
             app:destination="@+id/employees" />
+        <action
+            android:id="@+id/to_inventories"
+            app:destination="@id/inventories" />
     </fragment>
 
     <fragment
@@ -219,4 +222,14 @@
     <fragment
         android:id="@+id/departments"
         android:name="com.itrocket.union.departments.presentation.view.DepartmentComposeFragment" />
+
+    <fragment
+        android:id="@+id/inventories"
+        android:name="com.itrocket.union.inventories.presentation.view.InventoriesComposeFragment"
+        android:label="Inventories">
+
+        <action
+            android:id="@+id/to_inventoryCreate"
+            app:destination="@id/inventoryCreate" />
+    </fragment>
 </navigation>

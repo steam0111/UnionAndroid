@@ -97,7 +97,7 @@ private fun Content(
     onHideFoundAccountingObjectChanged: () -> Unit,
     onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit
 ) {
-    val accountingObjectList = state.newAccountingObjects.toList() + state.accountingObjects
+    val accountingObjectList = state.newAccountingObjects.toList() + state.inventoryDocument.accountingObjectList
 
     Column(
         Modifier
@@ -249,43 +249,43 @@ fun InventoryCreateScreenPreview() {
                 "Систмный интегратор",
                 "Систмный интегратор",
                 "Систмный интегратор",
+            ),
+            accountingObjectList = listOf(
+                AccountingObjectDomain(
+                    id = "7",
+                    isBarcode = true,
+                    title = "Ширикоформатный жидкокристалический монитор Samsung2",
+                    status = ObjectStatus.AVAILABLE,
+                    listMainInfo = listOf(
+                        ObjectInfoDomain(
+                            "Заводской номер",
+                            "таылватвлыавыалвыоалвыа"
+                        ),
+                        ObjectInfoDomain(
+                            "Инвентарный номер",
+                            "таылватвлыавыалвыоалвыа"
+                        ),
+                    ),
+                    listAdditionallyInfo = listOf()
+                ),
+                AccountingObjectDomain(
+                    id = "8",
+                    isBarcode = true,
+                    title = "Ширикоформатный жидкокристалический монитор Samsung2",
+                    status = ObjectStatus.AVAILABLE,
+                    listMainInfo = listOf(
+                        ObjectInfoDomain(
+                            "Заводской номер",
+                            "таылватвлыавыалвыоалвыа"
+                        ),
+                        ObjectInfoDomain(
+                            "Инвентарный номер",
+                            "таылватвлыавыалвыоалвыа"
+                        ),
+                    ),
+                    listAdditionallyInfo = listOf()
+                )
             )
         ),
-        accountingObjects = listOf(
-            AccountingObjectDomain(
-                id = "7",
-                isBarcode = true,
-                title = "Ширикоформатный жидкокристалический монитор Samsung2",
-                status = ObjectStatus.AVAILABLE,
-                listMainInfo = listOf(
-                    ObjectInfoDomain(
-                        "Заводской номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Инвентарный номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                ),
-                listAdditionallyInfo = listOf()
-            ),
-            AccountingObjectDomain(
-                id = "8",
-                isBarcode = true,
-                title = "Ширикоформатный жидкокристалический монитор Samsung2",
-                status = ObjectStatus.AVAILABLE,
-                listMainInfo = listOf(
-                    ObjectInfoDomain(
-                        "Заводской номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Инвентарный номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                ),
-                listAdditionallyInfo = listOf()
-            )
-        )
     ), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {}, {}, {})
 }

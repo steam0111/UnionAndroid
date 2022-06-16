@@ -121,8 +121,7 @@ class InventoryStoreFactory(
                     inventoryInteractor.createInventory(accountingObjects)
                 publish(
                     InventoryStore.Label.ShowCreateInventory(
-                        inventoryCreate = inventoryCreate,
-                        accountingObjectList = accountingObjects
+                        inventoryCreate = inventoryCreate
                     )
                 )
             }

@@ -1,7 +1,7 @@
 package com.itrocket.union.accountingObjects.domain.entity
 
 import android.os.Parcelable
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryStatus
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import kotlinx.parcelize.Parcelize
 
 private const val MAX_SHORT_INFO_LIST = 11
@@ -11,7 +11,7 @@ data class AccountingObjectDomain(
     val id: String,
     val title: String,
     val status: ObjectStatus,
-    val inventoryStatus: InventoryStatus = InventoryStatus.NOT_FOUND,
+    val inventoryStatus: InventoryAccountingObjectStatus = InventoryAccountingObjectStatus.NOT_FOUND,
     val isBarcode: Boolean = false,
     val listMainInfo: List<ObjectInfoDomain>,
     val listAdditionallyInfo: List<ObjectInfoDomain>,

@@ -25,7 +25,8 @@ class InventoryInteractor(
                 "Систмный интегратор",
                 "Систмный интегратор",
                 "Систмный интегратор",
-            )
+            ),
+            accountingObjectList = accountingObjects
         )
     }
 
