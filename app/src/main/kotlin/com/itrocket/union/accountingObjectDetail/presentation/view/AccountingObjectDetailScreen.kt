@@ -43,7 +43,7 @@ import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingOb
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryStatus
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
@@ -307,7 +307,7 @@ fun AccountingObjectDetailScreenPreview(isFullCharacteristicChecked: Boolean = t
                     ),
                     ObjectInfoDomain("blabla2", "blabla2")
                 ),
-                inventoryStatus = InventoryStatus.NOT_FOUND,
+                inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
                 maxItemsCount = 50,
             ),
             isFullCharacteristicChecked = isFullCharacteristicChecked

@@ -16,8 +16,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.accountingObjects.domain.entity.Status
-import com.itrocket.union.documents.domain.entity.DocumentStatus
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryStatus
 
 @Composable
 fun SmallStatusLabel(status: Status) {

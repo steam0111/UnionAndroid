@@ -5,7 +5,7 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.inventoryCreate.domain.dependencies.InventoryCreateRepository
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryStatus
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 
 class InventoryCreateRepositoryImpl(private val coreDispatchers: CoreDispatchers) :
     InventoryCreateRepository {
@@ -16,7 +16,7 @@ class InventoryCreateRepositoryImpl(private val coreDispatchers: CoreDispatchers
                 isBarcode = true,
                 title = "Ширикоформатный жидкокристалический монитор Samsung ЕК288, 23 дюйма",
                 status = ObjectStatus.AVAILABLE,
-                inventoryStatus = InventoryStatus.NEW,
+                inventoryStatus = InventoryAccountingObjectStatus.NEW,
                 listMainInfo = listOf(
                     ObjectInfoDomain(
                         "Заводской №",

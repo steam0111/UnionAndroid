@@ -1,13 +1,13 @@
 package com.itrocket.union.inventoryCreate.domain
 
-import kotlinx.coroutines.withContext
-import com.itrocket.union.inventoryCreate.domain.dependencies.InventoryCreateRepository
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.inventoryCreate.domain.dependencies.InventoryCreateRepository
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectsDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryStatus
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
+import kotlinx.coroutines.withContext
 
 class InventoryCreateInteractor(
     private val repository: InventoryCreateRepository,
@@ -32,7 +32,7 @@ class InventoryCreateInteractor(
                 val index = mutableAccountingObjects.indexOfFirst { it.id == id }
                 if (index != NO_INDEX) {
                     mutableAccountingObjects[index] =
-                        mutableAccountingObjects[index].copy(inventoryStatus = InventoryStatus.FOUND)
+                        mutableAccountingObjects[index].copy(inventoryStatus = InventoryAccountingObjectStatus.FOUND)
                 } else {
                     newAccountingObjectIds.add(id)
                 }
@@ -54,7 +54,7 @@ class InventoryCreateInteractor(
         val mutableList = accountingObjects.toMutableList()
         val newStatus = switcherDomain.currentValue
         val index = accountingObjects.indexOfFirst { it.id == switcherDomain.entityId }
-        mutableList[index] = mutableList[index].copy(inventoryStatus = newStatus as InventoryStatus)
+        mutableList[index] = mutableList[index].copy(inventoryStatus = newStatus as InventoryAccountingObjectStatus)
         return mutableList
     }
 

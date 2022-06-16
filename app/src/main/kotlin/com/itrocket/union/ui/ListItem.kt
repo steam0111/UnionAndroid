@@ -211,7 +211,9 @@ fun ReservesItem(
 
 @Composable
 fun InventoryDocumentItem(
-    item: InventoryCreateDomain
+    item: InventoryCreateDomain,
+    onInventoryClickListener: () -> Unit = {},
+    enabled: Boolean = false
 ) {
     val annotatedTitle = getInventoryAnnotatedTitle(item)
     val annotatedInfo = buildAnnotatedString {
@@ -231,6 +233,7 @@ fun InventoryDocumentItem(
         modifier = Modifier
             .fillMaxWidth()
             .background(white)
+            .clickable(enabled = enabled, onClick = onInventoryClickListener)
             .padding(horizontal = 16.dp)
     ) {
         Row(
@@ -502,7 +505,11 @@ fun DefaultListItem(
             item.subtitles.forEach {
                 if (!it.value.isNullOrBlank()) {
                     Text(
-                        text = stringResource(R.string.common_two_dots, stringResource(it.key), it.value.orEmpty()),
+                        text = stringResource(
+                            R.string.common_two_dots,
+                            stringResource(it.key),
+                            it.value.orEmpty()
+                        ),
                         style = AppTheme.typography.caption,
                         color = psb3
                     )
@@ -613,7 +620,7 @@ fun DefaultListItemPreview() {
             id = "1",
             title = "Organization",
             subtitles = mapOf(
-                R.string.department_code to "value1",  R.string.department_code to "value2"
+                R.string.department_code to "value1", R.string.department_code to "value2"
             ),
 
             ), onItemClickListener = {},
@@ -635,7 +642,8 @@ fun InventoryDocumentItemPreview() {
                 "Систмный интегратор",
                 "Систмный интегратор",
                 "Систмный интегратор",
-            )
+            ),
+            accountingObjectList = listOf()
         )
     )
 }

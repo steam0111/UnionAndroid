@@ -40,7 +40,6 @@ interface InventoryCreateStore :
 
     data class State(
         val inventoryDocument: InventoryCreateDomain,
-        val accountingObjects: List<AccountingObjectDomain>,
         val isHideFoundAccountingObjects: Boolean = false,
         val newAccountingObjects: Set<AccountingObjectDomain> = setOf(),
         val isAddNew: Boolean = false,

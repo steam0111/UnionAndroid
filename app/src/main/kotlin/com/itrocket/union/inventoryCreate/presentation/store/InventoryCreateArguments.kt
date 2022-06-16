@@ -7,6 +7,5 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class InventoryCreateArguments(
-    val inventoryDocument: InventoryCreateDomain,
-    val accountingObjects: List<AccountingObjectDomain>
+    val inventoryDocument: InventoryCreateDomain
 ) : Parcelable

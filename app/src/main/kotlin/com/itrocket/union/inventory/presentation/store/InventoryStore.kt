@@ -44,15 +44,11 @@ interface InventoryStore :
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
         data class ShowCreateInventory(
-            val accountingObjectList: List<AccountingObjectDomain>,
             val inventoryCreate: InventoryCreateDomain
         ) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = InventoryComposeFragmentDirections.toInventoryCreate(
-                    InventoryCreateArguments(
-                        inventoryDocument = inventoryCreate,
-                        accountingObjects = accountingObjectList
-                    )
+                    InventoryCreateArguments(inventoryDocument = inventoryCreate)
                 )
 
         }

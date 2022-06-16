@@ -12,7 +12,7 @@ import com.itrocket.union.ui.psb6
 import com.itrocket.union.ui.violet5
 import com.itrocket.union.ui.white
 
-enum class InventoryStatus(
+enum class InventoryAccountingObjectStatus(
     override val backgroundColor: Color,
     @StringRes override val textId: Int,
     override val textColor: Color = white
