@@ -1,5 +1,6 @@
 package com.itrocket.union.selectParams.data
 
+import com.example.union_sync_api.data.EmployeeSyncApi
 import com.example.union_sync_api.data.OrganizationSyncApi
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.manual.ManualType
@@ -13,6 +14,7 @@ import kotlinx.coroutines.withContext
 
 class SelectParamsRepositoryImpl(
     private val organizationSyncApi: OrganizationSyncApi,
+    private val employeeSyncApi: EmployeeSyncApi,
     private val coreDispatchers: CoreDispatchers
 ) : SelectParamsRepository {
 
@@ -56,6 +58,14 @@ class SelectParamsRepositoryImpl(
             it.map {
                 it.toParamValue()
             }
+        }
+    }
+
+    override suspend fun getEmployeeList(): Flow<List<ParamValueDomain>> {
+        return flow {
+            emit(employeeSyncApi.getEmployees().map {
+                it.toParamValue()
+            })
         }
     }
 }
