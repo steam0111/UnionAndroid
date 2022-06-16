@@ -1,16 +1,13 @@
 package com.itrocket.union.selectParams.domain
 
-import android.util.Log
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.ParamValueDomain
 import com.itrocket.union.selectParams.domain.dependencies.SelectParamsRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 
 class SelectParamsInteractor(
     private val selectParamsRepository: SelectParamsRepository,
@@ -18,11 +15,12 @@ class SelectParamsInteractor(
 ) {
 
     private var organizations: Flow<List<ParamValueDomain>>? = null
+    private var employee: Flow<List<ParamValueDomain>>? = null
 
     suspend fun getParamValues(type: ManualType, searchText: String): Flow<List<ParamValueDomain>> =
         when (type) {
             ManualType.ORGANIZATION -> getOrganizations(searchText)
-            ManualType.MOL -> selectParamsRepository.getParamValues(type, searchText)
+            ManualType.MOL -> getEmployees(searchText)
             ManualType.LOCATION -> selectParamsRepository.getParamValues(type, searchText)
         }
 
@@ -49,11 +47,22 @@ class SelectParamsInteractor(
         if (organizations == null) {
             organizations = selectParamsRepository.getOrganizationList()
         }
-        return organizations?.map {
-                it.filter {
-                    it.value.contains(other = searchText, ignoreCase = true)
-                }
-            } ?: flow { }
+        return (organizations ?: selectParamsRepository.getOrganizationList()).map {
+            it.filter {
+                it.value.contains(other = searchText, ignoreCase = true)
+            }
+        }
+    }
+
+    private suspend fun getEmployees(searchText: String): Flow<List<ParamValueDomain>> {
+        if (employee == null) {
+            employee = selectParamsRepository.getEmployeeList()
+        }
+        return (employee ?: selectParamsRepository.getEmployeeList()).map {
+            it.filter {
+                it.value.contains(other = searchText, ignoreCase = true)
+            }
+        }
     }
 
     companion object {

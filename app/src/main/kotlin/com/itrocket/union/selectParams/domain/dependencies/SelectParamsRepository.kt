@@ -8,4 +8,6 @@ interface SelectParamsRepository {
     suspend fun getParamValues(type: ManualType, searchText: String): Flow<List<ParamValueDomain>>
 
     suspend fun getOrganizationList(): Flow<List<ParamValueDomain>>
+
+    suspend fun getEmployeeList(): Flow<List<ParamValueDomain>>
 }
