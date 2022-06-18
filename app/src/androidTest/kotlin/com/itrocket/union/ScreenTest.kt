@@ -25,6 +25,7 @@ import com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateScree
 import com.itrocket.union.location.presentation.view.LocationScreenPreview
 import com.itrocket.union.newAccountingObject.presentation.view.NewAccountingObjectScreenPreview
 import com.itrocket.union.organizations.presentation.view.OrganizationsScreenPreview
+import com.itrocket.union.producer.presentation.view.ProducerScreenPreview
 import com.itrocket.union.readingMode.presentation.view.ReadingModeScreenPreview
 import com.itrocket.union.regions.presentation.view.RegionScreenPreview
 import com.itrocket.union.reserveDetail.presentation.view.ReserveDetailScreenPreview
@@ -233,6 +234,13 @@ class ScreensTest : ScreenshotTest {
     fun `Branches`() {
         takeScreenShot {
             BranchesScreenPreview()
+        }
+    }
+
+    @Test
+    fun `Producers`() {
+        takeScreenShot {
+            ProducerScreenPreview()
         }
     }
 

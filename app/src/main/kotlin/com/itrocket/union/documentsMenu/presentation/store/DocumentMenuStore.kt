@@ -79,6 +79,7 @@ interface DocumentMenuStore :
                     R.string.regions -> DocumentMenuComposeFragmentDirections.toRegion()
                     R.string.counterparties -> DocumentMenuComposeFragmentDirections.toCounterparty()
                     R.string.branches -> DocumentMenuComposeFragmentDirections.toBranches()
+                    R.string.producer -> DocumentMenuComposeFragmentDirections.toProducer()
                     else -> DocumentMenuComposeFragmentDirections.toAccountingObjects(null)
                 }
         }
