@@ -20,11 +20,11 @@ object InventoryModule {
         }
 
         factory<InventoryRepository> {
-            InventoryRepositoryImpl(get())
+            InventoryRepositoryImpl(get(), get())
         }
 
         factory {
-            InventoryInteractor(get(), get(), get())
+            InventoryInteractor(get(), get())
         }
 
         factory {

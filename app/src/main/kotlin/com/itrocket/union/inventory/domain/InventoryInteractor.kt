@@ -1,38 +1,41 @@
 package com.itrocket.union.inventory.domain
 
-import com.example.union_sync_api.data.InventorySyncApi
+import com.example.union_sync_api.entity.InventoryCreateSyncEntity
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.ParamValueDomain
 import kotlinx.coroutines.withContext
 
 class InventoryInteractor(
     private val repository: InventoryRepository,
     private val coreDispatchers: CoreDispatchers,
-    private val inventorySyncApi: InventorySyncApi
 ) {
 
-    suspend fun createInventory(accountingObjects: List<AccountingObjectDomain>): InventoryCreateDomain = withContext(coreDispatchers.io) {
-        // TODO создание инвентаризационной ведомости
-        //inventorySyncApi.createInventory()
+    suspend fun createInventory(
+        accountingObjects: List<AccountingObjectDomain>,
+        params: List<ParamDomain>
+    ): InventoryCreateDomain = withContext(coreDispatchers.io) {
+        val organizationId =
+            requireNotNull(value = params.find { it.type == ManualType.ORGANIZATION },
+                lazyMessage = {
+                    "organizationId must not be null"
+                }).id
+        val molId =
+            requireNotNull(value = params.find { it.type == ManualType.MOL }, lazyMessage = {
+                "molId must not be null"
+            }).id
 
-        InventoryCreateDomain(
-            number = "БП-00001374",
-            time = "12:40",
-            date = "12.12.12",
-            documentInfo = listOf(
-                "Систмный интегратор",
-                "Систмный интегратор",
-                "Систмный интегратор",
-                "Систмный интегратор",
-                "Систмный интегратор",
-            ),
-            accountingObjectList = accountingObjects
+        val id = repository.createInventory(
+            InventoryCreateSyncEntity(
+                organizationId = organizationId,
+                employeeId = molId,
+                accountingObjectsIds = accountingObjects.map { it.id }
+            )
         )
+        repository.getInventoryById(id)
     }
 
     fun changeParams(params: List<ParamDomain>, newParams: List<ParamDomain>): List<ParamDomain> {
@@ -48,23 +51,26 @@ class InventoryInteractor(
 
     fun changeLocation(params: List<ParamDomain>, location: String): List<ParamDomain> {
         val mutableParams = params.toMutableList()
-        val locationParam = params.find { it.type == ManualType.LOCATION }
         val locationIndex = params.indexOfFirst { it.type == ManualType.LOCATION }
         mutableParams[locationIndex] =
-            mutableParams[locationIndex].copy(paramValue = ParamValueDomain("", location))
+            mutableParams[locationIndex].copy(value = location)
         return mutableParams
     }
 
     fun clearParam(list: List<ParamDomain>, param: ParamDomain): List<ParamDomain> {
         val mutableList = list.toMutableList()
         val currentIndex = mutableList.indexOfFirst { it.type == param.type }
-        mutableList[currentIndex] = mutableList[currentIndex].copy(paramValue = null)
+        mutableList[currentIndex] = mutableList[currentIndex].copy(id = "", value = "")
         return mutableList
     }
 
     fun clearParams(list: List<ParamDomain>): List<ParamDomain> {
         return list.map {
-            it.copy(paramValue = null)
+            it.copy(id = "", value = "")
         }
+    }
+
+    fun isParamsValid(params: List<ParamDomain>): Boolean {
+        return params.all { it.value.isNotBlank() }
     }
 }

@@ -28,7 +28,7 @@ object InventoryCreateModule {
         }
 
         factory {
-            InventoryCreateInteractor(get(), get())
+            InventoryCreateInteractor(get(), get(), get())
         }
 
         factory { (args: InventoryCreateComposeFragmentArgs) ->

@@ -2,23 +2,28 @@ package com.itrocket.union.inventoryCreate.domain
 
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.inventoryCreate.domain.dependencies.InventoryCreateRepository
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectsDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
+import com.itrocket.union.inventoryCreate.domain.entity.toSyncEntity
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 import kotlinx.coroutines.withContext
 
 class InventoryCreateInteractor(
     private val repository: InventoryCreateRepository,
+    private val inventoryRepository: InventoryRepository,
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    fun saveInventoryDocument(
+    suspend fun saveInventoryDocument(
         inventoryCreate: InventoryCreateDomain,
         accountingObjects: List<AccountingObjectDomain>
-    ) {
-        // map in entity and save in db
+    ) = withContext(coreDispatchers.io) {
+        inventoryRepository.updateInventory(
+            inventoryCreate.copy(accountingObjects = accountingObjects).toSyncEntity()
+        )
     }
 
     suspend fun handleNewAccountingObjects(
@@ -39,7 +44,10 @@ class InventoryCreateInteractor(
             }
             val newAccountingObjects =
                 repository.getAccountingObjectsByIds(newAccountingObjectIds)
-            InventoryAccountingObjectsDomain(newAccountingObjects = newAccountingObjects, createdAccountingObjects = mutableAccountingObjects)
+            InventoryAccountingObjectsDomain(
+                newAccountingObjects = newAccountingObjects,
+                createdAccountingObjects = mutableAccountingObjects
+            )
         }
     }
 
@@ -54,7 +62,8 @@ class InventoryCreateInteractor(
         val mutableList = accountingObjects.toMutableList()
         val newStatus = switcherDomain.currentValue
         val index = accountingObjects.indexOfFirst { it.id == switcherDomain.entityId }
-        mutableList[index] = mutableList[index].copy(inventoryStatus = newStatus as InventoryAccountingObjectStatus)
+        mutableList[index] =
+            mutableList[index].copy(inventoryStatus = newStatus as InventoryAccountingObjectStatus)
         return mutableList
     }
 

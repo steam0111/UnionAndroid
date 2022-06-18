@@ -52,7 +52,6 @@ import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.ParamValueDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.utils.clickableUnbounded
 
@@ -222,7 +221,7 @@ fun InventoryDocumentItem(
     val annotatedTitle = getInventoryAnnotatedTitle(item)
     val annotatedInfo = buildAnnotatedString {
         item.documentInfo.forEachIndexed { index, info ->
-            append(info)
+            append(info.value)
             if (index < item.documentInfo.lastIndex) {
                 append(" ")
                 withStyle(SpanStyle(color = psb6, fontWeight = FontWeight.ExtraBold)) {
@@ -275,7 +274,7 @@ private fun getInventoryAnnotatedTitle(item: InventoryCreateDomain): Pair<Annota
         append("  ")
 
         appendInlineContent(timeId, "[icon3]")
-        append(item.time)
+        append(item.getTextTime())
         append("  ")
 
     }
@@ -378,7 +377,7 @@ fun DocumentInfoItem(
     )
     val annotatedInfo = buildAnnotatedString {
         item.params.forEachIndexed { index, info ->
-            append(info.paramValue?.value.orEmpty())
+            append(info.value)
             if (index < item.params.lastIndex) {
                 append(" ")
                 withStyle(SpanStyle(color = psb6, fontWeight = FontWeight.ExtraBold)) {
@@ -551,15 +550,15 @@ fun DocumentInfoItemPreview() {
             date = "",
             params = listOf(
                 ParamDomain(
-                    paramValue = ParamValueDomain("1", "blbbb"),
+                    "1", "blbbb",
                     type = ManualType.MOL
                 ),
                 ParamDomain(
-                    paramValue = ParamValueDomain("1", "blbbb"),
+                    "1", "blbbb",
                     type = ManualType.LOCATION
                 ),
                 ParamDomain(
-                    paramValue = ParamValueDomain("1", "blbbb"),
+                    "1", "blbbb",
                     type = ManualType.ORGANIZATION
                 )
             ),
@@ -646,16 +645,13 @@ fun InventoryDocumentItemPreview() {
     InventoryDocumentItem(
         item = InventoryCreateDomain(
             number = "БП-00001374",
-            time = "12:40",
-            date = "12.12.12",
+            date = System.currentTimeMillis(),
             documentInfo = listOf(
-                "Систмный интегратор",
-                "Систмный интегратор",
-                "Систмный интегратор",
-                "Систмный интегратор",
-                "Систмный интегратор",
+                ParamDomain("1", "Систмный интегратор", ManualType.MOL),
+                ParamDomain("2", "Систмный интегратор", ManualType.MOL),
+                ParamDomain("3", "Систмный интегратор", ManualType.MOL),
             ),
-            accountingObjectList = listOf()
+            accountingObjects = listOf(),
         )
     )
 }

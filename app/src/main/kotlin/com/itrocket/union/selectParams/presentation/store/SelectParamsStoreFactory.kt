@@ -11,7 +11,6 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.ParamValueDomain
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor.Companion.MIN_CURRENT_STEP
 import kotlinx.coroutines.flow.catch
@@ -88,8 +87,8 @@ class SelectParamsStoreFactory(
             dispatch(
                 Result.SearchText(
                     TextFieldValue(
-                        text = currentParam.paramValue?.value.orEmpty(),
-                        selection = TextRange(currentParam.paramValue?.value?.length ?: 0)
+                        text = currentParam.value,
+                        selection = TextRange(currentParam.value.length)
                     )
                 )
             )
@@ -97,7 +96,7 @@ class SelectParamsStoreFactory(
             catchException {
                 selectParamsInteractor.getParamValues(
                     currentParam.type,
-                    currentParam.paramValue?.value.orEmpty()
+                    currentParam.value
                 )
                     .catch {
                         dispatch(Result.Loading(false))
@@ -128,7 +127,7 @@ class SelectParamsStoreFactory(
 
         private suspend fun onItemSelected(
             getState: () -> SelectParamsStore.State,
-            item: ParamValueDomain
+            item: ParamDomain
         ) {
             dispatch(Result.Loading(true))
 
@@ -141,10 +140,10 @@ class SelectParamsStoreFactory(
 
             val currentParam = getState().params[getState().currentStep - 1]
 
-            dispatchSearchText(currentParam.paramValue?.value.orEmpty())
+            dispatchSearchText(currentParam.value)
             dispatchValues(
                 currentParam.type,
-                currentParam.paramValue?.value.orEmpty()
+                currentParam.value
             )
             dispatch(Result.Loading(false))
         }
@@ -155,10 +154,10 @@ class SelectParamsStoreFactory(
 
             val currentParam = getState().params[getState().currentStep - 1]
 
-            dispatchSearchText(currentParam.paramValue?.value.orEmpty())
+            dispatchSearchText(currentParam.value)
             dispatchValues(
                 currentParam.type,
-                currentParam.paramValue?.value.orEmpty()
+                currentParam.value
             )
             dispatch(Result.Loading(false))
         }
@@ -176,10 +175,10 @@ class SelectParamsStoreFactory(
 
                 val currentParam = getState().params[getState().currentStep - 1]
 
-                dispatchSearchText(currentParam.paramValue?.value.orEmpty())
+                dispatchSearchText(currentParam.value)
                 dispatchValues(
                     currentParam.type,
-                    currentParam.paramValue?.value.orEmpty()
+                    currentParam.value
                 )
                 dispatch(Result.Loading(false))
             }
@@ -216,7 +215,7 @@ class SelectParamsStoreFactory(
         data class Loading(val isLoading: Boolean) : Result()
         data class Step(val currentStep: Int) : Result()
         data class Params(val params: List<ParamDomain>) : Result()
-        data class Values(val values: List<ParamValueDomain>) : Result()
+        data class Values(val values: List<ParamDomain>) : Result()
         data class SearchText(val searchText: TextFieldValue) : Result()
     }
 

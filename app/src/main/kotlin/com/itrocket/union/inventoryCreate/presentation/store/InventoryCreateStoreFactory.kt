@@ -53,7 +53,7 @@ class InventoryCreateStoreFactory(
             when (intent) {
                 InventoryCreateStore.Intent.OnBackClicked -> publish(InventoryCreateStore.Label.GoBack)
                 is InventoryCreateStore.Intent.OnAccountingObjectClicked -> handleAccountingObjectClicked(
-                    accountingObjects = getState().inventoryDocument.accountingObjectList,
+                    accountingObjects = getState().inventoryDocument.accountingObjects,
                     accountingObject = intent.accountingObject
                 )
                 InventoryCreateStore.Intent.OnAddNewClicked -> {
@@ -70,10 +70,10 @@ class InventoryCreateStoreFactory(
                 }
                 InventoryCreateStore.Intent.OnSaveClicked -> saveInventory(
                     inventoryDocument = getState().inventoryDocument,
-                    accountingObjects = getState().inventoryDocument.accountingObjectList
+                    accountingObjects = getState().inventoryDocument.accountingObjects
                 )
                 is InventoryCreateStore.Intent.OnNewAccountingObjectsHandled -> handleNewAccountingObjects(
-                    accountingObjects = getState().inventoryDocument.accountingObjectList,
+                    accountingObjects = getState().inventoryDocument.accountingObjects,
                     newAccountingObjects = getState().newAccountingObjects.toList(),
                     handledAccountingObjectIds = intent.handledAccountingObjectIds,
                 )
@@ -81,7 +81,7 @@ class InventoryCreateStoreFactory(
                     dispatch(
                         Result.AccountingObjects(
                             inventoryCreateInteractor.changeAccountingObjectInventoryStatus(
-                                getState().inventoryDocument.accountingObjectList,
+                                getState().inventoryDocument.accountingObjects,
                                 intent.switcherResult.result
                             )
                         )
@@ -142,15 +142,17 @@ class InventoryCreateStoreFactory(
             }
         }
 
-        private fun saveInventory(
+        private suspend fun saveInventory(
             inventoryDocument: InventoryCreateDomain,
             accountingObjects: List<AccountingObjectDomain>
         ) {
             dispatch(Result.Loading(true))
-            inventoryCreateInteractor.saveInventoryDocument(
-                inventoryDocument,
-                accountingObjects
-            )
+            catchException {
+                inventoryCreateInteractor.saveInventoryDocument(
+                    inventoryDocument,
+                    accountingObjects
+                )
+            }
             dispatch(Result.Loading(false))
         }
 
@@ -159,7 +161,7 @@ class InventoryCreateStoreFactory(
             dispatch(
                 Result.AccountingObjects(
                     inventoryCreateInteractor.dropAccountingObjects(
-                        state.inventoryDocument.accountingObjectList
+                        state.inventoryDocument.accountingObjects
                     )
                 )
             )
@@ -191,7 +193,7 @@ class InventoryCreateStoreFactory(
                 is Result.HideFoundedAccountingObjects -> copy(isHideFoundAccountingObjects = result.hideFoundedAccountingObjects)
                 is Result.AccountingObjects -> copy(
                     inventoryDocument = inventoryDocument.copy(
-                        accountingObjectList = result.accountingObjects
+                        accountingObjects = result.accountingObjects
                     )
                 )
                 is Result.NewAccountingObjects -> copy(newAccountingObjects = result.newAccountingObjects)
