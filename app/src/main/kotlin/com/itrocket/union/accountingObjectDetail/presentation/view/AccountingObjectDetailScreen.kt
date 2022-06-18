@@ -308,7 +308,6 @@ fun AccountingObjectDetailScreenPreview(isFullCharacteristicChecked: Boolean = t
                     ObjectInfoDomain("blabla2", "blabla2")
                 ),
                 inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
-                maxItemsCount = 50,
             ),
             isFullCharacteristicChecked = isFullCharacteristicChecked
         ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {})

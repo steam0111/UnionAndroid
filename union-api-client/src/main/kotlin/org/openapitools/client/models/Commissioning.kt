@@ -2,7 +2,7 @@ package org.openapitools.client.models
 
 import com.squareup.moshi.Json
 
-data class CustomDepartmentDto(
+data class Commissioning (
 
     @Json(name = "id")
     val id: String,
@@ -11,7 +11,7 @@ data class CustomDepartmentDto(
     val deleted: Boolean,
 
     @Json(name = "version")
-    val version: Int?,
+    val version: Int? = null,
 
     @Json(name = "dateInsert")
     val dateInsert: String? = null,
@@ -22,16 +22,25 @@ data class CustomDepartmentDto(
     @Json(name = "catalogItemName")
     val catalogItemName: String? = null,
 
-    @Json(name = "name")
-    val name: String? = null,
-
-    @Json(name = "code")
-    val code: String? = null,
+    @Json(name = "date")
+    val date: String? = null,
 
     @Json(name = "organizationId")
     val organizationId: String? = null,
 
     @Json(name = "extendedOrganization")
-    val extendedOrganization: CustomOrganizationDto? = null
+    val extendedOrganization: CustomOrganizationDto? = null,
+
+    @Json(name = "responsibleId")
+    val responsibleId: String? = null,
+
+    @Json(name = "extendedResponsible")
+    val extendedResponsible: Employee? = null,
+
+    @Json(name = "statusId")
+    val statusId: String? = null,
+
+    @Json(name = "extendedStatus")
+    val extendedStatus: ActionStatusDto? = null
 
 )

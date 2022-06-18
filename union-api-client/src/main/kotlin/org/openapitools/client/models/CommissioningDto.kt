@@ -49,7 +49,7 @@ data class CommissioningDto (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int,
+    val version: kotlin.Int? = null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -67,13 +67,13 @@ data class CommissioningDto (
     val organizationId: kotlin.String? = null,
 
     @Json(name = "extendedOrganization")
-    val extendedOrganization: OrganizationDto? = null,
+    val extendedOrganization: CustomOrganizationDto? = null,
 
     @Json(name = "responsibleId")
     val responsibleId: kotlin.String? = null,
 
     @Json(name = "extendedResponsible")
-    val extendedResponsible: EmployeeDto? = null,
+    val extendedResponsible: Employee? = null,
 
     @Json(name = "statusId")
     val statusId: kotlin.String? = null,

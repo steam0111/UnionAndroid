@@ -5,12 +5,11 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.filter.domain.FilterInteractor
-import kotlinx.coroutines.delay
 
 class AccountingObjectStoreFactory(
     private val storeFactory: StoreFactory,
@@ -32,16 +31,21 @@ class AccountingObjectStoreFactory(
         AccountingObjectExecutor()
 
     private inner class AccountingObjectExecutor :
-        SuspendExecutor<AccountingObjectStore.Intent, Unit, AccountingObjectStore.State, Result, AccountingObjectStore.Label>(
-            mainContext = coreDispatchers.ui
+        BaseExecutor<AccountingObjectStore.Intent, Unit, AccountingObjectStore.State, Result, AccountingObjectStore.Label>(
+            context = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
             action: Unit,
             getState: () -> AccountingObjectStore.State
         ) {
             dispatch(Result.Loading(true))
-            delay(1000)
-            dispatch(Result.AccountingObjects(accountingObjectInteractor.getAccountingObjects()))
+            catchException {
+                dispatch(Result.AccountingObjects(accountingObjectInteractor.getAccountingObjects()))
+            }
+            dispatch(Result.Loading(false))
+        }
+
+        override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
         }
 
