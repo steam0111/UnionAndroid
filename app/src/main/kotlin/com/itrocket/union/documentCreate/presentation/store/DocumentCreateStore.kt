@@ -6,6 +6,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectArguments
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragmentDirections
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
@@ -31,11 +32,16 @@ interface DocumentCreateStore :
         data class OnParamClicked(val param: ParamDomain) : Intent()
         data class OnParamCrossClicked(val param: ParamDomain) : Intent()
         data class OnParamsChanged(val params: List<ParamDomain>) : Intent()
+        data class OnAccountingObjectSelected(val accountingObjectDomain: AccountingObjectDomain) :
+            Intent()
+
         data class OnLocationChanged(val location: String) : Intent()
     }
 
     data class State(
         val document: DocumentDomain,
+        val accountingObjects: List<AccountingObjectDomain>,
+        val params: List<ParamDomain>,
         val isLoading: Boolean = false,
         val selectedPage: Int = 0,
         val isNextEnabled: Boolean = false
@@ -49,6 +55,14 @@ interface DocumentCreateStore :
             override val directions: NavDirections
                 get() = DocumentCreateComposeFragmentDirections.toLocation(
                     LocationArguments(location = location)
+                )
+        }
+
+        data class ShowAccountingObjects(val params: List<ParamDomain>) : Label(),
+            ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = DocumentCreateComposeFragmentDirections.toAccountingObjects(
+                    AccountingObjectArguments(params = params)
                 )
         }
 

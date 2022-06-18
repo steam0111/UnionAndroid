@@ -60,6 +60,10 @@
     <fragment
         android:id="@+id/accountingObjects"
         android:name="com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment">
+        <argument
+            android:name="AccountingObjectArguments"
+            app:argType="com.itrocket.union.accountingObjects.presentation.store.AccountingObjectArguments"
+            app:nullable="true" />
         <action
             android:id="@+id/to_accountingObjectsDetails"
             app:destination="@id/accountingObjectsDetails" />
@@ -115,7 +119,7 @@
 
     <fragment
         android:id="@+id/employees"
-        android:name="com.itrocket.union.employees.presentation.view.EmployeeComposeFragment"/>
+        android:name="com.itrocket.union.employees.presentation.view.EmployeeComposeFragment" />
 
     <fragment
         android:id="@+id/filter"
@@ -240,6 +244,9 @@
         <action
             android:id="@+id/to_location"
             app:destination="@id/location" />
+        <action
+            android:id="@+id/to_accountingObjects"
+            app:destination="@id/accountingObjects" />
     </fragment>
 
     <fragment

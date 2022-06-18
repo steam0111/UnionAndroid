@@ -5,6 +5,8 @@ import androidx.navigation.fragment.navArgs
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
+import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectResult
+import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
 import com.itrocket.union.documentCreate.DocumentCreateModule.DOCUMENTCREATE_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
@@ -25,6 +27,17 @@ class DocumentCreateComposeFragment :
                     (it as SelectParamsResult?)?.params?.let {
                         accept(
                             DocumentCreateStore.Intent.OnParamsChanged(it)
+                        )
+                    }
+                }
+            ),
+            FragmentResult(
+                resultCode = AccountingObjectComposeFragment.ACCOUNTING_OBJECT_RESULT_CODE,
+                resultLabel = AccountingObjectComposeFragment.ACCOUNTING_OBJECT_RESULT,
+                resultAction = {
+                    (it as AccountingObjectResult?)?.accountingObject?.let {
+                        accept(
+                            DocumentCreateStore.Intent.OnAccountingObjectSelected(it)
                         )
                     }
                 }

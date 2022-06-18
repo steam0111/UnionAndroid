@@ -25,7 +25,9 @@ class DocumentCreateStoreFactory(
             Store<DocumentCreateStore.Intent, DocumentCreateStore.State, DocumentCreateStore.Label> by storeFactory.create(
                 name = "DocumentCreateStore",
                 initialState = DocumentCreateStore.State(
-                    document = documentCreateArguments.document
+                    document = documentCreateArguments.document,
+                    accountingObjects = documentCreateArguments.document.accountingObjects,
+                    params = documentCreateArguments.document.params
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
@@ -52,12 +54,15 @@ class DocumentCreateStoreFactory(
         ) {
             when (intent) {
                 DocumentCreateStore.Intent.OnBackClicked -> publish(DocumentCreateStore.Label.GoBack)
-                DocumentCreateStore.Intent.OnChooseClicked -> {
-                    //no-op
-                }
+                DocumentCreateStore.Intent.OnChooseClicked -> publish(
+                    DocumentCreateStore.Label.ShowAccountingObjects(
+                        getState().params
+                    )
+                )
                 DocumentCreateStore.Intent.OnDropClicked -> {
-                    val params = documentCreateInteractor.clearParams(getState().document.params)
-                    changeParams(params = params, getState = getState)
+                    dispatch(Result.Params(getState().document.params))
+                    dispatch(Result.AccountingObjects(getState().document.accountingObjects))
+                    isNextEnabled(getState)
                 }
                 DocumentCreateStore.Intent.OnNextClicked -> dispatch(
                     Result.SelectPage(
@@ -65,19 +70,19 @@ class DocumentCreateStoreFactory(
                     )
                 )
                 is DocumentCreateStore.Intent.OnParamClicked -> showParams(
-                    params = getState().document.params,
+                    params = getState().params,
                     param = intent.param
                 )
                 is DocumentCreateStore.Intent.OnParamCrossClicked -> {
                     val params = documentCreateInteractor.clearParam(
-                        getState().document.params,
+                        getState().params,
                         intent.param
                     )
                     changeParams(params = params, getState = getState)
                 }
                 is DocumentCreateStore.Intent.OnParamsChanged -> {
                     val params = documentCreateInteractor.changeParams(
-                        getState().document.params,
+                        getState().params,
                         intent.params
                     )
                     changeParams(params = params, getState = getState)
@@ -90,10 +95,20 @@ class DocumentCreateStoreFactory(
                 }
                 is DocumentCreateStore.Intent.OnLocationChanged -> {
                     val params = documentCreateInteractor.changeLocation(
-                        getState().document.params,
+                        getState().params,
                         intent.location
                     )
                     changeParams(params = params, getState = getState)
+                }
+                is DocumentCreateStore.Intent.OnAccountingObjectSelected -> {
+                    dispatch(
+                        Result.AccountingObjects(
+                            documentCreateInteractor.addAccountingObject(
+                                accountingObjects = getState().accountingObjects,
+                                accountingObjectDomain = intent.accountingObjectDomain
+                            )
+                        )
+                    )
                 }
             }
         }
@@ -107,19 +122,20 @@ class DocumentCreateStoreFactory(
         }
 
         private fun isNextEnabled(getState: () -> DocumentCreateStore.State) {
-            dispatch(Result.Enabled(documentCreateInteractor.isParamsFilled(getState().document.params)))
+            dispatch(Result.Enabled(documentCreateInteractor.isParamsFilled(getState().params)))
         }
 
         private suspend fun saveDocument(getState: () -> DocumentCreateStore.State) {
             if (getState().document.objectType == ObjectType.MAIN_ASSETS) {
                 documentCreateInteractor.saveAccountingObjectDocument(
-                    accountingObjects = getState().document.accountingObjects,
-                    params = getState().document.params
+                    accountingObjects = getState().accountingObjects,
+                    document = getState().document,
+                    params = getState().params
                 )
             } else {
                 documentCreateInteractor.saveReservesDocument(
                     reserves = getState().document.reserves,
-                    params = getState().document.params
+                    params = getState().params
                 )
             }
         }
@@ -157,8 +173,8 @@ class DocumentCreateStoreFactory(
         override fun DocumentCreateStore.State.reduce(result: Result) =
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
-                is Result.AccountingObjects -> copy(document = document.copy(accountingObjects = result.accountingObjects))
-                is Result.Params -> copy(document = document.copy(params = result.params))
+                is Result.AccountingObjects -> copy(accountingObjects = result.accountingObjects)
+                is Result.Params -> copy(params = result.params)
                 is Result.Reserves -> copy(document = document.copy(reserves = result.reserves))
                 is Result.SelectPage -> copy(selectedPage = result.page)
                 is Result.Enabled -> copy(isNextEnabled = result.enabled)

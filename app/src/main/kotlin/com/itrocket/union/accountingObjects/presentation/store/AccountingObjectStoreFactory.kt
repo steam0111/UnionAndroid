@@ -16,6 +16,7 @@ class AccountingObjectStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val accountingObjectInteractor: AccountingObjectInteractor,
     private val filterInteractor: FilterInteractor,
+    private val accountingObjectArguments: AccountingObjectArguments?
 ) {
     fun create(): AccountingObjectStore =
         object : AccountingObjectStore,
@@ -40,7 +41,9 @@ class AccountingObjectStoreFactory(
         ) {
             dispatch(Result.Loading(true))
             catchException {
-                dispatch(Result.AccountingObjects(accountingObjectInteractor.getAccountingObjects()))
+                dispatch(Result.AccountingObjects(accountingObjectInteractor.getAccountingObjects(
+                    accountingObjectArguments?.params.orEmpty()
+                )))
             }
             dispatch(Result.Loading(false))
         }
@@ -54,16 +57,24 @@ class AccountingObjectStoreFactory(
             getState: () -> AccountingObjectStore.State
         ) {
             when (intent) {
-                AccountingObjectStore.Intent.OnBackClicked -> publish(AccountingObjectStore.Label.GoBack)
+                AccountingObjectStore.Intent.OnBackClicked -> publish(AccountingObjectStore.Label.GoBack())
                 AccountingObjectStore.Intent.OnSearchClicked -> publish(
                     AccountingObjectStore.Label.ShowSearch
                 )
                 AccountingObjectStore.Intent.OnFilterClicked -> publish(
                     AccountingObjectStore.Label.ShowFilter(filterInteractor.getFilters())
                 )
-                is AccountingObjectStore.Intent.OnItemClicked -> publish(
+                is AccountingObjectStore.Intent.OnItemClicked -> onItemClick(intent.item)
+            }
+        }
+
+        private fun onItemClick(item: AccountingObjectDomain) {
+            if (accountingObjectArguments?.params?.isNotEmpty() == true) {
+                publish(AccountingObjectStore.Label.GoBack(AccountingObjectResult(item)))
+            } else {
+                publish(
                     AccountingObjectStore.Label.ShowDetail(
-                        intent.item
+                        item
                     )
                 )
             }
