@@ -4,7 +4,9 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
+import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
+import com.itrocket.union.manual.ParamDomain
 
 sealed class DocumentView {
     data class DocumentItemView(
@@ -13,7 +15,8 @@ sealed class DocumentView {
         val documentStatus: DocumentStatus,
         val objectType: ObjectType,
         val objectStatus: ObjectStatus,
-        val documentInfo: List<String>,
+        val documentType: DocumentTypeDomain,
+        val params: List<ParamDomain>,
         val date: String
     ) : DocumentView()
 
@@ -25,12 +28,24 @@ sealed class DocumentView {
         DocumentView()
 }
 
+fun DocumentView.DocumentItemView.toDocumentDomain() = DocumentDomain(
+    number = number,
+    time = time,
+    documentStatus = documentStatus,
+    status = objectStatus,
+    objectType = objectType,
+    date = date,
+    documentType = documentType,
+    params = params
+)
+
 fun DocumentDomain.toDocumentItemView() = DocumentView.DocumentItemView(
     number = number,
     time = time,
     documentStatus = documentStatus,
     objectStatus = status,
     objectType = objectType,
-    documentInfo = documentInfo,
-    date = date
+    date = date,
+    documentType = documentType,
+    params = params
 )

@@ -108,11 +108,14 @@
             android:name="DocumentComposeFragmentArgs"
             app:argType="com.itrocket.union.documents.presentation.store.DocumentArguments"
             app:nullable="false" />
+        <action
+            android:id="@+id/to_documentCreate"
+            app:destination="@id/documentCreate" />
     </fragment>
 
     <fragment
         android:id="@+id/employees"
-        android:name="com.itrocket.union.employees.presentation.view.EmployeeComposeFragment"></fragment>
+        android:name="com.itrocket.union.employees.presentation.view.EmployeeComposeFragment"/>
 
     <fragment
         android:id="@+id/filter"
@@ -222,6 +225,22 @@
     <fragment
         android:id="@+id/departments"
         android:name="com.itrocket.union.departments.presentation.view.DepartmentComposeFragment" />
+
+    <fragment
+        android:id="@+id/documentCreate"
+        android:name="com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragment"
+        android:label="DocumentCreate">
+
+        <argument
+            android:name="DocumentCreateArguments"
+            app:argType="com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments" />
+        <action
+            android:id="@+id/to_selectParams"
+            app:destination="@id/selectParams" />
+        <action
+            android:id="@+id/to_location"
+            app:destination="@id/location" />
+    </fragment>
 
     <fragment
         android:id="@+id/inventories"

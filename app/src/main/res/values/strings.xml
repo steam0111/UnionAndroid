@@ -27,6 +27,7 @@
     <string name="common_create">Создать</string>
     <string name="common_reading">Считывание</string>
     <string name="common_add">Добавить</string>
+    <string name="common_choose">Выбор</string>
 
     <!-- Auth -->
     <string name="auth_suggest">Это нужно сделать один раз</string>
@@ -74,6 +75,7 @@
     <string name="manual_organization">Организация</string>
     <string name="manual_mol">МОЛ</string>
     <string name="manual_location">Местоположение</string>
+    <string name="manual_exploiting">Эксплуатирующий</string>
 
     <!-- AccountingObjectScreen -->
     <string name="main_marking">Маркировка</string>
@@ -125,6 +127,11 @@
     <string name="documents_create_issue">Создать</string>
     <string name="documents_today">Сегодня</string>
     <string name="documents_yesterday">Вчера</string>
+
+    <!-- Document create -->
+    <string name="document_create_title">%s &quot;%s&quot;</string>
+    <string name="document_create_accounting_object">Объекты учета</string>
+    <string name="document_create_empty">Для начала считывания нажмите курок или выберите из списка</string>
 
     <!-- ModuleSettings -->
     <string name="module_settings_title">Модули</string>

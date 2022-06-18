@@ -1,0 +1,69 @@
+package com.itrocket.union.documentCreate.domain
+
+import kotlinx.coroutines.withContext
+import com.itrocket.union.documentCreate.domain.dependencies.DocumentCreateRepository
+import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.manual.ManualType
+import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.ParamValueDomain
+import com.itrocket.union.reserves.domain.entity.ReservesDomain
+
+class DocumentCreateInteractor(
+    private val repository: DocumentCreateRepository,
+    private val coreDispatchers: CoreDispatchers
+) {
+
+    fun changeParams(params: List<ParamDomain>, newParams: List<ParamDomain>): List<ParamDomain> {
+        val mutableParams = params.toMutableList()
+        mutableParams.forEachIndexed { index, paramDomain ->
+            val newParam = newParams.find { it.type == paramDomain.type }
+            if (newParam != null) {
+                mutableParams[index] = newParam
+            }
+        }
+        return mutableParams
+    }
+
+    fun changeLocation(params: List<ParamDomain>, location: String): List<ParamDomain> {
+        val mutableParams = params.toMutableList()
+        val locationParam = params.find { it.type == ManualType.LOCATION }
+        val locationIndex = params.indexOfFirst { it.type == ManualType.LOCATION }
+        mutableParams[locationIndex] =
+            mutableParams[locationIndex].copy(paramValue = ParamValueDomain("", location))
+        return mutableParams
+    }
+
+    fun clearParam(list: List<ParamDomain>, param: ParamDomain): List<ParamDomain> {
+        val mutableList = list.toMutableList()
+        val currentIndex = mutableList.indexOfFirst { it.type == param.type }
+        mutableList[currentIndex] = mutableList[currentIndex].copy(paramValue = null)
+        return mutableList
+    }
+
+    fun clearParams(list: List<ParamDomain>): List<ParamDomain> {
+        return list.map {
+            it.copy(paramValue = null)
+        }
+    }
+
+    fun isParamsFilled(params: List<ParamDomain>): Boolean = !params.any { it.paramValue == null }
+
+    suspend fun saveAccountingObjectDocument(
+        params: List<ParamDomain>,
+        accountingObjects: List<AccountingObjectDomain>
+    ) {
+        withContext(coreDispatchers.io) {
+            //save
+        }
+    }
+
+    suspend fun saveReservesDocument(
+        reserves: List<ReservesDomain>,
+        params: List<ParamDomain>,
+    ) {
+        withContext(coreDispatchers.io) {
+            //save
+        }
+    }
+}
