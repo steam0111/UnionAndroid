@@ -8,6 +8,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailScreenPreview
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectScreenPreview
 import com.itrocket.union.authUser.presentation.view.AuthUserScreenPreview
+import com.itrocket.union.counterparties.presentation.view.CounterpartyScreenPreview
 import com.itrocket.union.branches.presentation.view.BranchesScreenPreview
 import com.itrocket.union.departments.presentation.view.DepartmentScreenPreview
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateScreenPreview
@@ -211,6 +212,13 @@ class ScreensTest : ScreenshotTest {
     fun `Switcher`() {
         takeScreenShot {
             SwitcherScreenPreview()
+        }
+    }
+
+    @Test
+    fun `Counterparty`(){
+        takeScreenShot {
+            CounterpartyScreenPreview()
         }
     }
 
