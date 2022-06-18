@@ -25,6 +25,7 @@ import com.itrocket.union.location.presentation.view.LocationScreenPreview
 import com.itrocket.union.newAccountingObject.presentation.view.NewAccountingObjectScreenPreview
 import com.itrocket.union.organizations.presentation.view.OrganizationsScreenPreview
 import com.itrocket.union.readingMode.presentation.view.ReadingModeScreenPreview
+import com.itrocket.union.regions.presentation.view.RegionScreenPreview
 import com.itrocket.union.reserveDetail.presentation.view.ReserveDetailScreenPreview
 import com.itrocket.union.reserves.presentation.view.ReservesScreenPreview
 import com.itrocket.union.serverConnect.presentation.view.ServerConnectScreenPreview
@@ -210,6 +211,13 @@ class ScreensTest : ScreenshotTest {
     fun `Switcher`() {
         takeScreenShot {
             SwitcherScreenPreview()
+        }
+    }
+
+    @Test
+    fun `Region`() {
+        takeScreenShot {
+            RegionScreenPreview()
         }
     }
 

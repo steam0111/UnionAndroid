@@ -17,6 +17,7 @@ import org.openapitools.client.custom_api.OrganizationApi
 import org.openapitools.client.custom_api.DepartmentApi
 import org.openapitools.client.custom_api.EmployeeApi
 import org.openapitools.client.custom_api.NomenclatureGroupApi
+import org.openapitools.client.custom_api.RegionApi
 import org.openapitools.client.infrastructure.BigDecimalAdapter
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -99,6 +100,10 @@ object NetworkModule {
         single<EmployeeApi> {
             get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
                 .create(EmployeeApi::class.java)
+        }
+        single<RegionApi> {
+            get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
+                .create(RegionApi::class.java)
         }
         single<BranchesApi> {
             get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
