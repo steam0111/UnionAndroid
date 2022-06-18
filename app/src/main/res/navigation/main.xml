@@ -61,6 +61,9 @@
         <action
             android:id="@+id/to_region"
             app:destination="@id/region" />
+        <action
+            android:id="@+id/to_counterparty"
+            app:destination="@id/counterparty" />
     </fragment>
 
     <fragment
@@ -274,4 +277,9 @@
         android:id="@+id/region"
         android:name="com.itrocket.union.regions.presentation.view.RegionComposeFragment"
         android:label="Region"/>
+
+    <fragment
+        android:id="@+id/counterparty"
+        android:name="com.itrocket.union.counterparties.presentation.view.CounterpartyComposeFragment"
+        android:label="Counterparty"/>
 </navigation>

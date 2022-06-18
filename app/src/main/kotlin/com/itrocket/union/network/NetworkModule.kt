@@ -11,6 +11,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.openapitools.client.custom_api.AuthApi
+import org.openapitools.client.custom_api.CounterpartyApi
 import org.openapitools.client.custom_api.BranchesApi
 import org.openapitools.client.custom_api.AccountingObjectApi
 import org.openapitools.client.custom_api.OrganizationApi
@@ -100,6 +101,10 @@ object NetworkModule {
         single<EmployeeApi> {
             get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
                 .create(EmployeeApi::class.java)
+        }
+        single<CounterpartyApi> {
+            get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
+                .create(CounterpartyApi::class.java)
         }
         single<RegionApi> {
             get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)

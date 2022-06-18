@@ -70,6 +70,7 @@
     <string name="organizations">Организации</string>
     <string name="departments">Подразделения</string>
     <string name="inventories">Инв. ведомости</string>
+    <string name="counterparties">Контрагенты</string>
     <string name="regions">Регионы</string>
     <string name="branches">Филиалы</string>
 
@@ -183,4 +184,10 @@
 
     <!-- Inventories -->
     <string name="inventories_title">Список инв. ведомостей</string>
+
+    <!-- Counterparties -->
+    <string name="counterparties_title">Контрагенты</string>
+    <string name="counterparties_code">Код контрагента</string>
+    <string name="counterparties_kpp">КПП</string>
+    <string name="counterparties_inn">ИНН</string>
 </resources>

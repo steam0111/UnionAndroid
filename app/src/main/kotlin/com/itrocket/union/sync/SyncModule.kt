@@ -1,6 +1,7 @@
 package com.itrocket.union.sync
 
 import androidx.room.Room
+import com.example.union_sync_api.data.CounterpartySyncApi
 import com.example.union_sync_api.data.BranchesSyncApi
 import com.example.union_sync_api.data.DepartmentSyncApi
 import com.example.union_sync_api.data.EmployeeSyncApi
@@ -10,6 +11,7 @@ import com.example.union_sync_api.data.RegionSyncApi
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.OrganizationSyncApi
 import com.example.union_sync_impl.UnionDatabase
+import com.example.union_sync_impl.data.CounterpartySyncApiImpl
 import com.example.union_sync_impl.data.BranchesSyncApiImpl
 import com.example.union_sync_impl.data.DepartmentSyncApiImpl
 import com.example.union_sync_impl.data.EmployeeSyncApiImpl
@@ -81,6 +83,13 @@ object SyncModule {
                 inventoryDao = get()
             )
         }
+        factory<CounterpartySyncApi> {
+            CounterpartySyncApiImpl(
+                counterpartyApi = get(),
+                counterpartyDao = get()
+            )
+        }
+
         single {
             Room.databaseBuilder(
                 get(),
@@ -110,6 +119,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().networkSyncDao()
+        }
+        factory {
+            get<UnionDatabase>().counterpartyDao()
         }
         factory {
             get<UnionDatabase>().regionDao()

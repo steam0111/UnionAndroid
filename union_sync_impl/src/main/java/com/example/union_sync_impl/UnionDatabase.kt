@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.BranchesDao
+import com.example.union_sync_impl.dao.CounterpartyDao
 import com.example.union_sync_impl.dao.DepartmentDao
 import com.example.union_sync_impl.dao.EmployeeDao
 import com.example.union_sync_impl.dao.InventoryDao
@@ -17,6 +18,7 @@ import com.example.union_sync_impl.dao.OrganizationDao
 import com.example.union_sync_impl.dao.RegionDao
 import com.example.union_sync_impl.entity.AccountingObjectDb
 import com.example.union_sync_impl.entity.BranchesDb
+import com.example.union_sync_impl.entity.CounterpartyDb
 import com.example.union_sync_impl.entity.DepartmentDb
 import com.example.union_sync_impl.entity.EmployeeDb
 import com.example.union_sync_impl.entity.InventoryDb
@@ -42,7 +44,8 @@ import com.example.union_sync_impl.utils.Converters
         BranchesDb::class,
         InventoryDb::class,
         AccountingObjectDb::class,
-        RegionDb::class
+        RegionDb::class,
+        CounterpartyDb::class
     ], version = 30
 )
 @TypeConverters(Converters::class)
@@ -55,6 +58,7 @@ abstract class UnionDatabase : RoomDatabase() {
     abstract fun departmentDao(): DepartmentDao
     abstract fun employeeDao(): EmployeeDao
     abstract fun networkSyncDao(): NetworkSyncDao
+    abstract fun counterpartyDao(): CounterpartyDao
     abstract fun regionDao(): RegionDao
     abstract fun accountingObjectDao(): AccountingObjectDao
     abstract fun inventorySyncDao(): InventoryDao
