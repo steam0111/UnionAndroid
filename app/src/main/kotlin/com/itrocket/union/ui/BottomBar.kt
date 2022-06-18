@@ -64,6 +64,40 @@ private fun BottomBarPreview() {
 }
 
 @Composable
+fun ButtonLoaderBottomBar(
+    text: String,
+    onClick: () -> Unit,
+    isLoading: Boolean,
+    isEnabled: Boolean = true,
+    isAllUppercase: Boolean = true
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(graphite2)
+            .padding(16.dp)
+    ) {
+        ButtonWithLoader(
+            isLoading = isLoading,
+            isEnabled = isEnabled,
+            onClick = onClick,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = if (isAllUppercase) {
+                    text.uppercase()
+                } else {
+                    text
+                },
+                style = AppTheme.typography.body2,
+                color = white,
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+}
+
+@Composable
 fun StepBottomBar(
     step: Int,
     stepCount: Int,

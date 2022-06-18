@@ -1,62 +1,53 @@
-package com.itrocket.union.inventory.presentation.store
+package com.itrocket.union.documentCreate.presentation.store
 
 import androidx.navigation.NavDirections
+import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
-import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragmentDirections
+import com.itrocket.union.documents.domain.entity.DocumentDomain
+import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
-import com.itrocket.union.inventory.presentation.view.InventoryComposeFragmentDirections
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
-import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateArguments
 import com.itrocket.union.location.presentation.store.LocationArguments
-import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.selectParams.presentation.store.SelectParamsArguments
 
-interface InventoryStore :
-    Store<InventoryStore.Intent, InventoryStore.State, InventoryStore.Label> {
+interface DocumentCreateStore :
+    Store<DocumentCreateStore.Intent, DocumentCreateStore.State, DocumentCreateStore.Label> {
 
     sealed class Intent {
         object OnBackClicked : Intent()
         object OnDropClicked : Intent()
-        object OnCreateDocumentClicked : Intent()
+        object OnSaveClicked : Intent()
+        object OnNextClicked : Intent()
+        object OnPrevClicked : Intent()
+        object OnSettingsClicked : Intent()
+        object OnChooseClicked : Intent()
         data class OnSelectPage(val selectedPage: Int) : Intent()
         data class OnParamClicked(val param: ParamDomain) : Intent()
         data class OnParamCrossClicked(val param: ParamDomain) : Intent()
         data class OnParamsChanged(val params: List<ParamDomain>) : Intent()
-        data class OnLocationChanged(val locationResult: LocationResult) : Intent()
+        data class OnLocationChanged(val location: String) : Intent()
     }
 
     data class State(
-        val isAccountingObjectsLoading: Boolean = false,
-        val isCreateInventoryLoading: Boolean = false,
+        val document: DocumentDomain,
+        val isLoading: Boolean = false,
         val selectedPage: Int = 0,
-        val accountingObjectList: List<AccountingObjectDomain> = listOf(),
-        val params: List<ParamDomain> = listOf(
-            ParamDomain(paramValue = null, type = ManualType.ORGANIZATION),
-            ParamDomain(paramValue = null, type = ManualType.MOL),
-            ParamDomain(paramValue = null, type = ManualType.LOCATION),
-        )
+        val isNextEnabled: Boolean = false
     )
 
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
-        data class ShowCreateInventory(
-            val inventoryCreate: InventoryCreateDomain
-        ) : Label(), ForwardNavigationLabel {
-            override val directions: NavDirections
-                get() = InventoryComposeFragmentDirections.toInventoryCreate(
-                    InventoryCreateArguments(inventoryDocument = inventoryCreate)
-                )
-
-        }
+        data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
 
         data class ShowLocation(val location: String) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
-                get() = InventoryComposeFragmentDirections.toLocation(
+                get() = DocumentCreateComposeFragmentDirections.toLocation(
                     LocationArguments(location = location)
                 )
         }
@@ -66,14 +57,12 @@ interface InventoryStore :
             val params: List<ParamDomain>
         ) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
-                get() = InventoryComposeFragmentDirections.toSelectParams(
+                get() = DocumentCreateComposeFragmentDirections.toSelectParams(
                     SelectParamsArguments(
                         params = params,
                         currentStep = currentStep
                     )
                 )
         }
-
-        data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
     }
 }

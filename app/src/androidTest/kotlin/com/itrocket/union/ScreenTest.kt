@@ -9,6 +9,7 @@ import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObj
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectScreenPreview
 import com.itrocket.union.authUser.presentation.view.AuthUserScreenPreview
 import com.itrocket.union.departments.presentation.view.DepartmentScreenPreview
+import com.itrocket.union.documentCreate.presentation.view.DocumentCreateScreenPreview
 import com.itrocket.union.documents.presentation.view.DocumentScreenPreview
 import com.itrocket.union.documentsMenu.presentation.view.DocumentMenuScreenPreview
 import com.itrocket.union.employees.presentation.view.EmployeeScreenPreview
@@ -208,6 +209,13 @@ class ScreensTest : ScreenshotTest {
     fun `Switcher`() {
         takeScreenShot {
             SwitcherScreenPreview()
+        }
+    }
+
+    @Test
+    fun `DocumentCreate`(){
+        takeScreenShot {
+            DocumentCreateScreenPreview()
         }
     }
 }

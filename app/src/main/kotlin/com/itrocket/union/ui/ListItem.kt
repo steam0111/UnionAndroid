@@ -45,10 +45,14 @@ import com.itrocket.union.accountingObjects.domain.entity.Status
 import com.itrocket.union.common.DefaultItem
 import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentStatus
+import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
+import com.itrocket.union.manual.ManualType
+import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.ParamValueDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.utils.clickableUnbounded
 
@@ -90,7 +94,7 @@ fun AccountingObjectItem(
         }
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             SmallStatusLabel(status = status)
-            if(status is ObjectStatus) {
+            if (status is ObjectStatus) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -310,7 +314,7 @@ private fun getInventoryAnnotatedTitle(item: InventoryCreateDomain): Pair<Annota
 @Composable
 fun DocumentInfoItem(
     item: DocumentView.DocumentItemView,
-    onDocumentClickListener: (String) -> Unit,
+    onDocumentClickListener: (DocumentView.DocumentItemView) -> Unit,
     isShowBottomLine: Boolean,
     isShowStatus: Boolean = true
 ) {
@@ -373,9 +377,9 @@ fun DocumentInfoItem(
         },
     )
     val annotatedInfo = buildAnnotatedString {
-        item.documentInfo.forEachIndexed { index, info ->
-            append(info)
-            if (index < item.documentInfo.lastIndex) {
+        item.params.forEachIndexed { index, info ->
+            append(info.paramValue?.value.orEmpty())
+            if (index < item.params.lastIndex) {
                 append(" ")
                 withStyle(SpanStyle(color = psb6, fontWeight = FontWeight.ExtraBold)) {
                     append("|")
@@ -389,7 +393,7 @@ fun DocumentInfoItem(
             .fillMaxWidth()
             .background(white)
             .clickable {
-                onDocumentClickListener(item.number)
+                onDocumentClickListener(item)
             }
             .padding(horizontal = 16.dp)
     ) {
@@ -542,16 +546,24 @@ fun DocumentInfoItemPreview() {
             number = "БП-00001374",
             time = "12:40",
             objectStatus = ObjectStatus.AVAILABLE,
-            documentInfo = listOf(
-                "Систмный интегратор",
-                "Систмный интегратор",
-                "Систмный интегратор",
-                "Систмный интегратор",
-                "Систмный интегратор",
-            ),
             documentStatus = DocumentStatus.CREATED,
             objectType = ObjectType.MAIN_ASSETS,
-            date = ""
+            date = "",
+            params = listOf(
+                ParamDomain(
+                    paramValue = ParamValueDomain("1", "blbbb"),
+                    type = ManualType.MOL
+                ),
+                ParamDomain(
+                    paramValue = ParamValueDomain("1", "blbbb"),
+                    type = ManualType.LOCATION
+                ),
+                ParamDomain(
+                    paramValue = ParamValueDomain("1", "blbbb"),
+                    type = ManualType.ORGANIZATION
+                )
+            ),
+            documentType = DocumentTypeDomain.WRITE_OFF,
         ), onDocumentClickListener = {}, isShowBottomLine = true
     )
 }

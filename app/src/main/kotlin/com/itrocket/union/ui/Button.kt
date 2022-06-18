@@ -94,12 +94,19 @@ fun OutlinedButton(
 }
 
 @Composable
-fun ImageButton(@DrawableRes imageId: Int, paddings: PaddingValues, onClick: () -> Unit) {
+fun ImageButton(
+    @DrawableRes imageId: Int,
+    paddings: PaddingValues,
+    onClick: () -> Unit,
+    isEnabled: Boolean = true
+) {
+    val backgroundColor = if (isEnabled) psb6 else graphite3
+
     Image(
         painter = painterResource(id = imageId),
         contentDescription = null,
         modifier = Modifier
-            .background(psb6, RoundedCornerShape(8.dp))
+            .background(backgroundColor, RoundedCornerShape(8.dp))
             .clickable(onClick = onClick, interactionSource = remember {
                 MutableInteractionSource()
             }, indication = rememberRipple())

@@ -22,6 +22,7 @@ class SelectParamsInteractor(
             ManualType.ORGANIZATION -> getOrganizations(searchText)
             ManualType.MOL -> getEmployees(searchText)
             ManualType.LOCATION -> selectParamsRepository.getParamValues(type, searchText)
+            ManualType.EXPLOITING -> flow {  }
         }
 
 

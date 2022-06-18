@@ -31,6 +31,7 @@ import com.itrocket.union.token.TokenModule
 import com.itrocket.union.inventoryCreate.InventoryCreateModule
 import com.itrocket.union.switcher.SwitcherModule
 import com.itrocket.union.newAccountingObject.NewAccountingObjectModule
+import com.itrocket.union.documentCreate.DocumentCreateModule
 import com.itrocket.union.inventories.InventoriesModule
 
 object Modules {
@@ -69,6 +70,7 @@ object Modules {
         EmployeeModule.module,
         NewAccountingObjectModule.module,
         SwitcherModule.module,
-        InventoriesModule.module
+        InventoriesModule.module,
+        DocumentCreateModule.module
     )
 }

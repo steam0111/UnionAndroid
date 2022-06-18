@@ -3,10 +3,17 @@ package com.itrocket.union.documents.domain
 import kotlinx.coroutines.withContext
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentDomain
+import com.itrocket.union.documents.domain.entity.DocumentStatus
+import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
+import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.documents.presentation.view.toDocumentItemView
+import com.itrocket.union.manual.ManualType
+import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.ParamValueDomain
 import com.itrocket.union.utils.getTextDateFromStringDate
 import com.itrocket.union.utils.isCurrentYear
 import com.itrocket.union.utils.isToday
@@ -48,12 +55,31 @@ class DocumentInteractor(
         return rotatedDates.toMutableList().resolveItem(newDate)
     }
 
-    suspend fun getDocuments(): List<DocumentView> {
+    suspend fun getDocuments(type: DocumentTypeDomain): List<DocumentView> {
         return withContext(coreDispatchers.io) {
             groupDocuments(
-                repository.getDocuments()
+                repository.getDocuments(type)
             )
         }
+    }
+
+    suspend fun createDocument(type: DocumentTypeDomain, listType: ObjectType): DocumentDomain {
+        //add create document
+        return DocumentDomain(
+            number = "blablabla",
+            time = "12:00",
+            documentStatus = DocumentStatus.CREATED,
+            accountingObjects = listOf(),
+            date = "12.12.12",
+            documentType = type,
+            objectType = listType,
+            status = ObjectStatus.AVAILABLE,
+            params = listOf(
+                ParamDomain(paramValue = null, type = ManualType.ORGANIZATION),
+                ParamDomain(paramValue = null, type = ManualType.MOL),
+                ParamDomain(paramValue = null, type = type.manualType),
+            )
+        )
     }
 
 }
