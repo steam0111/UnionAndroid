@@ -1,11 +1,10 @@
 package com.itrocket.union.inventory.presentation.store
 
 import androidx.navigation.NavDirections
-import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
-import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailArguments
+import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragmentDirections
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
@@ -31,7 +30,8 @@ interface InventoryStore :
     }
 
     data class State(
-        val isLoading: Boolean = false,
+        val isAccountingObjectsLoading: Boolean = false,
+        val isCreateInventoryLoading: Boolean = false,
         val selectedPage: Int = 0,
         val accountingObjectList: List<AccountingObjectDomain> = listOf(),
         val params: List<ParamDomain> = listOf(

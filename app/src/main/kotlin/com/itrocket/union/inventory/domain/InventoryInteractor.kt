@@ -1,5 +1,6 @@
 package com.itrocket.union.inventory.domain
 
+import com.example.union_sync_api.data.InventorySyncApi
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
@@ -7,15 +8,19 @@ import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.ParamValueDomain
+import kotlinx.coroutines.withContext
 
 class InventoryInteractor(
     private val repository: InventoryRepository,
-    private val coreDispatchers: CoreDispatchers
+    private val coreDispatchers: CoreDispatchers,
+    private val inventorySyncApi: InventorySyncApi
 ) {
 
-    fun createInventory(accountingObjects: List<AccountingObjectDomain>): InventoryCreateDomain {
-        // add request
-        return InventoryCreateDomain(
+    suspend fun createInventory(accountingObjects: List<AccountingObjectDomain>): InventoryCreateDomain = withContext(coreDispatchers.io) {
+        // TODO создание инвентаризационной ведомости
+        //inventorySyncApi.createInventory()
+
+        InventoryCreateDomain(
             number = "БП-00001374",
             time = "12:40",
             date = "12.12.12",

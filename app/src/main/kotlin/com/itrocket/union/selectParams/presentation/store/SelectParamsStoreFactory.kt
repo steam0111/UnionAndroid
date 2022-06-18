@@ -1,6 +1,5 @@
 package com.itrocket.union.selectParams.presentation.store
 
-import android.util.Log
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import com.arkivanov.mvikotlin.core.store.Executor
@@ -8,7 +7,6 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.manual.ManualType
@@ -16,13 +14,9 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.ParamValueDomain
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor.Companion.MIN_CURRENT_STEP
-import java.lang.invoke.MethodHandles.catchException
-import kotlin.math.max
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.withContext
+import kotlin.math.max
 
 class SelectParamsStoreFactory(
     private val storeFactory: StoreFactory,
@@ -213,6 +207,9 @@ class SelectParamsStoreFactory(
             }
         }
 
+        override fun handleError(throwable: Throwable) {
+            super.handleError(throwable)
+        }
     }
 
     private sealed class Result {
