@@ -59,11 +59,9 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStoreFactory
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
-import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.ParamValueDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.BaseButton
@@ -87,6 +85,7 @@ import com.itrocket.utils.getTargetPage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -261,10 +260,10 @@ private fun ParamContent(
             items(params, key = {
                 it.type
             }) {
-                if (!it.paramValue?.value.isNullOrBlank()) {
+                if (it.value.isNotBlank()) {
                     SelectedBaseField(
                         label = stringResource(it.type.titleId),
-                        value = it.paramValue?.value.orEmpty(),
+                        value = it.value,
                         onFieldClickListener = {
                             onParamClickListener(it)
                         },
@@ -555,15 +554,15 @@ fun DocumentCreateScreenPreview() {
                 accountingObjects = listOf(),
                 params = listOf(
                     ParamDomain(
-                        paramValue = ParamValueDomain("1", "fsdsfsdf"),
+                        "1", "fsdsfsdf",
                         type = ManualType.ORGANIZATION
                     ),
                     ParamDomain(
-                        paramValue = ParamValueDomain("1", "fsdsfsdf"),
+                        "1", "fsdsfsdf",
                         type = ManualType.MOL
                     ),
                     ParamDomain(
-                        paramValue = ParamValueDomain("1", "fsdsfsdf"),
+                        "1", "fsdsfsdf",
                         type = DocumentTypeDomain.WRITE_OFF.manualType
                     ),
                 ),
@@ -571,15 +570,15 @@ fun DocumentCreateScreenPreview() {
             accountingObjects = listOf(),
             params = listOf(
                 ParamDomain(
-                    paramValue = ParamValueDomain("1", "fsdsfsdf"),
+                    "1", "fsdsfsdf",
                     type = ManualType.ORGANIZATION
                 ),
                 ParamDomain(
-                    paramValue = ParamValueDomain("1", "fsdsfsdf"),
+                    "1", "fsdsfsdf",
                     type = ManualType.MOL
                 ),
                 ParamDomain(
-                    paramValue = ParamValueDomain("1", "fsdsfsdf"),
+                    "1", "fsdsfsdf",
                     type = DocumentTypeDomain.WRITE_OFF.manualType
                 ),
             )

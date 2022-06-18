@@ -5,7 +5,6 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -34,6 +32,8 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
+import com.itrocket.union.manual.ManualType
+import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
@@ -97,7 +97,8 @@ private fun Content(
     onHideFoundAccountingObjectChanged: () -> Unit,
     onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit
 ) {
-    val accountingObjectList = state.newAccountingObjects.toList() + state.inventoryDocument.accountingObjectList
+    val accountingObjectList =
+        state.newAccountingObjects.toList() + state.inventoryDocument.accountingObjects
 
     Column(
         Modifier
@@ -241,16 +242,13 @@ fun InventoryCreateScreenPreview() {
     InventoryCreateScreen(InventoryCreateStore.State(
         inventoryDocument = InventoryCreateDomain(
             number = "БП-00001374",
-            time = "12:40",
-            date = "12.12.12",
+            date = System.currentTimeMillis(),
             documentInfo = listOf(
-                "Систмный интегратор",
-                "Систмный интегратор",
-                "Систмный интегратор",
-                "Систмный интегратор",
-                "Систмный интегратор",
+                ParamDomain("1", "Систмный интегратор", ManualType.ORGANIZATION),
+                ParamDomain("2", "Систмный интегратор", ManualType.MOL),
+                ParamDomain("3", "Систмный интегратор", ManualType.ORGANIZATION),
             ),
-            accountingObjectList = listOf(
+            accountingObjects = listOf(
                 AccountingObjectDomain(
                     id = "7",
                     isBarcode = true,

@@ -3,7 +3,6 @@ package com.itrocket.union.selectParams.domain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.ParamValueDomain
 import com.itrocket.union.selectParams.domain.dependencies.SelectParamsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,37 +13,43 @@ class SelectParamsInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    private var organizations: Flow<List<ParamValueDomain>>? = null
-    private var employee: Flow<List<ParamValueDomain>>? = null
+    private var organizations: Flow<List<ParamDomain>>? = null
+    private var mols: Flow<List<ParamDomain>>? = null
+    private var exploitings: Flow<List<ParamDomain>>? = null
 
-    suspend fun getParamValues(type: ManualType, searchText: String): Flow<List<ParamValueDomain>> =
+    suspend fun getParamValues(type: ManualType, searchText: String): Flow<List<ParamDomain>> =
         when (type) {
             ManualType.ORGANIZATION -> getOrganizations(searchText)
-            ManualType.MOL -> getEmployees(searchText)
+            ManualType.MOL -> getMols(searchText)
             ManualType.LOCATION -> selectParamsRepository.getParamValues(type, searchText)
-            ManualType.EXPLOITING -> flow {  }
+            ManualType.EXPLOITING -> getExploiting(searchText)
         }
 
 
     fun changeParamValue(
         params: List<ParamDomain>,
         currentStep: Int,
-        paramValue: ParamValueDomain
+        paramValue: ParamDomain
     ): List<ParamDomain> {
         val mutableParams = params.toMutableList()
-        val currentParamValue = mutableParams[currentStep - 1].paramValue
+        val currentParamValue = mutableParams[currentStep - 1].id
         mutableParams[currentStep - 1] =
             mutableParams[currentStep - 1].copy(
-                paramValue = if (currentParamValue != paramValue) {
-                    paramValue
+                id = if (currentParamValue != paramValue.id) {
+                    paramValue.id
                 } else {
-                    null
+                    ""
+                },
+                value = if (currentParamValue != paramValue.id) {
+                    paramValue.value
+                } else {
+                    ""
                 }
             )
         return mutableParams
     }
 
-    private suspend fun getOrganizations(searchText: String): Flow<List<ParamValueDomain>> {
+    private suspend fun getOrganizations(searchText: String): Flow<List<ParamDomain>> {
         if (organizations == null) {
             organizations = selectParamsRepository.getOrganizationList()
         }
@@ -55,11 +60,22 @@ class SelectParamsInteractor(
         }
     }
 
-    private suspend fun getEmployees(searchText: String): Flow<List<ParamValueDomain>> {
-        if (employee == null) {
-            employee = selectParamsRepository.getEmployeeList()
+    private suspend fun getMols(searchText: String): Flow<List<ParamDomain>> {
+        if (mols == null) {
+            mols = selectParamsRepository.getEmployees(ManualType.MOL)
         }
-        return (employee ?: selectParamsRepository.getEmployeeList()).map {
+        return (mols ?: selectParamsRepository.getEmployees(ManualType.MOL)).map {
+            it.filter {
+                it.value.contains(other = searchText, ignoreCase = true)
+            }
+        }
+    }
+
+    private suspend fun getExploiting(searchText: String): Flow<List<ParamDomain>> {
+        if (exploitings == null) {
+            exploitings = selectParamsRepository.getEmployees(ManualType.EXPLOITING)
+        }
+        return (exploitings ?: selectParamsRepository.getEmployees(ManualType.EXPLOITING)).map {
             it.filter {
                 it.value.contains(other = searchText, ignoreCase = true)
             }

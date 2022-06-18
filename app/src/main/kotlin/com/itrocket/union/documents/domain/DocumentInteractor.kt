@@ -13,7 +13,6 @@ import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.documents.presentation.view.toDocumentItemView
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.ParamValueDomain
 import com.itrocket.union.utils.getTextDateFromStringDate
 import com.itrocket.union.utils.isCurrentYear
 import com.itrocket.union.utils.isToday
@@ -75,9 +74,9 @@ class DocumentInteractor(
             objectType = listType,
             status = ObjectStatus.AVAILABLE,
             params = listOf(
-                ParamDomain(paramValue = null, type = ManualType.ORGANIZATION),
-                ParamDomain(paramValue = null, type = ManualType.MOL),
-                ParamDomain(paramValue = null, type = type.manualType),
+                ParamDomain("", "", type = ManualType.ORGANIZATION),
+                ParamDomain("", "", type = ManualType.MOL),
+                ParamDomain("", "", type = type.manualType),
             )
         )
     }

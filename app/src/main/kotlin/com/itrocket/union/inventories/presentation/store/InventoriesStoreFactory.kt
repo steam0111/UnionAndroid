@@ -37,7 +37,9 @@ class InventoriesStoreFactory(
             getState: () -> InventoriesStore.State
         ) {
             dispatch(Result.Loading(true))
-            dispatch(Result.Inventories(inventoriesInteractor.getInventories()))
+            catchException {
+                dispatch(Result.Inventories(inventoriesInteractor.getInventories()))
+            }
             dispatch(Result.Loading(false))
         }
 

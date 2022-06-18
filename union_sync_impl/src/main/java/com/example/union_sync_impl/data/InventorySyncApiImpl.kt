@@ -9,8 +9,8 @@ import com.example.union_sync_impl.data.mapper.toInventorySyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 
 class InventorySyncApiImpl(private val inventoryDao: InventoryDao) : InventorySyncApi {
-    override suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity) {
-        inventoryDao.insert(inventoryCreateSyncEntity.toInventoryDb())
+    override suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): Long {
+        return inventoryDao.insert(inventoryCreateSyncEntity.toInventoryDb())
     }
 
     override suspend fun getInventories(): List<InventorySyncEntity> {
@@ -20,5 +20,17 @@ class InventorySyncApiImpl(private val inventoryDao: InventoryDao) : InventorySy
                 mol = requireNotNull(it.employeeDb).toSyncEntity()
             )
         }
+    }
+
+    override suspend fun getInventoryById(id: Long): InventorySyncEntity {
+        val fullInventory = inventoryDao.getInventoryById(id)
+        return fullInventory.inventoryDb.toInventorySyncEntity(
+            organizationSyncEntity = requireNotNull(fullInventory.organizationDb).toSyncEntity(),
+            mol = requireNotNull(fullInventory.employeeDb).toSyncEntity()
+        )
+    }
+
+    override suspend fun updateInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity) {
+        inventoryDao.update(inventoryCreateSyncEntity.toInventoryDb())
     }
 }

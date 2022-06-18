@@ -30,7 +30,8 @@ private const val MIN_STEP = 1
 fun ButtonBottomBar(
     text: String,
     onClick: () -> Unit,
-    isLoading: Boolean = false
+    isLoading: Boolean = false,
+    isEnabled: Boolean = true
 ) {
     Row(
         modifier = Modifier
@@ -41,7 +42,7 @@ fun ButtonBottomBar(
         ButtonWithLoader(
             onClick = onClick,
             modifier = Modifier.fillMaxWidth(),
-            isEnabled = true,
+            isEnabled = isEnabled,
             isLoading = isLoading
         ) {
             Text(

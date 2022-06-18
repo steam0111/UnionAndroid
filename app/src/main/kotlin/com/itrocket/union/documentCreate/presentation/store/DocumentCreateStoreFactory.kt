@@ -143,7 +143,7 @@ class DocumentCreateStoreFactory(
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
             if (param.type == ManualType.LOCATION) {
                 publish(
-                    DocumentCreateStore.Label.ShowLocation(param.paramValue?.value.orEmpty())
+                    DocumentCreateStore.Label.ShowLocation(param.value)
                 )
             } else {
                 publish(

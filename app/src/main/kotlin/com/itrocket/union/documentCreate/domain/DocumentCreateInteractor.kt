@@ -7,7 +7,6 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.ParamValueDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 
 class DocumentCreateInteractor(
@@ -30,24 +29,24 @@ class DocumentCreateInteractor(
         val mutableParams = params.toMutableList()
         val locationIndex = params.indexOfFirst { it.type == ManualType.LOCATION }
         mutableParams[locationIndex] =
-            mutableParams[locationIndex].copy(paramValue = ParamValueDomain("", location))
+            mutableParams[locationIndex].copy(value = location)
         return mutableParams
     }
 
     fun clearParam(list: List<ParamDomain>, param: ParamDomain): List<ParamDomain> {
         val mutableList = list.toMutableList()
         val currentIndex = mutableList.indexOfFirst { it.type == param.type }
-        mutableList[currentIndex] = mutableList[currentIndex].copy(paramValue = null)
+        mutableList[currentIndex] = mutableList[currentIndex].copy(value = "")
         return mutableList
     }
 
     fun clearParams(list: List<ParamDomain>): List<ParamDomain> {
         return list.map {
-            it.copy(paramValue = null)
+            it.copy(value = "")
         }
     }
 
-    fun isParamsFilled(params: List<ParamDomain>): Boolean = !params.any { it.paramValue == null }
+    fun isParamsFilled(params: List<ParamDomain>): Boolean = !params.any { it.value.isBlank() }
 
     fun addAccountingObject(
         accountingObjects: List<AccountingObjectDomain>,

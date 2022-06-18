@@ -2,9 +2,7 @@ package com.itrocket.union.inventories
 
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.itrocket.core.base.BaseViewModel
-import com.itrocket.union.inventories.data.InventoriesRepositoryImpl
 import com.itrocket.union.inventories.domain.InventoriesInteractor
-import com.itrocket.union.inventories.domain.dependencies.InventoriesRepository
 import com.itrocket.union.inventories.presentation.store.InventoriesStore
 import com.itrocket.union.inventories.presentation.store.InventoriesStoreFactory
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -17,10 +15,6 @@ object InventoriesModule {
     val module = module {
         viewModel(INVENTORIES_VIEW_MODEL_QUALIFIER) {
             BaseViewModel(get<InventoriesStore>())
-        }
-
-        factory<InventoriesRepository> {
-            InventoriesRepositoryImpl(get())
         }
 
         factory {

@@ -11,7 +11,7 @@ fun InventoryCreateSyncEntity.toInventoryDb(): InventoryDb {
         organizationId = organizationId,
         employeeId = employeeId,
         accountingObjectsIds = accountingObjectsIds,
-        date = System.currentTimeMillis().toString()
+        date = System.currentTimeMillis()
     )
 }
 

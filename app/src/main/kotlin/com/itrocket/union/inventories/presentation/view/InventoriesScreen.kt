@@ -20,6 +20,8 @@ import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
 import com.itrocket.union.inventories.presentation.store.InventoriesStore
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
+import com.itrocket.union.manual.ManualType
+import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.BottomLine
@@ -111,42 +113,33 @@ fun InventoriesScreenPreview() {
             inventories = listOf(
                 InventoryCreateDomain(
                     number = "БП-00001375",
-                    time = "12:40",
-                    date = "12.12.12",
+                    date = System.currentTimeMillis(),
                     documentInfo = listOf(
-                        "Систмный интегратор",
-                        "Систмный интегратор",
-                        "Систмный интегратор",
-                        "Систмный интегратор",
-                        "Систмный интегратор",
+                        ParamDomain("1", "Систмный интегратор", ManualType.MOL),
+                        ParamDomain("2", "Систмный интегратор", ManualType.MOL),
+                        ParamDomain("3", "Систмный интегратор", ManualType.MOL),
                     ),
-                    accountingObjectList = listOf()
+                    accountingObjects = listOf()
                 ),
                 InventoryCreateDomain(
                     number = "БП-00001376",
-                    time = "12:40",
-                    date = "12.12.12",
+                    date = System.currentTimeMillis(),
                     documentInfo = listOf(
-                        "Систмный интегратор",
-                        "Систмный интегратор",
-                        "Систмный интегратор",
-                        "Систмный интегратор",
-                        "Систмный интегратор",
+                        ParamDomain("1", "Систмный интегратор", ManualType.MOL),
+                        ParamDomain("2", "Систмный интегратор", ManualType.MOL),
+                        ParamDomain("3", "Систмный интегратор", ManualType.MOL),
                     ),
-                    accountingObjectList = listOf()
+                    accountingObjects = listOf()
                 ),
                 InventoryCreateDomain(
                     number = "БП-00001377",
-                    time = "12:40",
-                    date = "12.12.12",
+                    date = System.currentTimeMillis(),
                     documentInfo = listOf(
-                        "Систмный интегратор",
-                        "Систмный интегратор",
-                        "Систмный интегратор",
-                        "Систмный интегратор",
-                        "Систмный интегратор",
+                        ParamDomain("1", "Систмный интегратор", ManualType.MOL),
+                        ParamDomain("2", "Систмный интегратор", ManualType.MOL),
+                        ParamDomain("3", "Систмный интегратор", ManualType.MOL),
                     ),
-                    accountingObjectList = listOf()
+                    accountingObjects = listOf()
                 )
             )
         ),

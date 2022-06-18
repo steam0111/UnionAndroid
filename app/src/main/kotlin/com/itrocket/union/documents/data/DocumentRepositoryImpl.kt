@@ -8,7 +8,6 @@ import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.ParamValueDomain
 
 class DocumentRepositoryImpl : DocumentRepository {
 
@@ -23,9 +22,9 @@ class DocumentRepositoryImpl : DocumentRepository {
             date = "06.05.2022",
             accountingObjects = listOf(),
             params = listOf(
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.ORGANIZATION),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.MOL),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = DocumentTypeDomain.WRITE_OFF.manualType),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.ORGANIZATION),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.MOL),
+                ParamDomain("1", "fsdsfsdf", type = DocumentTypeDomain.WRITE_OFF.manualType),
             )
         ),
         DocumentDomain(
@@ -38,9 +37,9 @@ class DocumentRepositoryImpl : DocumentRepository {
             objectType = ObjectType.MAIN_ASSETS,
             accountingObjects = listOf(),
             params = listOf(
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.ORGANIZATION),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.MOL),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = DocumentTypeDomain.WRITE_OFF.manualType),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.ORGANIZATION),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.MOL),
+                ParamDomain("1", "fsdsfsdf", type = DocumentTypeDomain.WRITE_OFF.manualType),
             )
         ),
         DocumentDomain(
@@ -53,9 +52,9 @@ class DocumentRepositoryImpl : DocumentRepository {
             objectType = ObjectType.MAIN_ASSETS,
             accountingObjects = listOf(),
             params = listOf(
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.ORGANIZATION),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.MOL),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = DocumentTypeDomain.WRITE_OFF.manualType),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.ORGANIZATION),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.MOL),
+                ParamDomain("1", "fsdsfsdf", type = DocumentTypeDomain.WRITE_OFF.manualType),
             )
         ),
         DocumentDomain(
@@ -68,9 +67,9 @@ class DocumentRepositoryImpl : DocumentRepository {
             date = "16.12.2021",
             accountingObjects = listOf(),
             params = listOf(
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.ORGANIZATION),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.MOL),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = DocumentTypeDomain.RETURN.manualType),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.ORGANIZATION),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.MOL),
+                ParamDomain("1", "fsdsfsdf", type = DocumentTypeDomain.RETURN.manualType),
             )
         ),
         DocumentDomain(
@@ -83,9 +82,9 @@ class DocumentRepositoryImpl : DocumentRepository {
             objectType = ObjectType.MAIN_ASSETS,
             accountingObjects = listOf(),
             params = listOf(
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.ORGANIZATION),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.MOL),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = DocumentTypeDomain.MOVING.manualType),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.ORGANIZATION),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.MOL),
+                ParamDomain("1", "fsdsfsdf", type = DocumentTypeDomain.MOVING.manualType),
             )
         ),
         DocumentDomain(
@@ -98,9 +97,9 @@ class DocumentRepositoryImpl : DocumentRepository {
             objectType = ObjectType.MAIN_ASSETS,
             accountingObjects = listOf(),
             params = listOf(
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.ORGANIZATION),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.MOL),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = DocumentTypeDomain.WRITE_OFF.manualType),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.ORGANIZATION),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.MOL),
+                ParamDomain("1", "fsdsfsdf", type = DocumentTypeDomain.WRITE_OFF.manualType),
             )
         ),
         DocumentDomain(
@@ -113,9 +112,9 @@ class DocumentRepositoryImpl : DocumentRepository {
             objectType = ObjectType.MAIN_ASSETS,
             accountingObjects = listOf(),
             params = listOf(
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.ORGANIZATION),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.MOL),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = DocumentTypeDomain.RETURN.manualType),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.ORGANIZATION),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.MOL),
+                ParamDomain("1", "fsdsfsdf", type = DocumentTypeDomain.RETURN.manualType),
             )
         ),
         DocumentDomain(
@@ -128,9 +127,9 @@ class DocumentRepositoryImpl : DocumentRepository {
             objectType = ObjectType.MAIN_ASSETS,
             accountingObjects = listOf(),
             params = listOf(
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.ORGANIZATION),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.MOL),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = DocumentTypeDomain.EXTRADITION.manualType),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.ORGANIZATION),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.MOL),
+                ParamDomain("1", "fsdsfsdf", type = DocumentTypeDomain.EXTRADITION.manualType),
             )
         ),
         DocumentDomain(
@@ -143,9 +142,9 @@ class DocumentRepositoryImpl : DocumentRepository {
             objectType = ObjectType.MAIN_ASSETS,
             accountingObjects = listOf(),
             params = listOf(
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.ORGANIZATION),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = ManualType.MOL),
-                ParamDomain(paramValue = ParamValueDomain("1", "fsdsfsdf"), type = DocumentTypeDomain.COMMISSIONING.manualType),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.ORGANIZATION),
+                ParamDomain("1", "fsdsfsdf", type = ManualType.MOL),
+                ParamDomain("1", "fsdsfsdf", type = DocumentTypeDomain.COMMISSIONING.manualType),
             )
         )
     )

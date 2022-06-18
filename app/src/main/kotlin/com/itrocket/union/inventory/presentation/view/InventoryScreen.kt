@@ -38,7 +38,6 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.inventory.presentation.store.InventoryStore
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.ParamValueDomain
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseToolbar
@@ -107,7 +106,8 @@ fun InventoryScreen(
                 ButtonBottomBar(
                     onClick = onInventoryCreateClickListener,
                     text = stringResource(R.string.common_create),
-                    isLoading = state.isCreateInventoryLoading
+                    isLoading = state.isCreateInventoryLoading,
+                    isEnabled = state.isCreateEnabled
                 )
             },
             content = {
@@ -181,10 +181,10 @@ private fun ParamContent(
         items(params, key = {
             it.type
         }) {
-            if (!it.paramValue?.value.isNullOrBlank()) {
+            if (it.value.isNotBlank()) {
                 SelectedBaseField(
                     label = stringResource(it.type.titleId),
-                    value = it.paramValue?.value.orEmpty(),
+                    value = it.value,
                     onFieldClickListener = {
                         onParamClickListener(it)
                     },
@@ -271,16 +271,15 @@ fun InventoryScreenPreview() {
         InventoryStore.State(
             params = listOf(
                 ParamDomain(
-                    paramValue = ParamValueDomain("1", "ООО «Грандмастер — Юниор»"),
+                    "1", "ООО «Грандмастер — Юниор»",
                     type = ManualType.ORGANIZATION
                 ),
                 ParamDomain(
-                    paramValue = ParamValueDomain(
-                        "2",
-                        "Колесников Виталий Константинович "
-                    ), type = ManualType.MOL
+                    "2",
+                    "Колесников Виталий Константинович ",
+                    type = ManualType.MOL
                 ),
-                ParamDomain(paramValue = ParamValueDomain("3", ""), type = ManualType.LOCATION),
+                ParamDomain("3", "", type = ManualType.LOCATION),
             ),
             accountingObjectList = listOf(
                 AccountingObjectDomain(

@@ -33,12 +33,13 @@ interface InventoryStore :
     data class State(
         val isAccountingObjectsLoading: Boolean = false,
         val isCreateInventoryLoading: Boolean = false,
+        val isCreateEnabled: Boolean = false,
         val selectedPage: Int = 0,
         val accountingObjectList: List<AccountingObjectDomain> = listOf(),
         val params: List<ParamDomain> = listOf(
-            ParamDomain(paramValue = null, type = ManualType.ORGANIZATION),
-            ParamDomain(paramValue = null, type = ManualType.MOL),
-            ParamDomain(paramValue = null, type = ManualType.LOCATION),
+            ParamDomain(id = "", value = "", type = ManualType.ORGANIZATION),
+            ParamDomain(id = "", value = "", type = ManualType.MOL),
+            ParamDomain(id = "", value = "", type = ManualType.LOCATION),
         )
     )
 

@@ -48,49 +48,36 @@ class InventoryStoreFactory(
         ) {
             when (intent) {
                 InventoryStore.Intent.OnBackClicked -> publish(InventoryStore.Label.GoBack)
-                InventoryStore.Intent.OnCreateDocumentClicked -> createInventory(getState().accountingObjectList)
+                InventoryStore.Intent.OnCreateDocumentClicked -> createInventory(
+                    getState().accountingObjectList,
+                    getState().params
+                )
                 InventoryStore.Intent.OnDropClicked -> {
-                    dispatch(
-                        Result.Params(
-                            inventoryInteractor.clearParams(getState().params)
-                        )
-                    )
-                    filterAccountingObjects(getState().params)
+                    val params = inventoryInteractor.clearParams(getState().params)
+                    changeParams(params)
                 }
                 is InventoryStore.Intent.OnParamClicked -> showParams(
                     params = getState().params,
                     param = intent.param
                 )
                 is InventoryStore.Intent.OnParamCrossClicked -> {
-                    dispatch(
-                        Result.Params(
-                            inventoryInteractor.clearParam(
-                                getState().params,
-                                intent.param
-                            )
-                        )
+                    val params = inventoryInteractor.clearParam(
+                        getState().params,
+                        intent.param
                     )
-                    filterAccountingObjects(getState().params)
+                    changeParams(params)
                 }
                 is InventoryStore.Intent.OnParamsChanged -> {
-                    dispatch(
-                        Result.Params(
-                            inventoryInteractor.changeParams(getState().params, intent.params)
-                        )
-                    )
-                    filterAccountingObjects(getState().params)
+                    val params = inventoryInteractor.changeParams(getState().params, intent.params)
+                    changeParams(params)
                 }
                 is InventoryStore.Intent.OnSelectPage -> dispatch(Result.SelectPage(intent.selectedPage))
                 is InventoryStore.Intent.OnLocationChanged -> {
-                    dispatch(
-                        Result.Params(
-                            inventoryInteractor.changeLocation(
-                                getState().params,
-                                intent.locationResult.location
-                            )
-                        )
+                    val params = inventoryInteractor.changeLocation(
+                        getState().params,
+                        intent.locationResult.location
                     )
-                    filterAccountingObjects(getState().params)
+                    changeParams(params)
                 }
             }
         }
@@ -99,10 +86,20 @@ class InventoryStoreFactory(
             publish(InventoryStore.Label.Error(throwable.message.orEmpty()))
         }
 
+        private suspend fun changeParams(params: List<ParamDomain>) {
+            dispatch(Result.Params(params))
+            isCreateEnabled(params)
+            filterAccountingObjects(params)
+        }
+
+        private fun isCreateEnabled(params: List<ParamDomain>) {
+            dispatch(Result.IsCreateEnabled(inventoryInteractor.isParamsValid(params)))
+        }
+
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
             if (param.type == ManualType.LOCATION) {
                 publish(
-                    InventoryStore.Label.ShowLocation(param.paramValue?.value.orEmpty())
+                    InventoryStore.Label.ShowLocation(param.value)
                 )
             } else {
                 publish(
@@ -114,11 +111,14 @@ class InventoryStoreFactory(
             }
         }
 
-        private suspend fun createInventory(accountingObjects: List<AccountingObjectDomain>) {
+        private suspend fun createInventory(
+            accountingObjects: List<AccountingObjectDomain>,
+            params: List<ParamDomain>
+        ) {
             dispatch(Result.IsAccountingObjectsLoading(true))
             catchException {
                 val inventoryCreate =
-                    inventoryInteractor.createInventory(accountingObjects)
+                    inventoryInteractor.createInventory(accountingObjects, params)
                 publish(
                     InventoryStore.Label.ShowCreateInventory(
                         inventoryCreate = inventoryCreate
@@ -145,6 +145,7 @@ class InventoryStoreFactory(
         data class Params(val params: List<ParamDomain>) : Result()
         data class SelectPage(val page: Int) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
+        data class IsCreateEnabled(val enabled: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryStore.State, Result> {
@@ -155,6 +156,7 @@ class InventoryStoreFactory(
                 is Result.SelectPage -> copy(selectedPage = result.page)
                 is Result.AccountingObjects -> copy(accountingObjectList = result.accountingObjects)
                 is Result.IsCreateInventoryLoading -> copy(isCreateInventoryLoading = result.isLoading)
+                is Result.IsCreateEnabled -> copy(isCreateEnabled = result.enabled)
             }
     }
 }
