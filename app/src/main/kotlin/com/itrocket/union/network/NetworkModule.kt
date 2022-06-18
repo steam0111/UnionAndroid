@@ -18,6 +18,7 @@ import org.openapitools.client.custom_api.OrganizationApi
 import org.openapitools.client.custom_api.DepartmentApi
 import org.openapitools.client.custom_api.EmployeeApi
 import org.openapitools.client.custom_api.NomenclatureGroupApi
+import org.openapitools.client.custom_api.ProducerApi
 import org.openapitools.client.custom_api.RegionApi
 import org.openapitools.client.infrastructure.BigDecimalAdapter
 import retrofit2.Retrofit
@@ -101,6 +102,10 @@ object NetworkModule {
         single<EmployeeApi> {
             get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
                 .create(EmployeeApi::class.java)
+        }
+        single<ProducerApi> {
+            get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
+                .create(ProducerApi::class.java)
         }
         single<CounterpartyApi> {
             get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
