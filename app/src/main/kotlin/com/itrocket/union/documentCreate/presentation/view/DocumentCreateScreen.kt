@@ -112,7 +112,7 @@ fun DocumentCreateScreen(
             screen = {
                 ParamContent(
                     onParamClickListener = onParamClickListener,
-                    params = state.document.params,
+                    params = state.params,
                     onCrossClickListener = onParamCrossClickListener,
                     onSaveClickListener = onSaveClickListener,
                     onNextClickListener = onNextClickListener,
@@ -128,7 +128,7 @@ fun DocumentCreateScreen(
                 when (state.document.objectType) {
                     ObjectType.MAIN_ASSETS -> AccountingObjectScreen(
                         isLoading = state.isLoading,
-                        accountingObjectList = state.document.accountingObjects,
+                        accountingObjectList = state.accountingObjects,
                         onAccountingObjectClickListener = {},
                         onSaveClickListener = onSaveClickListener,
                         onPrevClickListener = onPrevClickListener,
@@ -566,7 +566,22 @@ fun DocumentCreateScreenPreview() {
                         paramValue = ParamValueDomain("1", "fsdsfsdf"),
                         type = DocumentTypeDomain.WRITE_OFF.manualType
                     ),
-                )
+                ),
+            ),
+            accountingObjects = listOf(),
+            params = listOf(
+                ParamDomain(
+                    paramValue = ParamValueDomain("1", "fsdsfsdf"),
+                    type = ManualType.ORGANIZATION
+                ),
+                ParamDomain(
+                    paramValue = ParamValueDomain("1", "fsdsfsdf"),
+                    type = ManualType.MOL
+                ),
+                ParamDomain(
+                    paramValue = ParamValueDomain("1", "fsdsfsdf"),
+                    type = DocumentTypeDomain.WRITE_OFF.manualType
+                ),
             )
         ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 }

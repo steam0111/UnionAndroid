@@ -4,6 +4,7 @@ import kotlinx.coroutines.withContext
 import com.itrocket.union.documentCreate.domain.dependencies.DocumentCreateRepository
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.ParamValueDomain
@@ -27,7 +28,6 @@ class DocumentCreateInteractor(
 
     fun changeLocation(params: List<ParamDomain>, location: String): List<ParamDomain> {
         val mutableParams = params.toMutableList()
-        val locationParam = params.find { it.type == ManualType.LOCATION }
         val locationIndex = params.indexOfFirst { it.type == ManualType.LOCATION }
         mutableParams[locationIndex] =
             mutableParams[locationIndex].copy(paramValue = ParamValueDomain("", location))
@@ -49,7 +49,17 @@ class DocumentCreateInteractor(
 
     fun isParamsFilled(params: List<ParamDomain>): Boolean = !params.any { it.paramValue == null }
 
+    fun addAccountingObject(
+        accountingObjects: List<AccountingObjectDomain>,
+        accountingObjectDomain: AccountingObjectDomain
+    ): List<AccountingObjectDomain> {
+        val mutableList = accountingObjects.toMutableList()
+        mutableList.add(accountingObjectDomain)
+        return mutableList
+    }
+
     suspend fun saveAccountingObjectDocument(
+        document: DocumentDomain,
         params: List<ParamDomain>,
         accountingObjects: List<AccountingObjectDomain>
     ) {
