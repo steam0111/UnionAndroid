@@ -70,6 +70,7 @@
     <string name="organizations">Организации</string>
     <string name="departments">Подразделения</string>
     <string name="inventories">Инв. ведомости</string>
+    <string name="branches">Филиалы</string>
 
     <!-- Manual -->
     <string name="manual_organization">Организация</string>
@@ -161,6 +162,10 @@
     <string name="organizations_title">Организации</string>
     <string name="organization_actual_address">Фактический адрес</string>
     <string name="organization_legal_address">"Юридический адрес</string>
+
+    <!-- Branches -->
+    <string name="branches_title">Филиалы</string>
+    <string name="branches_code">Код филиала</string>
 
     <!-- Departments -->
     <string name="departments_title">Подразделения</string>

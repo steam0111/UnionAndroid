@@ -34,7 +34,7 @@ interface DocumentMenuStore :
                 get() = DocumentMenuComposeFragmentDirections.toAuth()
         }
 
-        object ShowSettings : Label(), ForwardNavigationLabel{
+        object ShowSettings : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = DocumentMenuComposeFragmentDirections.toModuleSettings()
         }
@@ -74,6 +74,7 @@ interface DocumentMenuStore :
                     R.string.departments -> DocumentMenuComposeFragmentDirections.toDepartments()
                     R.string.main_employees -> DocumentMenuComposeFragmentDirections.toEmployees()
                     R.string.inventories -> DocumentMenuComposeFragmentDirections.toInventories()
+                    R.string.branches -> DocumentMenuComposeFragmentDirections.toBranches()
                     else -> DocumentMenuComposeFragmentDirections.toAccountingObjects(null)
                 }
         }

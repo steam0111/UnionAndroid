@@ -55,6 +55,9 @@
         <action
             android:id="@+id/to_inventories"
             app:destination="@id/inventories" />
+        <action
+            android:id="@+id/to_branches"
+            app:destination="@id/branches" />
     </fragment>
 
     <fragment
@@ -258,4 +261,9 @@
             android:id="@+id/to_inventoryCreate"
             app:destination="@id/inventoryCreate" />
     </fragment>
+
+    <fragment
+        android:id="@+id/branches"
+        android:name="com.itrocket.union.branches.presentation.view.BranchesComposeFragment"
+        android:label="Branches"/>
 </navigation>
