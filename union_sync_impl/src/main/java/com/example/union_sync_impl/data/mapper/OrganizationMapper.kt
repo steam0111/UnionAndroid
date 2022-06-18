@@ -8,7 +8,7 @@ fun CustomOrganizationDto.toOrganizationDb(): OrganizationDb {
     return OrganizationDb(
         catalogItemName = catalogItemName.orEmpty(),
         name = name.orEmpty(),
-        id = id.orEmpty(),
+        id = id,
         actualAddress = actualAddress,
         legalAddress = legalAddress
     )

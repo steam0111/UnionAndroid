@@ -1,6 +1,7 @@
 package com.itrocket.union.sync
 
 import androidx.room.Room
+import com.example.union_sync_api.data.BranchesSyncApi
 import com.example.union_sync_api.data.DepartmentSyncApi
 import com.example.union_sync_api.data.EmployeeSyncApi
 import com.example.union_sync_api.data.InventorySyncApi
@@ -8,6 +9,7 @@ import com.example.union_sync_api.data.NomenclatureGroupSyncApi
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.OrganizationSyncApi
 import com.example.union_sync_impl.UnionDatabase
+import com.example.union_sync_impl.data.BranchesSyncApiImpl
 import com.example.union_sync_impl.data.DepartmentSyncApiImpl
 import com.example.union_sync_impl.data.EmployeeSyncApiImpl
 import com.example.union_sync_impl.data.InventorySyncApiImpl
@@ -42,6 +44,13 @@ object SyncModule {
             EmployeeSyncApiImpl(
                 employeeApi = get(),
                 employeeDao = get(),
+                organizationDao = get()
+            )
+        }
+        factory<BranchesSyncApi> {
+            BranchesSyncApiImpl(
+                branchesApi = get(),
+                branchesDao = get(),
                 organizationDao = get()
             )
         }
@@ -92,6 +101,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().networkSyncDao()
+        }
+        factory {
+            get<UnionDatabase>().branchesDao()
         }
         factory {
             get<UnionDatabase>().inventorySyncDao()
