@@ -40,10 +40,10 @@ import com.squareup.moshi.Json
  * @param cascadeItems 
  */
 
-data class Organization (
+data class CustomOrganizationDto (
 
     @Json(name = "id")
-    val id: kotlin.String? = null,
+    val id: kotlin.String,
 
     @Json(name = "deleted")
     val deleted: kotlin.Boolean? = null,

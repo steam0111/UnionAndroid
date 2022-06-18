@@ -2,9 +2,9 @@ package com.example.union_sync_impl.data.mapper
 
 import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_impl.entity.OrganizationDb
-import org.openapitools.client.models.Organization
+import org.openapitools.client.models.CustomOrganizationDto
 
-fun Organization.toOrganizationDb(): OrganizationDb {
+fun CustomOrganizationDto.toOrganizationDb(): OrganizationDb {
     return OrganizationDb(
         catalogItemName = catalogItemName.orEmpty(),
         name = name.orEmpty(),

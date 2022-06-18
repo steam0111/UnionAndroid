@@ -37,7 +37,7 @@ data class CustomEmployeeDto(
     val organizationId: String? = null,
 
     @Json(name = "extendedOrganization")
-    val extendedOrganization: Organization? = null,
+    val extendedOrganization: CustomOrganizationDto? = null,
 
     @Json(name = "post")
     val post: String? = null,

@@ -5,12 +5,14 @@ import com.example.union_sync_api.data.DepartmentSyncApi
 import com.example.union_sync_api.data.EmployeeSyncApi
 import com.example.union_sync_api.data.InventorySyncApi
 import com.example.union_sync_api.data.NomenclatureGroupSyncApi
+import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.OrganizationSyncApi
 import com.example.union_sync_impl.UnionDatabase
 import com.example.union_sync_impl.data.DepartmentSyncApiImpl
 import com.example.union_sync_impl.data.EmployeeSyncApiImpl
 import com.example.union_sync_impl.data.InventorySyncApiImpl
 import com.example.union_sync_impl.data.NomenclatureGroupSyncApiImpl
+import com.example.union_sync_impl.data.AccountingObjectSyncApiImpl
 import com.example.union_sync_impl.data.OrganizationSyncApiImpl
 import org.koin.dsl.module
 
@@ -41,6 +43,19 @@ object SyncModule {
                 employeeApi = get(),
                 employeeDao = get(),
                 organizationDao = get()
+            )
+        }
+        factory<AccountingObjectSyncApi> {
+            AccountingObjectSyncApiImpl(
+                api = get(),
+                accountingObjectsDao = get(),
+                employeeDao = get(),
+                organizationsDao = get(),
+                nomenclatureGroupDao = get(),
+                nomenclatureDao = get(),
+                locationPathDao = get(),
+                locationDao = get(),
+                departmentDao = get()
             )
         }
         factory<InventorySyncApi> {
@@ -80,6 +95,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().inventorySyncDao()
+        }
+        factory {
+            get<UnionDatabase>().accountingObjectDao()
         }
     }
 }

@@ -235,7 +235,7 @@ data class AccountingObjectDto (
     val extendedOrganization: OrganizationDto? = null,
 
     @Json(name = "extendedLocation")
-    val extendedLocation: LocationDto? = null,
+    val extendedLocation: Location? = null,
 
     @Json(name = "extendedMol")
     val extendedMol: EmployeeDto? = null,

@@ -12,15 +12,15 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 object AccountingObjectModule {
-    val ACCOUNTINGOBJECT_VIEW_MODEL_QUALIFIER = named("ACCOUNTINGOBJECT_VIEW_MODEL")
+    val ACCOUNTING_OBJECT_VIEW_MODEL_QUALIFIER = named("ACCOUNTING_OBJECT_VIEW_MODEL")
 
     val module = module {
-        viewModel(ACCOUNTINGOBJECT_VIEW_MODEL_QUALIFIER) {
+        viewModel(ACCOUNTING_OBJECT_VIEW_MODEL_QUALIFIER) {
             BaseViewModel(get<AccountingObjectStore>())
         }
 
         factory<AccountingObjectRepository> {
-            AccountingObjectRepositoryImpl()
+            AccountingObjectRepositoryImpl(get(), get())
         }
 
         factory {

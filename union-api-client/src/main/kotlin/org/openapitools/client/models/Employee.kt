@@ -79,7 +79,7 @@ data class Employee (
     val birthdate: kotlin.String? = null,
 
     @Json(name = "organization")
-    val organization: Organization? = null,
+    val organization: CustomOrganizationDto? = null,
 
     @Json(name = "subdivision")
     val subdivision: kotlin.String? = null,

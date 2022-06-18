@@ -4,7 +4,7 @@ import com.example.union_sync_api.entity.NomenclatureGroupSyncEntity
 import com.example.union_sync_impl.entity.NomenclatureGroupDb
 import org.openapitools.client.models.NomenclatureGroupDto
 
-fun NomenclatureGroupDto.toNomenclatureDb(): NomenclatureGroupDb {
+fun NomenclatureGroupDto.toNomenclatureGroupDb(): NomenclatureGroupDb {
     return NomenclatureGroupDb(
         id = id,
         catalogItemName = catalogItemName.orEmpty(),
