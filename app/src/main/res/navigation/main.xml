@@ -58,6 +58,9 @@
         <action
             android:id="@+id/to_branches"
             app:destination="@id/branches" />
+        <action
+            android:id="@+id/to_region"
+            app:destination="@id/region" />
     </fragment>
 
     <fragment
@@ -266,4 +269,9 @@
         android:id="@+id/branches"
         android:name="com.itrocket.union.branches.presentation.view.BranchesComposeFragment"
         android:label="Branches"/>
+
+    <fragment
+        android:id="@+id/region"
+        android:name="com.itrocket.union.regions.presentation.view.RegionComposeFragment"
+        android:label="Region"/>
 </navigation>

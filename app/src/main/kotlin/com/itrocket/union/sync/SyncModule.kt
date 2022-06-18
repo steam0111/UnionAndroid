@@ -6,6 +6,7 @@ import com.example.union_sync_api.data.DepartmentSyncApi
 import com.example.union_sync_api.data.EmployeeSyncApi
 import com.example.union_sync_api.data.InventorySyncApi
 import com.example.union_sync_api.data.NomenclatureGroupSyncApi
+import com.example.union_sync_api.data.RegionSyncApi
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.OrganizationSyncApi
 import com.example.union_sync_impl.UnionDatabase
@@ -14,6 +15,7 @@ import com.example.union_sync_impl.data.DepartmentSyncApiImpl
 import com.example.union_sync_impl.data.EmployeeSyncApiImpl
 import com.example.union_sync_impl.data.InventorySyncApiImpl
 import com.example.union_sync_impl.data.NomenclatureGroupSyncApiImpl
+import com.example.union_sync_impl.data.RegionSyncApiImpl
 import com.example.union_sync_impl.data.AccountingObjectSyncApiImpl
 import com.example.union_sync_impl.data.OrganizationSyncApiImpl
 import org.koin.dsl.module
@@ -44,6 +46,13 @@ object SyncModule {
             EmployeeSyncApiImpl(
                 employeeApi = get(),
                 employeeDao = get(),
+                organizationDao = get()
+            )
+        }
+        factory<RegionSyncApi> {
+            RegionSyncApiImpl(
+                regionApi = get(),
+                regionDao = get(),
                 organizationDao = get()
             )
         }
@@ -101,6 +110,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().networkSyncDao()
+        }
+        factory {
+            get<UnionDatabase>().regionDao()
         }
         factory {
             get<UnionDatabase>().branchesDao()

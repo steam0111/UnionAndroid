@@ -33,6 +33,7 @@ import com.itrocket.union.switcher.SwitcherModule
 import com.itrocket.union.newAccountingObject.NewAccountingObjectModule
 import com.itrocket.union.documentCreate.DocumentCreateModule
 import com.itrocket.union.inventories.InventoriesModule
+import com.itrocket.union.regions.RegionModule
 import com.itrocket.union.branches.BranchesModule
 
 object Modules {
@@ -72,6 +73,7 @@ object Modules {
         NewAccountingObjectModule.module,
         SwitcherModule.module,
         InventoriesModule.module,
+        RegionModule.module,
         DocumentCreateModule.module,
         BranchesModule.module
     )
