@@ -24,7 +24,7 @@ object AccountingObjectDetailModule {
         }
 
         factory<AccountingObjectDetailRepository> {
-            AccountingObjectDetailRepositoryImpl()
+            AccountingObjectDetailRepositoryImpl(dao = get())
         }
 
         factory {

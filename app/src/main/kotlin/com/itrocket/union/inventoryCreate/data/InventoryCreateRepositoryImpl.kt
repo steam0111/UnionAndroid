@@ -21,28 +21,24 @@ class InventoryCreateRepositoryImpl(private val coreDispatchers: CoreDispatchers
                 inventoryStatus = InventoryAccountingObjectStatus.NEW,
                 listMainInfo = listOf(
                     ObjectInfoDomain(
-                        R.string.auth_main_title,
+                        R.string.accounting_objects_factory_num,
                         "AV169V100E00442"
                     ),
                     ObjectInfoDomain(
-                        R.string.auth_main_title,
+                        R.string.accounting_objects_inventory_num,
                         "6134509345098749"
                     ),
                     ObjectInfoDomain(
-                        R.string.auth_main_title,
+                        R.string.manual_location,
                         "Склад хранения"
                     ),
                     ObjectInfoDomain(
-                        R.string.auth_main_title,
+                        R.string.manual_exploiting,
                         "Иванов Иван Иванович"
                     ),
                     ObjectInfoDomain(
-                        R.string.auth_main_title,
+                        R.string.manual_organization,
                         "Иванов Иван Иванович"
-                    ),
-                    ObjectInfoDomain(
-                        R.string.auth_main_title,
-                        "ОАО «Вымпелком»"
                     ),
                 ),
                 listAdditionallyInfo = listOf()

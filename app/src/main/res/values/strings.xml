@@ -86,7 +86,18 @@
     <string name="main_marking">Маркировка</string>
     <string name="accounting_objects_factory_number">Зав. номер</string>
     <string name="accounting_objects_inventory_number">Инвент. номер</string>
+    <string name="accounting_objects_current_status">Текущий статус</string>
+    <string name="accounting_objects_factory_num">Заводской №</string>
+    <string name="accounting_objects_inventory_num">Инвентарный №</string>
     <string name="accounting_objects_location">Местоположение</string>
+    <string name="accounting_objects_department">Подразделение</string>
+    <string name="accounting_objects_model">Модель</string>
+    <string name="accounting_objects_price">Цена</string>
+    <string name="accounting_objects_producer">Производитель</string>
+    <string name="accounting_objects_type">Тип</string>
+    <string name="accounting_objects_provider">Поставщик</string>
+    <string name="accounting_objects_count">Мин. остаток</string>
+    <string name="accounting_objects_commissioning_date">Дата поверки</string>
 
     <!-- NomenclatureGroup -->
     <string name="nomenclature_group_title">Номенклатурные группы</string>

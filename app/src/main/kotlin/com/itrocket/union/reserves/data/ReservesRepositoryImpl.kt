@@ -12,11 +12,11 @@ class ReservesRepositoryImpl : ReservesRepository {
                 id = "1", title = "Авторучка «Зебра TR22»", isBarcode = true, listInfo =
                 listOf(
                     ObjectInfoDomain(
-                        R.string.auth_main_title,
+                        R.string.accounting_objects_factory_num,
                         "таылватвлыавыалвыоалвыа"
                     ),
                     ObjectInfoDomain(
-                        R.string.auth_main_title,
+                        R.string.accounting_objects_inventory_num,
                         "таылватвлыавыалвыоалвыа"
                     )
                 ), itemsCount = 1200
@@ -25,11 +25,11 @@ class ReservesRepositoryImpl : ReservesRepository {
                 id = "2", title = "Бумага А4 «Русалочка-500 листов»", isBarcode = false, listInfo =
                 listOf(
                     ObjectInfoDomain(
-                        R.string.auth_main_title,
+                        R.string.manual_location,
                         "таылватвлыавыалвыоалвыа"
                     ),
                     ObjectInfoDomain(
-                        R.string.auth_main_title,
+                        R.string.manual_exploiting,
                         "таылватвлыавыалвыоалвыа"
                     )
                 ), itemsCount = 56
@@ -38,11 +38,11 @@ class ReservesRepositoryImpl : ReservesRepository {
                 id = "3", title = "Бумага А4 «Русалочка-250 листов»", isBarcode = true, listInfo =
                 listOf(
                     ObjectInfoDomain(
-                        R.string.auth_main_title,
+                        R.string.manual_location,
                         "таылватвлыавыалвыоалвыа"
                     ),
                     ObjectInfoDomain(
-                        R.string.auth_main_title,
+                        R.string.accounting_objects_factory_num,
                         "таылватвлыавыалвыоалвыа"
                     )
                 ), itemsCount = 167
@@ -51,11 +51,11 @@ class ReservesRepositoryImpl : ReservesRepository {
                 id = "4", title = "Бумага А4 «Русалочка-150 листов»", isBarcode = true, listInfo =
                 listOf(
                     ObjectInfoDomain(
-                        R.string.auth_main_title,
+                        R.string.accounting_objects_inventory_num,
                         "таылватвлыавыалвыоалвыа"
                     ),
                     ObjectInfoDomain(
-                        R.string.auth_main_title,
+                        R.string.accounting_objects_inventory_num,
                         "таылватвлыавыалвыоалвыа"
                     )
                 ), itemsCount = 5
@@ -64,11 +64,11 @@ class ReservesRepositoryImpl : ReservesRepository {
                 id = "5", title = "Авторучка «Зебра TR11»", isBarcode = true, listInfo =
                 listOf(
                     ObjectInfoDomain(
-                        R.string.auth_main_title,
+                        R.string.accounting_objects_inventory_num,
                         "таылватвлыавыалвыоалвыа"
                     ),
                     ObjectInfoDomain(
-                        R.string.auth_main_title,
+                        R.string.accounting_objects_inventory_num,
                         "таылватвлыавыалвыоалвыа"
                     )
                 ), itemsCount = 200
@@ -77,11 +77,11 @@ class ReservesRepositoryImpl : ReservesRepository {
                 id = "6", title = "Бумага А5 «Русалочка-1000 листов»", isBarcode = true, listInfo =
                 listOf(
                     ObjectInfoDomain(
-                        R.string.auth_main_title,
+                        R.string.accounting_objects_inventory_num,
                         "таылватвлыавыалвыоалвыа"
                     ),
                     ObjectInfoDomain(
-                        R.string.auth_main_title,
+                        R.string.accounting_objects_inventory_num,
                         "таылватвлыавыалвыоалвыа"
                     )
                 ), itemsCount = 11

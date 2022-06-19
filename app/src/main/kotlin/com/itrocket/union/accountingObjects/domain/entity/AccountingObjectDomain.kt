@@ -4,7 +4,7 @@ import android.os.Parcelable
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import kotlinx.parcelize.Parcelize
 
-private const val MAX_SHORT_INFO_LIST = 11
+private const val MAX_SHORT_INFO_LIST = 5
 
 @Parcelize
 data class AccountingObjectDomain(

@@ -48,8 +48,10 @@ class AccountingObjectDb(
     id: String,
     override var catalogItemName: String,
     val organizationId: String?,
+    val departmentId: String?,
     val locationId: String?,
     val molId: String?,
+    val producerId: String?,
     val exploitingId: String?,
     val nomenclatureId: String?,
     val nomenclatureGroupId: String?,
@@ -58,5 +60,11 @@ class AccountingObjectDb(
     val rfidValue: String?,
     val factoryNumber: String?,
     val inventoryNumber: String?,
-    val status: AccountingObjectStatus?
+    val status: AccountingObjectStatus?,
+    val equipmentTypeId: String?,
+    val actualPrice: String?,
+    val count: Int?,
+    val commissioningDate: String?,
+    val internalNumber: String?,
+    val model: String?
 ) : CatalogItemDb(id)

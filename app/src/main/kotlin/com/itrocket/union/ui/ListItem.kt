@@ -87,7 +87,11 @@ fun AccountingObjectItem(
             Spacer(modifier = Modifier.height(4.dp))
             accountingObject.listMainInfo.take(MAX_LIST_INFO).forEach {
                 Text(
-                    text = stringResource(R.string.common_two_dots, it.title, it.value),
+                    text = stringResource(
+                        R.string.common_two_dots,
+                        stringResource(id = it.title),
+                        it.value
+                    ),
                     style = AppTheme.typography.caption,
                     color = psb3
                 )
@@ -174,7 +178,11 @@ fun ReservesItem(
             Spacer(modifier = Modifier.height(4.dp))
             reserves.listInfo.take(MAX_LIST_INFO).forEach {
                 Text(
-                    text = stringResource(R.string.common_two_dots, it.title, it.value),
+                    text = stringResource(
+                        R.string.common_two_dots,
+                        stringResource(id = it.title),
+                        it.value
+                    ),
                     style = AppTheme.typography.caption,
                     color = psb3
                 )
