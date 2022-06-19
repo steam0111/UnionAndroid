@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.example.union_sync_impl.entity.FullInventory
 import com.example.union_sync_impl.entity.InventoryDb
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface InventoryDao {
@@ -32,7 +33,7 @@ interface InventoryDao {
                 "LEFT JOIN organizations ON inventories.organizationId = organizations.id " +
                 "LEFT JOIN employees ON inventories.employeeId = employees.id"
     )
-    suspend fun getAll(): List<FullInventory>
+    fun getAll(): Flow<List<FullInventory>>
 
     @Query(
         "SELECT inventories.*," +
