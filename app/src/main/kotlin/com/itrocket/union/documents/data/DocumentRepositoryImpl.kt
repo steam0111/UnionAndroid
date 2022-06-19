@@ -1,6 +1,7 @@
 package com.itrocket.union.documents.data
 
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
@@ -15,7 +16,7 @@ class DocumentRepositoryImpl : DocumentRepository {
         DocumentDomain(
             number = "1234543",
             time = "8:20",
-            status = ObjectStatus.AVAILABLE,
+            status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
             documentStatus = DocumentStatus.CREATED,
             objectType = ObjectType.MAIN_ASSETS,
             documentType = DocumentTypeDomain.WRITE_OFF,
@@ -30,7 +31,7 @@ class DocumentRepositoryImpl : DocumentRepository {
         DocumentDomain(
             number = "1234543",
             time = "8:20",
-            status = ObjectStatus.AVAILABLE,
+            status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
             date = "05.05.2022",
             documentStatus = DocumentStatus.CREATED,
             documentType = DocumentTypeDomain.WRITE_OFF,
@@ -45,7 +46,7 @@ class DocumentRepositoryImpl : DocumentRepository {
         DocumentDomain(
             number = "1234543",
             time = "8:20",
-            status = ObjectStatus.AVAILABLE,
+            status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
             date = "01.02.2022",
             documentType = DocumentTypeDomain.WRITE_OFF,
             documentStatus = DocumentStatus.CREATED,
@@ -60,7 +61,7 @@ class DocumentRepositoryImpl : DocumentRepository {
         DocumentDomain(
             number = "1234543",
             time = "8:20",
-            status = ObjectStatus.AVAILABLE,
+            status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
             documentStatus = DocumentStatus.CREATED,
             documentType = DocumentTypeDomain.RETURN,
             objectType = ObjectType.MAIN_ASSETS,
@@ -75,7 +76,7 @@ class DocumentRepositoryImpl : DocumentRepository {
         DocumentDomain(
             number = "1234543",
             time = "8:20",
-            status = ObjectStatus.AVAILABLE,
+            status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
             date = "16.12.2021",
             documentType = DocumentTypeDomain.MOVING,
             documentStatus = DocumentStatus.CREATED,
@@ -90,7 +91,7 @@ class DocumentRepositoryImpl : DocumentRepository {
         DocumentDomain(
             number = "1234543",
             time = "8:20",
-            status = ObjectStatus.AVAILABLE,
+            status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
             date = "16.12.2021",
             documentType = DocumentTypeDomain.WRITE_OFF,
             documentStatus = DocumentStatus.CREATED,
@@ -105,7 +106,7 @@ class DocumentRepositoryImpl : DocumentRepository {
         DocumentDomain(
             number = "1234543",
             time = "8:20",
-            status = ObjectStatus.AVAILABLE,
+            status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
             date = "16.12.2021",
             documentType = DocumentTypeDomain.RETURN,
             documentStatus = DocumentStatus.CREATED,
@@ -120,7 +121,7 @@ class DocumentRepositoryImpl : DocumentRepository {
         DocumentDomain(
             number = "1234543",
             time = "8:20",
-            status = ObjectStatus.AVAILABLE,
+            status =ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
             date = "16.12.2021",
             documentType = DocumentTypeDomain.EXTRADITION,
             documentStatus = DocumentStatus.CREATED,
@@ -135,7 +136,7 @@ class DocumentRepositoryImpl : DocumentRepository {
         DocumentDomain(
             number = "1234543",
             time = "8:20",
-            status = ObjectStatus.AVAILABLE,
+            status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
             date = "16.12.2021",
             documentType = DocumentTypeDomain.COMMISSIONING,
             documentStatus = DocumentStatus.CREATED,

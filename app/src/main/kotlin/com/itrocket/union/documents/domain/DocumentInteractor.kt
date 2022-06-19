@@ -4,6 +4,7 @@ import kotlinx.coroutines.withContext
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
@@ -72,7 +73,7 @@ class DocumentInteractor(
             date = "12.12.12",
             documentType = type,
             objectType = listType,
-            status = ObjectStatus.AVAILABLE,
+            status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
             params = listOf(
                 ParamDomain("", "", type = ManualType.ORGANIZATION),
                 ParamDomain("", "", type = ManualType.MOL),

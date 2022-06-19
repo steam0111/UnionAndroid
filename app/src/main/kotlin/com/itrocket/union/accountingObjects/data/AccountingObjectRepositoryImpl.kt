@@ -2,12 +2,16 @@ package com.itrocket.union.accountingObjects.data
 
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.accountingObjects.data.mapper.map
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class AccountingObjectRepositoryImpl(
@@ -15,9 +19,10 @@ class AccountingObjectRepositoryImpl(
     private val syncApi: AccountingObjectSyncApi
 ) : AccountingObjectRepository {
 
-    override suspend fun getAccountingObjects() = withContext(coreDispatchers.io) {
-        syncApi.getAccountingObjects().map()
-    }
+    override suspend fun getAccountingObjects(): Flow<List<AccountingObjectDomain>> =
+        withContext(coreDispatchers.io) {
+            syncApi.getAccountingObjects().map { it.map() }
+        }
 
     // Надо добавить фильтрацию по параметрам.
     // У параметра есть тип, который показывает, значение какого справочника там лежит.
@@ -28,14 +33,14 @@ class AccountingObjectRepositoryImpl(
                 id = "5",
                 isBarcode = true,
                 title = "Ширикоформатный жидкокристалический монитор Samsung",
-                status = ObjectStatus.UNDER_REPAIR,
+                status = ObjectStatus("available", ObjectStatusType.UNDER_REPAIR),
                 listMainInfo = listOf(
                     ObjectInfoDomain(
-                        "Заводской номер",
+                        R.string.accounting_object_detail_title,
                         "таылватвлыавыалвыоалвыа"
                     ),
                     ObjectInfoDomain(
-                        "Инвентарный номер",
+                        R.string.accounting_object_detail_title,
                         "таылватвлыавыалвыоалвыа"
                     ),
                 ),

@@ -10,7 +10,7 @@ private const val MAX_SHORT_INFO_LIST = 11
 data class AccountingObjectDomain(
     val id: String,
     val title: String,
-    val status: ObjectStatus,
+    val status: ObjectStatus?,
     val inventoryStatus: InventoryAccountingObjectStatus = InventoryAccountingObjectStatus.NOT_FOUND,
     val isBarcode: Boolean = false,
     val listMainInfo: List<ObjectInfoDomain>,
@@ -21,4 +21,4 @@ data class AccountingObjectDomain(
 }
 
 @Parcelize
-data class ObjectInfoDomain(val title: String, val value: String) : Parcelable
+data class ObjectInfoDomain(val title: Int, val value: String) : Parcelable

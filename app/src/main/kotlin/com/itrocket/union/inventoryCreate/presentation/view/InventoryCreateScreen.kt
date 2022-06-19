@@ -30,6 +30,7 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
 import com.itrocket.union.manual.ManualType
@@ -253,14 +254,14 @@ fun InventoryCreateScreenPreview() {
                     id = "7",
                     isBarcode = true,
                     title = "Ширикоформатный жидкокристалический монитор Samsung2",
-                    status = ObjectStatus.AVAILABLE,
+                    status = ObjectStatus("Доступен", ObjectStatusType.AVAILABLE),
                     listMainInfo = listOf(
                         ObjectInfoDomain(
-                            "Заводской номер",
+                            R.string.auth_main_title,
                             "таылватвлыавыалвыоалвыа"
                         ),
                         ObjectInfoDomain(
-                            "Инвентарный номер",
+                            R.string.auth_main_title,
                             "таылватвлыавыалвыоалвыа"
                         ),
                     ),
@@ -270,14 +271,14 @@ fun InventoryCreateScreenPreview() {
                     id = "8",
                     isBarcode = true,
                     title = "Ширикоформатный жидкокристалический монитор Samsung2",
-                    status = ObjectStatus.AVAILABLE,
+                    status = ObjectStatus("Доступен", ObjectStatusType.AVAILABLE),
                     listMainInfo = listOf(
                         ObjectInfoDomain(
-                            "Заводской номер",
+                            R.string.auth_main_title,
                             "таылватвлыавыалвыоалвыа"
                         ),
                         ObjectInfoDomain(
-                            "Инвентарный номер",
+                            R.string.auth_main_title,
                             "таылватвлыавыалвыоалвыа"
                         ),
                     ),

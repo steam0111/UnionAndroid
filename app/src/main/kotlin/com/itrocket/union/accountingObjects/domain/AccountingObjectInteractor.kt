@@ -5,13 +5,14 @@ import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObject
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.manual.ParamDomain
+import kotlinx.coroutines.flow.Flow
 
 class AccountingObjectInteractor(
     private val repository: AccountingObjectRepository,
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    suspend fun getAccountingObjects(params: List<ParamDomain>) =
+    suspend fun getAccountingObjects(params: List<ParamDomain>): Flow<List<AccountingObjectDomain>> =
         withContext(coreDispatchers.io) {
             //filter params
             repository.getAccountingObjects()

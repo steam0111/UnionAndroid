@@ -14,12 +14,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.accountingObjects.domain.entity.Status
 
 @Composable
-fun SmallStatusLabel(status: Status) {
+fun SmallStatusLabel(status: Status, text: String?) {
     BaseLabel(
+        text = text,
         status = status,
         verticalPadding = 4.dp,
         horizontalPadding = 8.dp,
@@ -31,9 +32,11 @@ fun SmallStatusLabel(status: Status) {
 @Composable
 fun MediumStatusLabel(
     status: Status,
+    text: String?,
     textStyle: TextStyle = AppTheme.typography.subtitle1
 ) {
     BaseLabel(
+        text = text,
         status = status,
         verticalPadding = 8.dp,
         horizontalPadding = 16.dp,
@@ -44,12 +47,13 @@ fun MediumStatusLabel(
 @Composable
 private fun BaseLabel(
     status: Status,
+    text: String?,
     verticalPadding: Dp,
     horizontalPadding: Dp,
     textStyle: TextStyle
 ) {
     Text(
-        text = stringResource(status.textId),
+        text = text ?: stringResource(status.textId),
         style = textStyle,
         color = status.textColor,
         modifier = Modifier
@@ -65,8 +69,8 @@ private fun BaseLabel(
 @Preview
 private fun PreviewLabels() {
     Column {
-        SmallStatusLabel(ObjectStatus.AVAILABLE)
+        SmallStatusLabel(ObjectStatusType.AVAILABLE, "available")
         Spacer(modifier = Modifier.height(16.dp))
-        MediumStatusLabel(ObjectStatus.AVAILABLE)
+        MediumStatusLabel(ObjectStatusType.AVAILABLE, "available")
     }
 }

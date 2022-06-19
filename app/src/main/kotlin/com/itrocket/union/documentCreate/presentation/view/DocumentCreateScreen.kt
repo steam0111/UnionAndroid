@@ -56,6 +56,7 @@ import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.ui.BaseTab
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStoreFactory
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
@@ -330,7 +331,7 @@ private fun AccountingObjectScreen(
                                 accountingObject = item,
                                 onAccountingObjectListener = onAccountingObjectClickListener,
                                 isShowBottomLine = isShowBottomLine,
-                                status = item.status
+                                status = item.status?.type
                             )
                         }
                     }
@@ -546,7 +547,7 @@ fun DocumentCreateScreenPreview() {
             document = DocumentDomain(
                 number = "1234543",
                 time = "8:20",
-                status = ObjectStatus.AVAILABLE,
+                status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
                 documentStatus = DocumentStatus.CREATED,
                 objectType = ObjectType.MAIN_ASSETS,
                 documentType = DocumentTypeDomain.WRITE_OFF,
