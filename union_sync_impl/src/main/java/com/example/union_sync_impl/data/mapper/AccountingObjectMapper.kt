@@ -2,13 +2,13 @@ package com.example.union_sync_impl.data.mapper
 
 import com.example.union_sync_api.entity.AccountingObjectStatus
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
-import com.example.union_sync_api.entity.LocationSyncEntity
-import com.example.union_sync_api.entity.EmployeeSyncEntity
-import com.example.union_sync_api.entity.ProducerSyncEntity
-import com.example.union_sync_api.entity.EquipmentTypesSyncEntity
-import com.example.union_sync_api.entity.ProviderSyncEntity
-import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_api.entity.DepartmentSyncEntity
+import com.example.union_sync_api.entity.EmployeeSyncEntity
+import com.example.union_sync_api.entity.EquipmentTypesSyncEntity
+import com.example.union_sync_api.entity.LocationSyncEntity
+import com.example.union_sync_api.entity.OrganizationSyncEntity
+import com.example.union_sync_api.entity.ProducerSyncEntity
+import com.example.union_sync_api.entity.ProviderSyncEntity
 import com.example.union_sync_impl.entity.AccountingObjectDb
 import com.example.union_sync_impl.entity.FullAccountingObject
 import org.openapitools.client.models.AccountingObjectStatusDto
@@ -42,14 +42,14 @@ fun CustomAccountingObjectDto.toAccountingObjectDb(): AccountingObjectDb {
 }
 
 fun FullAccountingObject.toSyncEntity(
-    locationSyncEntity: LocationSyncEntity?,
-    exploitingEmployee: EmployeeSyncEntity?,
-    producerSyncEntity: ProducerSyncEntity?,
-    mol: EmployeeSyncEntity?,
-    equipmentTypesSyncEntity: EquipmentTypesSyncEntity?,
-    providerSyncEntity: ProviderSyncEntity?,
-    organizationSyncEntity: OrganizationSyncEntity?,
-    departmentSyncEntity: DepartmentSyncEntity?
+    locationSyncEntity: LocationSyncEntity? = null,
+    exploitingEmployee: EmployeeSyncEntity? = null,
+    producerSyncEntity: ProducerSyncEntity? = null,
+    mol: EmployeeSyncEntity? = null,
+    equipmentTypesSyncEntity: EquipmentTypesSyncEntity? = null,
+    providerSyncEntity: ProviderSyncEntity? = null,
+    organizationSyncEntity: OrganizationSyncEntity? = null,
+    departmentSyncEntity: DepartmentSyncEntity? = null
 ): AccountingObjectSyncEntity {
     return AccountingObjectSyncEntity(
         id = accountingObjectDb.id,

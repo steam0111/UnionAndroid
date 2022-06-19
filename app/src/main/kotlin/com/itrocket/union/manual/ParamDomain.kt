@@ -18,6 +18,18 @@ open class ParamDomain(
     }
 }
 
+fun List<ParamDomain>.getOrganizationId(): String? {
+    return find { it.type == ManualType.ORGANIZATION }?.id
+}
+
+fun List<ParamDomain>.getMolId(): String? {
+    return find { it.type == ManualType.MOL }?.id
+}
+
+fun List<ParamDomain>.filterNotEmpty(): List<ParamDomain> {
+    return filterNot { it.id.isBlank() }
+}
+
 @Parcelize
 data class LocationParamDomain(
     val ids: List<String>,

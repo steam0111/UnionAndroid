@@ -4,19 +4,20 @@ import com.example.union_sync_api.data.InventorySyncApi
 import com.example.union_sync_api.entity.InventoryCreateSyncEntity
 import com.example.union_sync_api.entity.InventorySyncEntity
 import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
+import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.data.mapper.toInventoryDb
 import com.example.union_sync_impl.data.mapper.toInventorySyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationShortSyncEntity
-import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class InventorySyncApiImpl(
     private val inventoryDao: InventoryDao,
-    private val locationDao: LocationDao
+    private val locationDao: LocationDao,
+    private val accountingObjectDao: AccountingObjectDao
 ) : InventorySyncApi {
     override suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): Long {
         return inventoryDao.insert(inventoryCreateSyncEntity.toInventoryDb())
@@ -27,8 +28,9 @@ class InventorySyncApiImpl(
             it.map {
                 it.inventoryDb.toInventorySyncEntity(
                     organizationSyncEntity = requireNotNull(it.organizationDb).toSyncEntity(),
-                    mol = requireNotNull(it.employeeDb).toSyncEntity(),
-                    locationSyncEntities = listOf()
+                    mol = it.employeeDb?.toSyncEntity(),
+                    locationSyncEntities = listOf(),
+                    accountingObjects = listOf()
                 )
             }
         }
@@ -36,13 +38,24 @@ class InventorySyncApiImpl(
 
     override suspend fun getInventoryById(id: Long): InventorySyncEntity {
         val fullInventory = inventoryDao.getInventoryById(id)
-        val locations = locationDao.getLocationsByIds(fullInventory.inventoryDb.locationIds).map {
-            it.toLocationShortSyncEntity()
+
+        val locationIds = fullInventory.inventoryDb.locationIds
+
+        val locations = if (locationIds != null) {
+            locationDao.getLocationsByIds(locationIds).map {
+                it.toLocationShortSyncEntity()
+            }
+        } else {
+            null
         }
+
         return fullInventory.inventoryDb.toInventorySyncEntity(
             organizationSyncEntity = requireNotNull(fullInventory.organizationDb).toSyncEntity(),
-            mol = requireNotNull(fullInventory.employeeDb).toSyncEntity(),
-            locationSyncEntities = locations
+            mol = fullInventory.employeeDb?.toSyncEntity(),
+            locationSyncEntities = locations,
+            accountingObjects = accountingObjectDao.getAllByIds(fullInventory.inventoryDb.accountingObjectsIds).map {
+                it.toSyncEntity()
+            }
         )
     }
 

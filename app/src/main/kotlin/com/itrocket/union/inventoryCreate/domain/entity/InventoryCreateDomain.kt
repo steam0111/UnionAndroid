@@ -1,13 +1,14 @@
 package com.itrocket.union.inventoryCreate.domain.entity
 
 import android.os.Parcelable
-import com.example.union_sync_api.entity.InventoryCreateSyncEntity
 import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.getMolId
+import com.itrocket.union.manual.getOrganizationId
 import com.itrocket.union.utils.getStringDateFromMillis
 import com.itrocket.union.utils.getTimeFromMillis
 import kotlinx.parcelize.Parcelize
@@ -27,11 +28,10 @@ data class InventoryCreateDomain(
 }
 
 fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
-    val organizationId =
-        requireNotNull(documentInfo.find { it.type == ManualType.ORGANIZATION }?.id)
-    val molId = requireNotNull(documentInfo.find { it.type == ManualType.MOL }?.id)
-    val locationIds =
-        requireNotNull(documentInfo.find { it.type == ManualType.LOCATION } as? LocationParamDomain).ids
+    val organizationId = requireNotNull(documentInfo.getOrganizationId())
+    val molId = documentInfo.getMolId()
+    val locationIds = (documentInfo.find { it.type == ManualType.LOCATION } as? LocationParamDomain)?.ids
+
     return InventoryUpdateSyncEntity(
         id = number.toLong(),
         organizationId = organizationId,

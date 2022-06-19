@@ -10,8 +10,8 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 
@@ -164,6 +164,7 @@ class InventoryCreateStoreFactory(
                     inventoryDocument,
                     accountingObjects
                 )
+                publish(InventoryCreateStore.Label.GoBack)
             }
             dispatch(Result.Loading(false))
         }

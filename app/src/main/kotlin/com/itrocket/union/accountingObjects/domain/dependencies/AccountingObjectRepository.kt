@@ -8,5 +8,5 @@ interface AccountingObjectRepository {
 
     suspend fun getAccountingObjects(): Flow<List<AccountingObjectDomain>>
 
-    suspend fun getAccountingObjectsByParams(params: List<ParamDomain>): List<AccountingObjectDomain>
+    suspend fun getAccountingObjectsByParams(params: List<ParamDomain>): Flow<List<AccountingObjectDomain>>
 }
