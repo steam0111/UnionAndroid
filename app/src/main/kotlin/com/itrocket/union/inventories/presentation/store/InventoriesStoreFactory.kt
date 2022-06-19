@@ -5,9 +5,9 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.itrocket.union.inventories.domain.InventoriesInteractor
-import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.core.base.BaseExecutor
+import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.inventories.domain.InventoriesInteractor
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -42,6 +42,7 @@ class InventoriesStoreFactory(
                 dispatch(Result.Loading(true))
                 inventoriesInteractor.getInventories()
                     .catch {
+                        handleError(it)
                         dispatch(Result.Loading(false))
                     }.collect {
                         dispatch(Result.Inventories(it))

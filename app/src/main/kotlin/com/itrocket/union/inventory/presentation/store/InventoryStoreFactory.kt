@@ -13,6 +13,9 @@ import com.itrocket.union.inventory.domain.InventoryInteractor
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.filterNotEmpty
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 
 class InventoryStoreFactory(
     private val storeFactory: StoreFactory,
@@ -41,6 +44,7 @@ class InventoryStoreFactory(
             action: Unit,
             getState: () -> InventoryStore.State
         ) {
+            observeAccountingObjects()
         }
 
         override suspend fun executeIntent(
@@ -90,7 +94,7 @@ class InventoryStoreFactory(
         private suspend fun changeParams(params: List<ParamDomain>) {
             dispatch(Result.Params(params))
             isCreateEnabled(params)
-            filterAccountingObjects(params)
+            observeAccountingObjects(params.filterNotEmpty())
         }
 
         private fun isCreateEnabled(params: List<ParamDomain>) {
@@ -129,13 +133,16 @@ class InventoryStoreFactory(
             dispatch(Result.IsAccountingObjectsLoading(false))
         }
 
-        private suspend fun filterAccountingObjects(params: List<ParamDomain>) {
+        private suspend fun observeAccountingObjects(params: List<ParamDomain> = listOf()) {
             dispatch(Result.IsAccountingObjectsLoading(true))
-            dispatch(
-                Result.AccountingObjects(
-                    accountingObjectInteractor.getAccountingObjectsByParams(params)
-                )
-            )
+            catchException {
+                accountingObjectInteractor.getAccountingObjectsByParams(params)
+                    .catch { dispatch(Result.IsAccountingObjectsLoading(false)) }
+                    .collect {
+                        dispatch(Result.AccountingObjects(it))
+                        dispatch(Result.IsAccountingObjectsLoading(false))
+                    }
+            }
             dispatch(Result.IsAccountingObjectsLoading(false))
         }
     }

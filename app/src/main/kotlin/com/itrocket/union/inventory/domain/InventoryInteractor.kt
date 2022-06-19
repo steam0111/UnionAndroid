@@ -5,35 +5,29 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
-import com.itrocket.union.location.domain.entity.LocationDomain
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.getMolId
+import com.itrocket.union.manual.getOrganizationId
 import kotlinx.coroutines.withContext
 
 class InventoryInteractor(
     private val repository: InventoryRepository,
     private val coreDispatchers: CoreDispatchers,
 ) {
-
     suspend fun createInventory(
         accountingObjects: List<AccountingObjectDomain>,
         params: List<ParamDomain>
     ): InventoryCreateDomain = withContext(coreDispatchers.io) {
         val organizationId =
-            requireNotNull(value = params.find { it.type == ManualType.ORGANIZATION },
+            requireNotNull(value = params.getOrganizationId(),
                 lazyMessage = {
                     "organizationId must not be null"
-                }).id
-        val molId =
-            requireNotNull(value = params.find { it.type == ManualType.MOL }, lazyMessage = {
-                "molId must not be null"
-            }).id
-        val locationIds =
-            requireNotNull(value = params.find { it.type == ManualType.LOCATION } as? LocationParamDomain,
-                lazyMessage = {
-                    "molId must not be null"
-                }).ids
+                })
+
+        val molId = params.getMolId()
+        val locationIds = (params.find { it.type == ManualType.LOCATION } as? LocationParamDomain)?.ids
 
         val id = repository.createInventory(
             InventoryCreateSyncEntity(
@@ -81,6 +75,6 @@ class InventoryInteractor(
     }
 
     fun isParamsValid(params: List<ParamDomain>): Boolean {
-        return params.all { it.value.isNotBlank() }
+        return !params.getOrganizationId().isNullOrEmpty()
     }
 }

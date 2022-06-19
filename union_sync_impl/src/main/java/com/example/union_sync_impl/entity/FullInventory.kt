@@ -6,7 +6,7 @@ class FullInventory(
     @Embedded
     val inventoryDb: InventoryDb,
     @Embedded(prefix = "organizations_")
-    val organizationDb: OrganizationDb,
+    val organizationDb: OrganizationDb?,
     @Embedded(prefix = "employees_")
-    val employeeDb: EmployeeDb
+    val employeeDb: EmployeeDb?
 )

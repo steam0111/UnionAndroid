@@ -8,8 +8,8 @@ class InventoryDb(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
     val organizationId: String,
-    val employeeId: String,
+    val employeeId: String?,
     val accountingObjectsIds: List<String>,
-    val locationIds: List<String> = listOf(),
+    val locationIds: List<String>? = listOf(),
     val date: Long
 )

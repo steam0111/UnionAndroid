@@ -94,7 +94,7 @@ class AccountingObjectSyncApiImpl(
 
     private suspend fun getDbData(
         organizationId: String? = null,
-        molId: String? = null
+        molId: String? = null,
     ): List<AccountingObjectSyncEntity> {
         val filters = mutableListOf<String>()
 

@@ -1,11 +1,11 @@
 package com.example.union_sync_impl.data.mapper
 
+import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
 import com.example.union_sync_api.entity.InventoryCreateSyncEntity
 import com.example.union_sync_api.entity.InventorySyncEntity
 import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import com.example.union_sync_api.entity.LocationShortSyncEntity
-import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_impl.entity.InventoryDb
 
@@ -32,14 +32,16 @@ fun InventoryUpdateSyncEntity.toInventoryDb(): InventoryDb {
 
 fun InventoryDb.toInventorySyncEntity(
     organizationSyncEntity: OrganizationSyncEntity,
-    mol: EmployeeSyncEntity,
-    locationSyncEntities: List<LocationShortSyncEntity>
+    mol: EmployeeSyncEntity?,
+    locationSyncEntities: List<LocationShortSyncEntity>?,
+    accountingObjects: List<AccountingObjectSyncEntity>
 ): InventorySyncEntity {
     return InventorySyncEntity(
         id = id.toString(),
         date = date,
         organizationSyncEntity = organizationSyncEntity,
         mol = mol,
-        locationSyncEntities = locationSyncEntities
+        locationSyncEntities = locationSyncEntities,
+        accountingObjects = accountingObjects
     )
 }

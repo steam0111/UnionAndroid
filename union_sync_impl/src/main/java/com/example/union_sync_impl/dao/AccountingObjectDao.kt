@@ -31,6 +31,21 @@ interface AccountingObjectDao {
     )
     suspend fun getAllByParams(organizationId: String, molId: String): List<FullAccountingObject>
 
+
+    @Query(
+        "SELECT accounting_objects.*," +
+                "" +
+                "location.id AS locations_id, " +
+                "location.catalogItemName AS locations_catalogItemName, " +
+                "location.name AS locations_name, " +
+                "location.parentId AS locations_parentId " +
+                "" +
+                "FROM accounting_objects " +
+                "LEFT JOIN location ON accounting_objects.locationId = location.id " +
+                "WHERE accounting_objects.id IN (:ids)"
+    )
+    suspend fun getAllByIds(ids: List<String>): List<FullAccountingObject>
+
     @Query(
         "SELECT accounting_objects.*," +
                 "organizations.id AS organizations_id, " +
