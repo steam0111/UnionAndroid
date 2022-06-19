@@ -10,6 +10,8 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.filter.domain.FilterInteractor
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 
 class AccountingObjectStoreFactory(
     private val storeFactory: StoreFactory,
@@ -41,15 +43,19 @@ class AccountingObjectStoreFactory(
         ) {
             dispatch(Result.Loading(true))
             catchException {
-                dispatch(Result.AccountingObjects(accountingObjectInteractor.getAccountingObjects(
-                    accountingObjectArguments?.params.orEmpty()
-                )))
+                dispatch(Result.Loading(true))
+                accountingObjectInteractor.getAccountingObjects(accountingObjectArguments?.params.orEmpty())
+                    .catch { dispatch(Result.Loading(false)) }
+                    .collect {
+                        dispatch(Result.AccountingObjects(it))
+                        dispatch(Result.Loading(false))
+                    }
             }
-            dispatch(Result.Loading(false))
         }
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
+            publish(AccountingObjectStore.Label.Error(throwable.message.orEmpty()))
         }
 
         override suspend fun executeIntent(

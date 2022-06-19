@@ -41,6 +41,7 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.accountingObjects.domain.entity.Status
 import com.itrocket.union.common.DefaultItem
 import com.itrocket.union.documents.domain.entity.DocumentDateType
@@ -62,8 +63,9 @@ private const val DATE_ITEM_ROTATION_DURATION = 200
 fun AccountingObjectItem(
     accountingObject: AccountingObjectDomain,
     onAccountingObjectListener: (AccountingObjectDomain) -> Unit,
-    status: Status,
-    isShowBottomLine: Boolean
+    status: Status?,
+    isShowBottomLine: Boolean,
+    statusText: String? = null
 ) {
     Row(
         modifier = Modifier
@@ -92,8 +94,8 @@ fun AccountingObjectItem(
             }
         }
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
-            SmallStatusLabel(status = status)
-            if (status is ObjectStatus) {
+            status?.let { SmallStatusLabel(status = it, statusText) }
+            if (status is ObjectStatusType) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -115,7 +117,7 @@ fun AccountingObjectItem(
                         )
                     )
                 }
-                if (accountingObject.status == ObjectStatus.AVAILABLE) {
+                if (accountingObject.status?.type == ObjectStatusType.AVAILABLE) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -414,7 +416,7 @@ fun DocumentInfoItem(
             )
             if (isShowStatus) {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
-                    SmallStatusLabel(status = item.documentStatus)
+                    SmallStatusLabel(status = item.documentStatus, null)
                 }
             }
         }
@@ -544,7 +546,7 @@ fun DocumentInfoItemPreview() {
         item = DocumentView.DocumentItemView(
             number = "БП-00001374",
             time = "12:40",
-            objectStatus = ObjectStatus.AVAILABLE,
+            objectStatus = ObjectStatus("available", ObjectStatusType.AVAILABLE),
             documentStatus = DocumentStatus.CREATED,
             objectType = ObjectType.MAIN_ASSETS,
             date = "",
@@ -576,11 +578,11 @@ fun ReservesItemPreview() {
             id = "1", title = "Авторучка «Зебра TR22»", isBarcode = true, listInfo =
             listOf(
                 ObjectInfoDomain(
-                    "Заводской номер",
+                    R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 ),
                 ObjectInfoDomain(
-                    "Инвентарный номер",
+                    R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 )
             ), itemsCount = 1200
@@ -597,29 +599,29 @@ fun AccountingObjectItemPreview() {
             id = "1",
             isBarcode = true,
             title = "Ширикоформатный жидкокристалический монитор Samsung",
-            status = ObjectStatus.UNDER_REVIEW,
+            status = ObjectStatus("available", ObjectStatusType.UNDER_REVIEW),
             listMainInfo = listOf(
                 ObjectInfoDomain(
-                    "Заводской номер",
+                    R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 ),
                 ObjectInfoDomain(
-                    "Инвентарный номер",
+                    R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 ),
             ),
             listAdditionallyInfo = listOf(
                 ObjectInfoDomain(
-                    "Заводской номер",
+                    R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 ),
                 ObjectInfoDomain(
-                    "Инвентарный номер",
+                    R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 ),
             )
         ), onAccountingObjectListener = {}, isShowBottomLine = true,
-        status = ObjectStatus.UNDER_REVIEW
+        status = ObjectStatusType.UNDER_REVIEW
     )
 }
 

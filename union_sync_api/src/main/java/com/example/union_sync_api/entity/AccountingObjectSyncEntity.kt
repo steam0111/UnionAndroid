@@ -11,5 +11,14 @@ class AccountingObjectSyncEntity(
     val nomenclatureId: String?,
     val nomenclatureGroupId: String?,
     val name: String,
-    val rfidValue: String?
+    val rfidValue: String?,
+    val factoryNumber: String?,
+    val inventoryNumber: String?,
+    val locationSyncEntity: LocationSyncEntity?,
+    val status: AccountingObjectStatus?
+)
+
+class AccountingObjectStatus(
+    val id: String,
+    val name: String
 )

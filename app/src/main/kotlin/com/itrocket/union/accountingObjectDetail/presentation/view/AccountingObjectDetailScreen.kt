@@ -43,6 +43,7 @@ import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingOb
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
@@ -263,7 +264,7 @@ private fun ListInfo(listInfo: List<ObjectInfoDomain>) {
     LazyColumn {
         items(listInfo) {
             ExpandedInfoField(
-                label = it.title,
+                label = stringResource(id = it.title),
                 value = it.value,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -291,21 +292,21 @@ fun AccountingObjectDetailScreenPreview(isFullCharacteristicChecked: Boolean = t
             accountingObjectDomain = AccountingObjectDomain(
                 id = "123",
                 title = "Ширикоформатный жидкокристалический монитор Samsung ЕК288, 23 дюйма и еще очень много текста текста",
-                status = ObjectStatus.AVAILABLE,
+                status = ObjectStatus("available", ObjectStatusType.AVAILABLE),
                 isBarcode = false,
                 listMainInfo = listOf(
                     ObjectInfoDomain(
-                        "характерискика 1 характерискика 1 характерискика 1 характерискика 1 характерискика 1",
+                        R.string.auth_main_title,
                         "длинный текст длинный текст  длинный текст  длинный текст  длинный текст  длинный текст длинный текст  длинный текст  длинный текст "
                     ),
-                    ObjectInfoDomain("blabla2", "blabla2")
+                    ObjectInfoDomain(R.string.auth_main_title, "blabla2")
                 ),
                 listAdditionallyInfo = listOf(
                     ObjectInfoDomain(
-                        "характерискика 1 характерискика 1 характерискика 1 характерискика 1 характерискика 1",
+                        R.string.auth_main_title,
                         "длинный текст длинный текст  длинный текст  длинный текст  длинный текст  длинный текст длинный текст  длинный текст  длинный текст "
                     ),
-                    ObjectInfoDomain("blabla2", "blabla2")
+                    ObjectInfoDomain(R.string.auth_main_title, "blabla2")
                 ),
                 inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
             ),

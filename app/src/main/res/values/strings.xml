@@ -84,6 +84,9 @@
 
     <!-- AccountingObjectScreen -->
     <string name="main_marking">Маркировка</string>
+    <string name="accounting_objects_factory_number">Зав. номер</string>
+    <string name="accounting_objects_inventory_number">Инвент. номер</string>
+    <string name="accounting_objects_location">Местоположение</string>
 
     <!-- NomenclatureGroup -->
     <string name="nomenclature_group_title">Номенклатурные группы</string>
@@ -103,6 +106,7 @@
     <string name="accounting_object_available">Доступен</string>
     <string name="accounting_object_under_repair">В ремонте</string>
     <string name="accounting_object_under_review">На проверке</string>
+    <string name="accounting_object_given">Выдан</string>
 
     <!-- Filter -->
     <string name="accounting_object_decommissioned">Списан</string>

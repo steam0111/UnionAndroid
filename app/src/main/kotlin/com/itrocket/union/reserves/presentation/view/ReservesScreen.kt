@@ -117,11 +117,11 @@ fun ReservesScreenPreview() {
                 id = "1", title = "Авторучка «Зебра TR22»", isBarcode = true, listInfo =
                 listOf(
                     ObjectInfoDomain(
-                        "Заводской номер",
+                        R.string.auth_main_title,
                         "таылватвлыавыалвыоалвыа"
                     ),
                     ObjectInfoDomain(
-                        "Инвентарный номер",
+                        R.string.auth_main_title,
                         "таылватвлыавыалвыоалвыа"
                     )
                 ), itemsCount = 1200
@@ -133,11 +133,11 @@ fun ReservesScreenPreview() {
                 listInfo =
                 listOf(
                     ObjectInfoDomain(
-                        "Заводской номер",
+                        R.string.auth_main_title,
                         "таылватвлыавыалвыоалвыа"
                     ),
                     ObjectInfoDomain(
-                        "Инвентарный номер",
+                        R.string.auth_main_title,
                         "таылватвлыавыалвыоалвыа"
                     )
                 ),
@@ -150,11 +150,11 @@ fun ReservesScreenPreview() {
                 listInfo =
                 listOf(
                     ObjectInfoDomain(
-                        "Заводской номер",
+                        R.string.auth_main_title,
                         "таылватвлыавыалвыоалвыа"
                     ),
                     ObjectInfoDomain(
-                        "Инвентарный номер",
+                        R.string.auth_main_title,
                         "таылватвлыавыалвыоалвыа"
                     )
                 ),

@@ -51,6 +51,7 @@ import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.ui.BottomLine
 import com.itrocket.union.ui.ExpandedInfoField
 import com.itrocket.union.ui.TextButton
@@ -67,24 +68,24 @@ fun NewAccountingObjectScreen(
     onCrossClickListener: () -> Unit
 ) {
     AppTheme {
-            Box(
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = appInsets.bottomInset.dp, top = appInsets.topInset.dp),
+            contentAlignment = Alignment.BottomStart
+        ) {
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = appInsets.bottomInset.dp, top = appInsets.topInset.dp),
-                contentAlignment = Alignment.BottomStart
+                    .wrapContentHeight()
+                    .background(white, RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                    .padding(top = 16.dp),
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .background(white, RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                        .padding(top = 16.dp),
-                ) {
-                    Content(
-                        accountingObject = state.accountingObject,
-                        onCrossClickListener = onCrossClickListener
-                    )
-                }
+                Content(
+                    accountingObject = state.accountingObject,
+                    onCrossClickListener = onCrossClickListener
+                )
+            }
         }
     }
 }
@@ -136,7 +137,7 @@ private fun Content(accountingObject: AccountingObjectDomain, onCrossClickListen
             }
             items(accountingObject.listMainInfo) {
                 ExpandedInfoField(
-                    label = it.title,
+                    label = stringResource(id = it.title),
                     value = it.value,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -168,14 +169,14 @@ fun NewAccountingObjectScreenPreview() {
             id = "8",
             isBarcode = true,
             title = "Ширикоформатный жидкокристалический монитор Samsung ЕК288, 23 дюйма",
-            status = ObjectStatus.AVAILABLE,
+            status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
             listMainInfo = listOf(
                 ObjectInfoDomain(
-                    "Заводской номер",
+                    R.string.auth_main_title,
                     "AV169V100E00442"
                 ),
                 ObjectInfoDomain(
-                    "Инвентарный номер",
+                    R.string.auth_main_title,
                     "6134509345098749"
                 ),
             ),

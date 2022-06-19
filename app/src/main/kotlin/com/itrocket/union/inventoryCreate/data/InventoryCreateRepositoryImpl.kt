@@ -1,9 +1,11 @@
 package com.itrocket.union.inventoryCreate.data
 
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.inventoryCreate.domain.dependencies.InventoryCreateRepository
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 
@@ -15,31 +17,31 @@ class InventoryCreateRepositoryImpl(private val coreDispatchers: CoreDispatchers
                 id = "8",
                 isBarcode = true,
                 title = "Ширикоформатный жидкокристалический монитор Samsung ЕК288, 23 дюйма",
-                status = ObjectStatus.AVAILABLE,
+                status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
                 inventoryStatus = InventoryAccountingObjectStatus.NEW,
                 listMainInfo = listOf(
                     ObjectInfoDomain(
-                        "Заводской №",
+                        R.string.auth_main_title,
                         "AV169V100E00442"
                     ),
                     ObjectInfoDomain(
-                        "Инвентарный №",
+                        R.string.auth_main_title,
                         "6134509345098749"
                     ),
                     ObjectInfoDomain(
-                        "Местоположение",
+                        R.string.auth_main_title,
                         "Склад хранения"
                     ),
                     ObjectInfoDomain(
-                        "МОЛ",
+                        R.string.auth_main_title,
                         "Иванов Иван Иванович"
                     ),
                     ObjectInfoDomain(
-                        "Эксплуатирующий",
+                        R.string.auth_main_title,
                         "Иванов Иван Иванович"
                     ),
                     ObjectInfoDomain(
-                        "Организация",
+                        R.string.auth_main_title,
                         "ОАО «Вымпелком»"
                     ),
                 ),

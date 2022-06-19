@@ -10,14 +10,14 @@ import com.example.union_sync_impl.dao.LocationPathDao
 import com.example.union_sync_impl.dao.NomenclatureDao
 import com.example.union_sync_impl.dao.NomenclatureGroupDao
 import com.example.union_sync_impl.dao.OrganizationDao
-import com.example.union_sync_impl.data.mapper.toAccountingObjectDb
-import com.example.union_sync_impl.data.mapper.toDepartmentDb
-import com.example.union_sync_impl.data.mapper.toEmployeeDb
-import com.example.union_sync_impl.data.mapper.toLocationDb
-import com.example.union_sync_impl.data.mapper.toNomenclatureDb
-import com.example.union_sync_impl.data.mapper.toNomenclatureGroupDb
-import com.example.union_sync_impl.data.mapper.toOrganizationDb
-import com.example.union_sync_impl.data.mapper.toSyncEntity
+import com.example.union_sync_impl.data.mapper.*
+import com.example.union_sync_impl.entity.location.LocationPath
+import com.example.union_sync_impl.entity.location.LocationTypeDb
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import org.openapitools.client.custom_api.AccountingObjectApi
 import org.openapitools.client.models.CustomAccountingObjectDto
 import org.openapitools.client.models.GetAllResponse
@@ -34,43 +34,60 @@ class AccountingObjectSyncApiImpl(
     private val departmentDao: DepartmentDao
 ) : AccountingObjectSyncApi {
 
-    override suspend fun getAccountingObjects(): List<AccountingObjectSyncEntity> {
-        val dbData = accountingObjectsDao.getAll()
-        if (dbData.isEmpty()) {
-            apiAccountingObjectsGet().list?.let { objects ->
-                organizationsDao.insertAll(
-                    (
-                            objects.mapNotNull { it.extendedOrganization?.toOrganizationDb() } +
-                                    objects.mapNotNull { it.extendedDepartment?.extendedOrganization?.toOrganizationDb() } +
-                                    objects.mapNotNull { it.extendedMol?.extendedOrganization?.toOrganizationDb() } +
-                                    objects.mapNotNull { it.extendedExploiting?.extendedOrganization?.toOrganizationDb() }
-                            ).distinctBy { it.id }
-                )
-
-                employeeDao.insertAll(
-                    (objects.mapNotNull { it.extendedMol?.toEmployeeDb() } +
-                            objects.mapNotNull { it.extendedExploiting?.toEmployeeDb() }).distinctBy { it.id }
-                )
-
-                nomenclatureGroupDao.insertAll(
-                    (
-                            objects.mapNotNull { it.extendedNomenclatureGroup?.toNomenclatureGroupDb() } +
-                                    objects.mapNotNull { it.extendedNomenclature?.extendedNomenclatureGroup?.toNomenclatureGroupDb() }
-                            ).distinctBy { it.id }
-                )
-
-                nomenclatureDao.insertAll(objects.mapNotNull { it.extendedNomenclature?.toNomenclatureDb() })
-                locationDao.insertAll(objects.mapNotNull { it.extendedLocation?.toLocationDb() })
-                departmentDao.insertAll(objects.mapNotNull { it.extendedDepartment?.toDepartmentDb() })
-                accountingObjectsDao.insertAll(objects.map { it.toAccountingObjectDb() })
-                return accountingObjectsDao.getAll().map { it.toSyncEntity() }
-            }
-        }
-        return dbData.map { it.toSyncEntity() }
+    override suspend fun getAccountingObjects(): Flow<List<AccountingObjectSyncEntity>> {
+        return flow {
+            emit(getDbData())
+            syncAccountingObjects()
+            emit(getDbData())
+        }.distinctUntilChanged().flowOn(Dispatchers.IO)
     }
 
 
     private suspend fun apiAccountingObjectsGet(): GetAllResponse<CustomAccountingObjectDto> {
         return api.apiAccountingObjectsGet()
+    }
+
+    private suspend fun syncAccountingObjects() {
+        apiAccountingObjectsGet().list?.let { objects ->
+            organizationsDao.insertAll(
+                (
+                        objects.mapNotNull { it.extendedOrganization?.toOrganizationDb() } +
+                                objects.mapNotNull { it.extendedDepartment?.extendedOrganization?.toOrganizationDb() } +
+                                objects.mapNotNull { it.extendedMol?.extendedOrganization?.toOrganizationDb() } +
+                                objects.mapNotNull { it.extendedExploiting?.extendedOrganization?.toOrganizationDb() }
+                        ).distinctBy { it.id }
+            )
+
+            employeeDao.insertAll(
+                (objects.mapNotNull { it.extendedMol?.toEmployeeDb() } +
+                        objects.mapNotNull { it.extendedExploiting?.toEmployeeDb() }).distinctBy { it.id }
+            )
+
+            nomenclatureGroupDao.insertAll(
+                (
+                        objects.mapNotNull { it.extendedNomenclatureGroup?.toNomenclatureGroupDb() } +
+                                objects.mapNotNull { it.extendedNomenclature?.extendedNomenclatureGroup?.toNomenclatureGroupDb() }
+                        ).distinctBy { it.id }
+            )
+
+            nomenclatureDao.insertAll(objects.mapNotNull { it.extendedNomenclature?.toNomenclatureDb() })
+            locationDao.insertAll(objects.mapNotNull { it.extendedLocation?.toLocationDb() })
+            departmentDao.insertAll(objects.mapNotNull { it.extendedDepartment?.toDepartmentDb() })
+            accountingObjectsDao.insertAll(objects.map { it.toAccountingObjectDb() })
+        }
+    }
+
+    private suspend fun getDbData(): List<AccountingObjectSyncEntity> {
+        return accountingObjectsDao.getAll()
+            .map {
+                val locationType: LocationTypeDb? =
+                    locationDao.getLocationType(it.locationDb?.parentId)
+                it.toSyncEntity(
+                    it.locationDb?.toLocationSyncEntity(
+                        locationType = locationType?.name.orEmpty(),
+                        locationTypeId = locationType?.id.orEmpty()
+                    )
+                )
+            }
     }
 }

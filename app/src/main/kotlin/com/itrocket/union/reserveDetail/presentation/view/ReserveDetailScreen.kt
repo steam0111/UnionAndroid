@@ -137,7 +137,7 @@ private fun ListInfo(listInfo: List<ObjectInfoDomain>) {
     LazyColumn {
         items(listInfo) {
             ExpandedInfoField(
-                label = it.title,
+                label = stringResource(id = it.title),
                 value = it.value,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -165,11 +165,11 @@ fun ReserveDetailScreenPreview() {
             id = "1", title = "Авторучка «Зебра TR22»", isBarcode = true, listInfo =
             listOf(
                 ObjectInfoDomain(
-                    "Заводской номер",
+                    R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 ),
                 ObjectInfoDomain(
-                    "Инвентарный номер",
+                    R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 )
             ), itemsCount = 1200

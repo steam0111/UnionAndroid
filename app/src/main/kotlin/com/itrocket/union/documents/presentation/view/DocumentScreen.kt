@@ -44,6 +44,7 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
@@ -188,7 +189,7 @@ fun DocumentScreenPreview() {
                     date = "12.12.12",
                     number = "123213",
                     time = "123123",
-                    objectStatus = ObjectStatus.AVAILABLE,
+                    objectStatus = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
                     documentStatus = DocumentStatus.CREATED,
                     objectType = ObjectType.MAIN_ASSETS,
                     documentType = DocumentTypeDomain.WRITE_OFF,
@@ -211,7 +212,7 @@ fun DocumentScreenPreview() {
                     date = "12.12.12",
                     number = "1232132",
                     time = "123123",
-                    objectStatus = ObjectStatus.AVAILABLE,
+                    objectStatus = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
                     documentStatus = DocumentStatus.CREATED,
                     objectType = ObjectType.MAIN_ASSETS,
                     documentType = DocumentTypeDomain.WRITE_OFF,
@@ -233,7 +234,7 @@ fun DocumentScreenPreview() {
                     date = "12.12.12",
                     number = "1232133",
                     time = "123123",
-                    objectStatus = ObjectStatus.AVAILABLE,
+                    objectStatus = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
                     documentStatus = DocumentStatus.CREATED,
                     objectType = ObjectType.MAIN_ASSETS,
                     documentType = DocumentTypeDomain.WRITE_OFF,
@@ -256,7 +257,7 @@ fun DocumentScreenPreview() {
                     date = "12.12.12",
                     number = "1232134",
                     time = "123123",
-                    objectStatus = ObjectStatus.AVAILABLE,
+                    objectStatus = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
                     documentStatus = DocumentStatus.CREATED,
                     objectType = ObjectType.MAIN_ASSETS,
                     documentType = DocumentTypeDomain.WRITE_OFF,
