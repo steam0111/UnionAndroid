@@ -222,9 +222,10 @@ fun InventoryDocumentItem(
 ) {
     val annotatedTitle = getInventoryAnnotatedTitle(item)
     val annotatedInfo = buildAnnotatedString {
-        item.documentInfo.forEachIndexed { index, info ->
+        val filteredDocumentInfo = item.documentInfo.filter { it.value.isNotBlank() }
+        filteredDocumentInfo.forEachIndexed { index, info ->
             append(info.value)
-            if (index < item.documentInfo.lastIndex) {
+            if (index < filteredDocumentInfo.lastIndex) {
                 append(" ")
                 withStyle(SpanStyle(color = psb6, fontWeight = FontWeight.ExtraBold)) {
                     append("|")
@@ -378,9 +379,10 @@ fun DocumentInfoItem(
         },
     )
     val annotatedInfo = buildAnnotatedString {
-        item.params.forEachIndexed { index, info ->
+        val filteredParams = item.params.filter { it.value.isNotBlank() }
+        filteredParams.forEachIndexed { index, info ->
             append(info.value)
-            if (index < item.params.lastIndex) {
+            if (index < filteredParams.lastIndex) {
                 append(" ")
                 withStyle(SpanStyle(color = psb6, fontWeight = FontWeight.ExtraBold)) {
                     append("|")

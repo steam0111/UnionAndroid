@@ -11,7 +11,10 @@ import com.itrocket.union.documentCreate.presentation.view.DocumentCreateCompose
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
+import com.itrocket.union.location.domain.entity.LocationDomain
 import com.itrocket.union.location.presentation.store.LocationArguments
+import com.itrocket.union.location.presentation.store.LocationResult
+import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
@@ -35,7 +38,7 @@ interface DocumentCreateStore :
         data class OnAccountingObjectSelected(val accountingObjectDomain: AccountingObjectDomain) :
             Intent()
 
-        data class OnLocationChanged(val location: String) : Intent()
+        data class OnLocationChanged(val location: LocationResult) : Intent()
     }
 
     data class State(
@@ -51,7 +54,8 @@ interface DocumentCreateStore :
         object GoBack : Label(), GoBackNavigationLabel
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
 
-        data class ShowLocation(val location: String) : Label(), ForwardNavigationLabel {
+        data class ShowLocation(val location: LocationParamDomain) : Label(),
+            ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = DocumentCreateComposeFragmentDirections.toLocation(
                     LocationArguments(location = location)

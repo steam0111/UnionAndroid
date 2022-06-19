@@ -47,13 +47,19 @@ class DocumentInteractor(
             } else {
                 null
             }
+            val locationIds = if (type.manualType == ManualType.LOCATION) {
+                listOf<String>()
+            } else {
+                null
+            }
             val documentId = repository.createDocument(
                 DocumentCreateSyncEntity(
                     organizationId = "",
                     exploitingId = exploitingId,
                     molId = "",
                     documentType = type.name,
-                    accountingObjectsIds = listOf()
+                    accountingObjectsIds = listOf(),
+                    locationIds = locationIds
                 )
             )
             repository.getDocumentById(documentId)

@@ -12,5 +12,6 @@ class DocumentDb(
     val exploitingId: String?,
     val documentType: String,
     val accountingObjectsIds: List<String>,
+    val locationIds: List<String>?,
     val date: Long
 )

@@ -5,13 +5,18 @@ import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.example.union_sync_impl.dao.DocumentDao
+import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.data.mapper.toDocumentDb
 import com.example.union_sync_impl.data.mapper.toDocumentSyncEntity
+import com.example.union_sync_impl.data.mapper.toLocationShortSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class DocumentSyncApiImpl(private val documentDao: DocumentDao) : DocumentSyncApi {
+class DocumentSyncApiImpl(
+    private val documentDao: DocumentDao,
+    private val locationDao: LocationDao
+) : DocumentSyncApi {
     override suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): Long {
         return documentDao.insert(documentCreateSyncEntity.toDocumentDb())
     }
@@ -22,18 +27,21 @@ class DocumentSyncApiImpl(private val documentDao: DocumentDao) : DocumentSyncAp
                 it.documentDb.toDocumentSyncEntity(
                     organizationSyncEntity = it.organizationDb?.toSyncEntity(),
                     mol = it.molDb?.toSyncEntity(),
-                    exploiting = it.exploitingDb?.toSyncEntity()
+                    exploiting = it.exploitingDb?.toSyncEntity(),
+                    locations = null
                 )
             }
         }
     }
+
     override suspend fun getDocuments(type: String): Flow<List<DocumentSyncEntity>> {
         return documentDao.getDocumentsByType(type).map {
             it.map {
                 it.documentDb.toDocumentSyncEntity(
                     organizationSyncEntity = it.organizationDb?.toSyncEntity(),
                     mol = it.molDb?.toSyncEntity(),
-                    exploiting = it.exploitingDb?.toSyncEntity()
+                    exploiting = it.exploitingDb?.toSyncEntity(),
+                    locations = null
                 )
             }
         }
@@ -42,10 +50,19 @@ class DocumentSyncApiImpl(private val documentDao: DocumentDao) : DocumentSyncAp
 
     override suspend fun getDocumentById(id: Long): DocumentSyncEntity {
         val fullDocument = documentDao.getDocumentById(id)
+        val locationIds = fullDocument.documentDb.locationIds
+        val locations = if (locationIds != null) {
+            locationDao.getLocationsByIds(fullDocument.documentDb.locationIds).map {
+                it.toLocationShortSyncEntity()
+            }
+        } else {
+            null
+        }
         return fullDocument.documentDb.toDocumentSyncEntity(
             organizationSyncEntity = fullDocument.organizationDb?.toSyncEntity(),
             mol = fullDocument.molDb?.toSyncEntity(),
-            exploiting = fullDocument.exploitingDb?.toSyncEntity()
+            exploiting = fullDocument.exploitingDb?.toSyncEntity(),
+            locations = locations
         )
     }
 

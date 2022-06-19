@@ -4,6 +4,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.filter.domain.dependencies.FilterRepository
 import com.itrocket.union.filter.domain.entity.FilterDomain
 import com.itrocket.union.filter.domain.entity.FilterValueType
+import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.utils.resolveItem
 
 class FilterInteractor(
@@ -63,13 +64,13 @@ class FilterInteractor(
         }
     }
 
-    fun changeLocationFilter(filters: List<FilterDomain>, location: String): List<FilterDomain> {
+    fun changeLocationFilter(filters: List<FilterDomain>, location: LocationParamDomain): List<FilterDomain> {
         val mutableFilters = filters.toMutableList()
         val locationFilter = filters.find { it.filterValueType == FilterValueType.LOCATION }
         val locationIndex = filters.indexOf(locationFilter)
         if (locationIndex != NO_POSITION) {
             mutableFilters[locationIndex] = mutableFilters[locationIndex].copy(
-                values = listOf(location)
+                values = location.values
             )
         }
         return mutableFilters

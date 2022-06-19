@@ -10,5 +10,5 @@ class FullDocument(
     @Embedded(prefix = "mol_")
     val molDb: EmployeeDb?,
     @Embedded(prefix = "exploiting_")
-    val exploitingDb: EmployeeDb? = null
+    val exploitingDb: EmployeeDb? = null,
 )

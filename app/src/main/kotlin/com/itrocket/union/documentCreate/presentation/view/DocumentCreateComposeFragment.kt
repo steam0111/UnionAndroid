@@ -9,6 +9,9 @@ import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectR
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
 import com.itrocket.union.documentCreate.DocumentCreateModule.DOCUMENTCREATE_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
+import com.itrocket.union.inventory.presentation.store.InventoryStore
+import com.itrocket.union.location.presentation.store.LocationResult
+import com.itrocket.union.location.presentation.view.LocationComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 import com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFragment
 
@@ -42,6 +45,17 @@ class DocumentCreateComposeFragment :
                     }
                 }
             ),
+            FragmentResult(
+                resultCode = LocationComposeFragment.LOCATION_RESULT_CODE,
+                resultLabel = LocationComposeFragment.LOCATION_RESULT,
+                resultAction = {
+                    (it as LocationResult?)?.let {
+                        accept(
+                            DocumentCreateStore.Intent.OnLocationChanged(it)
+                        )
+                    }
+                }
+            )
         )
 
     override fun renderState(

@@ -94,12 +94,14 @@ object SyncModule {
         }
         factory<InventorySyncApi> {
             InventorySyncApiImpl(
-                inventoryDao = get()
+                inventoryDao = get(),
+                locationDao = get()
             )
         }
         factory<DocumentSyncApi> {
             DocumentSyncApiImpl(
-                documentDao = get()
+                documentDao = get(),
+                locationDao = get()
             )
         }
         factory<LocationSyncApi> {

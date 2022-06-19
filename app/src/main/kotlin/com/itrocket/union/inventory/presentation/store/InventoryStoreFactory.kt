@@ -10,6 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventory.domain.InventoryInteractor
+import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 
@@ -99,7 +100,7 @@ class InventoryStoreFactory(
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
             if (param.type == ManualType.LOCATION) {
                 publish(
-                    InventoryStore.Label.ShowLocation(param.value)
+                    InventoryStore.Label.ShowLocation(param as LocationParamDomain)
                 )
             } else {
                 publish(

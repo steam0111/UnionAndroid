@@ -9,6 +9,7 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.location.domain.LocationInteractor
 import com.itrocket.union.location.domain.entity.LocationDomain
+import com.itrocket.union.manual.LocationParamDomain
 import kotlinx.coroutines.delay
 
 class LocationStoreFactory(
@@ -58,21 +59,9 @@ class LocationStoreFactory(
                 LocationStore.Intent.OnBackClicked -> {
                     onBackClicked(getState)
                 }
-                LocationStore.Intent.OnAcceptClicked -> publish(
-                    LocationStore.Label.GoBack(
-                        LocationResult(
-                            locationInteractor.placeSchemaToString(getState().selectPlaceScheme)
-                        )
-                    )
-                )
+                LocationStore.Intent.OnAcceptClicked -> goBack(getState)
                 LocationStore.Intent.OnCrossClicked -> publish(LocationStore.Label.GoBack())
-                LocationStore.Intent.OnFinishClicked -> publish(
-                    LocationStore.Label.GoBack(
-                        LocationResult(
-                            locationInteractor.placeSchemaToString(getState().selectPlaceScheme)
-                        )
-                    )
-                )
+                LocationStore.Intent.OnFinishClicked -> goBack(getState)
                 is LocationStore.Intent.OnPlaceSelected -> {
                     selectPlace(getState, intent.place)
                 }
@@ -90,6 +79,19 @@ class LocationStoreFactory(
                     dispatch(Result.Loading(false))
                 }
             }
+        }
+
+        private fun goBack(getState: () -> LocationStore.State) {
+            publish(
+                LocationStore.Label.GoBack(
+                    LocationResult(
+                        LocationParamDomain(
+                            ids = getState().selectPlaceScheme.map { it.id },
+                            values = getState().selectPlaceScheme.map { it.value }
+                        )
+                    )
+                )
+            )
         }
 
         private suspend fun selectPlace(

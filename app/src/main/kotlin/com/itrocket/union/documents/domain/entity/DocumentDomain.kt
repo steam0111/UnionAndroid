@@ -6,6 +6,7 @@ import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
@@ -29,6 +30,7 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
     val organizationId = requireNotNull(params.find { it.type == ManualType.ORGANIZATION }?.id)
     val molId = requireNotNull(params.find { it.type == ManualType.MOL }?.id)
     val exploitingId = params.find { it.type == ManualType.EXPLOITING }?.id
+    val locationIds = (params.find { it.type == ManualType.LOCATION } as? LocationParamDomain)?.ids
     return DocumentUpdateSyncEntity(
         organizationId = organizationId,
         molId = molId,
@@ -36,6 +38,7 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
         documentType = documentType.name,
         accountingObjectsIds = accountingObjects.map { it.id },
         date = date,
+        locationIds = locationIds,
         id = number.toLong()
     )
 }

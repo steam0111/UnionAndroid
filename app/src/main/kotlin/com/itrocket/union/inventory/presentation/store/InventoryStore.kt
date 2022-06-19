@@ -12,6 +12,7 @@ import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateArguments
 import com.itrocket.union.location.presentation.store.LocationArguments
 import com.itrocket.union.location.presentation.store.LocationResult
+import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.selectParams.presentation.store.SelectParamsArguments
@@ -39,7 +40,7 @@ interface InventoryStore :
         val params: List<ParamDomain> = listOf(
             ParamDomain(id = "", value = "", type = ManualType.ORGANIZATION),
             ParamDomain(id = "", value = "", type = ManualType.MOL),
-            ParamDomain(id = "", value = "", type = ManualType.LOCATION),
+            LocationParamDomain(ids = listOf(), values = listOf()),
         )
     )
 
@@ -55,7 +56,7 @@ interface InventoryStore :
 
         }
 
-        data class ShowLocation(val location: String) : Label(), ForwardNavigationLabel {
+        data class ShowLocation(val location: LocationParamDomain) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = InventoryComposeFragmentDirections.toLocation(
                     LocationArguments(location = location)

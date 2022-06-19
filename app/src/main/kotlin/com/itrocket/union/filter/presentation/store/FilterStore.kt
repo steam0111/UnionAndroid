@@ -16,6 +16,7 @@ import com.itrocket.union.filterValues.presentation.store.FilterValueArguments
 import com.itrocket.union.filterValues.presentation.view.FilterValueComposeFragment
 import com.itrocket.union.location.presentation.store.LocationArguments
 import com.itrocket.union.location.presentation.store.LocationResult
+import com.itrocket.union.manual.LocationParamDomain
 
 interface FilterStore : Store<FilterStore.Intent, FilterStore.State, FilterStore.Label> {
 
@@ -45,7 +46,7 @@ interface FilterStore : Store<FilterStore.Intent, FilterStore.State, FilterStore
                 get() = FilterValueComposeFragment()
         }
 
-        data class ShowLocation(val location: String) : Label(), ForwardNavigationLabel {
+        data class ShowLocation(val location: LocationParamDomain) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = FilterComposeFragmentDirections.toLocation(LocationArguments(location))
 

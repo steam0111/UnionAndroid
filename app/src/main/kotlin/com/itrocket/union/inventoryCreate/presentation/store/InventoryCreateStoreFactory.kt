@@ -44,6 +44,17 @@ class InventoryCreateStoreFactory(
             action: Unit,
             getState: () -> InventoryCreateStore.State
         ) {
+            dispatch(Result.Loading(true))
+            catchException {
+                dispatch(
+                    Result.Inventory(
+                        inventoryCreateInteractor.getInventoryById(
+                            inventoryCreateArguments.inventoryDocument.number
+                        )
+                    )
+                )
+            }
+            dispatch(Result.Loading(false))
         }
 
         override suspend fun executeIntent(
@@ -97,10 +108,11 @@ class InventoryCreateStoreFactory(
         ) {
             dispatch(Result.Loading(true))
             catchException {
-                val inventoryAccountingObjects = inventoryCreateInteractor.handleNewAccountingObjects(
-                    accountingObjects = accountingObjects,
-                    handledAccountingObjectIds = handledAccountingObjectIds
-                )
+                val inventoryAccountingObjects =
+                    inventoryCreateInteractor.handleNewAccountingObjects(
+                        accountingObjects = accountingObjects,
+                        handledAccountingObjectIds = handledAccountingObjectIds
+                    )
                 dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
                 dispatch(
                     Result.NewAccountingObjects((newAccountingObjects + inventoryAccountingObjects.newAccountingObjects).toSet())
@@ -176,6 +188,7 @@ class InventoryCreateStoreFactory(
 
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
+        data class Inventory(val inventory: InventoryCreateDomain) : Result()
         data class AddNew(val addNew: Boolean) : Result()
         data class HideFoundedAccountingObjects(val hideFoundedAccountingObjects: Boolean) :
             Result()
@@ -197,6 +210,7 @@ class InventoryCreateStoreFactory(
                     )
                 )
                 is Result.NewAccountingObjects -> copy(newAccountingObjects = result.newAccountingObjects)
+                is Result.Inventory -> copy(inventoryDocument = result.inventory)
             }
     }
 }

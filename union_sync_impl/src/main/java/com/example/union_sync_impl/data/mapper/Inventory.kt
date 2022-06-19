@@ -4,6 +4,8 @@ import com.example.union_sync_api.entity.EmployeeSyncEntity
 import com.example.union_sync_api.entity.InventoryCreateSyncEntity
 import com.example.union_sync_api.entity.InventorySyncEntity
 import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
+import com.example.union_sync_api.entity.LocationShortSyncEntity
+import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_impl.entity.InventoryDb
 
@@ -12,7 +14,8 @@ fun InventoryCreateSyncEntity.toInventoryDb(): InventoryDb {
         organizationId = organizationId,
         employeeId = employeeId,
         accountingObjectsIds = accountingObjectsIds,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        locationIds = locationIds
     )
 }
 
@@ -22,18 +25,21 @@ fun InventoryUpdateSyncEntity.toInventoryDb(): InventoryDb {
         organizationId = organizationId,
         employeeId = employeeId,
         accountingObjectsIds = accountingObjectsIds,
-        date = date
+        date = date,
+        locationIds = locationIds
     )
 }
 
 fun InventoryDb.toInventorySyncEntity(
     organizationSyncEntity: OrganizationSyncEntity,
-    mol: EmployeeSyncEntity
+    mol: EmployeeSyncEntity,
+    locationSyncEntities: List<LocationShortSyncEntity>
 ): InventorySyncEntity {
     return InventorySyncEntity(
         id = id.toString(),
         date = date,
         organizationSyncEntity = organizationSyncEntity,
-        mol = mol
+        mol = mol,
+        locationSyncEntities = locationSyncEntities
     )
 }
