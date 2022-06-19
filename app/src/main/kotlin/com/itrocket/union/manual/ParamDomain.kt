@@ -22,6 +22,10 @@ fun List<ParamDomain>.getOrganizationId(): String? {
     return find { it.type == ManualType.ORGANIZATION }?.id
 }
 
+fun List<ParamDomain>.getExploitingId(): String? {
+    return find { it.type == ManualType.EXPLOITING }?.id
+}
+
 fun List<ParamDomain>.getMolId(): String? {
     return find { it.type == ManualType.MOL }?.id
 }

@@ -4,6 +4,7 @@ import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
 import com.example.union_sync_api.entity.LocationShortSyncEntity
 import com.example.union_sync_api.entity.OrganizationSyncEntity
+import com.itrocket.union.accountingObjects.data.mapper.map
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
@@ -20,7 +21,7 @@ fun DocumentSyncEntity.map(): DocumentDomain =
     DocumentDomain(
         number = id,
         date = date,
-        accountingObjects = listOf(),
+        accountingObjects = accountingObjects.map(),
         documentStatus = DocumentStatus.CREATED,
         documentType = DocumentTypeDomain.valueOf(documentType),
         objectType = ObjectType.MAIN_ASSETS,

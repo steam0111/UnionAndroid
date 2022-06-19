@@ -103,7 +103,8 @@ object SyncModule {
         factory<DocumentSyncApi> {
             DocumentSyncApiImpl(
                 documentDao = get(),
-                locationDao = get()
+                locationDao = get(),
+                accountingObjectDao = get()
             )
         }
         factory<LocationSyncApi> {

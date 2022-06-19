@@ -15,12 +15,6 @@ class AccountingObjectInteractor(
     suspend fun getAccountingObjects(params: List<ParamDomain>): Flow<List<AccountingObjectDomain>> =
         withContext(coreDispatchers.io) {
             //filter params
-            repository.getAccountingObjects()
+            repository.getAccountingObjects(params)
         }
-
-    suspend fun getAccountingObjectsByParams(params: List<ParamDomain>): Flow<List<AccountingObjectDomain>> {
-        return withContext(coreDispatchers.io) {
-            repository.getAccountingObjectsByParams(params)
-        }
-    }
 }

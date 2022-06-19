@@ -6,7 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface AccountingObjectRepository {
 
-    suspend fun getAccountingObjects(): Flow<List<AccountingObjectDomain>>
-
-    suspend fun getAccountingObjectsByParams(params: List<ParamDomain>): Flow<List<AccountingObjectDomain>>
+    suspend fun getAccountingObjects(params: List<ParamDomain>): Flow<List<AccountingObjectDomain>>
 }

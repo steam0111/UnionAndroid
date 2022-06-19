@@ -9,9 +9,9 @@ class DocumentDb(
     val id: Long = 0L,
     val organizationId: String,
     val molId: String,
-    val exploitingId: String?,
+    val exploitingId: String? = null,
     val documentType: String,
     val accountingObjectsIds: List<String>,
-    val locationIds: List<String>?,
+    val locationIds: List<String>? = null,
     val date: Long
 )

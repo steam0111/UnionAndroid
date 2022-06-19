@@ -6,6 +6,11 @@ import com.itrocket.union.accountingObjects.data.mapper.map
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.accountingObjects.data.mapper.map
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
+import com.itrocket.union.manual.ManualType
+import com.itrocket.union.manual.getExploitingId
 import com.itrocket.union.manual.getMolId
 import com.itrocket.union.manual.getOrganizationId
 import kotlinx.coroutines.flow.Flow
@@ -17,16 +22,12 @@ class AccountingObjectRepositoryImpl(
     private val syncApi: AccountingObjectSyncApi
 ) : AccountingObjectRepository {
 
-    override suspend fun getAccountingObjects(): Flow<List<AccountingObjectDomain>> =
-        withContext(coreDispatchers.io) {
-            syncApi.getAccountingObjects().map { it.map() }
-        }
-
-    override suspend fun getAccountingObjectsByParams(params: List<ParamDomain>): Flow<List<AccountingObjectDomain>> =
+    override suspend fun getAccountingObjects(params: List<ParamDomain>): Flow<List<AccountingObjectDomain>> =
         withContext(coreDispatchers.io) {
             syncApi.getAccountingObjects(
                 organizationId = params.getOrganizationId(),
-                molId = params.getMolId()
+                molId = params.getMolId(),
+                exploitingId = params.getExploitingId()
             ).map { it.map() }
         }
 }

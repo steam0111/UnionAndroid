@@ -47,12 +47,13 @@ class AccountingObjectSyncApiImpl(
 
     override suspend fun getAccountingObjects(
         organizationId: String?,
-        molId: String?
+        molId: String?,
+        exploitingId: String?
     ): Flow<List<AccountingObjectSyncEntity>> {
         return flow {
-            emit(getDbData(organizationId, molId))
+            emit(getDbData(organizationId, molId, exploitingId))
             syncAccountingObjects()
-            emit(getDbData(organizationId, molId))
+            emit(getDbData(organizationId, molId, exploitingId))
         }.distinctUntilChanged().flowOn(Dispatchers.IO)
     }
 
@@ -95,6 +96,7 @@ class AccountingObjectSyncApiImpl(
     private suspend fun getDbData(
         organizationId: String? = null,
         molId: String? = null,
+        exploitingId: String? = null
     ): List<AccountingObjectSyncEntity> {
         val filters = mutableListOf<String>()
 
@@ -103,6 +105,9 @@ class AccountingObjectSyncApiImpl(
         }
         if (molId != null) {
             filters.add("accounting_objects.molId = \'$molId\'")
+        }
+        if (exploitingId != null) {
+            filters.add("accounting_objects.exploitingId = \'$exploitingId\'")
         }
 
         val filterExpression = if (filters.isNotEmpty()) {

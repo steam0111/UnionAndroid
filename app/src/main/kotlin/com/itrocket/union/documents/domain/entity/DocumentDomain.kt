@@ -1,17 +1,12 @@
 package com.itrocket.union.documents.domain.entity
 
 import android.os.Parcelable
-import com.example.union_sync_api.entity.DocumentCreateSyncEntity
-import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
-import com.itrocket.union.utils.getStringDateFromMillis
-import com.itrocket.union.utils.getTimeFromMillis
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

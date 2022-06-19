@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.data.mapper
 
+import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
@@ -37,7 +38,8 @@ fun DocumentDb.toDocumentSyncEntity(
     organizationSyncEntity: OrganizationSyncEntity?,
     mol: EmployeeSyncEntity?,
     exploiting: EmployeeSyncEntity?,
-    locations: List<LocationShortSyncEntity>?
+    locations: List<LocationShortSyncEntity>?,
+    accountingObjects: List<AccountingObjectSyncEntity>
 ): DocumentSyncEntity {
     return DocumentSyncEntity(
         id = id.toString(),
@@ -46,7 +48,7 @@ fun DocumentDb.toDocumentSyncEntity(
         mol = mol,
         exploiting = exploiting,
         documentType = documentType,
-        accountingObjectsIds = accountingObjectsIds,
+        accountingObjects = accountingObjects,
         organizationId = organizationId,
         locations = locations
     )

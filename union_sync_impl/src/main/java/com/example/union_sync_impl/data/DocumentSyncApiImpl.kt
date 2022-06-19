@@ -4,6 +4,7 @@ import com.example.union_sync_api.data.DocumentSyncApi
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
+import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.DocumentDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.data.mapper.toDocumentDb
@@ -15,7 +16,8 @@ import kotlinx.coroutines.flow.map
 
 class DocumentSyncApiImpl(
     private val documentDao: DocumentDao,
-    private val locationDao: LocationDao
+    private val locationDao: LocationDao,
+    private val accountingObjectDao: AccountingObjectDao
 ) : DocumentSyncApi {
     override suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): Long {
         return documentDao.insert(documentCreateSyncEntity.toDocumentDb())
@@ -28,7 +30,8 @@ class DocumentSyncApiImpl(
                     organizationSyncEntity = it.organizationDb?.toSyncEntity(),
                     mol = it.molDb?.toSyncEntity(),
                     exploiting = it.exploitingDb?.toSyncEntity(),
-                    locations = null
+                    locations = null,
+                    accountingObjects = listOf()
                 )
             }
         }
@@ -41,7 +44,8 @@ class DocumentSyncApiImpl(
                     organizationSyncEntity = it.organizationDb?.toSyncEntity(),
                     mol = it.molDb?.toSyncEntity(),
                     exploiting = it.exploitingDb?.toSyncEntity(),
-                    locations = null
+                    locations = null,
+                    accountingObjects = listOf()
                 )
             }
         }
@@ -58,11 +62,16 @@ class DocumentSyncApiImpl(
         } else {
             null
         }
+
         return fullDocument.documentDb.toDocumentSyncEntity(
             organizationSyncEntity = fullDocument.organizationDb?.toSyncEntity(),
             mol = fullDocument.molDb?.toSyncEntity(),
             exploiting = fullDocument.exploitingDb?.toSyncEntity(),
-            locations = locations
+            locations = locations,
+            accountingObjects = accountingObjectDao.getAllByIds(fullDocument.documentDb.accountingObjectsIds)
+                .map {
+                    it.toSyncEntity()
+                }
         )
     }
 
