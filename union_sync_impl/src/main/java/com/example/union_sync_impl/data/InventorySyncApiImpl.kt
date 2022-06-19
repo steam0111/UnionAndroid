@@ -3,6 +3,7 @@ package com.example.union_sync_impl.data
 import com.example.union_sync_api.data.InventorySyncApi
 import com.example.union_sync_api.entity.InventoryCreateSyncEntity
 import com.example.union_sync_api.entity.InventorySyncEntity
+import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.data.mapper.toInventoryDb
 import com.example.union_sync_impl.data.mapper.toInventorySyncEntity
@@ -34,7 +35,7 @@ class InventorySyncApiImpl(private val inventoryDao: InventoryDao) : InventorySy
         )
     }
 
-    override suspend fun updateInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity) {
-        inventoryDao.update(inventoryCreateSyncEntity.toInventoryDb())
+    override suspend fun updateInventory(inventoryUpdateSyncEntity: InventoryUpdateSyncEntity) {
+        inventoryDao.update(inventoryUpdateSyncEntity.toInventoryDb())
     }
 }

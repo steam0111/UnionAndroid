@@ -60,9 +60,8 @@ class DocumentCreateStoreFactory(
                     )
                 )
                 DocumentCreateStore.Intent.OnDropClicked -> {
-                    dispatch(Result.Params(getState().document.params))
+                    changeParams(getState().document.params, getState)
                     dispatch(Result.AccountingObjects(getState().document.accountingObjects))
-                    isNextEnabled(getState)
                 }
                 DocumentCreateStore.Intent.OnNextClicked -> dispatch(
                     Result.SelectPage(
@@ -127,17 +126,15 @@ class DocumentCreateStoreFactory(
 
         private suspend fun saveDocument(getState: () -> DocumentCreateStore.State) {
             if (getState().document.objectType == ObjectType.MAIN_ASSETS) {
-                documentCreateInteractor.saveAccountingObjectDocument(
+                documentCreateInteractor.saveDocument(
                     accountingObjects = getState().accountingObjects,
                     document = getState().document,
                     params = getState().params
                 )
             } else {
-                documentCreateInteractor.saveReservesDocument(
-                    reserves = getState().document.reserves,
-                    params = getState().params
-                )
+                //no-op
             }
+            publish(DocumentCreateStore.Label.GoBack)
         }
 
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {

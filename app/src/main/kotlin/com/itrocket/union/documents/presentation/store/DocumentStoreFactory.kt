@@ -6,6 +6,7 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.itrocket.core.base.BaseExecutor
 import com.itrocket.union.documents.domain.DocumentInteractor
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.core.base.CoreDispatchers
@@ -15,6 +16,8 @@ import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.documents.presentation.view.toDocumentDomain
 import com.itrocket.utils.resolveItem
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 
 class DocumentStoreFactory(
     private val storeFactory: StoreFactory,
@@ -36,17 +39,23 @@ class DocumentStoreFactory(
         DocumentExecutor()
 
     private inner class DocumentExecutor :
-        SuspendExecutor<DocumentStore.Intent, Unit, DocumentStore.State, Result, DocumentStore.Label>(
-            mainContext = coreDispatchers.ui
+        BaseExecutor<DocumentStore.Intent, Unit, DocumentStore.State, Result, DocumentStore.Label>(
+            context = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
             action: Unit,
             getState: () -> DocumentStore.State
         ) {
-            dispatch(Result.IsListLoading(true))
-            delay(1000)
-            dispatch(Result.Documents(documentInteractor.getDocuments(getState().type)))
-            dispatch(Result.IsListLoading(false))
+            catchException {
+                dispatch(Result.IsListLoading(true))
+                documentInteractor.getDocuments(getState().type)
+                    .catch {
+                        dispatch(Result.IsListLoading(false))
+                    }.collect {
+                        dispatch(Result.Documents(it))
+                        dispatch(Result.IsListLoading(false))
+                    }
+            }
         }
 
         override suspend fun executeIntent(
@@ -79,7 +88,7 @@ class DocumentStoreFactory(
 
         private suspend fun createDocument(listType: ObjectType, documentType: DocumentTypeDomain) {
             dispatch(Result.IsDocumentCreateLoading(true))
-            val document = documentInteractor.createDocument(documentType, listType)
+            val document = documentInteractor.createDocument(documentType)
             showDocument(document)
             dispatch(Result.IsDocumentCreateLoading(false))
         }
@@ -91,6 +100,11 @@ class DocumentStoreFactory(
                 )
             )
         }
+
+        override fun handleError(throwable: Throwable) {
+            publish(DocumentStore.Label.Error(throwable.message.orEmpty()))
+        }
+
     }
 
     private sealed class Result {

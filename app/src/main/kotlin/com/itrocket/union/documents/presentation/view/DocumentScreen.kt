@@ -146,7 +146,7 @@ private fun Content(
                     val isShowBottomLine =
                         index < documents.lastIndex && documents[index + 1] !is DocumentView.DocumentDateView
                     AnimatedVisibility(
-                        visible = !rotatedDates.contains(item.date),
+                        visible = !rotatedDates.contains(item.dateUi),
                         enter = fadeIn() + expandVertically(),
                         exit = fadeOut() + shrinkVertically()
                     ) {
@@ -186,10 +186,8 @@ fun DocumentScreenPreview() {
                     dayType = DocumentDateType.OTHER
                 ),
                 DocumentView.DocumentItemView(
-                    date = "12.12.12",
+                    date = 123123,
                     number = "123213",
-                    time = "123123",
-                    objectStatus = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
                     documentStatus = DocumentStatus.CREATED,
                     objectType = ObjectType.MAIN_ASSETS,
                     documentType = DocumentTypeDomain.WRITE_OFF,
@@ -206,13 +204,12 @@ fun DocumentScreenPreview() {
                             "1", "blbbb",
                             type = ManualType.ORGANIZATION
                         )
-                    )
+                    ),
+                    dateUi = "12.12.12"
                 ),
                 DocumentView.DocumentItemView(
-                    date = "12.12.12",
+                    date = 123123,
                     number = "1232132",
-                    time = "123123",
-                    objectStatus = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
                     documentStatus = DocumentStatus.CREATED,
                     objectType = ObjectType.MAIN_ASSETS,
                     documentType = DocumentTypeDomain.WRITE_OFF,
@@ -229,12 +226,11 @@ fun DocumentScreenPreview() {
                             "1", "blbbb",
                             type = ManualType.ORGANIZATION
                         )
-                    )
+                    ),
+                    dateUi = "12.12.12"
                 ), DocumentView.DocumentItemView(
-                    date = "12.12.12",
+                    date = 123123,
                     number = "1232133",
-                    time = "123123",
-                    objectStatus = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
                     documentStatus = DocumentStatus.CREATED,
                     objectType = ObjectType.MAIN_ASSETS,
                     documentType = DocumentTypeDomain.WRITE_OFF,
@@ -251,13 +247,12 @@ fun DocumentScreenPreview() {
                             "1", "blbbb",
                             type = ManualType.ORGANIZATION
                         )
-                    )
+                    ),
+                    dateUi = "12.12.12"
                 ),
                 DocumentView.DocumentItemView(
-                    date = "12.12.12",
+                    date = 123123,
                     number = "1232134",
-                    time = "123123",
-                    objectStatus = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
                     documentStatus = DocumentStatus.CREATED,
                     objectType = ObjectType.MAIN_ASSETS,
                     documentType = DocumentTypeDomain.WRITE_OFF,
@@ -274,7 +269,8 @@ fun DocumentScreenPreview() {
                             "1", "blbbb",
                             type = ManualType.ORGANIZATION
                         )
-                    )
+                    ),
+                    dateUi = "12.12.12"
                 )
             )
         ),
