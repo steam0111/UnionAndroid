@@ -57,7 +57,7 @@ import com.example.union_sync_impl.utils.Converters
         EquipmentTypesDb::class,
         LocationTypeDb::class,
         DocumentDb::class
-    ], version = 39
+    ], version = 41
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {

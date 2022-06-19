@@ -1,16 +1,14 @@
 package com.itrocket.union.location.presentation.store
 
-import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.itrocket.core.base.BaseExecutor
+import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.location.domain.LocationInteractor
 import com.itrocket.union.location.domain.entity.LocationDomain
-import com.itrocket.core.base.CoreDispatchers
 import kotlinx.coroutines.delay
 
 class LocationStoreFactory(
@@ -40,13 +38,15 @@ class LocationStoreFactory(
             getState: () -> LocationStore.State
         ) {
             dispatch(Result.Loading(true))
-            val placeList = locationInteractor.getPlaceList(listOf())
-            dispatch(Result.PlaceValues(placeList))
-            dispatch(
-                Result.LevelHint(
-                    placeList.firstOrNull()?.type.orEmpty()
+            catchException {
+                val placeList = locationInteractor.getPlaceList(listOf())
+                dispatch(Result.PlaceValues(placeList))
+                dispatch(
+                    Result.LevelHint(
+                        placeList.firstOrNull()?.type.orEmpty()
+                    )
                 )
-            )
+            }
             dispatch(Result.Loading(false))
         }
 
@@ -79,11 +79,13 @@ class LocationStoreFactory(
                 is LocationStore.Intent.OnSearchTextChanged -> {
                     val selectedPlaceScheme = getState().selectPlaceScheme
                     dispatch(Result.Loading(true))
-                    dispatch(
-                        Result.PlaceValues(
-                            locationInteractor.getPlaceList(selectedPlaceScheme, intent.searchText)
+                    catchException {
+                        dispatch(
+                            Result.PlaceValues(
+                                locationInteractor.getPlaceList(selectedPlaceScheme, intent.searchText)
+                            )
                         )
-                    )
+                    }
                     dispatch(Result.SearchText(intent.searchText))
                     dispatch(Result.Loading(false))
                 }
