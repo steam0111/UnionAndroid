@@ -5,6 +5,8 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
+import com.itrocket.union.location.domain.entity.LocationDomain
+import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import kotlinx.coroutines.withContext
@@ -27,12 +29,18 @@ class InventoryInteractor(
             requireNotNull(value = params.find { it.type == ManualType.MOL }, lazyMessage = {
                 "molId must not be null"
             }).id
+        val locationIds =
+            requireNotNull(value = params.find { it.type == ManualType.LOCATION } as? LocationParamDomain,
+                lazyMessage = {
+                    "molId must not be null"
+                }).ids
 
         val id = repository.createInventory(
             InventoryCreateSyncEntity(
                 organizationId = organizationId,
                 employeeId = molId,
-                accountingObjectsIds = accountingObjects.map { it.id }
+                accountingObjectsIds = accountingObjects.map { it.id },
+                locationIds = locationIds
             )
         )
         repository.getInventoryById(id)
@@ -49,11 +57,13 @@ class InventoryInteractor(
         return mutableParams
     }
 
-    fun changeLocation(params: List<ParamDomain>, location: String): List<ParamDomain> {
+    fun changeLocation(
+        params: List<ParamDomain>,
+        location: LocationParamDomain
+    ): List<ParamDomain> {
         val mutableParams = params.toMutableList()
         val locationIndex = params.indexOfFirst { it.type == ManualType.LOCATION }
-        mutableParams[locationIndex] =
-            mutableParams[locationIndex].copy(value = location)
+        mutableParams[locationIndex] = location
         return mutableParams
     }
 

@@ -9,7 +9,9 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
+import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
+import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
@@ -45,6 +47,15 @@ class DocumentCreateStoreFactory(
             action: Unit,
             getState: () -> DocumentCreateStore.State
         ) {
+            dispatch(Result.Loading(true))
+            catchException {
+                val document = documentCreateInteractor.getDocumentById(
+                    documentCreateArguments.document.number
+                )
+                dispatch(Result.Document(document))
+                dispatch(Result.Params(document.params))
+            }
+            dispatch(Result.Loading(false))
             isNextEnabled(getState)
         }
 
@@ -95,7 +106,7 @@ class DocumentCreateStoreFactory(
                 is DocumentCreateStore.Intent.OnLocationChanged -> {
                     val params = documentCreateInteractor.changeLocation(
                         getState().params,
-                        intent.location
+                        intent.location.location
                     )
                     changeParams(params = params, getState = getState)
                 }
@@ -140,7 +151,7 @@ class DocumentCreateStoreFactory(
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
             if (param.type == ManualType.LOCATION) {
                 publish(
-                    DocumentCreateStore.Label.ShowLocation(param.value)
+                    DocumentCreateStore.Label.ShowLocation(param as LocationParamDomain)
                 )
             } else {
                 publish(
@@ -159,6 +170,7 @@ class DocumentCreateStoreFactory(
 
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
+        data class Document(val document: DocumentDomain) : Result()
         data class Params(val params: List<ParamDomain>) : Result()
         data class SelectPage(val page: Int) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
@@ -175,6 +187,7 @@ class DocumentCreateStoreFactory(
                 is Result.Reserves -> copy(document = document.copy(reserves = result.reserves))
                 is Result.SelectPage -> copy(selectedPage = result.page)
                 is Result.Enabled -> copy(isNextEnabled = result.enabled)
+                is Result.Document -> copy(document = result.document)
             }
     }
 

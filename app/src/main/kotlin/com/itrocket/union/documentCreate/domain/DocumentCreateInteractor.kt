@@ -6,6 +6,7 @@ import com.itrocket.union.documentCreate.domain.dependencies.DocumentCreateRepos
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.toUpdateSyncEntity
+import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import kotlinx.coroutines.withContext
@@ -15,6 +16,27 @@ class DocumentCreateInteractor(
     private val documentRepository: DocumentRepository,
     private val coreDispatchers: CoreDispatchers
 ) {
+
+    suspend fun getDocumentById(
+        id: String
+    ): DocumentDomain {
+        return withContext(coreDispatchers.io) {
+            documentRepository.getDocumentById(id.toLong())
+        }
+    }
+
+    suspend fun saveDocument(
+        document: DocumentDomain,
+        accountingObjects: List<AccountingObjectDomain>,
+        params: List<ParamDomain>
+    ) {
+        withContext(coreDispatchers.io) {
+            documentRepository.updateDocument(
+                document.copy(accountingObjects = accountingObjects, params = params)
+                    .toUpdateSyncEntity()
+            )
+        }
+    }
 
     fun changeParams(params: List<ParamDomain>, newParams: List<ParamDomain>): List<ParamDomain> {
         val mutableParams = params.toMutableList()
@@ -27,11 +49,10 @@ class DocumentCreateInteractor(
         return mutableParams
     }
 
-    fun changeLocation(params: List<ParamDomain>, location: String): List<ParamDomain> {
+    fun changeLocation(params: List<ParamDomain>, location: LocationParamDomain): List<ParamDomain> {
         val mutableParams = params.toMutableList()
         val locationIndex = params.indexOfFirst { it.type == ManualType.LOCATION }
-        mutableParams[locationIndex] =
-            mutableParams[locationIndex].copy(value = location)
+        mutableParams[locationIndex] = location
         return mutableParams
     }
 
@@ -57,18 +78,5 @@ class DocumentCreateInteractor(
         val mutableList = accountingObjects.toMutableList()
         mutableList.add(accountingObjectDomain)
         return mutableList
-    }
-
-    suspend fun saveDocument(
-        document: DocumentDomain,
-        accountingObjects: List<AccountingObjectDomain>,
-        params: List<ParamDomain>
-    ) {
-        withContext(coreDispatchers.io) {
-            documentRepository.updateDocument(
-                document.copy(accountingObjects = accountingObjects, params = params)
-                    .toUpdateSyncEntity()
-            )
-        }
     }
 }

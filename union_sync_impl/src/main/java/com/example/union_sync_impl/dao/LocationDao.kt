@@ -24,6 +24,9 @@ interface LocationDao {
     @Query("SELECT * FROM locationTypes WHERE parentId is :parentId LIMIT 1")
     suspend fun getLocationType(parentId: String?): LocationTypeDb
 
+    @Query("SELECT * FROM location WHERE id IN (:ids)")
+    suspend fun getLocationsByIds(ids: List<String>): List<LocationDb>
+
     @Query("SELECT * FROM location WHERE locationTypeId is :locationTypeId")
     suspend fun getLocationsByType(locationTypeId: String): List<LocationDb>
 

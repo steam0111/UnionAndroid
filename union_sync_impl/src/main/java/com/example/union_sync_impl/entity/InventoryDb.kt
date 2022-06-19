@@ -10,5 +10,6 @@ class InventoryDb(
     val organizationId: String,
     val employeeId: String,
     val accountingObjectsIds: List<String>,
+    val locationIds: List<String> = listOf(),
     val date: Long
 )

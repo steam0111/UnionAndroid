@@ -7,5 +7,6 @@ data class DocumentUpdateSyncEntity(
     val exploitingId: String? = null,
     val documentType: String,
     val accountingObjectsIds: List<String>,
+    val locationIds: List<String>? = null,
     val date: Long
 )

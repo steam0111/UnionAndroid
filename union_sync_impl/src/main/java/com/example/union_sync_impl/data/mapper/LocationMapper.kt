@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.data.mapper
 
+import com.example.union_sync_api.entity.LocationShortSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
@@ -24,6 +25,8 @@ fun CustomLocationsTypeDto.toLocationTypeDb(): LocationTypeDb {
         name = name
     )
 }
+
+fun LocationDb.toLocationShortSyncEntity() = LocationShortSyncEntity(id = id, name = name)
 
 fun LocationDb.toLocationSyncEntity(
     locationTypeId: String,

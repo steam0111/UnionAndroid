@@ -6,6 +6,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class FilterDomain(
     val name: String,
+    val ids: List<String> = listOf(),
     val values: List<String> = listOf(),
     val valueList: List<String> = listOf(),
     val filterValueType: FilterValueType

@@ -5,6 +5,7 @@ import com.example.union_sync_api.entity.InventoryCreateSyncEntity
 import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
+import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.utils.getStringDateFromMillis
@@ -25,24 +26,18 @@ data class InventoryCreateDomain(
     fun getTextTime() = getTimeFromMillis(date)
 }
 
-fun InventoryCreateDomain.toCreateSyncEntity(): InventoryCreateSyncEntity {
-    val organizationId = documentInfo.find { it.type == ManualType.ORGANIZATION }?.id
-    val molId = documentInfo.find { it.type == ManualType.MOL }?.id
-    return InventoryCreateSyncEntity(
-        organizationId = organizationId.orEmpty(),
-        employeeId = molId.orEmpty(),
-        accountingObjectsIds = accountingObjects.map { it.id }
-    )
-}
-
 fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
-    val organizationId = documentInfo.find { it.type == ManualType.ORGANIZATION }?.id
-    val molId = documentInfo.find { it.type == ManualType.MOL }?.id
+    val organizationId =
+        requireNotNull(documentInfo.find { it.type == ManualType.ORGANIZATION }?.id)
+    val molId = requireNotNull(documentInfo.find { it.type == ManualType.MOL }?.id)
+    val locationIds =
+        requireNotNull(documentInfo.find { it.type == ManualType.LOCATION } as? LocationParamDomain).ids
     return InventoryUpdateSyncEntity(
         id = number.toLong(),
-        organizationId = organizationId.orEmpty(),
-        employeeId = molId.orEmpty(),
+        organizationId = organizationId,
+        employeeId = molId,
         accountingObjectsIds = accountingObjects.map { it.id },
-        date = date
+        date = date,
+        locationIds = locationIds
     )
 }

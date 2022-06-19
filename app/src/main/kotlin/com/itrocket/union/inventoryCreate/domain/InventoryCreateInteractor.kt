@@ -17,6 +17,11 @@ class InventoryCreateInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
+    suspend fun getInventoryById(id: String) =
+        withContext(coreDispatchers.io) {
+            inventoryRepository.getInventoryById(id.toLong())
+        }
+
     suspend fun saveInventoryDocument(
         inventoryCreate: InventoryCreateDomain,
         accountingObjects: List<AccountingObjectDomain>
