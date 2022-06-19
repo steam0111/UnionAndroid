@@ -89,7 +89,8 @@ object SyncModule {
                 nomenclatureDao = get(),
                 locationPathDao = get(),
                 locationDao = get(),
-                departmentDao = get()
+                departmentDao = get(),
+                providerDao = get()
             )
         }
         factory<InventorySyncApi> {
@@ -177,6 +178,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().documentDao()
+        }
+        factory {
+            get<UnionDatabase>().providerDao()
         }
     }
 }

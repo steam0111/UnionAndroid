@@ -22,4 +22,8 @@ class EmployeeDb(
     val organizationId: String?,
     val number: String,
     val nfc: String?
-) : CatalogItemDb(id)
+) : CatalogItemDb(id) {
+
+    val fullName: String
+        get() = "$lastname $firstname $patronymic"
+}

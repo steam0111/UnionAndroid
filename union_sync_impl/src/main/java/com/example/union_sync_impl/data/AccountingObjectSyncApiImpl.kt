@@ -11,6 +11,7 @@ import com.example.union_sync_impl.dao.LocationPathDao
 import com.example.union_sync_impl.dao.NomenclatureDao
 import com.example.union_sync_impl.dao.NomenclatureGroupDao
 import com.example.union_sync_impl.dao.OrganizationDao
+import com.example.union_sync_impl.dao.ProviderDao
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDb
 import com.example.union_sync_impl.data.mapper.toDepartmentDb
 import com.example.union_sync_impl.data.mapper.toEmployeeDb
@@ -19,6 +20,7 @@ import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
 import com.example.union_sync_impl.data.mapper.toNomenclatureDb
 import com.example.union_sync_impl.data.mapper.toNomenclatureGroupDb
 import com.example.union_sync_impl.data.mapper.toOrganizationDb
+import com.example.union_sync_impl.data.mapper.toProviderDb
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.entity.location.LocationTypeDb
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +41,8 @@ class AccountingObjectSyncApiImpl(
     private val nomenclatureGroupDao: NomenclatureGroupDao,
     private val locationPathDao: LocationPathDao,
     private val locationDao: LocationDao,
-    private val departmentDao: DepartmentDao
+    private val departmentDao: DepartmentDao,
+    private val providerDao: ProviderDao
 ) : AccountingObjectSyncApi {
 
     override suspend fun getAccountingObjects(
@@ -84,6 +87,7 @@ class AccountingObjectSyncApiImpl(
             nomenclatureDao.insertAll(objects.mapNotNull { it.extendedNomenclature?.toNomenclatureDb() })
             locationDao.insertAll(objects.mapNotNull { it.extendedLocation?.toLocationDb() })
             departmentDao.insertAll(objects.mapNotNull { it.extendedDepartment?.toDepartmentDb() })
+            providerDao.insertAll(objects.mapNotNull { it.extendedProvider?.toProviderDb() })
             accountingObjectsDao.insertAll(objects.map { it.toAccountingObjectDb() })
         }
     }
@@ -124,11 +128,20 @@ class AccountingObjectSyncApiImpl(
             .map {
                 val locationType: LocationTypeDb? =
                     locationDao.getLocationType(it.locationDb?.parentId)
+                val locationSyncEntity = it.locationDb?.toLocationSyncEntity(
+                    locationType = locationType?.name.orEmpty(),
+                    locationTypeId = locationType?.id.orEmpty()
+                )
+
                 it.toSyncEntity(
-                    it.locationDb?.toLocationSyncEntity(
-                        locationType = locationType?.name.orEmpty(),
-                        locationTypeId = locationType?.id.orEmpty()
-                    )
+                    locationSyncEntity = locationSyncEntity,
+                    exploitingEmployee = it.exploitingEmployee?.toSyncEntity(),
+                    producerSyncEntity = it.producer?.toSyncEntity(),
+                    mol = it.mol?.toSyncEntity(),
+                    equipmentTypesSyncEntity = it.equipmentType?.toSyncEntity(),
+                    providerSyncEntity = it.provider?.toSyncEntity(),
+                    organizationSyncEntity = it.organization?.toSyncEntity(),
+                    departmentSyncEntity = it.department?.toSyncEntity()
                 )
             }
     }
