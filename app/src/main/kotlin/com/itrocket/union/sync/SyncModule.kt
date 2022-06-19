@@ -1,15 +1,16 @@
 package com.itrocket.union.sync
 
 import androidx.room.Room
+import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.CounterpartySyncApi
 import com.example.union_sync_api.data.BranchesSyncApi
 import com.example.union_sync_api.data.DepartmentSyncApi
 import com.example.union_sync_api.data.EmployeeSyncApi
 import com.example.union_sync_api.data.InventorySyncApi
+import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.NomenclatureGroupSyncApi
 import com.example.union_sync_api.data.ProducerSyncApi
 import com.example.union_sync_api.data.RegionSyncApi
-import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.OrganizationSyncApi
 import com.example.union_sync_api.data.EquipmentTypesSyncApi
 import com.example.union_sync_impl.UnionDatabase
@@ -18,6 +19,7 @@ import com.example.union_sync_impl.data.BranchesSyncApiImpl
 import com.example.union_sync_impl.data.DepartmentSyncApiImpl
 import com.example.union_sync_impl.data.EmployeeSyncApiImpl
 import com.example.union_sync_impl.data.InventorySyncApiImpl
+import com.example.union_sync_impl.data.LocationSyncApiImpl
 import com.example.union_sync_impl.data.NomenclatureGroupSyncApiImpl
 import com.example.union_sync_impl.data.ProducerSyncApiImpl
 import com.example.union_sync_impl.data.RegionSyncApiImpl
@@ -91,6 +93,13 @@ object SyncModule {
         factory<InventorySyncApi> {
             InventorySyncApiImpl(
                 inventoryDao = get()
+            )
+        }
+        factory<LocationSyncApi> {
+            LocationSyncApiImpl(
+                locationApi = get(),
+                locationDao = get(),
+                networkSyncDao = get()
             )
         }
         factory<CounterpartySyncApi> {

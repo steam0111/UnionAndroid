@@ -8,12 +8,12 @@ import com.example.union_sync_impl.dao.BranchesDao
 import com.example.union_sync_impl.dao.CounterpartyDao
 import com.example.union_sync_impl.dao.DepartmentDao
 import com.example.union_sync_impl.dao.EmployeeDao
+import com.example.union_sync_impl.dao.EquipmentTypesDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.LocationPathDao
 import com.example.union_sync_impl.dao.NetworkSyncDao
 import com.example.union_sync_impl.dao.NomenclatureDao
-import com.example.union_sync_impl.dao.EquipmentTypesDao
 import com.example.union_sync_impl.dao.NomenclatureGroupDao
 import com.example.union_sync_impl.dao.OrganizationDao
 import com.example.union_sync_impl.dao.ProducerDao
@@ -23,6 +23,7 @@ import com.example.union_sync_impl.entity.BranchesDb
 import com.example.union_sync_impl.entity.CounterpartyDb
 import com.example.union_sync_impl.entity.DepartmentDb
 import com.example.union_sync_impl.entity.EmployeeDb
+import com.example.union_sync_impl.entity.EquipmentTypesDb
 import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.entity.NetworkSyncDb
 import com.example.union_sync_impl.entity.NomenclatureDb
@@ -31,8 +32,8 @@ import com.example.union_sync_impl.entity.OrganizationDb
 import com.example.union_sync_impl.entity.ProducerDb
 import com.example.union_sync_impl.entity.RegionDb
 import com.example.union_sync_impl.entity.location.LocationDb
-import com.example.union_sync_impl.entity.EquipmentTypesDb
 import com.example.union_sync_impl.entity.location.LocationPath
+import com.example.union_sync_impl.entity.location.LocationTypeDb
 import com.example.union_sync_impl.utils.Converters
 
 @Database(
@@ -51,8 +52,9 @@ import com.example.union_sync_impl.utils.Converters
         RegionDb::class,
         CounterpartyDb::class,
         ProducerDb::class,
-        EquipmentTypesDb::class
-    ], version = 31
+        EquipmentTypesDb::class,
+        LocationTypeDb::class
+    ], version = 39
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {

@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class NetworkSyncDb(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
-    val isOrganizationSync: Boolean
+    val isOrganizationSync: Boolean = false,
+    val isLocationsSync: Boolean = false
 )

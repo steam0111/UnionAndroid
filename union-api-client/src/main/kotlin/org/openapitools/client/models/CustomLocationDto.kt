@@ -29,7 +29,7 @@ import com.squareup.moshi.Json
  * @param locationTypeId
  */
 
-data class Location (
+data class CustomLocationDto (
 
     @Json(name = "id")
     val id: String,
@@ -92,7 +92,7 @@ data class Location (
     val parentId: String? = null,
 
     @Json(name = "extendedParent")
-    val extendedParent: Location? = null,
+    val extendedParent: CustomLocationDto? = null,
 
     @Json(name = "locationTypeId")
     val locationTypeId: String? = null
