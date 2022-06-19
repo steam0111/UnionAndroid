@@ -9,6 +9,8 @@ import com.itrocket.union.inventories.domain.InventoriesInteractor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 
 class InventoriesStoreFactory(
     private val storeFactory: StoreFactory,
@@ -36,11 +38,16 @@ class InventoriesStoreFactory(
             action: Unit,
             getState: () -> InventoriesStore.State
         ) {
-            dispatch(Result.Loading(true))
             catchException {
-                dispatch(Result.Inventories(inventoriesInteractor.getInventories()))
+                dispatch(Result.Loading(true))
+                inventoriesInteractor.getInventories()
+                    .catch {
+                        dispatch(Result.Loading(false))
+                    }.collect {
+                        dispatch(Result.Inventories(it))
+                        dispatch(Result.Loading(false))
+                    }
             }
-            dispatch(Result.Loading(false))
         }
 
         override suspend fun executeIntent(
