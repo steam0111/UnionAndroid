@@ -7,7 +7,7 @@ import com.itrocket.union.inventoryCreate.domain.dependencies.InventoryCreateRep
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectsDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
-import com.itrocket.union.inventoryCreate.domain.entity.toSyncEntity
+import com.itrocket.union.inventoryCreate.domain.entity.toUpdateSyncEntity
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 import kotlinx.coroutines.withContext
 
@@ -22,7 +22,7 @@ class InventoryCreateInteractor(
         accountingObjects: List<AccountingObjectDomain>
     ) = withContext(coreDispatchers.io) {
         inventoryRepository.updateInventory(
-            inventoryCreate.copy(accountingObjects = accountingObjects).toSyncEntity()
+            inventoryCreate.copy(accountingObjects = accountingObjects).toUpdateSyncEntity()
         )
     }
 

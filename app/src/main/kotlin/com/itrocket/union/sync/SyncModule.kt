@@ -11,6 +11,7 @@ import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.NomenclatureGroupSyncApi
 import com.example.union_sync_api.data.ProducerSyncApi
 import com.example.union_sync_api.data.RegionSyncApi
+import com.example.union_sync_api.data.DocumentSyncApi
 import com.example.union_sync_api.data.OrganizationSyncApi
 import com.example.union_sync_api.data.EquipmentTypesSyncApi
 import com.example.union_sync_impl.UnionDatabase
@@ -24,6 +25,7 @@ import com.example.union_sync_impl.data.NomenclatureGroupSyncApiImpl
 import com.example.union_sync_impl.data.ProducerSyncApiImpl
 import com.example.union_sync_impl.data.RegionSyncApiImpl
 import com.example.union_sync_impl.data.AccountingObjectSyncApiImpl
+import com.example.union_sync_impl.data.DocumentSyncApiImpl
 import com.example.union_sync_impl.data.OrganizationSyncApiImpl
 import com.example.union_sync_impl.data.EquipmentTypesSyncApiImpl
 import org.koin.dsl.module
@@ -93,6 +95,11 @@ object SyncModule {
         factory<InventorySyncApi> {
             InventorySyncApiImpl(
                 inventoryDao = get()
+            )
+        }
+        factory<DocumentSyncApi> {
+            DocumentSyncApiImpl(
+                documentDao = get()
             )
         }
         factory<LocationSyncApi> {
@@ -165,6 +172,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().equipmentTypeDao()
+        }
+        factory {
+            get<UnionDatabase>().documentDao()
         }
     }
 }

@@ -1,16 +1,18 @@
 package com.itrocket.union.documentCreate.domain
 
-import kotlinx.coroutines.withContext
-import com.itrocket.union.documentCreate.domain.dependencies.DocumentCreateRepository
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.documentCreate.domain.dependencies.DocumentCreateRepository
+import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentDomain
+import com.itrocket.union.documents.domain.entity.toUpdateSyncEntity
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import kotlinx.coroutines.withContext
 
 class DocumentCreateInteractor(
     private val repository: DocumentCreateRepository,
+    private val documentRepository: DocumentRepository,
     private val coreDispatchers: CoreDispatchers
 ) {
 
@@ -57,22 +59,16 @@ class DocumentCreateInteractor(
         return mutableList
     }
 
-    suspend fun saveAccountingObjectDocument(
+    suspend fun saveDocument(
         document: DocumentDomain,
-        params: List<ParamDomain>,
-        accountingObjects: List<AccountingObjectDomain>
+        accountingObjects: List<AccountingObjectDomain>,
+        params: List<ParamDomain>
     ) {
         withContext(coreDispatchers.io) {
-            //save
-        }
-    }
-
-    suspend fun saveReservesDocument(
-        reserves: List<ReservesDomain>,
-        params: List<ParamDomain>,
-    ) {
-        withContext(coreDispatchers.io) {
-            //save
+            documentRepository.updateDocument(
+                document.copy(accountingObjects = accountingObjects, params = params)
+                    .toUpdateSyncEntity()
+            )
         }
     }
 }

@@ -546,12 +546,10 @@ fun DocumentCreateScreenPreview() {
         DocumentCreateStore.State(
             document = DocumentDomain(
                 number = "1234543",
-                time = "8:20",
-                status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
                 documentStatus = DocumentStatus.CREATED,
                 objectType = ObjectType.MAIN_ASSETS,
                 documentType = DocumentTypeDomain.WRITE_OFF,
-                date = "06.05.2022",
+                date = 123213213,
                 accountingObjects = listOf(),
                 params = listOf(
                     ParamDomain(

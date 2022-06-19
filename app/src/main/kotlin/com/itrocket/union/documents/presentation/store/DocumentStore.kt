@@ -3,6 +3,7 @@ package com.itrocket.union.documents.presentation.store
 import androidx.navigation.NavDirections
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
+import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments
 import com.itrocket.union.documents.domain.entity.DocumentDomain
@@ -44,7 +45,7 @@ interface DocumentStore : Store<DocumentStore.Intent, DocumentStore.State, Docum
                 )
 
         }
-
+        data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
         object GoBack : Label(), GoBackNavigationLabel
     }
 }

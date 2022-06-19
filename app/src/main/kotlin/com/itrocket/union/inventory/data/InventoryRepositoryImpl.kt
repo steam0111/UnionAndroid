@@ -2,6 +2,7 @@ package com.itrocket.union.inventory.data
 
 import com.example.union_sync_api.data.InventorySyncApi
 import com.example.union_sync_api.entity.InventoryCreateSyncEntity
+import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.inventoryCreate.data.mapper.map
@@ -21,9 +22,9 @@ class InventoryRepositoryImpl(
             inventorySyncApi.createInventory(inventoryCreateSyncEntity)
         }
 
-    override suspend fun updateInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity) =
+    override suspend fun updateInventory(inventoryUpdateSyncEntity: InventoryUpdateSyncEntity) =
         withContext(coreDispatchers.io) {
-            inventorySyncApi.updateInventory(inventoryCreateSyncEntity)
+            inventorySyncApi.updateInventory(inventoryUpdateSyncEntity)
         }
 
     override suspend fun getInventoryById(id: Long): InventoryCreateDomain =

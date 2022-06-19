@@ -329,7 +329,7 @@ fun DocumentInfoItem(
         append("  ")
 
         appendInlineContent(timeId, "[icon2]")
-        append(item.time)
+        append(item.getTextTime())
         append("  ")
 
         appendInlineContent(statusId, "[icon3]")
@@ -545,11 +545,9 @@ fun DocumentInfoItemPreview() {
     DocumentInfoItem(
         item = DocumentView.DocumentItemView(
             number = "БП-00001374",
-            time = "12:40",
-            objectStatus = ObjectStatus("available", ObjectStatusType.AVAILABLE),
             documentStatus = DocumentStatus.CREATED,
             objectType = ObjectType.MAIN_ASSETS,
-            date = "",
+            date = 123123,
             params = listOf(
                 ParamDomain(
                     "1", "blbbb",
@@ -565,6 +563,7 @@ fun DocumentInfoItemPreview() {
                 )
             ),
             documentType = DocumentTypeDomain.WRITE_OFF,
+            dateUi = "12.12.12"
         ), onDocumentClickListener = {}, isShowBottomLine = true
     )
 }
