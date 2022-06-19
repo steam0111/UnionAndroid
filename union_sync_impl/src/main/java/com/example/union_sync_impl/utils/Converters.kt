@@ -15,16 +15,20 @@ class Converters {
     }
 
     @TypeConverter
-    fun stringToStringList(string: String): List<String> {
+    fun stringToStringList(string: String?): List<String>? {
         val type: Type = newParameterizedType(List::class.java, String::class.java)
         val jsonAdapter: JsonAdapter<List<String>> = moshi.adapter(type)
-        return jsonAdapter.fromJson(string) ?: emptyList()
+        return if(string != null){
+            jsonAdapter.fromJson(string)
+        } else {
+            null
+        }
     }
 
     @TypeConverter
-    fun stringListToString(list: List<String>): String {
+    fun stringListToString(list: List<String>?): String? {
         val type: Type = newParameterizedType(List::class.java, String::class.java)
-        val jsonAdapter: JsonAdapter<List<String>> = moshi.adapter(type)
+        val jsonAdapter: JsonAdapter<List<String>?> = moshi.adapter(type)
         return jsonAdapter.toJson(list)
     }
 

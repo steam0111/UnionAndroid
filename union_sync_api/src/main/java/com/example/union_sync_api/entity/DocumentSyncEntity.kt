@@ -3,7 +3,7 @@ package com.example.union_sync_api.entity
 data class DocumentSyncEntity(
     val organizationId: String,
     val documentType: String,
-    val accountingObjectsIds: List<String>,
+    val accountingObjects: List<AccountingObjectSyncEntity>,
     val id: String,
     val date: Long,
     val organizationSyncEntity: OrganizationSyncEntity?,

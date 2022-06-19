@@ -461,7 +461,8 @@ private fun ParamBottomBar(
         BaseButton(
             text = stringResource(id = R.string.common_save),
             onClick = onSaveClickListener,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            enabled = isNextEnabled
         )
         Spacer(modifier = Modifier.width(16.dp))
 
