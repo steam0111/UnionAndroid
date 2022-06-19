@@ -15,6 +15,7 @@ import com.itrocket.union.documentCreate.presentation.view.DocumentCreateScreenP
 import com.itrocket.union.documents.presentation.view.DocumentScreenPreview
 import com.itrocket.union.documentsMenu.presentation.view.DocumentMenuScreenPreview
 import com.itrocket.union.employees.presentation.view.EmployeeScreenPreview
+import com.itrocket.union.equipmentTypes.presentation.view.EquipmentTypesScreenPreview
 import com.itrocket.union.filter.domain.entity.FilterDomain
 import com.itrocket.union.filter.domain.entity.FilterValueType
 import com.itrocket.union.filter.presentation.view.FilterScreenPreview
@@ -217,7 +218,7 @@ class ScreensTest : ScreenshotTest {
     }
 
     @Test
-    fun `Counterparty`(){
+    fun `Counterparty`() {
         takeScreenShot {
             CounterpartyScreenPreview()
         }
@@ -245,9 +246,16 @@ class ScreensTest : ScreenshotTest {
     }
 
     @Test
-    fun `DocumentCreate`(){
+    fun `DocumentCreate`() {
         takeScreenShot {
             DocumentCreateScreenPreview()
+        }
+    }
+
+    @Test
+    fun `EquipmentTypes`() {
+        takeScreenShot {
+            EquipmentTypesScreenPreview()
         }
     }
 }

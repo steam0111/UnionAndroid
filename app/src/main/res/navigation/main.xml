@@ -67,6 +67,9 @@
         <action
             android:id="@+id/to_counterparty"
             app:destination="@id/counterparty" />
+        <action
+            android:id="@+id/to_equipment_types"
+            app:destination="@+id/equipmentTypes" />
     </fragment>
 
     <fragment
@@ -274,20 +277,25 @@
     <fragment
         android:id="@+id/producer"
         android:name="com.itrocket.union.producer.presentation.view.ProducerComposeFragment"
-        android:label="Producer"/>
+        android:label="Producer" />
 
     <fragment
         android:id="@+id/branches"
         android:name="com.itrocket.union.branches.presentation.view.BranchesComposeFragment"
-        android:label="Branches"/>
+        android:label="Branches" />
 
     <fragment
         android:id="@+id/region"
         android:name="com.itrocket.union.regions.presentation.view.RegionComposeFragment"
-        android:label="Region"/>
+        android:label="Region" />
 
     <fragment
         android:id="@+id/counterparty"
         android:name="com.itrocket.union.counterparties.presentation.view.CounterpartyComposeFragment"
-        android:label="Counterparty"/>
+        android:label="Counterparty" />
+
+    <fragment
+        android:id="@+id/equipmentTypes"
+        android:name="com.itrocket.union.equipmentTypes.presentation.view.EquipmentTypeComposeFragment" />
+
 </navigation>

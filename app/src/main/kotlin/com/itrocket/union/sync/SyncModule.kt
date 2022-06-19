@@ -11,6 +11,7 @@ import com.example.union_sync_api.data.ProducerSyncApi
 import com.example.union_sync_api.data.RegionSyncApi
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.OrganizationSyncApi
+import com.example.union_sync_api.data.EquipmentTypesSyncApi
 import com.example.union_sync_impl.UnionDatabase
 import com.example.union_sync_impl.data.CounterpartySyncApiImpl
 import com.example.union_sync_impl.data.BranchesSyncApiImpl
@@ -22,6 +23,7 @@ import com.example.union_sync_impl.data.ProducerSyncApiImpl
 import com.example.union_sync_impl.data.RegionSyncApiImpl
 import com.example.union_sync_impl.data.AccountingObjectSyncApiImpl
 import com.example.union_sync_impl.data.OrganizationSyncApiImpl
+import com.example.union_sync_impl.data.EquipmentTypesSyncApiImpl
 import org.koin.dsl.module
 
 object SyncModule {
@@ -97,6 +99,12 @@ object SyncModule {
                 counterpartyDao = get()
             )
         }
+        factory<EquipmentTypesSyncApi> {
+            EquipmentTypesSyncApiImpl(
+                equipmentTypeApi = get(),
+                equipmentTypeDao = get()
+            )
+        }
 
         single {
             Room.databaseBuilder(
@@ -145,6 +153,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().accountingObjectDao()
+        }
+        factory {
+            get<UnionDatabase>().equipmentTypeDao()
         }
     }
 }
