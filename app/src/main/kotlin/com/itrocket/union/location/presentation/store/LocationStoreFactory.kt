@@ -1,11 +1,13 @@
 package com.itrocket.union.location.presentation.store
 
+import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.itrocket.core.base.BaseExecutor
 import com.itrocket.union.location.domain.LocationInteractor
 import com.itrocket.union.location.domain.entity.LocationDomain
 import com.itrocket.core.base.CoreDispatchers
@@ -30,8 +32,8 @@ class LocationStoreFactory(
         LocationExecutor()
 
     private inner class LocationExecutor :
-        SuspendExecutor<LocationStore.Intent, Unit, LocationStore.State, Result, LocationStore.Label>(
-            mainContext = coreDispatchers.ui
+        BaseExecutor<LocationStore.Intent, Unit, LocationStore.State, Result, LocationStore.Label>(
+            context = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
             action: Unit,
@@ -54,28 +56,7 @@ class LocationStoreFactory(
         ) {
             when (intent) {
                 LocationStore.Intent.OnBackClicked -> {
-                    val selectedPlaceScheme = getState().selectPlaceScheme
-                    dispatch(Result.Loading(true))
-                    dispatch(
-                        Result.SelectPlaceScheme(
-                            locationInteractor.removeLastPlace(
-                                selectedPlaceScheme = selectedPlaceScheme
-                            )
-                        )
-                    )
-                    val placeList = locationInteractor.getPlaceList(
-                        locationInteractor.getPrevPlaceScheme(
-                            getState().selectPlaceScheme
-                        )
-                    )
-                    dispatch(Result.PlaceValues(placeList))
-                    dispatch(
-                        Result.LevelHint(
-                            placeList.firstOrNull()?.type.orEmpty()
-                        )
-                    )
-                    dispatch(Result.SearchText(""))
-                    dispatch(Result.Loading(false))
+                    onBackClicked(getState)
                 }
                 LocationStore.Intent.OnAcceptClicked -> publish(
                     LocationStore.Label.GoBack(
@@ -93,33 +74,7 @@ class LocationStoreFactory(
                     )
                 )
                 is LocationStore.Intent.OnPlaceSelected -> {
-                    val placeValues = getState().placeValues
-                    val selectedPlaceScheme = getState().selectPlaceScheme
-                    dispatch(
-                        Result.SelectPlaceScheme(
-                            locationInteractor.resolveNewPlace(
-                                selectedPlaceScheme = selectedPlaceScheme,
-                                selectedPlace = intent.place,
-                                isRemoveLast = placeValues.contains(selectedPlaceScheme.lastOrNull())
-                            )
-                        )
-                    )
-                    dispatch(Result.LevelHint(""))
-                    delay(300) //Задержка для того чтобы успела отработать анимация радио баттона выбора местоположения
-
-                    dispatch(Result.Loading(true))
-                    val newPlaceValues =
-                        locationInteractor.getPlaceList(getState().selectPlaceScheme)
-                    if (newPlaceValues.isNotEmpty()) {
-                        dispatch(Result.PlaceValues(newPlaceValues))
-                    }
-                    dispatch(
-                        Result.LevelHint(
-                            newPlaceValues.firstOrNull()?.type.orEmpty()
-                        )
-                    )
-                    dispatch(Result.SearchText(""))
-                    dispatch(Result.Loading(false))
+                    selectPlace(getState, intent.place)
                 }
                 is LocationStore.Intent.OnSearchTextChanged -> {
                     val selectedPlaceScheme = getState().selectPlaceScheme
@@ -133,6 +88,72 @@ class LocationStoreFactory(
                     dispatch(Result.Loading(false))
                 }
             }
+        }
+
+        private suspend fun selectPlace(
+            getState: () -> LocationStore.State,
+            place: LocationDomain
+        ) {
+            val placeValues = getState().placeValues
+            val selectedPlaceScheme = getState().selectPlaceScheme
+            dispatch(
+                Result.SelectPlaceScheme(
+                    locationInteractor.resolveNewPlace(
+                        selectedPlaceScheme = selectedPlaceScheme,
+                        selectedPlace = place,
+                        isRemoveLast = placeValues.contains(selectedPlaceScheme.lastOrNull())
+                    )
+                )
+            )
+            dispatch(Result.LevelHint(""))
+            delay(300) //Задержка для того чтобы успела отработать анимация радио баттона выбора местоположения
+
+            dispatch(Result.Loading(true))
+            catchException {
+                val newPlaceValues =
+                    locationInteractor.getPlaceList(getState().selectPlaceScheme)
+                if (locationInteractor.isNewPlaceList(
+                        newList = newPlaceValues,
+                        oldList = placeValues
+                    )
+                ) {
+                    dispatch(Result.PlaceValues(newPlaceValues))
+                    dispatch(
+                        Result.LevelHint(
+                            newPlaceValues.firstOrNull()?.type.orEmpty()
+                        )
+                    )
+                }
+            }
+            dispatch(Result.SearchText(""))
+            dispatch(Result.Loading(false))
+        }
+
+        private suspend fun onBackClicked(getState: () -> LocationStore.State) {
+            val selectedPlaceScheme = getState().selectPlaceScheme
+            dispatch(Result.Loading(true))
+            catchException {
+                dispatch(
+                    Result.SelectPlaceScheme(
+                        locationInteractor.removeLastPlace(
+                            selectedPlaceScheme = selectedPlaceScheme
+                        )
+                    )
+                )
+                val placeList = locationInteractor.getPlaceList(
+                    locationInteractor.getPrevPlaceScheme(
+                        getState().selectPlaceScheme
+                    )
+                )
+                dispatch(Result.PlaceValues(placeList))
+                dispatch(
+                    Result.LevelHint(
+                        placeList.firstOrNull()?.type.orEmpty()
+                    )
+                )
+            }
+            dispatch(Result.SearchText(""))
+            dispatch(Result.Loading(false))
         }
     }
 
