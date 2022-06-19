@@ -13,6 +13,7 @@ import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.LocationPathDao
 import com.example.union_sync_impl.dao.NetworkSyncDao
 import com.example.union_sync_impl.dao.NomenclatureDao
+import com.example.union_sync_impl.dao.EquipmentTypesDao
 import com.example.union_sync_impl.dao.NomenclatureGroupDao
 import com.example.union_sync_impl.dao.OrganizationDao
 import com.example.union_sync_impl.dao.ProducerDao
@@ -30,6 +31,7 @@ import com.example.union_sync_impl.entity.OrganizationDb
 import com.example.union_sync_impl.entity.ProducerDb
 import com.example.union_sync_impl.entity.RegionDb
 import com.example.union_sync_impl.entity.location.LocationDb
+import com.example.union_sync_impl.entity.EquipmentTypesDb
 import com.example.union_sync_impl.entity.location.LocationPath
 import com.example.union_sync_impl.utils.Converters
 
@@ -48,8 +50,9 @@ import com.example.union_sync_impl.utils.Converters
         AccountingObjectDb::class,
         RegionDb::class,
         CounterpartyDb::class,
-        ProducerDb::class
-    ], version = 30
+        ProducerDb::class,
+        EquipmentTypesDb::class
+    ], version = 31
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {
@@ -67,4 +70,5 @@ abstract class UnionDatabase : RoomDatabase() {
     abstract fun accountingObjectDao(): AccountingObjectDao
     abstract fun inventorySyncDao(): InventoryDao
     abstract fun branchesDao(): BranchesDao
+    abstract fun equipmentTypeDao(): EquipmentTypesDao
 }

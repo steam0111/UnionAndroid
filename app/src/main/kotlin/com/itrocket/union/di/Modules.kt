@@ -37,6 +37,7 @@ import com.itrocket.union.producer.ProducerModule
 import com.itrocket.union.counterparties.CounterpartyModule
 import com.itrocket.union.regions.RegionModule
 import com.itrocket.union.branches.BranchesModule
+import com.itrocket.union.equipmentTypes.EquipmentTypeModule
 
 object Modules {
 
@@ -79,6 +80,7 @@ object Modules {
         DocumentCreateModule.module,
         BranchesModule.module,
         CounterpartyModule.module,
-        ProducerModule.module
+        ProducerModule.module,
+        EquipmentTypeModule.module
     )
 }

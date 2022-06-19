@@ -42,6 +42,7 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
             DocumentMenuDomain(titleId = R.string.counterparties, iconId = R.drawable.ic_inventory),
             DocumentMenuDomain(titleId = R.string.regions, iconId = R.drawable.ic_inventory),
             DocumentMenuDomain(titleId = R.string.branches, iconId = R.drawable.ic_inventory),
+            DocumentMenuDomain(titleId = R.string.equipment_types, iconId = R.drawable.ic_inventory),
             )
     }
 }

@@ -80,6 +80,7 @@ interface DocumentMenuStore :
                     R.string.counterparties -> DocumentMenuComposeFragmentDirections.toCounterparty()
                     R.string.branches -> DocumentMenuComposeFragmentDirections.toBranches()
                     R.string.producer -> DocumentMenuComposeFragmentDirections.toProducer()
+                    R.string.equipment_types -> DocumentMenuComposeFragmentDirections.toEquipmentTypes()
                     else -> DocumentMenuComposeFragmentDirections.toAccountingObjects(null)
                 }
         }

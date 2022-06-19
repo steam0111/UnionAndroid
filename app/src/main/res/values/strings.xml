@@ -74,6 +74,7 @@
     <string name="counterparties">Контрагенты</string>
     <string name="regions">Регионы</string>
     <string name="branches">Филиалы</string>
+    <string name="equipment_types">Типы оборуд.</string>
 
     <!-- Manual -->
     <string name="manual_organization">Организация</string>
@@ -195,4 +196,7 @@
     <string name="counterparties_code">Код контрагента</string>
     <string name="counterparties_kpp">КПП</string>
     <string name="counterparties_inn">ИНН</string>
+
+    <string name="equipment_type_code">Код оборудования</string>
+    <string name="equipment_type_title">Типы оборудования</string>
 </resources>
