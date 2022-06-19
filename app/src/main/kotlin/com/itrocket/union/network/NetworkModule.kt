@@ -14,10 +14,11 @@ import org.openapitools.client.custom_api.AuthApi
 import org.openapitools.client.custom_api.CounterpartyApi
 import org.openapitools.client.custom_api.BranchesApi
 import org.openapitools.client.custom_api.AccountingObjectApi
-import org.openapitools.client.custom_api.OrganizationApi
 import org.openapitools.client.custom_api.DepartmentApi
 import org.openapitools.client.custom_api.EmployeeApi
+import org.openapitools.client.custom_api.LocationApi
 import org.openapitools.client.custom_api.NomenclatureGroupApi
+import org.openapitools.client.custom_api.OrganizationApi
 import org.openapitools.client.custom_api.ProducerApi
 import org.openapitools.client.custom_api.RegionApi
 import org.openapitools.client.custom_api.EquipmentTypeApi
@@ -123,6 +124,10 @@ object NetworkModule {
         single<AccountingObjectApi> {
             get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
                 .create(AccountingObjectApi::class.java)
+        }
+        single {
+            get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
+                .create(LocationApi::class.java)
         }
         single<EquipmentTypeApi> {
             get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)

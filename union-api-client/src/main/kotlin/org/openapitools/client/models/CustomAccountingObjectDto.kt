@@ -146,7 +146,7 @@ data class CustomAccountingObjectDto(
     val extendedOrganization: CustomOrganizationDto? = null,
 
     @Json(name = "extendedLocation")
-    val extendedLocation: Location? = null,
+    val extendedLocation: CustomLocationDto? = null,
 
     @Json(name = "extendedMol")
     val extendedMol: CustomEmployeeDto? = null,

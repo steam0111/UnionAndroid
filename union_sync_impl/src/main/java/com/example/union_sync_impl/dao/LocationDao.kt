@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.union_sync_impl.entity.location.LocationDb
+import com.example.union_sync_impl.entity.location.LocationTypeDb
 
 @Dao
 interface LocationDao {
@@ -16,6 +17,15 @@ interface LocationDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(locationDbs: List<LocationDb>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllLocationTypes(locationTypesDbs: List<LocationTypeDb>)
+
+    @Query("SELECT * FROM locationTypes WHERE parentId is :parentId LIMIT 1")
+    suspend fun getLocationType(parentId: String?): LocationTypeDb
+
+    @Query("SELECT * FROM location WHERE locationTypeId is :locationTypeId")
+    suspend fun getLocationsByType(locationTypeId: String): List<LocationDb>
 
     /**
      * 1) Строиться общая таблица location + locationPath

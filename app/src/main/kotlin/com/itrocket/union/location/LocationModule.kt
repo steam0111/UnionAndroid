@@ -20,7 +20,9 @@ object LocationModule {
         }
 
         factory<LocationRepository> {
-            LocationRepositoryImpl()
+            LocationRepositoryImpl(
+                locationSyncApi = get()
+            )
         }
 
         factory {
