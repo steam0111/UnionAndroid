@@ -7,6 +7,7 @@ fun LocationSyncEntity.toLocationDomain(): LocationDomain {
     return LocationDomain(
         value = name,
         type = locationType,
-        locationTypeId = locationTypeId
+        locationTypeId = locationTypeId,
+        id = id
     )
 }

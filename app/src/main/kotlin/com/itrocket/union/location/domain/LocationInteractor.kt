@@ -22,6 +22,10 @@ class LocationInteractor(
         return prevSelectedPlaceScheme
     }
 
+    fun isNewPlaceList(newList: List<LocationDomain>, oldList: List<LocationDomain>): Boolean {
+        return newList.isNotEmpty() && !newList.containsAll(oldList)
+    }
+
     fun resolveNewPlace(
         selectedPlaceScheme: List<LocationDomain>,
         selectedPlace: LocationDomain,
