@@ -21,7 +21,8 @@ object LocationModule {
 
         factory<LocationRepository> {
             LocationRepositoryImpl(
-                locationSyncApi = get()
+                locationSyncApi = get(),
+                coreDispatchers = get()
             )
         }
 

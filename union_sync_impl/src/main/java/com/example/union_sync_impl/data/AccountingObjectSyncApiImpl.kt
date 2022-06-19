@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.data
 
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
@@ -10,8 +11,15 @@ import com.example.union_sync_impl.dao.LocationPathDao
 import com.example.union_sync_impl.dao.NomenclatureDao
 import com.example.union_sync_impl.dao.NomenclatureGroupDao
 import com.example.union_sync_impl.dao.OrganizationDao
-import com.example.union_sync_impl.data.mapper.*
-import com.example.union_sync_impl.entity.location.LocationPath
+import com.example.union_sync_impl.data.mapper.toAccountingObjectDb
+import com.example.union_sync_impl.data.mapper.toDepartmentDb
+import com.example.union_sync_impl.data.mapper.toEmployeeDb
+import com.example.union_sync_impl.data.mapper.toLocationDb
+import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
+import com.example.union_sync_impl.data.mapper.toNomenclatureDb
+import com.example.union_sync_impl.data.mapper.toNomenclatureGroupDb
+import com.example.union_sync_impl.data.mapper.toOrganizationDb
+import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.entity.location.LocationTypeDb
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -34,11 +42,14 @@ class AccountingObjectSyncApiImpl(
     private val departmentDao: DepartmentDao
 ) : AccountingObjectSyncApi {
 
-    override suspend fun getAccountingObjects(): Flow<List<AccountingObjectSyncEntity>> {
+    override suspend fun getAccountingObjects(
+        organizationId: String?,
+        molId: String?
+    ): Flow<List<AccountingObjectSyncEntity>> {
         return flow {
-            emit(getDbData())
+            emit(getDbData(organizationId, molId))
             syncAccountingObjects()
-            emit(getDbData())
+            emit(getDbData(organizationId, molId))
         }.distinctUntilChanged().flowOn(Dispatchers.IO)
     }
 
@@ -77,8 +88,39 @@ class AccountingObjectSyncApiImpl(
         }
     }
 
-    private suspend fun getDbData(): List<AccountingObjectSyncEntity> {
-        return accountingObjectsDao.getAll()
+    private suspend fun getDbData(
+        organizationId: String? = null,
+        molId: String? = null
+    ): List<AccountingObjectSyncEntity> {
+        val filters = mutableListOf<String>()
+
+        if (organizationId != null) {
+            filters.add("accounting_objects.organizationId = \'$organizationId\'")
+        }
+        if (molId != null) {
+            filters.add("accounting_objects.molId = \'$molId\'")
+        }
+
+        val filterExpression = if (filters.isNotEmpty()) {
+            "WHERE ${filters.joinToString(separator = " AND ")}"
+        } else {
+            ""
+        }
+
+        val getAccountingObjects = SimpleSQLiteQuery(
+            "SELECT accounting_objects.*," +
+                    "" +
+                    "location.id AS locations_id, " +
+                    "location.catalogItemName AS locations_catalogItemName, " +
+                    "location.name AS locations_name, " +
+                    "location.parentId AS locations_parentId " +
+                    "" +
+                    "FROM accounting_objects " +
+                    "LEFT JOIN location ON accounting_objects.locationId = location.id " +
+                    filterExpression
+        )
+
+        return accountingObjectsDao.getAll(getAccountingObjects)
             .map {
                 val locationType: LocationTypeDb? =
                     locationDao.getLocationType(it.locationDb?.parentId)
