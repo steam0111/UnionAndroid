@@ -7,8 +7,10 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.organizations.domain.OrganizationInteractor
 import com.itrocket.union.organizations.domain.entity.OrganizationDomain
+import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 
@@ -16,6 +18,7 @@ class OrganizationStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val organizationInteractor: OrganizationInteractor,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): OrganizationStore =
         object : OrganizationStore,
@@ -42,7 +45,7 @@ class OrganizationStoreFactory(
                 dispatch(Result.Loading(true))
                 organizationInteractor.getOrganizations()
                     .catch {
-                        dispatch(Result.Loading(false))
+                        handleError(it)
                     }
                     .collect {
                         dispatch(Result.Organizations(it))
@@ -66,7 +69,7 @@ class OrganizationStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(OrganizationStore.Label.Error(throwable.message.orEmpty()))
+            publish(OrganizationStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
     }
 

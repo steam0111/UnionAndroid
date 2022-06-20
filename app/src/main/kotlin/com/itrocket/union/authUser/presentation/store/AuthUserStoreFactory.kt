@@ -9,13 +9,16 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.authUser.domain.AuthUserInteractor
+import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.utils.ifBlankOrNull
 
 class AuthUserStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val authUserInteractor: AuthUserInteractor,
     private val authMainInteractor: AuthMainInteractor,
-    private val initialState: AuthUserStore.State?
+    private val initialState: AuthUserStore.State?,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): AuthUserStore =
         object : AuthUserStore,
@@ -95,7 +98,7 @@ class AuthUserStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(AuthUserStore.Label.Error(throwable.message.orEmpty()))
+            publish(AuthUserStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
     }
 

@@ -42,7 +42,7 @@ class CounterpartyStoreFactory(
             catchException {
                 dispatch(Result.Loading(true))
                 counterpartyInteractor.getCounterparties()
-                    .catch { dispatch(Result.Loading(false)) }
+                    .catch { handleError(it) }
                     .collect {
                         dispatch(Result.Counterparties(it))
                         dispatch(Result.Loading(false))
@@ -66,6 +66,7 @@ class CounterpartyStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
+            dispatch(Result.Loading(false))
             publish(CounterpartyStore.Label.Error(throwable.message.orEmpty()))
         }
     }

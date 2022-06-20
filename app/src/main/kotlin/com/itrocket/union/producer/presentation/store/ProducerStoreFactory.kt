@@ -7,15 +7,18 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.producer.domain.ProducerInteractor
 import com.itrocket.union.producer.domain.entity.ProducerDomain
+import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 
 class ProducerStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val producerInteractor: ProducerInteractor
+    private val producerInteractor: ProducerInteractor,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): ProducerStore =
         object : ProducerStore,
@@ -41,7 +44,9 @@ class ProducerStoreFactory(
             catchException {
                 dispatch(Result.Loading(true))
                 producerInteractor.getProducers()
-                    .catch { dispatch(Result.Loading(false)) }
+                    .catch {
+                        handleError(it)
+                    }
                     .collect {
                         dispatch(Result.Producers(it))
                         dispatch(Result.Loading(false))
@@ -66,7 +71,7 @@ class ProducerStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(ProducerStore.Label.Error(throwable.message.orEmpty()))
+            publish(ProducerStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
     }
 

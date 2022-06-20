@@ -9,17 +9,20 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
+import com.itrocket.union.utils.ifBlankOrNull
 
 class InventoryCreateStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val inventoryCreateInteractor: InventoryCreateInteractor,
-    private val inventoryCreateArguments: InventoryCreateArguments
+    private val inventoryCreateArguments: InventoryCreateArguments,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): InventoryCreateStore =
         object : InventoryCreateStore,
@@ -183,7 +186,7 @@ class InventoryCreateStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(InventoryCreateStore.Label.Error(throwable.message.orEmpty()))
+            publish(InventoryCreateStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
     }
 

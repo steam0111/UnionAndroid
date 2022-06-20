@@ -31,6 +31,7 @@ object BranchesModule {
             BranchesStoreFactory(
                 DefaultStoreFactory,
                 get(),
+                get(),
                 get()
             ).create()
         }

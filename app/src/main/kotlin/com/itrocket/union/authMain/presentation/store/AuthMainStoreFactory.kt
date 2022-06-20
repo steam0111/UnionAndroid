@@ -8,12 +8,15 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.authMain.domain.AuthMainInteractor
+import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.utils.ifBlankOrNull
 
 class AuthMainStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val authMainInteractor: AuthMainInteractor,
-    private val authMainArguments: AuthMainArguments
+    private val authMainArguments: AuthMainArguments,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): AuthMainStore =
         object : AuthMainStore,
@@ -75,7 +78,11 @@ class AuthMainStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(AuthMainStore.Label.Error(throwable.message.orEmpty()))
+            publish(
+                AuthMainStore.Label.Error(
+                    throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }
+                )
+            )
         }
     }
 

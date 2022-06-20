@@ -9,7 +9,9 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
+import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 
@@ -18,7 +20,8 @@ class AccountingObjectStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val accountingObjectInteractor: AccountingObjectInteractor,
     private val filterInteractor: FilterInteractor,
-    private val accountingObjectArguments: AccountingObjectArguments?
+    private val accountingObjectArguments: AccountingObjectArguments?,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): AccountingObjectStore =
         object : AccountingObjectStore,
@@ -48,7 +51,7 @@ class AccountingObjectStoreFactory(
                     params = accountingObjectArguments?.params.orEmpty(),
                     selectedAccountingObjectIds = accountingObjectArguments?.selectedAccountingObjectIds.orEmpty()
                 )
-                    .catch { dispatch(Result.Loading(false)) }
+                    .catch { handleError(it) }
                     .collect {
                         dispatch(Result.AccountingObjects(it))
                         dispatch(Result.Loading(false))
@@ -58,7 +61,7 @@ class AccountingObjectStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(AccountingObjectStore.Label.Error(throwable.message.orEmpty()))
+            publish(AccountingObjectStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
 
         override suspend fun executeIntent(

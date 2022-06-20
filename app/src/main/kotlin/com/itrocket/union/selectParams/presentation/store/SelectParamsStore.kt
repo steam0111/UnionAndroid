@@ -2,6 +2,7 @@ package com.itrocket.union.selectParams.presentation.store
 
 import androidx.compose.ui.text.input.TextFieldValue
 import com.arkivanov.mvikotlin.core.store.Store
+import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFragment
@@ -27,6 +28,7 @@ interface SelectParamsStore :
     )
 
     sealed class Label {
+        data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
         data class GoBack(
             override val result: SelectParamsResult? = null
         ) : Label(), GoBackNavigationLabel {

@@ -31,6 +31,7 @@ object OrganizationModule {
             OrganizationStoreFactory(
                 DefaultStoreFactory,
                 get(),
+                get(),
                 get()
             ).create()
         }

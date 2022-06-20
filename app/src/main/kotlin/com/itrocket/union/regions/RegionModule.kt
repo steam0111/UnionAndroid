@@ -32,6 +32,7 @@ object RegionModule {
             RegionStoreFactory(
                 DefaultStoreFactory,
                 get(),
+                get(),
                 get()
             ).create()
         }

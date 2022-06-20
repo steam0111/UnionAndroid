@@ -36,7 +36,8 @@ object DocumentCreateModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args.documentCreateArguments
+                args.documentCreateArguments,
+                get()
             ).create()
         }
     }

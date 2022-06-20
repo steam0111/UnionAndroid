@@ -11,16 +11,19 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import com.itrocket.union.utils.ifBlankOrNull
 
 class DocumentCreateStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val documentCreateInteractor: DocumentCreateInteractor,
-    private val documentCreateArguments: DocumentCreateArguments
+    private val documentCreateArguments: DocumentCreateArguments,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): DocumentCreateStore =
         object : DocumentCreateStore,
@@ -166,7 +169,8 @@ class DocumentCreateStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(DocumentCreateStore.Label.Error(throwable.message.orEmpty()))
+            dispatch(Result.Loading(false))
+            publish(DocumentCreateStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
     }
 

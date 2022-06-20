@@ -7,15 +7,18 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.location.domain.LocationInteractor
 import com.itrocket.union.location.domain.entity.LocationDomain
 import com.itrocket.union.manual.LocationParamDomain
+import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.delay
 
 class LocationStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val locationInteractor: LocationInteractor
+    private val locationInteractor: LocationInteractor,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): LocationStore =
         object : LocationStore,
@@ -158,6 +161,11 @@ class LocationStoreFactory(
             }
             dispatch(Result.SearchText(""))
             dispatch(Result.Loading(false))
+        }
+
+        override fun handleError(throwable: Throwable) {
+            dispatch(Result.Loading(false))
+            publish(LocationStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
     }
 

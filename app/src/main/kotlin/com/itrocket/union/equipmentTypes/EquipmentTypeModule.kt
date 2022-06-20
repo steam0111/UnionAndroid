@@ -31,6 +31,7 @@ object EquipmentTypeModule {
             EquipmentTypeStoreFactory(
                 DefaultStoreFactory,
                 get(),
+                get(),
                 get()
             ).create()
         }

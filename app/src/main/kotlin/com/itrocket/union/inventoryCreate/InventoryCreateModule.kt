@@ -36,7 +36,8 @@ object InventoryCreateModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args.inventoryCreateArguments
+                args.inventoryCreateArguments,
+                get()
             ).create()
         }
     }

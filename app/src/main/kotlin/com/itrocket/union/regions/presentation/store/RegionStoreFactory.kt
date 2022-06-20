@@ -5,18 +5,20 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.itrocket.union.regions.domain.RegionInteractor
 import com.itrocket.union.regions.domain.entity.RegionDomain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.core.base.BaseExecutor
+import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 
 class RegionStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val regionInteractor: RegionInteractor
+    private val regionInteractor: RegionInteractor,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): RegionStore =
         object : RegionStore,
@@ -42,7 +44,7 @@ class RegionStoreFactory(
             catchException {
                 dispatch(Result.Loading(true))
                 regionInteractor.getRegions()
-                    .catch { dispatch(Result.Loading(false)) }
+                    .catch { handleError(it) }
                     .collect {
                         dispatch(Result.Regions(it))
                         dispatch(Result.Loading(false))
@@ -67,7 +69,7 @@ class RegionStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(RegionStore.Label.Error(throwable.message.orEmpty()))
+            publish(RegionStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
     }
 
