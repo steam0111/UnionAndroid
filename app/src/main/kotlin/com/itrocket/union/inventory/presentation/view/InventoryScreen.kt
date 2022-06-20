@@ -72,28 +72,6 @@ fun InventoryScreen(
 ) {
     val pagerState = rememberPagerState(state.selectedPage)
     val coroutineScope = rememberCoroutineScope()
-    val tabs = listOf(
-        BaseTab(
-            title = stringResource(R.string.inventory_params),
-            screen = {
-                ParamContent(
-                    onParamClickListener = onParamClickListener,
-                    params = state.params,
-                    onCrossClickListener = onParamCrossClickListener
-                )
-            }
-        ),
-        BaseTab(
-            title = stringResource(R.string.inventory_ao_title),
-            screen = {
-                AccountingObjectScreen(
-                    isLoading = state.isAccountingObjectsLoading,
-                    accountingObjectList = state.accountingObjectList,
-                    onAccountingObjectClickListener = {}
-                )
-            }
-        )
-    )
 
     AppTheme {
         Scaffold(
@@ -117,7 +95,10 @@ fun InventoryScreen(
                     pagerState = pagerState,
                     selectedPage = state.selectedPage,
                     coroutineScope = coroutineScope,
-                    tabs = tabs
+                    onParamCrossClickListener = onParamCrossClickListener,
+                    onParamClickListener = onParamClickListener,
+                    paddingValues = it,
+                    state = state
                 )
             },
             modifier = Modifier.padding(
@@ -137,12 +118,38 @@ fun InventoryScreen(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun Content(
+    state: InventoryStore.State,
     onTabClickListener: (Int) -> Unit,
+    onParamClickListener: (ParamDomain) -> Unit,
+    onParamCrossClickListener: (ParamDomain) -> Unit,
     coroutineScope: CoroutineScope,
     selectedPage: Int,
     pagerState: PagerState,
-    tabs: List<BaseTab>
+    paddingValues: PaddingValues
 ) {
+    val tabs = listOf(
+        BaseTab(
+            title = stringResource(R.string.inventory_params),
+            screen = {
+                ParamContent(
+                    onParamClickListener = onParamClickListener,
+                    params = state.params,
+                    onCrossClickListener = onParamCrossClickListener
+                )
+            }
+        ),
+        BaseTab(
+            title = stringResource(R.string.inventory_ao_title),
+            screen = {
+                AccountingObjectScreen(
+                    isLoading = state.isAccountingObjectsLoading,
+                    accountingObjectList = state.accountingObjectList,
+                    onAccountingObjectClickListener = {},
+                    paddingValues = paddingValues
+                )
+            }
+        )
+    )
     Column {
         DoubleTabRow(
             modifier = Modifier
@@ -210,12 +217,17 @@ private fun ParamContent(
 private fun AccountingObjectScreen(
     isLoading: Boolean,
     accountingObjectList: List<AccountingObjectDomain>,
-    onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit
+    onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit,
+    paddingValues: PaddingValues
 ) {
     if (isLoading) {
         Loader(contentPadding = PaddingValues())
     } else {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
             itemsIndexed(accountingObjectList, key = { index, item ->
                 item.id
             }) { index, item ->
