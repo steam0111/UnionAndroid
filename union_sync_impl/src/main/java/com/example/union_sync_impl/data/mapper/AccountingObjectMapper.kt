@@ -37,7 +37,8 @@ fun CustomAccountingObjectDto.toAccountingObjectDb(): AccountingObjectDb {
 
 fun FullAccountingObject.toSyncEntity(
     fullAccountingObject: FullAccountingObject?,
-    locationSyncEntity: LocationSyncEntity?
+    locationSyncEntity: LocationSyncEntity?,
+    inventoryStatus: String? = null
 ): AccountingObjectSyncEntity {
     val exploitingEmployee = fullAccountingObject?.exploitingEmployee?.toSyncEntity()
     val producerSyncEntity = fullAccountingObject?.producer?.toSyncEntity()
@@ -67,7 +68,8 @@ fun FullAccountingObject.toSyncEntity(
         mol = mol,
         organizationSyncEntity = organizationSyncEntity,
         internalNumber = accountingObjectDb.internalNumber,
-        departmentSyncEntity = departmentSyncEntity
+        departmentSyncEntity = departmentSyncEntity,
+        inventoryStatus = inventoryStatus
     )
 }
 

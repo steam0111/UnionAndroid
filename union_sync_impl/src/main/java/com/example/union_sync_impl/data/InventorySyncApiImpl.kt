@@ -14,6 +14,8 @@ import com.example.union_sync_impl.data.mapper.toInventorySyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationShortSyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
+import com.example.union_sync_impl.entity.FullAccountingObject
+import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
 import kotlinx.coroutines.flow.Flow
@@ -53,11 +55,20 @@ class InventorySyncApiImpl(
         } else {
             null
         }
+        val accountingObjectIds = fullInventory.inventoryDb.accountingObjectsIds.map { it.id }
 
         val accountingObjects =
-            accountingObjectDao.getAll(sqlAccountingObjectQuery(accountingObjectsIds = fullInventory.inventoryDb.accountingObjectsIds))
-                .map {
-                    it.toSyncEntity(it, getLocationSyncEntity(it.locationDb))
+            accountingObjectDao.getAll(sqlAccountingObjectQuery(accountingObjectsIds = accountingObjectIds))
+                .map { fullAccountingObject ->
+                    val inventoryStatus = getInventoryStatus(
+                        inventoryDb = fullInventory.inventoryDb,
+                        fullAccountingObject = fullAccountingObject
+                    )
+                    fullAccountingObject.toSyncEntity(
+                        fullAccountingObject,
+                        getLocationSyncEntity(fullAccountingObject.locationDb),
+                        inventoryStatus
+                    )
                 }
 
         return fullInventory.inventoryDb.toInventorySyncEntity(
@@ -81,5 +92,14 @@ class InventorySyncApiImpl(
         val locationTypeDb: LocationTypeDb = locationDao.getLocationTypeById(locationTypeId)
 
         return locationDb.toLocationSyncEntity(locationTypeDb)
+    }
+
+    private fun getInventoryStatus(
+        inventoryDb: InventoryDb,
+        fullAccountingObject: FullAccountingObject
+    ): String? {
+        return inventoryDb.accountingObjectsIds.find {
+            fullAccountingObject.accountingObjectDb.id == it.id
+        }?.status
     }
 }

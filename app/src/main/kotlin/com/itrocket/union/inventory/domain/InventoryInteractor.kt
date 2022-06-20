@@ -3,11 +3,14 @@ package com.itrocket.union.inventory.domain
 import com.example.union_sync_api.entity.InventoryCreateSyncEntity
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.domain.entity.toAccountingObjectIdSyncEntity
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.getLocationIds
 import com.itrocket.union.manual.getMolId
 import com.itrocket.union.manual.getOrganizationId
 import kotlinx.coroutines.withContext
@@ -27,13 +30,15 @@ class InventoryInteractor(
                 })
 
         val molId = params.getMolId()
-        val locationIds = (params.find { it.type == ManualType.LOCATION } as? LocationParamDomain)?.ids
+        val locationIds = params.getLocationIds()
 
         val id = repository.createInventory(
             InventoryCreateSyncEntity(
                 organizationId = organizationId,
                 employeeId = molId,
-                accountingObjectsIds = accountingObjects.map { it.id },
+                accountingObjectsIds = accountingObjects.map {
+                    it.toAccountingObjectIdSyncEntity()
+                },
                 locationIds = locationIds
             )
         )

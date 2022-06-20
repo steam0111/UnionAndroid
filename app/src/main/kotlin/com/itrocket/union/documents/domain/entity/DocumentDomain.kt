@@ -6,6 +6,10 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.getExploitingId
+import com.itrocket.union.manual.getLocationIds
+import com.itrocket.union.manual.getMolId
+import com.itrocket.union.manual.getOrganizationId
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import kotlinx.parcelize.Parcelize
 
@@ -22,10 +26,10 @@ data class DocumentDomain(
 ) : Parcelable
 
 fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
-    val organizationId = requireNotNull(params.find { it.type == ManualType.ORGANIZATION }?.id)
-    val molId = requireNotNull(params.find { it.type == ManualType.MOL }?.id)
-    val exploitingId = params.find { it.type == ManualType.EXPLOITING }?.id
-    val locationIds = (params.find { it.type == ManualType.LOCATION } as? LocationParamDomain)?.ids
+    val organizationId = requireNotNull(params.getOrganizationId())
+    val molId = requireNotNull(params.getMolId())
+    val exploitingId = params.getExploitingId()
+    val locationIds = params.getLocationIds()
     return DocumentUpdateSyncEntity(
         organizationId = organizationId,
         molId = molId,
