@@ -38,6 +38,7 @@ import com.itrocket.union.counterparties.CounterpartyModule
 import com.itrocket.union.regions.RegionModule
 import com.itrocket.union.branches.BranchesModule
 import com.itrocket.union.equipmentTypes.EquipmentTypeModule
+import com.itrocket.union.error.ErrorModule
 
 object Modules {
 
@@ -81,6 +82,7 @@ object Modules {
         BranchesModule.module,
         CounterpartyModule.module,
         ProducerModule.module,
-        EquipmentTypeModule.module
+        EquipmentTypeModule.module,
+        ErrorModule.module
     )
 }

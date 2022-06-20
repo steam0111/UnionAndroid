@@ -31,6 +31,7 @@ object EmployeeModule {
             EmployeeStoreFactory(
                 DefaultStoreFactory,
                 get(),
+                get(),
                 get()
             ).create()
         }

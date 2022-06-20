@@ -9,13 +9,16 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.branches.domain.BranchesInteractor
 import com.itrocket.union.branches.domain.entity.BranchesDomain
+import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 
 class BranchesStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val branchesInteractor: BranchesInteractor
+    private val branchesInteractor: BranchesInteractor,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): BranchesStore =
         object : BranchesStore,
@@ -41,7 +44,7 @@ class BranchesStoreFactory(
             catchException {
                 dispatch(Result.Loading(true))
                 branchesInteractor.getBranches()
-                    .catch { dispatch(Result.Loading(false)) }
+                    .catch { handleError(it) }
                     .collect {
                         dispatch(Result.Branches(it))
                         dispatch(Result.Loading(false))
@@ -66,7 +69,7 @@ class BranchesStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(BranchesStore.Label.Error(throwable.message.orEmpty()))
+            publish(BranchesStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
     }
 

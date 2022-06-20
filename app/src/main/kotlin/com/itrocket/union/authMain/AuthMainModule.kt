@@ -44,7 +44,8 @@ object AuthMainModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args.authMainComposeFragmentArgs
+                args.authMainComposeFragmentArgs,
+                get()
             ).create()
         }
 

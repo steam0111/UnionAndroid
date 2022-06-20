@@ -2,6 +2,7 @@ package com.itrocket.union.location.presentation.store
 
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
+import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.union.location.domain.entity.LocationDomain
 import com.itrocket.union.location.presentation.view.LocationComposeFragment
 
@@ -25,6 +26,7 @@ interface LocationStore : Store<LocationStore.Intent, LocationStore.State, Locat
     )
 
     sealed class Label {
+        data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
         data class GoBack(override val result: LocationResult? = null) : Label(), GoBackNavigationLabel {
             override val resultCode: String
                 get() = LocationComposeFragment.LOCATION_RESULT_CODE

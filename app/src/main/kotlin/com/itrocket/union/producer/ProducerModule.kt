@@ -31,6 +31,7 @@ object ProducerModule {
             ProducerStoreFactory(
                 DefaultStoreFactory,
                 get(),
+                get(),
                 get()
             ).create()
         }

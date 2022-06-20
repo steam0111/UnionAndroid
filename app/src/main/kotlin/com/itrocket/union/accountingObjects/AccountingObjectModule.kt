@@ -38,7 +38,8 @@ object AccountingObjectModule {
                 get(),
                 get(),
                 get(),
-                arg.accountingObjectArguments
+                arg.accountingObjectArguments,
+                get()
             ).create()
         }
     }

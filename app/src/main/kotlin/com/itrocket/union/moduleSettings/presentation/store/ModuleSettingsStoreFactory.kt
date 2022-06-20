@@ -7,15 +7,17 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
+import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class ModuleSettingsStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val moduleSettingsInteractor: ModuleSettingsInteractor,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): ModuleSettingsStore =
         object : ModuleSettingsStore,
@@ -78,7 +80,7 @@ class ModuleSettingsStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(ModuleSettingsStore.Label.Error(throwable.message.orEmpty()))
+            publish(ModuleSettingsStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
     }
 

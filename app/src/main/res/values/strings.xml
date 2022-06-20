@@ -28,6 +28,7 @@
     <string name="common_reading">Считывание</string>
     <string name="common_add">Добавить</string>
     <string name="common_choose">Выбор</string>
+    <string name="common_error">Что-то пошло не так…</string>
 
     <!-- Auth -->
     <string name="auth_suggest">Это нужно сделать один раз</string>

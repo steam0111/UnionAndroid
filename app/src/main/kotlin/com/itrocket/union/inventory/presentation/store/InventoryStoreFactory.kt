@@ -9,11 +9,13 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.inventory.domain.InventoryInteractor
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.filterNotEmpty
+import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 
@@ -21,7 +23,8 @@ class InventoryStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val inventoryInteractor: InventoryInteractor,
-    private val accountingObjectInteractor: AccountingObjectInteractor
+    private val accountingObjectInteractor: AccountingObjectInteractor,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): InventoryStore =
         object : InventoryStore,
@@ -88,7 +91,7 @@ class InventoryStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(InventoryStore.Label.Error(throwable.message.orEmpty()))
+            publish(InventoryStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
 
         private suspend fun changeParams(params: List<ParamDomain>) {

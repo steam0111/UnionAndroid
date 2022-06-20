@@ -9,10 +9,12 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor.Companion.MIN_CURRENT_STEP
+import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlin.math.max
@@ -21,7 +23,8 @@ class SelectParamsStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val selectParamsInteractor: SelectParamsInteractor,
-    private val selectParamsArguments: SelectParamsArguments
+    private val selectParamsArguments: SelectParamsArguments,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): SelectParamsStore =
         object : SelectParamsStore,
@@ -99,7 +102,7 @@ class SelectParamsStoreFactory(
                     currentParam.value
                 )
                     .catch {
-                        dispatch(Result.Loading(false))
+                        handleError(it)
                     }
                     .collect {
                         dispatch(Result.Values(it))
@@ -198,7 +201,7 @@ class SelectParamsStoreFactory(
         private suspend fun dispatchValues(type: ManualType, searchText: String) {
             catchException {
                 selectParamsInteractor.getParamValues(type, searchText)
-                    .catch { dispatch(Result.Loading(false)) }
+                    .catch { handleError(it) }
                     .collect {
                         dispatch(Result.Values(it))
                         dispatch(Result.Loading(false))
@@ -207,7 +210,8 @@ class SelectParamsStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            super.handleError(throwable)
+            dispatch(Result.Loading(false))
+            publish(SelectParamsStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
     }
 

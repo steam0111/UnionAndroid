@@ -5,7 +5,6 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.union.documents.domain.DocumentInteractor
 import com.itrocket.union.documents.domain.entity.DocumentDomain
@@ -14,8 +13,8 @@ import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.documents.presentation.view.toDocumentDomain
-import com.itrocket.utils.resolveItem
-import kotlinx.coroutines.delay
+import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 
@@ -23,7 +22,8 @@ class DocumentStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val documentInteractor: DocumentInteractor,
-    private val arguments: DocumentArguments
+    private val arguments: DocumentArguments,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): DocumentStore =
         object : DocumentStore,
@@ -50,7 +50,7 @@ class DocumentStoreFactory(
                 dispatch(Result.IsListLoading(true))
                 documentInteractor.getDocuments(getState().type)
                     .catch {
-                        dispatch(Result.IsListLoading(false))
+                        handleError(it)
                     }.collect {
                         dispatch(Result.Documents(it))
                         dispatch(Result.IsListLoading(false))
@@ -102,7 +102,8 @@ class DocumentStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(DocumentStore.Label.Error(throwable.message.orEmpty()))
+            dispatch(Result.IsListLoading(false))
+            publish(DocumentStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
 
     }

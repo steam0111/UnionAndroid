@@ -36,7 +36,8 @@ object SelectParamsModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args.selectParamsComposeFragmentArgs
+                args.selectParamsComposeFragmentArgs,
+                get()
             ).create()
         }
     }

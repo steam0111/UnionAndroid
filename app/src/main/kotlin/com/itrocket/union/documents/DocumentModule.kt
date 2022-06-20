@@ -36,7 +36,8 @@ object DocumentModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args.documentComposeFragmentArgs
+                args.documentComposeFragmentArgs,
+                get()
             ).create()
         }
     }

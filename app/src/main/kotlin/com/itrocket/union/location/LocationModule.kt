@@ -34,6 +34,7 @@ object LocationModule {
             LocationStoreFactory(
                 DefaultStoreFactory,
                 get(),
+                get(),
                 get()
             ).create()
         }

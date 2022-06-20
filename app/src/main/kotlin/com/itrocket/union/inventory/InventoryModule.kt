@@ -32,6 +32,7 @@ object InventoryModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
+                get(),
                 get()
             ).create()
         }

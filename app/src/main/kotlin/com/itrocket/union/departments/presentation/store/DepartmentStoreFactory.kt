@@ -52,6 +52,7 @@ class DepartmentStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
+            dispatch(Result.Loading(false))
             publish(DepartmentStore.Label.Error(throwable.message.orEmpty()))
         }
     }

@@ -5,13 +5,16 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.equipmentTypes.domain.EquipmentTypeInteractor
 import com.itrocket.union.equipmentTypes.domain.entity.EquipmentTypesDomain
+import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 
 class EquipmentTypeStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val typesInteractor: EquipmentTypeInteractor
+    private val typesInteractor: EquipmentTypeInteractor,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): EquipmentTypeStore =
         object : EquipmentTypeStore,
@@ -37,7 +40,7 @@ class EquipmentTypeStoreFactory(
             catchException {
                 dispatch(Result.Loading(true))
                 typesInteractor.getEquipmentTypes()
-                    .catch { dispatch(Result.Loading(false)) }
+                    .catch { handleError(it) }
                     .collect {
                         dispatch(Result.Types(it))
                         dispatch(Result.Loading(false))
@@ -51,13 +54,14 @@ class EquipmentTypeStoreFactory(
         ) {
             when (intent) {
                 EquipmentTypeStore.Intent.OnBackClicked -> publish(EquipmentTypeStore.Label.GoBack)
-                is EquipmentTypeStore.Intent.OnItemClicked -> {}
+                is EquipmentTypeStore.Intent.OnItemClicked -> {
+                }
             }
         }
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(EquipmentTypeStore.Label.Error(throwable.message.orEmpty()))
+            publish(EquipmentTypeStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
     }
 
