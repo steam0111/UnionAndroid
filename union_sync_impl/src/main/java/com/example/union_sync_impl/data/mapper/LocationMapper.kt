@@ -28,14 +28,11 @@ fun CustomLocationsTypeDto.toLocationTypeDb(): LocationTypeDb {
 
 fun LocationDb.toLocationShortSyncEntity() = LocationShortSyncEntity(id = id, name = name)
 
-fun LocationDb.toLocationSyncEntity(
-    locationTypeId: String,
-    locationType: String
-): LocationSyncEntity {
+fun LocationDb.toLocationSyncEntity(locationTypeDb: LocationTypeDb): LocationSyncEntity {
     return LocationSyncEntity(
         id = id,
         name = name,
-        locationType = locationType,
-        locationTypeId = locationTypeId
+        locationType = locationTypeDb.name,
+        locationTypeId = locationTypeDb.id
     )
 }

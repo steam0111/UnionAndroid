@@ -22,7 +22,10 @@ interface LocationDao {
     suspend fun insertAllLocationTypes(locationTypesDbs: List<LocationTypeDb>)
 
     @Query("SELECT * FROM locationTypes WHERE parentId is :parentId LIMIT 1")
-    suspend fun getLocationType(parentId: String?): LocationTypeDb
+    suspend fun getNextLocationTypeByParent(parentId: String?): LocationTypeDb
+
+    @Query("SELECT * FROM locationTypes WHERE id is :id LIMIT 1")
+    suspend fun getLocationTypeById(id: String): LocationTypeDb
 
     @Query("SELECT * FROM location WHERE id IN (:ids)")
     suspend fun getLocationsByIds(ids: List<String>): List<LocationDb>

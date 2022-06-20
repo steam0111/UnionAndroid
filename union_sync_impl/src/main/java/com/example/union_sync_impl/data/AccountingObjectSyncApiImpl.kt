@@ -1,8 +1,8 @@
 package com.example.union_sync_impl.data
 
-import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
+import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.DepartmentDao
 import com.example.union_sync_impl.dao.EmployeeDao
@@ -12,6 +12,7 @@ import com.example.union_sync_impl.dao.NomenclatureDao
 import com.example.union_sync_impl.dao.NomenclatureGroupDao
 import com.example.union_sync_impl.dao.OrganizationDao
 import com.example.union_sync_impl.dao.ProviderDao
+import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDb
 import com.example.union_sync_impl.data.mapper.toDepartmentDb
 import com.example.union_sync_impl.data.mapper.toEmployeeDb
@@ -22,6 +23,7 @@ import com.example.union_sync_impl.data.mapper.toNomenclatureGroupDb
 import com.example.union_sync_impl.data.mapper.toOrganizationDb
 import com.example.union_sync_impl.data.mapper.toProviderDb
 import com.example.union_sync_impl.data.mapper.toSyncEntity
+import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -94,55 +96,26 @@ class AccountingObjectSyncApiImpl(
 
     private suspend fun getDbData(
         organizationId: String? = null,
-        exploitingId: String? = null
+        exploitingId: String? = null,
+        accountingObjectsIds: List<String>? = null
     ): List<AccountingObjectSyncEntity> {
-        val filters = mutableListOf<String>()
-
-        if (organizationId != null) {
-            filters.add("accounting_objects.organizationId = \'$organizationId\'")
-        }
-        if (exploitingId != null) {
-            filters.add("accounting_objects.exploitingId = \'$exploitingId\'")
-        }
-
-        val filterExpression = if (filters.isNotEmpty()) {
-            "WHERE ${filters.joinToString(separator = " AND ")}"
-        } else {
-            ""
-        }
-
-        val getAccountingObjects = SimpleSQLiteQuery(
-            "SELECT accounting_objects.*," +
-                    "" +
-                    "location.id AS locations_id, " +
-                    "location.catalogItemName AS locations_catalogItemName, " +
-                    "location.name AS locations_name, " +
-                    "location.parentId AS locations_parentId " +
-                    "" +
-                    "FROM accounting_objects " +
-                    "LEFT JOIN location ON accounting_objects.locationId = location.id " +
-                    filterExpression
-        )
-
-        return accountingObjectsDao.getAll(getAccountingObjects)
+        return accountingObjectsDao.getAll(sqlAccountingObjectQuery(organizationId, exploitingId, accountingObjectsIds))
             .map {
-                val locationType: LocationTypeDb? =
-                    locationDao.getLocationType(it.locationDb?.parentId)
-                val locationSyncEntity = it.locationDb?.toLocationSyncEntity(
-                    locationType = locationType?.name.orEmpty(),
-                    locationTypeId = locationType?.id.orEmpty()
-                )
-
                 it.toSyncEntity(
-                    locationSyncEntity = locationSyncEntity,
-                    exploitingEmployee = it.exploitingEmployee?.toSyncEntity(),
-                    producerSyncEntity = it.producer?.toSyncEntity(),
-                    mol = it.mol?.toSyncEntity(),
-                    equipmentTypesSyncEntity = it.equipmentType?.toSyncEntity(),
-                    providerSyncEntity = it.provider?.toSyncEntity(),
-                    organizationSyncEntity = it.organization?.toSyncEntity(),
-                    departmentSyncEntity = it.department?.toSyncEntity()
+                    fullAccountingObject = it,
+                    locationSyncEntity = getLocationSyncEntity(it.locationDb)
                 )
             }
+    }
+
+    //TODO переделать на join
+    private suspend fun getLocationSyncEntity(locationDb: LocationDb?): LocationSyncEntity? {
+        if (locationDb == null) {
+            return null
+        }
+        val locationTypeId = locationDb.locationTypeId ?: return null
+        val locationTypeDb: LocationTypeDb = locationDao.getLocationTypeById(locationTypeId)
+
+        return locationDb.toLocationSyncEntity(locationTypeDb)
     }
 }
