@@ -342,7 +342,7 @@ fun DocumentInfoItem(
         append("  ")
 
         appendInlineContent(statusId, "[icon3]")
-        append(stringResource(item.documentStatus.textId))
+        append(stringResource(item.documentType.titleId))
         append("  ")
 
         appendInlineContent(objectTypeId, "[icon4]")
