@@ -49,7 +49,10 @@ class DocumentCreateInteractor(
         return mutableParams
     }
 
-    fun changeLocation(params: List<ParamDomain>, location: LocationParamDomain): List<ParamDomain> {
+    fun changeLocation(
+        params: List<ParamDomain>,
+        location: LocationParamDomain
+    ): List<ParamDomain> {
         val mutableParams = params.toMutableList()
         val locationIndex = params.indexOfFirst { it.type == ManualType.LOCATION }
         mutableParams[locationIndex] = location
@@ -69,7 +72,11 @@ class DocumentCreateInteractor(
         }
     }
 
-    fun isParamsFilled(params: List<ParamDomain>): Boolean = !params.any { it.value.isBlank() }
+    fun getAccountingObjectIds(accountingObjects: List<AccountingObjectDomain>): List<String> =
+        accountingObjects.map { it.id }
+
+    fun isParamsValid(params: List<ParamDomain>): Boolean =
+        params.all { it.value.isNotBlank() || it.type == ManualType.LOCATION }
 
     fun addAccountingObject(
         accountingObjects: List<AccountingObjectDomain>,

@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.Flow
 interface AccountingObjectSyncApi {
     suspend fun getAccountingObjects(
         organizationId: String? = null,
-        molId: String? = null,
         exploitingId: String? = null
     ): Flow<List<AccountingObjectSyncEntity>>
 }

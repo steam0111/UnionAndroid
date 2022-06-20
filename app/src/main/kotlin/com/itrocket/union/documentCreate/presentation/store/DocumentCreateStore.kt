@@ -62,11 +62,17 @@ interface DocumentCreateStore :
                 )
         }
 
-        data class ShowAccountingObjects(val params: List<ParamDomain>) : Label(),
+        data class ShowAccountingObjects(
+            val params: List<ParamDomain>,
+            val selectedAccountingObjectIds: List<String>
+        ) : Label(),
             ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = DocumentCreateComposeFragmentDirections.toAccountingObjects(
-                    AccountingObjectArguments(params = params)
+                    AccountingObjectArguments(
+                        params = params,
+                        selectedAccountingObjectIds = selectedAccountingObjectIds
+                    )
                 )
         }
 

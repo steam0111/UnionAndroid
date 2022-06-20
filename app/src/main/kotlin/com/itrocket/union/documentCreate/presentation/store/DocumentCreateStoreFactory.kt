@@ -53,6 +53,7 @@ class DocumentCreateStoreFactory(
                     documentCreateArguments.document.number
                 )
                 dispatch(Result.Document(document))
+                dispatch(Result.AccountingObjects(document.accountingObjects))
                 dispatch(Result.Params(document.params))
             }
             dispatch(Result.Loading(false))
@@ -67,7 +68,8 @@ class DocumentCreateStoreFactory(
                 DocumentCreateStore.Intent.OnBackClicked -> publish(DocumentCreateStore.Label.GoBack)
                 DocumentCreateStore.Intent.OnChooseClicked -> publish(
                     DocumentCreateStore.Label.ShowAccountingObjects(
-                        getState().params
+                        getState().params,
+                        documentCreateInteractor.getAccountingObjectIds(getState().accountingObjects)
                     )
                 )
                 DocumentCreateStore.Intent.OnDropClicked -> {
@@ -132,7 +134,7 @@ class DocumentCreateStoreFactory(
         }
 
         private fun isNextEnabled(getState: () -> DocumentCreateStore.State) {
-            dispatch(Result.Enabled(documentCreateInteractor.isParamsFilled(getState().params)))
+            dispatch(Result.Enabled(documentCreateInteractor.isParamsValid(getState().params)))
         }
 
         private suspend fun saveDocument(getState: () -> DocumentCreateStore.State) {
