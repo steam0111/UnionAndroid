@@ -3,6 +3,7 @@ package com.itrocket.union.inventoryCreate.domain.entity
 import android.os.Parcelable
 import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.domain.entity.toAccountingObjectIdSyncEntity
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
@@ -36,7 +37,7 @@ fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
         id = number.toLong(),
         organizationId = organizationId,
         employeeId = molId,
-        accountingObjectsIds = accountingObjects.map { it.id },
+        accountingObjectsIds = accountingObjects.map { it.toAccountingObjectIdSyncEntity()},
         date = date,
         locationIds = locationIds
     )

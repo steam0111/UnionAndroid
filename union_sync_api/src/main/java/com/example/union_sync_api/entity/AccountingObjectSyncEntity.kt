@@ -20,8 +20,8 @@ class AccountingObjectSyncEntity(
     val count: Int?,
     val commissioningDate: String?,
     val internalNumber: String?,
-    val departmentSyncEntity: DepartmentSyncEntity?
-
+    val departmentSyncEntity: DepartmentSyncEntity?,
+    val inventoryStatus: String? = null
 )
 
 class AccountingObjectStatus(

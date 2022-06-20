@@ -1,6 +1,7 @@
 package com.itrocket.union.accountingObjects.domain.entity
 
 import android.os.Parcelable
+import com.example.union_sync_api.entity.AccountingObjectInfoSyncEntity
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import kotlinx.parcelize.Parcelize
 
@@ -22,3 +23,6 @@ data class AccountingObjectDomain(
 
 @Parcelize
 data class ObjectInfoDomain(val title: Int, val value: String) : Parcelable
+
+fun AccountingObjectDomain.toAccountingObjectIdSyncEntity() =
+    AccountingObjectInfoSyncEntity(id = id, status = inventoryStatus.name)

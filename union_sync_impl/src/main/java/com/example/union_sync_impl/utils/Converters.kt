@@ -1,6 +1,7 @@
 package com.example.union_sync_impl.utils
 
 import androidx.room.TypeConverter
+import com.example.union_sync_api.entity.AccountingObjectInfoSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectStatus
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -18,7 +19,7 @@ class Converters {
     fun stringToStringList(string: String?): List<String>? {
         val type: Type = newParameterizedType(List::class.java, String::class.java)
         val jsonAdapter: JsonAdapter<List<String>> = moshi.adapter(type)
-        return if(string != null){
+        return if (string != null) {
             jsonAdapter.fromJson(string)
         } else {
             null
@@ -35,7 +36,8 @@ class Converters {
     @TypeConverter
     fun toAccountingObjectStatus(value: String?): AccountingObjectStatus? {
         return if (value == null) null else {
-            val type: Type = newParameterizedType(AccountingObjectStatus::class.java, String::class.java)
+            val type: Type =
+                newParameterizedType(AccountingObjectStatus::class.java, String::class.java)
             val jsonAdapter: JsonAdapter<AccountingObjectStatus> = moshi.adapter(type)
             return jsonAdapter.fromJson(value)
         }
@@ -43,10 +45,29 @@ class Converters {
 
     @TypeConverter
     fun fromAccountingObjectStatus(status: AccountingObjectStatus?): String? {
-        return if (status == null) null else{
-            val type: Type = newParameterizedType(AccountingObjectStatus::class.java, String::class.java)
+        return if (status == null) null else {
+            val type: Type =
+                newParameterizedType(AccountingObjectStatus::class.java, String::class.java)
             val jsonAdapter: JsonAdapter<AccountingObjectStatus> = moshi.adapter(type)
             return jsonAdapter.toJson(status)
+        }
+    }
+
+    @TypeConverter
+    fun toAccountingObjectId(value: String?): List<AccountingObjectInfoSyncEntity>? {
+        return if (value == null) null else {
+            val type: Type = newParameterizedType(List::class.java, AccountingObjectInfoSyncEntity::class.java)
+            val jsonAdapter: JsonAdapter<List<AccountingObjectInfoSyncEntity>> = moshi.adapter(type)
+            return jsonAdapter.fromJson(value)
+        }
+    }
+
+    @TypeConverter
+    fun fromAccountingObjectId(ids: List<AccountingObjectInfoSyncEntity>?): String? {
+        return if (ids == null) null else {
+            val type: Type = newParameterizedType(List::class.java, AccountingObjectInfoSyncEntity::class.java)
+            val jsonAdapter: JsonAdapter<List<AccountingObjectInfoSyncEntity>> = moshi.adapter(type)
+            return jsonAdapter.toJson(ids)
         }
     }
 }
