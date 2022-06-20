@@ -21,14 +21,11 @@ class LocationSyncApiImpl(
     override suspend fun getLocations(locationTypeParentId: String?): List<LocationSyncEntity> {
         syncLocations()
 
-        val locationType = locationDao.getLocationType(locationTypeParentId)
+        val locationType = locationDao.getNextLocationTypeByParent(locationTypeParentId)
         val locations = locationDao.getLocationsByType(locationType.id)
 
         return locations.map {
-            it.toLocationSyncEntity(
-                locationType = locationType.name,
-                locationTypeId = locationType.id
-            )
+            it.toLocationSyncEntity(locationType)
         }
     }
 
