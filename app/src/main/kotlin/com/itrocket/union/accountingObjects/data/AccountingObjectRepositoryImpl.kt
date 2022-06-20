@@ -26,7 +26,6 @@ class AccountingObjectRepositoryImpl(
         withContext(coreDispatchers.io) {
             syncApi.getAccountingObjects(
                 organizationId = params.getOrganizationId(),
-                molId = params.getMolId(),
                 exploitingId = params.getExploitingId()
             ).map { it.map() }
         }

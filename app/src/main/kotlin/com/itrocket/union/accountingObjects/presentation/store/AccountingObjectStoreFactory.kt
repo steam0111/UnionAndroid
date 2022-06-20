@@ -44,7 +44,10 @@ class AccountingObjectStoreFactory(
             dispatch(Result.Loading(true))
             catchException {
                 dispatch(Result.Loading(true))
-                accountingObjectInteractor.getAccountingObjects(accountingObjectArguments?.params.orEmpty())
+                accountingObjectInteractor.getAccountingObjects(
+                    params = accountingObjectArguments?.params.orEmpty(),
+                    selectedAccountingObjectIds = accountingObjectArguments?.selectedAccountingObjectIds.orEmpty()
+                )
                     .catch { dispatch(Result.Loading(false)) }
                     .collect {
                         dispatch(Result.AccountingObjects(it))

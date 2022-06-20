@@ -5,4 +5,7 @@ import com.itrocket.union.manual.ParamDomain
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class AccountingObjectArguments(val params: List<ParamDomain>) : Parcelable
+data class AccountingObjectArguments(
+    val params: List<ParamDomain>,
+    val selectedAccountingObjectIds: List<String>
+) : Parcelable
