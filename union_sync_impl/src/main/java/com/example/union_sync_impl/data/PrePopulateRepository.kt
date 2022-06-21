@@ -26,6 +26,7 @@ class PrePopulateRepository(
                 NomenclatureGroup("Стулья"),
                 NomenclatureGroup("Мобильные телефоны"),
                 NomenclatureGroup("Мониторы"),
+                NomenclatureGroup("Шкафы"),
             )
             val groups = nomenclatureGroupDao.getAll()
             groups.forEachIndexed { index, nomenclatureGroupDao ->

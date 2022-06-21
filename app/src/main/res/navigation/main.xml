@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation android:id="@+id/main"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:startDestination="@id/auth">
+    android:id="@+id/main"
+    app:startDestination="@id/documentsMenu">
 
     <fragment
         android:id="@+id/auth"
@@ -19,6 +19,9 @@
         <action
             android:id="@+id/to_accountingObjects"
             app:destination="@id/accountingObjects" />
+        <action
+            android:id="@+id/to_identify"
+            app:destination="@id/identify" />
         <action
             android:id="@+id/to_reserves"
             app:destination="@id/reserves" />
@@ -62,6 +65,18 @@
             android:name="AccountingObjectDetailArguments"
             app:argType="com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailArguments"
             app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/identify"
+        android:name="com.itrocket.union.identify.presentation.view.IdentifyComposeFragment">
+        <action
+            android:id="@+id/to_accountingObjectsDetails"
+            app:destination="@id/accountingObjectsDetails" />
+
+        <action
+            android:id="@+id/to_Filter"
+            app:destination="@id/filter" />
     </fragment>
 
     <fragment
@@ -151,7 +166,7 @@
     <fragment
         android:id="@+id/moduleSettings"
         android:name="com.itrocket.union.moduleSettings.presentation.view.ModuleSettingsComposeFragment"
-        android:label="@string/module_settings_label"/>
+        android:label="@string/module_settings_label" />
 
     <fragment
         android:id="@+id/inventory"
@@ -171,4 +186,5 @@
             android:name="SelectParamsComposeFragmentArgs"
             app:argType="com.itrocket.union.selectParams.presentation.store.SelectParamsArguments" />
     </fragment>
+
 </navigation>

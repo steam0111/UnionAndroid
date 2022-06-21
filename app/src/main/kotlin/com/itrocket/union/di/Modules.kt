@@ -11,6 +11,7 @@ import com.itrocket.union.documents.DocumentModule
 import com.itrocket.union.documentsMenu.DocumentMenuModule
 import com.itrocket.union.filter.FilterModule
 import com.itrocket.union.filterValues.FilterValueModule
+import com.itrocket.union.identify.IdentifyModule
 import com.itrocket.union.location.LocationModule
 import com.itrocket.union.network.NetworkModule
 import com.itrocket.union.nomenclature.NomenclatureModule
@@ -49,6 +50,7 @@ object Modules {
         NomenclatureModule.module,
         ModuleSettingsModule.module,
         ScannerModule.module,
-        InventoryModule.module
+        InventoryModule.module,
+        IdentifyModule.module
     )
 }

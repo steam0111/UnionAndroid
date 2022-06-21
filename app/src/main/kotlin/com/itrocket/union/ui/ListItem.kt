@@ -44,6 +44,7 @@ import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
+import com.itrocket.union.identify.domain.entity.IdentifyDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.utils.clickableUnbounded
 
@@ -144,6 +145,91 @@ fun AccountingObjectItem(
                     )
                     RadioButton(
                         selected = accountingObject.isBarcode,
+                        onClick = null,
+                        colors = RadioButtonDefaults.colors(
+                            selectedColor = psb6,
+                            unselectedColor = graphite3
+                        )
+                    )
+                }
+            }
+        }
+    }
+    if (isShowBottomLine) {
+        BottomLine()
+    }
+}
+
+@Composable
+fun IdentifyItem(
+    identifies: AccountingObjectDomain,
+    onIdentifyListener: (AccountingObjectDomain) -> Unit,
+    isShowBottomLine: Boolean
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = {
+                onIdentifyListener(identifies)
+            })
+            .padding(vertical = 12.dp, horizontal = 16.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+        ) {
+            Text(
+                text = identifies.title,
+                style = AppTheme.typography.body1,
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            identifies.listMainInfo.take(MAX_LIST_INFO).forEach {
+                Text(
+                    text = stringResource(R.string.common_two_dots, it.title, it.value),
+                    style = AppTheme.typography.caption,
+                    color = psb3
+                )
+            }
+        }
+        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
+            SmallStatusLabel(objectStatus = identifies.status)
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                Text(
+                    text = stringResource(R.string.common_barcode),
+                    style = AppTheme.typography.caption,
+                    color = graphite5,
+                    modifier = Modifier.padding(end = 4.dp)
+                )
+                RadioButton(
+                    selected = identifies.isBarcode,
+                    onClick = null,
+                    colors = RadioButtonDefaults.colors(
+                        selectedColor = psb6,
+                        unselectedColor = graphite3
+                    )
+                )
+            }
+            if (identifies.status == ObjectStatus.AVAILABLE) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Text(
+                        text = stringResource(R.string.common_rfid),
+                        style = AppTheme.typography.caption,
+                        color = graphite5,
+                        modifier = Modifier.padding(end = 4.dp)
+                    )
+                    RadioButton(
+                        selected = identifies.isBarcode,
                         onClick = null,
                         colors = RadioButtonDefaults.colors(
                             selectedColor = psb6,
