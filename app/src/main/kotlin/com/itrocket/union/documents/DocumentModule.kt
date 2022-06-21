@@ -24,7 +24,7 @@ object DocumentModule {
         }
 
         factory<DocumentRepository> {
-            DocumentRepositoryImpl()
+            DocumentRepositoryImpl(get())
         }
 
         factory {
@@ -36,7 +36,8 @@ object DocumentModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args.documentComposeFragmentArgs
+                args.documentComposeFragmentArgs,
+                get()
             ).create()
         }
     }

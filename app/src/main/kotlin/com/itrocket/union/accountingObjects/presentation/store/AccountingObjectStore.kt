@@ -2,13 +2,16 @@ package com.itrocket.union.accountingObjects.presentation.store
 
 import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
+import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailArguments
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragmentDirections
 import com.itrocket.union.filter.domain.entity.FilterDomain
 import com.itrocket.union.filter.presentation.store.FilterArguments
+import com.itrocket.union.inventory.presentation.store.InventoryStore
 
 interface AccountingObjectStore :
     Store<AccountingObjectStore.Intent, AccountingObjectStore.State, AccountingObjectStore.Label> {
@@ -28,7 +31,17 @@ interface AccountingObjectStore :
     )
 
     sealed class Label {
-        object GoBack : Label(), GoBackNavigationLabel
+        data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
+        data class GoBack(override val result: AccountingObjectResult? = null) : Label(),
+            GoBackNavigationLabel {
+
+            override val resultCode: String
+                get() = AccountingObjectComposeFragment.ACCOUNTING_OBJECT_RESULT_CODE
+
+            override val resultLabel: String
+                get() = AccountingObjectComposeFragment.ACCOUNTING_OBJECT_RESULT
+        }
+
         object ShowSearch : Label()
         data class ShowFilter(val filters: List<FilterDomain>) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections

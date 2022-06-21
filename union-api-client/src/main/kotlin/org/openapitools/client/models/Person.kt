@@ -36,7 +36,7 @@ data class Person (
     val unionUser: UnionUser? = null,
 
     @Json(name = "organization")
-    val organization: Organization? = null,
+    val organization: CustomOrganizationDto? = null,
 
     @Json(name = "permissions")
     val permissions: kotlin.collections.Set<Permission>? = null

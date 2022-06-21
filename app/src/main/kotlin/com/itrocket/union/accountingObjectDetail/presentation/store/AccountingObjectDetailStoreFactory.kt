@@ -1,14 +1,15 @@
 package com.itrocket.union.accountingObjectDetail.presentation.store
 
 import com.arkivanov.mvikotlin.core.store.*
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import com.itrocket.union.accountingObjectDetail.domain.AccountingObjectDetailInteractor
+import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.accountingObjectDetail.domain.AccountingObjectDetailInteractor
+import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 
 class AccountingObjectDetailStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val accountingObjectDetailInteractor: AccountingObjectDetailInteractor,
+    private val interactor: AccountingObjectDetailInteractor,
     private val accountingObjectDetailArguments: AccountingObjectDetailArguments
 ) {
     fun create(): AccountingObjectDetailStore =
@@ -27,13 +28,29 @@ class AccountingObjectDetailStoreFactory(
         AccountingObjectDetailExecutor()
 
     private inner class AccountingObjectDetailExecutor :
-        SuspendExecutor<AccountingObjectDetailStore.Intent, Unit, AccountingObjectDetailStore.State, Result, AccountingObjectDetailStore.Label>(
-            mainContext = coreDispatchers.ui
+        BaseExecutor<AccountingObjectDetailStore.Intent, Unit, AccountingObjectDetailStore.State, Result, AccountingObjectDetailStore.Label>(
+            context = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
             action: Unit,
             getState: () -> AccountingObjectDetailStore.State
         ) {
+            catchException {
+                dispatch(Result.Loading(true))
+                dispatch(
+                    Result.AccountingObject(
+                        interactor.getAccountingObject(
+                            accountingObjectDetailArguments.argument.id
+                        )
+                    )
+                )
+                dispatch(Result.Loading(false))
+            }
+        }
+
+        override fun handleError(throwable: Throwable) {
+            dispatch(Result.Loading(false))
+            publish(AccountingObjectDetailStore.Label.Error(throwable.message.orEmpty()))
         }
 
         override suspend fun executeIntent(
@@ -67,6 +84,7 @@ class AccountingObjectDetailStoreFactory(
         data class NewPage(val page: Int) : Result()
         data class Loading(val isLoading: Boolean) : Result()
         data class CheckedFullCharacteristics(val isChecked: Boolean) : Result()
+        data class AccountingObject(val obj: AccountingObjectDomain) : Result()
     }
 
     private object ReducerImpl : Reducer<AccountingObjectDetailStore.State, Result> {
@@ -75,6 +93,7 @@ class AccountingObjectDetailStoreFactory(
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.CheckedFullCharacteristics -> copy(isFullCharacteristicChecked = result.isChecked)
                 is Result.NewPage -> copy(selectedPage = result.page)
+                is Result.AccountingObject -> copy(accountingObjectDomain = result.obj)
             }
     }
 }

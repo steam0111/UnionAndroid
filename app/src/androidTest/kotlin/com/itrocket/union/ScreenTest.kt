@@ -8,17 +8,31 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailScreenPreview
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectScreenPreview
 import com.itrocket.union.authUser.presentation.view.AuthUserScreenPreview
+import com.itrocket.union.counterparties.presentation.view.CounterpartyScreenPreview
+import com.itrocket.union.branches.presentation.view.BranchesScreenPreview
+import com.itrocket.union.departments.presentation.view.DepartmentScreenPreview
+import com.itrocket.union.documentCreate.presentation.view.DocumentCreateScreenPreview
 import com.itrocket.union.documents.presentation.view.DocumentScreenPreview
 import com.itrocket.union.documentsMenu.presentation.view.DocumentMenuScreenPreview
+import com.itrocket.union.employees.presentation.view.EmployeeScreenPreview
+import com.itrocket.union.equipmentTypes.presentation.view.EquipmentTypesScreenPreview
 import com.itrocket.union.filter.domain.entity.FilterDomain
 import com.itrocket.union.filter.domain.entity.FilterValueType
 import com.itrocket.union.filter.presentation.view.FilterScreenPreview
 import com.itrocket.union.filterValues.presentation.view.FilterValueScreenPreview
+import com.itrocket.union.inventories.presentation.view.InventoriesScreenPreview
+import com.itrocket.union.inventory.presentation.view.InventoryScreenPreview
+import com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateScreenPreview
 import com.itrocket.union.location.presentation.view.LocationScreenPreview
+import com.itrocket.union.newAccountingObject.presentation.view.NewAccountingObjectScreenPreview
+import com.itrocket.union.organizations.presentation.view.OrganizationsScreenPreview
+import com.itrocket.union.producer.presentation.view.ProducerScreenPreview
 import com.itrocket.union.readingMode.presentation.view.ReadingModeScreenPreview
+import com.itrocket.union.regions.presentation.view.RegionScreenPreview
 import com.itrocket.union.reserveDetail.presentation.view.ReserveDetailScreenPreview
 import com.itrocket.union.reserves.presentation.view.ReservesScreenPreview
 import com.itrocket.union.serverConnect.presentation.view.ServerConnectScreenPreview
+import com.itrocket.union.switcher.presentation.view.SwitcherScreenPreview
 import com.karumi.shot.ScreenshotTest
 import org.junit.Rule
 import org.junit.Test
@@ -144,6 +158,104 @@ class ScreensTest : ScreenshotTest {
     fun `ReservesDetailScreen`() {
         takeScreenShot {
             ReserveDetailScreenPreview()
+        }
+    }
+
+    @Test
+    fun `OrganizationsScreen`() {
+        takeScreenShot {
+            OrganizationsScreenPreview()
+        }
+    }
+
+    @Test
+    fun `DepartmentsScreen`() {
+        takeScreenShot {
+            DepartmentScreenPreview()
+        }
+    }
+
+    @Test
+    fun `EmployeesScreen`() {
+        takeScreenShot {
+            EmployeeScreenPreview()
+        }
+    }
+
+    @Test
+    fun `InventoryCreate`() {
+        takeScreenShot {
+            InventoryCreateScreenPreview()
+        }
+    }
+
+    @Test
+    fun `InventoriesCreate`() {
+        takeScreenShot {
+            InventoriesScreenPreview()
+        }
+    }
+
+    @Test
+    fun `Inventory`() {
+        takeScreenShot {
+            InventoryScreenPreview()
+        }
+    }
+
+    @Test
+    fun `NewAccountingObject`() {
+        takeScreenShot {
+            NewAccountingObjectScreenPreview()
+        }
+    }
+
+    @Test
+    fun `Switcher`() {
+        takeScreenShot {
+            SwitcherScreenPreview()
+        }
+    }
+
+    @Test
+    fun `Counterparty`() {
+        takeScreenShot {
+            CounterpartyScreenPreview()
+        }
+    }
+
+    @Test
+    fun `Region`() {
+        takeScreenShot {
+            RegionScreenPreview()
+        }
+    }
+
+    @Test
+    fun `Branches`() {
+        takeScreenShot {
+            BranchesScreenPreview()
+        }
+    }
+
+    @Test
+    fun `Producers`() {
+        takeScreenShot {
+            ProducerScreenPreview()
+        }
+    }
+
+    @Test
+    fun `DocumentCreate`() {
+        takeScreenShot {
+            DocumentCreateScreenPreview()
+        }
+    }
+
+    @Test
+    fun `EquipmentTypes`() {
+        takeScreenShot {
+            EquipmentTypesScreenPreview()
         }
     }
 }

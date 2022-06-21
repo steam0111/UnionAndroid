@@ -35,6 +35,7 @@ object ModuleSettingsModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
+                get()
             ).create()
         }
 

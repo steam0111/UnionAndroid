@@ -36,7 +36,8 @@ object NomenclatureGroupModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args.nomenclatureGroupArguments
+                args.nomenclatureGroupArguments,
+                get()
             ).create()
         }
     }

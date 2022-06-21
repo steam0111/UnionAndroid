@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.SpanStyle
@@ -40,11 +41,18 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
+import com.itrocket.union.accountingObjects.domain.entity.Status
+import com.itrocket.union.common.DefaultItem
 import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentStatus
+import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
-import com.itrocket.union.identify.domain.entity.IdentifyDomain
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
+import com.itrocket.union.employees.domain.entity.EmployeeDomain
+import com.itrocket.union.manual.ManualType
+import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.utils.clickableUnbounded
 
@@ -79,7 +87,9 @@ fun DefaultListItem(
 fun AccountingObjectItem(
     accountingObject: AccountingObjectDomain,
     onAccountingObjectListener: (AccountingObjectDomain) -> Unit,
-    isShowBottomLine: Boolean
+    status: Status?,
+    isShowBottomLine: Boolean,
+    statusText: String? = null
 ) {
     Row(
         modifier = Modifier
@@ -101,36 +111,19 @@ fun AccountingObjectItem(
             Spacer(modifier = Modifier.height(4.dp))
             accountingObject.listMainInfo.take(MAX_LIST_INFO).forEach {
                 Text(
-                    text = stringResource(R.string.common_two_dots, it.title, it.value),
+                    text = stringResource(
+                        R.string.common_two_dots,
+                        stringResource(id = it.title),
+                        it.value
+                    ),
                     style = AppTheme.typography.caption,
                     color = psb3
                 )
             }
         }
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
-            SmallStatusLabel(objectStatus = accountingObject.status)
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                Text(
-                    text = stringResource(R.string.common_barcode),
-                    style = AppTheme.typography.caption,
-                    color = graphite5,
-                    modifier = Modifier.padding(end = 4.dp)
-                )
-                RadioButton(
-                    selected = accountingObject.isBarcode,
-                    onClick = null,
-                    colors = RadioButtonDefaults.colors(
-                        selectedColor = psb6,
-                        unselectedColor = graphite3
-                    )
-                )
-            }
-            if (accountingObject.status == ObjectStatus.AVAILABLE) {
+            status?.let { SmallStatusLabel(status = it, statusText) }
+            if (status is ObjectStatusType) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -138,7 +131,7 @@ fun AccountingObjectItem(
                     horizontalArrangement = Arrangement.End
                 ) {
                     Text(
-                        text = stringResource(R.string.common_rfid),
+                        text = stringResource(R.string.common_barcode),
                         style = AppTheme.typography.caption,
                         color = graphite5,
                         modifier = Modifier.padding(end = 4.dp)
@@ -151,6 +144,29 @@ fun AccountingObjectItem(
                             unselectedColor = graphite3
                         )
                     )
+                }
+                if (accountingObject.status?.type == ObjectStatusType.AVAILABLE) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Text(
+                            text = stringResource(R.string.common_rfid),
+                            style = AppTheme.typography.caption,
+                            color = graphite5,
+                            modifier = Modifier.padding(end = 4.dp)
+                        )
+                        RadioButton(
+                            selected = accountingObject.isBarcode,
+                            onClick = null,
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = psb6,
+                                unselectedColor = graphite3
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -271,7 +287,11 @@ fun ReservesItem(
             Spacer(modifier = Modifier.height(4.dp))
             reserves.listInfo.take(MAX_LIST_INFO).forEach {
                 Text(
-                    text = stringResource(R.string.common_two_dots, it.title, it.value),
+                    text = stringResource(
+                        R.string.common_two_dots,
+                        stringResource(id = it.title),
+                        it.value
+                    ),
                     style = AppTheme.typography.caption,
                     color = psb3
                 )
@@ -312,9 +332,108 @@ fun ReservesItem(
 }
 
 @Composable
+fun InventoryDocumentItem(
+    item: InventoryCreateDomain,
+    onInventoryClickListener: () -> Unit = {},
+    enabled: Boolean = false
+) {
+    val annotatedTitle = getInventoryAnnotatedTitle(item)
+    val annotatedInfo = buildAnnotatedString {
+        val filteredDocumentInfo = item.documentInfo.filter { it.value.isNotBlank() }
+        filteredDocumentInfo.forEachIndexed { index, info ->
+            append(info.value)
+            if (index < filteredDocumentInfo.lastIndex) {
+                append(" ")
+                withStyle(SpanStyle(color = psb6, fontWeight = FontWeight.ExtraBold)) {
+                    append("|")
+                }
+                append(" ")
+            }
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(white)
+            .clickable(enabled = enabled, onClick = onInventoryClickListener)
+            .padding(horizontal = 16.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 18.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            Text(
+                text = annotatedTitle.first,
+                inlineContent = annotatedTitle.second,
+                style = AppTheme.typography.body1,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 20.sp,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = annotatedInfo, style = AppTheme.typography.caption, color = graphite6)
+        Spacer(modifier = Modifier.height(12.dp))
+    }
+}
+
+private fun getInventoryAnnotatedTitle(item: InventoryCreateDomain): Pair<AnnotatedString, Map<String, InlineTextContent>> {
+    val numberId = "number"
+    val dateId = "date"
+    val timeId = "time"
+    val annotatedTitle = buildAnnotatedString {
+        appendInlineContent(numberId, "[icon1]")
+        append(item.number)
+        append("  ")
+
+        appendInlineContent(timeId, "[icon3]")
+        append(item.getTextDate())
+        append("  ")
+
+        appendInlineContent(timeId, "[icon3]")
+        append(item.getTextTime())
+        append("  ")
+
+    }
+    val numberContent = mapOf(
+        numberId to InlineTextContent(
+            Placeholder(
+                width = 20.sp,
+                height = 16.sp,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
+            )
+        ) {
+            Image(painter = painterResource(R.drawable.ic_number), contentDescription = null)
+        },
+        dateId to InlineTextContent(
+            Placeholder(
+                width = 20.sp,
+                height = 16.sp,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
+            )
+        ) {
+            Image(painter = painterResource(R.drawable.ic_calendar), contentDescription = null)
+        },
+        timeId to InlineTextContent(
+            Placeholder(
+                width = 20.sp,
+                height = 16.sp,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
+            )
+        ) {
+            Image(painter = painterResource(R.drawable.ic_clock), contentDescription = null)
+        },
+    )
+    return annotatedTitle to numberContent
+}
+
+@Composable
 fun DocumentInfoItem(
     item: DocumentView.DocumentItemView,
-    onDocumentClickListener: (String) -> Unit,
+    onDocumentClickListener: (DocumentView.DocumentItemView) -> Unit,
     isShowBottomLine: Boolean,
     isShowStatus: Boolean = true
 ) {
@@ -328,11 +447,11 @@ fun DocumentInfoItem(
         append("  ")
 
         appendInlineContent(timeId, "[icon2]")
-        append(item.time)
+        append(item.getTextTime())
         append("  ")
 
         appendInlineContent(statusId, "[icon3]")
-        append(stringResource(item.documentStatus.textId))
+        append(stringResource(item.documentType.titleId))
         append("  ")
 
         appendInlineContent(objectTypeId, "[icon4]")
@@ -377,9 +496,10 @@ fun DocumentInfoItem(
         },
     )
     val annotatedInfo = buildAnnotatedString {
-        item.documentInfo.forEachIndexed { index, info ->
-            append(info)
-            if (index < item.documentInfo.lastIndex) {
+        val filteredParams = item.params.filter { it.value.isNotBlank() }
+        filteredParams.forEachIndexed { index, info ->
+            append(info.value)
+            if (index < filteredParams.lastIndex) {
                 append(" ")
                 withStyle(SpanStyle(color = psb6, fontWeight = FontWeight.ExtraBold)) {
                     append("|")
@@ -393,7 +513,7 @@ fun DocumentInfoItem(
             .fillMaxWidth()
             .background(white)
             .clickable {
-                onDocumentClickListener(item.number)
+                onDocumentClickListener(item)
             }
             .padding(horizontal = 16.dp)
     ) {
@@ -415,7 +535,7 @@ fun DocumentInfoItem(
             )
             if (isShowStatus) {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
-                    SmallStatusLabel(documentStatus = item.documentStatus)
+                    SmallStatusLabel(status = item.documentStatus, null)
                 }
             }
         }
@@ -485,10 +605,57 @@ fun DocumentDateItem(
     }
 }
 
+@Composable
+fun DefaultListItem(
+    item: DefaultItem,
+    onItemClickListener: (DefaultItem) -> Unit,
+    isShowBottomLine: Boolean
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = {
+                onItemClickListener(item)
+            })
+            .padding(vertical = 12.dp, horizontal = 16.dp)
+    ) {
+        Column {
+            Text(
+                text = item.title,
+                style = AppTheme.typography.body1,
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            item.subtitles.forEach {
+                if (!it.value.isNullOrBlank()) {
+                    Text(
+                        text = stringResource(
+                            R.string.common_two_dots,
+                            stringResource(it.key),
+                            it.value.orEmpty()
+                        ),
+                        style = AppTheme.typography.caption,
+                        color = psb3
+                    )
+                }
+            }
+        }
+    }
+    if (isShowBottomLine) {
+        BottomLine()
+    }
+}
+
 @Preview
 @Composable
 fun DocumentDateItemPreview() {
-    DocumentDateItem(item = DocumentView.DocumentDateView("12.12.12", DocumentDateType.OTHER, "12.12.12"), {}, false)
+    DocumentDateItem(
+        item = DocumentView.DocumentDateView(
+            "12.12.12",
+            DocumentDateType.OTHER,
+            "12.12.12"
+        ), {}, false
+    )
 }
 
 @Preview
@@ -497,18 +664,25 @@ fun DocumentInfoItemPreview() {
     DocumentInfoItem(
         item = DocumentView.DocumentItemView(
             number = "БП-00001374",
-            time = "12:40",
-            objectStatus = ObjectStatus.AVAILABLE,
-            documentInfo = listOf(
-                "Систмный интегратор",
-                "Систмный интегратор",
-                "Систмный интегратор",
-                "Систмный интегратор",
-                "Систмный интегратор",
-            ),
             documentStatus = DocumentStatus.CREATED,
             objectType = ObjectType.MAIN_ASSETS,
-            date = ""
+            date = 123123,
+            params = listOf(
+                ParamDomain(
+                    "1", "blbbb",
+                    type = ManualType.MOL
+                ),
+                ParamDomain(
+                    "1", "blbbb",
+                    type = ManualType.LOCATION
+                ),
+                ParamDomain(
+                    "1", "blbbb",
+                    type = ManualType.ORGANIZATION
+                )
+            ),
+            documentType = DocumentTypeDomain.WRITE_OFF,
+            dateUi = "12.12.12"
         ), onDocumentClickListener = {}, isShowBottomLine = true
     )
 }
@@ -522,11 +696,11 @@ fun ReservesItemPreview() {
             id = "1", title = "Авторучка «Зебра TR22»", isBarcode = true, listInfo =
             listOf(
                 ObjectInfoDomain(
-                    "Заводской номер",
+                    R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 ),
                 ObjectInfoDomain(
-                    "Инвентарный номер",
+                    R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 )
             ), itemsCount = 1200
@@ -543,33 +717,135 @@ fun AccountingObjectItemPreview() {
             id = "1",
             isBarcode = true,
             title = "Ширикоформатный жидкокристалический монитор Samsung",
-            status = ObjectStatus.UNDER_REVIEW,
+            status = ObjectStatus("available", ObjectStatusType.UNDER_REVIEW),
             listMainInfo = listOf(
                 ObjectInfoDomain(
-                    "Заводской номер",
+                    R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 ),
                 ObjectInfoDomain(
-                    "Инвентарный номер",
+                    R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 ),
             ),
             listAdditionallyInfo = listOf(
                 ObjectInfoDomain(
-                    "Заводской номер",
+                    R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 ),
                 ObjectInfoDomain(
-                    "Инвентарный номер",
+                    R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 ),
             )
-        ), onAccountingObjectListener = {}, isShowBottomLine = true
+        ), onAccountingObjectListener = {}, isShowBottomLine = true,
+        status = ObjectStatusType.UNDER_REVIEW
     )
 }
 
 @Preview
 @Composable
-fun DefaultItemPreview() {
-    DefaultListItem(title = "title title title title title title title title title", isShowBottomLine = true)
+fun DefaultListItemPreview() {
+    DefaultListItem(
+        item = DefaultItem(
+            id = "1",
+            title = "Organization",
+            subtitles = mapOf(
+                R.string.department_code to "value1", R.string.department_code to "value2"
+            ),
+
+            ), onItemClickListener = {},
+        isShowBottomLine = true
+    )
+}
+
+@Preview
+@Composable
+fun InventoryDocumentItemPreview() {
+    InventoryDocumentItem(
+        item = InventoryCreateDomain(
+            number = "БП-00001374",
+            date = System.currentTimeMillis(),
+            documentInfo = listOf(
+                ParamDomain("1", "Систмный интегратор", ManualType.MOL),
+                ParamDomain("2", "Систмный интегратор", ManualType.MOL),
+                ParamDomain("3", "Систмный интегратор", ManualType.MOL),
+            ),
+            accountingObjects = listOf(),
+        )
+    )
+}
+
+@Composable
+fun EmployeeItem(
+    item: EmployeeDomain,
+    onEmployeeClickListener: (EmployeeDomain) -> Unit,
+    isShowBottomLine: Boolean
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = { onEmployeeClickListener(item) })
+            .padding(vertical = 12.dp, horizontal = 16.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(0.7f)
+        ) {
+            Text(
+                text = item.fullName,
+                style = AppTheme.typography.body1,
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(
+                    R.string.employees_service_number,
+                    item.number
+                ),
+                style = AppTheme.typography.caption,
+                color = psb3
+            )
+        }
+        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                Text(
+                    text = stringResource(R.string.employees_nfc),
+                    style = AppTheme.typography.caption,
+                    color = graphite5,
+                    modifier = Modifier.padding(end = 4.dp)
+                )
+                RadioButton(
+                    selected = item.hasNfc,
+                    onClick = null,
+                    colors = RadioButtonDefaults.colors(
+                        selectedColor = psb6,
+                        unselectedColor = graphite3
+                    )
+                )
+            }
+        }
+    }
+    if (isShowBottomLine) {
+        BottomLine()
+    }
+}
+
+@Preview
+@Composable
+fun EmployeeItemPreview() {
+    EmployeeItem(
+        item = EmployeeDomain(
+            id = "1",
+            nfc = null,
+            catalogItemName = "Ким У Бин",
+            number = "BO_173470001290",
+            firstname = "Ким",
+            lastname = "У",
+            patronymic = "Бин"
+        ), onEmployeeClickListener = {}, isShowBottomLine = true
+    )
 }

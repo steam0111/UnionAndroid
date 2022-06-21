@@ -1,36 +1,49 @@
 package com.itrocket.union.documents.presentation.view
 
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
+import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
+import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.utils.getStringDateFromMillis
+import com.itrocket.union.utils.getTimeFromMillis
 
 sealed class DocumentView {
     data class DocumentItemView(
         val number: String,
-        val time: String,
         val documentStatus: DocumentStatus,
         val objectType: ObjectType,
-        val objectStatus: ObjectStatus,
-        val documentInfo: List<String>,
-        val date: String
-    ) : DocumentView()
+        val documentType: DocumentTypeDomain,
+        val params: List<ParamDomain>,
+        val date: Long,
+        val dateUi: String,
+    ) : DocumentView() {
+        fun getTextTime() = getTimeFromMillis(date)
+    }
 
     data class DocumentDateView(
         val date: String,
         val dayType: DocumentDateType,
         val dateUi: String
-    ) :
-        DocumentView()
+    ) : DocumentView()
 }
 
-fun DocumentDomain.toDocumentItemView() = DocumentView.DocumentItemView(
+fun DocumentView.DocumentItemView.toDocumentDomain() = DocumentDomain(
     number = number,
-    time = time,
     documentStatus = documentStatus,
-    objectStatus = status,
     objectType = objectType,
-    documentInfo = documentInfo,
-    date = date
+    date = date,
+    documentType = documentType,
+    params = params
+)
+
+fun DocumentDomain.toDocumentItemView(dateUi: String) = DocumentView.DocumentItemView(
+    number = number,
+    documentStatus = documentStatus,
+    objectType = objectType,
+    date = date,
+    documentType = documentType,
+    params = params,
+    dateUi = dateUi
 )

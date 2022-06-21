@@ -44,13 +44,17 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.store.DocumentStore
+import com.itrocket.union.manual.ManualType
+import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.ButtonBottomBar
+import com.itrocket.union.ui.ButtonLoaderBottomBar
 import com.itrocket.union.ui.DocumentDateItem
 import com.itrocket.union.ui.DocumentInfoItem
 
@@ -61,7 +65,7 @@ fun DocumentScreen(
     onBackClickListener: () -> Unit,
     onSearchClickListener: () -> Unit,
     onFilterClickListener: () -> Unit,
-    onDocumentClickListener: (String) -> Unit,
+    onDocumentClickListener: (DocumentView.DocumentItemView) -> Unit,
     onCreateRequestClickListener: () -> Unit,
     onDateArrowClickListener: (String) -> Unit
 ) {
@@ -79,14 +83,15 @@ fun DocumentScreen(
                 )
             },
             bottomBar = {
-                ButtonBottomBar(
+                ButtonLoaderBottomBar(
                     text = stringResource(id = R.string.documents_create_issue),
-                    onClick = onCreateRequestClickListener
+                    onClick = onCreateRequestClickListener,
+                    isLoading = state.isDocumentCreateLoading,
                 )
             },
             content = {
                 when {
-                    state.isLoading -> {
+                    state.isListLoading -> {
                         Column(
                             modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.Center,
@@ -117,7 +122,7 @@ fun DocumentScreen(
 private fun Content(
     contentPadding: PaddingValues,
     documents: List<DocumentView>,
-    onDocumentClickListener: (String) -> Unit,
+    onDocumentClickListener: (DocumentView.DocumentItemView) -> Unit,
     onDateArrowClickListener: (String) -> Unit,
     rotatedDates: List<String>,
 ) {
@@ -141,7 +146,7 @@ private fun Content(
                     val isShowBottomLine =
                         index < documents.lastIndex && documents[index + 1] !is DocumentView.DocumentDateView
                     AnimatedVisibility(
-                        visible = !rotatedDates.contains(item.date),
+                        visible = !rotatedDates.contains(item.dateUi),
                         enter = fadeIn() + expandVertically(),
                         exit = fadeOut() + shrinkVertically()
                     ) {
@@ -175,41 +180,97 @@ fun DocumentScreenPreview() {
     DocumentScreen(
         DocumentStore.State(
             type = DocumentTypeDomain.ALL, documents = listOf(
-                DocumentView.DocumentDateView(date = "12.12.12", dateUi = "12.12.12", dayType = DocumentDateType.OTHER),
-                DocumentView.DocumentItemView(
+                DocumentView.DocumentDateView(
                     date = "12.12.12",
+                    dateUi = "12.12.12",
+                    dayType = DocumentDateType.OTHER
+                ),
+                DocumentView.DocumentItemView(
+                    date = 123123,
                     number = "123213",
-                    time = "123123",
-                    objectStatus = ObjectStatus.AVAILABLE,
-                    documentInfo = listOf("DocumentInfo1", "DocumentInfo2", "DocumentInfo3"),
                     documentStatus = DocumentStatus.CREATED,
-                    objectType = ObjectType.MAIN_ASSETS
+                    objectType = ObjectType.MAIN_ASSETS,
+                    documentType = DocumentTypeDomain.WRITE_OFF,
+                    params = listOf(
+                        ParamDomain(
+                            "1", "blbbb",
+                            type = ManualType.MOL
+                        ),
+                        ParamDomain(
+                            "1", "blbbb",
+                            type = ManualType.LOCATION
+                        ),
+                        ParamDomain(
+                            "1", "blbbb",
+                            type = ManualType.ORGANIZATION
+                        )
+                    ),
+                    dateUi = "12.12.12"
                 ),
                 DocumentView.DocumentItemView(
-                    date = "12.12.12",
+                    date = 123123,
                     number = "1232132",
-                    time = "123123",
-                    objectStatus = ObjectStatus.AVAILABLE,
-                    documentInfo = listOf("DocumentInfo1", "DocumentInfo2", "DocumentInfo3"),
                     documentStatus = DocumentStatus.CREATED,
-                    objectType = ObjectType.MAIN_ASSETS
+                    objectType = ObjectType.MAIN_ASSETS,
+                    documentType = DocumentTypeDomain.WRITE_OFF,
+                    params = listOf(
+                        ParamDomain(
+                            "1", "blbbb",
+                            type = ManualType.MOL
+                        ),
+                        ParamDomain(
+                            "1", "blbbb",
+                            type = ManualType.LOCATION
+                        ),
+                        ParamDomain(
+                            "1", "blbbb",
+                            type = ManualType.ORGANIZATION
+                        )
+                    ),
+                    dateUi = "12.12.12"
                 ), DocumentView.DocumentItemView(
-                    date = "12.12.12",
+                    date = 123123,
                     number = "1232133",
-                    time = "123123",
-                    objectStatus = ObjectStatus.AVAILABLE,
-                    documentInfo = listOf("DocumentInfo1", "DocumentInfo2", "DocumentInfo3"),
                     documentStatus = DocumentStatus.CREATED,
-                    objectType = ObjectType.MAIN_ASSETS
+                    objectType = ObjectType.MAIN_ASSETS,
+                    documentType = DocumentTypeDomain.WRITE_OFF,
+                    params = listOf(
+                        ParamDomain(
+                            "1", "blbbb",
+                            type = ManualType.MOL
+                        ),
+                        ParamDomain(
+                            "1", "blbbb",
+                            type = ManualType.LOCATION
+                        ),
+                        ParamDomain(
+                            "1", "blbbb",
+                            type = ManualType.ORGANIZATION
+                        )
+                    ),
+                    dateUi = "12.12.12"
                 ),
                 DocumentView.DocumentItemView(
-                    date = "12.12.12",
+                    date = 123123,
                     number = "1232134",
-                    time = "123123",
-                    objectStatus = ObjectStatus.AVAILABLE,
-                    documentInfo = listOf("DocumentInfo1", "DocumentInfo2", "DocumentInfo3"),
                     documentStatus = DocumentStatus.CREATED,
-                    objectType = ObjectType.MAIN_ASSETS
+                    objectType = ObjectType.MAIN_ASSETS,
+                    documentType = DocumentTypeDomain.WRITE_OFF,
+                    params = listOf(
+                        ParamDomain(
+                            "1", "blbbb",
+                            type = ManualType.MOL
+                        ),
+                        ParamDomain(
+                            "1", "blbbb",
+                            type = ManualType.LOCATION
+                        ),
+                        ParamDomain(
+                            "1", "blbbb",
+                            type = ManualType.ORGANIZATION
+                        )
+                    ),
+                    dateUi = "12.12.12"
                 )
             )
         ),

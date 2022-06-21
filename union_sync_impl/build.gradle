@@ -32,6 +32,10 @@ android {
 }
 
 dependencies {
+    implementation project(":union_sync_api")
+    implementation project(":union-api-client")
+    implementation(libs.retrofit.moshi)
+
     implementation(libs.database.runtime)
     kapt(libs.database.compiler)
 }

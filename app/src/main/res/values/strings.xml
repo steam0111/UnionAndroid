@@ -17,6 +17,7 @@
     <string name="common_drop">Сбросить</string>
     <string name="common_apply">Применить</string>
     <string name="common_cancel">Отмена</string>
+    <string name="common_continue">Продолжить</string>
     <string name="common_finish">Готово</string>
     <string name="common_step">Шаг %s</string>
     <string name="common_next">Далее</string>
@@ -24,6 +25,10 @@
     <string name="common_exit">Выйти</string>
     <string name="common_save">Сохранить</string>
     <string name="common_create">Создать</string>
+    <string name="common_reading">Считывание</string>
+    <string name="common_add">Добавить</string>
+    <string name="common_choose">Выбор</string>
+    <string name="common_error">Что-то пошло не так…</string>
 
     <!-- Auth -->
     <string name="auth_suggest">Это нужно сделать один раз</string>
@@ -63,9 +68,37 @@
     <string name="main_write_off">Списание</string>
     <string name="nomenclature_group">Ном. группа</string>
     <string name="nomenclature">Номенклатура</string>
+    <string name="organizations">Организации</string>
+    <string name="departments">Подразделения</string>
+    <string name="inventories">Инв. ведомости</string>
+    <string name="producer">Производители</string>
+    <string name="counterparties">Контрагенты</string>
+    <string name="regions">Регионы</string>
+    <string name="branches">Филиалы</string>
+    <string name="equipment_types">Типы оборуд.</string>
+
+    <!-- Manual -->
+    <string name="manual_organization">Организация</string>
+    <string name="manual_mol">МОЛ</string>
+    <string name="manual_location">Местоположение</string>
+    <string name="manual_exploiting">Эксплуатирующий</string>
 
     <!-- AccountingObjectScreen -->
     <string name="main_marking">Маркировка</string>
+    <string name="accounting_objects_factory_number">Зав. номер</string>
+    <string name="accounting_objects_inventory_number">Инвент. номер</string>
+    <string name="accounting_objects_current_status">Текущий статус</string>
+    <string name="accounting_objects_factory_num">Заводской №</string>
+    <string name="accounting_objects_inventory_num">Инвентарный №</string>
+    <string name="accounting_objects_location">Местоположение</string>
+    <string name="accounting_objects_department">Подразделение</string>
+    <string name="accounting_objects_model">Модель</string>
+    <string name="accounting_objects_price">Цена</string>
+    <string name="accounting_objects_producer">Производитель</string>
+    <string name="accounting_objects_type">Тип</string>
+    <string name="accounting_objects_provider">Поставщик</string>
+    <string name="accounting_objects_count">Мин. остаток</string>
+    <string name="accounting_objects_commissioning_date">Дата поверки</string>
 
     <!-- NomenclatureGroup -->
     <string name="nomenclature_group_title">Номенклатурные группы</string>
@@ -85,6 +118,7 @@
     <string name="accounting_object_available">Доступен</string>
     <string name="accounting_object_under_repair">В ремонте</string>
     <string name="accounting_object_under_review">На проверке</string>
+    <string name="accounting_object_given">Выдан</string>
 
     <!-- Filter -->
     <string name="accounting_object_decommissioned">Списан</string>
@@ -115,6 +149,11 @@
     <string name="documents_today">Сегодня</string>
     <string name="documents_yesterday">Вчера</string>
 
+    <!-- Document create -->
+    <string name="document_create_title">%s &quot;%s&quot;</string>
+    <string name="document_create_accounting_object">Объекты учета</string>
+    <string name="document_create_empty">Для начала считывания нажмите курок или выберите из списка</string>
+
     <!-- ModuleSettings -->
     <string name="module_settings_title">Модули</string>
     <string name="module_settings_label">ModuleSettings</string>
@@ -126,4 +165,55 @@
     <string name="inventory_params">Параметры</string>
     <string name="inventory_accounting_object">Объекты учета</string>
     <string name="identify_title">Идентификация</string>
+
+    <!-- InventoryCreate -->
+    <string name="inventory_create_hide_found_ao">Скрывать найденные ОС</string>
+    <string name="inventory_create_add_new">Добавлять новое</string>
+    <string name="inventory_create_new">Новый</string>
+    <string name="inventory_create_found">Найден</string>
+    <string name="inventory_create_not_found">Не найден</string>
+
+    <!-- Switcher -->
+    <string name="switcher_accounting_object_status">Статус ОС</string>
+
+    <!-- NewAccountingObject -->
+    <string name="new_accounting_object_title">Новый ОУ</string>
+
+    <!-- Regions -->
+    <string name="region_title">Регионы</string>
+    <string name="region_code">Код региона</string>
+
+    <!-- Organizations -->
+    <string name="organizations_title">Организации</string>
+    <string name="organization_actual_address">Фактический адрес</string>
+    <string name="organization_legal_address">"Юридический адрес</string>
+
+    <!-- Branches -->
+    <string name="branches_title">Филиалы</string>
+    <string name="branches_code">Код филиала</string>
+
+    <!-- Departments -->
+    <string name="departments_title">Подразделения</string>
+    <string name="department_code">Код подразделения</string>
+
+    <!-- Employees -->
+    <string name="employees_nfc">NFC</string>
+    <string name="employees_title">Сотрудники</string>
+    <string name="employees_service_number">Табельный номер: %s</string>
+
+    <!-- Inventories -->
+    <string name="inventories_title">Список инв. ведомостей</string>
+
+    <!-- Producer -->
+    <string name="producer_title">Производители</string>
+    <string name="producer_code">Код производителя</string>
+
+    <!-- Counterparties -->
+    <string name="counterparties_title">Контрагенты</string>
+    <string name="counterparties_code">Код контрагента</string>
+    <string name="counterparties_kpp">КПП</string>
+    <string name="counterparties_inn">ИНН</string>
+
+    <string name="equipment_type_code">Код оборудования</string>
+    <string name="equipment_type_title">Типы оборудования</string>
 </resources>

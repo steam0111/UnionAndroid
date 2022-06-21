@@ -1,8 +1,16 @@
 package com.itrocket.union.documents.presentation.store
 
+import androidx.navigation.NavDirections
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
+import com.itrocket.core.navigation.DefaultNavigationErrorLabel
+import com.itrocket.core.navigation.ForwardNavigationLabel
+import com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments
+import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
+import com.itrocket.union.documents.domain.entity.ObjectType
+import com.itrocket.union.documents.presentation.view.DocumentComposeFragment
+import com.itrocket.union.documents.presentation.view.DocumentComposeFragmentDirections
 import com.itrocket.union.documents.presentation.view.DocumentView
 
 interface DocumentStore : Store<DocumentStore.Intent, DocumentStore.State, DocumentStore.Label> {
@@ -12,18 +20,32 @@ interface DocumentStore : Store<DocumentStore.Intent, DocumentStore.State, Docum
         object OnSearchClicked : Intent()
         object OnFilterClicked : Intent()
         object OnDocumentCreateClicked : Intent()
-        data class OnDocumentClicked(val id: String) : Intent()
+        data class OnDocumentClicked(val documentView: DocumentView.DocumentItemView) : Intent()
         data class OnDateArrowClicked(val date: String) : Intent()
     }
 
     data class State(
-        val isLoading: Boolean = false,
+        val isListLoading: Boolean = false,
+        val isDocumentCreateLoading: Boolean = false,
         val type: DocumentTypeDomain,
         val documents: List<DocumentView> = listOf(),
         val rotatedDates: List<String> = listOf()
     )
 
     sealed class Label {
+        data class ShowDocumentCreate(
+            private val document: DocumentDomain
+        ) : Label(),
+            ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = DocumentComposeFragmentDirections.toDocumentCreate(
+                    DocumentCreateArguments(
+                        document = document
+                    )
+                )
+
+        }
+        data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
         object GoBack : Label(), GoBackNavigationLabel
     }
 }

@@ -1,168 +1,32 @@
 package com.itrocket.union.accountingObjects.data
 
+import com.example.union_sync_api.data.AccountingObjectSyncApi
+import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.accountingObjects.data.mapper.map
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
+import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.accountingObjects.data.mapper.map
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
+import com.itrocket.union.manual.ManualType
+import com.itrocket.union.manual.getExploitingId
+import com.itrocket.union.manual.getMolId
+import com.itrocket.union.manual.getOrganizationId
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
-class AccountingObjectRepositoryImpl : AccountingObjectRepository {
+class AccountingObjectRepositoryImpl(
+    private val coreDispatchers: CoreDispatchers,
+    private val syncApi: AccountingObjectSyncApi
+) : AccountingObjectRepository {
 
-    override suspend fun getAccountingObjects() =
-        listOf(
-            AccountingObjectDomain(
-                id = "1",
-                isBarcode = true,
-                title = "Ширикоформатный жидкокристалический монитор Samsung",
-                status = ObjectStatus.AVAILABLE,
-                listMainInfo = listOf(
-                    ObjectInfoDomain(
-                        "Заводской номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Инвентарный номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Заводской номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Инвентарный номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Заводской номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Инвентарный номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Заводской номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Инвентарный номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Заводской номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Инвентарный номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                ),
-                listAdditionallyInfo = listOf(
-                    ObjectInfoDomain(
-                        "Заводской номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Инвентарный номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Заводской номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Инвентарный номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Заводской номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                )
-            ),
-            AccountingObjectDomain(
-                id = "2",
-                isBarcode = true,
-                title = "Ширикоформатный жидкокристалический монитор Samsung",
-                status = ObjectStatus.DECOMMISSIONED,
-                listMainInfo = listOf(
-                    ObjectInfoDomain(
-                        "Заводской номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Инвентарный номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                ),
-                listAdditionallyInfo = listOf()
-            ), AccountingObjectDomain(
-                id = "3",
-                isBarcode = true,
-                title = "Ширикоформатный жидкокристалический монитор Samsung",
-                status = ObjectStatus.UNDER_REPAIR,
-                listMainInfo = listOf(
-                    ObjectInfoDomain(
-                        "Заводской номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Инвентарный номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                ),
-                listAdditionallyInfo = listOf()
-            ),
-            AccountingObjectDomain(
-                id = "4",
-                isBarcode = true,
-                title = "Ширикоформатный жидкокристалический монитор Samsung",
-                status = ObjectStatus.UNDER_REVIEW,
-                listMainInfo = listOf(
-                    ObjectInfoDomain(
-                        "Заводской номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Инвентарный номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                ),
-                listAdditionallyInfo = listOf()
-            ),
-            AccountingObjectDomain(
-                id = "5",
-                isBarcode = true,
-                title = "Ширикоформатный жидкокристалический монитор Samsung",
-                status = ObjectStatus.UNDER_REPAIR,
-                listMainInfo = listOf(
-                    ObjectInfoDomain(
-                        "Заводской номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                    ObjectInfoDomain(
-                        "Инвентарный номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                ),
-                listAdditionallyInfo = listOf()
-            ),
-            AccountingObjectDomain(
-                id = "6",
-                isBarcode = true,
-                title = "Ширикоформатный жидкокристалический монитор Samsung",
-                status = ObjectStatus.DECOMMISSIONED,
-                listMainInfo = listOf(
-                    ObjectInfoDomain(
-                        "Заводской номер",
-                        "123123123123123333"
-                    ),
-                    ObjectInfoDomain(
-                        "Инвентарный номер",
-                        "таылватвлыавыалвыоалвыа"
-                    ),
-                ),
-                listAdditionallyInfo = listOf()
-            )
-        )
-
+    override suspend fun getAccountingObjects(params: List<ParamDomain>): Flow<List<AccountingObjectDomain>> =
+        withContext(coreDispatchers.io) {
+            syncApi.getAccountingObjects(
+                organizationId = params.getOrganizationId(),
+                exploitingId = params.getExploitingId()
+            ).map { it.map() }
+        }
 }

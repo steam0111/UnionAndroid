@@ -25,6 +25,7 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectStore
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
@@ -90,7 +91,9 @@ private fun AccountingObjectList(
             AccountingObjectItem(
                 accountingObject = item,
                 onAccountingObjectListener = onAccountingObjectListener,
-                isShowBottomLine = isShowBottomLine
+                isShowBottomLine = isShowBottomLine,
+                status = item.status?.type,
+                statusText = item.status?.text
             )
         }
         item {
@@ -122,14 +125,14 @@ fun AccountingObjectScreenPreview() {
                     id = "7",
                     isBarcode = true,
                     title = "Ширикоформатный жидкокристалический монитор Samsung2",
-                    status = ObjectStatus.AVAILABLE,
+                    status = null,
                     listMainInfo = listOf(
                         ObjectInfoDomain(
-                            "Заводской номер",
+                            R.string.auth_main_title,
                             "таылватвлыавыалвыоалвыа"
                         ),
                         ObjectInfoDomain(
-                            "Инвентарный номер",
+                            R.string.auth_main_title,
                             "таылватвлыавыалвыоалвыа"
                         ),
                     ),
@@ -139,14 +142,14 @@ fun AccountingObjectScreenPreview() {
                     id = "8",
                     isBarcode = true,
                     title = "Ширикоформатный жидкокристалический монитор Samsung2",
-                    status = ObjectStatus.AVAILABLE,
+                    status = ObjectStatus("available", ObjectStatusType.AVAILABLE),
                     listMainInfo = listOf(
                         ObjectInfoDomain(
-                            "Заводской номер",
+                            R.string.auth_main_title,
                             "таылватвлыавыалвыоалвыа"
                         ),
                         ObjectInfoDomain(
-                            "Инвентарный номер",
+                            R.string.auth_main_title,
                             "таылватвлыавыалвыоалвыа"
                         ),
                     ),

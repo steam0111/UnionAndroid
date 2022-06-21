@@ -33,8 +33,16 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
             DocumentMenuDomain(titleId = R.string.main_moved, iconId = R.drawable.ic_moved),
             DocumentMenuDomain(titleId = R.string.main_write_off, iconId = R.drawable.ic_write_off),
             DocumentMenuDomain(titleId = R.string.main_inventory, iconId = R.drawable.ic_inventory),
+            DocumentMenuDomain(titleId = R.string.inventories, iconId = R.drawable.ic_inventory),
             DocumentMenuDomain(titleId = R.string.nomenclature_group, iconId = R.drawable.ic_inventory),
             DocumentMenuDomain(titleId = R.string.nomenclature, iconId = R.drawable.ic_inventory),
-        )
+            DocumentMenuDomain(titleId = R.string.organizations, iconId = R.drawable.ic_inventory),
+            DocumentMenuDomain(titleId = R.string.departments, iconId = R.drawable.ic_inventory),
+            DocumentMenuDomain(titleId = R.string.producer, iconId = R.drawable.ic_inventory),
+            DocumentMenuDomain(titleId = R.string.counterparties, iconId = R.drawable.ic_inventory),
+            DocumentMenuDomain(titleId = R.string.regions, iconId = R.drawable.ic_inventory),
+            DocumentMenuDomain(titleId = R.string.branches, iconId = R.drawable.ic_inventory),
+            DocumentMenuDomain(titleId = R.string.equipment_types, iconId = R.drawable.ic_inventory),
+            )
     }
 }

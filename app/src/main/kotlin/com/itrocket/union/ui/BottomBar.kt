@@ -3,6 +3,7 @@ package com.itrocket.union.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,7 +29,9 @@ private const val MIN_STEP = 1
 @Composable
 fun ButtonBottomBar(
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    isLoading: Boolean = false,
+    isEnabled: Boolean = true
 ) {
     Row(
         modifier = Modifier
@@ -36,11 +39,62 @@ fun ButtonBottomBar(
             .background(graphite2)
             .padding(16.dp)
     ) {
-        BaseButton(
-            text = text,
+        ButtonWithLoader(
+            onClick = onClick,
+            modifier = Modifier.fillMaxWidth(),
+            isEnabled = isEnabled,
+            isLoading = isLoading
+        ) {
+            Text(
+                text = text,
+                style = AppTheme.typography.body2,
+                color = white,
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+}
+
+@Composable
+@Preview
+private fun BottomBarPreview() {
+    Column {
+        ButtonBottomBar(text = "Создать", onClick = { /*TODO*/ })
+        ButtonBottomBar(text = "Создать", onClick = { /*TODO*/ }, isLoading = true)
+    }
+}
+
+@Composable
+fun ButtonLoaderBottomBar(
+    text: String,
+    onClick: () -> Unit,
+    isLoading: Boolean,
+    isEnabled: Boolean = true,
+    isAllUppercase: Boolean = true
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(graphite2)
+            .padding(16.dp)
+    ) {
+        ButtonWithLoader(
+            isLoading = isLoading,
+            isEnabled = isEnabled,
             onClick = onClick,
             modifier = Modifier.fillMaxWidth()
-        )
+        ) {
+            Text(
+                text = if (isAllUppercase) {
+                    text.uppercase()
+                } else {
+                    text
+                },
+                style = AppTheme.typography.body2,
+                color = white,
+                fontWeight = FontWeight.Medium
+            )
+        }
     }
 }
 
@@ -59,7 +113,8 @@ fun StepBottomBar(
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
-            .fillMaxWidth().background(white)
+            .fillMaxWidth()
+            .background(white)
             .padding(vertical = 16.dp, horizontal = 48.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

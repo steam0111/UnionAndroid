@@ -44,6 +44,9 @@ import com.squareup.moshi.Json
  * @param extendedMol 
  * @param extendedInventoryState 
  * @param extendedInventoryType 
+ * @param inventoryBaseId 
+ * @param extendedInventoryBase 
+ * @param comment 
  */
 
 data class InventoryDto (
@@ -103,7 +106,16 @@ data class InventoryDto (
     val extendedInventoryState: InventoryStateDto? = null,
 
     @Json(name = "extendedInventoryType")
-    val extendedInventoryType: InventoryTypeDto? = null
+    val extendedInventoryType: InventoryTypeDto? = null,
+
+    @Json(name = "inventoryBaseId")
+    val inventoryBaseId: kotlin.String? = null,
+
+    @Json(name = "extendedInventoryBase")
+    val extendedInventoryBase: InventoryBaseDto? = null,
+
+    @Json(name = "comment")
+    val comment: kotlin.String? = null
 
 )
 

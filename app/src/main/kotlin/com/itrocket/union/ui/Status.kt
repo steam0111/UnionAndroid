@@ -14,36 +14,30 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
-import com.itrocket.union.documents.domain.entity.DocumentStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
+import com.itrocket.union.accountingObjects.domain.entity.Status
 
 @Composable
-fun SmallStatusLabel(objectStatus: ObjectStatus) {
+fun SmallStatusLabel(status: Status, text: String?) {
     BaseLabel(
-        objectStatus = objectStatus,
+        text = text,
+        status = status,
         verticalPadding = 4.dp,
         horizontalPadding = 8.dp,
         textStyle = AppTheme.typography.caption
     )
 }
 
-@Composable
-fun SmallStatusLabel(documentStatus: DocumentStatus) {
-    BaseLabel(
-        documentStatus = documentStatus,
-        verticalPadding = 4.dp,
-        horizontalPadding = 8.dp,
-        textStyle = AppTheme.typography.caption
-    )
-}
 
 @Composable
 fun MediumStatusLabel(
-    objectStatus: ObjectStatus,
+    status: Status,
+    text: String?,
     textStyle: TextStyle = AppTheme.typography.subtitle1
 ) {
     BaseLabel(
-        objectStatus = objectStatus,
+        text = text,
+        status = status,
         verticalPadding = 8.dp,
         horizontalPadding = 16.dp,
         textStyle = textStyle
@@ -52,38 +46,19 @@ fun MediumStatusLabel(
 
 @Composable
 private fun BaseLabel(
-    objectStatus: ObjectStatus,
+    status: Status,
+    text: String?,
     verticalPadding: Dp,
     horizontalPadding: Dp,
     textStyle: TextStyle
 ) {
     Text(
-        text = stringResource(objectStatus.textId),
+        text = text ?: stringResource(status.textId),
         style = textStyle,
-        color = objectStatus.textColor,
+        color = status.textColor,
         modifier = Modifier
             .background(
-                objectStatus.backgroundColor,
-                RoundedCornerShape(111.dp)
-            )
-            .padding(vertical = verticalPadding, horizontal = horizontalPadding)
-    )
-}
-
-@Composable
-private fun BaseLabel(
-    documentStatus: DocumentStatus,
-    verticalPadding: Dp,
-    horizontalPadding: Dp,
-    textStyle: TextStyle
-) {
-    Text(
-        text = stringResource(documentStatus.textId),
-        style = textStyle,
-        color = documentStatus.textColor,
-        modifier = Modifier
-            .background(
-                documentStatus.backgroundColor,
+                status.backgroundColor,
                 RoundedCornerShape(111.dp)
             )
             .padding(vertical = verticalPadding, horizontal = horizontalPadding)
@@ -94,8 +69,8 @@ private fun BaseLabel(
 @Preview
 private fun PreviewLabels() {
     Column {
-        SmallStatusLabel(ObjectStatus.AVAILABLE)
+        SmallStatusLabel(ObjectStatusType.AVAILABLE, "available")
         Spacer(modifier = Modifier.height(16.dp))
-        MediumStatusLabel(ObjectStatus.AVAILABLE)
+        MediumStatusLabel(ObjectStatusType.AVAILABLE, "available")
     }
 }

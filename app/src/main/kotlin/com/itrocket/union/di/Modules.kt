@@ -7,22 +7,38 @@ import com.itrocket.union.authMain.AuthMainModule
 import com.itrocket.union.authUser.AuthUserModule
 import com.itrocket.union.container.ContainerModule
 import com.itrocket.union.core.CoreModule
+import com.itrocket.union.organizations.OrganizationModule
+import com.itrocket.union.departments.DepartmentModule
 import com.itrocket.union.documents.DocumentModule
 import com.itrocket.union.documentsMenu.DocumentMenuModule
+import com.itrocket.union.employees.EmployeeModule
 import com.itrocket.union.filter.FilterModule
 import com.itrocket.union.filterValues.FilterValueModule
-import com.itrocket.union.identify.IdentifyModule
 import com.itrocket.union.location.LocationModule
+import com.itrocket.union.moduleSettings.ModuleSettingsModule
 import com.itrocket.union.network.NetworkModule
 import com.itrocket.union.nomenclature.NomenclatureModule
 import com.itrocket.union.nomenclatureGroup.NomenclatureGroupModule
 import com.itrocket.union.readingMode.ReadingModeModule
 import com.itrocket.union.reserveDetail.ReserveDetailModule
 import com.itrocket.union.reserves.ReservesModule
-import com.itrocket.union.serverConnect.ServerConnectModule
-import com.itrocket.union.moduleSettings.ModuleSettingsModule
 import com.itrocket.union.scanner.ScannerModule
 import com.itrocket.union.inventory.InventoryModule
+import com.itrocket.union.selectParams.SelectParamsModule
+import com.itrocket.union.serverConnect.ServerConnectModule
+import com.itrocket.union.sync.SyncModule
+import com.itrocket.union.token.TokenModule
+import com.itrocket.union.inventoryCreate.InventoryCreateModule
+import com.itrocket.union.switcher.SwitcherModule
+import com.itrocket.union.newAccountingObject.NewAccountingObjectModule
+import com.itrocket.union.documentCreate.DocumentCreateModule
+import com.itrocket.union.inventories.InventoriesModule
+import com.itrocket.union.producer.ProducerModule
+import com.itrocket.union.counterparties.CounterpartyModule
+import com.itrocket.union.regions.RegionModule
+import com.itrocket.union.branches.BranchesModule
+import com.itrocket.union.equipmentTypes.EquipmentTypeModule
+import com.itrocket.union.error.ErrorModule
 
 object Modules {
 
@@ -52,5 +68,23 @@ object Modules {
         ScannerModule.module,
         InventoryModule.module,
         IdentifyModule.module
+        InventoryModule.module,
+        SelectParamsModule.module,
+        TokenModule.module,
+        SyncModule.module,
+        InventoryCreateModule.module,
+        OrganizationModule.module,
+        DepartmentModule.module,
+        EmployeeModule.module,
+        NewAccountingObjectModule.module,
+        SwitcherModule.module,
+        InventoriesModule.module,
+        RegionModule.module,
+        DocumentCreateModule.module,
+        BranchesModule.module,
+        CounterpartyModule.module,
+        ProducerModule.module,
+        EquipmentTypeModule.module,
+        ErrorModule.module
     )
 }

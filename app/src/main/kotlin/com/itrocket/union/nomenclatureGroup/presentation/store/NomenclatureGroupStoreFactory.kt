@@ -7,14 +7,17 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.nomenclatureGroup.domain.NomenclatureGroupInteractor
 import com.itrocket.union.nomenclatureGroup.domain.entity.NomenclatureGroupDomain
+import com.itrocket.union.utils.ifBlankOrNull
 
 class NomenclatureGroupStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val nomenclatureGroupInteractor: NomenclatureGroupInteractor,
-    private val nomenclatureGroupArguments: NomenclatureGroupArguments
+    private val nomenclatureGroupArguments: NomenclatureGroupArguments,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): NomenclatureGroupStore =
         object : NomenclatureGroupStore,
@@ -37,9 +40,11 @@ class NomenclatureGroupStoreFactory(
             action: Unit,
             getState: () -> NomenclatureGroupStore.State
         ) {
+            dispatch(Result.Loading(true))
             catchException {
                 dispatch(Result.NomenclatureGroups(nomenclatureGroupInteractor.getNomenclatureGroups()))
             }
+            dispatch(Result.Loading(false))
         }
 
         override suspend fun executeIntent(
@@ -52,7 +57,8 @@ class NomenclatureGroupStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(NomenclatureGroupStore.Label.Error(throwable.message.orEmpty()))
+            dispatch(Result.Loading(false))
+            publish(NomenclatureGroupStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
     }
 

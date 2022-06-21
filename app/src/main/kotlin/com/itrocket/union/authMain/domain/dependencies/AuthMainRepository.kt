@@ -4,8 +4,6 @@ import com.itrocket.token_auth.AuthCredentials
 import com.itrocket.union.authMain.domain.entity.AuthCredsDomain
 import com.itrocket.union.authMain.domain.entity.AuthDomain
 import kotlinx.coroutines.flow.Flow
-import org.openapitools.client.models.AuthJwtResponse
-import retrofit2.Response
 
 interface AuthMainRepository {
 
@@ -15,11 +13,11 @@ interface AuthMainRepository {
 
     suspend fun saveAuthCredentials(credentials: AuthDomain)
 
-    fun subscribeAccessToken(): Flow<String>
-
     fun subscribeRefreshToken(): Flow<String>
 
     suspend fun clearAuthCredentials()
 
     suspend fun invalidateToken(accessToken: String): Boolean
+
+    suspend fun getAccessTokenOrEmpty(): String
 }

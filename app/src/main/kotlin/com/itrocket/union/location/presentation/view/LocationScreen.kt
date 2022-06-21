@@ -45,13 +45,13 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.itrocket.union.R
-import com.itrocket.union.ui.AppTheme
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.ui.EditText
+import com.itrocket.union.R
 import com.itrocket.union.location.domain.entity.LocationDomain
 import com.itrocket.union.location.presentation.store.LocationStore
+import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.Loader
 import com.itrocket.union.ui.MediumSpacer
@@ -326,17 +326,17 @@ private fun ArrowBackButton(enabled: Boolean, onClick: () -> Unit) {
 fun LocationScreenPreview() {
     LocationScreen(LocationStore.State(
         placeValues = listOf(
-            LocationDomain("Стелаж", "A"),
-            LocationDomain("Стелаж", "Б"),
-            LocationDomain("Стелаж", "С"),
-            LocationDomain("Стелаж", "D")
+            LocationDomain("1","1", "Стелаж", "A"),
+            LocationDomain("1","1", "Стелаж", "Б"),
+            LocationDomain("1","1", "Стелаж", "С"),
+            LocationDomain("1","1", "Стелаж", "D")
         ),
         levelHint = "Стелаж",
         selectPlaceScheme = listOf(
-            LocationDomain("Склад", "ГО"),
-            LocationDomain("Суп", "авыаывавыаывавыа"),
-            LocationDomain("Склад", "ГО"),
-            LocationDomain("Склад", "ГО")
+            LocationDomain("1","1", "Склад", "ГО"),
+            LocationDomain("1","1", "Суп", "авыаывавыаывавыа"),
+            LocationDomain("1","1", "Склад", "ГО"),
+            LocationDomain("1","1", "Склад", "ГО")
         )
     ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {})
 }

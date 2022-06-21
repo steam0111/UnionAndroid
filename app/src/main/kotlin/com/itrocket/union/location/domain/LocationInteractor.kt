@@ -1,11 +1,10 @@
 package com.itrocket.union.location.domain
 
-import kotlinx.coroutines.withContext
-import com.itrocket.union.location.domain.dependencies.LocationRepository
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.location.domain.dependencies.LocationRepository
 import com.itrocket.union.location.domain.entity.LocationDomain
 import com.itrocket.utils.resolveItem
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 class LocationInteractor(
     private val repository: LocationRepository,
@@ -14,7 +13,6 @@ class LocationInteractor(
 
     suspend fun getPlaceList(selectedPlaceScheme: List<LocationDomain>, searchText: String = "") =
         withContext(coreDispatchers.io) {
-            delay(500)
             repository.getPlaceList(selectedPlaceScheme, searchText)
         }
 
@@ -22,6 +20,10 @@ class LocationInteractor(
         val prevSelectedPlaceScheme = selectedPlaceScheme.toMutableList()
         prevSelectedPlaceScheme.removeLastOrNull()
         return prevSelectedPlaceScheme
+    }
+
+    fun isNewPlaceList(newList: List<LocationDomain>, oldList: List<LocationDomain>): Boolean {
+        return newList.isNotEmpty() && !newList.containsAll(oldList)
     }
 
     fun resolveNewPlace(

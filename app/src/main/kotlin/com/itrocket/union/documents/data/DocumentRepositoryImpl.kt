@@ -1,150 +1,33 @@
 package com.itrocket.union.documents.data
 
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.example.union_sync_api.data.DocumentSyncApi
+import com.example.union_sync_api.entity.DocumentCreateSyncEntity
+import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
+import com.itrocket.union.documents.data.mapper.map
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentDomain
-import com.itrocket.union.documents.domain.entity.DocumentStatus
-import com.itrocket.union.documents.domain.entity.ObjectType
+import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-class DocumentRepositoryImpl : DocumentRepository {
-    override suspend fun getDocuments(): List<DocumentDomain> {
-        return listOf(
-            DocumentDomain(
-                number = "1234543",
-                time = "8:20",
-                status = ObjectStatus.AVAILABLE,
-                documentStatus = DocumentStatus.CREATED,
-                objectType = ObjectType.MAIN_ASSETS,
-                date = "06.05.2022",
-                documentInfo = listOf(
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                )
-            ),
-            DocumentDomain(
-                number = "1234543",
-                time = "8:20",
-                status = ObjectStatus.AVAILABLE,
-                date = "05.05.2022",
-                documentStatus = DocumentStatus.CREATED,
-                objectType = ObjectType.MAIN_ASSETS,
-                documentInfo = listOf(
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                )
-            ),
-            DocumentDomain(
-                number = "1234543",
-                time = "8:20",
-                status = ObjectStatus.AVAILABLE,
-                date = "01.02.2022",
-                documentStatus = DocumentStatus.CREATED,
-                objectType = ObjectType.MAIN_ASSETS,
-                documentInfo = listOf(
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                )
-            ),
-            DocumentDomain(
-                number = "1234543",
-                time = "8:20",
-                status = ObjectStatus.AVAILABLE,
-                documentStatus = DocumentStatus.CREATED,
-                objectType = ObjectType.MAIN_ASSETS,
-                date = "16.12.2021",
-                documentInfo = listOf(
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                )
-            ),
-            DocumentDomain(
-                number = "1234543",
-                time = "8:20",
-                status = ObjectStatus.AVAILABLE,
-                date = "16.12.2021",
-                documentStatus = DocumentStatus.CREATED,
-                objectType = ObjectType.MAIN_ASSETS,
-                documentInfo = listOf(
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                )
-            ),
-            DocumentDomain(
-                number = "1234543",
-                time = "8:20",
-                status = ObjectStatus.AVAILABLE,
-                date = "16.12.2021",
-                documentStatus = DocumentStatus.CREATED,
-                objectType = ObjectType.MAIN_ASSETS,
-                documentInfo = listOf(
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                )
-            ),
-            DocumentDomain(
-                number = "1234543",
-                time = "8:20",
-                status = ObjectStatus.AVAILABLE,
-                date = "16.12.2021",
-                documentStatus = DocumentStatus.CREATED,
-                objectType = ObjectType.MAIN_ASSETS,
-                documentInfo = listOf(
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                )
-            ),
-            DocumentDomain(
-                number = "1234543",
-                time = "8:20",
-                status = ObjectStatus.AVAILABLE,
-                date = "16.12.2021",
-                documentStatus = DocumentStatus.CREATED,
-                objectType = ObjectType.MAIN_ASSETS,
-                documentInfo = listOf(
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                )
-            ),
-            DocumentDomain(
-                number = "1234543",
-                time = "8:20",
-                status = ObjectStatus.AVAILABLE,
-                date = "16.12.2021",
-                documentStatus = DocumentStatus.CREATED,
-                objectType = ObjectType.MAIN_ASSETS,
-                documentInfo = listOf(
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                    "Систмный интегратор",
-                )
-            )
-        )
+class DocumentRepositoryImpl(private val documentSyncApi: DocumentSyncApi) : DocumentRepository {
+    override suspend fun getAllDocuments(): Flow<List<DocumentDomain>> {
+        return documentSyncApi.getAllDocuments().map { it.map() }
     }
 
+    override suspend fun getDocuments(type: DocumentTypeDomain): Flow<List<DocumentDomain>> {
+        return documentSyncApi.getDocuments(type.name).map { it.map() }
+    }
+
+    override suspend fun getDocumentById(id: Long): DocumentDomain {
+        return documentSyncApi.getDocumentById(id).map()
+    }
+
+    override suspend fun updateDocument(documentUpdateSyncEntity: DocumentUpdateSyncEntity) {
+        return documentSyncApi.updateDocument(documentUpdateSyncEntity)
+    }
+
+    override suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): Long {
+        return documentSyncApi.createDocument(documentCreateSyncEntity)
+    }
 }

@@ -5,18 +5,23 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
-import kotlinx.coroutines.delay
+import com.itrocket.union.utils.ifBlankOrNull
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 
 class AccountingObjectStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val accountingObjectInteractor: AccountingObjectInteractor,
     private val filterInteractor: FilterInteractor,
+    private val accountingObjectArguments: AccountingObjectArguments?,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): AccountingObjectStore =
         object : AccountingObjectStore,
@@ -32,17 +37,31 @@ class AccountingObjectStoreFactory(
         AccountingObjectExecutor()
 
     private inner class AccountingObjectExecutor :
-        SuspendExecutor<AccountingObjectStore.Intent, Unit, AccountingObjectStore.State, Result, AccountingObjectStore.Label>(
-            mainContext = coreDispatchers.ui
+        BaseExecutor<AccountingObjectStore.Intent, Unit, AccountingObjectStore.State, Result, AccountingObjectStore.Label>(
+            context = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
             action: Unit,
             getState: () -> AccountingObjectStore.State
         ) {
             dispatch(Result.Loading(true))
-            delay(1000)
-            dispatch(Result.AccountingObjects(accountingObjectInteractor.getAccountingObjects()))
+            catchException {
+                dispatch(Result.Loading(true))
+                accountingObjectInteractor.getAccountingObjects(
+                    params = accountingObjectArguments?.params.orEmpty(),
+                    selectedAccountingObjectIds = accountingObjectArguments?.selectedAccountingObjectIds.orEmpty()
+                )
+                    .catch { handleError(it) }
+                    .collect {
+                        dispatch(Result.AccountingObjects(it))
+                        dispatch(Result.Loading(false))
+                    }
+            }
+        }
+
+        override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
+            publish(AccountingObjectStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
 
         override suspend fun executeIntent(
@@ -50,16 +69,24 @@ class AccountingObjectStoreFactory(
             getState: () -> AccountingObjectStore.State
         ) {
             when (intent) {
-                AccountingObjectStore.Intent.OnBackClicked -> publish(AccountingObjectStore.Label.GoBack)
+                AccountingObjectStore.Intent.OnBackClicked -> publish(AccountingObjectStore.Label.GoBack())
                 AccountingObjectStore.Intent.OnSearchClicked -> publish(
                     AccountingObjectStore.Label.ShowSearch
                 )
                 AccountingObjectStore.Intent.OnFilterClicked -> publish(
                     AccountingObjectStore.Label.ShowFilter(filterInteractor.getFilters())
                 )
-                is AccountingObjectStore.Intent.OnItemClicked -> publish(
+                is AccountingObjectStore.Intent.OnItemClicked -> onItemClick(intent.item)
+            }
+        }
+
+        private fun onItemClick(item: AccountingObjectDomain) {
+            if (accountingObjectArguments?.params?.isNotEmpty() == true) {
+                publish(AccountingObjectStore.Label.GoBack(AccountingObjectResult(item)))
+            } else {
+                publish(
                     AccountingObjectStore.Label.ShowDetail(
-                        intent.item
+                        item
                     )
                 )
             }

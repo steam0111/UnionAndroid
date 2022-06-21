@@ -6,9 +6,9 @@ interface TokenManager {
 
     suspend fun refreshToken(refreshToken: String): AuthCredentials
 
-    fun getAccessToken(): String
+    suspend fun getAccessToken(): String
 
-    fun getRefreshToken(): String
+    suspend fun getRefreshToken(): String
 
     suspend fun saveAuthCredentials(authCredentials: AuthCredentials)
 }

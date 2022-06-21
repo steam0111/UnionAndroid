@@ -20,7 +20,10 @@ object LocationModule {
         }
 
         factory<LocationRepository> {
-            LocationRepositoryImpl()
+            LocationRepositoryImpl(
+                locationSyncApi = get(),
+                coreDispatchers = get()
+            )
         }
 
         factory {
@@ -30,6 +33,7 @@ object LocationModule {
         factory {
             LocationStoreFactory(
                 DefaultStoreFactory,
+                get(),
                 get(),
                 get()
             ).create()
