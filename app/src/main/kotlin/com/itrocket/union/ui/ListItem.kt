@@ -180,13 +180,17 @@ fun AccountingObjectItem(
 fun IdentifyItem(
     identifies: AccountingObjectDomain,
     onIdentifyListener: (AccountingObjectDomain) -> Unit,
-    isShowBottomLine: Boolean
+    status: Status?,
+
+    isShowBottomLine: Boolean,
+    statusText: String? = null
+
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = {
-                onIdentifyListener(identifies)
+//                onIdentifyListener(identifies)
             })
             .padding(vertical = 12.dp, horizontal = 16.dp)
     ) {
@@ -209,7 +213,7 @@ fun IdentifyItem(
             }
         }
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
-            SmallStatusLabel(objectStatus = identifies.status)
+            status?.let { SmallStatusLabel(status = it, statusText) }
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -231,29 +235,29 @@ fun IdentifyItem(
                     )
                 )
             }
-            if (identifies.status == ObjectStatus.AVAILABLE) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Text(
-                        text = stringResource(R.string.common_rfid),
-                        style = AppTheme.typography.caption,
-                        color = graphite5,
-                        modifier = Modifier.padding(end = 4.dp)
-                    )
-                    RadioButton(
-                        selected = identifies.isBarcode,
-                        onClick = null,
-                        colors = RadioButtonDefaults.colors(
-                            selectedColor = psb6,
-                            unselectedColor = graphite3
-                        )
-                    )
-                }
-            }
+//            if (identifies.status == ObjectStatus.AVAILABLE) {
+//                Spacer(modifier = Modifier.height(8.dp))
+//                Row(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    horizontalArrangement = Arrangement.End
+//                ) {
+//                    Text(
+//                        text = stringResource(R.string.common_rfid),
+//                        style = AppTheme.typography.caption,
+//                        color = graphite5,
+//                        modifier = Modifier.padding(end = 4.dp)
+//                    )
+//                    RadioButton(
+//                        selected = identifies.isBarcode,
+//                        onClick = null,
+//                        colors = RadioButtonDefaults.colors(
+//                            selectedColor = psb6,
+//                            unselectedColor = graphite3
+//                        )
+//                    )
+//                }
+//            }
         }
     }
     if (isShowBottomLine) {

@@ -2,10 +2,14 @@ package com.itrocket.union.identify
 
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.itrocket.core.base.BaseViewModel
+import com.itrocket.union.accountingObjectDetail.data.AccountingObjectDetailRepositoryImpl
+import com.itrocket.union.accountingObjectDetail.domain.dependencies.AccountingObjectDetailRepository
 import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailComposeFragmentArgs
 import com.itrocket.union.accountingObjects.data.AccountingObjectRepositoryImpl
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
+import com.itrocket.union.identify.data.IdentifyRepositoryImpl
+import com.itrocket.union.identify.domain.IdentifyInteractor
 import com.itrocket.union.identify.domain.dependencies.IdentifyRepository
 import com.itrocket.union.identify.presentation.store.IdentifyStore
 import com.itrocket.union.identify.presentation.store.IdentifyStoreFactory
@@ -21,12 +25,12 @@ object IdentifyModule {
             BaseViewModel(get<IdentifyStore>())
         }
 
-        factory<AccountingObjectRepository> {
-            AccountingObjectRepositoryImpl()
+        factory<IdentifyRepository> {
+            IdentifyRepositoryImpl()
         }
 
         factory {
-            AccountingObjectInteractor(get(), get())
+            IdentifyInteractor(get(), get())
         }
 
         factory {
@@ -35,6 +39,7 @@ object IdentifyModule {
                 get(),
                 get(),
                 get(),
+                get()
             ).create()
         }
     }

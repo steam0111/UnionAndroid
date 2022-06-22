@@ -43,7 +43,7 @@ interface DocumentMenuStore :
             ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = when (item.titleId) {
-                    R.string.main_accounting_object -> DocumentMenuComposeFragmentDirections.toAccountingObjects()
+                    R.string.main_accounting_object -> DocumentMenuComposeFragmentDirections.toAccountingObjects(null)
                     R.string.main_identification -> DocumentMenuComposeFragmentDirections.toIdentify()
                     R.string.main_reserves -> DocumentMenuComposeFragmentDirections.toReserves()
                     R.string.main_documents -> DocumentMenuComposeFragmentDirections.toDocuments(

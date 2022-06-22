@@ -13,12 +13,21 @@ import com.itrocket.union.filter.domain.entity.FilterDomain
 import com.itrocket.union.filter.presentation.store.FilterArguments
 import com.itrocket.union.identify.domain.entity.IdentifyDomain
 import com.itrocket.union.identify.presentation.view.IdentifyComposeFragmentDirections
+import com.itrocket.union.inventory.presentation.store.InventoryStore
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
+import com.itrocket.union.manual.ParamDomain
 
 interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, IdentifyStore.Label> {
 
     sealed class Intent {
         data class OnItemClicked(val item: AccountingObjectDomain) :
             Intent()
+
+        data class OnSelectPage(val selectedPage: Int) : IdentifyStore.Intent()
+        data class OnParamClicked(val param: ParamDomain) : IdentifyStore.Intent()
+        object OnDropClicked : IdentifyStore.Intent()
+        object OnCreateClicked : IdentifyStore.Intent()
+        object OnReadingModeClicked : IdentifyStore.Intent()
 
         object OnFilterClicked : IdentifyStore.Intent()
         object OnBackClicked : IdentifyStore.Intent()
@@ -28,12 +37,19 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
     data class State(
 //        val accountingObjectDomain: AccountingObjectDomain,
 
-        val isLoading: Boolean = false,
+        val isIdentifyLoading: Boolean = false,
         val identifies: List<AccountingObjectDomain> = listOf(),
         val selectedPage: Int = 0,
-        val accountingObjects: List<AccountingObjectDomain> = listOf()
-
-
+        val accountingObjects: List<AccountingObjectDomain>        = listOf()
+//            AccountingObjectDomain(
+//                id = "4",
+//                title = "Name",
+//                status = null,
+//                inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
+//                listAdditionallyInfo = listOf(),
+//                listMainInfo = listOf()
+//            )
+//        )
     )
 
     sealed class Label {

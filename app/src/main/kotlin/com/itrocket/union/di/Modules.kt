@@ -39,6 +39,7 @@ import com.itrocket.union.regions.RegionModule
 import com.itrocket.union.branches.BranchesModule
 import com.itrocket.union.equipmentTypes.EquipmentTypeModule
 import com.itrocket.union.error.ErrorModule
+import com.itrocket.union.identify.IdentifyModule
 
 object Modules {
 
@@ -67,7 +68,7 @@ object Modules {
         ModuleSettingsModule.module,
         ScannerModule.module,
         InventoryModule.module,
-        IdentifyModule.module
+        IdentifyModule.module,
         InventoryModule.module,
         SelectParamsModule.module,
         TokenModule.module,
