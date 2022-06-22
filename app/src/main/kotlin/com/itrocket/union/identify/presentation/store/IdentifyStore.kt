@@ -40,16 +40,24 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         val isIdentifyLoading: Boolean = false,
         val identifies: List<AccountingObjectDomain> = listOf(),
         val selectedPage: Int = 0,
-        val accountingObjects: List<AccountingObjectDomain>        = listOf()
-//            AccountingObjectDomain(
-//                id = "4",
-//                title = "Name",
-//                status = null,
-//                inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
-//                listAdditionallyInfo = listOf(),
-//                listMainInfo = listOf()
-//            )
-//        )
+        val accountingObjects: List<AccountingObjectDomain> = listOf(
+            AccountingObjectDomain(
+                id = "4",
+                title = "Name",
+                status = null,
+                inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
+                listAdditionallyInfo = listOf(),
+                listMainInfo = listOf()
+            ),
+            AccountingObjectDomain(
+                id = "5",
+                title = "Name2",
+                status = null,
+                inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
+                listAdditionallyInfo = listOf(),
+                listMainInfo = listOf()
+            ),
+        )
     )
 
     sealed class Label {

@@ -1,6 +1,7 @@
 package com.itrocket.union.identify.presentation.view
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,7 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -29,6 +32,7 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.identify.presentation.store.IdentifyStore
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.ui.*
+import com.itrocket.utils.clickableUnbounded
 import com.itrocket.utils.getTargetPage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
@@ -165,48 +169,21 @@ private fun Toolbar(
         backgroundColor = psb1,
         textColor = white,
         content = {
-            Text(
-                text = stringResource(R.string.common_drop),
-                style = AppTheme.typography.body2,
-                color = psb6,
-                modifier = Modifier.clickable(onClick = onDropClickListener)
-            )
-        }
-    )
-}
-
-
-@Composable
-private fun ParamContent(
-    params: List<ParamDomain>,
-    onParamClickListener: (ParamDomain) -> Unit,
-    onCrossClickListener: (ParamDomain) -> Unit
-) {
-    LazyColumn(modifier = Modifier.fillMaxHeight()) {
-        items(params, key = {
-            it.type
-        }) {
-            if (it.value.isNotBlank()) {
-                SelectedBaseField(
-                    label = stringResource(it.type.titleId),
-                    value = it.value,
-                    onFieldClickListener = {
-                        onParamClickListener(it)
-                    },
-                    isCrossVisible = true,
-                    onCrossClickListener = {
-                        onCrossClickListener(it)
-                    }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_document_add),
+                    contentDescription = null,
+                    modifier = Modifier.clickableUnbounded(onClick = onSaveClickListener)
                 )
-            } else {
-                UnselectedBaseField(
-                    label = stringResource(it.type.titleId),
-                    onFieldClickListener = {
-                        onParamClickListener(it)
-                    })
+                Spacer(modifier = Modifier.width(24.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.ic_document_search),
+                    contentDescription = null,
+                    modifier = Modifier.clickableUnbounded(onClick = onDropClickListener)
+                )
             }
         }
-    }
+    )
 }
 
 @Composable
@@ -232,74 +209,3 @@ private fun IdentifyList(
         }
     }
 }
-
-@Composable
-private fun ListInfo(listInfo: List<ObjectInfoDomain>) {
-    LazyColumn {
-//        items(listInfo) {
-//            ExpandedInfoField(
-//                label = it.title,
-//                value = it.value,
-//                modifier = Modifier.fillMaxWidth()
-//            )
-//        }
-    }
-}
-
-//    @ExperimentalPagerApi
-//    @Preview(
-//        name = "светлая тема экран - 6.3 (3040x1440)",
-//        showSystemUi = true,
-//        device = Devices.PIXEL_4_XL,
-//        uiMode = Configuration.UI_MODE_NIGHT_NO
-//    )
-//    @Preview(
-//        name = "темная тема экран - 4,95 (1920 × 1080)",
-//        showSystemUi = true,
-//        device = Devices.NEXUS_5,
-//        uiMode = Configuration.UI_MODE_NIGHT_YES
-//    )
-//    @Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
-//    @Composable
-//    fun IdentifyScreenPreview() {
-//        IdentifyScreen(
-//            IdentifyStore.State(
-//                                identifies = listOf(
-//                    AccountingObjectDomain(
-//                        id = "7",
-//                        isBarcode = true,
-//                        title = "Ширикоформатный жидкокристалический монитор Samsung2",
-//
-//                        status = ObjectStatus.AVAILABLE,
-//                        listMainInfo = listOf(
-//                            ObjectInfoDomain(
-//                                "Заводской номер",
-//                                "таылватвлыавыалвыоалвыа"
-//                            ),
-//                            ObjectInfoDomain(
-//                                "Инвентарный номер",
-//                                "таылватвлыавыалвыоалвыа"
-//                            ),
-//                        ),
-//                        listAdditionallyInfo = listOf()
-//                    ),
-//                    AccountingObjectDomain(
-//                        id = "8",
-//                        isBarcode = true,
-//                        title = "Ширикоформатный жидкокристалический монитор Samsung2",
-//                        status = ObjectStatus.AVAILABLE,
-//                        listMainInfo = listOf(
-//                            ObjectInfoDomain(
-//                                "Заводской номер",
-//                                "таылватвлыавыалвыоалвыа"
-//                            ),
-//                            ObjectInfoDomain(
-//                                "Инвентарный номер",
-//                                "таылватвлыавыалвыоалвыа"
-//                            ),
-//                        ),
-//                        listAdditionallyInfo = listOf()
-//                    )
-//                )
-//            ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
-//    }
