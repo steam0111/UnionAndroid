@@ -21,9 +21,10 @@ import androidx.compose.ui.unit.dp
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
-import com.itrocket.union.filter.domain.entity.FilterDomain
-import com.itrocket.union.filter.domain.entity.FilterValueType
 import com.itrocket.union.filter.presentation.store.FilterStore
+import com.itrocket.union.manual.ManualType
+import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.Params
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
@@ -40,7 +41,7 @@ fun FilterScreen(
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
     onDropClickListener: () -> Unit,
-    onFieldClickListener: (FilterDomain) -> Unit,
+    onFieldClickListener: (ParamDomain) -> Unit,
     onShowClickListener: () -> Unit
 ) {
     val resources = LocalContext.current.resources
@@ -54,7 +55,7 @@ fun FilterScreen(
             },
             content = {
                 FilterContent(
-                    filters = state.filterFields,
+                    filters = state.params.paramList,
                     onFieldClickListener = onFieldClickListener
                 )
             },
@@ -92,19 +93,19 @@ private fun FilterToolbar(onCrossClickListener: () -> Unit, onDropClickListener:
 
 @Composable
 private fun FilterContent(
-    filters: List<FilterDomain>,
-    onFieldClickListener: (FilterDomain) -> Unit
+    filters: List<ParamDomain>,
+    onFieldClickListener: (ParamDomain) -> Unit
 ) {
     LazyColumn {
         items(filters) {
-            if (it.values.isEmpty()) {
-                UnselectedBaseField(label = it.name, onFieldClickListener = {
+            if (it.value.isEmpty()) {
+                UnselectedBaseField(label = stringResource(it.type.titleId), onFieldClickListener = {
                     onFieldClickListener(it)
                 })
             } else {
                 SelectedBaseField(
-                    label = it.name,
-                    value = it.values.joinToString(", "),
+                    label = stringResource(it.type.titleId),
+                    value = it.value,
                     onFieldClickListener = {
                         onFieldClickListener(it)
                     }
@@ -148,24 +149,23 @@ private fun FilterBottomBar(
 fun FilterScreenPreview() {
     FilterScreen(
         FilterStore.State(
-            filterFields = listOf(
-                FilterDomain(
-                    name = "Местоположение",
-                    filterValueType = FilterValueType.SINGLE_SELECT_LIST
+            params = Params(listOf(
+                ParamDomain(
+                    type = ManualType.ORGANIZATION,
+                    id = "1",
+                    value = ""
                 ),
-                FilterDomain(name = "Статус", filterValueType = FilterValueType.SINGLE_SELECT_LIST),
-                FilterDomain(
-                    name = "Дата заявки",
-                    values = listOf("За все время"),
-                    valueList = listOf(
-                        "За все время",
-                        "За сегодня",
-                        "За 2 дня",
-                        "За 3 дня",
-                        "За неделю"
-                    ),
-                    filterValueType = FilterValueType.SINGLE_SELECT_LIST,
+                ParamDomain(
+                    type = ManualType.ORGANIZATION,
+                    id = "2",
+                    value = ""
+                ),
+                ParamDomain(
+                    type = ManualType.LOCATION,
+                    id = "3",
+                    value = ""
                 )
+            )
             )
         ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
 }

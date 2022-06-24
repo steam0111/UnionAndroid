@@ -84,7 +84,7 @@
             app:destination="@id/accountingObjectsDetails" />
 
         <action
-            android:id="@+id/to_Filter"
+            android:id="@+id/to_filter"
             app:destination="@id/filter" />
     </fragment>
 
@@ -107,7 +107,7 @@
             app:destination="@id/reserveDetail" />
 
         <action
-            android:id="@+id/to_Filter"
+            android:id="@+id/to_filter"
             app:destination="@id/filter" />
     </fragment>
 
@@ -147,6 +147,9 @@
             android:name="FilterArguments"
             app:argType="com.itrocket.union.filter.presentation.store.FilterArguments"
             app:nullable="false" />
+        <action
+            android:id="@+id/to_selectParams"
+            app:destination="@id/selectParams"/>
     </fragment>
 
     <fragment
