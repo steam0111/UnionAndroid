@@ -255,7 +255,11 @@
 
     <fragment
         android:id="@+id/organization"
-        android:name="com.itrocket.union.organizations.presentation.view.OrganizationComposeFragment" />
+        android:name="com.itrocket.union.organizations.presentation.view.OrganizationComposeFragment">
+        <action
+            android:id="@+id/to_organizationDetail"
+            app:destination="@+id/organizationDetail" />
+    </fragment>
 
     <fragment
         android:id="@+id/departments"
@@ -352,6 +356,15 @@
         <argument
             android:name="NomenclatureGroupDetailComposeFragmentArgs"
             app:argType="com.itrocket.union.nomenclatureGroupDetail.presentation.store.NomenclatureGroupDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/organizationDetail"
+        android:name="com.itrocket.union.organizationDetail.presentation.view.OrganizationDetailComposeFragment">
+        <argument
+            android:name="OrganizationDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.organizationDetail.presentation.store.OrganizationDetailArguments"
             app:nullable="false" />
     </fragment>
 

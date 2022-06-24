@@ -20,7 +20,11 @@ class OrganizationComposeFragment :
                 state = state,
                 appInsets = appInsets,
                 onBackClickListener = { accept(OrganizationStore.Intent.OnBackClicked) },
-                onOrganizationClickListener = {}
+                onOrganizationClickListener = {
+                    accept(
+                        OrganizationStore.Intent.OnOrganizationsClicked(it.id)
+                    )
+                }
             )
         }
     }

@@ -7,7 +7,7 @@ import com.itrocket.union.R
 
 fun NomenclatureDetailSyncEntity.toDomain(): NomenclatureDetailDomain {
     val listInfo = mutableListOf<ObjectInfoDomain>()
-    listInfo.add(ObjectInfoDomain(R.string.nomenclature_name, nomenclature.name))
+    listInfo.add(ObjectInfoDomain(R.string.common_name, nomenclature.name))
     listInfo.add(ObjectInfoDomain(R.string.nomenclature_code, nomenclature.code))
     nomenclatureGroup?.name?.let {
         listInfo.add(ObjectInfoDomain(R.string.nomenclature_group_name, it))

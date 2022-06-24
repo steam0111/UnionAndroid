@@ -61,9 +61,13 @@ class OrganizationStoreFactory(
         ) {
             when (intent) {
                 OrganizationStore.Intent.OnBackClicked -> publish(OrganizationStore.Label.GoBack)
-                OrganizationStore.Intent.OnFilterClicked -> {}
-                OrganizationStore.Intent.OnSearchClicked -> {}
-                is OrganizationStore.Intent.OnOrganizationsClicked -> {}
+                OrganizationStore.Intent.OnFilterClicked -> {
+                }
+                OrganizationStore.Intent.OnSearchClicked -> {
+                }
+                is OrganizationStore.Intent.OnOrganizationsClicked -> {
+                    publish(OrganizationStore.Label.ShowDetail(intent.id))
+                }
             }
         }
 
