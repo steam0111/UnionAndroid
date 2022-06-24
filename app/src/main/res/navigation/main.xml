@@ -41,8 +41,8 @@
             android:id="@+id/to_moduleSettings"
             app:destination="@id/moduleSettings" />
         <action
-            android:id="@+id/to_inventory"
-            app:destination="@id/inventory" />
+            android:id="@+id/to_inventoryContainer"
+            app:destination="@id/inventoryContainer" />
         <action
             android:id="@+id/to_organizations"
             app:destination="@id/organization" />
@@ -217,40 +217,12 @@
         android:label="@string/module_settings_label" />
 
     <fragment
-        android:id="@+id/inventory"
-        android:name="com.itrocket.union.inventory.presentation.view.InventoryComposeFragment"
-        android:label="Inventory">
-        <action
-            android:id="@+id/to_selectParams"
-            app:destination="@id/selectParams" />
-        <action
-            android:id="@+id/to_location"
-            app:destination="@id/location" />
-        <action
-            android:id="@+id/to_accountingObjectsDetails"
-            app:destination="@id/accountingObjectsDetails" />
-        <action
-            android:id="@+id/to_inventoryCreate"
-            app:destination="@id/inventoryCreate" />
-    </fragment>
-
-    <fragment
         android:id="@+id/selectParams"
         android:name="com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFragment">
 
         <argument
             android:name="SelectParamsComposeFragmentArgs"
             app:argType="com.itrocket.union.selectParams.presentation.store.SelectParamsArguments" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/inventoryCreate"
-        android:name="com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateComposeFragment"
-        android:label="InventoryCreate">
-
-        <argument
-            android:name="InventoryCreateArguments"
-            app:argType="com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateArguments" />
     </fragment>
 
     <fragment
@@ -295,8 +267,8 @@
         android:label="Inventories">
 
         <action
-            android:id="@+id/to_inventoryCreate"
-            app:destination="@id/inventoryCreate" />
+            android:id="@+id/to_inventoryContainer"
+            app:destination="@id/inventoryContainer" />
     </fragment>
 
     <fragment
@@ -368,4 +340,24 @@
             app:nullable="false" />
     </fragment>
 
+
+    <fragment
+        android:id="@+id/inventoryContainer"
+        android:name="com.itrocket.union.inventoryContainer.presentation.view.InventoryContainerComposeFragment"
+        android:label="InventoryContainer">
+        <action
+            android:id="@+id/to_selectParams"
+            app:destination="@id/selectParams" />
+        <action
+            android:id="@+id/to_location"
+            app:destination="@id/location" />
+        <action
+            android:id="@+id/to_accountingObjectsDetails"
+            app:destination="@id/accountingObjectsDetails" />
+
+        <argument
+            android:name="InventoryContainerArguments"
+            app:argType="com.itrocket.union.inventoryContainer.presentation.store.InventoryContainerArguments"
+            app:nullable="true" />
+    </fragment>
 </navigation>

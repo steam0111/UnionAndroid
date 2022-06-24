@@ -1,10 +1,8 @@
 package com.itrocket.union.inventoryCreate.presentation.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.navArgs
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
@@ -25,7 +23,6 @@ class InventoryCreateComposeFragment :
     BaseComposeFragment<InventoryCreateStore.Intent, InventoryCreateStore.State, InventoryCreateStore.Label>(
         INVENTORYCREATE_VIEW_MODEL_QUALIFIER
     ) {
-    override val navArgs by navArgs<InventoryCreateComposeFragmentArgs>()
 
     override val fragmentResultList: List<FragmentResult>
         get() = listOf(
@@ -138,5 +135,9 @@ class InventoryCreateComposeFragment :
                 }
             }
         }
+    }
+
+    companion object {
+        const val INVENTORY_CREATE_ARGUMENTS = "inventory create arguments"
     }
 }

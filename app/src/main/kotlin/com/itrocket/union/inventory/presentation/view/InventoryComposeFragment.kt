@@ -6,10 +6,12 @@ import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.inventory.InventoryModule.INVENTORY_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.inventory.presentation.store.InventoryStore
+import com.itrocket.union.inventoryContainer.presentation.view.InventoryCreateClickHandler
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.location.presentation.view.LocationComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 import com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFragment
+import com.itrocket.union.utils.fragment.ChildBackPressedHandler
 
 class InventoryComposeFragment :
     BaseComposeFragment<InventoryStore.Intent, InventoryStore.State, InventoryStore.Label>(
@@ -71,5 +73,16 @@ class InventoryComposeFragment :
                 }
             )
         }
+    }
+
+    override fun handleLabel(label: InventoryStore.Label) {
+        super.handleLabel(label)
+        when (label) {
+            InventoryStore.Label.GoBack -> (parentFragment as? ChildBackPressedHandler)?.onChildBackPressed()
+            is InventoryStore.Label.ShowCreateInventory -> (parentFragment as? InventoryCreateClickHandler)?.onInventoryCreateClicked(
+                label.inventoryCreate
+            )
+        }
+
     }
 }

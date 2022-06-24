@@ -5,10 +5,10 @@ import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.union.authContainer.presentation.view.AuthContainer
-import com.itrocket.union.authContainer.presentation.view.ChildBackPressedHandler
 import com.itrocket.union.authContainer.presentation.view.NextClickHandler
 import com.itrocket.union.authUser.AuthUserModule.AUTHUSER_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.authUser.presentation.store.AuthUserStore
+import com.itrocket.union.utils.fragment.ChildBackPressedHandler
 
 class AuthUserComposeFragment :
     BaseComposeFragment<AuthUserStore.Intent, AuthUserStore.State, AuthUserStore.Label>(
