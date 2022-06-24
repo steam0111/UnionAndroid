@@ -20,7 +20,7 @@ fun CounterpartyDomain.toDefaultItem() =
         subtitles = mapOf(
             R.string.organization_actual_address to actualAddress,
             R.string.organization_legal_address to legalAddress,
-            R.string.counterparties_inn to inn,
-            R.string.counterparties_kpp to kpp,
+            R.string.common_inn to inn,
+            R.string.common_kpp to kpp,
         )
     )

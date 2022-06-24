@@ -30,6 +30,7 @@ import com.itrocket.union.location.presentation.view.LocationScreenPreview
 import com.itrocket.union.newAccountingObject.presentation.view.NewAccountingObjectScreenPreview
 import com.itrocket.union.nomenclatureDetail.presentation.view.NomenclatureDetailScreenPreview
 import com.itrocket.union.nomenclatureGroupDetail.presentation.view.NomenclatureGroupDetailScreenPreview
+import com.itrocket.union.organizationDetail.presentation.view.OrganizationDetailScreenPreview
 import com.itrocket.union.organizations.presentation.view.OrganizationsScreenPreview
 import com.itrocket.union.producer.presentation.view.ProducerScreenPreview
 import com.itrocket.union.readingMode.presentation.view.ReadingModeScreenPreview
@@ -289,6 +290,13 @@ class ScreensTest : ScreenshotTest {
     fun `NomenclatureGroupDetail`() {
         takeScreenShot {
             NomenclatureGroupDetailScreenPreview()
+        }
+    }
+
+    @Test
+    fun `OrganizationDetail`() {
+        takeScreenShot {
+            OrganizationDetailScreenPreview()
         }
     }
 }

@@ -43,6 +43,7 @@ import com.union.sdk.SyncModule
 import com.itrocket.union.employeeDetail.EmployeeDetailModule
 import com.itrocket.union.nomenclatureDetail.NomenclatureDetailModule
 import com.itrocket.union.nomenclatureGroupDetail.NomenclatureGroupDetailModule
+import com.itrocket.union.organizationDetail.OrganizationDetailModule
 
 object Modules {
 
@@ -90,6 +91,7 @@ object Modules {
         EmployeeDetailModule.module,
         NomenclatureDetailModule.module,
         DepartmentDetailModule.module,
-        NomenclatureGroupDetailModule.module
+        NomenclatureGroupDetailModule.module,
+        OrganizationDetailModule.module
     )
 }

@@ -6,5 +6,5 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.nomenclatureGroupDetail.domain.entity.NomenclatureGroupDetailDomain
 
 fun NomenclatureGroupSyncEntity.toDomain() = NomenclatureGroupDetailDomain(
-    listOf(ObjectInfoDomain(R.string.nomenclature_name, name))
+    listOf(ObjectInfoDomain(R.string.common_name, name))
 )

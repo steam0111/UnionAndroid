@@ -7,7 +7,7 @@ import com.itrocket.union.departmentDetail.domain.entity.DepartmentDetailDomain
 
 fun DepartmentDetailSyncEntity.toDomain(): DepartmentDetailDomain {
     val listInfo = mutableListOf<ObjectInfoDomain>()
-    listInfo.add(ObjectInfoDomain(R.string.department_name, department.name))
+    listInfo.add(ObjectInfoDomain(R.string.common_name, department.name))
     listInfo.add(ObjectInfoDomain(R.string.department_code, department.code))
     organization?.name?.let {
         listInfo.add(ObjectInfoDomain(R.string.organization, it))

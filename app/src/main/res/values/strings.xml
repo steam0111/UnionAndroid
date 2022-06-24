@@ -29,6 +29,9 @@
     <string name="common_add">Добавить</string>
     <string name="common_choose">Выбор</string>
     <string name="common_error">Что-то пошло не так…</string>
+    <string name="common_name">Название</string>
+    <string name="common_kpp">КПП</string>
+    <string name="common_inn">ИНН</string>
 
     <!-- Auth -->
     <string name="auth_suggest">Это нужно сделать один раз</string>
@@ -108,7 +111,6 @@
 
     <!-- Nomenclature -->
     <string name="nomenclature_title">Номенклатура</string>
-    <string name="nomenclature_name">Название</string>
     <string name="nomenclature_code">Код</string>
     <string name="nomenclature_group_name">Ном. группа</string>
 
@@ -194,6 +196,8 @@
     <string name="organization_actual_address">Фактический адрес</string>
     <string name="organization_legal_address">"Юридический адрес</string>
     <string name="organization">Организация</string>
+    <string name="organization_comment">Комментарий</string>
+    <string name="organization_employee">Сотрудник</string>
 
     <!-- Branches -->
     <string name="branches_title">Филиалы</string>
@@ -203,10 +207,10 @@
     <string name="departments_title">Подразделения</string>
     <string name="department_code">Код подразделения</string>
     <string name="department_title">Подразделение</string>
-    <string name="department_name">Название</string>
 
     <!-- Employees -->
     <string name="employees_nfc">NFC</string>
+    <string name="employees_name">Сотрудник</string>
     <string name="employees_title">Сотрудники</string>
     <string name="employees_service_number">Табельный номер: %s</string>
     <string name="employees_firstname">Имя</string>
@@ -228,8 +232,6 @@
     <!-- Counterparties -->
     <string name="counterparties_title">Контрагенты</string>
     <string name="counterparties_code">Код контрагента</string>
-    <string name="counterparties_kpp">КПП</string>
-    <string name="counterparties_inn">ИНН</string>
 
     <string name="equipment_type_code">Код оборудования</string>
     <string name="equipment_type_title">Типы оборудования</string>
