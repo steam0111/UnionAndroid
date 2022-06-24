@@ -265,7 +265,9 @@ fun InventoryCreateScreenPreview() {
                             "таылватвлыавыалвыоалвыа"
                         ),
                     ),
-                    listAdditionallyInfo = listOf()
+                    listAdditionallyInfo = listOf(),
+                    barcodeValue = "",
+                    rfidValue = ""
                 ),
                 AccountingObjectDomain(
                     id = "8",
@@ -282,8 +284,10 @@ fun InventoryCreateScreenPreview() {
                             "таылватвлыавыалвыоалвыа"
                         ),
                     ),
-                    listAdditionallyInfo = listOf()
-                )
+                    listAdditionallyInfo = listOf(),
+                    barcodeValue = "",
+                    rfidValue = ""
+                ),
             )
         ),
     ), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {}, {}, {})

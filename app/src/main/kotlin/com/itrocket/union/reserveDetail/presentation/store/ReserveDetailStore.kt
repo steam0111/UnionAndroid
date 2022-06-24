@@ -7,8 +7,6 @@ import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
-import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.readingMode.presentation.store.ReadingModeArguments
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
@@ -35,9 +33,7 @@ interface ReserveDetailStore :
             ShowBottomSheetNavigationLabel {
 
             override val arguments: Bundle
-                get() = bundleOf(
-                    ReadingModeComposeFragment.READING_MODE_ARGS to ReadingModeArguments(readingMode)
-                )
+                get() = bundleOf()
 
             override val containerId: Int = R.id.mainActivityNavHostFragment
 

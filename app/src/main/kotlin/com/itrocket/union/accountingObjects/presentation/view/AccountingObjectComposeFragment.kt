@@ -1,5 +1,6 @@
 package com.itrocket.union.accountingObjects.presentation.view
 
+import android.util.Log
 import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.navArgs
 import com.google.accompanist.pager.ExperimentalPagerApi

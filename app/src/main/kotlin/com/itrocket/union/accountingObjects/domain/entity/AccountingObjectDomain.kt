@@ -14,6 +14,8 @@ data class AccountingObjectDomain(
     val status: ObjectStatus?,
     val inventoryStatus: InventoryAccountingObjectStatus = InventoryAccountingObjectStatus.NOT_FOUND,
     val isBarcode: Boolean = false,
+    val rfidValue: String?,
+    val barcodeValue: String?,
     val listMainInfo: List<ObjectInfoDomain>,
     val listAdditionallyInfo: List<ObjectInfoDomain>
 ) : Parcelable {

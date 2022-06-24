@@ -70,6 +70,7 @@ class ModuleSettingsStoreFactory(
                         defaultService = getState().defaultService,
                         keyCode = getState().keyCode
                     )
+                    publish(ModuleSettingsStore.Label.GoBack)
                 }
                 is ModuleSettingsStore.Intent.OnDefaultServiceChanged -> dispatch(
                     Result.Service(

@@ -24,4 +24,17 @@ class AccountingObjectRepositoryImpl(
                 exploitingId = params.getExploitingId()
             ).map { it.map() }
         }
+
+    override suspend fun getAccountingObjectsByRfids(ids: List<String>): List<AccountingObjectDomain> {
+        return withContext(coreDispatchers.io) {
+            syncApi.getAccountingObjectsByRfids(ids).map()
+        }
+    }
+
+    override suspend fun getAccountingObjectsByBarcode(barcode: String): AccountingObjectDomain? {
+        return withContext(coreDispatchers.io) {
+            syncApi.getAccountingObjectsByBarcode(barcode)?.map()
+        }
+    }
+
 }
