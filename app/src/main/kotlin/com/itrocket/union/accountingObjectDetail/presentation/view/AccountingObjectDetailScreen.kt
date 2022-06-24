@@ -363,6 +363,8 @@ fun AccountingObjectDetailScreenPreview(isFullCharacteristicChecked: Boolean = t
                     ObjectInfoDomain(R.string.auth_main_title, "blabla2")
                 ),
                 inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
+                barcodeValue = "",
+                rfidValue = ""
             ),
             isFullCharacteristicChecked = isFullCharacteristicChecked
         ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {})

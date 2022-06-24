@@ -327,7 +327,9 @@ fun InventoryScreenPreview() {
                             R.string.auth_main_title,
                             "таылватвлыавыалвыоалвыа"
                         ),
-                    )
+                    ),
+                    barcodeValue = "",
+                    rfidValue = ""
                 ),
                 AccountingObjectDomain(
                     id = "2",
@@ -344,7 +346,9 @@ fun InventoryScreenPreview() {
                             "таылватвлыавыалвыоалвыа"
                         ),
                     ),
-                    listAdditionallyInfo = listOf()
+                    listAdditionallyInfo = listOf(),
+                    barcodeValue = "",
+                    rfidValue = ""
                 ), AccountingObjectDomain(
                     id = "3",
                     isBarcode = true,
@@ -360,7 +364,9 @@ fun InventoryScreenPreview() {
                             "таылватвлыавыалвыоалвыа"
                         ),
                     ),
-                    listAdditionallyInfo = listOf()
+                    listAdditionallyInfo = listOf(),
+                    barcodeValue = "",
+                    rfidValue = ""
                 )
             ),
             selectedPage = 1,

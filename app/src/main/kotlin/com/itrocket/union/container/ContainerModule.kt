@@ -23,7 +23,7 @@ object ContainerModule {
         viewModel {
             MainViewModel(get(), get())
         }
-        single {
+        single(createdAtStart = true) {
             ScannerManager(get(), get(), get())
         }
     }

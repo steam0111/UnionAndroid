@@ -22,6 +22,8 @@ class ModuleSettingsInteractor(
         withContext(coreDispatchers.io) {
             serviceEntryManager.applyChanges(defaultService)
             serviceEntryManager.restartService()
+            serviceEntryManager.applyReadPower("100")
+            serviceEntryManager.applyWritePower("100") //TODO: Пока нет экрана выбора мощности сделал максимальной
             repository.saveKeyCode(keyCode)
         }
     }

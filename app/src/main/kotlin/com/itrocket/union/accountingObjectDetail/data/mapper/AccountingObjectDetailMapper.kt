@@ -79,6 +79,8 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
         status = accountingObject.status?.toDomainStatus(),
         isBarcode = accountingObject.barcodeValue != null,
         listMainInfo = listMainInfo,
-        listAdditionallyInfo = emptyList()
+        listAdditionallyInfo = emptyList(),
+        barcodeValue = accountingObject.barcodeValue,
+        rfidValue = accountingObject.rfidValue,
     )
 }

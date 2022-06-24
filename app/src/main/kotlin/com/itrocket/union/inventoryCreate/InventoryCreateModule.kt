@@ -5,9 +5,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.core.parameter.parametersOf
-import com.itrocket.union.inventoryCreate.data.InventoryCreateRepositoryImpl
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
-import com.itrocket.union.inventoryCreate.domain.dependencies.InventoryCreateRepository
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStoreFactory
 import com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateComposeFragmentArgs
@@ -21,10 +19,6 @@ object InventoryCreateModule {
             BaseViewModel(get<InventoryCreateStore>() {
                 parametersOf(args)
             })
-        }
-
-        factory<InventoryCreateRepository> {
-            InventoryCreateRepositoryImpl(get())
         }
 
         factory {

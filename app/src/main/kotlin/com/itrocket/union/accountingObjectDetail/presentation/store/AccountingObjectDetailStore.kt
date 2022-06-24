@@ -10,7 +10,6 @@ import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
-import com.itrocket.union.readingMode.presentation.store.ReadingModeArguments
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 
 interface AccountingObjectDetailStore :
@@ -40,9 +39,7 @@ interface AccountingObjectDetailStore :
             ShowBottomSheetNavigationLabel {
 
             override val arguments: Bundle
-                get() = bundleOf(
-                    ReadingModeComposeFragment.READING_MODE_ARGS to ReadingModeArguments(readingMode)
-                )
+                get() = bundleOf()
 
             override val containerId: Int = R.id.mainActivityNavHostFragment
 

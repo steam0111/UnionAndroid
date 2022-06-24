@@ -136,7 +136,9 @@ fun AccountingObjectScreenPreview() {
                             "таылватвлыавыалвыоалвыа"
                         ),
                     ),
-                    listAdditionallyInfo = listOf()
+                    listAdditionallyInfo = listOf(),
+                    barcodeValue = "",
+                    rfidValue = ""
                 ),
                 AccountingObjectDomain(
                     id = "8",
@@ -153,7 +155,9 @@ fun AccountingObjectScreenPreview() {
                             "таылватвлыавыалвыоалвыа"
                         ),
                     ),
-                    listAdditionallyInfo = listOf()
+                    listAdditionallyInfo = listOf(),
+                    barcodeValue = "",
+                    rfidValue = ""
                 )
             )
         ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})

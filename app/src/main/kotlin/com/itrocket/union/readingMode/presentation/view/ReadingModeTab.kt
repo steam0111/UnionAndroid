@@ -18,3 +18,8 @@ fun ReadingModeTab.toReaderMode() = when (this) {
     ReadingModeTab.BARCODE -> ReaderMode.BARCODE
     ReadingModeTab.SN -> ReaderMode.NONE
 }
+
+fun ReaderMode.toReadingModeTab() = when(this){
+    ReaderMode.BARCODE -> ReadingModeTab.BARCODE
+    ReaderMode.NONE, ReaderMode.RFID -> ReadingModeTab.RFID
+}

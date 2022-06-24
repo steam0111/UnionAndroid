@@ -16,7 +16,7 @@ interface ReadingModeStore :
     data class State(
         val isManualInputEnabled: Boolean = false,
         val tabs: List<ReadingModeTab>,
-        val selectedTab: ReadingModeTab
+        val selectedTab: ReadingModeTab = ReadingModeTab.RFID
     )
 
     sealed class Label

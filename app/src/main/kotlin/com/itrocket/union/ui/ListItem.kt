@@ -629,7 +629,9 @@ fun AccountingObjectItemPreview() {
                     R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 ),
-            )
+            ),
+            barcodeValue = "",
+            rfidValue = ""
         ), onAccountingObjectListener = {}, isShowBottomLine = true,
         status = ObjectStatusType.REVIEW
     )

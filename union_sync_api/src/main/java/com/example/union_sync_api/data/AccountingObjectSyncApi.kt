@@ -10,6 +10,10 @@ interface AccountingObjectSyncApi {
         exploitingId: String? = null
     ): Flow<List<AccountingObjectSyncEntity>>
 
+    suspend fun getAccountingObjectsByRfids(accountingObjectRfids: List<String>): List<AccountingObjectSyncEntity>
+
+    suspend fun getAccountingObjectsByBarcode(accountingObjectBarcode: String): AccountingObjectSyncEntity?
+
     suspend fun getAccountingObjectDetailById(id: String): AccountingObjectDetailSyncEntity
 
 }

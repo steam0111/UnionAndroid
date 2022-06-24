@@ -67,6 +67,24 @@ class AccountingObjectSyncApiImpl(
 
     }
 
+    override suspend fun getAccountingObjectsByRfids(accountingObjectRfids: List<String>): List<AccountingObjectSyncEntity> {
+        return accountingObjectsDao.getAll(sqlAccountingObjectQuery(rfids = accountingObjectRfids))
+            .map {
+                it.toSyncEntity(
+                    locationSyncEntity = getLocationSyncEntity(it.locationDb)
+                )
+            }
+    }
+
+    override suspend fun getAccountingObjectsByBarcode(accountingObjectBarcode: String): AccountingObjectSyncEntity? {
+        val fullAccountingObjects =
+            accountingObjectsDao.getAll(sqlAccountingObjectQuery(barcode = accountingObjectBarcode))
+        val fullAccountingObject = fullAccountingObjects.firstOrNull()
+        return fullAccountingObject?.toSyncEntity(
+            locationSyncEntity = getLocationSyncEntity(fullAccountingObject.locationDb)
+        )
+    }
+
     private suspend fun apiAccountingObjectsGet(): GetAllResponse<CustomAccountingObjectDto> {
         return api.apiAccountingObjectsGet()
     }

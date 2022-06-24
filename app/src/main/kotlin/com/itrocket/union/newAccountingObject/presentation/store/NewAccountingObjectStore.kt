@@ -14,7 +14,8 @@ interface NewAccountingObjectStore :
     }
 
     data class State(
-        val accountingObject: AccountingObjectDomain
+        val isLoading: Boolean = false,
+        val accountingObject: AccountingObjectDomain? = null
     )
 
     sealed class Label {
