@@ -105,9 +105,7 @@ class DocumentCreateStoreFactory(
                 DocumentCreateStore.Intent.OnPrevClicked -> dispatch(Result.SelectPage(PARAMS_PAGE))
                 DocumentCreateStore.Intent.OnSaveClicked -> saveDocument(getState)
                 is DocumentCreateStore.Intent.OnSelectPage -> dispatch(Result.SelectPage(intent.selectedPage))
-                DocumentCreateStore.Intent.OnSettingsClicked -> {
-                    //no-op
-                }
+                DocumentCreateStore.Intent.OnSettingsClicked -> publish(DocumentCreateStore.Label.ShowReadingMode)
                 is DocumentCreateStore.Intent.OnLocationChanged -> {
                     val params = documentCreateInteractor.changeLocation(
                         getState().params,
@@ -125,7 +123,37 @@ class DocumentCreateStoreFactory(
                         )
                     )
                 }
+                is DocumentCreateStore.Intent.OnNewAccountingObjectBarcodeHandled -> handleBarcodeAccountingObjects(
+                    intent.barcode,
+                    getState().accountingObjects
+                )
+                is DocumentCreateStore.Intent.OnNewAccountingObjectRfidsHandled -> handleRfidsAccountingObjects(
+                    intent.rfids,
+                    getState().accountingObjects
+                )
             }
+        }
+
+        private suspend fun handleBarcodeAccountingObjects(
+            barcode: String,
+            accountingObjects: List<AccountingObjectDomain>
+        ) {
+            val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectBarcode(
+                accountingObjects = accountingObjects,
+                barcode = barcode
+            )
+            dispatch(Result.AccountingObjects(newAccountingObjects))
+        }
+
+        private suspend fun handleRfidsAccountingObjects(
+            rfids: List<String>,
+            accountingObjects: List<AccountingObjectDomain>
+        ) {
+            val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectRfids(
+                accountingObjects = accountingObjects,
+                handledAccountingObjectRfids = rfids
+            )
+            dispatch(Result.AccountingObjects(newAccountingObjects))
         }
 
         private fun changeParams(
