@@ -27,6 +27,7 @@ import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.BottomLine
 import com.itrocket.union.ui.InventoryDocumentItem
 import com.itrocket.union.ui.LoadingContent
+import com.itrocket.union.ui.SearchToolbar
 
 @Composable
 fun InventoriesScreen(
@@ -35,18 +36,22 @@ fun InventoriesScreen(
     onBackClickListener: () -> Unit,
     onSearchClickListener: () -> Unit,
     onFilterClickListener: () -> Unit,
-    onInventoryClickListener: (InventoryCreateDomain) -> Unit
+    onInventoryClickListener: (InventoryCreateDomain) -> Unit,
+    onSearchTextChanged: (String) -> Unit
 ) {
     AppTheme {
         Scaffold(
             topBar = {
-                BlackToolbar(
+                SearchToolbar(
                     title = stringResource(
                         id = R.string.inventories_title,
                     ),
                     onSearchClickListener = onSearchClickListener,
                     onBackClickListener = onBackClickListener,
-                    onFilterClickListener = onFilterClickListener
+                    onFilterClickListener = onFilterClickListener,
+                    onSearchTextChanged = onSearchTextChanged,
+                    isShowSearch = state.isShowSearch,
+                    searchText = state.searchText,
                 )
             },
             content = {
@@ -147,5 +152,7 @@ fun InventoriesScreenPreview() {
         {},
         {},
         {},
-        {})
+        {},
+        {},
+    )
 }

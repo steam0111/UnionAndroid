@@ -31,7 +31,10 @@ class InventoriesComposeFragment :
                 },
                 onInventoryClickListener = {
                     accept(InventoriesStore.Intent.OnInventoryClicked(it))
-                }
+                },
+                onSearchTextChanged = {
+                    accept(InventoriesStore.Intent.OnSearchTextChanged(it))
+                },
             )
         }
     }

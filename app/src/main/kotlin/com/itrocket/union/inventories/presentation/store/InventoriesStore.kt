@@ -18,11 +18,14 @@ interface InventoriesStore :
         object OnSearchClicked : Intent()
         object OnFilterClicked : Intent()
         data class OnInventoryClicked(val inventory: InventoryCreateDomain) : Intent()
+        data class OnSearchTextChanged(val searchText: String) : Intent()
     }
 
     data class State(
         val isLoading: Boolean = false,
         val inventories: List<InventoryCreateDomain> = listOf(),
+        val isShowSearch: Boolean = false,
+        val searchText: String = ""
     )
 
     sealed class Label {
