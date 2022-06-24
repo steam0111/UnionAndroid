@@ -1,7 +1,9 @@
 package com.example.union_sync_impl.data.mapper
 
+import com.example.union_sync_api.entity.EmployeeDetailSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
 import com.example.union_sync_impl.entity.EmployeeDb
+import com.example.union_sync_impl.entity.FullEmployeeDb
 import org.openapitools.client.models.CustomEmployeeDto
 
 fun CustomEmployeeDto.toEmployeeDb(): EmployeeDb {
@@ -13,7 +15,9 @@ fun CustomEmployeeDto.toEmployeeDb(): EmployeeDb {
         patronymic = patronymic.orEmpty(),
         number = number.orEmpty(),
         nfc = nfc,
-        organizationId = organizationId
+        organizationId = organizationId,
+        post = post,
+        statusId = employeeStatusId
     )
 }
 
@@ -26,6 +30,13 @@ fun EmployeeDb.toSyncEntity(): EmployeeSyncEntity {
         lastname = lastname,
         patronymic = patronymic,
         number = number,
-        nfc = nfc
+        nfc = nfc,
+        post = post,
+        statusId = statusId
     )
 }
+
+fun FullEmployeeDb.toDetailSyncEntity() = EmployeeDetailSyncEntity(
+    employeeDb.toSyncEntity(),
+    organizationDb?.toSyncEntity()
+)

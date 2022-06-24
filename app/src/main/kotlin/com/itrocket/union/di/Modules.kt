@@ -39,6 +39,7 @@ import com.itrocket.union.serverConnect.ServerConnectModule
 import com.itrocket.union.switcher.SwitcherModule
 import com.itrocket.union.token.TokenModule
 import com.union.sdk.SyncModule
+import com.itrocket.union.employeeDetail.EmployeeDetailModule
 
 object Modules {
 
@@ -83,6 +84,7 @@ object Modules {
         CounterpartyModule.module,
         ProducerModule.module,
         EquipmentTypeModule.module,
-        ErrorModule.module
+        ErrorModule.module,
+        EmployeeDetailModule.module
     )
 }

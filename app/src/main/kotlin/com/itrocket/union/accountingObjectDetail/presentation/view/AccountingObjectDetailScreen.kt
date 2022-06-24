@@ -265,7 +265,7 @@ private fun ListInfo(listInfo: List<ObjectInfoDomain>) {
         items(listInfo) {
             ExpandedInfoField(
                 label = stringResource(id = it.title),
-                value = it.value,
+                value = it.value.orEmpty(),
                 modifier = Modifier.fillMaxWidth()
             )
         }

@@ -20,6 +20,7 @@ class EmployeeComposeFragment :
                 state = state,
                 appInsets = appInsets,
                 onBackClickListener = { accept(EmployeeStore.Intent.OnBackClicked) },
+                onEmployeeClickListener = { accept(EmployeeStore.Intent.OnEmployeeClicked(it.id)) }
             )
         }
     }

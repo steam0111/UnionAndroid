@@ -21,7 +21,9 @@ class EmployeeDb(
     val patronymic: String,
     val organizationId: String?,
     val number: String,
-    val nfc: String?
+    val nfc: String?,
+    val statusId: String?,
+    val post: String?
 ) : CatalogItemDb(id) {
 
     val fullName: String

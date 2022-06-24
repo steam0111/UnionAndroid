@@ -138,7 +138,7 @@ private fun Content(accountingObject: AccountingObjectDomain, onCrossClickListen
             items(accountingObject.listMainInfo) {
                 ExpandedInfoField(
                     label = stringResource(id = it.title),
-                    value = it.value,
+                    value = it.value.orEmpty(),
                     modifier = Modifier.fillMaxWidth()
                 )
             }
