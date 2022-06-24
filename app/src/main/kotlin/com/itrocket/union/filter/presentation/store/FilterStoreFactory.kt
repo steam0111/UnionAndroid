@@ -6,22 +6,27 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
-import com.itrocket.union.filter.domain.entity.FilterDomain
-import com.itrocket.union.filter.domain.entity.FilterValueType
+import com.itrocket.union.manual.LocationParamDomain
+import com.itrocket.union.manual.ManualType
+import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.Params
 
 class FilterStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val filterInteractor: FilterInteractor,
-    private val filterArgs: FilterArguments
+    private val filterArgs: FilterArguments,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): FilterStore =
         object : FilterStore,
             Store<FilterStore.Intent, FilterStore.State, FilterStore.Label> by storeFactory.create(
                 name = "FilterStore",
-                initialState = FilterStore.State(filterFields = filterArgs.argument),
+                initialState = FilterStore.State(params = Params(filterArgs.argument)),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
@@ -31,8 +36,8 @@ class FilterStoreFactory(
         FilterExecutor()
 
     private inner class FilterExecutor :
-        SuspendExecutor<FilterStore.Intent, Unit, FilterStore.State, Result, FilterStore.Label>(
-            mainContext = coreDispatchers.ui
+        BaseExecutor<FilterStore.Intent, Unit, FilterStore.State, Result, FilterStore.Label>(
+            context = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
             action: Unit,
@@ -45,13 +50,7 @@ class FilterStoreFactory(
             getState: () -> FilterStore.State
         ) {
             when (intent) {
-                is FilterStore.Intent.OnFieldClicked -> {
-                    if (intent.filter.filterValueType == FilterValueType.LOCATION) {
-                        //publish(FilterStore.Label.ShowLocation(intent.filter))
-                    } else {
-                        publish(FilterStore.Label.ShowFilterValues(intent.filter))
-                    }
-                }
+                is FilterStore.Intent.OnFieldClicked -> showFilters(intent.filter, getState)
                 is FilterStore.Intent.OnShowClicked -> {
 
                 }
@@ -60,13 +59,13 @@ class FilterStoreFactory(
                 }
                 FilterStore.Intent.OnDropClicked -> {
                     val droppedFilterFields =
-                        filterInteractor.dropFilterFields(getState().filterFields)
+                        filterInteractor.dropFilterFields(getState().params.paramList)
                     dispatch(Result.Filters(droppedFilterFields))
                 }
                 is FilterStore.Intent.OnFilterChanged -> {
-                    val filterList = filterInteractor.changeFilter(
-                        filters = getState().filterFields,
-                        filterChange = intent.filter
+                    val filterList = filterInteractor.changeFilters(
+                        filters = getState().params.paramList,
+                        newFilters = intent.filters
                     )
                     dispatch(Result.Filters(filterList))
                 }
@@ -74,7 +73,7 @@ class FilterStoreFactory(
                     dispatch(
                         Result.Filters(
                             filterInteractor.changeLocationFilter(
-                                filters = getState().filterFields,
+                                filters = getState().params.paramList,
                                 location = intent.locationResult.location
                             )
                         )
@@ -82,16 +81,43 @@ class FilterStoreFactory(
                 }
             }
         }
+
+        private fun showFilters(filter: ParamDomain, getState: () -> FilterStore.State) {
+            when (filter.type) {
+                ManualType.LOCATION -> publish(FilterStore.Label.ShowLocation(filter as LocationParamDomain))
+                ManualType.STATUS -> {
+                    //no-op
+                }
+                ManualType.DATE -> {
+                    //no-op
+                }
+                else -> {
+                    val defaultTypeParams =
+                        filterInteractor.getDefaultTypeParams(getState().params)
+                    val currentStep = defaultTypeParams.indexOf(filter) + 1
+                    publish(
+                        FilterStore.Label.ShowFilters(
+                            currentStep = currentStep,
+                            filters = defaultTypeParams
+                        )
+                    )
+                }
+            }
+        }
+
+        override fun handleError(throwable: Throwable) {
+            publish(FilterStore.Label.Error(throwable.message ?: errorInteractor.getDefaultError()))
+        }
     }
 
     private sealed class Result {
-        data class Filters(val filters: List<FilterDomain>) : Result()
+        data class Filters(val filters: List<ParamDomain>) : Result()
     }
 
     private object ReducerImpl : Reducer<FilterStore.State, Result> {
         override fun FilterStore.State.reduce(result: Result) =
             when (result) {
-                is Result.Filters -> copy(filterFields = result.filters)
+                is Result.Filters -> copy(params = params.copy(result.filters))
             }
     }
 }

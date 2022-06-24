@@ -23,6 +23,7 @@ class SelectParamsInteractor(
             ManualType.MOL -> getMols(searchText)
             ManualType.LOCATION -> selectParamsRepository.getParamValues(type, searchText)
             ManualType.EXPLOITING -> getExploiting(searchText)
+            else -> flow {  }
         }
 
 

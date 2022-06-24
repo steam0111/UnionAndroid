@@ -1,62 +1,36 @@
 package com.itrocket.union.filter.data
 
 import com.itrocket.union.filter.domain.dependencies.FilterRepository
-import com.itrocket.union.filter.domain.entity.FilterDomain
-import com.itrocket.union.filter.domain.entity.FilterValueType
+import com.itrocket.union.manual.LocationParamDomain
+import com.itrocket.union.manual.ManualType
+import com.itrocket.union.manual.ParamDomain
 
 class FilterRepositoryImpl : FilterRepository {
-    override fun getFilters(): List<FilterDomain> {
+    override fun getFilters(): List<ParamDomain> {
         return listOf(
-            FilterDomain(
-                name = "Организация",
-                valueList = listOf(
-                    "Все",
-                    "ООО «Грандмастер — Юниор»",
-                    "ОАО «Бестиарий»",
-                    "ОАО «Интер АйДи»"
-                ),
-                filterValueType = FilterValueType.MULTI_SELECT_LIST
+            ParamDomain(
+                id = "Организация",
+                type = ManualType.ORGANIZATION,
+                value = ""
             ),
-            FilterDomain(
-                name = "Ответственный",
-                valueList = listOf(
-                    "JanitorYoke",
-                    "ParadoxColor",
-                    "GoldLegacy",
-                    "SkinPorterMine"
-                ),
-                filterValueType = FilterValueType.MULTI_SELECT_LIST
+            ParamDomain(
+                id = "Ответственный",
+                type = ManualType.MOL,
+                value = ""
             ),
-            FilterDomain(
-                name = "Эксплуатирующий",
-                valueList = listOf(
-                    "JanitorYoke",
-                    "ParadoxColor",
-                    "GoldLegacy",
-                    "SkinPorterMine"
-                ),
-                filterValueType = FilterValueType.MULTI_SELECT_LIST
+            ParamDomain(
+                id = "Эксплуатирующий",
+                type = ManualType.EXPLOITING,
+                value = ""
             ),
-            FilterDomain(
-                name = "Местоположение",
-                filterValueType = FilterValueType.LOCATION
+            LocationParamDomain(
+                ids = listOf(),
+                values = listOf()
             ),
-            FilterDomain(
-                name = "Статус",
-                filterValueType = FilterValueType.SINGLE_SELECT_LIST,
-                valueList = listOf("Не найден", "Найден")
-            ),
-            FilterDomain(
-                name = "Дата заявки",
-                values = listOf("За все время"),
-                valueList = listOf(
-                    "За все время",
-                    "За сегодня",
-                    "За 2 дня",
-                    "За 3 дня",
-                    "За неделю"
-                ),
-                filterValueType = FilterValueType.SINGLE_SELECT_LIST
+            ParamDomain(
+                id = "Статус",
+                type = ManualType.STATUS,
+                value = ""
             ),
         )
     }

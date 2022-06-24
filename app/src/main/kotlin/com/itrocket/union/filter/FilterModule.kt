@@ -36,7 +36,8 @@ object FilterModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args.filterArguments
+                args.filterArguments,
+                get()
             ).create()
         }
     }

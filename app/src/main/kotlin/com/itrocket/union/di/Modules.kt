@@ -51,7 +51,6 @@ object Modules {
         AccountingObjectModule.module,
         AccountingObjectDetailModule.module,
         FilterModule.module,
-        FilterValueModule.module,
         AccountingObjectDetailModule.module,
         ReadingModeModule.module,
         ReservesModule.module,

@@ -1,8 +1,8 @@
 package com.itrocket.union.filter.domain.dependencies
 
-import com.itrocket.union.filter.domain.entity.FilterDomain
+import com.itrocket.union.manual.ParamDomain
 
 interface FilterRepository {
 
-    fun getFilters(): List<FilterDomain>
+    fun getFilters(): List<ParamDomain>
 }
