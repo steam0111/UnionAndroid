@@ -9,6 +9,7 @@ import com.itrocket.union.branches.BranchesModule
 import com.itrocket.union.container.ContainerModule
 import com.itrocket.union.core.CoreModule
 import com.itrocket.union.counterparties.CounterpartyModule
+import com.itrocket.union.departmentDetail.DepartmentDetailModule
 import com.itrocket.union.departments.DepartmentModule
 import com.itrocket.union.documentCreate.DocumentCreateModule
 import com.itrocket.union.documents.DocumentModule
@@ -40,6 +41,8 @@ import com.itrocket.union.switcher.SwitcherModule
 import com.itrocket.union.token.TokenModule
 import com.union.sdk.SyncModule
 import com.itrocket.union.employeeDetail.EmployeeDetailModule
+import com.itrocket.union.nomenclatureDetail.NomenclatureDetailModule
+import com.itrocket.union.nomenclatureGroupDetail.NomenclatureGroupDetailModule
 
 object Modules {
 
@@ -84,6 +87,9 @@ object Modules {
         ProducerModule.module,
         EquipmentTypeModule.module,
         ErrorModule.module,
-        EmployeeDetailModule.module
+        EmployeeDetailModule.module,
+        NomenclatureDetailModule.module,
+        DepartmentDetailModule.module,
+        NomenclatureGroupDetailModule.module
     )
 }

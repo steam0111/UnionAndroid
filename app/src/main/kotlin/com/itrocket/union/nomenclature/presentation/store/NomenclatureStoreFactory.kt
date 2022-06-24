@@ -53,6 +53,11 @@ class NomenclatureStoreFactory(
         ) {
             when (intent) {
                 NomenclatureStore.Intent.OnBackClicked -> publish(NomenclatureStore.Label.GoBack)
+                is NomenclatureStore.Intent.OnItemClicked -> publish(
+                    NomenclatureStore.Label.ShowDetail(
+                        intent.id
+                    )
+                )
             }
         }
 

@@ -20,7 +20,7 @@ class DepartmentComposeFragment :
                 state = state,
                 appInsets = appInsets,
                 onBackClickListener = { accept(DepartmentStore.Intent.OnBackClicked) },
-                onItemClickListener = {}
+                onItemClickListener = { accept(DepartmentStore.Intent.OnDepartmentClicked(it.id)) }
             )
         }
     }

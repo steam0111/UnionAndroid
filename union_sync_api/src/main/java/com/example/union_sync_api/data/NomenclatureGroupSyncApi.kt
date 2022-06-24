@@ -4,4 +4,6 @@ import com.example.union_sync_api.entity.NomenclatureGroupSyncEntity
 
 interface NomenclatureGroupSyncApi {
     suspend fun getNomenclatureGroups(): List<NomenclatureGroupSyncEntity>
+
+    suspend fun getNomenclatureGroupDetail(id: String): NomenclatureGroupSyncEntity
 }

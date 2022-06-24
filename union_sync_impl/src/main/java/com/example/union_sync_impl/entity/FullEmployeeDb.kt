@@ -5,6 +5,6 @@ import androidx.room.Embedded
 class FullEmployeeDb(
     @Embedded
     val employeeDb: EmployeeDb,
-    @Embedded(prefix = "organization")
+    @Embedded(prefix = "organizations_")
     val organizationDb: OrganizationDb?,
 )

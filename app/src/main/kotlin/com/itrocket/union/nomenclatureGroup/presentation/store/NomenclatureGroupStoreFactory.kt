@@ -52,6 +52,11 @@ class NomenclatureGroupStoreFactory(
             getState: () -> NomenclatureGroupStore.State
         ) {
             when (intent) {
+                is NomenclatureGroupStore.Intent.OnItemClick -> publish(
+                    NomenclatureGroupStore.Label.ShowDetail(
+                        intent.id
+                    )
+                )
                 NomenclatureGroupStore.Intent.OnBackClicked -> publish(NomenclatureGroupStore.Label.GoBack)
             }
         }

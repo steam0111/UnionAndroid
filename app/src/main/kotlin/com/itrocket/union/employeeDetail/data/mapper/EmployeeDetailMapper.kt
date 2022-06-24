@@ -21,6 +21,9 @@ fun EmployeeDetailSyncEntity.toEmployeeDetailDomain(): EmployeeDetailDomain {
     employee.nfc?.let {
         listInfo.add(ObjectInfoDomain(R.string.employees_nfc, it))
     }
+    organizationSyncEntity?.name?.let {
+        listInfo.add(ObjectInfoDomain(R.string.organization, it))
+    }
     return EmployeeDetailDomain(listInfo)
 }
 

@@ -25,7 +25,9 @@ class NomenclatureComposeFragment :
                 onBackClickListener = {
                     accept(NomenclatureStore.Intent.OnBackClicked)
                 },
-                onItemClickListener = {}
+                onItemClickListener = {
+                    accept(NomenclatureStore.Intent.OnItemClicked(it.id))
+                }
             )
         }
     }

@@ -13,13 +13,20 @@ class NomenclatureGroupComposeFragment :
     ) {
     override val navArgs by navArgs<NomenclatureGroupComposeFragmentArgs>()
 
-    override fun renderState(state: NomenclatureGroupStore.State, composeView: ComposeView, appInsets: AppInsets) {
+    override fun renderState(
+        state: NomenclatureGroupStore.State,
+        composeView: ComposeView,
+        appInsets: AppInsets
+    ) {
         composeView.setContent {
             NomenclatureGroupScreen(
                 state = state,
                 appInsets = appInsets,
                 onBackClickListener = {
                     accept(NomenclatureGroupStore.Intent.OnBackClicked)
+                },
+                onItemClick = {
+                    accept(NomenclatureGroupStore.Intent.OnItemClick(it))
                 }
             )
         }
