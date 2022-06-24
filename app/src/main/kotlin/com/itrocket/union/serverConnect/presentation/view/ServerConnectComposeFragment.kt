@@ -5,10 +5,10 @@ import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.union.authContainer.presentation.view.AuthContainer
-import com.itrocket.union.authContainer.presentation.view.ChildBackPressedHandler
 import com.itrocket.union.authContainer.presentation.view.NextClickHandler
 import com.itrocket.union.serverConnect.ServerConnectModule.SERVERCONNECT_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.serverConnect.presentation.store.ServerConnectStore
+import com.itrocket.union.utils.fragment.ChildBackPressedHandler
 
 class ServerConnectComposeFragment :
     BaseComposeFragment<ServerConnectStore.Intent, ServerConnectStore.State, ServerConnectStore.Label>(

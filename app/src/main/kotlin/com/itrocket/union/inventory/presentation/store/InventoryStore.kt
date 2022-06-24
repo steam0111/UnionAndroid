@@ -6,10 +6,8 @@ import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.documents.domain.entity.ObjectType
-import com.itrocket.union.inventory.presentation.view.InventoryComposeFragmentDirections
+import com.itrocket.union.inventoryContainer.presentation.view.InventoryContainerComposeFragmentDirections
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
-import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateArguments
 import com.itrocket.union.location.presentation.store.LocationArguments
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.manual.LocationParamDomain
@@ -48,17 +46,11 @@ interface InventoryStore :
         object GoBack : Label(), GoBackNavigationLabel
         data class ShowCreateInventory(
             val inventoryCreate: InventoryCreateDomain
-        ) : Label(), ForwardNavigationLabel {
-            override val directions: NavDirections
-                get() = InventoryComposeFragmentDirections.toInventoryCreate(
-                    InventoryCreateArguments(inventoryDocument = inventoryCreate)
-                )
-
-        }
+        ) : Label()
 
         data class ShowLocation(val location: LocationParamDomain) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
-                get() = InventoryComposeFragmentDirections.toLocation(
+                get() = InventoryContainerComposeFragmentDirections.toLocation(
                     LocationArguments(location = location)
                 )
         }
@@ -68,7 +60,7 @@ interface InventoryStore :
             val params: List<ParamDomain>
         ) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
-                get() = InventoryComposeFragmentDirections.toSelectParams(
+                get() = InventoryContainerComposeFragmentDirections.toSelectParams(
                     SelectParamsArguments(
                         params = params,
                         currentStep = currentStep

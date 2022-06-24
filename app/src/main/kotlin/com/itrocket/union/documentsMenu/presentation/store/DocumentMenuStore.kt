@@ -72,7 +72,9 @@ interface DocumentMenuStore :
                     R.string.nomenclature -> DocumentMenuComposeFragmentDirections.toNomenclature(
                         NomenclatureArguments(0)
                     )
-                    R.string.main_inventory -> DocumentMenuComposeFragmentDirections.toInventory()
+                    R.string.main_inventory -> DocumentMenuComposeFragmentDirections.toInventoryContainer(
+                        null
+                    )
                     R.string.organizations -> DocumentMenuComposeFragmentDirections.toOrganizations()
                     R.string.departments -> DocumentMenuComposeFragmentDirections.toDepartments()
                     R.string.main_employees -> DocumentMenuComposeFragmentDirections.toEmployees()

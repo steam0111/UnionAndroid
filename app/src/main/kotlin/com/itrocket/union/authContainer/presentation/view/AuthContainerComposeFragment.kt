@@ -18,6 +18,7 @@ import com.itrocket.union.authContainer.presentation.store.AuthContainerStore
 import com.itrocket.union.authUser.presentation.view.AuthUserComposeFragment
 import com.itrocket.union.replaceFragment
 import com.itrocket.union.serverConnect.presentation.view.ServerConnectComposeFragment
+import com.itrocket.union.utils.fragment.ChildBackPressedHandler
 import com.itrocket.utils.toPx
 
 class AuthContainerComposeFragment :
