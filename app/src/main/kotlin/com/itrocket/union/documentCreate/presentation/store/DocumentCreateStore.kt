@@ -1,23 +1,24 @@
 package com.itrocket.union.documentCreate.presentation.store
 
+import android.os.Bundle
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
-import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
+import com.itrocket.core.navigation.GoBackNavigationLabel
+import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
+import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectArguments
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragmentDirections
 import com.itrocket.union.documents.domain.entity.DocumentDomain
-import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
-import com.itrocket.union.documents.domain.entity.ObjectType
-import com.itrocket.union.location.domain.entity.LocationDomain
 import com.itrocket.union.location.presentation.store.LocationArguments
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.manual.LocationParamDomain
-import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsArguments
 
 interface DocumentCreateStore :
@@ -37,7 +38,10 @@ interface DocumentCreateStore :
         data class OnParamsChanged(val params: List<ParamDomain>) : Intent()
         data class OnAccountingObjectSelected(val accountingObjectDomain: AccountingObjectDomain) :
             Intent()
-
+        data class OnNewAccountingObjectRfidsHandled(val rfids: List<String>) :
+            Intent()
+        data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :
+            Intent()
         data class OnLocationChanged(val location: LocationResult) : Intent()
     }
 
@@ -87,6 +91,18 @@ interface DocumentCreateStore :
                         currentStep = currentStep
                     )
                 )
+        }
+
+        object ShowReadingMode : Label(),
+            ShowBottomSheetNavigationLabel {
+
+            override val arguments: Bundle
+                get() = bundleOf()
+
+            override val containerId: Int = R.id.mainActivityNavHostFragment
+
+            override val fragment: Fragment
+                get() = ReadingModeComposeFragment()
         }
     }
 }
