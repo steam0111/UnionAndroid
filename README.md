@@ -84,4 +84,5 @@ DI:
 - Navigation Component (https://developer.android.com/guide/navigation)
 
 Генерация шаблонного кода для фичи:
+- Добавляем плагин itrocket-geminio.zip (лежит в корне проекта) в android studio
 - https://github.com/steam0111/android-multimodule-plugin, шаблоны лежит в папке geminio
