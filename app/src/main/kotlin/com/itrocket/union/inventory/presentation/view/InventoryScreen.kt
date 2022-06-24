@@ -349,7 +349,7 @@ fun InventoryScreenPreview() {
                     id = "3",
                     isBarcode = true,
                     title = "Ширикоформатный жидкокристалический монитор Samsung",
-                    status = ObjectStatus("AVAILABLE", ObjectStatusType.UNDER_REPAIR),
+                    status = ObjectStatus("AVAILABLE", ObjectStatusType.REPAIR),
                     listMainInfo = listOf(
                         ObjectInfoDomain(
                             R.string.auth_main_title,

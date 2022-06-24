@@ -1,4 +1,4 @@
-package com.itrocket.union.sync
+package com.union.sdk
 
 import androidx.room.Room
 import com.example.union_sync_api.data.AccountingObjectSyncApi
@@ -11,6 +11,7 @@ import com.example.union_sync_api.data.EquipmentTypesSyncApi
 import com.example.union_sync_api.data.InventorySyncApi
 import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.NomenclatureGroupSyncApi
+import com.example.union_sync_api.data.NomenclatureSyncApi
 import com.example.union_sync_api.data.OrganizationSyncApi
 import com.example.union_sync_api.data.ProducerSyncApi
 import com.example.union_sync_api.data.RegionSyncApi
@@ -25,6 +26,7 @@ import com.example.union_sync_impl.data.EquipmentTypesSyncApiImpl
 import com.example.union_sync_impl.data.InventorySyncApiImpl
 import com.example.union_sync_impl.data.LocationSyncApiImpl
 import com.example.union_sync_impl.data.NomenclatureGroupSyncApiImpl
+import com.example.union_sync_impl.data.NomenclatureSyncApiImpl
 import com.example.union_sync_impl.data.OrganizationSyncApiImpl
 import com.example.union_sync_impl.data.ProducerSyncApiImpl
 import com.example.union_sync_impl.data.RegionSyncApiImpl
@@ -125,6 +127,9 @@ object SyncModule {
                 equipmentTypeApi = get(),
                 equipmentTypeDao = get()
             )
+        }
+        factory<NomenclatureSyncApi> {
+            NomenclatureSyncApiImpl(nomenclatureDao = get())
         }
 
         single {

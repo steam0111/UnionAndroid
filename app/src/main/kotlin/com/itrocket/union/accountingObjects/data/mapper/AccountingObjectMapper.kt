@@ -19,7 +19,7 @@ fun List<AccountingObjectSyncEntity>.map(): List<AccountingObjectDomain> = map {
     }
 
     val status = syncEntity.inventoryStatus
-    val inventoryStatus = if(!status.isNullOrBlank()){
+    val inventoryStatus = if (!status.isNullOrBlank()) {
         InventoryAccountingObjectStatus.valueOf(status)
     } else {
         InventoryAccountingObjectStatus.NOT_FOUND
@@ -39,6 +39,6 @@ fun List<AccountingObjectSyncEntity>.map(): List<AccountingObjectDomain> = map {
 
 fun AccountingObjectStatus.toDomainStatus(): ObjectStatus =
     ObjectStatus(
-        text = name,
-        type = ObjectStatusType.valueOf(id)
+        text = name.orEmpty(),
+        type = id?.let { ObjectStatusType.valueOf(it) }
     )

@@ -9,6 +9,7 @@ import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
+import com.example.union_sync_impl.data.mapper.toAccountingObjectDetailSyncEntity
 import com.example.union_sync_impl.data.mapper.toInventoryDb
 import com.example.union_sync_impl.data.mapper.toInventorySyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationShortSyncEntity
@@ -65,7 +66,6 @@ class InventorySyncApiImpl(
                         fullAccountingObject = fullAccountingObject
                     )
                     fullAccountingObject.toSyncEntity(
-                        fullAccountingObject,
                         getLocationSyncEntity(fullAccountingObject.locationDb),
                         inventoryStatus
                     )

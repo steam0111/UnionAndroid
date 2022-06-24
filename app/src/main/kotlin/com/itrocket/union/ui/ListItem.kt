@@ -608,7 +608,7 @@ fun AccountingObjectItemPreview() {
             id = "1",
             isBarcode = true,
             title = "Ширикоформатный жидкокристалический монитор Samsung",
-            status = ObjectStatus("available", ObjectStatusType.UNDER_REVIEW),
+            status = ObjectStatus("available", ObjectStatusType.REVIEW),
             listMainInfo = listOf(
                 ObjectInfoDomain(
                     R.string.auth_main_title,
@@ -630,7 +630,7 @@ fun AccountingObjectItemPreview() {
                 ),
             )
         ), onAccountingObjectListener = {}, isShowBottomLine = true,
-        status = ObjectStatusType.UNDER_REVIEW
+        status = ObjectStatusType.REVIEW
     )
 }
 

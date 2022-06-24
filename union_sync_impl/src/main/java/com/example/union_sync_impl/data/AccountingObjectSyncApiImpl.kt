@@ -1,6 +1,7 @@
 package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.AccountingObjectSyncApi
+import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
@@ -14,6 +15,7 @@ import com.example.union_sync_impl.dao.OrganizationDao
 import com.example.union_sync_impl.dao.ProviderDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDb
+import com.example.union_sync_impl.data.mapper.toAccountingObjectDetailSyncEntity
 import com.example.union_sync_impl.data.mapper.toDepartmentDb
 import com.example.union_sync_impl.data.mapper.toEmployeeDb
 import com.example.union_sync_impl.data.mapper.toLocationDb
@@ -58,6 +60,12 @@ class AccountingObjectSyncApiImpl(
         }.distinctUntilChanged().flowOn(Dispatchers.IO)
     }
 
+    override suspend fun getAccountingObjectDetailById(id: String): AccountingObjectDetailSyncEntity {
+        val fullAccountingObjectDb = accountingObjectsDao.getById(id)
+        val location = getLocationSyncEntity(fullAccountingObjectDb.locationDb)
+        return fullAccountingObjectDb.toAccountingObjectDetailSyncEntity(location)
+
+    }
 
     private suspend fun apiAccountingObjectsGet(): GetAllResponse<CustomAccountingObjectDto> {
         return api.apiAccountingObjectsGet()
@@ -99,13 +107,19 @@ class AccountingObjectSyncApiImpl(
         exploitingId: String? = null,
         accountingObjectsIds: List<String>? = null
     ): List<AccountingObjectSyncEntity> {
-        return accountingObjectsDao.getAll(sqlAccountingObjectQuery(organizationId, exploitingId, accountingObjectsIds))
+        return accountingObjectsDao.getAll(
+            sqlAccountingObjectQuery(
+                organizationId,
+                exploitingId,
+                accountingObjectsIds
+            )
+        )
             .map {
                 it.toSyncEntity(
-                    fullAccountingObject = it,
                     locationSyncEntity = getLocationSyncEntity(it.locationDb)
                 )
             }
+
     }
 
     //TODO переделать на join

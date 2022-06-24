@@ -50,6 +50,7 @@ class AccountingObjectDb(
     val organizationId: String?,
     val departmentId: String?,
     val locationId: String?,
+    val providerId: String?,
     val molId: String?,
     val producerId: String?,
     val exploitingId: String?,
@@ -60,7 +61,7 @@ class AccountingObjectDb(
     val rfidValue: String?,
     val factoryNumber: String?,
     val inventoryNumber: String?,
-    val status: AccountingObjectStatus?,
+    val status: AccountingObjectStatusDb?,
     val equipmentTypeId: String?,
     val actualPrice: String?,
     val count: Int?,
@@ -68,3 +69,10 @@ class AccountingObjectDb(
     val internalNumber: String?,
     val model: String?
 ) : CatalogItemDb(id)
+
+class AccountingObjectStatusDb(
+    val id: String?,
+    val name: String?
+)
+
+
