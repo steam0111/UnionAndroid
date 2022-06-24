@@ -76,6 +76,7 @@
     <string name="regions">Регионы</string>
     <string name="branches">Филиалы</string>
     <string name="equipment_types">Типы оборуд.</string>
+    <string name="save">Сохранение</string>
 
     <!-- Manual -->
     <string name="manual_organization">Организация</string>
@@ -200,6 +201,14 @@
     <string name="employees_nfc">NFC</string>
     <string name="employees_title">Сотрудники</string>
     <string name="employees_service_number">Табельный номер: %s</string>
+    <string name="employees_firstname">Имя</string>
+    <string name="employees_lastname">Фамилия</string>
+    <string name="employees_patronymic">Отчество</string>
+    <string name="employees_post">Должность</string>
+    <string name="employees_status">Статус сотрудника</string>
+    <string name="employee_status_mol">Материально-ответственное лицо</string>
+    <string name="employee_status_without_organization">Физ. лицо</string>
+    <string name="employees_number">Табельный номер</string>
 
     <!-- Inventories -->
     <string name="inventories_title">Список инв. ведомостей</string>

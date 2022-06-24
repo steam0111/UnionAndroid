@@ -14,6 +14,8 @@ import com.itrocket.union.departments.presentation.view.DepartmentScreenPreview
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateScreenPreview
 import com.itrocket.union.documents.presentation.view.DocumentScreenPreview
 import com.itrocket.union.documentsMenu.presentation.view.DocumentMenuScreenPreview
+import com.itrocket.union.employeeDetail.presentation.view.EmployeeDetailScreen
+import com.itrocket.union.employeeDetail.presentation.view.EmployeeDetailScreenPreview
 import com.itrocket.union.employees.presentation.view.EmployeeScreenPreview
 import com.itrocket.union.equipmentTypes.presentation.view.EquipmentTypesScreenPreview
 import com.itrocket.union.filter.domain.entity.FilterDomain
@@ -256,6 +258,13 @@ class ScreensTest : ScreenshotTest {
     fun `EquipmentTypes`() {
         takeScreenShot {
             EquipmentTypesScreenPreview()
+        }
+    }
+
+    @Test
+    fun `EmployeeDetail`() {
+        takeScreenShot {
+            EmployeeDetailScreenPreview()
         }
     }
 }

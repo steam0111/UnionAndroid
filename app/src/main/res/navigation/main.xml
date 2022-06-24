@@ -134,7 +134,12 @@
 
     <fragment
         android:id="@+id/employees"
-        android:name="com.itrocket.union.employees.presentation.view.EmployeeComposeFragment" />
+        android:name="com.itrocket.union.employees.presentation.view.EmployeeComposeFragment">
+
+        <action
+            android:id="@+id/to_employee_detail"
+            app:destination="@id/employeeDetail" />
+    </fragment>
 
     <fragment
         android:id="@+id/filter"
@@ -297,5 +302,14 @@
     <fragment
         android:id="@+id/equipmentTypes"
         android:name="com.itrocket.union.equipmentTypes.presentation.view.EquipmentTypeComposeFragment" />
+
+    <fragment
+        android:id="@+id/employeeDetail"
+        android:name="com.itrocket.union.employeeDetail.presentation.view.EmployeeDetailComposeFragment">
+        <argument
+            android:name="EmployeeDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.employeeDetail.presentation.store.EmployeeDetailArguments"
+            app:nullable="false" />
+    </fragment>
 
 </navigation>

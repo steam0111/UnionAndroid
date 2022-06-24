@@ -54,7 +54,9 @@ class EmployeeStoreFactory(
                 EmployeeStore.Intent.OnBackClicked -> publish(EmployeeStore.Label.GoBack)
                 EmployeeStore.Intent.OnFilterClicked -> {}
                 EmployeeStore.Intent.OnSearchClicked -> {}
-                is EmployeeStore.Intent.OnEmployeeClicked -> {}
+                is EmployeeStore.Intent.OnEmployeeClicked -> {
+                    publish(EmployeeStore.Label.ShowDetail(intent.employeeId))
+                }
             }
         }
 

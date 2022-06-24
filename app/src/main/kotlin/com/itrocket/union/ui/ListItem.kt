@@ -51,6 +51,7 @@ import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
+import com.itrocket.union.employees.domain.entity.EmployeeStatus
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
@@ -90,7 +91,7 @@ fun AccountingObjectItem(
                     text = stringResource(
                         R.string.common_two_dots,
                         stringResource(id = it.title),
-                        it.value
+                        it.value.orEmpty()
                     ),
                     style = AppTheme.typography.caption,
                     color = psb3
@@ -181,7 +182,7 @@ fun ReservesItem(
                     text = stringResource(
                         R.string.common_two_dots,
                         stringResource(id = it.title),
-                        it.value
+                        it.value.orEmpty()
                     ),
                     style = AppTheme.typography.caption,
                     color = psb3
@@ -736,7 +737,9 @@ fun EmployeeItemPreview() {
             number = "BO_173470001290",
             firstname = "Ким",
             lastname = "У",
-            patronymic = "Бин"
+            patronymic = "Бин",
+            post = "bb",
+            employeeStatus = EmployeeStatus.MOL
         ), onEmployeeClickListener = {}, isShowBottomLine = true
     )
 }
