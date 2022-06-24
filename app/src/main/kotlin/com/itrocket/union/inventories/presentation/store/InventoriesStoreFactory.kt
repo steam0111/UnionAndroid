@@ -58,14 +58,24 @@ class InventoriesStoreFactory(
             getState: () -> InventoriesStore.State
         ) {
             when (intent) {
-                InventoriesStore.Intent.OnBackClicked -> publish(InventoriesStore.Label.GoBack)
+                InventoriesStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
                 InventoriesStore.Intent.OnFilterClicked -> publish(InventoriesStore.Label.ShowFilter)
                 is InventoriesStore.Intent.OnInventoryClicked -> publish(
                     InventoriesStore.Label.ShowInventoryDetail(
                         intent.inventory
                     )
                 )
-                InventoriesStore.Intent.OnSearchClicked -> publish(InventoriesStore.Label.ShowSearch)
+                InventoriesStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
+                is InventoriesStore.Intent.OnSearchTextChanged -> dispatch(Result.SearchText(intent.searchText))
+            }
+        }
+
+        private fun onBackClicked(isShowSearch: Boolean){
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+            } else {
+                publish(InventoriesStore.Label.GoBack)
             }
         }
 
@@ -77,6 +87,8 @@ class InventoriesStoreFactory(
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class Inventories(val inventories: List<InventoryCreateDomain>) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoriesStore.State, Result> {
@@ -84,6 +96,8 @@ class InventoriesStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.Inventories -> copy(inventories = result.inventories)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
 }

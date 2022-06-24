@@ -32,6 +32,7 @@
     <string name="common_name">Название</string>
     <string name="common_kpp">КПП</string>
     <string name="common_inn">ИНН</string>
+    <string name="search_hint">Введите запрос</string>
 
     <!-- Auth -->
     <string name="auth_suggest">Это нужно сделать один раз</string>

@@ -13,6 +13,7 @@ import com.itrocket.union.documents.DocumentModule
 import com.itrocket.union.documentsMenu.DocumentMenuModule
 import com.itrocket.union.employees.EmployeeModule
 import com.itrocket.union.filter.FilterModule
+import com.itrocket.union.inventories.InventoriesModule
 import com.itrocket.union.inventory.InventoryModule
 import com.itrocket.union.inventoryCreate.InventoryCreateModule
 import com.itrocket.union.location.LocationModule
@@ -36,7 +37,6 @@ import com.itrocket.union.nomenclatureGroupDetail.NomenclatureGroupDetailModule
 import com.itrocket.union.organizationDetail.OrganizationDetailModule
 import com.itrocket.union.newAccountingObject.NewAccountingObjectModule
 import com.itrocket.union.documentCreate.DocumentCreateModule
-import com.itrocket.union.inventories.InventoriesModule
 import com.itrocket.union.producer.ProducerModule
 import com.itrocket.union.counterparties.CounterpartyModule
 import com.itrocket.union.regions.RegionModule
