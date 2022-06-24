@@ -5,5 +5,5 @@ import com.itrocket.union.nomenclature.domain.entity.NomenclatureDomain
 
 
 fun List<NomenclatureSyncEntity>.map(): List<NomenclatureDomain> = map {
-    NomenclatureDomain(it.id, it.catalogItemName + " " + it.code)
+    NomenclatureDomain(it.id, it.catalogItemName + " " + it.code, code = it.code)
 }

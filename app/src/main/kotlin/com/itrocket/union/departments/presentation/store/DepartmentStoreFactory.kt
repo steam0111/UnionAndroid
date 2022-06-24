@@ -47,7 +47,9 @@ class DepartmentStoreFactory(
                 DepartmentStore.Intent.OnBackClicked -> publish(DepartmentStore.Label.GoBack)
                 DepartmentStore.Intent.OnFilterClicked -> {}
                 DepartmentStore.Intent.OnSearchClicked -> {}
-                is DepartmentStore.Intent.OnDepartmentClicked -> {}
+                is DepartmentStore.Intent.OnDepartmentClicked -> {
+                    publish(DepartmentStore.Label.ShowDetail(intent.id))
+                }
             }
         }
 

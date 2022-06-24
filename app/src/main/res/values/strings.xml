@@ -108,6 +108,9 @@
 
     <!-- Nomenclature -->
     <string name="nomenclature_title">Номенклатура</string>
+    <string name="nomenclature_name">Название</string>
+    <string name="nomenclature_code">Код</string>
+    <string name="nomenclature_group_name">Ном. группа</string>
 
     <!-- AccountingObjectDetailScreen -->
     <string name="accounting_objects_title">Объекты учета</string>
@@ -190,6 +193,7 @@
     <string name="organizations_title">Организации</string>
     <string name="organization_actual_address">Фактический адрес</string>
     <string name="organization_legal_address">"Юридический адрес</string>
+    <string name="organization">Организация</string>
 
     <!-- Branches -->
     <string name="branches_title">Филиалы</string>
@@ -198,6 +202,8 @@
     <!-- Departments -->
     <string name="departments_title">Подразделения</string>
     <string name="department_code">Код подразделения</string>
+    <string name="department_title">Подразделение</string>
+    <string name="department_name">Название</string>
 
     <!-- Employees -->
     <string name="employees_nfc">NFC</string>

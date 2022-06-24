@@ -10,6 +10,7 @@ import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectSc
 import com.itrocket.union.authUser.presentation.view.AuthUserScreenPreview
 import com.itrocket.union.counterparties.presentation.view.CounterpartyScreenPreview
 import com.itrocket.union.branches.presentation.view.BranchesScreenPreview
+import com.itrocket.union.departmentDetail.presentation.view.DepartmentDetailScreenPreview
 import com.itrocket.union.departments.presentation.view.DepartmentScreenPreview
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateScreenPreview
 import com.itrocket.union.documents.presentation.view.DocumentScreenPreview
@@ -27,6 +28,8 @@ import com.itrocket.union.inventory.presentation.view.InventoryScreenPreview
 import com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateScreenPreview
 import com.itrocket.union.location.presentation.view.LocationScreenPreview
 import com.itrocket.union.newAccountingObject.presentation.view.NewAccountingObjectScreenPreview
+import com.itrocket.union.nomenclatureDetail.presentation.view.NomenclatureDetailScreenPreview
+import com.itrocket.union.nomenclatureGroupDetail.presentation.view.NomenclatureGroupDetailScreenPreview
 import com.itrocket.union.organizations.presentation.view.OrganizationsScreenPreview
 import com.itrocket.union.producer.presentation.view.ProducerScreenPreview
 import com.itrocket.union.readingMode.presentation.view.ReadingModeScreenPreview
@@ -265,6 +268,27 @@ class ScreensTest : ScreenshotTest {
     fun `EmployeeDetail`() {
         takeScreenShot {
             EmployeeDetailScreenPreview()
+        }
+    }
+
+    @Test
+    fun `NomenclatureDetail`() {
+        takeScreenShot {
+            NomenclatureDetailScreenPreview()
+        }
+    }
+
+    @Test
+    fun `DepartmentDetail`() {
+        takeScreenShot {
+            DepartmentDetailScreenPreview()
+        }
+    }
+
+    @Test
+    fun `NomenclatureGroupDetail`() {
+        takeScreenShot {
+            NomenclatureGroupDetailScreenPreview()
         }
     }
 }

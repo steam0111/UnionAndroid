@@ -12,7 +12,7 @@ class FullAccountingObject(
     val mol: EmployeeDb?,
     @Embedded(prefix = "exploiting_")
     val exploitingEmployee: EmployeeDb?,
-    @Embedded(prefix = "organization_")
+    @Embedded(prefix = "organizations_")
     val organization: OrganizationDb?,
     @Embedded(prefix = "department_")
     val department: DepartmentDb?,

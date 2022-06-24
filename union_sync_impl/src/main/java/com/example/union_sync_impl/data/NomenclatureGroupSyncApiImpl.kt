@@ -22,4 +22,8 @@ class NomenclatureGroupSyncApiImpl(
         }
         return nomenclatureDb.map { it.toSyncEntity() }
     }
+
+    override suspend fun getNomenclatureGroupDetail(id: String): NomenclatureGroupSyncEntity {
+        return nomenclatureGroupDao.getById(id).toSyncEntity()
+    }
 }

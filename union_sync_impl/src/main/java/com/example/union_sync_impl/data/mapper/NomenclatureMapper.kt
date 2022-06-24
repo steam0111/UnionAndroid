@@ -1,9 +1,10 @@
 package com.example.union_sync_impl.data.mapper
 
+import com.example.union_sync_api.entity.NomenclatureDetailSyncEntity
 import com.example.union_sync_api.entity.NomenclatureSyncEntity
+import com.example.union_sync_impl.entity.FullNomenclatureDb
 import com.example.union_sync_impl.entity.NomenclatureDb
 import org.openapitools.client.models.Nomenclature
-import org.openapitools.client.models.NomenclatureDto
 
 fun Nomenclature.toNomenclatureDb(): NomenclatureDb {
     return NomenclatureDb(
@@ -21,4 +22,9 @@ fun NomenclatureDb.toSyncEntity() = NomenclatureSyncEntity(
     name = name,
     nomenclatureGroupId = nomenclatureGroupId,
     catalogItemName = catalogItemName
+)
+
+fun FullNomenclatureDb.toDetailSyncEntity() = NomenclatureDetailSyncEntity(
+    nomenclature = nomenclatureDb.toSyncEntity(),
+    nomenclatureGroup = nomenclatureGroupDb?.toSyncEntity()
 )

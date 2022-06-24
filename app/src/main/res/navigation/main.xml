@@ -191,6 +191,10 @@
         <argument
             android:name="NomenclatureGroupArguments"
             app:argType="com.itrocket.union.nomenclatureGroup.presentation.store.NomenclatureGroupArguments" />
+
+        <action
+            android:id="@+id/to_nomenclatureGroupDetail"
+            app:destination="@id/nomenclatureGroupDetail" />
     </fragment>
 
     <fragment
@@ -201,6 +205,10 @@
         <argument
             android:name="NomenclatureArguments"
             app:argType="com.itrocket.union.nomenclature.presentation.store.NomenclatureArguments" />
+
+        <action
+            android:id="@+id/to_nomenclatureDetail"
+            app:destination="@id/nomenclatureDetail" />
     </fragment>
 
     <fragment
@@ -251,7 +259,12 @@
 
     <fragment
         android:id="@+id/departments"
-        android:name="com.itrocket.union.departments.presentation.view.DepartmentComposeFragment" />
+        android:name="com.itrocket.union.departments.presentation.view.DepartmentComposeFragment">
+
+        <action
+            android:id="@+id/to_department_detail"
+            app:destination="@id/departmentDetail" />
+    </fragment>
 
     <fragment
         android:id="@+id/documentCreate"
@@ -312,6 +325,33 @@
         <argument
             android:name="EmployeeDetailComposeFragmentArgs"
             app:argType="com.itrocket.union.employeeDetail.presentation.store.EmployeeDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nomenclatureDetail"
+        android:name="com.itrocket.union.nomenclatureDetail.presentation.view.NomenclatureDetailComposeFragment">
+        <argument
+            android:name="NomenclatureDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.nomenclatureDetail.presentation.store.NomenclatureDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/departmentDetail"
+        android:name="com.itrocket.union.departmentDetail.presentation.view.DepartmentDetailComposeFragment">
+        <argument
+            android:name="DepartmentComposeFragmentArgs"
+            app:argType="com.itrocket.union.departmentDetail.presentation.store.DepartmentDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nomenclatureGroupDetail"
+        android:name="com.itrocket.union.nomenclatureGroupDetail.presentation.view.NomenclatureGroupDetailComposeFragment">
+        <argument
+            android:name="NomenclatureGroupDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.nomenclatureGroupDetail.presentation.store.NomenclatureGroupDetailArguments"
             app:nullable="false" />
     </fragment>
 
