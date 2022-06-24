@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 class ObjectStatus(
     val text: String,
-    val type: ObjectStatusType
+    val type: ObjectStatusType?
 ) : Parcelable
 
 enum class ObjectStatusType(
@@ -19,11 +19,12 @@ enum class ObjectStatusType(
 ) : Status {
     AVAILABLE(backgroundColor = green7, textId = R.string.accounting_object_available),
     GIVEN(backgroundColor = blue6, textId = R.string.accounting_object_given),
-    UNDER_REVIEW(backgroundColor = burntSienna, textId = R.string.accounting_object_under_review),
-    UNDER_REPAIR(backgroundColor = violet5, textId = R.string.accounting_object_under_repair),
+    REVIEW(backgroundColor = burntSienna, textId = R.string.accounting_object_under_review),
+    REPAIR(backgroundColor = violet5, textId = R.string.accounting_object_under_repair),
     DECOMMISSIONED(
         backgroundColor = graphite2,
         textColor = graphite6,
         textId = R.string.accounting_object_decommissioned
-    )
+    ),
+    TRANSIT(backgroundColor = blue6, textId = R.string.accounting_object_transit)
 }

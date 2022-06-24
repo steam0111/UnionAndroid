@@ -1,6 +1,7 @@
 package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.DocumentSyncApi
+import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
@@ -9,6 +10,7 @@ import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.DocumentDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
+import com.example.union_sync_impl.data.mapper.toAccountingObjectDetailSyncEntity
 import com.example.union_sync_impl.data.mapper.toDocumentDb
 import com.example.union_sync_impl.data.mapper.toDocumentSyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationShortSyncEntity
@@ -68,10 +70,10 @@ class DocumentSyncApiImpl(
             null
         }
 
-        val accountingObjects =
+        val accountingObjects: List<AccountingObjectSyncEntity> =
             accountingObjectDao.getAll(sqlAccountingObjectQuery(accountingObjectsIds = fullDocument.documentDb.accountingObjectsIds))
                 .map {
-                    it.toSyncEntity(it, getLocationSyncEntity(it.locationDb))
+                    it.toSyncEntity(getLocationSyncEntity(it.locationDb))
                 }
 
         return fullDocument.documentDb.toDocumentSyncEntity(

@@ -8,23 +8,25 @@ class AccountingObjectSyncEntity(
     val rfidValue: String?,
     val factoryNumber: String?,
     val inventoryNumber: String?,
-    val locationSyncEntity: LocationSyncEntity?,
-    val status: AccountingObjectStatus?,
-    val mol: EmployeeSyncEntity?,
-    val exploitingEmployee: EmployeeSyncEntity?,
-    val organizationSyncEntity: OrganizationSyncEntity?,
     val actualPrice: String?,
-    val producerSyncEntity: ProducerSyncEntity?,
-    val equipmentTypesSyncEntity: EquipmentTypesSyncEntity?,
-    val providerSyncEntity: ProviderSyncEntity?,
     val count: Int?,
     val commissioningDate: String?,
     val internalNumber: String?,
-    val departmentSyncEntity: DepartmentSyncEntity?,
-    val inventoryStatus: String? = null
+    val inventoryStatus: String? = null,
+    val status: AccountingObjectStatus?,
+    val providerId: String?,
+    val departmentId: String?,
+    val producerId: String?,
+    val equipmentTypeId: String?,
+    val locationId: String?,
+    val molId: String?,
+    val exploitingEmployeeId: String?,
+    val organizationId: String?,
+    val model: String?,
+    val locationSyncEntity: LocationSyncEntity?
 )
 
 class AccountingObjectStatus(
-    val id: String,
-    val name: String
+    val id: String?,
+    val name: String?
 )

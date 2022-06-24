@@ -20,4 +20,5 @@ class NomenclatureDb(
     override var catalogItemName: String,
     var number: String,
     val nomenclatureGroupId: String,
+    val name: String
 ) : CatalogItemDb(id)

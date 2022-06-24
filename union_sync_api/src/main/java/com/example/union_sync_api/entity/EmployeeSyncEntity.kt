@@ -9,4 +9,7 @@ class EmployeeSyncEntity(
     val organizationId: String?,
     val number: String,
     val nfc: String?
-)
+) {
+    val fullName: String
+        get() = "$lastname $firstname $patronymic"
+}

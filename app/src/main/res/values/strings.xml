@@ -119,6 +119,7 @@
     <string name="accounting_object_under_repair">В ремонте</string>
     <string name="accounting_object_under_review">На проверке</string>
     <string name="accounting_object_given">Выдан</string>
+    <string name="accounting_object_transit">Перевозка</string>
 
     <!-- Filter -->
     <string name="accounting_object_decommissioned">Списан</string>

@@ -1,0 +1,44 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdk libs.versions.compileSdk.get().toInteger()
+
+    defaultConfig {
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.toVersion(libs.versions.java.get().toInteger())
+        targetCompatibility JavaVersion.toVersion(libs.versions.java.get().toInteger())
+    }
+    kotlinOptions {
+        jvmTarget = libs.versions.java.get()
+        useIR = true
+    }
+}
+
+dependencies {
+    api project(":union_sync_api")
+    implementation project(":union_sync_impl")
+    implementation project(":union-api-client")
+
+    implementation(libs.database.runtime)
+    kapt(libs.database.compiler)
+
+    implementation(libs.bundles.koin.android)
+}
