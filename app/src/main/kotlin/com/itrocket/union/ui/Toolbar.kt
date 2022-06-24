@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.itrocket.union.R
 import com.itrocket.utils.clickableUnbounded
@@ -35,7 +36,7 @@ fun BaseToolbar(
             .fillMaxWidth()
             .shadow(4.dp)
             .background(backgroundColor)
-            .padding(vertical = 20.dp, horizontal = 16.dp)
+            .padding(vertical = 18.dp, horizontal = 16.dp)
     ) {
         Image(
             painter = painterResource(startImageId),
@@ -48,7 +49,8 @@ fun BaseToolbar(
         Text(
             text = title,
             modifier = Modifier.padding(start = 16.dp),
-            style = AppTheme.typography.h6,
+            style = AppTheme.typography.body1,
+            fontWeight = FontWeight.Medium,
             color = textColor
         )
         Spacer(modifier = Modifier.weight(1f))
