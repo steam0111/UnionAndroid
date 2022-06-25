@@ -11,6 +11,7 @@ import com.itrocket.union.authUser.presentation.view.AuthUserScreenPreview
 import com.itrocket.union.branchDetail.presentation.view.BranchDetailScreenPreview
 import com.itrocket.union.counterparties.presentation.view.CounterpartyScreenPreview
 import com.itrocket.union.branches.presentation.view.BranchesScreenPreview
+import com.itrocket.union.conterpartyDetail.presentation.view.CounterpartyDetailScreenPreview
 import com.itrocket.union.departmentDetail.presentation.view.DepartmentDetailScreenPreview
 import com.itrocket.union.departments.presentation.view.DepartmentScreenPreview
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateScreenPreview
@@ -278,6 +279,13 @@ class ScreensTest : ScreenshotTest {
     fun `RegionDetail`() {
         takeScreenShot {
             RegionDetailScreenPreview()
+        }
+    }
+
+    @Test
+    fun `CounterpartyDetail`() {
+        takeScreenShot {
+            CounterpartyDetailScreenPreview()
         }
     }
 }
