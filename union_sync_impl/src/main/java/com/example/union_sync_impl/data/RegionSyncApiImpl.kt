@@ -1,9 +1,11 @@
 package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.RegionSyncApi
+import com.example.union_sync_api.entity.RegionDetailSyncEntity
 import com.example.union_sync_api.entity.RegionSyncEntity
 import com.example.union_sync_impl.dao.OrganizationDao
 import com.example.union_sync_impl.dao.RegionDao
+import com.example.union_sync_impl.data.mapper.toDetailSyncEntity
 import com.example.union_sync_impl.data.mapper.toOrganizationDb
 import com.example.union_sync_impl.data.mapper.toRegionDb
 import com.example.union_sync_impl.data.mapper.toSyncEntity
@@ -31,5 +33,9 @@ class RegionSyncApiImpl(
             }
             emit(regionDao.getAll().map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun getRegionDetail(id: String): RegionDetailSyncEntity {
+        return regionDao.getFullById(id).toDetailSyncEntity()
     }
 }

@@ -17,13 +17,10 @@ import com.itrocket.union.documentCreate.presentation.view.DocumentCreateScreenP
 import com.itrocket.union.documents.presentation.view.DocumentScreenPreview
 import com.itrocket.union.documentsMenu.presentation.view.DocumentMenuScreenPreview
 import com.itrocket.union.employeeDetail.presentation.view.EmployeeDetailScreen
+import com.itrocket.union.filter.presentation.view.FilterScreen
 import com.itrocket.union.employeeDetail.presentation.view.EmployeeDetailScreenPreview
 import com.itrocket.union.employees.presentation.view.EmployeeScreenPreview
 import com.itrocket.union.equipmentTypes.presentation.view.EquipmentTypesScreenPreview
-import com.itrocket.union.filter.domain.entity.FilterDomain
-import com.itrocket.union.filter.domain.entity.FilterValueType
-import com.itrocket.union.filter.presentation.view.FilterScreenPreview
-import com.itrocket.union.filterValues.presentation.view.FilterValueScreenPreview
 import com.itrocket.union.inventories.presentation.view.InventoriesScreenPreview
 import com.itrocket.union.inventory.presentation.view.InventoryScreenPreview
 import com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateScreenPreview
@@ -35,6 +32,7 @@ import com.itrocket.union.organizationDetail.presentation.view.OrganizationDetai
 import com.itrocket.union.organizations.presentation.view.OrganizationsScreenPreview
 import com.itrocket.union.producer.presentation.view.ProducerScreenPreview
 import com.itrocket.union.readingMode.presentation.view.ReadingModeScreenPreview
+import com.itrocket.union.regionDetail.presentation.view.RegionDetailScreenPreview
 import com.itrocket.union.regions.presentation.view.RegionScreenPreview
 import com.itrocket.union.reserveDetail.presentation.view.ReserveDetailScreenPreview
 import com.itrocket.union.reserves.presentation.view.ReservesScreenPreview
@@ -105,38 +103,6 @@ class ScreensTest : ScreenshotTest {
     fun `FilterScreen`() {
         takeScreenShot {
             FilterScreenPreview()
-        }
-    }
-
-    @Test
-    fun `FilterValueScreen_typeMultiSelect`() {
-        takeScreenShot {
-            FilterValueScreenPreview()
-        }
-    }
-
-    @Test
-    fun `FilterValueScreen_typeSingleSelect`() {
-        takeScreenShot {
-            FilterValueScreenPreview(
-                filter = FilterDomain(
-                    name = "Filter name",
-                    filterValueType = FilterValueType.SINGLE_SELECT_LIST,
-                    valueList = listOf("Value1", "Value2", "Value3")
-                )
-            )
-        }
-    }
-
-    @Test
-    fun `FilterValueScreen_typeInput`() {
-        takeScreenShot {
-            FilterValueScreenPreview(
-                filter = FilterDomain(
-                    name = "Filter name",
-                    filterValueType = FilterValueType.INPUT
-                )
-            )
         }
     }
 
@@ -305,6 +271,13 @@ class ScreensTest : ScreenshotTest {
     fun `BranchDetail`() {
         takeScreenShot {
             BranchDetailScreenPreview()
+        }
+    }
+
+    @Test
+    fun `RegionDetail`() {
+        takeScreenShot {
+            RegionDetailScreenPreview()
         }
     }
 }

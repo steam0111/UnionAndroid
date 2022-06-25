@@ -45,6 +45,7 @@ import com.itrocket.union.branches.BranchesModule
 import com.itrocket.union.equipmentTypes.EquipmentTypeModule
 import com.itrocket.union.error.ErrorModule
 import com.itrocket.union.inventoryContainer.InventoryContainerModule
+import com.itrocket.union.regionDetail.RegionDetailModule
 
 object Modules {
 
@@ -96,6 +97,7 @@ object Modules {
         DepartmentDetailModule.module,
         NomenclatureGroupDetailModule.module,
         OrganizationDetailModule.module,
-        BranchDetailModule.module
+        BranchDetailModule.module,
+        RegionDetailModule.module
     )
 }
