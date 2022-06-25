@@ -7,6 +7,6 @@ import com.example.union_sync_impl.entity.core.CatalogItemDb
 class EquipmentTypesDb(
     id: String,
     override var catalogItemName: String,
-    val name: String,
-    val code: String
+    val name: String?,
+    val code: String?
 ) : CatalogItemDb(id)
