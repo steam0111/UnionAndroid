@@ -2,7 +2,7 @@ package org.openapitools.client.models
 
 import com.squareup.moshi.Json
 
-data class Nomenclature (
+data class CustomNomenclatureDto (
 
     @Json(name = "id")
     val id: String,

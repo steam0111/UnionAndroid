@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation android:id="@+id/main"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
     app:startDestination="@id/auth">
 
     <fragment
         android:id="@+id/auth"
         android:name="com.itrocket.union.authContainer.presentation.view.AuthContainerComposeFragment">
+
         <action
             android:id="@+id/to_documentsMenu"
             app:destination="@id/documentsMenu"
+            app:popUpTo="@id/main" />
+
+        <action
+            android:id="@+id/to_SyncAll"
+            app:destination="@+id/syncAll"
             app:popUpTo="@id/main" />
     </fragment>
 
@@ -75,17 +81,17 @@
     <fragment
         android:id="@+id/accountingObjects"
         android:name="com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment">
+        <action
+            android:id="@+id/to_accountingObjectsDetails"
+            app:destination="@id/accountingObjectsDetails" />
+        <action
+            android:id="@+id/to_filter"
+            app:destination="@id/filter" />
+
         <argument
             android:name="AccountingObjectArguments"
             app:argType="com.itrocket.union.accountingObjects.presentation.store.AccountingObjectArguments"
             app:nullable="true" />
-        <action
-            android:id="@+id/to_accountingObjectsDetails"
-            app:destination="@id/accountingObjectsDetails" />
-
-        <action
-            android:id="@+id/to_filter"
-            app:destination="@id/filter" />
     </fragment>
 
     <fragment
@@ -123,13 +129,13 @@
     <fragment
         android:id="@+id/documents"
         android:name="com.itrocket.union.documents.presentation.view.DocumentComposeFragment">
+        <action
+            android:id="@+id/to_documentCreate"
+            app:destination="@id/documentCreate" />
         <argument
             android:name="DocumentComposeFragmentArgs"
             app:argType="com.itrocket.union.documents.presentation.store.DocumentArguments"
             app:nullable="false" />
-        <action
-            android:id="@+id/to_documentCreate"
-            app:destination="@id/documentCreate" />
     </fragment>
 
     <fragment
@@ -148,10 +154,12 @@
         <action
             android:id="@+id/to_location"
             app:destination="@id/location" />
+
         <argument
             android:name="FilterArguments"
             app:argType="com.itrocket.union.filter.presentation.store.FilterArguments"
             app:nullable="false" />
+
         <action
             android:id="@+id/to_selectParams"
             app:destination="@id/selectParams" />
@@ -188,13 +196,13 @@
         android:name="com.itrocket.union.nomenclatureGroup.presentation.view.NomenclatureGroupComposeFragment"
         android:label="NomenclatureGroup">
 
-        <argument
-            android:name="NomenclatureGroupArguments"
-            app:argType="com.itrocket.union.nomenclatureGroup.presentation.store.NomenclatureGroupArguments" />
-
         <action
             android:id="@+id/to_nomenclatureGroupDetail"
             app:destination="@id/nomenclatureGroupDetail" />
+
+        <argument
+            android:name="NomenclatureGroupArguments"
+            app:argType="com.itrocket.union.nomenclatureGroup.presentation.store.NomenclatureGroupArguments" />
     </fragment>
 
     <fragment
@@ -202,13 +210,13 @@
         android:name="com.itrocket.union.nomenclature.presentation.view.NomenclatureComposeFragment"
         android:label="Nomenclature">
 
-        <argument
-            android:name="NomenclatureArguments"
-            app:argType="com.itrocket.union.nomenclature.presentation.store.NomenclatureArguments" />
-
         <action
             android:id="@+id/to_nomenclatureDetail"
             app:destination="@id/nomenclatureDetail" />
+
+        <argument
+            android:name="NomenclatureArguments"
+            app:argType="com.itrocket.union.nomenclature.presentation.store.NomenclatureArguments" />
     </fragment>
 
     <fragment
@@ -247,9 +255,6 @@
         android:name="com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragment"
         android:label="DocumentCreate">
 
-        <argument
-            android:name="DocumentCreateArguments"
-            app:argType="com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments" />
         <action
             android:id="@+id/to_selectParams"
             app:destination="@id/selectParams" />
@@ -259,6 +264,9 @@
         <action
             android:id="@+id/to_accountingObjects"
             app:destination="@id/accountingObjects" />
+        <argument
+            android:name="DocumentCreateArguments"
+            app:argType="com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments" />
     </fragment>
 
     <fragment
@@ -311,6 +319,7 @@
     <fragment
         android:id="@+id/equipmentTypes"
         android:name="com.itrocket.union.equipmentTypes.presentation.view.EquipmentTypeComposeFragment">
+
         <action
             android:id="@+id/to_equipmentTypeDetail"
             app:destination="@+id/equipmentTypeDetail" />
@@ -380,6 +389,17 @@
             android:name="InventoryContainerArguments"
             app:argType="com.itrocket.union.inventoryContainer.presentation.store.InventoryContainerArguments"
             app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/syncAll"
+        android:name="com.itrocket.union.syncAll.presentation.view.SyncAllComposeFragment"
+        android:label="SyncAll">
+
+        <action
+            android:id="@+id/to_documentsMenu"
+            app:destination="@id/documentsMenu"
+            app:popUpTo="@id/main" />
     </fragment>
 
     <fragment
