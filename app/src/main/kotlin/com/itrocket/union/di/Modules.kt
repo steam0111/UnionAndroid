@@ -5,6 +5,7 @@ import com.itrocket.union.accountingObjects.AccountingObjectModule
 import com.itrocket.union.authContainer.AuthContainerModule
 import com.itrocket.union.authMain.AuthMainModule
 import com.itrocket.union.authUser.AuthUserModule
+import com.itrocket.union.branchDetail.BranchDetailModule
 import com.itrocket.union.container.ContainerModule
 import com.itrocket.union.core.CoreModule
 import com.itrocket.union.departmentDetail.DepartmentDetailModule
@@ -94,6 +95,7 @@ object Modules {
         NomenclatureDetailModule.module,
         DepartmentDetailModule.module,
         NomenclatureGroupDetailModule.module,
-        OrganizationDetailModule.module
+        OrganizationDetailModule.module,
+        BranchDetailModule.module
     )
 }

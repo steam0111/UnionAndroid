@@ -1,11 +1,12 @@
 package com.example.union_sync_impl.data
 
-import android.util.Log
 import com.example.union_sync_api.data.BranchesSyncApi
+import com.example.union_sync_api.entity.BranchDetailSyncEntity
 import com.example.union_sync_api.entity.BranchSyncEntity
 import com.example.union_sync_impl.dao.BranchesDao
 import com.example.union_sync_impl.dao.OrganizationDao
 import com.example.union_sync_impl.data.mapper.toBranchesDb
+import com.example.union_sync_impl.data.mapper.toDetailSyncEntity
 import com.example.union_sync_impl.data.mapper.toOrganizationDb
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import kotlinx.coroutines.Dispatchers
@@ -30,5 +31,9 @@ class BranchesSyncApiImpl(
             }
             emit(branchesDao.getAll().map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun getBranchDetail(id: String): BranchDetailSyncEntity {
+        return branchesDao.getFullById(id).toDetailSyncEntity()
     }
 }

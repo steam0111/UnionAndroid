@@ -154,7 +154,7 @@
             app:nullable="false" />
         <action
             android:id="@+id/to_selectParams"
-            app:destination="@id/selectParams"/>
+            app:destination="@id/selectParams" />
     </fragment>
 
     <fragment
@@ -279,7 +279,11 @@
     <fragment
         android:id="@+id/branches"
         android:name="com.itrocket.union.branches.presentation.view.BranchesComposeFragment"
-        android:label="Branches" />
+        android:label="Branches">
+        <action
+            android:id="@+id/to_branchDetail"
+            app:destination="@id/branchDetail" />
+    </fragment>
 
     <fragment
         android:id="@+id/region"
@@ -359,5 +363,14 @@
             android:name="InventoryContainerArguments"
             app:argType="com.itrocket.union.inventoryContainer.presentation.store.InventoryContainerArguments"
             app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/branchDetail"
+        android:name="com.itrocket.union.branchDetail.presentation.view.BranchDetailComposeFragment">
+        <argument
+            android:name="BranchDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.branchDetail.presentation.store.BranchDetailArguments"
+            app:nullable="false" />
     </fragment>
 </navigation>

@@ -21,7 +21,7 @@ class BranchesComposeFragment :
                 state = state,
                 appInsets = appInsets,
                 onBackClickListener = { accept(BranchesStore.Intent.OnBackClicked) },
-                onBranchClickListener = {}
+                onBranchClickListener = { accept(BranchesStore.Intent.OnBranchClicked(it.id)) }
             )
         }
     }
