@@ -1,54 +1,55 @@
 package com.example.union_sync_impl.dao
 
 import androidx.sqlite.db.SimpleSQLiteQuery
+import com.example.union_sync_impl.utils.SqlTableFilters
+import com.example.union_sync_impl.utils.addFilters
+import com.example.union_sync_impl.utils.contains
+import com.example.union_sync_impl.utils.isEquals
 
 fun sqlAccountingObjectQuery(
     organizationId: String? = null,
     exploitingId: String? = null,
     accountingObjectsIds: List<String>? = null,
     rfids: List<String>? = null,
-    barcode: String? = null
+    barcode: String? = null,
+    textQuery: String? = null
 ): SimpleSQLiteQuery {
-    val filters = mutableListOf<String>()
+    val mainQuery = "SELECT accounting_objects.*," +
+            "" +
+            "location.id AS locations_id, " +
+            "location.catalogItemName AS locations_catalogItemName, " +
+            "location.name AS locations_name, " +
+            "location.parentId AS locations_parentId, " +
+            "location.locationTypeId AS locations_locationTypeId " +
+            "" +
+            "FROM accounting_objects " +
+            "LEFT JOIN location ON accounting_objects.locationId = location.id"
 
-    if (organizationId != null) {
-        filters.add("accounting_objects.organizationId = \'$organizationId\'")
-    }
-
-    if (exploitingId != null) {
-        filters.add("accounting_objects.exploitingId = \'$exploitingId\'")
-    }
-
-    if (barcode != null) {
-        filters.add("accounting_objects.barcodeValue = \'$barcode\'")
-    }
-
-    if (accountingObjectsIds != null) {
-        val values = accountingObjectsIds.map { "\'$it\'" }
-        filters.add("accounting_objects.id IN (${values.joinToString(",")})")
-    }
-
-    if (rfids != null) {
-        val values = rfids.map { "\'$it\'"  }
-        filters.add("accounting_objects.rfidValue IN (${values.joinToString(",")})")
-    }
-
-    val filterExpression = if (filters.isNotEmpty()) {
-        "WHERE ${filters.joinToString(separator = " AND ")}"
-    } else {
-        ""
-    }
-
-    return SimpleSQLiteQuery(
-        "SELECT accounting_objects.*," +
-                "" +
-                "location.id AS locations_id, " +
-                "location.catalogItemName AS locations_catalogItemName, " +
-                "location.name AS locations_name, " +
-                "location.parentId AS locations_parentId " +
-                "" +
-                "FROM accounting_objects " +
-                "LEFT JOIN location ON accounting_objects.locationId = location.id " +
-                filterExpression
+    val query = mainQuery.addFilters(
+        sqlTableFilters = SqlTableFilters(
+            tableName = "accounting_objects",
+            filter = buildList {
+                organizationId?.let {
+                    add("organizationId" isEquals organizationId)
+                }
+                exploitingId?.let {
+                    add("exploitingId" isEquals exploitingId)
+                }
+                accountingObjectsIds?.let {
+                    add("id" isEquals accountingObjectsIds)
+                }
+                rfids?.let {
+                    add("rfidValue" isEquals rfids)
+                }
+                barcode?.let {
+                    add("barcodeValue" isEquals barcode)
+                }
+                textQuery?.let {
+                    add("name" contains textQuery)
+                }
+            }
+        )
     )
+
+    return SimpleSQLiteQuery(query)
 }
