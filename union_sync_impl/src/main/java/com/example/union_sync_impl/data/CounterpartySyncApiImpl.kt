@@ -27,4 +27,8 @@ class CounterpartySyncApiImpl(
             emit(counterpartyDao.getAll().map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)
     }
+
+    override suspend fun getCounterpartyDetail(id: String): CounterpartySyncEntity {
+        return counterpartyDao.getById(id).toSyncEntity()
+    }
 }

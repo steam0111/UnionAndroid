@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface CounterpartySyncApi {
     suspend fun getCounterparties(): Flow<List<CounterpartySyncEntity>>
+
+    suspend fun getCounterpartyDetail(id: String): CounterpartySyncEntity
 }

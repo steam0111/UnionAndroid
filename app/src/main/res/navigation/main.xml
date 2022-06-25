@@ -298,7 +298,11 @@
     <fragment
         android:id="@+id/counterparty"
         android:name="com.itrocket.union.counterparties.presentation.view.CounterpartyComposeFragment"
-        android:label="Counterparty" />
+        android:label="Counterparty">
+        <action
+            android:id="@+id/to_counterpartyDetail"
+            app:destination="@+id/counterpartyDetail" />
+    </fragment>
 
     <fragment
         android:id="@+id/equipmentTypes"
@@ -385,6 +389,15 @@
         <argument
             android:name="RegionDetailComposeFragmentArgs"
             app:argType="com.itrocket.union.regionDetail.presentation.store.RegionDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/counterpartyDetail"
+        android:name="com.itrocket.union.conterpartyDetail.presentation.view.CounterpartyDetailComposeFragment">
+        <argument
+            android:name="CounterpartyDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.conterpartyDetail.presentation.store.CounterpartyDetailArguments"
             app:nullable="false" />
     </fragment>
 </navigation>

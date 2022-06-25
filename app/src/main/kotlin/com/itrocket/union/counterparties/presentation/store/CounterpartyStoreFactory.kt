@@ -57,6 +57,7 @@ class CounterpartyStoreFactory(
             when (intent) {
                 CounterpartyStore.Intent.OnBackClicked -> publish(CounterpartyStore.Label.GoBack)
                 is CounterpartyStore.Intent.OnCounterpartyClicked -> {
+                    publish(CounterpartyStore.Label.ShowDetail(intent.id))
                 }
                 CounterpartyStore.Intent.OnFilterClicked -> {
                 }

@@ -24,7 +24,7 @@ class CounterpartyComposeFragment :
                     accept(CounterpartyStore.Intent.OnBackClicked)
                 },
                 onCounterpartyClickListener = {
-                    accept(CounterpartyStore.Intent.OnCounterpartyClicked(it))
+                    accept(CounterpartyStore.Intent.OnCounterpartyClicked(it.id))
                 }
             )
         }

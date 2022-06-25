@@ -42,6 +42,7 @@ import com.itrocket.union.producer.ProducerModule
 import com.itrocket.union.counterparties.CounterpartyModule
 import com.itrocket.union.regions.RegionModule
 import com.itrocket.union.branches.BranchesModule
+import com.itrocket.union.conterpartyDetail.CounterpartyDetailModule
 import com.itrocket.union.equipmentTypes.EquipmentTypeModule
 import com.itrocket.union.error.ErrorModule
 import com.itrocket.union.inventoryContainer.InventoryContainerModule
@@ -98,6 +99,7 @@ object Modules {
         NomenclatureGroupDetailModule.module,
         OrganizationDetailModule.module,
         BranchDetailModule.module,
-        RegionDetailModule.module
+        RegionDetailModule.module,
+        CounterpartyDetailModule.module
     )
 }
