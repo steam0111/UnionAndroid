@@ -2,6 +2,7 @@ package com.union.sdk
 
 import androidx.room.Room
 import com.example.union_sync_api.data.AccountingObjectSyncApi
+import com.example.union_sync_api.data.AllSyncApi
 import com.example.union_sync_api.data.BranchesSyncApi
 import com.example.union_sync_api.data.CounterpartySyncApi
 import com.example.union_sync_api.data.DepartmentSyncApi
@@ -17,6 +18,7 @@ import com.example.union_sync_api.data.ProducerSyncApi
 import com.example.union_sync_api.data.RegionSyncApi
 import com.example.union_sync_impl.UnionDatabase
 import com.example.union_sync_impl.data.AccountingObjectSyncApiImpl
+import com.example.union_sync_impl.data.AllSyncImpl
 import com.example.union_sync_impl.data.BranchesSyncApiImpl
 import com.example.union_sync_impl.data.CounterpartySyncApiImpl
 import com.example.union_sync_impl.data.DepartmentSyncApiImpl
@@ -36,63 +38,43 @@ object SyncModule {
     val module = module {
         factory<NomenclatureGroupSyncApi> {
             NomenclatureGroupSyncApiImpl(
-                nomenclatureGroupApi = get(),
                 nomenclatureGroupDao = get()
             )
         }
         factory<OrganizationSyncApi> {
             OrganizationSyncApiImpl(
-                organizationApi = get(),
                 organizationDao = get(),
-                networkSyncDao = get()
             )
         }
         factory<DepartmentSyncApi> {
             DepartmentSyncApiImpl(
-                departmentApi = get(),
                 departmentDao = get(),
-                organizationDao = get()
             )
         }
         factory<EmployeeSyncApi> {
             EmployeeSyncApiImpl(
-                employeeApi = get(),
                 employeeDao = get(),
-                organizationDao = get()
             )
         }
         factory<ProducerSyncApi> {
             ProducerSyncApiImpl(
-                producerApi = get(),
                 producerDao = get()
             )
         }
         factory<RegionSyncApi> {
             RegionSyncApiImpl(
-                regionApi = get(),
                 regionDao = get(),
-                organizationDao = get()
             )
         }
         factory<BranchesSyncApi> {
             BranchesSyncApiImpl(
-                branchesApi = get(),
                 branchesDao = get(),
-                organizationDao = get()
             )
         }
         factory<AccountingObjectSyncApi> {
             AccountingObjectSyncApiImpl(
-                api = get(),
                 accountingObjectsDao = get(),
-                employeeDao = get(),
-                organizationsDao = get(),
-                nomenclatureGroupDao = get(),
-                nomenclatureDao = get(),
-                locationPathDao = get(),
                 locationDao = get(),
-                departmentDao = get(),
-                providerDao = get()
             )
         }
         factory<InventorySyncApi> {
@@ -111,27 +93,52 @@ object SyncModule {
         }
         factory<LocationSyncApi> {
             LocationSyncApiImpl(
-                locationApi = get(),
                 locationDao = get(),
-                networkSyncDao = get()
             )
         }
         factory<CounterpartySyncApi> {
             CounterpartySyncApiImpl(
-                counterpartyApi = get(),
                 counterpartyDao = get()
             )
         }
         factory<EquipmentTypeSyncApi> {
             EquipmentTypeSyncApiImpl(
-                equipmentTypeApi = get(),
                 equipmentTypeDao = get()
             )
         }
         factory<NomenclatureSyncApi> {
             NomenclatureSyncApiImpl(nomenclatureDao = get())
         }
-
+        factory<AllSyncApi> {
+            AllSyncImpl(
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+            )
+        }
         single {
             Room.databaseBuilder(
                 get(),

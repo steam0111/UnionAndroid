@@ -179,7 +179,7 @@ data class CustomAccountingObjectDto(
     val extendedBranch: BranchDto? = null,
 
     @Json(name = "extendedNomenclature")
-    val extendedNomenclature: Nomenclature? = null,
+    val extendedNomenclature: CustomNomenclatureDto? = null,
 
     @Json(name = "extendedNomenclatureGroup")
     val extendedNomenclatureGroup: NomenclatureGroupDto? = null,
