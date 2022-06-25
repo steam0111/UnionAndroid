@@ -80,6 +80,5 @@ data class CustomOrganizationDto(
 
     @Json(name = "employeeId")
     val employeeId: String?
-
 )
 

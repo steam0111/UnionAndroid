@@ -45,6 +45,8 @@ database = "2.4.2"
 scannerclient = "1.0.9"
 scannerclient_impl = "1.1.0"
 
+junit = "4.13.2"
+
 [libraries]
 
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
@@ -103,6 +105,8 @@ database-compiler = { module = "androidx.room:room-compiler", version.ref = "dat
 
 scannerclient-impl = { module = "ru.interid:scannerclient-impl", version.ref = "scannerclient_impl"}
 scannerclient = { module = "ru.interid:scanner_client", version.ref = "scannerclient"}
+
+junit = { module = "junit:junit", version.ref = "junit"}
 
 [bundles]
 android-ext = ["android-ext-lifecycle", "android-ext-fragment"]

@@ -7,7 +7,8 @@ import kotlinx.coroutines.flow.Flow
 interface AccountingObjectSyncApi {
     suspend fun getAccountingObjects(
         organizationId: String? = null,
-        exploitingId: String? = null
+        exploitingId: String? = null,
+        textQuery: String? = null
     ): Flow<List<AccountingObjectSyncEntity>>
 
     suspend fun getAccountingObjectsByRfids(accountingObjectRfids: List<String>): List<AccountingObjectSyncEntity>
@@ -15,5 +16,4 @@ interface AccountingObjectSyncApi {
     suspend fun getAccountingObjectsByBarcode(accountingObjectBarcode: String): AccountingObjectSyncEntity?
 
     suspend fun getAccountingObjectDetailById(id: String): AccountingObjectDetailSyncEntity
-
 }

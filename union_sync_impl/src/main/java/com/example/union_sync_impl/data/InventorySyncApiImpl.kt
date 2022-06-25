@@ -9,7 +9,6 @@ import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
-import com.example.union_sync_impl.data.mapper.toAccountingObjectDetailSyncEntity
 import com.example.union_sync_impl.data.mapper.toInventoryDb
 import com.example.union_sync_impl.data.mapper.toInventorySyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationShortSyncEntity
@@ -89,7 +88,7 @@ class InventorySyncApiImpl(
             return null
         }
         val locationTypeId = locationDb.locationTypeId ?: return null
-        val locationTypeDb: LocationTypeDb = locationDao.getLocationTypeById(locationTypeId)
+        val locationTypeDb: LocationTypeDb = locationDao.getLocationTypeById(locationTypeId) ?: return null
 
         return locationDb.toLocationSyncEntity(locationTypeDb)
     }

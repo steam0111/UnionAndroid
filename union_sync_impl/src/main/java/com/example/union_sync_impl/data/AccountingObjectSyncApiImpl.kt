@@ -51,7 +51,8 @@ class AccountingObjectSyncApiImpl(
 
     override suspend fun getAccountingObjects(
         organizationId: String?,
-        exploitingId: String?
+        exploitingId: String?,
+        textQuery: String?
     ): Flow<List<AccountingObjectSyncEntity>> {
         return flow {
             emit(getDbData(organizationId, exploitingId))
@@ -123,13 +124,15 @@ class AccountingObjectSyncApiImpl(
     private suspend fun getDbData(
         organizationId: String? = null,
         exploitingId: String? = null,
-        accountingObjectsIds: List<String>? = null
+        accountingObjectsIds: List<String>? = null,
+        textQuery: String? = null
     ): List<AccountingObjectSyncEntity> {
         return accountingObjectsDao.getAll(
             sqlAccountingObjectQuery(
-                organizationId,
-                exploitingId,
-                accountingObjectsIds
+                organizationId = organizationId,
+                exploitingId = exploitingId,
+                accountingObjectsIds = accountingObjectsIds,
+                textQuery = textQuery
             )
         )
             .map {
@@ -146,7 +149,7 @@ class AccountingObjectSyncApiImpl(
             return null
         }
         val locationTypeId = locationDb.locationTypeId ?: return null
-        val locationTypeDb: LocationTypeDb = locationDao.getLocationTypeById(locationTypeId)
+        val locationTypeDb: LocationTypeDb = locationDao.getLocationTypeById(locationTypeId) ?: return null
 
         return locationDb.toLocationSyncEntity(locationTypeDb)
     }

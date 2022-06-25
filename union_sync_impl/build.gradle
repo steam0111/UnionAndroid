@@ -38,4 +38,6 @@ dependencies {
 
     implementation(libs.database.runtime)
     kapt(libs.database.compiler)
+
+    testImplementation(libs.junit)
 }
