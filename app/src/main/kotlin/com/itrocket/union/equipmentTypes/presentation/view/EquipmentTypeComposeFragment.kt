@@ -24,7 +24,7 @@ class EquipmentTypeComposeFragment :
                     accept(EquipmentTypeStore.Intent.OnBackClicked)
                 },
                 onItemClickListener = {
-                    accept(EquipmentTypeStore.Intent.OnItemClicked(it))
+                    accept(EquipmentTypeStore.Intent.OnItemClicked(it.id))
                 }
             )
         }

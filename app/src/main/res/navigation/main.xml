@@ -310,7 +310,11 @@
 
     <fragment
         android:id="@+id/equipmentTypes"
-        android:name="com.itrocket.union.equipmentTypes.presentation.view.EquipmentTypeComposeFragment" />
+        android:name="com.itrocket.union.equipmentTypes.presentation.view.EquipmentTypeComposeFragment">
+        <action
+            android:id="@+id/to_equipmentTypeDetail"
+            app:destination="@+id/equipmentTypeDetail" />
+    </fragment>
 
     <fragment
         android:id="@+id/employeeDetail"
@@ -411,6 +415,15 @@
         <argument
             android:name="ProducerDetailComposeFragmentArgs"
             app:argType="com.itrocket.union.producerDetail.presentation.store.ProducerDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/equipmentTypeDetail"
+        android:name="com.itrocket.union.equipmentTypeDetail.presentation.view.EquipmentTypeDetailComposeFragment">
+        <argument
+            android:name="EquipmentTypeDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.equipmentTypeDetail.presentation.store.EquipmentTypeDetailArguments"
             app:nullable="false" />
     </fragment>
 </navigation>

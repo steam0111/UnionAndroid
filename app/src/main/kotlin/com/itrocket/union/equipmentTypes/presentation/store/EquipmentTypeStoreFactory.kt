@@ -55,6 +55,7 @@ class EquipmentTypeStoreFactory(
             when (intent) {
                 EquipmentTypeStore.Intent.OnBackClicked -> publish(EquipmentTypeStore.Label.GoBack)
                 is EquipmentTypeStore.Intent.OnItemClicked -> {
+                    publish(EquipmentTypeStore.Label.ShowDetail(intent.id))
                 }
             }
         }

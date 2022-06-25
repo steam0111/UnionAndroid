@@ -48,6 +48,7 @@ import com.itrocket.union.error.ErrorModule
 import com.itrocket.union.inventoryContainer.InventoryContainerModule
 import com.itrocket.union.regionDetail.RegionDetailModule
 import com.itrocket.union.producerDetail.ProducerDetailModule
+import com.itrocket.union.equipmentTypeDetail.EquipmentTypeDetailModule
 
 object Modules {
 
@@ -102,6 +103,7 @@ object Modules {
         BranchDetailModule.module,
         RegionDetailModule.module,
         CounterpartyDetailModule.module,
-        ProducerDetailModule.module
+        ProducerDetailModule.module,
+        EquipmentTypeDetailModule.module
     )
 }

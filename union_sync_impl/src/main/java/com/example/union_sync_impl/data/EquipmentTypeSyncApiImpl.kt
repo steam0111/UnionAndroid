@@ -1,8 +1,8 @@
 package com.example.union_sync_impl.data
 
-import com.example.union_sync_api.data.EquipmentTypesSyncApi
-import com.example.union_sync_api.entity.EquipmentTypesSyncEntity
-import com.example.union_sync_impl.dao.EquipmentTypesDao
+import com.example.union_sync_api.data.EquipmentTypeSyncApi
+import com.example.union_sync_api.entity.EquipmentTypeSyncEntity
+import com.example.union_sync_impl.dao.EquipmentTypeDao
 import com.example.union_sync_impl.data.mapper.toEquipmentTypeDb
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import kotlinx.coroutines.Dispatchers
@@ -12,11 +12,11 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import org.openapitools.client.custom_api.EquipmentTypeApi
 
-class EquipmentTypesSyncApiImpl(
-    private val equipmentTypeDao: EquipmentTypesDao,
+class EquipmentTypeSyncApiImpl(
+    private val equipmentTypeDao: EquipmentTypeDao,
     private val equipmentTypeApi: EquipmentTypeApi
-) : EquipmentTypesSyncApi {
-    override suspend fun getEquipmentTypes(): Flow<List<EquipmentTypesSyncEntity>> {
+) : EquipmentTypeSyncApi {
+    override suspend fun getEquipmentTypes(): Flow<List<EquipmentTypeSyncEntity>> {
         return flow {
             emit(equipmentTypeDao.getAll().map { it.toSyncEntity() })
             val networkData = equipmentTypeApi.apiCatalogEquipmentTypesGet().list.orEmpty()
@@ -25,5 +25,9 @@ class EquipmentTypesSyncApiImpl(
             }
             emit(equipmentTypeDao.getAll().map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun getEquipmentTypeDetail(id: String): EquipmentTypeSyncEntity {
+        return equipmentTypeDao.getById(id).toSyncEntity()
     }
 }

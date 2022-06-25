@@ -9,7 +9,7 @@ import com.example.union_sync_impl.dao.CounterpartyDao
 import com.example.union_sync_impl.dao.DepartmentDao
 import com.example.union_sync_impl.dao.DocumentDao
 import com.example.union_sync_impl.dao.EmployeeDao
-import com.example.union_sync_impl.dao.EquipmentTypesDao
+import com.example.union_sync_impl.dao.EquipmentTypeDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.LocationPathDao
@@ -78,7 +78,7 @@ abstract class UnionDatabase : RoomDatabase() {
     abstract fun accountingObjectDao(): AccountingObjectDao
     abstract fun inventorySyncDao(): InventoryDao
     abstract fun branchesDao(): BranchesDao
-    abstract fun equipmentTypeDao(): EquipmentTypesDao
+    abstract fun equipmentTypeDao(): EquipmentTypeDao
     abstract fun documentDao(): DocumentDao
     abstract fun providerDao(): ProviderDao
 }
