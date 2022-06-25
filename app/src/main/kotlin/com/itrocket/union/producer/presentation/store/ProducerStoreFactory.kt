@@ -63,6 +63,7 @@ class ProducerStoreFactory(
                 ProducerStore.Intent.OnFilterClicked -> {
                 }
                 is ProducerStore.Intent.OnProducerClicked -> {
+                    publish(ProducerStore.Label.ShowDetail(intent.id))
                 }
                 ProducerStore.Intent.OnSearchClicked -> {
                 }

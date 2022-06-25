@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProducerSyncApi {
     suspend fun getProducers(): Flow<List<ProducerSyncEntity>>
+
+    suspend fun getProducerDetail(id: String): ProducerSyncEntity
 }

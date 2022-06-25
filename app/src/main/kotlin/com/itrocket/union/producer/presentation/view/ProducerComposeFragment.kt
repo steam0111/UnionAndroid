@@ -24,7 +24,7 @@ class ProducerComposeFragment :
                     accept(ProducerStore.Intent.OnBackClicked)
                 },
                 onProducerClickListener = {
-                    accept(ProducerStore.Intent.OnProducerClicked(it))
+                    accept(ProducerStore.Intent.OnProducerClicked(it.id))
                 }
             )
         }

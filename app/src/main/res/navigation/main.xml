@@ -274,7 +274,11 @@
     <fragment
         android:id="@+id/producer"
         android:name="com.itrocket.union.producer.presentation.view.ProducerComposeFragment"
-        android:label="Producer" />
+        android:label="Producer">
+        <action
+            android:id="@+id/to_producerDetail"
+            app:destination="@+id/producerDetail" />
+    </fragment>
 
     <fragment
         android:id="@+id/branches"
@@ -398,6 +402,15 @@
         <argument
             android:name="CounterpartyDetailComposeFragmentArgs"
             app:argType="com.itrocket.union.conterpartyDetail.presentation.store.CounterpartyDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/producerDetail"
+        android:name="com.itrocket.union.producerDetail.presentation.view.ProducerDetailComposeFragment">
+        <argument
+            android:name="ProducerDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.producerDetail.presentation.store.ProducerDetailArguments"
             app:nullable="false" />
     </fragment>
 </navigation>
