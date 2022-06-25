@@ -1,6 +1,8 @@
 package com.example.union_sync_impl.data.mapper
 
+import com.example.union_sync_api.entity.RegionDetailSyncEntity
 import com.example.union_sync_api.entity.RegionSyncEntity
+import com.example.union_sync_impl.entity.FullRegionDb
 import com.example.union_sync_impl.entity.RegionDb
 import org.openapitools.client.models.Region
 
@@ -23,3 +25,7 @@ fun RegionDb.toSyncEntity(): RegionSyncEntity {
         code = code
     )
 }
+
+fun FullRegionDb.toDetailSyncEntity() = RegionDetailSyncEntity(
+    region = regionDb.toSyncEntity()
+)

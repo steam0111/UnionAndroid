@@ -288,7 +288,12 @@
     <fragment
         android:id="@+id/region"
         android:name="com.itrocket.union.regions.presentation.view.RegionComposeFragment"
-        android:label="Region" />
+        android:label="Region">
+
+        <action
+            android:id="@+id/to_regionDetail"
+            app:destination="@id/regionDetail" />
+    </fragment>
 
     <fragment
         android:id="@+id/counterparty"
@@ -371,6 +376,15 @@
         <argument
             android:name="BranchDetailComposeFragmentArgs"
             app:argType="com.itrocket.union.branchDetail.presentation.store.BranchDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/regionDetail"
+        android:name="com.itrocket.union.regionDetail.presentation.view.RegionDetailComposeFragment">
+        <argument
+            android:name="RegionDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.regionDetail.presentation.store.RegionDetailArguments"
             app:nullable="false" />
     </fragment>
 </navigation>

@@ -191,6 +191,7 @@
     <!-- Regions -->
     <string name="region_title">Регионы</string>
     <string name="region_code">Код региона</string>
+    <string name="region">Регион</string>
 
     <!-- Organizations -->
     <string name="organizations_title">Организации</string>

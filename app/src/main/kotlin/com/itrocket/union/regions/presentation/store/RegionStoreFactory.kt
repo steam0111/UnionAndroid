@@ -61,6 +61,7 @@ class RegionStoreFactory(
                 RegionStore.Intent.OnFilterClicked -> {
                 }
                 is RegionStore.Intent.OnRegionClicked -> {
+                    publish(RegionStore.Label.ShowDetail(intent.id))
                 }
                 RegionStore.Intent.OnSearchClicked -> {
                 }

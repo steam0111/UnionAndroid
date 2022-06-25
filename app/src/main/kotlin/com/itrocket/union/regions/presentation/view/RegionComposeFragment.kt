@@ -24,7 +24,7 @@ class RegionComposeFragment :
                     accept(RegionStore.Intent.OnBackClicked)
                 },
                 onRegionClickListener = {
-                    accept(RegionStore.Intent.OnRegionClicked(it))
+                    accept(RegionStore.Intent.OnRegionClicked(it.id))
                 }
             )
         }
