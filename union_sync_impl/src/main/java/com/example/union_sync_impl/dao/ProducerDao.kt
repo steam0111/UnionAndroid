@@ -12,6 +12,9 @@ interface ProducerDao {
     @Query("SELECT * FROM producer")
     suspend fun getAll(): List<ProducerDb>
 
+    @Query("SELECT * FROM producer WHERE id = :id LIMIT 1")
+    suspend fun getById(id: String): ProducerDb
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(producers: List<ProducerDb>)
 }

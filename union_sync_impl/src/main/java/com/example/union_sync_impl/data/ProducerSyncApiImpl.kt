@@ -28,4 +28,8 @@ class ProducerSyncApiImpl(
             emit(producerDao.getAll().map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)
     }
+
+    override suspend fun getProducerDetail(id: String): ProducerSyncEntity {
+        return producerDao.getById(id).toSyncEntity()
+    }
 }

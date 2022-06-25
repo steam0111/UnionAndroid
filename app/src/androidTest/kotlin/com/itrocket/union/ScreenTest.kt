@@ -32,6 +32,7 @@ import com.itrocket.union.nomenclatureGroupDetail.presentation.view.Nomenclature
 import com.itrocket.union.organizationDetail.presentation.view.OrganizationDetailScreenPreview
 import com.itrocket.union.organizations.presentation.view.OrganizationsScreenPreview
 import com.itrocket.union.producer.presentation.view.ProducerScreenPreview
+import com.itrocket.union.producerDetail.presentation.view.ProducerDetailScreenPreview
 import com.itrocket.union.readingMode.presentation.view.ReadingModeScreenPreview
 import com.itrocket.union.regionDetail.presentation.view.RegionDetailScreenPreview
 import com.itrocket.union.regions.presentation.view.RegionScreenPreview
@@ -286,6 +287,13 @@ class ScreensTest : ScreenshotTest {
     fun `CounterpartyDetail`() {
         takeScreenShot {
             CounterpartyDetailScreenPreview()
+        }
+    }
+
+    @Test
+    fun `ProducerDetail`() {
+        takeScreenShot {
+            ProducerDetailScreenPreview()
         }
     }
 }
