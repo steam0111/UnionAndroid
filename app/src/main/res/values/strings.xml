@@ -203,6 +203,8 @@
     <!-- Branches -->
     <string name="branches_title">Филиалы</string>
     <string name="branches_code">Код филиала</string>
+    <string name="branch">Филиал</string>
+
 
     <!-- Departments -->
     <string name="departments_title">Подразделения</string>

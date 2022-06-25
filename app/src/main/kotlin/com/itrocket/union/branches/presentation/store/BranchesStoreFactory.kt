@@ -59,6 +59,7 @@ class BranchesStoreFactory(
             when (intent) {
                 BranchesStore.Intent.OnBackClicked -> publish(BranchesStore.Label.GoBack)
                 is BranchesStore.Intent.OnBranchClicked -> {
+                    publish(BranchesStore.Label.ShowDetail(intent.id))
                 }
                 BranchesStore.Intent.OnFilterClicked -> {
                 }
