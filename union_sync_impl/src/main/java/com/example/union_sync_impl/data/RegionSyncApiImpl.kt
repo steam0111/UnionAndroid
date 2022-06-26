@@ -4,6 +4,7 @@ import com.example.union_sync_api.data.RegionSyncApi
 import com.example.union_sync_api.entity.RegionDetailSyncEntity
 import com.example.union_sync_api.entity.RegionSyncEntity
 import com.example.union_sync_impl.dao.RegionDao
+import com.example.union_sync_impl.dao.sqlRegionQuery
 import com.example.union_sync_impl.data.mapper.toDetailSyncEntity
 import com.example.union_sync_impl.data.mapper.toOrganizationDb
 import com.example.union_sync_impl.data.mapper.toRegionDb
@@ -17,9 +18,9 @@ import kotlinx.coroutines.flow.flowOn
 class RegionSyncApiImpl(
     private val regionDao: RegionDao
 ) : RegionSyncApi {
-    override suspend fun getRegions(): Flow<List<RegionSyncEntity>> {
+    override suspend fun getRegions(organizationId: String?): Flow<List<RegionSyncEntity>> {
         return flow {
-            emit(regionDao.getAll().map { it.toSyncEntity() })
+            emit(regionDao.getAll(sqlRegionQuery(organizationId)).map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)
     }
 

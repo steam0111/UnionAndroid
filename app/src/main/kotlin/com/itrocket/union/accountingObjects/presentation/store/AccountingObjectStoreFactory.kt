@@ -1,10 +1,6 @@
 package com.itrocket.union.accountingObjects.presentation.store
 
-import com.arkivanov.mvikotlin.core.store.Executor
-import com.arkivanov.mvikotlin.core.store.Reducer
-import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
-import com.arkivanov.mvikotlin.core.store.Store
-import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.core.store.*
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
@@ -12,8 +8,6 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.utils.ifBlankOrNull
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 
 class AccountingObjectStoreFactory(
     private val storeFactory: StoreFactory,
@@ -47,15 +41,15 @@ class AccountingObjectStoreFactory(
             dispatch(Result.Loading(true))
             catchException {
                 dispatch(Result.Loading(true))
-                accountingObjectInteractor.getAccountingObjects(
-                    params = accountingObjectArguments?.params.orEmpty(),
-                    selectedAccountingObjectIds = accountingObjectArguments?.selectedAccountingObjectIds.orEmpty()
+                dispatch(
+                    Result.AccountingObjects(
+                        accountingObjectInteractor.getAccountingObjects(
+                            params = accountingObjectArguments?.params.orEmpty(),
+                            selectedAccountingObjectIds = accountingObjectArguments?.selectedAccountingObjectIds.orEmpty()
+                        )
+                    )
                 )
-                    .catch { handleError(it) }
-                    .collect {
-                        dispatch(Result.AccountingObjects(it))
-                        dispatch(Result.Loading(false))
-                    }
+                dispatch(Result.Loading(false))
             }
         }
 

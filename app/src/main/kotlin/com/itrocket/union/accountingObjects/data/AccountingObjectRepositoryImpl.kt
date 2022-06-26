@@ -8,8 +8,6 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getExploitingId
 import com.itrocket.union.manual.getOrganizationId
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class AccountingObjectRepositoryImpl(
@@ -17,7 +15,7 @@ class AccountingObjectRepositoryImpl(
     private val syncApi: AccountingObjectSyncApi,
 ) : AccountingObjectRepository {
 
-    override suspend fun getAccountingObjects(params: List<ParamDomain>): Flow<List<AccountingObjectDomain>> =
+    override suspend fun getAccountingObjects(params: List<ParamDomain>): List<AccountingObjectDomain> =
         withContext(coreDispatchers.io) {
             syncApi.getAccountingObjects(
                 organizationId = params.getOrganizationId(),
@@ -25,15 +23,15 @@ class AccountingObjectRepositoryImpl(
             ).map { it.map() }
         }
 
-    override suspend fun getAccountingObjectsByRfids(ids: List<String>): List<AccountingObjectDomain> {
+    override suspend fun getAccountingObjectsByRfids(rfids: List<String>): List<AccountingObjectDomain> {
         return withContext(coreDispatchers.io) {
-            syncApi.getAccountingObjectsByRfids(ids).map()
+            syncApi.getAccountingObjects(rfids = rfids).map()
         }
     }
 
     override suspend fun getAccountingObjectsByBarcode(barcode: String): AccountingObjectDomain? {
         return withContext(coreDispatchers.io) {
-            syncApi.getAccountingObjectsByBarcode(barcode)?.map()
+            syncApi.getAccountingObjects(barcode = barcode).firstOrNull()?.map()
         }
     }
 

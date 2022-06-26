@@ -5,7 +5,7 @@ import com.example.union_sync_api.entity.RegionSyncEntity
 import kotlinx.coroutines.flow.Flow
 
 interface RegionSyncApi {
-    suspend fun getRegions(): Flow<List<RegionSyncEntity>>
+    suspend fun getRegions(organizationId: String? = null): Flow<List<RegionSyncEntity>>
 
     suspend fun getRegionDetail(id: String): RegionDetailSyncEntity
 }
