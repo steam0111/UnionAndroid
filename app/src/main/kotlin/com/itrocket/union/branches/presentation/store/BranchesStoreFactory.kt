@@ -23,7 +23,7 @@ class BranchesStoreFactory(
     private val errorInteractor: ErrorInteractor,
     private val searchManager: SearchManager,
 ) {
-
+    //TODO отрефакторить
     private var params: List<ParamDomain>? = null
 
     fun create(): BranchesStore =

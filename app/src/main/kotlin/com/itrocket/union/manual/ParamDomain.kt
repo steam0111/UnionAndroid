@@ -19,43 +19,43 @@ open class ParamDomain(
 }
 
 fun List<ParamDomain>.getOrganizationId(): String? {
-    return find { it.type == ManualType.ORGANIZATION }?.id
+    return filterNotEmpty().find { it.type == ManualType.ORGANIZATION }?.id
 }
 
 fun List<ParamDomain>.getLocationIds(): List<String>? {
-    return (find { it.type == ManualType.LOCATION } as? LocationParamDomain)?.ids
+    return (filterNotEmpty().find { it.type == ManualType.LOCATION } as? LocationParamDomain)?.ids
 }
 
 fun List<ParamDomain>.getExploitingId(): String? {
-    return find { it.type == ManualType.EXPLOITING }?.id
+    return filterNotEmpty().find { it.type == ManualType.EXPLOITING }?.id
 }
 
 fun List<ParamDomain>.getMolId(): String? {
-    return find { it.type == ManualType.MOL }?.id
+    return filterNotEmpty().find { it.type == ManualType.MOL }?.id
 }
 
 fun List<ParamDomain>.getDepartmentId(): String? {
-    return find { it.type == ManualType.DEPARTMENT }?.id
+    return filterNotEmpty().find { it.type == ManualType.DEPARTMENT }?.id
 }
 
 fun List<ParamDomain>.getProducerId(): String? {
-    return find { it.type == ManualType.PRODUCER }?.id
+    return filterNotEmpty().find { it.type == ManualType.PRODUCER }?.id
 }
 
 fun List<ParamDomain>.getProviderId(): String? {
-    return find { it.type == ManualType.PROVIDER }?.id
+    return filterNotEmpty().find { it.type == ManualType.PROVIDER }?.id
 }
 
 fun List<ParamDomain>.getStatusId(): String? {
-    return find { it.type == ManualType.STATUS }?.id
+    return filterNotEmpty().find { it.type == ManualType.STATUS }?.id
 }
 
 fun List<ParamDomain>.getNomenclatureGroupId(): String? {
-    return find { it.type == ManualType.NOMENCLATURE_GROUP }?.id
+    return filterNotEmpty().find { it.type == ManualType.NOMENCLATURE_GROUP }?.id
 }
 
 fun List<ParamDomain>.getEquipmentTypeId(): String? {
-    return find { it.type == ManualType.EQUIPMENT_TYPE }?.id
+    return filterNotEmpty().find { it.type == ManualType.EQUIPMENT_TYPE }?.id
 }
 
 fun List<ParamDomain>.filterNotEmpty(): List<ParamDomain> {

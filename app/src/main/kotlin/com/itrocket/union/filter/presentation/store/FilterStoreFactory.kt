@@ -94,7 +94,6 @@ class FilterStoreFactory(
                     )
                     dispatch(Result.Filters(filters))
                     dispatch(Result.Count(getResultCount(filters, getState())))
-
                 }
             }
         }
