@@ -63,7 +63,7 @@ class InventoriesStoreFactory(
                 InventoriesStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is InventoriesStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    searchManager.searchQuery.emit(intent.searchText)
+                    searchManager.emit(intent.searchText)
                 }
             }
         }
@@ -72,7 +72,7 @@ class InventoriesStoreFactory(
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
                 dispatch(Result.SearchText(""))
-                searchManager.searchQuery.emit("")
+                searchManager.emit("")
             } else {
                 publish(InventoriesStore.Label.GoBack)
             }

@@ -62,7 +62,7 @@ class ProducerStoreFactory(
                 ProducerStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is ProducerStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    searchManager.searchQuery.emit(intent.searchText)
+                    searchManager.emit(intent.searchText)
                 }
             }
         }
@@ -85,7 +85,7 @@ class ProducerStoreFactory(
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
                 dispatch(Result.SearchText(""))
-                searchManager.searchQuery.emit("")
+                searchManager.emit("")
             } else {
                 publish(ProducerStore.Label.GoBack)
             }

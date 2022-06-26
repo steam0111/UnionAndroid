@@ -127,7 +127,7 @@ class SelectParamsStoreFactory(
 
                 dispatch(Result.Loading(true))
 
-                searchManager.searchQuery.emit(searchText.text)
+                searchManager.emit(searchText.text)
                 dispatch(Result.Loading(false))
             }
         }

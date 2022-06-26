@@ -61,7 +61,7 @@ class NomenclatureGroupStoreFactory(
                 NomenclatureGroupStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is NomenclatureGroupStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    searchManager.searchQuery.emit(intent.searchText)
+                    searchManager.emit(intent.searchText)
                 }
             }
         }
@@ -84,7 +84,7 @@ class NomenclatureGroupStoreFactory(
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
                 dispatch(Result.SearchText(""))
-                searchManager.searchQuery.emit("")
+                searchManager.emit("")
             } else {
                 publish(NomenclatureGroupStore.Label.GoBack)
             }

@@ -75,7 +75,7 @@ class LocationStoreFactory(
                 }
                 is LocationStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    searchManager.searchQuery.emit(intent.searchText)
+                    searchManager.emit(intent.searchText)
                 }
             }
         }

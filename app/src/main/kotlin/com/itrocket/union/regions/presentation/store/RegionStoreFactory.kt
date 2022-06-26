@@ -60,7 +60,7 @@ class RegionStoreFactory(
                 RegionStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is RegionStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    searchManager.searchQuery.emit(intent.searchText)
+                    searchManager.emit(intent.searchText)
                 }
             }
         }
@@ -77,7 +77,7 @@ class RegionStoreFactory(
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
                 dispatch(Result.SearchText(""))
-                searchManager.searchQuery.emit("")
+                searchManager.emit("")
             } else {
                 publish(RegionStore.Label.GoBack)
             }

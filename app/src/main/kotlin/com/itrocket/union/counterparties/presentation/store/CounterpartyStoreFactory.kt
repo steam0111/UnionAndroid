@@ -5,11 +5,10 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.itrocket.core.base.BaseExecutor
+import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.counterparties.domain.CounterpartyInteractor
 import com.itrocket.union.counterparties.domain.entity.CounterpartyDomain
-import com.itrocket.core.base.CoreDispatchers
-import com.itrocket.core.base.BaseExecutor
 import com.itrocket.union.search.SearchManager
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -60,7 +59,7 @@ class CounterpartyStoreFactory(
                 CounterpartyStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is CounterpartyStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    searchManager.searchQuery.emit(intent.searchText)
+                    searchManager.emit(intent.searchText)
                 }
             }
         }
@@ -69,7 +68,7 @@ class CounterpartyStoreFactory(
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
                 dispatch(Result.SearchText(""))
-                searchManager.searchQuery.emit("")
+                searchManager.emit("")
             } else {
                 publish(CounterpartyStore.Label.GoBack)
             }

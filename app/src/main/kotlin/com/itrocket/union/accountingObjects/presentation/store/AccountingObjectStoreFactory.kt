@@ -1,6 +1,10 @@
 package com.itrocket.union.accountingObjects.presentation.store
 
-import com.arkivanov.mvikotlin.core.store.*
+import com.arkivanov.mvikotlin.core.store.Executor
+import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
+import com.arkivanov.mvikotlin.core.store.Store
+import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
@@ -77,7 +81,7 @@ class AccountingObjectStoreFactory(
                 is AccountingObjectStore.Intent.OnItemClicked -> onItemClick(intent.item)
                 is AccountingObjectStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    searchManager.searchQuery.emit(intent.searchText)
+                    searchManager.emit(intent.searchText)
                 }
             }
         }
@@ -87,7 +91,7 @@ class AccountingObjectStoreFactory(
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
                 dispatch(Result.SearchText(""))
-                searchManager.searchQuery.emit("")
+                searchManager.emit("")
             } else {
                 publish(AccountingObjectStore.Label.GoBack())
             }

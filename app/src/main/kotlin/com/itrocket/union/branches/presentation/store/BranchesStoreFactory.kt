@@ -69,7 +69,7 @@ class BranchesStoreFactory(
                 BranchesStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is BranchesStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    searchManager.searchQuery.emit(intent.searchText)
+                    searchManager.emit(intent.searchText)
                 }
                 is BranchesStore.Intent.OnFilterResult -> {
                     params = intent.params
@@ -94,7 +94,7 @@ class BranchesStoreFactory(
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
                 dispatch(Result.SearchText(""))
-                searchManager.searchQuery.emit("")
+                searchManager.emit("")
             } else {
                 publish(BranchesStore.Label.GoBack)
             }

@@ -1,6 +1,10 @@
 package com.itrocket.union.equipmentTypes.presentation.store
 
-import com.arkivanov.mvikotlin.core.store.*
+import com.arkivanov.mvikotlin.core.store.Executor
+import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
+import com.arkivanov.mvikotlin.core.store.Store
+import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.equipmentTypes.domain.EquipmentTypeInteractor
@@ -56,7 +60,7 @@ class EquipmentTypeStoreFactory(
                 EquipmentTypeStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is EquipmentTypeStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    searchManager.searchQuery.emit(intent.searchText)
+                    searchManager.emit(intent.searchText)
                 }
             }
         }
@@ -77,7 +81,7 @@ class EquipmentTypeStoreFactory(
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
                 dispatch(Result.SearchText(""))
-                searchManager.searchQuery.emit("")
+                searchManager.emit("")
             } else {
                 publish(EquipmentTypeStore.Label.GoBack)
             }

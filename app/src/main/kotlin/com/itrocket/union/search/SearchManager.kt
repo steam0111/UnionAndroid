@@ -9,22 +9,41 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 
 class SearchManager {
-    val searchQuery: MutableStateFlow<String> = MutableStateFlow("")
+    private val searchQuery: MutableStateFlow<SearchEvent> = MutableStateFlow(SearchEvent.FirstEmit)
 
     @OptIn(ExperimentalCoroutinesApi::class, kotlinx.coroutines.FlowPreview::class)
     suspend fun listenSearch(onSearchChanged: suspend (String) -> Unit) {
-        searchQuery.debounce(SEARCH_DELAY)
+        searchQuery.debounce {
+            when (it) {
+                SearchEvent.FirstEmit -> 0
+                is SearchEvent.OnSearchChanged -> SEARCH_DELAY
+            }
+        }
             .distinctUntilChanged()
             .flatMapLatest {
                 flow {
                     this.emit(it)
                 }
             }.collect {
-                onSearchChanged(it)
+                onSearchChanged(
+                    when (it) {
+                        SearchEvent.FirstEmit -> ""
+                        is SearchEvent.OnSearchChanged -> it.value
+                    }
+                )
             }
+    }
+
+    suspend fun emit(query: String) {
+        searchQuery.emit(SearchEvent.OnSearchChanged(query))
     }
 
     companion object {
         private const val SEARCH_DELAY = 300L
     }
+}
+
+sealed class SearchEvent {
+    object FirstEmit : SearchEvent()
+    data class OnSearchChanged(val value: String) : SearchEvent()
 }
