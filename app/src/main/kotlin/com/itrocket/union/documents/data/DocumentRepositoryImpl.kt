@@ -7,12 +7,24 @@ import com.itrocket.union.documents.data.mapper.map
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
+import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.getExploitingId
+import com.itrocket.union.manual.getMolId
+import com.itrocket.union.manual.getOrganizationId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class DocumentRepositoryImpl(private val documentSyncApi: DocumentSyncApi) : DocumentRepository {
-    override suspend fun getAllDocuments(textQuery: String?): Flow<List<DocumentDomain>> {
-        return documentSyncApi.getAllDocuments(textQuery).map { it.map() }
+    override suspend fun getAllDocuments(
+        textQuery: String?,
+        params: List<ParamDomain>?
+    ): Flow<List<DocumentDomain>> {
+        return documentSyncApi.getAllDocuments(
+            textQuery = textQuery,
+            molId = params?.getMolId(),
+            exploitingId = params?.getExploitingId(),
+            organizationId = params?.getOrganizationId()
+        ).map { it.map() }
     }
 
     override suspend fun getDocuments(

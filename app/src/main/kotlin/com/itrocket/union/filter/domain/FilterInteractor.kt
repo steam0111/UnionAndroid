@@ -4,16 +4,20 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.branches.domain.dependencies.BranchesRepository
 import com.itrocket.union.departments.domain.dependencies.DepartmentRepository
+import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.employees.domain.dependencies.EmployeeRepository
 import com.itrocket.union.filter.domain.dependencies.FilterRepository
 import com.itrocket.union.filter.domain.entity.CatalogType
+import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
 import com.itrocket.union.nomenclature.domain.dependencies.NomenclatureRepository
 import com.itrocket.union.regions.domain.dependencies.RegionRepository
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.firstOrNull
 
 class FilterInteractor(
     private val repository: FilterRepository,
@@ -23,7 +27,9 @@ class FilterInteractor(
     private val departmentRepository: DepartmentRepository,
     private val nomenclatureRepository: NomenclatureRepository,
     private val regionRepository: RegionRepository,
-    private val coreDispatchers: CoreDispatchers
+    private val coreDispatchers: CoreDispatchers,
+    private val documentRepository: DocumentRepository,
+    private val inventoriesRepository: InventoryRepository
 ) {
     fun getFilters() = repository.getFilters()
 
@@ -88,6 +94,12 @@ class FilterInteractor(
             }
             CatalogType.REGIONS -> {
                 regionRepository.getRegions().count()
+            }
+            CatalogType.DOCUMENTS -> {
+                documentRepository.getAllDocuments(params = params).firstOrNull()?.count() ?: 0
+            }
+            CatalogType.INVENTORIES -> {
+                inventoriesRepository.getInventories(params = params).firstOrNull()?.count() ?: 0
             }
             else -> 0
         }

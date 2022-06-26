@@ -132,6 +132,9 @@
         <action
             android:id="@+id/to_documentCreate"
             app:destination="@id/documentCreate" />
+        <action
+            android:id="@+id/to_filter"
+            app:destination="@id/filter" />
         <argument
             android:name="DocumentComposeFragmentArgs"
             app:argType="com.itrocket.union.documents.presentation.store.DocumentArguments"
@@ -288,6 +291,10 @@
         <action
             android:id="@+id/to_inventoryContainer"
             app:destination="@id/inventoryContainer" />
+
+        <action
+            android:id="@+id/to_filter"
+            app:destination="@id/filter" />
     </fragment>
 
     <fragment

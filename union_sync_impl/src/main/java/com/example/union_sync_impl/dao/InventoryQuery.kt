@@ -4,9 +4,12 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
 import com.example.union_sync_impl.utils.contains
+import com.example.union_sync_impl.utils.isEquals
 
 fun sqlInventoryQuery(
-    textQuery: String? = null
+    textQuery: String? = null,
+    organizationId: String? = null,
+    molId: String? = null
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT inventories.*," +
             "" +
@@ -35,6 +38,14 @@ fun sqlInventoryQuery(
             filter = buildList {
                 textQuery?.let {
                     add("id" contains textQuery)
+                }
+
+                organizationId?.let {
+                    add("organizationId" isEquals organizationId)
+                }
+
+                molId?.let {
+                    add("employeeId" isEquals molId)
                 }
             }
         )
