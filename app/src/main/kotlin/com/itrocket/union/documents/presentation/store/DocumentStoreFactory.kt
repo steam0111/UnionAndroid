@@ -14,6 +14,7 @@ import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.documents.presentation.view.toDocumentDomain
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
@@ -49,7 +50,11 @@ class DocumentStoreFactory(
             getState: () -> DocumentStore.State
         ) {
             searchManager.listenSearch {
-                listenDocuments(typeDomain = getState().type, searchText = it)
+                listenDocuments(
+                    typeDomain = getState().type,
+                    searchText = it,
+                    params = getState().params
+                )
             }
         }
 
@@ -62,7 +67,19 @@ class DocumentStoreFactory(
                     getState().isShowSearch
                 )
                 DocumentStore.Intent.OnFilterClicked -> {
-                    //no-op
+                    publish(
+                        DocumentStore.Label.ShowFilter(
+                            getState().params ?: documentInteractor.getFilters()
+                        )
+                    )
+                }
+                is DocumentStore.Intent.OnFilterResult -> {
+                    dispatch(Result.FilterParams(intent.params))
+                    listenDocuments(
+                        params = getState().params,
+                        searchText = "",
+                        typeDomain = getState().type
+                    )
                 }
                 DocumentStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is DocumentStore.Intent.OnDocumentClicked -> {
@@ -97,11 +114,16 @@ class DocumentStoreFactory(
 
         private suspend fun listenDocuments(
             searchText: String = "",
-            typeDomain: DocumentTypeDomain
+            typeDomain: DocumentTypeDomain,
+            params: List<ParamDomain>?
         ) {
             catchException {
                 dispatch(Result.IsListLoading(true))
-                documentInteractor.getDocuments(type = typeDomain, searchQuery = searchText)
+                documentInteractor.getDocuments(
+                    type = typeDomain,
+                    searchQuery = searchText,
+                    params = params
+                )
                     .catch {
                         handleError(it)
                     }.collect {
@@ -140,6 +162,7 @@ class DocumentStoreFactory(
         data class RotatedDate(val rotatedDates: List<String>) : Result()
         data class SearchText(val searchText: String) : Result()
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
+        data class FilterParams(val params: List<ParamDomain>) : Result()
     }
 
     private object ReducerImpl : Reducer<DocumentStore.State, Result> {
@@ -151,6 +174,7 @@ class DocumentStoreFactory(
                 is Result.IsListLoading -> copy(isListLoading = result.isLoading)
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchText -> copy(searchText = result.searchText)
+                is Result.FilterParams -> copy(params = result.params)
             }
     }
 }
