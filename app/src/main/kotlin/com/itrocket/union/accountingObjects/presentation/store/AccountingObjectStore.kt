@@ -24,11 +24,14 @@ interface AccountingObjectStore :
         object OnFilterClicked : Intent()
         object OnBackClicked : Intent()
         object OnSearchClicked : Intent()
+        data class OnSearchTextChanged(val searchText: String) : Intent()
     }
 
     data class State(
         val isLoading: Boolean = false,
-        val accountingObjects: List<AccountingObjectDomain> = listOf()
+        val accountingObjects: List<AccountingObjectDomain> = listOf(),
+        val isShowSearch: Boolean = false,
+        val searchText: String = ""
     )
 
     sealed class Label {

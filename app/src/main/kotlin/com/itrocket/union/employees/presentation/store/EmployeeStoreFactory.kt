@@ -51,19 +51,23 @@ class EmployeeStoreFactory(
             getState: () -> EmployeeStore.State
         ) {
             when (intent) {
-                EmployeeStore.Intent.OnBackClicked -> publish(EmployeeStore.Label.GoBack)
+                EmployeeStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch, params)
                 EmployeeStore.Intent.OnFilterClicked -> publish(
                     EmployeeStore.Label.ShowFilter(
                         params ?: employeeInteractor.getFilters()
                     )
                 )
-                EmployeeStore.Intent.OnSearchClicked -> {}
+                EmployeeStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is EmployeeStore.Intent.OnEmployeeClicked -> {
                     publish(EmployeeStore.Label.ShowDetail(intent.employeeId))
                 }
                 is EmployeeStore.Intent.OnFilterResult -> {
                     params = intent.params
-                    getEmployees(params)
+                    getEmployees(params, getState().searchText)
+                }
+                is EmployeeStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    getEmployees(params, intent.searchText)
                 }
             }
         }
@@ -73,10 +77,23 @@ class EmployeeStoreFactory(
             publish(EmployeeStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
 
-        private suspend fun getEmployees(params: List<ParamDomain>? = null) {
+        private suspend fun onBackClicked(isShowSearch: Boolean, params: List<ParamDomain>?) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                getEmployees(params, "")
+            } else {
+                publish(EmployeeStore.Label.GoBack)
+            }
+        }
+
+        private suspend fun getEmployees(
+            params: List<ParamDomain>? = null,
+            searchText: String = ""
+        ) {
             catchException {
                 dispatch(Result.Loading(true))
-                dispatch(Result.Employees(employeeInteractor.getEmployees(params)))
+                dispatch(Result.Employees(employeeInteractor.getEmployees(params, searchText)))
                 dispatch(Result.Loading(false))
             }
         }
@@ -85,6 +102,8 @@ class EmployeeStoreFactory(
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class Employees(val employees: List<EmployeeDomain>) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<EmployeeStore.State, Result> {
@@ -92,6 +111,8 @@ class EmployeeStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.Employees -> copy(employees = result.employees)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
 }

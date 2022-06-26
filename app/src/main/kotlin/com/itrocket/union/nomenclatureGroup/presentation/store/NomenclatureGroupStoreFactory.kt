@@ -40,11 +40,7 @@ class NomenclatureGroupStoreFactory(
             action: Unit,
             getState: () -> NomenclatureGroupStore.State
         ) {
-            dispatch(Result.Loading(true))
-            catchException {
-                dispatch(Result.NomenclatureGroups(nomenclatureGroupInteractor.getNomenclatureGroups()))
-            }
-            dispatch(Result.Loading(false))
+            getNomenclatureGroup()
         }
 
         override suspend fun executeIntent(
@@ -57,7 +53,30 @@ class NomenclatureGroupStoreFactory(
                         intent.id
                     )
                 )
-                NomenclatureGroupStore.Intent.OnBackClicked -> publish(NomenclatureGroupStore.Label.GoBack)
+                NomenclatureGroupStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
+                NomenclatureGroupStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
+                is NomenclatureGroupStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    getNomenclatureGroup(intent.searchText)
+                }
+            }
+        }
+
+        private suspend fun getNomenclatureGroup(searchText: String = ""){
+            dispatch(Result.Loading(true))
+            catchException {
+                dispatch(Result.NomenclatureGroups(nomenclatureGroupInteractor.getNomenclatureGroups(searchQuery = searchText)))
+            }
+            dispatch(Result.Loading(false))
+        }
+
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                getNomenclatureGroup("")
+            } else {
+                publish(NomenclatureGroupStore.Label.GoBack)
             }
         }
 
@@ -70,6 +89,8 @@ class NomenclatureGroupStoreFactory(
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class NomenclatureGroups(val nomenclatureGroupsDomain: List<NomenclatureGroupDomain>) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<NomenclatureGroupStore.State, Result> {
@@ -77,6 +98,8 @@ class NomenclatureGroupStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.NomenclatureGroups -> copy(nomenclatureGroups = result.nomenclatureGroupsDomain)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
 }

@@ -19,11 +19,14 @@ interface BranchesStore : Store<BranchesStore.Intent, BranchesStore.State, Branc
         object OnBackClicked : Intent()
         data class OnBranchClicked(val id: String) : Intent()
         class OnFilterResult(val params: List<ParamDomain>) : Intent()
+        data class OnSearchTextChanged(val searchText: String) : Intent()
     }
 
     data class State(
         val branches: List<BranchesDomain> = listOf(),
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        val isShowSearch: Boolean = false,
+        val searchText: String = ""
     )
 
     sealed class Label {

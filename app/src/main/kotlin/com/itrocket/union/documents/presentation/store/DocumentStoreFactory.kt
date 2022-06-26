@@ -46,16 +46,7 @@ class DocumentStoreFactory(
             action: Unit,
             getState: () -> DocumentStore.State
         ) {
-            catchException {
-                dispatch(Result.IsListLoading(true))
-                documentInteractor.getDocuments(getState().type)
-                    .catch {
-                        handleError(it)
-                    }.collect {
-                        dispatch(Result.Documents(it))
-                        dispatch(Result.IsListLoading(false))
-                    }
-            }
+            listenDocuments(typeDomain = getState().type)
         }
 
         override suspend fun executeIntent(
@@ -63,13 +54,14 @@ class DocumentStoreFactory(
             getState: () -> DocumentStore.State
         ) {
             when (intent) {
-                DocumentStore.Intent.OnArrowBackClicked -> publish(DocumentStore.Label.GoBack)
+                DocumentStore.Intent.OnArrowBackClicked -> onBackClicked(
+                    getState().isShowSearch,
+                    getState().type
+                )
                 DocumentStore.Intent.OnFilterClicked -> {
                     //no-op
                 }
-                DocumentStore.Intent.OnSearchClicked -> {
-                    //no-op
-                }
+                DocumentStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is DocumentStore.Intent.OnDocumentClicked -> {
                     showDocument(intent.documentView.toDocumentDomain())
                 }
@@ -82,8 +74,38 @@ class DocumentStoreFactory(
                         documentInteractor.resolveRotatedDates(getState().rotatedDates, intent.date)
                     dispatch(Result.RotatedDate(newRotatedDates))
                 }
+                is DocumentStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    listenDocuments(typeDomain = getState().type, searchText = intent.searchText)
+                }
             }
 
+        }
+
+        private suspend fun onBackClicked(isShowSearch: Boolean, typeDomain: DocumentTypeDomain) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                listenDocuments("", typeDomain)
+            } else {
+                publish(DocumentStore.Label.GoBack)
+            }
+        }
+
+        private suspend fun listenDocuments(
+            searchText: String = "",
+            typeDomain: DocumentTypeDomain
+        ) {
+            catchException {
+                dispatch(Result.IsListLoading(true))
+                documentInteractor.getDocuments(type = typeDomain, searchQuery = searchText)
+                    .catch {
+                        handleError(it)
+                    }.collect {
+                        dispatch(Result.Documents(it))
+                        dispatch(Result.IsListLoading(false))
+                    }
+            }
         }
 
         private suspend fun createDocument(listType: ObjectType, documentType: DocumentTypeDomain) {
@@ -113,6 +135,8 @@ class DocumentStoreFactory(
         data class IsListLoading(val isLoading: Boolean) : Result()
         data class Documents(val documents: List<DocumentView>) : Result()
         data class RotatedDate(val rotatedDates: List<String>) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<DocumentStore.State, Result> {
@@ -122,6 +146,8 @@ class DocumentStoreFactory(
                 is Result.RotatedDate -> copy(rotatedDates = result.rotatedDates)
                 is Result.IsDocumentCreateLoading -> copy(isDocumentCreateLoading = result.isLoading)
                 is Result.IsListLoading -> copy(isListLoading = result.isLoading)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
 }

@@ -9,7 +9,7 @@ class RegionInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    suspend fun getRegions() = withContext(coreDispatchers.io) {
+    suspend fun getRegions(searchQuery: String = "") = withContext(coreDispatchers.io) {
         repository.getRegions()
     }
 }

@@ -45,19 +45,7 @@ class BranchesStoreFactory(
             action: Unit,
             getState: () -> BranchesStore.State
         ) {
-            getBranches()
-        }
-
-        private suspend fun getBranches(params: List<ParamDomain>? = null) {
-            catchException {
-                dispatch(Result.Loading(true))
-                branchesInteractor.getBranches(params)
-                    .catch { handleError(it) }
-                    .collect {
-                        dispatch(Result.Branches(it))
-                        dispatch(Result.Loading(false))
-                    }
-            }
+            listenBranches()
         }
 
         override suspend fun executeIntent(
@@ -65,7 +53,10 @@ class BranchesStoreFactory(
             getState: () -> BranchesStore.State
         ) {
             when (intent) {
-                BranchesStore.Intent.OnBackClicked -> publish(BranchesStore.Label.GoBack)
+                BranchesStore.Intent.OnBackClicked -> onBackClicked(
+                    params,
+                    getState().isShowSearch
+                )
                 is BranchesStore.Intent.OnBranchClicked -> {
                     publish(BranchesStore.Label.ShowDetail(intent.id))
                 }
@@ -74,12 +65,41 @@ class BranchesStoreFactory(
                         params ?: branchesInteractor.getFilters()
                     )
                 )
-                BranchesStore.Intent.OnSearchClicked -> {
+                BranchesStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
+                is BranchesStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    listenBranches(params, intent.searchText)
                 }
                 is BranchesStore.Intent.OnFilterResult -> {
                     params = intent.params
-                    getBranches(params)
+                    listenBranches(params, getState().searchText)
                 }
+            }
+        }
+
+
+        private suspend fun listenBranches(
+            params: List<ParamDomain>? = null,
+            searchText: String = ""
+        ) {
+            catchException {
+                dispatch(Result.Loading(true))
+                branchesInteractor.getBranches(params, searchText)
+                    .catch { handleError(it) }
+                    .collect {
+                        dispatch(Result.Branches(it))
+                        dispatch(Result.Loading(false))
+                    }
+            }
+        }
+
+        private suspend fun onBackClicked(params: List<ParamDomain>?, isShowSearch: Boolean) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                listenBranches(params, "")
+            } else {
+                publish(BranchesStore.Label.GoBack)
             }
         }
 
@@ -92,6 +112,8 @@ class BranchesStoreFactory(
     private sealed class Result {
         data class Branches(val branches: List<BranchesDomain>) : Result()
         data class Loading(val isLoading: Boolean) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<BranchesStore.State, Result> {
@@ -99,6 +121,8 @@ class BranchesStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.Branches -> copy(branches = result.branches)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
 }

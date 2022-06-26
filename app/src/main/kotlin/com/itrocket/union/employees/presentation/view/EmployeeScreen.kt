@@ -20,6 +20,7 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.EmployeeItem
 import com.itrocket.union.ui.LoadingContent
+import com.itrocket.union.ui.SearchToolbar
 
 @Composable
 fun EmployeesScreen(
@@ -28,7 +29,8 @@ fun EmployeesScreen(
     onBackClickListener: () -> Unit,
     onSearchClickListener: () -> Unit = {},
     onFilterClickListener: () -> Unit = {},
-    onEmployeeClickListener: (EmployeeDomain) -> Unit = {}
+    onEmployeeClickListener: (EmployeeDomain) -> Unit = {},
+    onSearchTextChanged: (String) -> Unit
 ) {
     AppTheme {
         Column(
@@ -36,11 +38,14 @@ fun EmployeesScreen(
                 .fillMaxSize()
                 .padding(top = appInsets.topInset.dp)
         ) {
-            BlackToolbar(
+            SearchToolbar(
                 title = stringResource(id = R.string.employees_title),
                 onBackClickListener = onBackClickListener,
                 onSearchClickListener = onSearchClickListener,
-                onFilterClickListener = onFilterClickListener
+                onFilterClickListener = onFilterClickListener,
+                onSearchTextChanged = onSearchTextChanged,
+                isShowSearch = state.isShowSearch,
+                searchText = state.searchText,
             )
             LoadingContent(isLoading = state.isLoading) {
                 EmployeesList(
@@ -119,5 +124,5 @@ fun EmployeeScreenPreview() {
                     employeeStatus = EmployeeStatus.WITHOUT_ORGANIZATION
                 )
             )
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {})
 }

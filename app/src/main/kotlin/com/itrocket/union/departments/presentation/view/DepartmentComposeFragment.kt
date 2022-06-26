@@ -38,6 +38,12 @@ class DepartmentComposeFragment :
                 appInsets = appInsets,
                 onBackClickListener = { accept(DepartmentStore.Intent.OnBackClicked) },
                 onItemClickListener = { accept(DepartmentStore.Intent.OnDepartmentClicked(it.id)) },
+                onSearchTextChanged = {
+                    accept(DepartmentStore.Intent.OnSearchTextChanged(it))
+                },
+                onSearchClickListener = {
+                    accept(DepartmentStore.Intent.OnSearchClicked)
+                },
                 onFilterClickListener = { accept(DepartmentStore.Intent.OnFilterClicked) }
             )
         }

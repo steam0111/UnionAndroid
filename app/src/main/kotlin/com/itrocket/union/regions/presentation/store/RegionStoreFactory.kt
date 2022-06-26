@@ -41,9 +41,32 @@ class RegionStoreFactory(
             action: Unit,
             getState: () -> RegionStore.State
         ) {
+            listenRegions()
+        }
+
+        override suspend fun executeIntent(
+            intent: RegionStore.Intent,
+            getState: () -> RegionStore.State
+        ) {
+            when (intent) {
+                RegionStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
+                RegionStore.Intent.OnFilterClicked -> {
+                }
+                is RegionStore.Intent.OnRegionClicked -> {
+                    publish(RegionStore.Label.ShowDetail(intent.id))
+                }
+                RegionStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
+                is RegionStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    listenRegions(intent.searchText)
+                }
+            }
+        }
+
+        private suspend fun listenRegions(searchText: String = "") {
             catchException {
                 dispatch(Result.Loading(true))
-                regionInteractor.getRegions()
+                regionInteractor.getRegions(searchText)
                     .catch { handleError(it) }
                     .collect {
                         dispatch(Result.Regions(it))
@@ -52,19 +75,13 @@ class RegionStoreFactory(
             }
         }
 
-        override suspend fun executeIntent(
-            intent: RegionStore.Intent,
-            getState: () -> RegionStore.State
-        ) {
-            when (intent) {
-                RegionStore.Intent.OnBackClicked -> publish(RegionStore.Label.GoBack)
-                RegionStore.Intent.OnFilterClicked -> {
-                }
-                is RegionStore.Intent.OnRegionClicked -> {
-                    publish(RegionStore.Label.ShowDetail(intent.id))
-                }
-                RegionStore.Intent.OnSearchClicked -> {
-                }
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                listenRegions("")
+            } else {
+                publish(RegionStore.Label.GoBack)
             }
         }
 
@@ -77,6 +94,8 @@ class RegionStoreFactory(
     private sealed class Result {
         data class Regions(val regions: List<RegionDomain>) : Result()
         data class Loading(val isLoading: Boolean) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<RegionStore.State, Result> {
@@ -84,6 +103,8 @@ class RegionStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.Regions -> copy(regions = result.regions)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
 }

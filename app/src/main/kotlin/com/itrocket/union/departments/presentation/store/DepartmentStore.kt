@@ -20,11 +20,14 @@ interface DepartmentStore :
         object OnBackClicked : Intent()
         class OnFilterResult(val params: List<ParamDomain>) : Intent()
         data class OnDepartmentClicked(val id: String) : Intent()
+        data class OnSearchTextChanged(val searchText: String) : Intent()
     }
 
     data class State(
         val isLoading: Boolean = false,
-        val departments: List<DepartmentDomain> = listOf()
+        val departments: List<DepartmentDomain> = listOf(),
+        val isShowSearch: Boolean = false,
+        val searchText: String = ""
     )
 
     sealed class Label {

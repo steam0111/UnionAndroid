@@ -19,11 +19,14 @@ interface OrganizationStore :
         object OnFilterClicked : Intent()
         object OnBackClicked : Intent()
         data class OnOrganizationsClicked(val id: String) : Intent()
+        data class OnSearchTextChanged(val searchText: String) : Intent()
     }
 
     data class State(
         val isLoading: Boolean = false,
-        val organizations: List<OrganizationDomain> = listOf()
+        val organizations: List<OrganizationDomain> = listOf(),
+        val isShowSearch: Boolean = false,
+        val searchText: String = ""
     )
 
     sealed class Label {

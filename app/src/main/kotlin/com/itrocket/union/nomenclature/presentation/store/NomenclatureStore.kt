@@ -17,13 +17,17 @@ interface NomenclatureStore :
     sealed class Intent {
         object OnBackClicked : Intent()
         class OnItemClicked(val id: String) : Intent()
+        data class OnSearchTextChanged(val searchText: String) : Intent()
+        object OnSearchClicked : Intent()
         object OnFilterClicked : Intent()
         class OnFilterResult(val params: List<ParamDomain>) : Intent()
     }
 
     data class State(
         val nomenclatures: List<NomenclatureDomain> = emptyList(),
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        val isShowSearch: Boolean = false,
+        val searchText: String = ""
     )
 
     sealed class Label {

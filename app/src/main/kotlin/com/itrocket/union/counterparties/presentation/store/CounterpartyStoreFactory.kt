@@ -39,15 +39,7 @@ class CounterpartyStoreFactory(
             action: Unit,
             getState: () -> CounterpartyStore.State
         ) {
-            catchException {
-                dispatch(Result.Loading(true))
-                counterpartyInteractor.getCounterparties()
-                    .catch { handleError(it) }
-                    .collect {
-                        dispatch(Result.Counterparties(it))
-                        dispatch(Result.Loading(false))
-                    }
-            }
+            listenCounterparty()
         }
 
         override suspend fun executeIntent(
@@ -55,14 +47,39 @@ class CounterpartyStoreFactory(
             getState: () -> CounterpartyStore.State
         ) {
             when (intent) {
-                CounterpartyStore.Intent.OnBackClicked -> publish(CounterpartyStore.Label.GoBack)
+                CounterpartyStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
                 is CounterpartyStore.Intent.OnCounterpartyClicked -> {
                     publish(CounterpartyStore.Label.ShowDetail(intent.id))
                 }
                 CounterpartyStore.Intent.OnFilterClicked -> {
                 }
-                CounterpartyStore.Intent.OnSearchClicked -> {
+                CounterpartyStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
+                is CounterpartyStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    listenCounterparty(intent.searchText)
                 }
+            }
+        }
+
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                listenCounterparty("")
+            } else {
+                publish(CounterpartyStore.Label.GoBack)
+            }
+        }
+
+        private suspend fun listenCounterparty(searchText: String = "") {
+            catchException {
+                dispatch(Result.Loading(true))
+                counterpartyInteractor.getCounterparties(searchText)
+                    .catch { handleError(it) }
+                    .collect {
+                        dispatch(Result.Counterparties(it))
+                        dispatch(Result.Loading(false))
+                    }
             }
         }
 
@@ -75,6 +92,8 @@ class CounterpartyStoreFactory(
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class Counterparties(val counterparties: List<CounterpartyDomain>) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<CounterpartyStore.State, Result> {
@@ -82,6 +101,8 @@ class CounterpartyStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.Counterparties -> copy(counterparties = result.counterparties)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
 }

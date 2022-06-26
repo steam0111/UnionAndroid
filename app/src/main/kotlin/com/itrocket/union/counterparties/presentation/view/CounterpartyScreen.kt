@@ -44,6 +44,7 @@ import com.itrocket.union.organizations.domain.entity.toDefaultItem
 import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.DefaultListItem
 import com.itrocket.union.ui.LoadingContent
+import com.itrocket.union.ui.SearchToolbar
 
 @Composable
 fun CounterpartyScreen(
@@ -51,6 +52,8 @@ fun CounterpartyScreen(
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
     onCounterpartyClickListener: (CounterpartyDomain) -> Unit,
+    onSearchTextChanged: (String) -> Unit,
+    onSearchClickListener: () -> Unit,
 ) {
     AppTheme {
         Column(
@@ -58,9 +61,13 @@ fun CounterpartyScreen(
                 .fillMaxSize()
                 .padding(top = appInsets.topInset.dp)
         ) {
-            BlackToolbar(
+            SearchToolbar(
                 title = stringResource(id = R.string.counterparties_title),
-                onBackClickListener = onBackClickListener
+                onBackClickListener = onBackClickListener,
+                onSearchClickListener = onSearchClickListener,
+                onSearchTextChanged = onSearchTextChanged,
+                isShowSearch = state.isShowSearch,
+                searchText = state.searchText
             )
             LoadingContent(isLoading = state.isLoading) {
                 Content(
@@ -143,5 +150,5 @@ fun CounterpartyScreenPreview() {
                 kpp = "345345"
             ),
         )
-    ), AppInsets(topInset = previewTopInsetDp), {}, {})
+    ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
 }

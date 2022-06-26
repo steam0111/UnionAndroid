@@ -43,13 +43,16 @@ import com.itrocket.union.regions.domain.entity.toDefaultItem
 import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.DefaultListItem
 import com.itrocket.union.ui.LoadingContent
+import com.itrocket.union.ui.SearchToolbar
 
 @Composable
 fun RegionScreen(
     state: RegionStore.State,
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
-    onRegionClickListener: (RegionDomain) -> Unit
+    onRegionClickListener: (RegionDomain) -> Unit,
+    onSearchClickListener: () -> Unit,
+    onSearchTextChanged: (String) -> Unit
 ) {
     AppTheme {
         Column(
@@ -57,9 +60,13 @@ fun RegionScreen(
                 .fillMaxSize()
                 .padding(top = appInsets.topInset.dp)
         ) {
-            BlackToolbar(
+            SearchToolbar(
                 title = stringResource(id = R.string.region_title),
-                onBackClickListener = onBackClickListener
+                onBackClickListener = onBackClickListener,
+                onSearchTextChanged = onSearchTextChanged,
+                onSearchClickListener = onSearchClickListener,
+                isShowSearch = state.isShowSearch,
+                searchText = state.searchText
             )
             LoadingContent(isLoading = state.isLoading) {
                 Content(
@@ -133,5 +140,5 @@ fun RegionScreenPreview() {
                 code = "code3"
             ),
         )
-    ), AppInsets(), {}, {})
+    ), AppInsets(), {}, {}, {}, {})
 }

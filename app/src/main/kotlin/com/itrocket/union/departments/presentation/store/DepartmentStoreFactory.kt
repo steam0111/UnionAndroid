@@ -44,7 +44,7 @@ class DepartmentStoreFactory(
             getState: () -> DepartmentStore.State
         ) {
             when (intent) {
-                DepartmentStore.Intent.OnBackClicked -> publish(DepartmentStore.Label.GoBack)
+                DepartmentStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
                 DepartmentStore.Intent.OnFilterClicked -> {
                     publish(
                         DepartmentStore.Label.ShowFilter(
@@ -52,14 +52,46 @@ class DepartmentStoreFactory(
                         )
                     )
                 }
-                DepartmentStore.Intent.OnSearchClicked -> {}
+                DepartmentStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is DepartmentStore.Intent.OnDepartmentClicked -> {
                     publish(DepartmentStore.Label.ShowDetail(intent.id))
                 }
+                is DepartmentStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    getDepartments(intent.searchText, params)
+                }
                 is DepartmentStore.Intent.OnFilterResult -> {
                     params = intent.params
-                    getDepartments(params)
+                    getDepartments(getState().searchText, params)
                 }
+            }
+        }
+
+        private suspend fun getDepartments(
+            searchText: String = "",
+            params: List<ParamDomain>? = null
+        ) {
+            dispatch(Result.Loading(true))
+            catchException {
+                dispatch(
+                    Result.Departments(
+                        departmentInteractor.getDepartments(
+                            params,
+                            searchText
+                        )
+                    )
+                )
+            }
+            dispatch(Result.Loading(false))
+        }
+
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                getDepartments("")
+            } else {
+                publish(DepartmentStore.Label.GoBack)
             }
         }
 
@@ -67,19 +99,13 @@ class DepartmentStoreFactory(
             dispatch(Result.Loading(false))
             publish(DepartmentStore.Label.Error(throwable.message.orEmpty()))
         }
-
-        private suspend fun getDepartments(params: List<ParamDomain>? = null) {
-            catchException {
-                dispatch(Result.Loading(true))
-                dispatch(Result.Departments(departmentInteractor.getDepartments(params)))
-                dispatch(Result.Loading(false))
-            }
-        }
     }
 
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class Departments(val items: List<DepartmentDomain>) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<DepartmentStore.State, Result> {
@@ -87,6 +113,8 @@ class DepartmentStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.Departments -> copy(departments = result.items)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
 }

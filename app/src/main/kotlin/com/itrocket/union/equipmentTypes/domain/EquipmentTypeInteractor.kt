@@ -9,7 +9,7 @@ class EquipmentTypeInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    suspend fun getEquipmentTypes() = withContext(coreDispatchers.io) {
+    suspend fun getEquipmentTypes(searchQuery: String = "") = withContext(coreDispatchers.io) {
         repository.getEquipmentTypes()
     }
 }

@@ -18,12 +18,15 @@ interface EmployeeStore : Store<EmployeeStore.Intent, EmployeeStore.State, Emplo
         object OnFilterClicked : Intent()
         object OnBackClicked : Intent()
         data class OnEmployeeClicked(val employeeId: String) : Intent()
-        class OnFilterResult(val params: List<ParamDomain>) : Intent()
+        data class OnSearchTextChanged(val searchText: String) : Intent()
+        data class OnFilterResult(val params: List<ParamDomain>) : Intent()
     }
 
     data class State(
         val isLoading: Boolean = false,
-        val employees: List<EmployeeDomain> = listOf()
+        val employees: List<EmployeeDomain> = listOf(),
+        val isShowSearch: Boolean = false,
+        val searchText: String = ""
     )
 
     sealed class Label {

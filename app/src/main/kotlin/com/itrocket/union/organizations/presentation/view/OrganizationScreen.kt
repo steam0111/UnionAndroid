@@ -24,7 +24,9 @@ fun OrganizationScreen(
     state: OrganizationStore.State,
     appInsets: AppInsets,
     onOrganizationClickListener: (DefaultItem) -> Unit,
-    onBackClickListener: () -> Unit
+    onBackClickListener: () -> Unit,
+    onSearchClickListener: () -> Unit,
+    onSearchTextChanged: (String) -> Unit
 ) {
     AppTheme {
         Column(
@@ -32,9 +34,13 @@ fun OrganizationScreen(
                 .fillMaxSize()
                 .padding(top = appInsets.topInset.dp)
         ) {
-            BlackToolbar(
+            SearchToolbar(
                 title = stringResource(id = R.string.organizations_title),
-                onBackClickListener = onBackClickListener
+                onBackClickListener = onBackClickListener,
+                onSearchTextChanged = onSearchTextChanged,
+                onSearchClickListener = onSearchClickListener,
+                isShowSearch = state.isShowSearch,
+                searchText = state.searchText
             )
             LoadingContent(isLoading = state.isLoading) {
                 Content(
@@ -113,5 +119,5 @@ fun OrganizationsScreenPreview() {
                     actualAddress = "there"
                 )
             )
-        ), AppInsets(topInset = previewTopInsetDp), {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
 }

@@ -25,7 +25,13 @@ class EquipmentTypeComposeFragment :
                 },
                 onItemClickListener = {
                     accept(EquipmentTypeStore.Intent.OnItemClicked(it.id))
-                }
+                },
+                onSearchClickListener = {
+                    accept(EquipmentTypeStore.Intent.OnSearchClicked)
+                },
+                onSearchTextChanged = {
+                    accept(EquipmentTypeStore.Intent.OnSearchTextChanged(it))
+                },
             )
         }
     }

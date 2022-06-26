@@ -11,7 +11,10 @@ class DepartmentInteractor(
     private val repository: DepartmentRepository,
     private val coreDispatchers: CoreDispatchers
 ) {
-    suspend fun getDepartments(params: List<ParamDomain>?): List<DepartmentDomain> =
+    suspend fun getDepartments(
+        params: List<ParamDomain>?,
+        searchQuery: String = ""
+    ): List<DepartmentDomain> =
         withContext(coreDispatchers.io) {
             repository.getDepartments(params)
         }

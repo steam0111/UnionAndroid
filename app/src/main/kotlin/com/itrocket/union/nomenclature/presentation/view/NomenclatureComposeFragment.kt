@@ -4,6 +4,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.navArgs
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
+import com.itrocket.union.inventories.presentation.store.InventoriesStore
 import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.filter.presentation.view.FilterComposeFragment
 import com.itrocket.union.nomenclature.NomenclatureModule.NOMENCLATURE_VIEW_MODEL_QUALIFIER
@@ -43,6 +44,12 @@ class NomenclatureComposeFragment :
                 },
                 onItemClickListener = {
                     accept(NomenclatureStore.Intent.OnItemClicked(it.id))
+                },
+                onSearchTextChanged = {
+                    accept(NomenclatureStore.Intent.OnSearchTextChanged(it))
+                },
+                onSearchClickListener = {
+                    accept(NomenclatureStore.Intent.OnSearchClicked)
                 },
                 onFilterClickListener = { accept(NomenclatureStore.Intent.OnFilterClicked) }
             )

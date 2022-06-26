@@ -26,6 +26,7 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.DefaultListItem
 import com.itrocket.union.ui.LoadingContent
+import com.itrocket.union.ui.SearchToolbar
 
 @Composable
 fun BranchesScreen(
@@ -33,6 +34,8 @@ fun BranchesScreen(
     appInsets: AppInsets,
     onBranchClickListener: (DefaultItem) -> Unit,
     onBackClickListener: () -> Unit,
+    onSearchTextChanged: (String) -> Unit,
+    onSearchClickListener: () -> Unit,
     onFilterClickListener: () -> Unit
 ) {
     AppTheme {
@@ -41,9 +44,13 @@ fun BranchesScreen(
                 .fillMaxSize()
                 .padding(top = appInsets.topInset.dp)
         ) {
-            BlackToolbar(
+            SearchToolbar(
                 title = stringResource(id = R.string.branches_title),
                 onBackClickListener = onBackClickListener,
+                onSearchTextChanged = onSearchTextChanged,
+                onSearchClickListener = onSearchClickListener,
+                isShowSearch = state.isShowSearch,
+                searchText = state.searchText,
                 onFilterClickListener = onFilterClickListener
             )
             LoadingContent(isLoading = state.isLoading) {
@@ -123,5 +130,5 @@ fun BranchesScreenPreview() {
                     code = "code3"
                 )
             )
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {})
 }

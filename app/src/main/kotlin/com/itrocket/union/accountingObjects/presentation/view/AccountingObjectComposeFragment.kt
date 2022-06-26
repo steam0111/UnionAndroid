@@ -52,6 +52,9 @@ class AccountingObjectComposeFragment :
                 },
                 onAccountingObjectListener = {
                     accept(AccountingObjectStore.Intent.OnItemClicked(it))
+                },
+                onSearchTextChanged = {
+                    accept(AccountingObjectStore.Intent.OnSearchTextChanged(it))
                 }
             )
         }
