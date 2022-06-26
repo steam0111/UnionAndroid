@@ -31,6 +31,7 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
 import com.itrocket.union.manual.ManualType
@@ -98,8 +99,12 @@ private fun Content(
     onHideFoundAccountingObjectChanged: () -> Unit,
     onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit
 ) {
-    val accountingObjectList =
+    var accountingObjectList =
         state.newAccountingObjects.toList() + state.inventoryDocument.accountingObjects
+    if (state.isHideFoundAccountingObjects) {
+        accountingObjectList =
+            accountingObjectList.filter { it.inventoryStatus != InventoryAccountingObjectStatus.FOUND }
+    }
 
     Column(
         Modifier
