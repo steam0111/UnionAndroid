@@ -5,6 +5,7 @@ import com.example.union_sync_api.data.AccountingObjectStatusSyncApi
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.AllSyncApi
 import com.example.union_sync_api.data.BranchesSyncApi
+import com.example.union_sync_api.data.ClearSyncDataApi
 import com.example.union_sync_api.data.CounterpartySyncApi
 import com.example.union_sync_api.data.DepartmentSyncApi
 import com.example.union_sync_api.data.DocumentSyncApi
@@ -22,6 +23,7 @@ import com.example.union_sync_impl.data.AccountingObjectStatusSyncApiImpl
 import com.example.union_sync_impl.data.AccountingObjectSyncApiImpl
 import com.example.union_sync_impl.data.AllSyncImpl
 import com.example.union_sync_impl.data.BranchesSyncApiImpl
+import com.example.union_sync_impl.data.ClearSyncDataImpl
 import com.example.union_sync_impl.data.CounterpartySyncApiImpl
 import com.example.union_sync_impl.data.DepartmentSyncApiImpl
 import com.example.union_sync_impl.data.DocumentSyncApiImpl
@@ -143,7 +145,7 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
-                get()
+                get(),
             )
         }
         single {
@@ -205,6 +207,11 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().statusDao()
+        }
+        factory<ClearSyncDataApi> {
+            ClearSyncDataImpl(
+                unionDatabase = get()
+            )
         }
     }
 }

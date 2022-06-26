@@ -3,6 +3,7 @@ package com.itrocket.union.serverConnect.domain
 import androidx.core.text.isDigitsOnly
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.serverConnect.domain.dependencies.ServerConnectRepository
+import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 class ServerConnectInteractor(
@@ -23,6 +24,10 @@ class ServerConnectInteractor(
 
     fun validateServerAddress(serverAddress: String): Boolean {
         return serverAddress.toHttpUrlOrNull() != null
+    }
+
+    suspend fun clearAllSyncDataIfNeeded(newServerAddress: String, newPort: String) = withContext(coreDispatchers.io) {
+        repository.clearAllSyncDataIfNeeded(newServerAddress, newPort)
     }
 
     companion object {

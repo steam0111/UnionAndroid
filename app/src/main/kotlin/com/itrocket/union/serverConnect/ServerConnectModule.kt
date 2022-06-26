@@ -35,7 +35,9 @@ object ServerConnectModule {
             ServerConnectRepositoryImpl(
                 baseUrlPreferencesKey = get(BASE_URL_PREFERENCE_KEY),
                 portPreferencesKey = get(PORT_PREFERENCE_KEY),
-                dataStore = get()
+                dataStore = get(),
+                coreDispatchers = get(),
+                clearSyncDataApi = get()
             )
         }
 

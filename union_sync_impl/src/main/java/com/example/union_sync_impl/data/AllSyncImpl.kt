@@ -181,26 +181,30 @@ class AllSyncImpl(
     }
 
     private suspend fun syncNomenclatureGroup() {
-        val nomenclaturesGroupNetwork =
-            nomenclatureGroupApi.apiCatalogsNomenclatureGroupGet().list ?: emptyList()
+        kotlin.runCatching { //TODO посже необходимо убрат, сейчас без этого в прилу не попасть
+            val nomenclaturesGroupNetwork =
+                nomenclatureGroupApi.apiCatalogsNomenclatureGroupGet().list ?: emptyList()
 
-        nomenclatureGroupDao.insertAll(nomenclaturesGroupNetwork.map { it.toNomenclatureGroupDb() })
+            nomenclatureGroupDao.insertAll(nomenclaturesGroupNetwork.map { it.toNomenclatureGroupDb() })
+        }
     }
 
     private suspend fun syncNomenclature() {
-        val nomenclatureNetwork =
-            nomenclatureGroupApi.apiCatalogsNomenclatureGet().list ?: emptyList()
+        kotlin.runCatching { //TODO посже необходимо убрат, сейчас без этого в прилу не попасть
+            val nomenclatureNetwork =
+                nomenclatureGroupApi.apiCatalogsNomenclatureGet().list ?: emptyList()
 
-        nomenclatureGroupDao.insertAll(
-            nomenclatureNetwork.mapNotNull {
-                it.extendedNomenclatureGroup?.toNomenclatureGroupDb()
-            }
-        )
-        nomenclatureDao.insertAll(
-            nomenclatureNetwork.map {
-                it.toNomenclatureDb()
-            }
-        )
+            nomenclatureGroupDao.insertAll(
+                nomenclatureNetwork.mapNotNull {
+                    it.extendedNomenclatureGroup?.toNomenclatureGroupDb()
+                }
+            )
+            nomenclatureDao.insertAll(
+                nomenclatureNetwork.map {
+                    it.toNomenclatureDb()
+                }
+            )
+        }
     }
 
     private suspend fun syncAccountingObjects() {
