@@ -1,6 +1,6 @@
 package com.itrocket.union.accountingObjects.data.mapper
 
-import com.example.union_sync_api.entity.AccountingObjectStatus
+import com.example.union_sync_api.entity.AccountingObjectStatusSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.*
@@ -42,7 +42,7 @@ fun AccountingObjectSyncEntity.map(): AccountingObjectDomain {
     )
 }
 
-fun AccountingObjectStatus.toDomainStatus(): ObjectStatus =
+fun AccountingObjectStatusSyncEntity.toDomainStatus(): ObjectStatus =
     ObjectStatus(
         text = name.orEmpty(),
         type = id?.let { ObjectStatusType.valueOf(it) }

@@ -24,7 +24,7 @@ object SelectParamsModule {
         }
 
         factory<SelectParamsRepository> {
-            SelectParamsRepositoryImpl(get(), get(), get())
+            SelectParamsRepositoryImpl(get(), get(), get(), get(), get(), get(), get(), get())
         }
 
         factory {

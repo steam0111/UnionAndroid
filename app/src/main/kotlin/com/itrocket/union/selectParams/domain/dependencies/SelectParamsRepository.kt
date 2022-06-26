@@ -10,4 +10,14 @@ interface SelectParamsRepository {
     suspend fun getOrganizationList(): Flow<List<ParamDomain>>
 
     suspend fun getEmployees(type: ManualType): Flow<List<ParamDomain>>
+
+    suspend fun getStatuses(): Flow<List<ParamDomain>>
+
+    suspend fun getEquipmentTypes(): Flow<List<ParamDomain>>
+
+    suspend fun getDepartments(): Flow<List<ParamDomain>>
+
+    suspend fun getProviders(): Flow<List<ParamDomain>>
+
+    suspend fun getProducers(): Flow<List<ParamDomain>>
 }

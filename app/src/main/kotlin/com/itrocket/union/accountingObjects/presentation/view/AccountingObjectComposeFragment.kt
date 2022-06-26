@@ -1,13 +1,15 @@
 package com.itrocket.union.accountingObjects.presentation.view
 
-import android.util.Log
 import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.navArgs
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
+import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.accountingObjects.AccountingObjectModule.ACCOUNTING_OBJECT_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectStore
+import com.itrocket.union.filter.presentation.view.FilterComposeFragment
+import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 
 class AccountingObjectComposeFragment :
     BaseComposeFragment<AccountingObjectStore.Intent, AccountingObjectStore.State, AccountingObjectStore.Label>(
@@ -15,6 +17,19 @@ class AccountingObjectComposeFragment :
     ) {
 
     override val navArgs by navArgs<AccountingObjectComposeFragmentArgs>()
+
+    override val fragmentResultList: List<FragmentResult>
+        get() = listOf(
+            FragmentResult(
+                resultCode = FilterComposeFragment.FILTER_RESULT_CODE,
+                resultLabel = FilterComposeFragment.FILTER_RESULT_LABEL,
+                resultAction = {
+                    (it as SelectParamsResult?)?.params?.let {
+                        accept(AccountingObjectStore.Intent.OnFilterResult(it))
+                    }
+                }
+            )
+        )
 
     @OptIn(ExperimentalPagerApi::class)
     override fun renderState(

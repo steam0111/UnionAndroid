@@ -9,17 +9,14 @@ class FilterRepositoryImpl : FilterRepository {
     override fun getFilters(): List<ParamDomain> {
         return listOf(
             ParamDomain(
-                id = "Организация",
                 type = ManualType.ORGANIZATION,
                 value = ""
             ),
             ParamDomain(
-                id = "Ответственный",
                 type = ManualType.MOL,
                 value = ""
             ),
             ParamDomain(
-                id = "Эксплуатирующий",
                 type = ManualType.EXPLOITING,
                 value = ""
             ),
@@ -28,7 +25,6 @@ class FilterRepositoryImpl : FilterRepository {
                 values = listOf()
             ),
             ParamDomain(
-                id = "Статус",
                 type = ManualType.STATUS,
                 value = ""
             ),

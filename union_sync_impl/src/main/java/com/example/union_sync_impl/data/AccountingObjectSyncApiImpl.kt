@@ -28,6 +28,7 @@ class AccountingObjectSyncApiImpl(
         providerId: String?,
         rfids: List<String>?,
         barcode: String?,
+        statusId: String?,
         textQuery: String?,
         accountingObjectsIds: List<String>?
     ): List<AccountingObjectSyncEntity> {
@@ -42,6 +43,7 @@ class AccountingObjectSyncApiImpl(
                 molId = molId,
                 rfids = rfids,
                 barcode = barcode,
+                statusId = statusId,
                 accountingObjectsIds = accountingObjectsIds,
                 textQuery = textQuery
             )

@@ -14,6 +14,7 @@ interface AccountingObjectSyncApi {
         providerId: String? = null,
         rfids: List<String>? = null,
         barcode: String? = null,
+        statusId: String? = null,
         textQuery: String? = null,
         accountingObjectsIds: List<String>? = null
     ): List<AccountingObjectSyncEntity>

@@ -16,6 +16,7 @@ fun sqlAccountingObjectQuery(
     producerId: String? = null,
     equipmentTypeId: String? = null,
     providerId: String? = null,
+    statusId: String? = null,
     textQuery: String? = null,
     accountingObjectsIds: List<String>? = null
 ): SimpleSQLiteQuery {
@@ -63,6 +64,9 @@ fun sqlAccountingObjectQuery(
                 }
                 providerId?.let {
                     add("providerId" isEquals providerId)
+                }
+                statusId?.let {
+                    add("statusId" isEquals statusId)
                 }
                 textQuery?.let {
                     add("name" contains textQuery)

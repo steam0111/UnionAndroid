@@ -1,7 +1,7 @@
 package com.example.union_sync_impl.data.mapper
 
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
-import com.example.union_sync_api.entity.AccountingObjectStatus
+import com.example.union_sync_api.entity.AccountingObjectStatusSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_impl.entity.AccountingObjectDb
@@ -25,7 +25,8 @@ fun CustomAccountingObjectDto.toAccountingObjectDb(): AccountingObjectDb {
         rfidValue = rfidValue,
         factoryNumber = factoryNumber,
         inventoryNumber = inventoryNumber,
-        status = extendedAccountingObjectStatus?.toStatus(),
+        status = extendedAccountingObjectStatus?.toStatusDb(),
+        statusId = accountingObjectStatusId,
         producerId = producerId,
         equipmentTypeId = typeId,
         actualPrice = actualPrice,
@@ -55,7 +56,7 @@ fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
     )
 }
 
-fun AccountingObjectStatusDto.toStatus() = AccountingObjectStatusDb(id, name)
+fun AccountingObjectStatusDto.toStatusDb() = AccountingObjectStatusDb(id.orEmpty(), name)
 
 
 fun AccountingObjectDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?) =
@@ -70,7 +71,8 @@ fun AccountingObjectDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?) =
         actualPrice = actualPrice,
         count = count,
         commissioningDate = commissioningDate,
-        status = status?.toStatus(),
+        status = status?.toSyncEntity(),
+        statusId = statusId,
         providerId = providerId,
         departmentId = departmentId,
         producerId = producerId,
@@ -99,7 +101,7 @@ fun FullAccountingObject.toSyncEntity(
     actualPrice = accountingObjectDb.actualPrice,
     count = accountingObjectDb.count,
     commissioningDate = accountingObjectDb.commissioningDate,
-    status = accountingObjectDb.status?.toStatus(),
+    status = accountingObjectDb.status?.toSyncEntity(),
     providerId = accountingObjectDb.providerId,
     departmentId = accountingObjectDb.departmentId,
     producerId = accountingObjectDb.producerId,
@@ -110,7 +112,8 @@ fun FullAccountingObject.toSyncEntity(
     organizationId = accountingObjectDb.organizationId,
     internalNumber = accountingObjectDb.internalNumber,
     model = accountingObjectDb.model,
-    locationSyncEntity = locationSyncEntity
+    locationSyncEntity = locationSyncEntity,
+    statusId = accountingObjectDb.statusId
 )
 
-fun AccountingObjectStatusDb.toStatus() = AccountingObjectStatus(id, name)
+fun AccountingObjectStatusDb.toSyncEntity() = AccountingObjectStatusSyncEntity(id, name)

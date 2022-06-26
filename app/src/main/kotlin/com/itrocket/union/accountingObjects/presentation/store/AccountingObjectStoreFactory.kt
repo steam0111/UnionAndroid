@@ -6,17 +6,19 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.error.ErrorInteractor
-import com.itrocket.union.filter.domain.FilterInteractor
+import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.utils.ifBlankOrNull
 
 class AccountingObjectStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val accountingObjectInteractor: AccountingObjectInteractor,
-    private val filterInteractor: FilterInteractor,
     private val accountingObjectArguments: AccountingObjectArguments?,
     private val errorInteractor: ErrorInteractor
 ) {
+
+    private var params: List<ParamDomain>? = null
+
     fun create(): AccountingObjectStore =
         object : AccountingObjectStore,
             Store<AccountingObjectStore.Intent, AccountingObjectStore.State, AccountingObjectStore.Label> by storeFactory.create(
@@ -38,19 +40,7 @@ class AccountingObjectStoreFactory(
             action: Unit,
             getState: () -> AccountingObjectStore.State
         ) {
-            dispatch(Result.Loading(true))
-            catchException {
-                dispatch(Result.Loading(true))
-                dispatch(
-                    Result.AccountingObjects(
-                        accountingObjectInteractor.getAccountingObjects(
-                            params = accountingObjectArguments?.params.orEmpty(),
-                            selectedAccountingObjectIds = accountingObjectArguments?.selectedAccountingObjectIds.orEmpty()
-                        )
-                    )
-                )
-                dispatch(Result.Loading(false))
-            }
+            getAccountingObjects(accountingObjectArguments?.params.orEmpty())
         }
 
         override fun handleError(throwable: Throwable) {
@@ -68,9 +58,30 @@ class AccountingObjectStoreFactory(
                     AccountingObjectStore.Label.ShowSearch
                 )
                 AccountingObjectStore.Intent.OnFilterClicked -> publish(
-                    AccountingObjectStore.Label.ShowFilter(filterInteractor.getFilters())
+                    AccountingObjectStore.Label.ShowFilter(
+                        params ?: accountingObjectInteractor.getFilters()
+                    )
                 )
+                is AccountingObjectStore.Intent.OnFilterResult -> {
+                    params = intent.params
+                    getAccountingObjects(params.orEmpty())
+                }
                 is AccountingObjectStore.Intent.OnItemClicked -> onItemClick(intent.item)
+            }
+        }
+
+        private suspend fun getAccountingObjects(params: List<ParamDomain>) {
+            catchException {
+                dispatch(Result.Loading(true))
+                dispatch(
+                    Result.AccountingObjects(
+                        accountingObjectInteractor.getAccountingObjects(
+                            params = params,
+                            selectedAccountingObjectIds = accountingObjectArguments?.selectedAccountingObjectIds.orEmpty()
+                        )
+                    )
+                )
+                dispatch(Result.Loading(false))
             }
         }
 
