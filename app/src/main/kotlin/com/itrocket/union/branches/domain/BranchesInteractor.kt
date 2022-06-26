@@ -1,12 +1,11 @@
 package com.itrocket.union.branches.domain
 
-import kotlinx.coroutines.withContext
-import com.itrocket.union.branches.domain.dependencies.BranchesRepository
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.branches.domain.dependencies.BranchesRepository
 import com.itrocket.union.branches.domain.entity.BranchesDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 
 class BranchesInteractor(
     private val repository: BranchesRepository,
@@ -16,7 +15,7 @@ class BranchesInteractor(
     suspend fun getBranches(
         params: List<ParamDomain>?,
         searchQuery: String = ""
-    ): Flow<List<BranchesDomain>> =
+    ): List<BranchesDomain> =
         withContext(coreDispatchers.io) { repository.getBranches(searchQuery, params) }
 
     fun getFilters(): List<ParamDomain> {

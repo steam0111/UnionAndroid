@@ -14,7 +14,7 @@ class RegionRepositoryImpl(
 
     override suspend fun getRegions(textQuery: String?): List<RegionDomain> {
         return withContext(coreDispatchers.io) {
-            regionSyncApi.getRegions(textQuery).map()
+            regionSyncApi.getRegions(textQuery = textQuery).map()
         }
     }
 }

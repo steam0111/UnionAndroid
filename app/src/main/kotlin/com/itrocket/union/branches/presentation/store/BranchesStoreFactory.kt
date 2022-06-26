@@ -13,8 +13,6 @@ import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 
 class BranchesStoreFactory(
     private val storeFactory: StoreFactory,
@@ -85,15 +83,11 @@ class BranchesStoreFactory(
             params: List<ParamDomain>? = null,
             searchText: String = ""
         ) {
+            dispatch(Result.Loading(true))
             catchException {
-                dispatch(Result.Loading(true))
-                branchesInteractor.getBranches(params, searchText)
-                    .catch { handleError(it) }
-                    .collect {
-                        dispatch(Result.Branches(it))
-                        dispatch(Result.Loading(false))
-                    }
+                dispatch(Result.Branches(branchesInteractor.getBranches(params, searchText)))
             }
+            dispatch(Result.Loading(false))
         }
 
         private suspend fun onBackClicked(isShowSearch: Boolean) {
