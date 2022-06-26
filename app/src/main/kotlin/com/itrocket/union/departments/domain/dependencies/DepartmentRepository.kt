@@ -1,7 +1,8 @@
 package com.itrocket.union.departments.domain.dependencies
 
 import com.itrocket.union.departments.domain.entity.DepartmentDomain
+import com.itrocket.union.manual.ParamDomain
 
 interface DepartmentRepository {
-    suspend fun getDepartments(): List<DepartmentDomain>
+    suspend fun getDepartments(params: List<ParamDomain>?): List<DepartmentDomain>
 }

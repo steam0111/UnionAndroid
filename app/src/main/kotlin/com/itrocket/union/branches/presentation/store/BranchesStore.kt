@@ -1,16 +1,15 @@
 package com.itrocket.union.branches.presentation.store
 
 import androidx.navigation.NavDirections
-import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
+import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.branchDetail.presentation.store.BranchDetailArguments
 import com.itrocket.union.branches.domain.entity.BranchesDomain
 import com.itrocket.union.branches.presentation.view.BranchesComposeFragmentDirections
-import com.itrocket.union.employeeDetail.presentation.store.EmployeeDetailArguments
-import com.itrocket.union.employees.presentation.store.EmployeeStore
-import com.itrocket.union.employees.presentation.view.EmployeeComposeFragmentDirections
+import com.itrocket.union.filter.presentation.store.FilterArguments
+import com.itrocket.union.manual.ParamDomain
 
 interface BranchesStore : Store<BranchesStore.Intent, BranchesStore.State, BranchesStore.Label> {
 
@@ -19,6 +18,7 @@ interface BranchesStore : Store<BranchesStore.Intent, BranchesStore.State, Branc
         object OnFilterClicked : Intent()
         object OnBackClicked : Intent()
         data class OnBranchClicked(val id: String) : Intent()
+        class OnFilterResult(val params: List<ParamDomain>) : Intent()
     }
 
     data class State(
@@ -34,6 +34,11 @@ interface BranchesStore : Store<BranchesStore.Intent, BranchesStore.State, Branc
                 get() = BranchesComposeFragmentDirections.toBranchDetail(
                     BranchDetailArguments(id = id)
                 )
+        }
+
+        data class ShowFilter(val filters: List<ParamDomain>) : Label(), ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = BranchesComposeFragmentDirections.toFilter(FilterArguments(filters))
         }
     }
 }
