@@ -8,6 +8,7 @@ import com.example.union_sync_api.entity.AccountingObjectInfoSyncEntity
 class InventoryDb(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
+    val name: String = "",
     val organizationId: String,
     val employeeId: String?,
     val accountingObjectsIds: List<AccountingObjectInfoSyncEntity>,

@@ -3,6 +3,7 @@ package com.example.union_sync_impl.data
 import com.example.union_sync_api.data.ProducerSyncApi
 import com.example.union_sync_api.entity.ProducerSyncEntity
 import com.example.union_sync_impl.dao.ProducerDao
+import com.example.union_sync_impl.dao.sqlProducerQuery
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +16,7 @@ class ProducerSyncApiImpl(
 ) : ProducerSyncApi {
     override suspend fun getProducers(textQuery: String?): Flow<List<ProducerSyncEntity>> {
         return flow {
-            emit(producerDao.getAll().map { it.toSyncEntity() })
+            emit(producerDao.getAll(sqlProducerQuery(textQuery)).map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)
     }
 

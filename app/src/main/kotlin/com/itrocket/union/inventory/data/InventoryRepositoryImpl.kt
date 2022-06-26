@@ -7,9 +7,6 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.inventoryCreate.data.mapper.map
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class InventoryRepositoryImpl(
@@ -32,10 +29,9 @@ class InventoryRepositoryImpl(
             inventorySyncApi.getInventoryById(id).map()
         }
 
-    override suspend fun getInventories(textQuery: String?): Flow<List<InventoryCreateDomain>> =
+    override suspend fun getInventories(textQuery: String?): List<InventoryCreateDomain> =
         withContext(coreDispatchers.io) {
-            inventorySyncApi.getInventories(textQuery).map {
-                it.map()
-            }.flowOn(coreDispatchers.io)
+            inventorySyncApi.getInventories(textQuery).map()
         }
+
 }

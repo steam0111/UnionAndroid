@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface BranchesRepository {
 
     suspend fun getBranches(
-        textQuery: String?,
+        textQuery: String? = null,
         params: List<ParamDomain>?
     ): Flow<List<BranchesDomain>>
 }

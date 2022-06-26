@@ -26,7 +26,7 @@ fun InventoryUpdateSyncEntity.toInventoryDb(): InventoryDb {
         employeeId = employeeId,
         accountingObjectsIds = accountingObjectsIds,
         date = date,
-        locationIds = locationIds
+        locationIds = locationIds,
     )
 }
 

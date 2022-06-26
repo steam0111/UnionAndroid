@@ -3,6 +3,7 @@ package com.example.union_sync_impl.data
 import com.example.union_sync_api.data.EquipmentTypeSyncApi
 import com.example.union_sync_api.entity.EquipmentTypeSyncEntity
 import com.example.union_sync_impl.dao.EquipmentTypeDao
+import com.example.union_sync_impl.dao.sqlEquipmentTypeQuery
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +16,7 @@ class EquipmentTypeSyncApiImpl(
 ) : EquipmentTypeSyncApi {
     override suspend fun getEquipmentTypes(textQuery: String?): Flow<List<EquipmentTypeSyncEntity>> {
         return flow {
-            emit(equipmentTypeDao.getAll().map { it.toSyncEntity() })
+            emit(equipmentTypeDao.getAll(sqlEquipmentTypeQuery(textQuery)).map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)
     }
 
