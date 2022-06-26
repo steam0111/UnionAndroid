@@ -14,7 +14,6 @@ import com.itrocket.union.manual.Params
 import com.itrocket.union.nomenclature.domain.dependencies.NomenclatureRepository
 import com.itrocket.union.regions.domain.dependencies.RegionRepository
 import kotlinx.coroutines.flow.count
-import kotlinx.parcelize.Parcelize
 
 class FilterInteractor(
     private val repository: FilterRepository,
@@ -69,6 +68,7 @@ class FilterInteractor(
         return mutableFilters
     }
 
+    //TODO переделать через базу данных
     suspend fun getResultCount(from: CatalogType?, params: List<ParamDomain>): Int {
         return when (from) {
             CatalogType.ACCOUNTING_OBJECTS -> {
