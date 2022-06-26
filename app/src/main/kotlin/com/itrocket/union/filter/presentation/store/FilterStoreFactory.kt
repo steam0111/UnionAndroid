@@ -22,11 +22,15 @@ class FilterStoreFactory(
     private val filterArgs: FilterArguments,
     private val errorInteractor: ErrorInteractor
 ) {
+
     fun create(): FilterStore =
         object : FilterStore,
             Store<FilterStore.Intent, FilterStore.State, FilterStore.Label> by storeFactory.create(
                 name = "FilterStore",
-                initialState = FilterStore.State(params = Params(filterArgs.argument)),
+                initialState = FilterStore.State(
+                    params = Params(filterArgs.argument),
+                    from = filterArgs.from
+                ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
@@ -43,6 +47,14 @@ class FilterStoreFactory(
             action: Unit,
             getState: () -> FilterStore.State
         ) {
+            dispatch(
+                Result.Count(
+                    filterInteractor.getResultCount(
+                        filterArgs.from,
+                        filterArgs.argument
+                    )
+                )
+            )
         }
 
         override suspend fun executeIntent(
@@ -65,6 +77,7 @@ class FilterStoreFactory(
                     val droppedFilterFields =
                         filterInteractor.dropFilterFields(getState().params.paramList)
                     dispatch(Result.Filters(droppedFilterFields))
+                    dispatch(Result.Count(getResultCount(droppedFilterFields, getState())))
                 }
                 is FilterStore.Intent.OnFilterChanged -> {
                     val filterList = filterInteractor.changeFilters(
@@ -72,18 +85,25 @@ class FilterStoreFactory(
                         newFilters = intent.filters
                     )
                     dispatch(Result.Filters(filterList))
+                    dispatch(Result.Count(getResultCount(filterList, getState())))
                 }
                 is FilterStore.Intent.OnFilterLocationChanged -> {
-                    dispatch(
-                        Result.Filters(
-                            filterInteractor.changeLocationFilter(
-                                filters = getState().params.paramList,
-                                location = intent.locationResult.location
-                            )
-                        )
+                    val filters = filterInteractor.changeLocationFilter(
+                        filters = getState().params.paramList,
+                        location = intent.locationResult.location
                     )
+                    dispatch(Result.Filters(filters))
+                    dispatch(Result.Count(getResultCount(filters, getState())))
+
                 }
             }
+        }
+
+        private suspend fun getResultCount(
+            params: List<ParamDomain>,
+            state: FilterStore.State
+        ): Int {
+            return filterInteractor.getResultCount(state.from, params)
         }
 
         private fun showFilters(filter: ParamDomain, getState: () -> FilterStore.State) {
@@ -113,12 +133,14 @@ class FilterStoreFactory(
 
     private sealed class Result {
         data class Filters(val filters: List<ParamDomain>) : Result()
+        data class Count(val count: Int) : Result()
     }
 
     private object ReducerImpl : Reducer<FilterStore.State, Result> {
         override fun FilterStore.State.reduce(result: Result) =
             when (result) {
                 is Result.Filters -> copy(params = params.copy(result.filters))
+                is Result.Count -> copy(resultCount = result.count)
             }
     }
 }

@@ -1,15 +1,29 @@
 package com.itrocket.union.filter.domain
 
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
+import com.itrocket.union.branches.domain.dependencies.BranchesRepository
+import com.itrocket.union.departments.domain.dependencies.DepartmentRepository
+import com.itrocket.union.employees.domain.dependencies.EmployeeRepository
 import com.itrocket.union.filter.domain.dependencies.FilterRepository
+import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
-import com.itrocket.utils.resolveItem
+import com.itrocket.union.nomenclature.domain.dependencies.NomenclatureRepository
+import com.itrocket.union.regions.domain.dependencies.RegionRepository
+import kotlinx.coroutines.flow.count
+import kotlinx.parcelize.Parcelize
 
 class FilterInteractor(
     private val repository: FilterRepository,
+    private val accountingObjectRepository: AccountingObjectRepository,
+    private val employeeRepository: EmployeeRepository,
+    private val branchesRepository: BranchesRepository,
+    private val departmentRepository: DepartmentRepository,
+    private val nomenclatureRepository: NomenclatureRepository,
+    private val regionRepository: RegionRepository,
     private val coreDispatchers: CoreDispatchers
 ) {
     fun getFilters() = repository.getFilters()
@@ -53,6 +67,30 @@ class FilterInteractor(
                 )
         }
         return mutableFilters
+    }
+
+    suspend fun getResultCount(from: CatalogType?, params: List<ParamDomain>): Int {
+        return when (from) {
+            CatalogType.ACCOUNTING_OBJECTS -> {
+                accountingObjectRepository.getAccountingObjects(params).count()
+            }
+            CatalogType.EMPLOYEES -> {
+                employeeRepository.getEmployees(params).count()
+            }
+            CatalogType.BRANCHES -> {
+                branchesRepository.getBranches(params).count()
+            }
+            CatalogType.DEPARTMENTS -> {
+                departmentRepository.getDepartments(params).count()
+            }
+            CatalogType.NOMENCLATURES -> {
+                nomenclatureRepository.getNomenclatures(params).count()
+            }
+            CatalogType.REGIONS -> {
+                regionRepository.getRegions().count()
+            }
+            else -> 0
+        }
     }
 
     companion object {

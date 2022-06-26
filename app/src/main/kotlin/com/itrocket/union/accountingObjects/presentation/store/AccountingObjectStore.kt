@@ -9,8 +9,8 @@ import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingOb
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragmentDirections
+import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.filter.presentation.store.FilterArguments
-import com.itrocket.union.inventory.presentation.store.InventoryStore
 import com.itrocket.union.manual.ParamDomain
 
 interface AccountingObjectStore :
@@ -49,7 +49,12 @@ interface AccountingObjectStore :
         object ShowSearch : Label()
         data class ShowFilter(val filters: List<ParamDomain>) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
-                get() = AccountingObjectComposeFragmentDirections.toFilter(FilterArguments(filters))
+                get() = AccountingObjectComposeFragmentDirections.toFilter(
+                    FilterArguments(
+                        filters,
+                        CatalogType.ACCOUNTING_OBJECTS
+                    )
+                )
         }
 
         data class ShowDetail(val item: AccountingObjectDomain) :

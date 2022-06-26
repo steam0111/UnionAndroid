@@ -1,12 +1,5 @@
 <resources>
-    <plurals name="filter_result_show">
-        <item quantity="zero">Нет заявок</item>
-        <item quantity="one">Показать %d заявку</item>
-        <item quantity="two">Показать %d заявки</item>
-        <item quantity="few">Показать %d заявки</item>
-        <item quantity="many">Показать %d заявок</item>
-        <item quantity="other">Нет заявок</item>
-    </plurals>
+    <string name="filter_result_show">Показать результаты (%s)</string>
 
     <!-- Common -->
     <string name="app_name">Union</string>

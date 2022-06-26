@@ -8,6 +8,7 @@ import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.employeeDetail.presentation.store.EmployeeDetailArguments
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
 import com.itrocket.union.employees.presentation.view.EmployeeComposeFragmentDirections
+import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.filter.presentation.store.FilterArguments
 import com.itrocket.union.manual.ParamDomain
 
@@ -43,7 +44,12 @@ interface EmployeeStore : Store<EmployeeStore.Intent, EmployeeStore.State, Emplo
 
         data class ShowFilter(val filters: List<ParamDomain>) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
-                get() = EmployeeComposeFragmentDirections.toFilter(FilterArguments(filters))
+                get() = EmployeeComposeFragmentDirections.toFilter(
+                    FilterArguments(
+                        filters,
+                        CatalogType.EMPLOYEES
+                    )
+                )
         }
     }
 }

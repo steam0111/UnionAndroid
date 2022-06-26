@@ -5,6 +5,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
+import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.filter.presentation.view.FilterComposeFragment
 import com.itrocket.union.filter.presentation.view.FilterComposeFragmentDirections
 import com.itrocket.union.location.presentation.store.LocationArguments
@@ -28,7 +29,8 @@ interface FilterStore : Store<FilterStore.Intent, FilterStore.State, FilterStore
 
     data class State(
         val params: Params,
-        val resultCount: Int = 0
+        val resultCount: Int = 0,
+        val from: CatalogType = CatalogType.DEFAULT
     )
 
     sealed class Label {

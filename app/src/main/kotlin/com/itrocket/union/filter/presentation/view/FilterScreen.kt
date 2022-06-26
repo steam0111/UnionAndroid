@@ -99,9 +99,11 @@ private fun FilterContent(
     LazyColumn {
         items(filters) {
             if (it.value.isEmpty()) {
-                UnselectedBaseField(label = stringResource(it.type.titleId), onFieldClickListener = {
-                    onFieldClickListener(it)
-                })
+                UnselectedBaseField(
+                    label = stringResource(it.type.titleId),
+                    onFieldClickListener = {
+                        onFieldClickListener(it)
+                    })
             } else {
                 SelectedBaseField(
                     label = stringResource(it.type.titleId),
@@ -128,10 +130,8 @@ private fun FilterBottomBar(
             .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)
     ) {
         BaseButton(
-            text = resources.getQuantityString(
-                R.plurals.filter_result_show,
-                resultCount,
-                resultCount
+            text = stringResource(
+                R.string.filter_result_show, resultCount
             ),
             onClick = onBtnClickListener,
             modifier = Modifier.fillMaxWidth()
@@ -149,23 +149,24 @@ private fun FilterBottomBar(
 fun FilterScreenPreview() {
     FilterScreen(
         FilterStore.State(
-            params = Params(listOf(
-                ParamDomain(
-                    type = ManualType.ORGANIZATION,
-                    id = "1",
-                    value = ""
-                ),
-                ParamDomain(
-                    type = ManualType.ORGANIZATION,
-                    id = "2",
-                    value = ""
-                ),
-                ParamDomain(
-                    type = ManualType.LOCATION,
-                    id = "3",
-                    value = ""
+            params = Params(
+                listOf(
+                    ParamDomain(
+                        type = ManualType.ORGANIZATION,
+                        id = "1",
+                        value = ""
+                    ),
+                    ParamDomain(
+                        type = ManualType.ORGANIZATION,
+                        id = "2",
+                        value = ""
+                    ),
+                    ParamDomain(
+                        type = ManualType.LOCATION,
+                        id = "3",
+                        value = ""
+                    )
                 )
-            )
             )
         ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
 }
