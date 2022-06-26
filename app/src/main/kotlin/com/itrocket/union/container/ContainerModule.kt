@@ -6,7 +6,6 @@ import com.itrocket.union.container.domain.IsUserAuthorizedUseCase
 import com.itrocket.union.container.domain.OnSessionExpiredUseCase
 import com.itrocket.union.container.domain.ScannerManager
 import com.itrocket.union.container.presentation.MainViewModel
-import com.itrocket.union.syncAll.SyncAllModule
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -31,7 +30,6 @@ object ContainerModule {
         factory {
             IsDbSyncedUseCase(
                 get(),
-                get(SyncAllModule.IS_SYNCED_BD_PREFERENCE_KEY),
                 get()
             )
         }

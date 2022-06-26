@@ -10,6 +10,7 @@ import com.example.union_sync_impl.dao.EmployeeDao
 import com.example.union_sync_impl.dao.EquipmentTypeDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.LocationPathDao
+import com.example.union_sync_impl.dao.NetworkSyncDao
 import com.example.union_sync_impl.dao.NomenclatureDao
 import com.example.union_sync_impl.dao.NomenclatureGroupDao
 import com.example.union_sync_impl.dao.OrganizationDao
@@ -31,6 +32,7 @@ import com.example.union_sync_impl.data.mapper.toProducerDb
 import com.example.union_sync_impl.data.mapper.toProviderDb
 import com.example.union_sync_impl.data.mapper.toRegionDb
 import com.example.union_sync_impl.data.mapper.toStatusDb
+import com.example.union_sync_impl.entity.NetworkSyncDb
 import org.openapitools.client.custom_api.AccountingObjectApi
 import org.openapitools.client.custom_api.BranchesApi
 import org.openapitools.client.custom_api.CounterpartyApi
@@ -72,8 +74,13 @@ class AllSyncImpl(
     private val producerDao: ProducerDao,
     private val regionApi: RegionApi,
     private val regionDao: RegionDao,
-    private val statusesDao: AccountingObjectStatusDao
+    private val statusesDao: AccountingObjectStatusDao,
+    private val networkSyncDao: NetworkSyncDao
 ) : AllSyncApi {
+
+    override suspend fun isSynced(): Boolean {
+        return networkSyncDao.getNetworkSync()?.isAllSynced ?: false
+    }
 
     override suspend fun syncAll() {
         syncProducers()
@@ -92,6 +99,12 @@ class AllSyncImpl(
         syncLocations()
 
         syncAccountingObjects()
+
+        networkSyncDao.insert(
+            NetworkSyncDb(
+                isAllSynced = true
+            )
+        )
     }
 
     private suspend fun syncRegions() {

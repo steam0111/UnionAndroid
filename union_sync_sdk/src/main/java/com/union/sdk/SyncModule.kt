@@ -18,6 +18,7 @@ import com.example.union_sync_api.data.OrganizationSyncApi
 import com.example.union_sync_api.data.ProducerSyncApi
 import com.example.union_sync_api.data.RegionSyncApi
 import com.example.union_sync_impl.UnionDatabase
+import com.example.union_sync_impl.data.AccountingObjectStatusSyncApiImpl
 import com.example.union_sync_impl.data.AccountingObjectSyncApiImpl
 import com.example.union_sync_impl.data.AllSyncImpl
 import com.example.union_sync_impl.data.BranchesSyncApiImpl
@@ -33,7 +34,6 @@ import com.example.union_sync_impl.data.NomenclatureSyncApiImpl
 import com.example.union_sync_impl.data.OrganizationSyncApiImpl
 import com.example.union_sync_impl.data.ProducerSyncApiImpl
 import com.example.union_sync_impl.data.RegionSyncApiImpl
-import com.example.union_sync_impl.data.AccountingObjectStatusSyncApiImpl
 import org.koin.dsl.module
 
 object SyncModule {
@@ -116,6 +116,7 @@ object SyncModule {
         }
         factory<AllSyncApi> {
             AllSyncImpl(
+                get(),
                 get(),
                 get(),
                 get(),

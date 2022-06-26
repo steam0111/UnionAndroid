@@ -8,5 +8,6 @@ data class NetworkSyncDb(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
     val isOrganizationSync: Boolean = false,
-    val isLocationsSync: Boolean = false
+    val isLocationsSync: Boolean = false,
+    val isAllSynced: Boolean = false
 )

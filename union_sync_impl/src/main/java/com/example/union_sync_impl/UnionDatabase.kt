@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.union_sync_impl.dao.AccountingObjectDao
+import com.example.union_sync_impl.dao.AccountingObjectStatusDao
 import com.example.union_sync_impl.dao.BranchesDao
 import com.example.union_sync_impl.dao.CounterpartyDao
 import com.example.union_sync_impl.dao.DepartmentDao
@@ -17,11 +18,11 @@ import com.example.union_sync_impl.dao.NetworkSyncDao
 import com.example.union_sync_impl.dao.NomenclatureDao
 import com.example.union_sync_impl.dao.NomenclatureGroupDao
 import com.example.union_sync_impl.dao.OrganizationDao
-import com.example.union_sync_impl.dao.ProviderDao
 import com.example.union_sync_impl.dao.ProducerDao
+import com.example.union_sync_impl.dao.ProviderDao
 import com.example.union_sync_impl.dao.RegionDao
-import com.example.union_sync_impl.dao.AccountingObjectStatusDao
 import com.example.union_sync_impl.entity.AccountingObjectDb
+import com.example.union_sync_impl.entity.AccountingObjectStatusDb
 import com.example.union_sync_impl.entity.BranchesDb
 import com.example.union_sync_impl.entity.CounterpartyDb
 import com.example.union_sync_impl.entity.DepartmentDb
@@ -34,12 +35,11 @@ import com.example.union_sync_impl.entity.NomenclatureDb
 import com.example.union_sync_impl.entity.NomenclatureGroupDb
 import com.example.union_sync_impl.entity.OrganizationDb
 import com.example.union_sync_impl.entity.ProducerDb
+import com.example.union_sync_impl.entity.ProviderDb
 import com.example.union_sync_impl.entity.RegionDb
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationPath
 import com.example.union_sync_impl.entity.location.LocationTypeDb
-import com.example.union_sync_impl.entity.ProviderDb
-import com.example.union_sync_impl.entity.AccountingObjectStatusDb
 import com.example.union_sync_impl.utils.Converters
 
 @Database(
@@ -63,7 +63,7 @@ import com.example.union_sync_impl.utils.Converters
         DocumentDb::class,
         ProviderDb::class,
         AccountingObjectStatusDb::class
-    ], version = 49
+    ], version = 50
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {

@@ -1,6 +1,5 @@
 package com.itrocket.union.syncAll
 
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.itrocket.core.base.BaseViewModel
 import com.itrocket.union.syncAll.data.SyncAllRepositoryImpl
@@ -14,7 +13,6 @@ import org.koin.dsl.module
 
 object SyncAllModule {
     val SYNCALL_VIEW_MODEL_QUALIFIER = named("SYNCALL_VIEW_MODEL")
-    val IS_SYNCED_BD_PREFERENCE_KEY = named("IS_SYNCED_BD_PREFERENCE_KEY")
 
     val module = module {
         viewModel(SYNCALL_VIEW_MODEL_QUALIFIER) {
@@ -25,8 +23,6 @@ object SyncAllModule {
             SyncAllRepositoryImpl(
                 get(),
                 get(),
-                get(),
-                isSyncDbPreferenceKey = get(IS_SYNCED_BD_PREFERENCE_KEY)
             )
         }
 
@@ -41,10 +37,6 @@ object SyncAllModule {
                 get(),
                 get()
             ).create()
-        }
-
-        single(qualifier = IS_SYNCED_BD_PREFERENCE_KEY) {
-            booleanPreferencesKey(IS_SYNCED_BD_PREFERENCE_KEY.value)
         }
     }
 }
