@@ -1,15 +1,19 @@
 package com.itrocket.union.inventoryCreate.presentation.view
 
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
+import com.itrocket.union.inventory.presentation.store.InventoryStore
+import com.itrocket.union.inventoryContainer.presentation.view.InventoryCreateClickHandler
 import com.itrocket.union.inventoryCreate.InventoryCreateModule.INVENTORYCREATE_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
 import com.itrocket.union.switcher.presentation.store.SwitcherResult
 import com.itrocket.union.switcher.presentation.view.SwitcherComposeFragment
+import com.itrocket.union.utils.fragment.ChildBackPressedHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -23,6 +27,13 @@ class InventoryCreateComposeFragment :
     BaseComposeFragment<InventoryCreateStore.Intent, InventoryCreateStore.State, InventoryCreateStore.Label>(
         INVENTORYCREATE_VIEW_MODEL_QUALIFIER
     ) {
+
+    override val onBackPressedCallback: OnBackPressedCallback
+        get() = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                accept(InventoryCreateStore.Intent.OnBackClicked)
+            }
+        }
 
     override val fragmentResultList: List<FragmentResult>
         get() = listOf(
@@ -135,6 +146,14 @@ class InventoryCreateComposeFragment :
                 }
             }
         }
+    }
+
+    override fun handleLabel(label: InventoryCreateStore.Label) {
+        super.handleLabel(label)
+        when (label) {
+            InventoryCreateStore.Label.GoBack -> (parentFragment as? ChildBackPressedHandler)?.onChildBackPressed()
+        }
+
     }
 
     companion object {

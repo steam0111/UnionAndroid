@@ -1,5 +1,6 @@
 package com.itrocket.union.inventory.presentation.view
 
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
@@ -7,6 +8,7 @@ import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.inventory.InventoryModule.INVENTORY_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.inventory.presentation.store.InventoryStore
 import com.itrocket.union.inventoryContainer.presentation.view.InventoryCreateClickHandler
+import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.location.presentation.view.LocationComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
@@ -17,6 +19,13 @@ class InventoryComposeFragment :
     BaseComposeFragment<InventoryStore.Intent, InventoryStore.State, InventoryStore.Label>(
         INVENTORY_VIEW_MODEL_QUALIFIER
     ) {
+
+    override val onBackPressedCallback: OnBackPressedCallback
+        get() = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                accept(InventoryStore.Intent.OnBackClicked)
+            }
+        }
 
     override val fragmentResultList: List<FragmentResult>
         get() = listOf(

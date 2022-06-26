@@ -49,7 +49,7 @@ interface InventoryCreateStore :
     )
 
     sealed class Label {
-        object GoBack : Label(), GoBackNavigationLabel
+        object GoBack : Label()
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
         data class ShowChangeStatus(val switcherData: SwitcherDomain) : Label(),
             ShowBottomSheetNavigationLabel {

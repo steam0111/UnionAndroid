@@ -43,7 +43,7 @@ interface InventoryStore :
     )
 
     sealed class Label {
-        object GoBack : Label(), GoBackNavigationLabel
+        object GoBack : Label()
         data class ShowCreateInventory(
             val inventoryCreate: InventoryCreateDomain
         ) : Label()

@@ -32,6 +32,7 @@ class InventoryContainerComposeFragment :
 
     private var inventoryContainer: ConstraintLayout? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initStartFragment()
