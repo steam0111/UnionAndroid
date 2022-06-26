@@ -10,6 +10,7 @@ import com.itrocket.union.regions.domain.entity.RegionDomain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -18,7 +19,8 @@ class RegionStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val regionInteractor: RegionInteractor,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val searchManager: SearchManager
 ) {
     fun create(): RegionStore =
         object : RegionStore,
@@ -41,7 +43,9 @@ class RegionStoreFactory(
             action: Unit,
             getState: () -> RegionStore.State
         ) {
-            listenRegions()
+            searchManager.listenSearch {
+                listenRegions(searchText = it)
+            }
         }
 
         override suspend fun executeIntent(
@@ -58,7 +62,7 @@ class RegionStoreFactory(
                 RegionStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is RegionStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    listenRegions(intent.searchText)
+                    searchManager.searchQuery.emit(intent.searchText)
                 }
             }
         }
@@ -78,8 +82,7 @@ class RegionStoreFactory(
         private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
-                dispatch(Result.SearchText(""))
-                listenRegions("")
+                searchManager.searchQuery.emit("")
             } else {
                 publish(RegionStore.Label.GoBack)
             }

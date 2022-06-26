@@ -18,7 +18,10 @@ import kotlinx.coroutines.flow.flowOn
 class RegionSyncApiImpl(
     private val regionDao: RegionDao
 ) : RegionSyncApi {
-    override suspend fun getRegions(organizationId: String?): Flow<List<RegionSyncEntity>> {
+    override suspend fun getRegions(
+        organizationId: String?,
+        textQuery: String?
+    ): Flow<List<RegionSyncEntity>> {
         return flow {
             emit(regionDao.getAll(sqlRegionQuery(organizationId)).map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)

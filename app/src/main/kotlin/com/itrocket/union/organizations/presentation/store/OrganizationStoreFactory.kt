@@ -10,6 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.organizations.domain.OrganizationInteractor
 import com.itrocket.union.organizations.domain.entity.OrganizationDomain
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -18,7 +19,8 @@ class OrganizationStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val organizationInteractor: OrganizationInteractor,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val searchManager: SearchManager
 ) {
     fun create(): OrganizationStore =
         object : OrganizationStore,
@@ -41,7 +43,9 @@ class OrganizationStoreFactory(
             action: Unit,
             getState: () -> OrganizationStore.State
         ) {
-            listenOrganizations()
+            searchManager.listenSearch {
+                listenOrganizations(searchText = it)
+            }
         }
 
         override suspend fun executeIntent(
@@ -58,7 +62,7 @@ class OrganizationStoreFactory(
                 }
                 is OrganizationStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    listenOrganizations(intent.searchText)
+                    searchManager.searchQuery.emit(intent.searchText)
                 }
             }
         }
@@ -80,8 +84,7 @@ class OrganizationStoreFactory(
         private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
-                dispatch(Result.SearchText(""))
-                listenOrganizations("")
+                searchManager.searchQuery.emit("")
             } else {
                 publish(OrganizationStore.Label.GoBack)
             }

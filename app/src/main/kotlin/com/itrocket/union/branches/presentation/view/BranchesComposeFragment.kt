@@ -1,5 +1,6 @@
 package com.itrocket.union.branches.presentation.view
 
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
@@ -13,6 +14,14 @@ class BranchesComposeFragment :
     BaseComposeFragment<BranchesStore.Intent, BranchesStore.State, BranchesStore.Label>(
         BRANCHES_VIEW_MODEL_QUALIFIER
     ) {
+
+    override val onBackPressedCallback by lazy {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                accept(BranchesStore.Intent.OnBackClicked)
+            }
+        }
+    }
 
     override val fragmentResultList: List<FragmentResult>
         get() = listOf(
@@ -44,7 +53,7 @@ class BranchesComposeFragment :
                 },
                 onSearchTextChanged = {
                     accept(BranchesStore.Intent.OnSearchTextChanged(it))
-                }
+                },
             )
         }
     }

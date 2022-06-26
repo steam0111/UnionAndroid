@@ -4,5 +4,8 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.nomenclature.domain.entity.NomenclatureDomain
 
 interface NomenclatureRepository {
-    suspend fun getNomenclatures(params: List<ParamDomain>?): List<NomenclatureDomain>
+    suspend fun getNomenclatures(
+        textQuery: String?,
+        params: List<ParamDomain>?
+    ): List<NomenclatureDomain>
 }

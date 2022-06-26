@@ -13,10 +13,14 @@ class EmployeeRepositoryImpl(
     private val coreDispatchers: CoreDispatchers,
     private val employeeSyncApi: EmployeeSyncApi
 ) : EmployeeRepository {
-    override suspend fun getEmployees(params: List<ParamDomain>?): List<EmployeeDomain> =
+    override suspend fun getEmployees(
+        textQuery: String?,
+        params: List<ParamDomain>?,
+    ): List<EmployeeDomain> =
         withContext(coreDispatchers.io) {
             employeeSyncApi.getEmployees(
-                organizationId = params?.getOrganizationId()
+                organizationId = params?.getOrganizationId(),
+                textQuery = textQuery
             ).map()
         }
 }

@@ -15,10 +15,14 @@ class NomenclatureRepositoryImpl(
     private val coreDispatchers: CoreDispatchers
 ) : NomenclatureRepository {
 
-    override suspend fun getNomenclatures(params: List<ParamDomain>?): List<NomenclatureDomain> =
+    override suspend fun getNomenclatures(
+        textQuery: String?,
+        params: List<ParamDomain>?,
+    ): List<NomenclatureDomain> =
         withContext(coreDispatchers.io) {
             syncApi.getNomenclatures(
-                groupId = params?.getNomenclatureGroupId()
+                groupId = params?.getNomenclatureGroupId(),
+                textQuery = textQuery
             ).map()
         }
 }

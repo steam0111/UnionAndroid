@@ -12,8 +12,11 @@ class DepartmentSyncApiImpl(
     private val departmentDao: DepartmentDao,
 ) : DepartmentSyncApi {
 
-    override suspend fun getDepartments(organizationId: String?): List<DepartmentSyncEntity> {
-        val departmentDb = departmentDao.getAll(sqlDepartmentsQuery(organizationId))
+    override suspend fun getDepartments(
+        textQuery: String?,
+        organizationId: String?
+    ): List<DepartmentSyncEntity> {
+        val departmentDb = departmentDao.getAll(sqlDepartmentsQuery(organizationId = organizationId, textQuery = textQuery))
         return departmentDb.map { it.toSyncEntity() }
     }
 

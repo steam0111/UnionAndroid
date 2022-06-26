@@ -11,13 +11,15 @@ import com.itrocket.union.employees.domain.EmployeeInteractor
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 
 class EmployeeStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val employeeInteractor: EmployeeInteractor,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val searchManager: SearchManager
 ) {
 
     private var params: List<ParamDomain>? = null
@@ -43,7 +45,9 @@ class EmployeeStoreFactory(
             action: Unit,
             getState: () -> EmployeeStore.State
         ) {
-            getEmployees()
+            searchManager.listenSearch {
+                getEmployees(params = params, searchText = it)
+            }
         }
 
         override suspend fun executeIntent(
@@ -51,7 +55,7 @@ class EmployeeStoreFactory(
             getState: () -> EmployeeStore.State
         ) {
             when (intent) {
-                EmployeeStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch, params)
+                EmployeeStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
                 EmployeeStore.Intent.OnFilterClicked -> publish(
                     EmployeeStore.Label.ShowFilter(
                         params ?: employeeInteractor.getFilters()
@@ -67,7 +71,7 @@ class EmployeeStoreFactory(
                 }
                 is EmployeeStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    getEmployees(params, intent.searchText)
+                    searchManager.searchQuery.emit(intent.searchText)
                 }
             }
         }
@@ -77,11 +81,10 @@ class EmployeeStoreFactory(
             publish(EmployeeStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
 
-        private suspend fun onBackClicked(isShowSearch: Boolean, params: List<ParamDomain>?) {
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
-                dispatch(Result.SearchText(""))
-                getEmployees(params, "")
+                searchManager.searchQuery.emit("")
             } else {
                 publish(EmployeeStore.Label.GoBack)
             }

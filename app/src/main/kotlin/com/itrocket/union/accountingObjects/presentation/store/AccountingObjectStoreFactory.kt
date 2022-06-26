@@ -7,6 +7,7 @@ import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 
 class AccountingObjectStoreFactory(
@@ -14,10 +15,11 @@ class AccountingObjectStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val accountingObjectInteractor: AccountingObjectInteractor,
     private val accountingObjectArguments: AccountingObjectArguments?,
+    private val searchManager: SearchManager,
     private val errorInteractor: ErrorInteractor
 ) {
 
-    private var params: List<ParamDomain>? = null
+    private var params: List<ParamDomain>? = accountingObjectArguments?.params
 
     fun create(): AccountingObjectStore =
         object : AccountingObjectStore,
@@ -36,11 +38,17 @@ class AccountingObjectStoreFactory(
         BaseExecutor<AccountingObjectStore.Intent, Unit, AccountingObjectStore.State, Result, AccountingObjectStore.Label>(
             context = coreDispatchers.ui
         ) {
+
         override suspend fun executeAction(
             action: Unit,
             getState: () -> AccountingObjectStore.State
         ) {
-            getAccountingObjects(accountingObjectArguments?.params.orEmpty())
+            searchManager.listenSearch {
+                getAccountingObjects(
+                    params = params.orEmpty(),
+                    searchText = it
+                )
+            }
         }
 
         override fun handleError(throwable: Throwable) {
@@ -54,8 +62,7 @@ class AccountingObjectStoreFactory(
         ) {
             when (intent) {
                 AccountingObjectStore.Intent.OnBackClicked -> onBackClicked(
-                    getState().isShowSearch,
-                    params.orEmpty()
+                    getState().isShowSearch
                 )
                 AccountingObjectStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 AccountingObjectStore.Intent.OnFilterClicked -> publish(
@@ -70,17 +77,16 @@ class AccountingObjectStoreFactory(
                 is AccountingObjectStore.Intent.OnItemClicked -> onItemClick(intent.item)
                 is AccountingObjectStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    getAccountingObjects(params.orEmpty(), intent.searchText)
+                    searchManager.searchQuery.emit(intent.searchText)
                 }
             }
         }
 
 
-        private suspend fun onBackClicked(isShowSearch: Boolean, params: List<ParamDomain>) {
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
-                dispatch(Result.SearchText(""))
-                getAccountingObjects(params, "")
+                searchManager.searchQuery.emit("")
             } else {
                 publish(AccountingObjectStore.Label.GoBack())
             }
@@ -133,5 +139,9 @@ class AccountingObjectStoreFactory(
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchText -> copy(searchText = result.searchText)
             }
+    }
+
+    companion object {
+        private const val SEARCH_DELAY = 300L
     }
 }

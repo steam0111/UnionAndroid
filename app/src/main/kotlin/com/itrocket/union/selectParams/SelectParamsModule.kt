@@ -47,6 +47,7 @@ object SelectParamsModule {
                 get(),
                 get(),
                 args.selectParamsComposeFragmentArgs,
+                get(),
                 get()
             ).create()
         }

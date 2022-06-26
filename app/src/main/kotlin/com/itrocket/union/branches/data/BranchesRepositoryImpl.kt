@@ -15,10 +15,14 @@ class BranchesRepositoryImpl(
     private val coreDispatchers: CoreDispatchers,
     private val branchesSyncApi: BranchesSyncApi
 ) : BranchesRepository {
-    override suspend fun getBranches(params: List<ParamDomain>?): Flow<List<BranchesDomain>> {
+    override suspend fun getBranches(
+        textQuery: String?,
+        params: List<ParamDomain>?,
+    ): Flow<List<BranchesDomain>> {
         return withContext(coreDispatchers.io) {
             branchesSyncApi.getBranches(
-                organizationId = params?.getOrganizationId()
+                organizationId = params?.getOrganizationId(),
+                textQuery = textQuery
             ).map { it.map() }
         }
     }

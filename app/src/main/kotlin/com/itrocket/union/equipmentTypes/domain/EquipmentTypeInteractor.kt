@@ -10,6 +10,6 @@ class EquipmentTypeInteractor(
 ) {
 
     suspend fun getEquipmentTypes(searchQuery: String = "") = withContext(coreDispatchers.io) {
-        repository.getEquipmentTypes()
+        repository.getEquipmentTypes(searchQuery)
     }
 }

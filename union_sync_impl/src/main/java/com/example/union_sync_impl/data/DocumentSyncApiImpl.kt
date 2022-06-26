@@ -29,7 +29,7 @@ class DocumentSyncApiImpl(
         return documentDao.insert(documentCreateSyncEntity.toDocumentDb())
     }
 
-    override suspend fun getAllDocuments(): Flow<List<DocumentSyncEntity>> {
+    override suspend fun getAllDocuments(textQuery: String?): Flow<List<DocumentSyncEntity>> {
         return documentDao.getAll().map {
             it.map {
                 it.documentDb.toDocumentSyncEntity(
@@ -43,7 +43,10 @@ class DocumentSyncApiImpl(
         }
     }
 
-    override suspend fun getDocuments(type: String): Flow<List<DocumentSyncEntity>> {
+    override suspend fun getDocuments(
+        type: String,
+        textQuery: String?
+    ): Flow<List<DocumentSyncEntity>> {
         return documentDao.getDocumentsByType(type).map {
             it.map {
                 it.documentDb.toDocumentSyncEntity(
@@ -94,7 +97,8 @@ class DocumentSyncApiImpl(
             return null
         }
         val locationTypeId = locationDb.locationTypeId ?: return null
-        val locationTypeDb: LocationTypeDb = locationDao.getLocationTypeById(locationTypeId) ?: return null
+        val locationTypeDb: LocationTypeDb =
+            locationDao.getLocationTypeById(locationTypeId) ?: return null
 
         return locationDb.toLocationSyncEntity(locationTypeDb)
     }

@@ -16,7 +16,7 @@ class DepartmentInteractor(
         searchQuery: String = ""
     ): List<DepartmentDomain> =
         withContext(coreDispatchers.io) {
-            repository.getDepartments(params)
+            repository.getDepartments(searchQuery, params)
         }
 
     fun getFilters(): List<ParamDomain> {

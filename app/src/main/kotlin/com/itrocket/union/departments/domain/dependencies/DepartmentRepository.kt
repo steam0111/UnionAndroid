@@ -4,5 +4,8 @@ import com.itrocket.union.departments.domain.entity.DepartmentDomain
 import com.itrocket.union.manual.ParamDomain
 
 interface DepartmentRepository {
-    suspend fun getDepartments(params: List<ParamDomain>?): List<DepartmentDomain>
+    suspend fun getDepartments(
+        textQuery: String?,
+        params: List<ParamDomain>?
+    ): List<DepartmentDomain>
 }

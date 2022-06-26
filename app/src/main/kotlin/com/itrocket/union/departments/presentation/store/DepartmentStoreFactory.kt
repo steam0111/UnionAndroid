@@ -6,11 +6,13 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.departments.domain.DepartmentInteractor
 import com.itrocket.union.departments.domain.entity.DepartmentDomain
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.search.SearchManager
 
 class DepartmentStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val departmentInteractor: DepartmentInteractor,
+    private val searchManager: SearchManager
 ) {
 
     private var params: List<ParamDomain>? = null
@@ -36,7 +38,9 @@ class DepartmentStoreFactory(
             action: Unit,
             getState: () -> DepartmentStore.State
         ) {
-            getDepartments()
+            searchManager.listenSearch {
+                getDepartments(params = params, searchText = it)
+            }
         }
 
         override suspend fun executeIntent(
@@ -58,7 +62,7 @@ class DepartmentStoreFactory(
                 }
                 is DepartmentStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    getDepartments(intent.searchText, params)
+                    searchManager.searchQuery.emit(intent.searchText)
                 }
                 is DepartmentStore.Intent.OnFilterResult -> {
                     params = intent.params
@@ -88,8 +92,7 @@ class DepartmentStoreFactory(
         private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
-                dispatch(Result.SearchText(""))
-                getDepartments("")
+                searchManager.searchQuery.emit("")
             } else {
                 publish(DepartmentStore.Label.GoBack)
             }

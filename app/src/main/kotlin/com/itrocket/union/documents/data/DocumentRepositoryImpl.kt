@@ -11,12 +11,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class DocumentRepositoryImpl(private val documentSyncApi: DocumentSyncApi) : DocumentRepository {
-    override suspend fun getAllDocuments(): Flow<List<DocumentDomain>> {
-        return documentSyncApi.getAllDocuments().map { it.map() }
+    override suspend fun getAllDocuments(textQuery: String?): Flow<List<DocumentDomain>> {
+        return documentSyncApi.getAllDocuments(textQuery).map { it.map() }
     }
 
-    override suspend fun getDocuments(type: DocumentTypeDomain): Flow<List<DocumentDomain>> {
-        return documentSyncApi.getDocuments(type.name).map { it.map() }
+    override suspend fun getDocuments(
+        type: DocumentTypeDomain,
+        textQuery: String?
+    ): Flow<List<DocumentDomain>> {
+        return documentSyncApi.getDocuments(type.name, textQuery).map { it.map() }
     }
 
     override suspend fun getDocumentById(id: Long): DocumentDomain {

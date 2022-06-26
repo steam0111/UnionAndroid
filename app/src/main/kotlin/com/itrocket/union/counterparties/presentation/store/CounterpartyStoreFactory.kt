@@ -10,13 +10,15 @@ import com.itrocket.union.counterparties.domain.CounterpartyInteractor
 import com.itrocket.union.counterparties.domain.entity.CounterpartyDomain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.core.base.BaseExecutor
+import com.itrocket.union.search.SearchManager
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 
 class CounterpartyStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val counterpartyInteractor: CounterpartyInteractor
+    private val counterpartyInteractor: CounterpartyInteractor,
+    private val searchManager: SearchManager,
 ) {
     fun create(): CounterpartyStore =
         object : CounterpartyStore,
@@ -39,7 +41,9 @@ class CounterpartyStoreFactory(
             action: Unit,
             getState: () -> CounterpartyStore.State
         ) {
-            listenCounterparty()
+            searchManager.listenSearch {
+                listenCounterparty(it)
+            }
         }
 
         override suspend fun executeIntent(
@@ -56,7 +60,7 @@ class CounterpartyStoreFactory(
                 CounterpartyStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is CounterpartyStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    listenCounterparty(intent.searchText)
+                    searchManager.searchQuery.emit(intent.searchText)
                 }
             }
         }
@@ -64,8 +68,7 @@ class CounterpartyStoreFactory(
         private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
-                dispatch(Result.SearchText(""))
-                listenCounterparty("")
+                searchManager.searchQuery.emit("")
             } else {
                 publish(CounterpartyStore.Label.GoBack)
             }

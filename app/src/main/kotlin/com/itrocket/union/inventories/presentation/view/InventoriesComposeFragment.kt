@@ -1,5 +1,6 @@
 package com.itrocket.union.inventories.presentation.view
 
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
@@ -10,6 +11,14 @@ class InventoriesComposeFragment :
     BaseComposeFragment<InventoriesStore.Intent, InventoriesStore.State, InventoriesStore.Label>(
         INVENTORIES_VIEW_MODEL_QUALIFIER
     ) {
+
+    override val onBackPressedCallback by lazy {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                accept(InventoriesStore.Intent.OnBackClicked)
+            }
+        }
+    }
 
     override fun renderState(
         state: InventoriesStore.State,

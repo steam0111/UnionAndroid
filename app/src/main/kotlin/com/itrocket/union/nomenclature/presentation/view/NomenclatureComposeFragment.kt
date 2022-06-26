@@ -1,10 +1,10 @@
 package com.itrocket.union.nomenclature.presentation.view
 
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.navArgs
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
-import com.itrocket.union.inventories.presentation.store.InventoriesStore
 import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.filter.presentation.view.FilterComposeFragment
 import com.itrocket.union.nomenclature.NomenclatureModule.NOMENCLATURE_VIEW_MODEL_QUALIFIER
@@ -16,6 +16,14 @@ class NomenclatureComposeFragment :
         NOMENCLATURE_VIEW_MODEL_QUALIFIER
     ) {
     override val navArgs by navArgs<NomenclatureComposeFragmentArgs>()
+
+    override val onBackPressedCallback by lazy {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                accept(NomenclatureStore.Intent.OnBackClicked)
+            }
+        }
+    }
 
     override val fragmentResultList: List<FragmentResult>
         get() = listOf(

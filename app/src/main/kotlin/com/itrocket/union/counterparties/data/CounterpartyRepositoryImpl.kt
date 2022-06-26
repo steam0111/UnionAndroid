@@ -15,8 +15,8 @@ class CounterpartyRepositoryImpl(
 ) :
     CounterpartyRepository {
 
-    override suspend fun getCounterparties(): Flow<List<CounterpartyDomain>> =
+    override suspend fun getCounterparties(textQuery: String?): Flow<List<CounterpartyDomain>> =
         withContext(coreDispatchers.io) {
-            counterpartySyncApi.getCounterparties().map { it.map() }
+            counterpartySyncApi.getCounterparties(textQuery).map { it.map() }
         }
 }

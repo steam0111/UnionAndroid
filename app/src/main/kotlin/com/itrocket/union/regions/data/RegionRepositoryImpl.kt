@@ -14,9 +14,9 @@ class RegionRepositoryImpl(
     private val regionSyncApi: RegionSyncApi
 ) : RegionRepository {
 
-    override suspend fun getRegions(): Flow<List<RegionDomain>> {
+    override suspend fun getRegions(textQuery: String?): Flow<List<RegionDomain>> {
         return withContext(coreDispatchers.io) {
-            regionSyncApi.getRegions().map { it.map() }
+            regionSyncApi.getRegions(textQuery).map { it.map() }
         }
     }
 }

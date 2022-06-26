@@ -14,8 +14,11 @@ class DepartmentRepositoryImpl(
     private val departmentSyncApi: DepartmentSyncApi
 ) : DepartmentRepository {
 
-    override suspend fun getDepartments(params: List<ParamDomain>?): List<DepartmentDomain> =
+    override suspend fun getDepartments(
+        textQuery: String?,
+        params: List<ParamDomain>?
+    ): List<DepartmentDomain> =
         withContext(coreDispatchers.io) {
-            departmentSyncApi.getDepartments(organizationId = params?.getOrganizationId()).map()
+            departmentSyncApi.getDepartments(textQuery, params?.getOrganizationId()).map()
         }
 }

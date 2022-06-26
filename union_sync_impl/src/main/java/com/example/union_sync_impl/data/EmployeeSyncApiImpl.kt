@@ -11,8 +11,11 @@ import com.example.union_sync_impl.data.mapper.toSyncEntity
 class EmployeeSyncApiImpl(
     private val employeeDao: EmployeeDao
 ) : EmployeeSyncApi {
-    override suspend fun getEmployees(organizationId: String?): List<EmployeeSyncEntity> {
-        val employeeDb = employeeDao.getAll(sqlEmployeeQuery(organizationId))
+    override suspend fun getEmployees(
+        organizationId: String?,
+        textQuery: String?
+    ): List<EmployeeSyncEntity> {
+        val employeeDb = employeeDao.getAll(sqlEmployeeQuery(organizationId, textQuery))
         return employeeDb.map { it.toSyncEntity() }
     }
 

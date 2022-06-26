@@ -12,6 +12,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor.Companion.MIN_CURRENT_STEP
 import com.itrocket.union.utils.ifBlankOrNull
@@ -24,7 +25,8 @@ class SelectParamsStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val selectParamsInteractor: SelectParamsInteractor,
     private val selectParamsArguments: SelectParamsArguments,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val searchManager: SearchManager
 ) {
     fun create(): SelectParamsStore =
         object : SelectParamsStore,
@@ -52,6 +54,10 @@ class SelectParamsStoreFactory(
             getState: () -> SelectParamsStore.State
         ) {
             initialAction(getState)
+            searchManager.listenSearch {
+                val currentParam = getState().params[getState().currentStep - 1]
+                dispatchValues(currentParam.type, it)
+            }
         }
 
         override suspend fun executeIntent(
@@ -121,9 +127,7 @@ class SelectParamsStoreFactory(
 
                 dispatch(Result.Loading(true))
 
-                val currentParam = getState().params[getState().currentStep - 1]
-
-                dispatchValues(currentParam.type, searchText.text)
+                searchManager.searchQuery.emit(searchText.text)
                 dispatch(Result.Loading(false))
             }
         }
@@ -144,10 +148,7 @@ class SelectParamsStoreFactory(
             val currentParam = getState().params[getState().currentStep - 1]
 
             dispatchSearchText(currentParam.value)
-            dispatchValues(
-                currentParam.type,
-                currentParam.value
-            )
+            searchManager.searchQuery.emit(currentParam.value)
             dispatch(Result.Loading(false))
         }
 
@@ -158,10 +159,7 @@ class SelectParamsStoreFactory(
             val currentParam = getState().params[getState().currentStep - 1]
 
             dispatchSearchText(currentParam.value)
-            dispatchValues(
-                currentParam.type,
-                currentParam.value
-            )
+            searchManager.searchQuery.emit(currentParam.value)
             dispatch(Result.Loading(false))
         }
 
@@ -179,10 +177,7 @@ class SelectParamsStoreFactory(
                 val currentParam = getState().params[getState().currentStep - 1]
 
                 dispatchSearchText(currentParam.value)
-                dispatchValues(
-                    currentParam.type,
-                    currentParam.value
-                )
+                searchManager.searchQuery.emit(currentParam.value)
                 dispatch(Result.Loading(false))
             }
         }

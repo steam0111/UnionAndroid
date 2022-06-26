@@ -10,6 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.producer.domain.ProducerInteractor
 import com.itrocket.union.producer.domain.entity.ProducerDomain
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -18,7 +19,8 @@ class ProducerStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val producerInteractor: ProducerInteractor,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val searchManager: SearchManager
 ) {
     fun create(): ProducerStore =
         object : ProducerStore,
@@ -41,7 +43,9 @@ class ProducerStoreFactory(
             action: Unit,
             getState: () -> ProducerStore.State
         ) {
-            listenProducers()
+            searchManager.listenSearch {
+                listenProducers(searchText = it)
+            }
         }
 
         override suspend fun executeIntent(
@@ -58,7 +62,7 @@ class ProducerStoreFactory(
                 ProducerStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is ProducerStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    listenProducers(intent.searchText)
+                    searchManager.searchQuery.emit(intent.searchText)
                 }
             }
         }
@@ -80,8 +84,7 @@ class ProducerStoreFactory(
         private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
-                dispatch(Result.SearchText(""))
-                listenProducers("")
+                searchManager.searchQuery.emit("")
             } else {
                 publish(ProducerStore.Label.GoBack)
             }

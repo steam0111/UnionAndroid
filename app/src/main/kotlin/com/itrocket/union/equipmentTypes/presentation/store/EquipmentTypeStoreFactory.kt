@@ -6,6 +6,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.equipmentTypes.domain.EquipmentTypeInteractor
 import com.itrocket.union.equipmentTypes.domain.entity.EquipmentTypesDomain
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -14,7 +15,8 @@ class EquipmentTypeStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val typesInteractor: EquipmentTypeInteractor,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val searchManager: SearchManager
 ) {
     fun create(): EquipmentTypeStore =
         object : EquipmentTypeStore,
@@ -37,7 +39,9 @@ class EquipmentTypeStoreFactory(
             action: Unit,
             getState: () -> EquipmentTypeStore.State
         ) {
-            listenEquipment()
+            searchManager.listenSearch {
+                listenEquipment(searchText = it)
+            }
         }
 
         override suspend fun executeIntent(
@@ -72,8 +76,7 @@ class EquipmentTypeStoreFactory(
         private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
-                dispatch(Result.SearchText(""))
-                listenEquipment("")
+                searchManager.searchQuery.emit("")
             } else {
                 publish(EquipmentTypeStore.Label.GoBack)
             }

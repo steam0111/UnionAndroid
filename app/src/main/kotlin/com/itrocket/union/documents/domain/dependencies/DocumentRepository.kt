@@ -8,9 +8,12 @@ import kotlinx.coroutines.flow.Flow
 
 interface DocumentRepository {
 
-    suspend fun getAllDocuments(): Flow<List<DocumentDomain>>
+    suspend fun getAllDocuments(textQuery: String?): Flow<List<DocumentDomain>>
 
-    suspend fun getDocuments(type: DocumentTypeDomain): Flow<List<DocumentDomain>>
+    suspend fun getDocuments(
+        type: DocumentTypeDomain,
+        textQuery: String?
+    ): Flow<List<DocumentDomain>>
 
     suspend fun getDocumentById(id: Long): DocumentDomain
 

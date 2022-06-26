@@ -32,9 +32,9 @@ class InventoryRepositoryImpl(
             inventorySyncApi.getInventoryById(id).map()
         }
 
-    override suspend fun getInventories(): Flow<List<InventoryCreateDomain>> =
+    override suspend fun getInventories(textQuery: String?): Flow<List<InventoryCreateDomain>> =
         withContext(coreDispatchers.io) {
-            inventorySyncApi.getInventories().map {
+            inventorySyncApi.getInventories(textQuery).map {
                 it.map()
             }.flowOn(coreDispatchers.io)
         }

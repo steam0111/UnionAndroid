@@ -1,5 +1,6 @@
 package com.itrocket.union.accountingObjects.presentation.view
 
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.navArgs
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -15,6 +16,14 @@ class AccountingObjectComposeFragment :
     BaseComposeFragment<AccountingObjectStore.Intent, AccountingObjectStore.State, AccountingObjectStore.Label>(
         ACCOUNTING_OBJECT_VIEW_MODEL_QUALIFIER
     ) {
+
+    override val onBackPressedCallback by lazy {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                accept(AccountingObjectStore.Intent.OnBackClicked)
+            }
+        }
+    }
 
     override val navArgs by navArgs<AccountingObjectComposeFragmentArgs>()
 

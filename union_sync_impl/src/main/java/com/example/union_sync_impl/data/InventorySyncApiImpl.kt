@@ -30,7 +30,7 @@ class InventorySyncApiImpl(
         return inventoryDao.insert(inventoryCreateSyncEntity.toInventoryDb())
     }
 
-    override suspend fun getInventories(): Flow<List<InventorySyncEntity>> {
+    override suspend fun getInventories(textQuery: String?): Flow<List<InventorySyncEntity>> {
         return inventoryDao.getAll().map {
             it.map {
                 it.inventoryDb.toInventorySyncEntity(

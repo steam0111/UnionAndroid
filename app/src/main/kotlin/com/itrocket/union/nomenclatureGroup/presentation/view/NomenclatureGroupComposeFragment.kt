@@ -1,5 +1,6 @@
 package com.itrocket.union.nomenclatureGroup.presentation.view
 
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.navArgs
 import com.itrocket.core.base.AppInsets
@@ -12,6 +13,14 @@ class NomenclatureGroupComposeFragment :
         NOMENCLATUREGROUP_VIEW_MODEL_QUALIFIER
     ) {
     override val navArgs by navArgs<NomenclatureGroupComposeFragmentArgs>()
+
+    override val onBackPressedCallback by lazy {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                accept(NomenclatureGroupStore.Intent.OnBackClicked)
+            }
+        }
+    }
 
     override fun renderState(
         state: NomenclatureGroupStore.State,
