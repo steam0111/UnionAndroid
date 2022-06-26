@@ -22,7 +22,13 @@ class BranchesSyncApiImpl(
         textQuery: String?
     ): Flow<List<BranchSyncEntity>> {
         return flow {
-            emit(branchesDao.getAll(sqlBranchesQuery(organizationId)).map { it.toSyncEntity() })
+            emit(
+                branchesDao.getAll(
+                    sqlBranchesQuery(
+                        organizationId = organizationId,
+                        textQuery = textQuery
+                    )
+                ).map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)
     }
 
