@@ -27,6 +27,7 @@ fun DepartmentScreen(
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
     onItemClickListener: (DefaultItem) -> Unit,
+    onFilterClickListener: () -> Unit
 ) {
     AppTheme {
         Column(
@@ -36,7 +37,8 @@ fun DepartmentScreen(
         ) {
             BlackToolbar(
                 title = stringResource(id = R.string.departments_title),
-                onBackClickListener = onBackClickListener
+                onBackClickListener = onBackClickListener,
+                onFilterClickListener = onFilterClickListener
             )
             LoadingContent(isLoading = state.isLoading) {
                 Content(
@@ -115,5 +117,5 @@ fun DepartmentScreenPreview() {
                     code = "code3"
                 )
             )
-        ), appInsets = AppInsets(), onBackClickListener = {}, onItemClickListener = {})
+        ), appInsets = AppInsets(), onBackClickListener = {}, onItemClickListener = {}, {})
 }

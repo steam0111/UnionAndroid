@@ -5,6 +5,7 @@ import com.example.union_sync_api.data.CounterpartySyncApi
 import com.example.union_sync_api.data.DepartmentSyncApi
 import com.example.union_sync_api.data.EmployeeSyncApi
 import com.example.union_sync_api.data.EquipmentTypeSyncApi
+import com.example.union_sync_api.data.NomenclatureGroupSyncApi
 import com.example.union_sync_api.data.OrganizationSyncApi
 import com.example.union_sync_api.data.ProducerSyncApi
 import com.itrocket.core.base.CoreDispatchers
@@ -26,6 +27,7 @@ class SelectParamsRepositoryImpl(
     private val equipmentTypeSyncApi: EquipmentTypeSyncApi,
     private val producerSyncApi: ProducerSyncApi,
     private val providerSyncApi: CounterpartySyncApi,
+    private val nomenclatureGroupSyncApi: NomenclatureGroupSyncApi,
     private val coreDispatchers: CoreDispatchers
 ) : SelectParamsRepository {
 
@@ -106,5 +108,11 @@ class SelectParamsRepositoryImpl(
         return producerSyncApi.getProducers().map { list ->
             list.map { it.toParam() }
         }
+    }
+
+    override suspend fun getNomenclatureGroup(): Flow<List<ParamDomain>> {
+        return flow {
+            emit(nomenclatureGroupSyncApi.getNomenclatureGroups().map { it.toParam() })
+        }.flowOn(Dispatchers.IO)
     }
 }

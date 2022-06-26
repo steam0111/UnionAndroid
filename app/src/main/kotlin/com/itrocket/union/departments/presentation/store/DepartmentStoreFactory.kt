@@ -5,12 +5,16 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.departments.domain.DepartmentInteractor
 import com.itrocket.union.departments.domain.entity.DepartmentDomain
+import com.itrocket.union.manual.ParamDomain
 
 class DepartmentStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val departmentInteractor: DepartmentInteractor,
 ) {
+
+    private var params: List<ParamDomain>? = null
+
     fun create(): DepartmentStore =
         object : DepartmentStore,
             Store<DepartmentStore.Intent, DepartmentStore.State, DepartmentStore.Label> by storeFactory.create(
@@ -32,11 +36,7 @@ class DepartmentStoreFactory(
             action: Unit,
             getState: () -> DepartmentStore.State
         ) {
-            dispatch(Result.Loading(true))
-            catchException {
-                dispatch(Result.Employees(departmentInteractor.getDepartments()))
-            }
-            dispatch(Result.Loading(false))
+            getDepartments()
         }
 
         override suspend fun executeIntent(
@@ -45,10 +45,20 @@ class DepartmentStoreFactory(
         ) {
             when (intent) {
                 DepartmentStore.Intent.OnBackClicked -> publish(DepartmentStore.Label.GoBack)
-                DepartmentStore.Intent.OnFilterClicked -> {}
+                DepartmentStore.Intent.OnFilterClicked -> {
+                    publish(
+                        DepartmentStore.Label.ShowFilter(
+                            params ?: departmentInteractor.getFilters()
+                        )
+                    )
+                }
                 DepartmentStore.Intent.OnSearchClicked -> {}
                 is DepartmentStore.Intent.OnDepartmentClicked -> {
                     publish(DepartmentStore.Label.ShowDetail(intent.id))
+                }
+                is DepartmentStore.Intent.OnFilterResult -> {
+                    params = intent.params
+                    getDepartments(params)
                 }
             }
         }
@@ -57,18 +67,26 @@ class DepartmentStoreFactory(
             dispatch(Result.Loading(false))
             publish(DepartmentStore.Label.Error(throwable.message.orEmpty()))
         }
+
+        private suspend fun getDepartments(params: List<ParamDomain>? = null) {
+            catchException {
+                dispatch(Result.Loading(true))
+                dispatch(Result.Departments(departmentInteractor.getDepartments(params)))
+                dispatch(Result.Loading(false))
+            }
+        }
     }
 
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
-        data class Employees(val employees: List<DepartmentDomain>) : Result()
+        data class Departments(val items: List<DepartmentDomain>) : Result()
     }
 
     private object ReducerImpl : Reducer<DepartmentStore.State, Result> {
         override fun DepartmentStore.State.reduce(result: Result) =
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
-                is Result.Employees -> copy(departments = result.employees)
+                is Result.Departments -> copy(departments = result.items)
             }
     }
 }

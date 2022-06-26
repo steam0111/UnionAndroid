@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation android:id="@+id/main"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     app:startDestination="@id/auth">
 
     <fragment
@@ -145,6 +145,9 @@
         <action
             android:id="@+id/to_employee_detail"
             app:destination="@id/employeeDetail" />
+        <action
+            android:id="@+id/to_filter"
+            app:destination="@id/filter" />
     </fragment>
 
     <fragment
@@ -214,6 +217,10 @@
             android:id="@+id/to_nomenclatureDetail"
             app:destination="@id/nomenclatureDetail" />
 
+        <action
+            android:id="@+id/to_filter"
+            app:destination="@id/filter" />
+
         <argument
             android:name="NomenclatureArguments"
             app:argType="com.itrocket.union.nomenclature.presentation.store.NomenclatureArguments" />
@@ -248,6 +255,10 @@
         <action
             android:id="@+id/to_department_detail"
             app:destination="@id/departmentDetail" />
+
+        <action
+            android:id="@+id/to_filter"
+            app:destination="@id/filter" />
     </fragment>
 
     <fragment
@@ -295,6 +306,9 @@
         <action
             android:id="@+id/to_branchDetail"
             app:destination="@id/branchDetail" />
+        <action
+            android:id="@+id/to_filter"
+            app:destination="@id/filter" />
     </fragment>
 
     <fragment

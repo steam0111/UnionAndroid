@@ -6,14 +6,16 @@ import com.itrocket.union.departments.domain.dependencies.DepartmentRepository
 import com.itrocket.union.departments.domain.entity.DepartmentDomain
 import kotlinx.coroutines.withContext
 import com.itrocket.union.departments.data.mapper.map
+import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.getOrganizationId
 
 class DepartmentRepositoryImpl(
     private val coreDispatchers: CoreDispatchers,
     private val departmentSyncApi: DepartmentSyncApi
 ) : DepartmentRepository {
 
-    override suspend fun getDepartments(): List<DepartmentDomain> =
+    override suspend fun getDepartments(params: List<ParamDomain>?): List<DepartmentDomain> =
         withContext(coreDispatchers.io) {
-            departmentSyncApi.getDepartments().map()
+            departmentSyncApi.getDepartments(organizationId = params?.getOrganizationId()).map()
         }
 }

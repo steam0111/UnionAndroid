@@ -5,6 +5,8 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
+import com.itrocket.union.filter.presentation.store.FilterArguments
+import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.nomenclature.domain.entity.NomenclatureDomain
 import com.itrocket.union.nomenclature.presentation.view.NomenclatureComposeFragmentDirections
 import com.itrocket.union.nomenclatureDetail.presentation.store.NomenclatureDetailArguments
@@ -15,6 +17,8 @@ interface NomenclatureStore :
     sealed class Intent {
         object OnBackClicked : Intent()
         class OnItemClicked(val id: String) : Intent()
+        object OnFilterClicked : Intent()
+        class OnFilterResult(val params: List<ParamDomain>) : Intent()
     }
 
     data class State(
@@ -31,6 +35,11 @@ interface NomenclatureStore :
                 get() = NomenclatureComposeFragmentDirections.toNomenclatureDetail(
                     NomenclatureDetailArguments(id = id)
                 )
+        }
+
+        data class ShowFilter(val filters: List<ParamDomain>) : Label(), ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = NomenclatureComposeFragmentDirections.toFilter(FilterArguments(filters))
         }
     }
 }

@@ -5,6 +5,7 @@ import com.example.union_sync_api.entity.CounterpartySyncEntity
 import com.example.union_sync_api.entity.DepartmentSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
 import com.example.union_sync_api.entity.EquipmentTypeSyncEntity
+import com.example.union_sync_api.entity.NomenclatureGroupSyncEntity
 import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_api.entity.ProducerSyncEntity
 
@@ -48,4 +49,10 @@ fun CounterpartySyncEntity.toParam() = ParamDomain(
     id = id,
     value = name.orEmpty(),
     type = ManualType.STATUS
+)
+
+fun NomenclatureGroupSyncEntity.toParam() = ParamDomain(
+    id = id,
+    value = name,
+    type = ManualType.NOMENCLATURE_GROUP
 )

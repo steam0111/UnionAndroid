@@ -10,6 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.branches.domain.BranchesInteractor
 import com.itrocket.union.branches.domain.entity.BranchesDomain
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -20,6 +21,9 @@ class BranchesStoreFactory(
     private val branchesInteractor: BranchesInteractor,
     private val errorInteractor: ErrorInteractor
 ) {
+
+    private var params: List<ParamDomain>? = null
+
     fun create(): BranchesStore =
         object : BranchesStore,
             Store<BranchesStore.Intent, BranchesStore.State, BranchesStore.Label> by storeFactory.create(
@@ -41,9 +45,13 @@ class BranchesStoreFactory(
             action: Unit,
             getState: () -> BranchesStore.State
         ) {
+            getBranches()
+        }
+
+        private suspend fun getBranches(params: List<ParamDomain>? = null) {
             catchException {
                 dispatch(Result.Loading(true))
-                branchesInteractor.getBranches()
+                branchesInteractor.getBranches(params)
                     .catch { handleError(it) }
                     .collect {
                         dispatch(Result.Branches(it))
@@ -61,9 +69,16 @@ class BranchesStoreFactory(
                 is BranchesStore.Intent.OnBranchClicked -> {
                     publish(BranchesStore.Label.ShowDetail(intent.id))
                 }
-                BranchesStore.Intent.OnFilterClicked -> {
-                }
+                BranchesStore.Intent.OnFilterClicked -> publish(
+                    BranchesStore.Label.ShowFilter(
+                        params ?: branchesInteractor.getFilters()
+                    )
+                )
                 BranchesStore.Intent.OnSearchClicked -> {
+                }
+                is BranchesStore.Intent.OnFilterResult -> {
+                    params = intent.params
+                    getBranches(params)
                 }
             }
         }

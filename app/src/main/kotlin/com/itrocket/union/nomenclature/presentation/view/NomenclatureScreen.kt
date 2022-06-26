@@ -31,6 +31,7 @@ fun NomenclatureScreen(
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
     onItemClickListener: (DefaultItem) -> Unit,
+    onFilterClickListener: () -> Unit
 ) {
     AppTheme {
         Column(
@@ -40,7 +41,8 @@ fun NomenclatureScreen(
         ) {
             BlackToolbar(
                 title = stringResource(id = R.string.nomenclature_title),
-                onBackClickListener = onBackClickListener
+                onBackClickListener = onBackClickListener,
+                onFilterClickListener = onFilterClickListener
             )
             Content(
                 nomenclatureGroupsDomain = state.nomenclatures,
@@ -89,5 +91,5 @@ private fun Content(
 @Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
 @Composable
 fun NomenclatureScreenPreview() {
-    NomenclatureScreen(NomenclatureStore.State(), AppInsets(), {}, {})
+    NomenclatureScreen(NomenclatureStore.State(), AppInsets(), {}, {}, {})
 }

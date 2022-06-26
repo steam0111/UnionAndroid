@@ -8,6 +8,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.nomenclature.domain.NomenclatureInteractor
 import com.itrocket.union.nomenclature.domain.entity.NomenclatureDomain
 import com.itrocket.union.utils.ifBlankOrNull
@@ -19,6 +20,8 @@ class NomenclatureStoreFactory(
     private val nomenclatureArguments: NomenclatureArguments,
     private val errorInteractor: ErrorInteractor
 ) {
+    private var params: List<ParamDomain>? = null
+
     fun create(): NomenclatureStore =
         object : NomenclatureStore,
             Store<NomenclatureStore.Intent, NomenclatureStore.State, NomenclatureStore.Label> by storeFactory.create(
@@ -40,11 +43,7 @@ class NomenclatureStoreFactory(
             action: Unit,
             getState: () -> NomenclatureStore.State
         ) {
-            catchException {
-                dispatch(Result.Loading(true))
-                dispatch(Result.Nomenclatures(nomenclatureInteractor.getNomenclatures()))
-                dispatch(Result.Loading(false))
-            }
+            getNomenclatures()
         }
 
         override suspend fun executeIntent(
@@ -58,12 +57,29 @@ class NomenclatureStoreFactory(
                         intent.id
                     )
                 )
+                is NomenclatureStore.Intent.OnFilterClicked -> publish(
+                    NomenclatureStore.Label.ShowFilter(
+                        params ?: nomenclatureInteractor.getFilters()
+                    )
+                )
+                is NomenclatureStore.Intent.OnFilterResult -> {
+                    params = intent.params
+                    getNomenclatures(params)
+                }
             }
         }
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
             publish(NomenclatureStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+        }
+
+        private suspend fun getNomenclatures(params: List<ParamDomain>? = null) {
+            catchException {
+                dispatch(Result.Loading(true))
+                dispatch(Result.Nomenclatures(nomenclatureInteractor.getNomenclatures(params)))
+                dispatch(Result.Loading(false))
+            }
         }
     }
 

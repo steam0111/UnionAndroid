@@ -20,4 +20,6 @@ interface SelectParamsRepository {
     suspend fun getProviders(): Flow<List<ParamDomain>>
 
     suspend fun getProducers(): Flow<List<ParamDomain>>
+
+    suspend fun getNomenclatureGroup(): Flow<List<ParamDomain>>
 }

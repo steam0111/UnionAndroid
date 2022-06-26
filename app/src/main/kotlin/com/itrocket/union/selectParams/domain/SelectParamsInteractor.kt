@@ -21,6 +21,7 @@ class SelectParamsInteractor(
     private var providers: Flow<List<ParamDomain>>? = null
     private var producers: Flow<List<ParamDomain>>? = null
     private var equipmentTypes: Flow<List<ParamDomain>>? = null
+    private var nomenclaturesGroups: Flow<List<ParamDomain>>? = null
 
     suspend fun getParamValues(type: ManualType, searchText: String): Flow<List<ParamDomain>> =
         when (type) {
@@ -33,6 +34,7 @@ class SelectParamsInteractor(
             ManualType.PROVIDER -> getProviders(searchText)
             ManualType.PRODUCER -> getProducers(searchText)
             ManualType.EQUIPMENT_TYPE -> getEquipmentTypes(searchText)
+            ManualType.NOMENCLATURE_GROUP -> getNomenclatureGroup(searchText)
             else -> flow { }
         }
 
@@ -147,6 +149,18 @@ class SelectParamsInteractor(
         }
 
         return (departments ?: selectParamsRepository.getDepartments()).map {
+            it.filter { param ->
+                param.value.contains(other = searchText, ignoreCase = true)
+            }
+        }
+    }
+
+    private suspend fun getNomenclatureGroup(searchText: String): Flow<List<ParamDomain>> {
+        if (nomenclaturesGroups == null) {
+            nomenclaturesGroups = selectParamsRepository.getNomenclatureGroup()
+        }
+
+        return (nomenclaturesGroups ?: selectParamsRepository.getNomenclatureGroup()).map {
             it.filter { param ->
                 param.value.contains(other = searchText, ignoreCase = true)
             }

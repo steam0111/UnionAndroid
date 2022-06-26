@@ -10,6 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.employees.domain.EmployeeInteractor
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.utils.ifBlankOrNull
 
 class EmployeeStoreFactory(
@@ -18,6 +19,9 @@ class EmployeeStoreFactory(
     private val employeeInteractor: EmployeeInteractor,
     private val errorInteractor: ErrorInteractor
 ) {
+
+    private var params: List<ParamDomain>? = null
+
     fun create(): EmployeeStore =
         object : EmployeeStore,
             Store<EmployeeStore.Intent, EmployeeStore.State, EmployeeStore.Label> by storeFactory.create(
@@ -39,11 +43,7 @@ class EmployeeStoreFactory(
             action: Unit,
             getState: () -> EmployeeStore.State
         ) {
-            catchException {
-                dispatch(Result.Loading(true))
-                dispatch(Result.Employees(employeeInteractor.getEmployees()))
-                dispatch(Result.Loading(false))
-            }
+            getEmployees()
         }
 
         override suspend fun executeIntent(
@@ -52,10 +52,18 @@ class EmployeeStoreFactory(
         ) {
             when (intent) {
                 EmployeeStore.Intent.OnBackClicked -> publish(EmployeeStore.Label.GoBack)
-                EmployeeStore.Intent.OnFilterClicked -> {}
+                EmployeeStore.Intent.OnFilterClicked -> publish(
+                    EmployeeStore.Label.ShowFilter(
+                        params ?: employeeInteractor.getFilters()
+                    )
+                )
                 EmployeeStore.Intent.OnSearchClicked -> {}
                 is EmployeeStore.Intent.OnEmployeeClicked -> {
                     publish(EmployeeStore.Label.ShowDetail(intent.employeeId))
+                }
+                is EmployeeStore.Intent.OnFilterResult -> {
+                    params = intent.params
+                    getEmployees(params)
                 }
             }
         }
@@ -63,6 +71,14 @@ class EmployeeStoreFactory(
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
             publish(EmployeeStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+        }
+
+        private suspend fun getEmployees(params: List<ParamDomain>? = null) {
+            catchException {
+                dispatch(Result.Loading(true))
+                dispatch(Result.Employees(employeeInteractor.getEmployees(params)))
+                dispatch(Result.Loading(false))
+            }
         }
     }
 
