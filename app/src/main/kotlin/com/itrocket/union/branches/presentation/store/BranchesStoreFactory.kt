@@ -99,6 +99,7 @@ class BranchesStoreFactory(
         private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
                 searchManager.searchQuery.emit("")
             } else {
                 publish(BranchesStore.Label.GoBack)
