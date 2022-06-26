@@ -69,4 +69,24 @@ class AddFiltersToQueryTest {
 
         assert(expect == result)
     }
+
+    @Test
+    fun rightQuery_onContainInFewFields() {
+        val mainQuery = "SELECT * FROM employees"
+
+        val expect = mainQuery + " WHERE employees.organizationId = '009988098711' AND " +
+                "(employees.firstname LIKE '%sss%' OR employees.lastname LIKE '%sss%')"
+
+        val result = mainQuery.addFilters(
+            sqlTableFilters = SqlTableFilters(
+                "employees",
+                listOf(
+                    "organizationId" isEquals "009988098711",
+                    listOf("firstname", "lastname") contains "sss"
+                )
+            )
+        )
+
+        assert(expect == result)
+    }
 }

@@ -3,7 +3,7 @@ package com.itrocket.union.serverConnect.data
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import com.example.union_sync_api.data.ClearSyncDataApi
+import com.example.union_sync_api.data.ManageSyncDataApi
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.serverConnect.domain.dependencies.ServerConnectRepository
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +21,7 @@ class ServerConnectRepositoryImpl(
     private val portPreferencesKey: Preferences.Key<String>,
     private val dataStore: DataStore<Preferences>,
     private val coreDispatchers: CoreDispatchers,
-    private val clearSyncDataApi: ClearSyncDataApi
+    private val manageSyncDataApi: ManageSyncDataApi
 ) : ServerConnectRepository {
 
     private val serverUrl = MutableSharedFlow<String>(replay = 1)
@@ -77,7 +77,7 @@ class ServerConnectRepositoryImpl(
         if (newServerAddress != getBaseUrl().firstOrNull() ||
             newPort != getPort().firstOrNull()
         ) {
-            clearSyncDataApi.clearAll()
+            manageSyncDataApi.clearAll()
         }
     }
 }
