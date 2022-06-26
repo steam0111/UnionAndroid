@@ -1,21 +1,23 @@
 package com.itrocket.union.documents.presentation.store
 
 import androidx.navigation.NavDirections
-import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
+import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
-import com.itrocket.union.documents.domain.entity.ObjectType
-import com.itrocket.union.documents.presentation.view.DocumentComposeFragment
 import com.itrocket.union.documents.presentation.view.DocumentComposeFragmentDirections
 import com.itrocket.union.documents.presentation.view.DocumentView
+import com.itrocket.union.filter.domain.entity.CatalogType
+import com.itrocket.union.filter.presentation.store.FilterArguments
+import com.itrocket.union.manual.ParamDomain
 
 interface DocumentStore : Store<DocumentStore.Intent, DocumentStore.State, DocumentStore.Label> {
 
     sealed class Intent {
+        class OnFilterResult(val params: List<ParamDomain>) : Intent()
         object OnArrowBackClicked : Intent()
         object OnSearchClicked : Intent()
         object OnFilterClicked : Intent()
@@ -32,7 +34,8 @@ interface DocumentStore : Store<DocumentStore.Intent, DocumentStore.State, Docum
         val documents: List<DocumentView> = listOf(),
         val rotatedDates: List<String> = listOf(),
         val isShowSearch: Boolean = false,
-        val searchText: String = ""
+        val searchText: String = "",
+        val params: List<ParamDomain>? = null
     )
 
     sealed class Label {
@@ -48,7 +51,17 @@ interface DocumentStore : Store<DocumentStore.Intent, DocumentStore.State, Docum
                 )
 
         }
+
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
         object GoBack : Label(), GoBackNavigationLabel
+        data class ShowFilter(val filters: List<ParamDomain>) : Label(), ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = DocumentComposeFragmentDirections.toFilter(
+                    FilterArguments(
+                        filters,
+                        CatalogType.DOCUMENTS
+                    )
+                )
+        }
     }
 }

@@ -30,8 +30,20 @@ class DocumentSyncApiImpl(
         return documentDao.insert(documentCreateSyncEntity.toDocumentDb())
     }
 
-    override suspend fun getAllDocuments(textQuery: String?): Flow<List<DocumentSyncEntity>> {
-        return documentDao.getAll(sqlDocumentsQuery(textQuery)).map {
+    override suspend fun getAllDocuments(
+        textQuery: String?,
+        molId: String?,
+        exploitingId: String?,
+        organizationId: String?
+    ): Flow<List<DocumentSyncEntity>> {
+        return documentDao.getAll(
+            sqlDocumentsQuery(
+                textQuery = textQuery,
+                molId = molId,
+                exploitingId = exploitingId,
+                organizationId = organizationId
+            )
+        ).map {
             it.map {
                 it.documentDb.toDocumentSyncEntity(
                     organizationSyncEntity = it.organizationDb?.toSyncEntity(),

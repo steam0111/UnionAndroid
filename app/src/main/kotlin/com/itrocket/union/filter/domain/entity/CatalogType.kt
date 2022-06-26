@@ -12,5 +12,7 @@ enum class CatalogType : Parcelable {
     NOMENCLATURES,
     REGIONS,
     RESERVES,
-    DEFAULT
+    DOCUMENTS,
+    DEFAULT,
+    INVENTORIES
 }

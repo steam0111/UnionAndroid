@@ -10,6 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.inventories.domain.InventoriesInteractor
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
+import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
@@ -44,7 +45,7 @@ class InventoriesStoreFactory(
             getState: () -> InventoriesStore.State
         ) {
             searchManager.listenSearch {
-                listenInventories(searchQuery = it)
+                listenInventories(searchQuery = it, params = getState().params)
             }
         }
 
@@ -54,7 +55,15 @@ class InventoriesStoreFactory(
         ) {
             when (intent) {
                 InventoriesStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
-                InventoriesStore.Intent.OnFilterClicked -> publish(InventoriesStore.Label.ShowFilter)
+                InventoriesStore.Intent.OnFilterClicked -> publish(
+                    InventoriesStore.Label.ShowFilter(
+                        getState().params ?: inventoriesInteractor.getFilters()
+                    )
+                )
+                is InventoriesStore.Intent.OnFilterResult -> {
+                    dispatch(Result.FilterParams(intent.params))
+                    listenInventories(params = getState().params, searchQuery = "")
+                }
                 is InventoriesStore.Intent.OnInventoryClicked -> publish(
                     InventoriesStore.Label.ShowInventoryDetail(
                         intent.inventory
@@ -78,10 +87,13 @@ class InventoriesStoreFactory(
             }
         }
 
-        private suspend fun listenInventories(searchQuery: String = "") {
+        private suspend fun listenInventories(
+            searchQuery: String = "",
+            params: List<ParamDomain>?
+        ) {
             catchException {
                 dispatch(Result.Loading(true))
-                inventoriesInteractor.getInventories(searchQuery)
+                inventoriesInteractor.getInventories(searchQuery = searchQuery, params = params)
                     .catch {
                         handleError(it)
                     }.collect {
@@ -104,6 +116,7 @@ class InventoriesStoreFactory(
         data class Inventories(val inventories: List<InventoryCreateDomain>) : Result()
         data class SearchText(val searchText: String) : Result()
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
+        data class FilterParams(val params: List<ParamDomain>) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoriesStore.State, Result> {
@@ -113,6 +126,7 @@ class InventoriesStoreFactory(
                 is Result.Inventories -> copy(inventories = result.inventories)
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchText -> copy(searchText = result.searchText)
+                is Result.FilterParams -> copy(params = result.params)
             }
     }
 }

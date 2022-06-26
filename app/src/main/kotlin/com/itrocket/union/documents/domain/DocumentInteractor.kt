@@ -11,6 +11,7 @@ import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.documents.presentation.view.toDocumentItemView
 import com.itrocket.union.manual.ManualType
+import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.utils.getStringDateFromMillis
 import com.itrocket.union.utils.getTextDateFromMillis
 import com.itrocket.union.utils.getTextDateFromStringDate
@@ -28,12 +29,13 @@ class DocumentInteractor(
 ) {
     suspend fun getDocuments(
         searchQuery: String = "",
+        params: List<ParamDomain>?,
         type: DocumentTypeDomain
     ): Flow<List<DocumentView>> {
         return withContext(coreDispatchers.io) {
             groupDocuments(
                 if (type == DocumentTypeDomain.ALL) {
-                    repository.getAllDocuments(searchQuery)
+                    repository.getAllDocuments(searchQuery, params)
                 } else {
                     repository.getDocuments(type, searchQuery)
                 }
@@ -103,5 +105,22 @@ class DocumentInteractor(
 
     fun resolveRotatedDates(rotatedDates: List<String>, newDate: String): List<String> {
         return rotatedDates.toMutableList().resolveItem(newDate)
+    }
+
+    fun getFilters(): List<ParamDomain> {
+        return listOf(
+            ParamDomain(
+                type = ManualType.ORGANIZATION,
+                value = ""
+            ),
+            ParamDomain(
+                type = ManualType.MOL,
+                value = ""
+            ),
+            ParamDomain(
+                type = ManualType.EXPLOITING,
+                value = ""
+            )
+        )
     }
 }

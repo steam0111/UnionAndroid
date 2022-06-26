@@ -4,9 +4,13 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
 import com.example.union_sync_impl.utils.contains
+import com.example.union_sync_impl.utils.isEquals
 
 fun sqlDocumentsQuery(
-    textQuery: String? = null
+    textQuery: String? = null,
+    molId: String? = null,
+    exploitingId: String? = null,
+    organizationId: String? = null
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT documents.*," +
             "" +
@@ -45,6 +49,15 @@ fun sqlDocumentsQuery(
             filter = buildList {
                 textQuery?.let {
                     add("id" contains textQuery)
+                }
+                molId?.let {
+                    add("molId" isEquals molId)
+                }
+                exploitingId?.let {
+                    add("exploitingId" isEquals exploitingId)
+                }
+                organizationId?.let {
+                    add("organizationId" isEquals organizationId)
                 }
             }
         )

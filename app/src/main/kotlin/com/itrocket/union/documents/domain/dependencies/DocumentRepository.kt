@@ -4,11 +4,15 @@ import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
+import com.itrocket.union.manual.ParamDomain
 import kotlinx.coroutines.flow.Flow
 
 interface DocumentRepository {
 
-    suspend fun getAllDocuments(textQuery: String?): Flow<List<DocumentDomain>>
+    suspend fun getAllDocuments(
+        textQuery: String? = null,
+        params: List<ParamDomain>?
+    ): Flow<List<DocumentDomain>>
 
     suspend fun getDocuments(
         type: DocumentTypeDomain,
