@@ -19,6 +19,8 @@ import com.example.union_sync_impl.entity.FullAccountingObject
 import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class InventorySyncApiImpl(
     private val inventoryDao: InventoryDao,
@@ -29,14 +31,16 @@ class InventorySyncApiImpl(
         return inventoryDao.insert(inventoryCreateSyncEntity.toInventoryDb())
     }
 
-    override suspend fun getInventories(textQuery: String?): List<InventorySyncEntity> {
+    override suspend fun getInventories(textQuery: String?): Flow<List<InventorySyncEntity>> {
         return inventoryDao.getAll(sqlInventoryQuery(textQuery)).map {
-            it.inventoryDb.toInventorySyncEntity(
-                organizationSyncEntity = requireNotNull(it.organizationDb).toSyncEntity(),
-                mol = it.employeeDb?.toSyncEntity(),
-                locationSyncEntities = listOf(),
-                accountingObjects = listOf()
-            )
+            it.map {
+                it.inventoryDb.toInventorySyncEntity(
+                    organizationSyncEntity = requireNotNull(it.organizationDb).toSyncEntity(),
+                    mol = it.employeeDb?.toSyncEntity(),
+                    locationSyncEntities = listOf(),
+                    accountingObjects = listOf()
+                )
+            }
         }
     }
 

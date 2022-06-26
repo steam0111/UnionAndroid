@@ -63,7 +63,7 @@ import com.example.union_sync_impl.utils.Converters
         DocumentDb::class,
         ProviderDb::class,
         AccountingObjectStatusDb::class
-    ], version = 51
+    ], version = 52
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {

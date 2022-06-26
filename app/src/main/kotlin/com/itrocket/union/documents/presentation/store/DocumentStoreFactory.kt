@@ -6,9 +6,9 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
-import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.documents.domain.DocumentInteractor
 import com.itrocket.union.documents.domain.entity.DocumentDomain
+import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
@@ -16,6 +16,8 @@ import com.itrocket.union.documents.presentation.view.toDocumentDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 
 class DocumentStoreFactory(
     private val storeFactory: StoreFactory,
@@ -99,15 +101,13 @@ class DocumentStoreFactory(
         ) {
             catchException {
                 dispatch(Result.IsListLoading(true))
-                dispatch(
-                    Result.Documents(
-                        documentInteractor.getDocuments(
-                            type = typeDomain,
-                            searchQuery = searchText
-                        )
-                    )
-                )
-                dispatch(Result.IsListLoading(false))
+                documentInteractor.getDocuments(type = typeDomain, searchQuery = searchText)
+                    .catch {
+                        handleError(it)
+                    }.collect {
+                        dispatch(Result.Documents(it))
+                        dispatch(Result.IsListLoading(false))
+                    }
             }
         }
 

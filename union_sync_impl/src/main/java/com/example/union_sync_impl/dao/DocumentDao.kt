@@ -9,12 +9,13 @@ import androidx.room.Update
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.union_sync_impl.entity.DocumentDb
 import com.example.union_sync_impl.entity.FullDocument
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DocumentDao {
 
-    @RawQuery
-    fun getAll(query: SupportSQLiteQuery): List<FullDocument>
+    @RawQuery(observedEntities = [FullDocument::class])
+    fun getAll(query: SupportSQLiteQuery): Flow<List<FullDocument>>
 
     @Query(
         "SELECT documents.*," +
@@ -49,7 +50,7 @@ interface DocumentDao {
                 "LEFT JOIN employees exploitingEmployees ON documents.exploitingId = exploitingEmployees.id " +
                 "WHERE documents.documentType = :type"
     )
-    fun getDocumentsByType(type: String): List<FullDocument>
+    fun getDocumentsByType(type: String): Flow<List<FullDocument>>
 
     @Query(
         "SELECT documents.*," +

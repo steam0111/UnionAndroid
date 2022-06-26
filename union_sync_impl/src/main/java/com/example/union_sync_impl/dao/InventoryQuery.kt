@@ -34,7 +34,7 @@ fun sqlInventoryQuery(
             tableName = "inventories",
             filter = buildList {
                 textQuery?.let {
-                    add("name" contains textQuery)
+                    add("id" contains textQuery)
                 }
             }
         )
