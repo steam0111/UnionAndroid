@@ -5,6 +5,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
+import com.itrocket.union.filter.presentation.view.FilterComposeFragment
 import com.itrocket.union.filter.presentation.view.FilterComposeFragmentDirections
 import com.itrocket.union.location.presentation.store.LocationArguments
 import com.itrocket.union.location.presentation.store.LocationResult
@@ -12,6 +13,7 @@ import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
 import com.itrocket.union.selectParams.presentation.store.SelectParamsArguments
+import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 
 interface FilterStore : Store<FilterStore.Intent, FilterStore.State, FilterStore.Label> {
 
@@ -30,7 +32,12 @@ interface FilterStore : Store<FilterStore.Intent, FilterStore.State, FilterStore
     )
 
     sealed class Label {
-        object GoBack : Label(), GoBackNavigationLabel
+        class GoBack(override val result: SelectParamsResult? = null) : Label(),
+            GoBackNavigationLabel {
+            override val resultCode: String = FilterComposeFragment.FILTER_RESULT_CODE
+            override val resultLabel: String = FilterComposeFragment.FILTER_RESULT_LABEL
+        }
+
         data class ShowFilters(
             val currentStep: Int,
             val filters: List<ParamDomain>
@@ -44,7 +51,8 @@ interface FilterStore : Store<FilterStore.Intent, FilterStore.State, FilterStore
                 )
         }
 
-        data class ShowLocation(val location: LocationParamDomain) : Label(), ForwardNavigationLabel {
+        data class ShowLocation(val location: LocationParamDomain) : Label(),
+            ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = FilterComposeFragmentDirections.toLocation(LocationArguments(location))
 

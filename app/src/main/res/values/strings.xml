@@ -239,4 +239,5 @@
 
     <string name="equipment_type_code">Код оборудования</string>
     <string name="equipment_type_title">Типы оборудования</string>
+    <string name="equipment_type">Тип оборудования</string>
 </resources>

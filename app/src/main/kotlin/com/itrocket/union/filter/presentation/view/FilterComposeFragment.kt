@@ -65,5 +65,7 @@ class FilterComposeFragment :
 
     companion object {
         const val FILTER_ARG = "filter arg"
+        const val FILTER_RESULT_CODE = "filter result code"
+        const val FILTER_RESULT_LABEL = "filter result label"
     }
 }

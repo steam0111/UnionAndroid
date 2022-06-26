@@ -1,19 +1,31 @@
 package com.itrocket.union.selectParams.data
 
+import com.example.union_sync_api.data.AccountingObjectStatusSyncApi
+import com.example.union_sync_api.data.CounterpartySyncApi
+import com.example.union_sync_api.data.DepartmentSyncApi
 import com.example.union_sync_api.data.EmployeeSyncApi
+import com.example.union_sync_api.data.EquipmentTypeSyncApi
 import com.example.union_sync_api.data.OrganizationSyncApi
+import com.example.union_sync_api.data.ProducerSyncApi
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.toParam
 import com.itrocket.union.selectParams.domain.dependencies.SelectParamsRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class SelectParamsRepositoryImpl(
     private val organizationSyncApi: OrganizationSyncApi,
     private val employeeSyncApi: EmployeeSyncApi,
+    private val statusesSyncApi: AccountingObjectStatusSyncApi,
+    private val departmentSyncApi: DepartmentSyncApi,
+    private val equipmentTypeSyncApi: EquipmentTypeSyncApi,
+    private val producerSyncApi: ProducerSyncApi,
+    private val providerSyncApi: CounterpartySyncApi,
     private val coreDispatchers: CoreDispatchers
 ) : SelectParamsRepository {
 
@@ -49,7 +61,7 @@ class SelectParamsRepositoryImpl(
             emit(getMockList(type).filter {
                 it.value.contains(other = searchText, ignoreCase = true)
             })
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
     override suspend fun getOrganizationList(): Flow<List<ParamDomain>> {
@@ -57,12 +69,42 @@ class SelectParamsRepositoryImpl(
             it.map {
                 it.toParam()
             }
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
     override suspend fun getEmployees(type: ManualType): Flow<List<ParamDomain>> {
         return flow {
             emit(employeeSyncApi.getEmployees().map { it.toParam(type) })
+        }.flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun getStatuses(): Flow<List<ParamDomain>> {
+        return flow {
+            emit(statusesSyncApi.getStatuses().map { it.toParam() })
+        }.flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun getEquipmentTypes(): Flow<List<ParamDomain>> {
+        return equipmentTypeSyncApi.getEquipmentTypes().map { list ->
+            list.map { it.toParam() }
+        }
+    }
+
+    override suspend fun getDepartments(): Flow<List<ParamDomain>> {
+        return flow {
+            emit(departmentSyncApi.getDepartments().map { it.toParam() })
+        }.flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun getProviders(): Flow<List<ParamDomain>> {
+        return providerSyncApi.getCounterparties().map { list ->
+            list.map { it.toParam() }
+        }
+    }
+
+    override suspend fun getProducers(): Flow<List<ParamDomain>> {
+        return producerSyncApi.getProducers().map { list ->
+            list.map { it.toParam() }
         }
     }
 }

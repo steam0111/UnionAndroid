@@ -1,6 +1,7 @@
 package com.union.sdk
 
 import androidx.room.Room
+import com.example.union_sync_api.data.AccountingObjectStatusSyncApi
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.AllSyncApi
 import com.example.union_sync_api.data.BranchesSyncApi
@@ -32,6 +33,7 @@ import com.example.union_sync_impl.data.NomenclatureSyncApiImpl
 import com.example.union_sync_impl.data.OrganizationSyncApiImpl
 import com.example.union_sync_impl.data.ProducerSyncApiImpl
 import com.example.union_sync_impl.data.RegionSyncApiImpl
+import com.example.union_sync_impl.data.AccountingObjectStatusSyncApiImpl
 import org.koin.dsl.module
 
 object SyncModule {
@@ -109,6 +111,9 @@ object SyncModule {
         factory<NomenclatureSyncApi> {
             NomenclatureSyncApiImpl(nomenclatureDao = get())
         }
+        factory<AccountingObjectStatusSyncApi> {
+            AccountingObjectStatusSyncApiImpl(dao = get())
+        }
         factory<AllSyncApi> {
             AllSyncImpl(
                 get(),
@@ -137,6 +142,7 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
+                get()
             )
         }
         single {
@@ -195,6 +201,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().providerDao()
+        }
+        factory {
+            get<UnionDatabase>().statusDao()
         }
     }
 }

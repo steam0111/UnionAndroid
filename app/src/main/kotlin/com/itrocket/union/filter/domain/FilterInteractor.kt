@@ -16,7 +16,7 @@ class FilterInteractor(
 
     fun dropFilterFields(filters: List<ParamDomain>): List<ParamDomain> {
         return filters.toMutableList().map {
-            it.copy(value = "", id = "")
+            it.copy(value = "", id = null)
         }
     }
 

@@ -6,8 +6,14 @@ import com.itrocket.union.accountingObjects.data.mapper.map
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.getDepartmentId
+import com.itrocket.union.manual.getEquipmentTypeId
 import com.itrocket.union.manual.getExploitingId
+import com.itrocket.union.manual.getMolId
 import com.itrocket.union.manual.getOrganizationId
+import com.itrocket.union.manual.getProducerId
+import com.itrocket.union.manual.getProviderId
+import com.itrocket.union.manual.getStatusId
 import kotlinx.coroutines.withContext
 
 class AccountingObjectRepositoryImpl(
@@ -19,7 +25,13 @@ class AccountingObjectRepositoryImpl(
         withContext(coreDispatchers.io) {
             syncApi.getAccountingObjects(
                 organizationId = params.getOrganizationId(),
-                exploitingId = params.getExploitingId()
+                exploitingId = params.getExploitingId(),
+                molId = params.getMolId(),
+                departmentId = params.getDepartmentId(),
+                producerId = params.getProducerId(),
+                equipmentTypeId = params.getEquipmentTypeId(),
+                providerId = params.getProviderId(),
+                statusId = params.getStatusId()
             ).map { it.map() }
         }
 

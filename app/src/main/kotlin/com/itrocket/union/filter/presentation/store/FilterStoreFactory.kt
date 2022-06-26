@@ -5,7 +5,6 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
@@ -14,6 +13,7 @@ import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
+import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 
 class FilterStoreFactory(
     private val storeFactory: StoreFactory,
@@ -52,10 +52,14 @@ class FilterStoreFactory(
             when (intent) {
                 is FilterStore.Intent.OnFieldClicked -> showFilters(intent.filter, getState)
                 is FilterStore.Intent.OnShowClicked -> {
-
+                    publish(
+                        FilterStore.Label.GoBack(
+                            result = SelectParamsResult(getState().params.paramList)
+                        )
+                    )
                 }
                 FilterStore.Intent.OnCrossClicked -> {
-                    publish(FilterStore.Label.GoBack)
+                    publish(FilterStore.Label.GoBack())
                 }
                 FilterStore.Intent.OnDropClicked -> {
                     val droppedFilterFields =
@@ -85,9 +89,6 @@ class FilterStoreFactory(
         private fun showFilters(filter: ParamDomain, getState: () -> FilterStore.State) {
             when (filter.type) {
                 ManualType.LOCATION -> publish(FilterStore.Label.ShowLocation(filter as LocationParamDomain))
-                ManualType.STATUS -> {
-                    //no-op
-                }
                 ManualType.DATE -> {
                     //no-op
                 }

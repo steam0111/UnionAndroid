@@ -20,6 +20,7 @@ interface AccountingObjectStore :
         data class OnItemClicked(val item: AccountingObjectDomain) :
             Intent()
 
+        class OnFilterResult(val params: List<ParamDomain>) : Intent()
         object OnFilterClicked : Intent()
         object OnBackClicked : Intent()
         object OnSearchClicked : Intent()

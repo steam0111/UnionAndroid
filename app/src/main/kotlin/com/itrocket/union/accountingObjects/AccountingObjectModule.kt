@@ -37,7 +37,6 @@ object AccountingObjectModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                get(),
                 arg.accountingObjectArguments,
                 get()
             ).create()

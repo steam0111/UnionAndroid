@@ -2,6 +2,7 @@ package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.AllSyncApi
 import com.example.union_sync_impl.dao.AccountingObjectDao
+import com.example.union_sync_impl.dao.AccountingObjectStatusDao
 import com.example.union_sync_impl.dao.BranchesDao
 import com.example.union_sync_impl.dao.CounterpartyDao
 import com.example.union_sync_impl.dao.DepartmentDao
@@ -29,6 +30,7 @@ import com.example.union_sync_impl.data.mapper.toOrganizationDb
 import com.example.union_sync_impl.data.mapper.toProducerDb
 import com.example.union_sync_impl.data.mapper.toProviderDb
 import com.example.union_sync_impl.data.mapper.toRegionDb
+import com.example.union_sync_impl.data.mapper.toStatusDb
 import org.openapitools.client.custom_api.AccountingObjectApi
 import org.openapitools.client.custom_api.BranchesApi
 import org.openapitools.client.custom_api.CounterpartyApi
@@ -70,6 +72,7 @@ class AllSyncImpl(
     private val producerDao: ProducerDao,
     private val regionApi: RegionApi,
     private val regionDao: RegionDao,
+    private val statusesDao: AccountingObjectStatusDao
 ) : AllSyncApi {
 
     override suspend fun syncAll() {
@@ -117,12 +120,14 @@ class AllSyncImpl(
 
     private suspend fun syncLocations() {
         kotlin.runCatching { //TODO посже необходимо убрат, сейчас без этого в прилу не попасть
-            val networkLocationTypes: List<CustomLocationsTypeDto> = requireNotNull(locationApi.apiLocationsTypesGet().list)
+            val networkLocationTypes: List<CustomLocationsTypeDto> =
+                requireNotNull(locationApi.apiLocationsTypesGet().list)
             locationDao.insertAllLocationTypes(networkLocationTypes.map { it.toLocationTypeDb() })
         }
 
         kotlin.runCatching { //TODO посже необходимо убрат, сейчас без этого в прилу не попасть
-            val networkLocations: List<CustomLocationDto> = requireNotNull(locationApi.apiLocationsGet().list)
+            val networkLocations: List<CustomLocationDto> =
+                requireNotNull(locationApi.apiLocationsGet().list)
             locationDao.insertAll(networkLocations.map { it.toLocationDb() })
         }
     }
@@ -212,6 +217,7 @@ class AllSyncImpl(
             locationDao.insertAll(objects.mapNotNull { it.extendedLocation?.toLocationDb() })
             departmentDao.insertAll(objects.mapNotNull { it.extendedDepartment?.toDepartmentDb() })
             providerDao.insertAll(objects.mapNotNull { it.extendedProvider?.toProviderDb() })
+            statusesDao.insertAll(objects.mapNotNull { it.extendedAccountingObjectStatus?.toStatusDb() })
             accountingObjectsDao.insertAll(objects.map { it.toAccountingObjectDb() })
         }
     }

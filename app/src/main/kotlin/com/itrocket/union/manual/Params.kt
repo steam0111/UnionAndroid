@@ -5,7 +5,6 @@ data class Params(val paramList: List<ParamDomain>) {
     private val listNotDefaultParams by lazy {
         listOf(
             ManualType.LOCATION,
-            ManualType.STATUS,
             ManualType.DATE
         )
     }
@@ -27,7 +26,7 @@ data class Params(val paramList: List<ParamDomain>) {
     }
 
     fun filterNotEmpty(): List<ParamDomain> {
-        return paramList.filterNot { it.id.isBlank() }
+        return paramList.filterNot { it.id.isNullOrBlank() }
     }
 
     /**

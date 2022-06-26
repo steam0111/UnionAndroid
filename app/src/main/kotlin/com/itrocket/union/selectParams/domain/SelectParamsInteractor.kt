@@ -16,6 +16,11 @@ class SelectParamsInteractor(
     private var organizations: Flow<List<ParamDomain>>? = null
     private var mols: Flow<List<ParamDomain>>? = null
     private var exploitings: Flow<List<ParamDomain>>? = null
+    private var statuses: Flow<List<ParamDomain>>? = null
+    private var departments: Flow<List<ParamDomain>>? = null
+    private var providers: Flow<List<ParamDomain>>? = null
+    private var producers: Flow<List<ParamDomain>>? = null
+    private var equipmentTypes: Flow<List<ParamDomain>>? = null
 
     suspend fun getParamValues(type: ManualType, searchText: String): Flow<List<ParamDomain>> =
         when (type) {
@@ -23,7 +28,12 @@ class SelectParamsInteractor(
             ManualType.MOL -> getMols(searchText)
             ManualType.LOCATION -> selectParamsRepository.getParamValues(type, searchText)
             ManualType.EXPLOITING -> getExploiting(searchText)
-            else -> flow {  }
+            ManualType.STATUS -> getAccountingObjectStatuses(searchText)
+            ManualType.DEPARTMENT -> getDepartments(searchText)
+            ManualType.PROVIDER -> getProviders(searchText)
+            ManualType.PRODUCER -> getProducers(searchText)
+            ManualType.EQUIPMENT_TYPE -> getEquipmentTypes(searchText)
+            else -> flow { }
         }
 
 
@@ -79,6 +89,66 @@ class SelectParamsInteractor(
         return (exploitings ?: selectParamsRepository.getEmployees(ManualType.EXPLOITING)).map {
             it.filter {
                 it.value.contains(other = searchText, ignoreCase = true)
+            }
+        }
+    }
+
+    private suspend fun getAccountingObjectStatuses(searchText: String): Flow<List<ParamDomain>> {
+        if (statuses == null) {
+            statuses = selectParamsRepository.getStatuses()
+        }
+
+        return (statuses ?: selectParamsRepository.getStatuses()).map {
+            it.filter { param ->
+                param.value.contains(other = searchText, ignoreCase = true)
+            }
+        }
+    }
+
+    private suspend fun getEquipmentTypes(searchText: String): Flow<List<ParamDomain>> {
+        if (equipmentTypes == null) {
+            equipmentTypes = selectParamsRepository.getEquipmentTypes()
+        }
+
+        return (equipmentTypes ?: selectParamsRepository.getEquipmentTypes()).map {
+            it.filter { param ->
+                param.value.contains(other = searchText, ignoreCase = true)
+            }
+        }
+    }
+
+    private suspend fun getProviders(searchText: String): Flow<List<ParamDomain>> {
+        if (providers == null) {
+            providers = selectParamsRepository.getProviders()
+        }
+
+        return (providers ?: selectParamsRepository.getProviders()).map {
+            it.filter { param ->
+                param.value.contains(other = searchText, ignoreCase = true)
+            }
+        }
+    }
+
+    private suspend fun getProducers(searchText: String): Flow<List<ParamDomain>> {
+        if (producers == null) {
+            producers = selectParamsRepository.getProducers()
+        }
+
+        return (producers ?: selectParamsRepository.getProducers()).map {
+            it.filter { param ->
+                param.value.contains(other = searchText, ignoreCase = true)
+            }
+        }
+    }
+
+    private suspend fun getDepartments(searchText: String): Flow<List<ParamDomain>> {
+        if (departments == null) {
+            departments = selectParamsRepository.getDepartments()
+        }
+
+        return (departments ?: selectParamsRepository.getDepartments()).map {
+            it.filter { param ->
+                param.value.contains(other = searchText, ignoreCase = true)
             }
         }
     }
