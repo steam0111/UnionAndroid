@@ -18,6 +18,7 @@ object AuthMainModule {
     val AUTHMAIN_VIEW_MODEL_QUALIFIER = named("AUTHMAIN_VIEW_MODEL")
     val ACCESS_TOKEN_PREFERENCE_KEY = named("ACCESS_TOKEN_PREFERENCE_KEY")
     val REFRESH_TOKEN_PREFERENCE_KEY = named("REFRESH_TOKEN_PREFERENCE_KEY")
+    val LOGIN_PREFERENCE_KEY = named("LOGIN_PREFERENCE_KEY")
 
     val module = module {
         viewModel(AUTHMAIN_VIEW_MODEL_QUALIFIER) { (args: AuthMainComposeFragmentArgs) ->
@@ -31,7 +32,8 @@ object AuthMainModule {
                 api = get(),
                 dataStore = get(),
                 accessTokenPreferencesKey = get(ACCESS_TOKEN_PREFERENCE_KEY),
-                refreshTokenPreferencesKey = get(REFRESH_TOKEN_PREFERENCE_KEY)
+                refreshTokenPreferencesKey = get(REFRESH_TOKEN_PREFERENCE_KEY),
+                loginPreferencesKey = get(LOGIN_PREFERENCE_KEY)
             )
         }
 
@@ -55,6 +57,10 @@ object AuthMainModule {
 
         single(qualifier = REFRESH_TOKEN_PREFERENCE_KEY) {
             stringPreferencesKey(REFRESH_TOKEN_PREFERENCE_KEY.value)
+        }
+
+        single(qualifier = LOGIN_PREFERENCE_KEY) {
+            stringPreferencesKey(LOGIN_PREFERENCE_KEY.value)
         }
     }
 }

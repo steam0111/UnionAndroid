@@ -3,7 +3,9 @@ package com.itrocket.union.authMain.domain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.authMain.domain.dependencies.AuthMainRepository
 import com.itrocket.union.authMain.domain.entity.AuthCredsDomain
+import kotlin.math.log
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 
 class AuthMainInteractor(
@@ -15,7 +17,12 @@ class AuthMainInteractor(
         withContext(coreDispatchers.io) {
             val auth = repository.signIn(AuthCredsDomain(login = login, password = password))
             repository.saveAuthCredentials(auth)
+            repository.saveLogin(login)
         }
+    }
+
+    suspend fun getLogin(): String? {
+        return repository.getLogin().firstOrNull()
     }
 
     fun validatePassword(password: String): Boolean {

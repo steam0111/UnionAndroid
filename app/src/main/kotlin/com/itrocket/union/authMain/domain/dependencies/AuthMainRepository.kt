@@ -13,6 +13,10 @@ interface AuthMainRepository {
 
     suspend fun saveAuthCredentials(credentials: AuthDomain)
 
+    suspend fun saveLogin(login: String)
+
+    suspend fun getLogin(): Flow<String>
+
     fun subscribeRefreshToken(): Flow<String>
 
     suspend fun clearAuthCredentials()

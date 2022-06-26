@@ -12,6 +12,7 @@ import com.itrocket.union.authUser.domain.AuthUserInteractor
 import com.itrocket.union.container.domain.IsDbSyncedUseCase
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.utils.ifBlankOrNull
+import kotlin.math.log
 
 class AuthUserStoreFactory(
     private val storeFactory: StoreFactory,
@@ -43,6 +44,10 @@ class AuthUserStoreFactory(
             action: Unit,
             getState: () -> AuthUserStore.State
         ) {
+            val login = authMainInteractor.getLogin()
+            if (!login.isNullOrBlank()) {
+                dispatch(Result.Login(login))
+            }
             publish(
                 AuthUserStore.Label.ChangeEnable(
                     isEnabled(

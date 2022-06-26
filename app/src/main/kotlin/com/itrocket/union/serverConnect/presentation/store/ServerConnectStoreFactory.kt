@@ -36,6 +36,14 @@ class ServerConnectStoreFactory(
             action: Unit,
             getState: () -> ServerConnectStore.State
         ) {
+            val serverUrl = serverConnectInteractor.getBaseUrl()
+            val port = serverConnectInteractor.getPort()
+            if (!serverUrl.isNullOrBlank()) {
+                dispatch(Result.ServerAddress(serverUrl))
+            }
+            if (!port.isNullOrBlank()) {
+                dispatch(Result.Port(port))
+            }
             publish(
                 ServerConnectStore.Label.ChangeEnable(
                     isEnabled(
@@ -80,7 +88,10 @@ class ServerConnectStoreFactory(
                     }
                 }
                 ServerConnectStore.Intent.OnNextClicked -> {
-                    serverConnectInteractor.clearAllSyncDataIfNeeded(getState().serverAddress, getState().port)
+                    serverConnectInteractor.clearAllSyncDataIfNeeded(
+                        getState().serverAddress,
+                        getState().port
+                    )
                     serverConnectInteractor.saveBaseUrl(getState().serverAddress)
                     serverConnectInteractor.savePort(getState().port)
                     publish(ServerConnectStore.Label.NextFinish)
