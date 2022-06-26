@@ -28,7 +28,7 @@ object FilterModule {
         }
 
         factory {
-            FilterInteractor(get(), get())
+            FilterInteractor(get(), get(), get(), get(), get(), get(), get(), get())
         }
 
         factory { (args: FilterComposeFragmentArgs) ->

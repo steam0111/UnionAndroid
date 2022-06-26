@@ -8,6 +8,7 @@ import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.branchDetail.presentation.store.BranchDetailArguments
 import com.itrocket.union.branches.domain.entity.BranchesDomain
 import com.itrocket.union.branches.presentation.view.BranchesComposeFragmentDirections
+import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.filter.presentation.store.FilterArguments
 import com.itrocket.union.manual.ParamDomain
 
@@ -41,7 +42,12 @@ interface BranchesStore : Store<BranchesStore.Intent, BranchesStore.State, Branc
 
         data class ShowFilter(val filters: List<ParamDomain>) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
-                get() = BranchesComposeFragmentDirections.toFilter(FilterArguments(filters))
+                get() = BranchesComposeFragmentDirections.toFilter(
+                    FilterArguments(
+                        filters,
+                        CatalogType.BRANCHES
+                    )
+                )
         }
     }
 }

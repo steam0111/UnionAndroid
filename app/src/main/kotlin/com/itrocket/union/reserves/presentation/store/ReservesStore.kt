@@ -4,6 +4,7 @@ import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
+import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.filter.presentation.store.FilterArguments
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.reserveDetail.presentation.store.ReserveDetailArguments
@@ -31,7 +32,12 @@ interface ReservesStore : Store<ReservesStore.Intent, ReservesStore.State, Reser
         object ShowSearch : Label()
         data class ShowFilter(val filters: List<ParamDomain>) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
-                get() = ReservesComposeFragmentDirections.toFilter(FilterArguments(filters))
+                get() = ReservesComposeFragmentDirections.toFilter(
+                    FilterArguments(
+                        filters,
+                        CatalogType.RESERVES
+                    )
+                )
         }
 
         data class ShowDetail(val item: ReservesDomain) :

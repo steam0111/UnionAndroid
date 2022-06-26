@@ -5,6 +5,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
+import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.filter.presentation.store.FilterArguments
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.nomenclature.domain.entity.NomenclatureDomain
@@ -43,7 +44,12 @@ interface NomenclatureStore :
 
         data class ShowFilter(val filters: List<ParamDomain>) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
-                get() = NomenclatureComposeFragmentDirections.toFilter(FilterArguments(filters))
+                get() = NomenclatureComposeFragmentDirections.toFilter(
+                    FilterArguments(
+                        filters,
+                        CatalogType.NOMENCLATURES
+                    )
+                )
         }
     }
 }

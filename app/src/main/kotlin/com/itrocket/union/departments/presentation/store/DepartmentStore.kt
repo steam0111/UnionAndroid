@@ -8,6 +8,7 @@ import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.departmentDetail.presentation.store.DepartmentDetailArguments
 import com.itrocket.union.departments.domain.entity.DepartmentDomain
 import com.itrocket.union.departments.presentation.view.DepartmentComposeFragmentDirections
+import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.filter.presentation.store.FilterArguments
 import com.itrocket.union.manual.ParamDomain
 
@@ -42,7 +43,12 @@ interface DepartmentStore :
 
         data class ShowFilter(val filters: List<ParamDomain>) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
-                get() = DepartmentComposeFragmentDirections.toFilter(FilterArguments(filters))
+                get() = DepartmentComposeFragmentDirections.toFilter(
+                    FilterArguments(
+                        filters,
+                        CatalogType.DEPARTMENTS
+                    )
+                )
         }
     }
 }
