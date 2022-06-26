@@ -31,88 +31,53 @@ class SelectParamsRepositoryImpl(
     private val coreDispatchers: CoreDispatchers
 ) : SelectParamsRepository {
 
-    fun getMockList(type: ManualType) = listOf(
-        ParamDomain("1", "1", type),
-        ParamDomain("12", "12", type),
-        ParamDomain("2", "2", type),
-        ParamDomain("3", "3", type),
-        ParamDomain("123", "123", type),
-        ParamDomain("122", "122", type),
-        ParamDomain("231", "231", type),
-        ParamDomain("4444", "4444", type),
-        ParamDomain("1111d", "1111d", type),
-        ParamDomain("4343", "4343", type),
-        ParamDomain("1233212", "123321", type),
-        ParamDomain("1233213", "123321", type),
-        ParamDomain("1233214", "123321", type),
-        ParamDomain("1233215", "123321", type),
-        ParamDomain("1233216", "123321", type),
-        ParamDomain("1233217", "123321", type),
-        ParamDomain("1233218", "123321", type),
-        ParamDomain("1233219", "123321", type),
-        ParamDomain("1233210", "123321", type),
-        ParamDomain("12332100", "123321", type),
-        ParamDomain("123321000", "123321", type),
-    )
-
-    override suspend fun getParamValues(
-        type: ManualType,
-        searchText: String
-    ): Flow<List<ParamDomain>> {
-        return flow {
-            emit(getMockList(type).filter {
-                it.value.contains(other = searchText, ignoreCase = true)
-            })
-        }.flowOn(Dispatchers.IO)
-    }
-
     override suspend fun getOrganizationList(textQuery: String?): Flow<List<ParamDomain>> {
-        return organizationSyncApi.getOrganizations(textQuery).map {
+        return organizationSyncApi.getOrganizations(textQuery = textQuery).map {
             it.map {
                 it.toParam()
             }
-        }.flowOn(Dispatchers.IO)
+        }.flowOn(coreDispatchers.io)
     }
 
     override suspend fun getEmployees(type: ManualType, textQuery: String?): Flow<List<ParamDomain>> {
         return flow {
-            emit(employeeSyncApi.getEmployees(textQuery).map { it.toParam(type) })
-        }.flowOn(Dispatchers.IO)
+            emit(employeeSyncApi.getEmployees(textQuery = textQuery).map { it.toParam(type) })
+        }.flowOn(coreDispatchers.io)
     }
 
-    override suspend fun getStatuses(): Flow<List<ParamDomain>> {
+    override suspend fun getStatuses(textQuery: String?): Flow<List<ParamDomain>> {
         return flow {
             emit(statusesSyncApi.getStatuses().map { it.toParam() })
-        }.flowOn(Dispatchers.IO)
+        }.flowOn(coreDispatchers.io)
     }
 
     override suspend fun getEquipmentTypes(textQuery: String?): Flow<List<ParamDomain>> {
-        return equipmentTypeSyncApi.getEquipmentTypes(textQuery).map { list ->
+        return equipmentTypeSyncApi.getEquipmentTypes(textQuery = textQuery).map { list ->
             list.map { it.toParam() }
         }
     }
 
-    override suspend fun getDepartments(): Flow<List<ParamDomain>> {
+    override suspend fun getDepartments(textQuery: String?): Flow<List<ParamDomain>> {
         return flow {
-            emit(departmentSyncApi.getDepartments().map { it.toParam() })
-        }.flowOn(Dispatchers.IO)
+            emit(departmentSyncApi.getDepartments(textQuery = textQuery).map { it.toParam() })
+        }.flowOn(coreDispatchers.io)
     }
 
-    override suspend fun getProviders(): Flow<List<ParamDomain>> {
-        return providerSyncApi.getCounterparties().map { list ->
+    override suspend fun getProviders(textQuery: String?): Flow<List<ParamDomain>> {
+        return providerSyncApi.getCounterparties(textQuery = textQuery).map { list ->
             list.map { it.toParam() }
         }
     }
 
-    override suspend fun getProducers(): Flow<List<ParamDomain>> {
-        return producerSyncApi.getProducers().map { list ->
+    override suspend fun getProducers(textQuery: String?): Flow<List<ParamDomain>> {
+        return producerSyncApi.getProducers(textQuery = textQuery).map { list ->
             list.map { it.toParam() }
         }
     }
 
-    override suspend fun getNomenclatureGroup(): Flow<List<ParamDomain>> {
+    override suspend fun getNomenclatureGroup(textQuery: String?): Flow<List<ParamDomain>> {
         return flow {
-            emit(nomenclatureGroupSyncApi.getNomenclatureGroups().map { it.toParam() })
-        }.flowOn(Dispatchers.IO)
+            emit(nomenclatureGroupSyncApi.getNomenclatureGroups(textQuery = textQuery).map { it.toParam() })
+        }.flowOn(coreDispatchers.io)
     }
 }

@@ -13,21 +13,10 @@ class SelectParamsInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    private var organizations: Flow<List<ParamDomain>>? = null
-    private var mols: Flow<List<ParamDomain>>? = null
-    private var exploitings: Flow<List<ParamDomain>>? = null
-    private var statuses: Flow<List<ParamDomain>>? = null
-    private var departments: Flow<List<ParamDomain>>? = null
-    private var providers: Flow<List<ParamDomain>>? = null
-    private var producers: Flow<List<ParamDomain>>? = null
-    private var equipmentTypes: Flow<List<ParamDomain>>? = null
-    private var nomenclaturesGroups: Flow<List<ParamDomain>>? = null
-
     suspend fun getParamValues(type: ManualType, searchText: String): Flow<List<ParamDomain>> =
         when (type) {
             ManualType.ORGANIZATION -> getOrganizations(searchText)
             ManualType.MOL -> getMols(searchText)
-            ManualType.LOCATION -> selectParamsRepository.getParamValues(type, searchText)
             ManualType.EXPLOITING -> getExploiting(searchText)
             ManualType.STATUS -> getAccountingObjectStatuses(searchText)
             ManualType.DEPARTMENT -> getDepartments(searchText)
@@ -63,99 +52,42 @@ class SelectParamsInteractor(
     }
 
     private suspend fun getOrganizations(searchText: String): Flow<List<ParamDomain>> {
-        if (organizations == null) {
-            organizations = selectParamsRepository.getOrganizationList(searchText)
-        }
-        return (organizations ?: selectParamsRepository.getOrganizationList(searchText))
+        return selectParamsRepository.getOrganizationList(textQuery = searchText)
     }
 
     private suspend fun getMols(searchText: String): Flow<List<ParamDomain>> {
-        if (mols == null) {
-            mols = selectParamsRepository.getEmployees(ManualType.MOL, searchText)
-        }
-        return (mols ?: selectParamsRepository.getEmployees(ManualType.MOL, searchText))
+        return selectParamsRepository.getEmployees(type = ManualType.MOL, textQuery = searchText)
     }
 
     private suspend fun getExploiting(searchText: String): Flow<List<ParamDomain>> {
-        if (exploitings == null) {
-            exploitings = selectParamsRepository.getEmployees(ManualType.EXPLOITING, searchText)
-        }
-        return (exploitings ?: selectParamsRepository.getEmployees(
-            ManualType.EXPLOITING,
-            searchText
-        ))
+        return selectParamsRepository.getEmployees(
+            type = ManualType.EXPLOITING,
+            textQuery = searchText
+        )
     }
 
     private suspend fun getAccountingObjectStatuses(searchText: String): Flow<List<ParamDomain>> {
-        if (statuses == null) {
-            statuses = selectParamsRepository.getStatuses()
-        }
-
-        return (statuses ?: selectParamsRepository.getStatuses()).map {
-            it.filter { param ->
-                param.value.contains(other = searchText, ignoreCase = true)
-            }
-        }
+        return selectParamsRepository.getStatuses(textQuery = searchText)
     }
 
     private suspend fun getEquipmentTypes(searchText: String): Flow<List<ParamDomain>> {
-        if (equipmentTypes == null) {
-            equipmentTypes = selectParamsRepository.getEquipmentTypes(searchText)
-        }
-
-        return (equipmentTypes ?: selectParamsRepository.getEquipmentTypes(searchText)).map {
-            it.filter { param ->
-                param.value.contains(other = searchText, ignoreCase = true)
-            }
-        }
+        return selectParamsRepository.getEquipmentTypes(textQuery = searchText)
     }
 
     private suspend fun getProviders(searchText: String): Flow<List<ParamDomain>> {
-        if (providers == null) {
-            providers = selectParamsRepository.getProviders()
-        }
-
-        return (providers ?: selectParamsRepository.getProviders()).map {
-            it.filter { param ->
-                param.value.contains(other = searchText, ignoreCase = true)
-            }
-        }
+        return selectParamsRepository.getProviders(textQuery = searchText)
     }
 
     private suspend fun getProducers(searchText: String): Flow<List<ParamDomain>> {
-        if (producers == null) {
-            producers = selectParamsRepository.getProducers()
-        }
-
-        return (producers ?: selectParamsRepository.getProducers()).map {
-            it.filter { param ->
-                param.value.contains(other = searchText, ignoreCase = true)
-            }
-        }
+        return selectParamsRepository.getProducers(textQuery = searchText)
     }
 
     private suspend fun getDepartments(searchText: String): Flow<List<ParamDomain>> {
-        if (departments == null) {
-            departments = selectParamsRepository.getDepartments()
-        }
-
-        return (departments ?: selectParamsRepository.getDepartments()).map {
-            it.filter { param ->
-                param.value.contains(other = searchText, ignoreCase = true)
-            }
-        }
+        return selectParamsRepository.getDepartments(textQuery = searchText)
     }
 
     private suspend fun getNomenclatureGroup(searchText: String): Flow<List<ParamDomain>> {
-        if (nomenclaturesGroups == null) {
-            nomenclaturesGroups = selectParamsRepository.getNomenclatureGroup()
-        }
-
-        return (nomenclaturesGroups ?: selectParamsRepository.getNomenclatureGroup()).map {
-            it.filter { param ->
-                param.value.contains(other = searchText, ignoreCase = true)
-            }
-        }
+        return selectParamsRepository.getNomenclatureGroup(textQuery = searchText)
     }
 
     companion object {
