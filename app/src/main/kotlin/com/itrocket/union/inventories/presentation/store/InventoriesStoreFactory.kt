@@ -12,8 +12,6 @@ import com.itrocket.union.inventories.domain.InventoriesInteractor
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 
 class InventoriesStoreFactory(
     private val storeFactory: StoreFactory,
@@ -80,13 +78,9 @@ class InventoriesStoreFactory(
         private suspend fun listenInventories(searchQuery: String = "") {
             catchException {
                 dispatch(Result.Loading(true))
-                inventoriesInteractor.getInventories(searchQuery)
-                    .catch {
-                        handleError(it)
-                    }.collect {
-                        dispatch(Result.Inventories(it))
-                        dispatch(Result.Loading(false))
-                    }
+                dispatch(Result.Inventories(inventoriesInteractor.getInventories(searchQuery)))
+                dispatch(Result.Loading(false))
+
             }
         }
 

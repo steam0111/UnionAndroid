@@ -72,19 +72,19 @@ class FilterInteractor(
     suspend fun getResultCount(from: CatalogType?, params: List<ParamDomain>): Int {
         return when (from) {
             CatalogType.ACCOUNTING_OBJECTS -> {
-                accountingObjectRepository.getAccountingObjects(params).count()
+                accountingObjectRepository.getAccountingObjects(params = params).count()
             }
             CatalogType.EMPLOYEES -> {
-                employeeRepository.getEmployees(params).count()
+                employeeRepository.getEmployees(params = params).count()
             }
             CatalogType.BRANCHES -> {
-                branchesRepository.getBranches(params).count()
+                branchesRepository.getBranches(params = params).count()
             }
             CatalogType.DEPARTMENTS -> {
-                departmentRepository.getDepartments(params).count()
+                departmentRepository.getDepartments(params = params).count()
             }
             CatalogType.NOMENCLATURES -> {
-                nomenclatureRepository.getNomenclatures(params).count()
+                nomenclatureRepository.getNomenclatures(params = params).count()
             }
             CatalogType.REGIONS -> {
                 regionRepository.getRegions().count()

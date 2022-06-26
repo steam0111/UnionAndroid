@@ -10,6 +10,7 @@ import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.DocumentDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
+import com.example.union_sync_impl.dao.sqlDocumentsQuery
 import com.example.union_sync_impl.data.mapper.toDocumentDb
 import com.example.union_sync_impl.data.mapper.toDocumentSyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationShortSyncEntity
@@ -17,8 +18,6 @@ import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 class DocumentSyncApiImpl(
     private val documentDao: DocumentDao,
@@ -29,34 +28,30 @@ class DocumentSyncApiImpl(
         return documentDao.insert(documentCreateSyncEntity.toDocumentDb())
     }
 
-    override suspend fun getAllDocuments(textQuery: String?): Flow<List<DocumentSyncEntity>> {
-        return documentDao.getAll().map {
-            it.map {
-                it.documentDb.toDocumentSyncEntity(
-                    organizationSyncEntity = it.organizationDb?.toSyncEntity(),
-                    mol = it.molDb?.toSyncEntity(),
-                    exploiting = it.exploitingDb?.toSyncEntity(),
-                    locations = null,
-                    accountingObjects = listOf()
-                )
-            }
+    override suspend fun getAllDocuments(textQuery: String?): List<DocumentSyncEntity> {
+        return documentDao.getAll(sqlDocumentsQuery(textQuery)).map {
+            it.documentDb.toDocumentSyncEntity(
+                organizationSyncEntity = it.organizationDb?.toSyncEntity(),
+                mol = it.molDb?.toSyncEntity(),
+                exploiting = it.exploitingDb?.toSyncEntity(),
+                locations = null,
+                accountingObjects = listOf()
+            )
         }
     }
 
     override suspend fun getDocuments(
         type: String,
         textQuery: String?
-    ): Flow<List<DocumentSyncEntity>> {
-        return documentDao.getDocumentsByType(type).map {
-            it.map {
-                it.documentDb.toDocumentSyncEntity(
-                    organizationSyncEntity = it.organizationDb?.toSyncEntity(),
-                    mol = it.molDb?.toSyncEntity(),
-                    exploiting = it.exploitingDb?.toSyncEntity(),
-                    locations = null,
-                    accountingObjects = listOf()
-                )
-            }
+    ): List<DocumentSyncEntity> {
+        return documentDao.getAll(sqlDocumentsQuery(type)).map {
+            it.documentDb.toDocumentSyncEntity(
+                organizationSyncEntity = it.organizationDb?.toSyncEntity(),
+                mol = it.molDb?.toSyncEntity(),
+                exploiting = it.exploitingDb?.toSyncEntity(),
+                locations = null,
+                accountingObjects = listOf()
+            )
         }
     }
 

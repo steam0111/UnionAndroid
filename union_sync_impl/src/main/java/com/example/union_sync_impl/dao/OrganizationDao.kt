@@ -4,13 +4,15 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.RawQuery
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.union_sync_impl.entity.FullOrganizationDb
 import com.example.union_sync_impl.entity.OrganizationDb
 
 @Dao
 interface OrganizationDao {
-    @Query("SELECT * FROM organizations")
-    suspend fun getAll(): List<OrganizationDb>
+    @RawQuery
+    fun getAll(query: SupportSQLiteQuery): List<OrganizationDb>
 
     @Query(
         "SELECT organizations.*," +

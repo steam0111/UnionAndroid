@@ -9,6 +9,7 @@ import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
+import com.example.union_sync_impl.dao.sqlInventoryQuery
 import com.example.union_sync_impl.data.mapper.toInventoryDb
 import com.example.union_sync_impl.data.mapper.toInventorySyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationShortSyncEntity
@@ -18,8 +19,6 @@ import com.example.union_sync_impl.entity.FullAccountingObject
 import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 class InventorySyncApiImpl(
     private val inventoryDao: InventoryDao,
@@ -30,16 +29,14 @@ class InventorySyncApiImpl(
         return inventoryDao.insert(inventoryCreateSyncEntity.toInventoryDb())
     }
 
-    override suspend fun getInventories(textQuery: String?): Flow<List<InventorySyncEntity>> {
-        return inventoryDao.getAll().map {
-            it.map {
-                it.inventoryDb.toInventorySyncEntity(
-                    organizationSyncEntity = requireNotNull(it.organizationDb).toSyncEntity(),
-                    mol = it.employeeDb?.toSyncEntity(),
-                    locationSyncEntities = listOf(),
-                    accountingObjects = listOf()
-                )
-            }
+    override suspend fun getInventories(textQuery: String?): List<InventorySyncEntity> {
+        return inventoryDao.getAll(sqlInventoryQuery(textQuery)).map {
+            it.inventoryDb.toInventorySyncEntity(
+                organizationSyncEntity = requireNotNull(it.organizationDb).toSyncEntity(),
+                mol = it.employeeDb?.toSyncEntity(),
+                locationSyncEntities = listOf(),
+                accountingObjects = listOf()
+            )
         }
     }
 
@@ -88,7 +85,8 @@ class InventorySyncApiImpl(
             return null
         }
         val locationTypeId = locationDb.locationTypeId ?: return null
-        val locationTypeDb: LocationTypeDb = locationDao.getLocationTypeById(locationTypeId) ?: return null
+        val locationTypeDb: LocationTypeDb =
+            locationDao.getLocationTypeById(locationTypeId) ?: return null
 
         return locationDb.toLocationSyncEntity(locationTypeDb)
     }

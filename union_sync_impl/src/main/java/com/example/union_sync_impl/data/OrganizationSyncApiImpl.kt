@@ -4,6 +4,7 @@ import com.example.union_sync_api.data.OrganizationSyncApi
 import com.example.union_sync_api.entity.OrganizationDetailSyncEntity
 import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_impl.dao.OrganizationDao
+import com.example.union_sync_impl.dao.sqlOrganizationQuery
 import com.example.union_sync_impl.data.mapper.toDetailSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +19,7 @@ class OrganizationSyncApiImpl(
 
     override suspend fun getOrganizations(textQuery: String?): Flow<List<OrganizationSyncEntity>> {
         return flow {
-            emit(organizationDao.getAll().map { it.toSyncEntity() })
+            emit(organizationDao.getAll(sqlOrganizationQuery(textQuery)).map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)
     }
 
