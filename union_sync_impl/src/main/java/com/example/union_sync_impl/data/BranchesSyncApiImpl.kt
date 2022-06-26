@@ -7,11 +7,6 @@ import com.example.union_sync_impl.dao.BranchesDao
 import com.example.union_sync_impl.dao.sqlBranchesQuery
 import com.example.union_sync_impl.data.mapper.toDetailSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 
 class BranchesSyncApiImpl(
     private val branchesDao: BranchesDao
@@ -20,16 +15,13 @@ class BranchesSyncApiImpl(
     override suspend fun getBranches(
         organizationId: String?,
         textQuery: String?
-    ): Flow<List<BranchSyncEntity>> {
-        return flow {
-            emit(
-                branchesDao.getAll(
-                    sqlBranchesQuery(
-                        organizationId = organizationId,
-                        textQuery = textQuery
-                    )
-                ).map { it.toSyncEntity() })
-        }.distinctUntilChanged().flowOn(Dispatchers.IO)
+    ): List<BranchSyncEntity> {
+        return branchesDao.getAll(
+            sqlBranchesQuery(
+                organizationId = organizationId,
+                textQuery = textQuery
+            )
+        ).map { it.toSyncEntity() }
     }
 
     override suspend fun getBranchDetail(id: String): BranchDetailSyncEntity {

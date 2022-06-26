@@ -20,8 +20,10 @@ class AccountingObjectInteractor(
     ): List<AccountingObjectDomain> =
         withContext(coreDispatchers.io) {
             //filter params
-            repository.getAccountingObjects(searchQuery,
-                params).filter {
+            repository.getAccountingObjects(
+                searchQuery,
+                params
+            ).filter {
                 !selectedAccountingObjectIds.contains(it.id)
             }
         }

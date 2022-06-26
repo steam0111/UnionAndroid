@@ -1,9 +1,8 @@
 package com.itrocket.union.regions.domain.dependencies
 
 import com.itrocket.union.regions.domain.entity.RegionDomain
-import kotlinx.coroutines.flow.Flow
 
 interface RegionRepository {
 
-    suspend fun getRegions(textQuery: String? = null): Flow<List<RegionDomain>>
+    suspend fun getRegions(textQuery: String? = null): List<RegionDomain>
 }
