@@ -23,7 +23,7 @@ class RegionSyncApiImpl(
         textQuery: String?
     ): Flow<List<RegionSyncEntity>> {
         return flow {
-            emit(regionDao.getAll(sqlRegionQuery(organizationId)).map { it.toSyncEntity() })
+            emit(regionDao.getAll(sqlRegionQuery(organizationId = organizationId, textQuery = textQuery)).map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)
     }
 
