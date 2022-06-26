@@ -132,24 +132,16 @@ class SelectParamsStoreFactory(
             }
         }
 
-        private suspend fun onItemSelected(
+        private fun onItemSelected(
             getState: () -> SelectParamsStore.State,
             item: ParamDomain
         ) {
-            dispatch(Result.Loading(true))
-
             val newParams = selectParamsInteractor.changeParamValue(
                 params = getState().params,
                 currentStep = getState().currentStep,
                 paramValue = item
             )
             dispatch(Result.Params(newParams))
-
-            val currentParam = getState().params[getState().currentStep - 1]
-
-            dispatchSearchText(currentParam.value)
-            searchManager.searchQuery.emit(currentParam.value)
-            dispatch(Result.Loading(false))
         }
 
         private suspend fun onPrevClicked(getState: () -> SelectParamsStore.State) {
@@ -159,7 +151,7 @@ class SelectParamsStoreFactory(
             val currentParam = getState().params[getState().currentStep - 1]
 
             dispatchSearchText(currentParam.value)
-            searchManager.searchQuery.emit(currentParam.value)
+            dispatchValues(currentParam.type, currentParam.value)
             dispatch(Result.Loading(false))
         }
 
@@ -177,7 +169,7 @@ class SelectParamsStoreFactory(
                 val currentParam = getState().params[getState().currentStep - 1]
 
                 dispatchSearchText(currentParam.value)
-                searchManager.searchQuery.emit(currentParam.value)
+                dispatchValues(currentParam.type, currentParam.value)
                 dispatch(Result.Loading(false))
             }
         }
