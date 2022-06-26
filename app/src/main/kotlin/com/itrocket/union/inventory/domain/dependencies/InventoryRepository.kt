@@ -9,5 +9,5 @@ interface InventoryRepository {
     suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): Long
     suspend fun updateInventory(inventoryUpdateSyncEntity: InventoryUpdateSyncEntity)
     suspend fun getInventoryById(id: Long): InventoryCreateDomain
-    suspend fun getInventories(): Flow<List<InventoryCreateDomain>>
+    suspend fun getInventories(textQuery: String?): Flow<List<InventoryCreateDomain>>
 }

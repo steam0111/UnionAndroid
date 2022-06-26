@@ -12,7 +12,7 @@ class NomenclatureInteractor(
 ) {
     suspend fun getNomenclatures(params: List<ParamDomain>?, searchQuery: String = "") =
         withContext(coreDispatchers.io) {
-            repository.getNomenclatures(params)
+            repository.getNomenclatures(searchQuery, params)
         }
 
     fun getFilters(): List<ParamDomain> {

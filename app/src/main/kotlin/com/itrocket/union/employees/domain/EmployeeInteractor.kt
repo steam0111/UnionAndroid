@@ -16,7 +16,7 @@ class EmployeeInteractor(
         searchQuery: String = ""
     ): List<EmployeeDomain> =
         withContext(coreDispatchers.io) {
-            repository.getEmployees(params)
+            repository.getEmployees(searchQuery, params)
         }
 
     fun getFilters(): List<ParamDomain> {

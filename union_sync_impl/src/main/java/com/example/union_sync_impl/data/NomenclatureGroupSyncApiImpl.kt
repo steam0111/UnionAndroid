@@ -9,7 +9,7 @@ class NomenclatureGroupSyncApiImpl(
     private val nomenclatureGroupDao: NomenclatureGroupDao
 ) : NomenclatureGroupSyncApi {
 
-    override suspend fun getNomenclatureGroups(): List<NomenclatureGroupSyncEntity> {
+    override suspend fun getNomenclatureGroups(textQuery: String?): List<NomenclatureGroupSyncEntity> {
         val nomenclatureDb = nomenclatureGroupDao.getAll()
         return nomenclatureDb.map { it.toSyncEntity() }
     }

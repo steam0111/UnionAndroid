@@ -33,9 +33,9 @@ class DocumentInteractor(
         return withContext(coreDispatchers.io) {
             groupDocuments(
                 if (type == DocumentTypeDomain.ALL) {
-                    repository.getAllDocuments()
+                    repository.getAllDocuments(searchQuery)
                 } else {
-                    repository.getDocuments(type)
+                    repository.getDocuments(type, searchQuery)
                 }
             )
         }

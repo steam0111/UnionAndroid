@@ -10,6 +10,6 @@ class RegionInteractor(
 ) {
 
     suspend fun getRegions(searchQuery: String = "") = withContext(coreDispatchers.io) {
-        repository.getRegions()
+        repository.getRegions(searchQuery)
     }
 }

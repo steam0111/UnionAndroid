@@ -10,6 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.inventories.domain.InventoriesInteractor
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -18,7 +19,8 @@ class InventoriesStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val inventoriesInteractor: InventoriesInteractor,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val searchManager: SearchManager
 ) {
     fun create(): InventoriesStore =
         object : InventoriesStore,
@@ -41,7 +43,9 @@ class InventoriesStoreFactory(
             action: Unit,
             getState: () -> InventoriesStore.State
         ) {
-            listenInventories()
+            searchManager.listenSearch {
+                listenInventories(searchQuery = it)
+            }
         }
 
         override suspend fun executeIntent(
@@ -59,7 +63,7 @@ class InventoriesStoreFactory(
                 InventoriesStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is InventoriesStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    listenInventories(intent.searchText)
+                    searchManager.searchQuery.emit(intent.searchText)
                 }
             }
         }
@@ -67,8 +71,7 @@ class InventoriesStoreFactory(
         private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
-                dispatch(Result.SearchText(""))
-                listenInventories("")
+                searchManager.searchQuery.emit("")
             } else {
                 publish(InventoriesStore.Label.GoBack)
             }

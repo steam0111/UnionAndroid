@@ -26,6 +26,7 @@ object InventoriesModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
+                get(),
                 get()
             ).create()
         }

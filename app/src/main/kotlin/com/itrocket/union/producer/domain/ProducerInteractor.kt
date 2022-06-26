@@ -10,6 +10,6 @@ class ProducerInteractor(
 ) {
 
     suspend fun getProducers(searchQuery: String = "") = withContext(coreDispatchers.io) {
-        repository.getProducers()
+        repository.getProducers(searchQuery)
     }
 }

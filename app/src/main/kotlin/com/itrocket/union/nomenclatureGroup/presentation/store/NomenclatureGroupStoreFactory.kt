@@ -10,6 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.nomenclatureGroup.domain.NomenclatureGroupInteractor
 import com.itrocket.union.nomenclatureGroup.domain.entity.NomenclatureGroupDomain
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 
 class NomenclatureGroupStoreFactory(
@@ -17,7 +18,8 @@ class NomenclatureGroupStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val nomenclatureGroupInteractor: NomenclatureGroupInteractor,
     private val nomenclatureGroupArguments: NomenclatureGroupArguments,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val searchManager: SearchManager
 ) {
     fun create(): NomenclatureGroupStore =
         object : NomenclatureGroupStore,
@@ -40,7 +42,9 @@ class NomenclatureGroupStoreFactory(
             action: Unit,
             getState: () -> NomenclatureGroupStore.State
         ) {
-            getNomenclatureGroup()
+            searchManager.listenSearch {
+                getNomenclatureGroup(searchText = it)
+            }
         }
 
         override suspend fun executeIntent(
@@ -57,15 +61,21 @@ class NomenclatureGroupStoreFactory(
                 NomenclatureGroupStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is NomenclatureGroupStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    getNomenclatureGroup(intent.searchText)
+                    searchManager.searchQuery.emit(intent.searchText)
                 }
             }
         }
 
-        private suspend fun getNomenclatureGroup(searchText: String = ""){
+        private suspend fun getNomenclatureGroup(searchText: String = "") {
             dispatch(Result.Loading(true))
             catchException {
-                dispatch(Result.NomenclatureGroups(nomenclatureGroupInteractor.getNomenclatureGroups(searchQuery = searchText)))
+                dispatch(
+                    Result.NomenclatureGroups(
+                        nomenclatureGroupInteractor.getNomenclatureGroups(
+                            searchQuery = searchText
+                        )
+                    )
+                )
             }
             dispatch(Result.Loading(false))
         }
@@ -73,8 +83,7 @@ class NomenclatureGroupStoreFactory(
         private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
-                dispatch(Result.SearchText(""))
-                getNomenclatureGroup("")
+                searchManager.searchQuery.emit("")
             } else {
                 publish(NomenclatureGroupStore.Label.GoBack)
             }
@@ -88,7 +97,9 @@ class NomenclatureGroupStoreFactory(
 
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
-        data class NomenclatureGroups(val nomenclatureGroupsDomain: List<NomenclatureGroupDomain>) : Result()
+        data class NomenclatureGroups(val nomenclatureGroupsDomain: List<NomenclatureGroupDomain>) :
+            Result()
+
         data class SearchText(val searchText: String) : Result()
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }

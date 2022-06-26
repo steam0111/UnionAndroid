@@ -11,6 +11,7 @@ import com.itrocket.union.branches.domain.BranchesInteractor
 import com.itrocket.union.branches.domain.entity.BranchesDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -19,7 +20,8 @@ class BranchesStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val branchesInteractor: BranchesInteractor,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val searchManager: SearchManager,
 ) {
 
     private var params: List<ParamDomain>? = null
@@ -45,7 +47,9 @@ class BranchesStoreFactory(
             action: Unit,
             getState: () -> BranchesStore.State
         ) {
-            listenBranches()
+            searchManager.listenSearch {
+                listenBranches(params = params, searchText = getState().searchText)
+            }
         }
 
         override suspend fun executeIntent(
@@ -54,7 +58,6 @@ class BranchesStoreFactory(
         ) {
             when (intent) {
                 BranchesStore.Intent.OnBackClicked -> onBackClicked(
-                    params,
                     getState().isShowSearch
                 )
                 is BranchesStore.Intent.OnBranchClicked -> {
@@ -68,7 +71,7 @@ class BranchesStoreFactory(
                 BranchesStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is BranchesStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    listenBranches(params, intent.searchText)
+                    searchManager.searchQuery.emit(intent.searchText)
                 }
                 is BranchesStore.Intent.OnFilterResult -> {
                     params = intent.params
@@ -93,11 +96,10 @@ class BranchesStoreFactory(
             }
         }
 
-        private suspend fun onBackClicked(params: List<ParamDomain>?, isShowSearch: Boolean) {
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
-                dispatch(Result.SearchText(""))
-                listenBranches(params, "")
+                searchManager.searchQuery.emit("")
             } else {
                 publish(BranchesStore.Label.GoBack)
             }

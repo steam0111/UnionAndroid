@@ -10,6 +10,6 @@ class CounterpartyInteractor(
 ) {
 
     suspend fun getCounterparties(searchQuery: String = "") = withContext(coreDispatchers.io) {
-        repository.getCounterparties()
+        repository.getCounterparties(searchQuery)
     }
 }

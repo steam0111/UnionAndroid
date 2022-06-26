@@ -16,7 +16,7 @@ class OrganizationSyncApiImpl(
     private val organizationDao: OrganizationDao
 ) : OrganizationSyncApi {
 
-    override suspend fun getOrganizations(): Flow<List<OrganizationSyncEntity>> {
+    override suspend fun getOrganizations(textQuery: String?): Flow<List<OrganizationSyncEntity>> {
         return flow {
             emit(organizationDao.getAll().map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)

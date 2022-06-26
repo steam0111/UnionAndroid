@@ -17,7 +17,7 @@ class BranchesInteractor(
         params: List<ParamDomain>?,
         searchQuery: String = ""
     ): Flow<List<BranchesDomain>> =
-        withContext(coreDispatchers.io) { repository.getBranches(params) }
+        withContext(coreDispatchers.io) { repository.getBranches(searchQuery, params) }
 
     fun getFilters(): List<ParamDomain> {
         return listOf(

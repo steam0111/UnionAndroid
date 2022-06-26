@@ -44,6 +44,7 @@ import com.itrocket.union.regions.RegionModule
 import com.itrocket.union.reserveDetail.ReserveDetailModule
 import com.itrocket.union.reserves.ReservesModule
 import com.itrocket.union.scanner.ScannerModule
+import com.itrocket.union.search.SearchModule
 import com.itrocket.union.selectParams.SelectParamsModule
 import com.itrocket.union.serverConnect.ServerConnectModule
 import com.itrocket.union.switcher.SwitcherModule
@@ -108,5 +109,6 @@ object Modules {
         CounterpartyDetailModule.module,
         ProducerDetailModule.module,
         EquipmentTypeDetailModule.module,
+        SearchModule.module
     )
 }

@@ -32,6 +32,7 @@ object EquipmentTypeModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
+                get(),
                 get()
             ).create()
         }

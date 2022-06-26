@@ -1,5 +1,6 @@
 package com.itrocket.union.departments.presentation.view
 
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
@@ -13,6 +14,14 @@ class DepartmentComposeFragment :
     BaseComposeFragment<DepartmentStore.Intent, DepartmentStore.State, DepartmentStore.Label>(
         DEPARTMENT_VIEW_MODEL_QUALIFIER
     ) {
+
+    override val onBackPressedCallback by lazy {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                accept(DepartmentStore.Intent.OnBackClicked)
+            }
+        }
+    }
 
     override val fragmentResultList: List<FragmentResult>
         get() = listOf(

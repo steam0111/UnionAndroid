@@ -8,6 +8,6 @@ class OrganizationInteractor(
     private val repository: OrganizationRepository
 ) {
     suspend fun getOrganizations(searchQuery: String = ""): Flow<List<OrganizationDomain>> =
-        repository.getOrganizations()
+        repository.getOrganizations(searchQuery)
 
 }

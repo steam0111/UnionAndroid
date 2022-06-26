@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface RegionRepository {
 
-    suspend fun getRegions(): Flow<List<RegionDomain>>
+    suspend fun getRegions(textQuery: String?): Flow<List<RegionDomain>>
 }

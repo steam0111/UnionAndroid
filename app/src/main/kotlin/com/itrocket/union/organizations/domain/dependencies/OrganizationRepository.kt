@@ -4,5 +4,5 @@ import com.itrocket.union.organizations.domain.entity.OrganizationDomain
 import kotlinx.coroutines.flow.Flow
 
 interface OrganizationRepository {
-    suspend fun getOrganizations(): Flow<List<OrganizationDomain>>
+    suspend fun getOrganizations(textQuery: String?): Flow<List<OrganizationDomain>>
 }

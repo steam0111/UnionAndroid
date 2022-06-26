@@ -1,5 +1,6 @@
 package com.itrocket.union.organizations.presentation.view
 
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
@@ -11,6 +12,15 @@ class OrganizationComposeFragment :
     BaseComposeFragment<OrganizationStore.Intent, OrganizationStore.State, OrganizationStore.Label>(
         ORGANIZATION_VIEW_MODEL_QUALIFIER
     ) {
+
+    override val onBackPressedCallback by lazy {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                accept(OrganizationStore.Intent.OnBackClicked)
+            }
+        }
+    }
+
     override fun renderState(
         state: OrganizationStore.State,
         composeView: ComposeView,

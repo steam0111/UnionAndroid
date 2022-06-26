@@ -11,6 +11,7 @@ import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.nomenclature.domain.NomenclatureInteractor
 import com.itrocket.union.nomenclature.domain.entity.NomenclatureDomain
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 
 class NomenclatureStoreFactory(
@@ -18,7 +19,8 @@ class NomenclatureStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val nomenclatureInteractor: NomenclatureInteractor,
     private val nomenclatureArguments: NomenclatureArguments,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val searchManager: SearchManager
 ) {
     private var params: List<ParamDomain>? = null
 
@@ -43,7 +45,9 @@ class NomenclatureStoreFactory(
             action: Unit,
             getState: () -> NomenclatureStore.State
         ) {
-            getNomenclatures()
+            searchManager.listenSearch {
+                getNomenclatures(searchText = it, params = params)
+            }
         }
 
         override suspend fun executeIntent(
@@ -52,8 +56,7 @@ class NomenclatureStoreFactory(
         ) {
             when (intent) {
                 NomenclatureStore.Intent.OnBackClicked -> onBackClicked(
-                    getState().isShowSearch,
-                    params
+                    getState().isShowSearch
                 )
                 is NomenclatureStore.Intent.OnItemClicked -> publish(
                     NomenclatureStore.Label.ShowDetail(
@@ -72,16 +75,15 @@ class NomenclatureStoreFactory(
                 NomenclatureStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is NomenclatureStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    getNomenclatures(params, intent.searchText)
+                    searchManager.searchQuery.emit(intent.searchText)
                 }
             }
         }
 
-        private suspend fun onBackClicked(isShowSearch: Boolean, params: List<ParamDomain>?) {
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
-                dispatch(Result.SearchText(""))
-                getNomenclatures(params = params)
+                searchManager.searchQuery.emit("")
             } else {
                 publish(NomenclatureStore.Label.GoBack)
             }

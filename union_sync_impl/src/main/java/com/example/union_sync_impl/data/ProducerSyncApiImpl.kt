@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.flowOn
 class ProducerSyncApiImpl(
     private val producerDao: ProducerDao
 ) : ProducerSyncApi {
-    override suspend fun getProducers(): Flow<List<ProducerSyncEntity>> {
+    override suspend fun getProducers(textQuery: String?): Flow<List<ProducerSyncEntity>> {
         return flow {
             emit(producerDao.getAll().map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)

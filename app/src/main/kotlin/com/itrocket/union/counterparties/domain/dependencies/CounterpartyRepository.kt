@@ -4,5 +4,5 @@ import com.itrocket.union.counterparties.domain.entity.CounterpartyDomain
 import kotlinx.coroutines.flow.Flow
 
 interface CounterpartyRepository {
-    suspend fun getCounterparties(): Flow<List<CounterpartyDomain>>
+    suspend fun getCounterparties(textQuery: String?): Flow<List<CounterpartyDomain>>
 }

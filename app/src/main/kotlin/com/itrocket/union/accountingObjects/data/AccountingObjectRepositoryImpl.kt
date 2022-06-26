@@ -21,9 +21,13 @@ class AccountingObjectRepositoryImpl(
     private val syncApi: AccountingObjectSyncApi,
 ) : AccountingObjectRepository {
 
-    override suspend fun getAccountingObjects(params: List<ParamDomain>): List<AccountingObjectDomain> =
+    override suspend fun getAccountingObjects(
+        textQuery: String?,
+        params: List<ParamDomain>
+    ): List<AccountingObjectDomain> =
         withContext(coreDispatchers.io) {
             syncApi.getAccountingObjects(
+                textQuery = textQuery,
                 organizationId = params.getOrganizationId(),
                 exploitingId = params.getExploitingId(),
                 molId = params.getMolId(),

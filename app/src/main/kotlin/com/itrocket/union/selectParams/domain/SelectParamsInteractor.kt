@@ -64,35 +64,26 @@ class SelectParamsInteractor(
 
     private suspend fun getOrganizations(searchText: String): Flow<List<ParamDomain>> {
         if (organizations == null) {
-            organizations = selectParamsRepository.getOrganizationList()
+            organizations = selectParamsRepository.getOrganizationList(searchText)
         }
-        return (organizations ?: selectParamsRepository.getOrganizationList()).map {
-            it.filter {
-                it.value.contains(other = searchText, ignoreCase = true)
-            }
-        }
+        return (organizations ?: selectParamsRepository.getOrganizationList(searchText))
     }
 
     private suspend fun getMols(searchText: String): Flow<List<ParamDomain>> {
         if (mols == null) {
-            mols = selectParamsRepository.getEmployees(ManualType.MOL)
+            mols = selectParamsRepository.getEmployees(ManualType.MOL, searchText)
         }
-        return (mols ?: selectParamsRepository.getEmployees(ManualType.MOL)).map {
-            it.filter {
-                it.value.contains(other = searchText, ignoreCase = true)
-            }
-        }
+        return (mols ?: selectParamsRepository.getEmployees(ManualType.MOL, searchText))
     }
 
     private suspend fun getExploiting(searchText: String): Flow<List<ParamDomain>> {
         if (exploitings == null) {
-            exploitings = selectParamsRepository.getEmployees(ManualType.EXPLOITING)
+            exploitings = selectParamsRepository.getEmployees(ManualType.EXPLOITING, searchText)
         }
-        return (exploitings ?: selectParamsRepository.getEmployees(ManualType.EXPLOITING)).map {
-            it.filter {
-                it.value.contains(other = searchText, ignoreCase = true)
-            }
-        }
+        return (exploitings ?: selectParamsRepository.getEmployees(
+            ManualType.EXPLOITING,
+            searchText
+        ))
     }
 
     private suspend fun getAccountingObjectStatuses(searchText: String): Flow<List<ParamDomain>> {
@@ -109,10 +100,10 @@ class SelectParamsInteractor(
 
     private suspend fun getEquipmentTypes(searchText: String): Flow<List<ParamDomain>> {
         if (equipmentTypes == null) {
-            equipmentTypes = selectParamsRepository.getEquipmentTypes()
+            equipmentTypes = selectParamsRepository.getEquipmentTypes(searchText)
         }
 
-        return (equipmentTypes ?: selectParamsRepository.getEquipmentTypes()).map {
+        return (equipmentTypes ?: selectParamsRepository.getEquipmentTypes(searchText)).map {
             it.filter { param ->
                 param.value.contains(other = searchText, ignoreCase = true)
             }

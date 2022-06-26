@@ -12,8 +12,12 @@ class NomenclatureSyncApiImpl(
     private val nomenclatureDao: NomenclatureDao
 ) : NomenclatureSyncApi {
 
-    override suspend fun getNomenclatures(groupId: String?): List<NomenclatureSyncEntity> {
-        return nomenclatureDao.getAll(sqlNomenclatureQuery(groupId)).map { it.toSyncEntity() }
+    override suspend fun getNomenclatures(
+        groupId: String?,
+        textQuery: String?
+    ): List<NomenclatureSyncEntity> {
+        return nomenclatureDao.getAll(sqlNomenclatureQuery(groupId, textQuery))
+            .map { it.toSyncEntity() }
     }
 
     override suspend fun getNomenclatureDetail(id: String): NomenclatureDetailSyncEntity {

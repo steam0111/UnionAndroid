@@ -11,6 +11,6 @@ class InventoriesInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
     suspend fun getInventories(searchQuery: String = ""): Flow<List<InventoryCreateDomain>> = withContext(coreDispatchers.io) {
-        repository.getInventories()
+        repository.getInventories(searchQuery)
     }
 }

@@ -11,7 +11,7 @@ class NomenclatureGroupRepositoryImpl(
     private val coreDispatchers: CoreDispatchers,
     private val nomenclatureGroupSyncApi: NomenclatureGroupSyncApi
 ) : NomenclatureGroupRepository {
-    override suspend fun getNomenclatureGroups(): List<NomenclatureGroupDomain> = withContext(coreDispatchers.io) {
-        nomenclatureGroupSyncApi.getNomenclatureGroups().map()
+    override suspend fun getNomenclatureGroups(textQuery: String?): List<NomenclatureGroupDomain> = withContext(coreDispatchers.io) {
+        nomenclatureGroupSyncApi.getNomenclatureGroups(textQuery).map()
     }
 }

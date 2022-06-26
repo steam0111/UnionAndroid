@@ -1,5 +1,6 @@
 package com.itrocket.union.regions.presentation.view
 
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
@@ -10,6 +11,14 @@ class RegionComposeFragment :
     BaseComposeFragment<RegionStore.Intent, RegionStore.State, RegionStore.Label>(
         REGION_VIEW_MODEL_QUALIFIER
     ) {
+
+    override val onBackPressedCallback by lazy {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                accept(RegionStore.Intent.OnBackClicked)
+            }
+        }
+    }
 
     override fun renderState(
         state: RegionStore.State,

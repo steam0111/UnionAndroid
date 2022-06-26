@@ -31,6 +31,7 @@ object DepartmentModule {
             DepartmentStoreFactory(
                 DefaultStoreFactory,
                 get(),
+                get(),
                 get()
             ).create()
         }

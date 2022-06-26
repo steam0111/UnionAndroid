@@ -1,5 +1,6 @@
 package com.itrocket.union.documents.presentation.view
 
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.navArgs
 import com.itrocket.union.documents.DocumentModule.DOCUMENT_VIEW_MODEL_QUALIFIER
@@ -11,6 +12,14 @@ class DocumentComposeFragment :
     BaseComposeFragment<DocumentStore.Intent, DocumentStore.State, DocumentStore.Label>(
         DOCUMENT_VIEW_MODEL_QUALIFIER
     ) {
+
+    override val onBackPressedCallback by lazy {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                accept(DocumentStore.Intent.OnArrowBackClicked)
+            }
+        }
+    }
 
     override val navArgs by navArgs<DocumentComposeFragmentArgs>()
 

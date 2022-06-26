@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface InventorySyncApi {
     suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): Long
-    suspend fun getInventories(): Flow<List<InventorySyncEntity>>
+    suspend fun getInventories(textQuery: String? = null): Flow<List<InventorySyncEntity>>
     suspend fun getInventoryById(id: Long): InventorySyncEntity
     suspend fun updateInventory(inventoryUpdateSyncEntity: InventoryUpdateSyncEntity)
 }

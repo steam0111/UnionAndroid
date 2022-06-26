@@ -17,7 +17,10 @@ class BranchesSyncApiImpl(
     private val branchesDao: BranchesDao
 ) : BranchesSyncApi {
 
-    override suspend fun getBranches(organizationId: String?): Flow<List<BranchSyncEntity>> {
+    override suspend fun getBranches(
+        textQuery: String?,
+        organizationId: String?
+    ): Flow<List<BranchSyncEntity>> {
         return flow {
             emit(branchesDao.getAll(sqlBranchesQuery(organizationId)).map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)

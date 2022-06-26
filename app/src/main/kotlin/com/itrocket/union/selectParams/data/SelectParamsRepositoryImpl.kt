@@ -66,17 +66,17 @@ class SelectParamsRepositoryImpl(
         }.flowOn(Dispatchers.IO)
     }
 
-    override suspend fun getOrganizationList(): Flow<List<ParamDomain>> {
-        return organizationSyncApi.getOrganizations().map {
+    override suspend fun getOrganizationList(textQuery: String?): Flow<List<ParamDomain>> {
+        return organizationSyncApi.getOrganizations(textQuery).map {
             it.map {
                 it.toParam()
             }
         }.flowOn(Dispatchers.IO)
     }
 
-    override suspend fun getEmployees(type: ManualType): Flow<List<ParamDomain>> {
+    override suspend fun getEmployees(type: ManualType, textQuery: String?): Flow<List<ParamDomain>> {
         return flow {
-            emit(employeeSyncApi.getEmployees().map { it.toParam(type) })
+            emit(employeeSyncApi.getEmployees(textQuery).map { it.toParam(type) })
         }.flowOn(Dispatchers.IO)
     }
 
@@ -86,8 +86,8 @@ class SelectParamsRepositoryImpl(
         }.flowOn(Dispatchers.IO)
     }
 
-    override suspend fun getEquipmentTypes(): Flow<List<ParamDomain>> {
-        return equipmentTypeSyncApi.getEquipmentTypes().map { list ->
+    override suspend fun getEquipmentTypes(textQuery: String?): Flow<List<ParamDomain>> {
+        return equipmentTypeSyncApi.getEquipmentTypes(textQuery).map { list ->
             list.map { it.toParam() }
         }
     }

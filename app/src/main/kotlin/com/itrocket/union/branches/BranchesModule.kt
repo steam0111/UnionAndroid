@@ -32,6 +32,7 @@ object BranchesModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
+                get(),
                 get()
             ).create()
         }

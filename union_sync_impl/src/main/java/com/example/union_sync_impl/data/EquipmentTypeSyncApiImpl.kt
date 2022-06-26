@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.flowOn
 class EquipmentTypeSyncApiImpl(
     private val equipmentTypeDao: EquipmentTypeDao,
 ) : EquipmentTypeSyncApi {
-    override suspend fun getEquipmentTypes(): Flow<List<EquipmentTypeSyncEntity>> {
+    override suspend fun getEquipmentTypes(textQuery: String?): Flow<List<EquipmentTypeSyncEntity>> {
         return flow {
             emit(equipmentTypeDao.getAll().map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)

@@ -9,7 +9,10 @@ class LocationSyncApiImpl(
     private val locationDao: LocationDao,
 ) : LocationSyncApi {
 
-    override suspend fun getLocations(locationTypeParentId: String?): List<LocationSyncEntity> {
+    override suspend fun getLocations(
+        locationTypeParentId: String?,
+        textQuery: String?
+    ): List<LocationSyncEntity> {
         val locationType = locationDao.getNextLocationTypeByParent(locationTypeParentId)
         val locations = locationDao.getLocationsByType(locationType.id)
 
