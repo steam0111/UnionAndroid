@@ -5,7 +5,6 @@ import com.example.union_sync_api.data.AccountingObjectStatusSyncApi
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.AllSyncApi
 import com.example.union_sync_api.data.BranchesSyncApi
-import com.example.union_sync_api.data.ClearSyncDataApi
 import com.example.union_sync_api.data.CounterpartySyncApi
 import com.example.union_sync_api.data.DepartmentSyncApi
 import com.example.union_sync_api.data.DocumentSyncApi
@@ -13,6 +12,7 @@ import com.example.union_sync_api.data.EmployeeSyncApi
 import com.example.union_sync_api.data.EquipmentTypeSyncApi
 import com.example.union_sync_api.data.InventorySyncApi
 import com.example.union_sync_api.data.LocationSyncApi
+import com.example.union_sync_api.data.ManageSyncDataApi
 import com.example.union_sync_api.data.NomenclatureGroupSyncApi
 import com.example.union_sync_api.data.NomenclatureSyncApi
 import com.example.union_sync_api.data.OrganizationSyncApi
@@ -23,7 +23,6 @@ import com.example.union_sync_impl.data.AccountingObjectStatusSyncApiImpl
 import com.example.union_sync_impl.data.AccountingObjectSyncApiImpl
 import com.example.union_sync_impl.data.AllSyncImpl
 import com.example.union_sync_impl.data.BranchesSyncApiImpl
-import com.example.union_sync_impl.data.ClearSyncDataImpl
 import com.example.union_sync_impl.data.CounterpartySyncApiImpl
 import com.example.union_sync_impl.data.DepartmentSyncApiImpl
 import com.example.union_sync_impl.data.DocumentSyncApiImpl
@@ -31,6 +30,7 @@ import com.example.union_sync_impl.data.EmployeeSyncApiImpl
 import com.example.union_sync_impl.data.EquipmentTypeSyncApiImpl
 import com.example.union_sync_impl.data.InventorySyncApiImpl
 import com.example.union_sync_impl.data.LocationSyncApiImpl
+import com.example.union_sync_impl.data.ManageSyncDataImpl
 import com.example.union_sync_impl.data.NomenclatureGroupSyncApiImpl
 import com.example.union_sync_impl.data.NomenclatureSyncApiImpl
 import com.example.union_sync_impl.data.OrganizationSyncApiImpl
@@ -208,9 +208,10 @@ object SyncModule {
         factory {
             get<UnionDatabase>().statusDao()
         }
-        factory<ClearSyncDataApi> {
-            ClearSyncDataImpl(
-                unionDatabase = get()
+        factory<ManageSyncDataApi> {
+            ManageSyncDataImpl(
+                unionDatabase = get(),
+                networkSyncDao = get()
             )
         }
     }

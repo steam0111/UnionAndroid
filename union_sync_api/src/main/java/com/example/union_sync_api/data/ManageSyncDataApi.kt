@@ -1,5 +1,6 @@
 package com.example.union_sync_api.data
 
-interface ClearSyncDataApi {
+interface ManageSyncDataApi {
     suspend fun clearAll()
+    suspend fun isSynced(): Boolean
 }

@@ -37,7 +37,7 @@ object ServerConnectModule {
                 portPreferencesKey = get(PORT_PREFERENCE_KEY),
                 dataStore = get(),
                 coreDispatchers = get(),
-                clearSyncDataApi = get()
+                manageSyncDataApi = get()
             )
         }
 

@@ -78,10 +78,6 @@ class AllSyncImpl(
     private val networkSyncDao: NetworkSyncDao
 ) : AllSyncApi {
 
-    override suspend fun isSynced(): Boolean {
-        return networkSyncDao.getNetworkSync()?.isAllSynced ?: false
-    }
-
     override suspend fun syncAll() {
         syncProducers()
         syncCounterparty()
