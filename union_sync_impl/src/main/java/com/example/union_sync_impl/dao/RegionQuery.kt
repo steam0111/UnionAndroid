@@ -17,7 +17,7 @@ fun sqlRegionQuery(
             tableName = "regions",
             filter = buildList {
                 organizationId?.let {
-                    add("organizationId" isEquals organizationId)
+                    add("organizationId" contains organizationId)
                 }
                 textQuery?.let {
                     add("name" contains textQuery)
