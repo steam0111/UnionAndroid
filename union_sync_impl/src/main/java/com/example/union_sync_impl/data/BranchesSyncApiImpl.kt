@@ -18,8 +18,8 @@ class BranchesSyncApiImpl(
 ) : BranchesSyncApi {
 
     override suspend fun getBranches(
-        textQuery: String?,
-        organizationId: String?
+        organizationId: String?,
+        textQuery: String?
     ): Flow<List<BranchSyncEntity>> {
         return flow {
             emit(branchesDao.getAll(sqlBranchesQuery(organizationId)).map { it.toSyncEntity() })
