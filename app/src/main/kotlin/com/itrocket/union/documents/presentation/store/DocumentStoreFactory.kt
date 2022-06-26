@@ -14,6 +14,7 @@ import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.documents.presentation.view.toDocumentDomain
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 
 class DocumentStoreFactory(
@@ -21,7 +22,8 @@ class DocumentStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val documentInteractor: DocumentInteractor,
     private val arguments: DocumentArguments,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val searchManager: SearchManager
 ) {
     fun create(): DocumentStore =
         object : DocumentStore,
@@ -44,7 +46,9 @@ class DocumentStoreFactory(
             action: Unit,
             getState: () -> DocumentStore.State
         ) {
-            listenDocuments(typeDomain = getState().type)
+            searchManager.listenSearch {
+                listenDocuments(typeDomain = getState().type, searchText = it)
+            }
         }
 
         override suspend fun executeIntent(
@@ -53,8 +57,7 @@ class DocumentStoreFactory(
         ) {
             when (intent) {
                 DocumentStore.Intent.OnArrowBackClicked -> onBackClicked(
-                    getState().isShowSearch,
-                    getState().type
+                    getState().isShowSearch
                 )
                 DocumentStore.Intent.OnFilterClicked -> {
                     //no-op
@@ -74,17 +77,17 @@ class DocumentStoreFactory(
                 }
                 is DocumentStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    listenDocuments(typeDomain = getState().type, searchText = intent.searchText)
+                    searchManager.searchQuery.emit(intent.searchText)
                 }
             }
 
         }
 
-        private suspend fun onBackClicked(isShowSearch: Boolean, typeDomain: DocumentTypeDomain) {
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
                 dispatch(Result.SearchText(""))
-                listenDocuments("", typeDomain)
+                searchManager.searchQuery.emit("")
             } else {
                 publish(DocumentStore.Label.GoBack)
             }

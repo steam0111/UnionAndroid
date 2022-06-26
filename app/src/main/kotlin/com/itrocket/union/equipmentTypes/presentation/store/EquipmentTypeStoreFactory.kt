@@ -56,7 +56,7 @@ class EquipmentTypeStoreFactory(
                 EquipmentTypeStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is EquipmentTypeStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
-                    listenEquipment(intent.searchText)
+                    searchManager.searchQuery.emit(intent.searchText)
                 }
             }
         }
@@ -76,6 +76,7 @@ class EquipmentTypeStoreFactory(
         private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
                 searchManager.searchQuery.emit("")
             } else {
                 publish(EquipmentTypeStore.Label.GoBack)

@@ -44,7 +44,7 @@ fun sqlDocumentsQuery(
             tableName = "documents",
             filter = buildList {
                 textQuery?.let {
-                    add("documentType" contains textQuery)
+                    add("id" contains textQuery)
                 }
             }
         )

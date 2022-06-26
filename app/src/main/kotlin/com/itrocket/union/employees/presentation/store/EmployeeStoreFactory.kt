@@ -84,6 +84,7 @@ class EmployeeStoreFactory(
         private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
                 searchManager.searchQuery.emit("")
             } else {
                 publish(EmployeeStore.Label.GoBack)
