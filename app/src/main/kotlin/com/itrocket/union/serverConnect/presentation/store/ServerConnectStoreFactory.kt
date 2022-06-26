@@ -6,8 +6,8 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import com.itrocket.union.serverConnect.domain.ServerConnectInteractor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.serverConnect.domain.ServerConnectInteractor
 
 class ServerConnectStoreFactory(
     private val storeFactory: StoreFactory,
@@ -80,6 +80,7 @@ class ServerConnectStoreFactory(
                     }
                 }
                 ServerConnectStore.Intent.OnNextClicked -> {
+                    serverConnectInteractor.clearAllSyncDataIfNeeded(getState().serverAddress, getState().port)
                     serverConnectInteractor.saveBaseUrl(getState().serverAddress)
                     serverConnectInteractor.savePort(getState().port)
                     publish(ServerConnectStore.Label.NextFinish)

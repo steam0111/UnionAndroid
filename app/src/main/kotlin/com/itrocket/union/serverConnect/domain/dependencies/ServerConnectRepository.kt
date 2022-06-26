@@ -15,4 +15,6 @@ interface ServerConnectRepository {
     fun getServerAddress(): Flow<String>
 
     fun getReadyServerUrl(): String
+
+    suspend fun clearAllSyncDataIfNeeded(newServerAddress: String, newPort: String)
 }
