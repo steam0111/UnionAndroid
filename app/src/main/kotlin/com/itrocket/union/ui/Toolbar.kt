@@ -192,8 +192,8 @@ fun SearchToolbar(
                     modifier = Modifier
                         .clickableUnbounded(onClick = onSearchClickListener)
                 )
-                Spacer(modifier = Modifier.width(28.dp))
                 if (onFilterClickListener != null) {
+                    Spacer(modifier = Modifier.width(28.dp))
                     Image(
                         painter = painterResource(R.drawable.ic_filter_white),
                         contentDescription = null,

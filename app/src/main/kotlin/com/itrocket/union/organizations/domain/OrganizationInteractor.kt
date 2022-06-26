@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class OrganizationInteractor(
     private val repository: OrganizationRepository
 ) {
-    suspend fun getOrganizations(): Flow<List<OrganizationDomain>> = repository.getOrganizations()
+    suspend fun getOrganizations(searchQuery: String = ""): Flow<List<OrganizationDomain>> =
+        repository.getOrganizations()
 
 }

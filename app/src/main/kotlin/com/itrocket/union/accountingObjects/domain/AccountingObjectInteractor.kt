@@ -14,6 +14,7 @@ class AccountingObjectInteractor(
 ) {
 
     suspend fun getAccountingObjects(
+        searchQuery: String = "",
         params: List<ParamDomain>,
         selectedAccountingObjectIds: List<String> = listOf()
     ): List<AccountingObjectDomain> =

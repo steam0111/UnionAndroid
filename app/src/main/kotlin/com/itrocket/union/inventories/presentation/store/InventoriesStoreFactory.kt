@@ -41,16 +41,7 @@ class InventoriesStoreFactory(
             action: Unit,
             getState: () -> InventoriesStore.State
         ) {
-            catchException {
-                dispatch(Result.Loading(true))
-                inventoriesInteractor.getInventories()
-                    .catch {
-                        handleError(it)
-                    }.collect {
-                        dispatch(Result.Inventories(it))
-                        dispatch(Result.Loading(false))
-                    }
-            }
+            listenInventories()
         }
 
         override suspend fun executeIntent(
@@ -66,20 +57,38 @@ class InventoriesStoreFactory(
                     )
                 )
                 InventoriesStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
-                is InventoriesStore.Intent.OnSearchTextChanged -> dispatch(Result.SearchText(intent.searchText))
+                is InventoriesStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    listenInventories(intent.searchText)
+                }
             }
         }
 
-        private fun onBackClicked(isShowSearch: Boolean){
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
                 dispatch(Result.SearchText(""))
+                listenInventories("")
             } else {
                 publish(InventoriesStore.Label.GoBack)
             }
         }
 
+        private suspend fun listenInventories(searchQuery: String = "") {
+            catchException {
+                dispatch(Result.Loading(true))
+                inventoriesInteractor.getInventories(searchQuery)
+                    .catch {
+                        handleError(it)
+                    }.collect {
+                        dispatch(Result.Inventories(it))
+                        dispatch(Result.Loading(false))
+                    }
+            }
+        }
+
         override fun handleError(throwable: Throwable) {
+            dispatch(Result.Loading(false))
             publish(InventoriesStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
     }

@@ -13,7 +13,10 @@ class BranchesInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    suspend fun getBranches(params: List<ParamDomain>?): Flow<List<BranchesDomain>> =
+    suspend fun getBranches(
+        params: List<ParamDomain>?,
+        searchQuery: String = ""
+    ): Flow<List<BranchesDomain>> =
         withContext(coreDispatchers.io) { repository.getBranches(params) }
 
     fun getFilters(): List<ParamDomain> {

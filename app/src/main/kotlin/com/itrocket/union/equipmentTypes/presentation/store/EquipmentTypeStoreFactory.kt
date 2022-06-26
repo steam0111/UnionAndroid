@@ -37,9 +37,30 @@ class EquipmentTypeStoreFactory(
             action: Unit,
             getState: () -> EquipmentTypeStore.State
         ) {
+            listenEquipment()
+        }
+
+        override suspend fun executeIntent(
+            intent: EquipmentTypeStore.Intent,
+            getState: () -> EquipmentTypeStore.State
+        ) {
+            when (intent) {
+                EquipmentTypeStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
+                is EquipmentTypeStore.Intent.OnItemClicked -> {
+                    publish(EquipmentTypeStore.Label.ShowDetail(intent.id))
+                }
+                EquipmentTypeStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
+                is EquipmentTypeStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    listenEquipment(intent.searchText)
+                }
+            }
+        }
+
+        private suspend fun listenEquipment(searchText: String = "") {
             catchException {
                 dispatch(Result.Loading(true))
-                typesInteractor.getEquipmentTypes()
+                typesInteractor.getEquipmentTypes(searchQuery = searchText)
                     .catch { handleError(it) }
                     .collect {
                         dispatch(Result.Types(it))
@@ -48,15 +69,13 @@ class EquipmentTypeStoreFactory(
             }
         }
 
-        override suspend fun executeIntent(
-            intent: EquipmentTypeStore.Intent,
-            getState: () -> EquipmentTypeStore.State
-        ) {
-            when (intent) {
-                EquipmentTypeStore.Intent.OnBackClicked -> publish(EquipmentTypeStore.Label.GoBack)
-                is EquipmentTypeStore.Intent.OnItemClicked -> {
-                    publish(EquipmentTypeStore.Label.ShowDetail(intent.id))
-                }
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                listenEquipment("")
+            } else {
+                publish(EquipmentTypeStore.Label.GoBack)
             }
         }
 
@@ -69,6 +88,8 @@ class EquipmentTypeStoreFactory(
     private sealed class Result {
         data class Types(val types: List<EquipmentTypesDomain>) : Result()
         data class Loading(val isLoading: Boolean) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<EquipmentTypeStore.State, Result> {
@@ -76,6 +97,8 @@ class EquipmentTypeStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.Types -> copy(types = result.types)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
 }

@@ -41,9 +41,32 @@ class ProducerStoreFactory(
             action: Unit,
             getState: () -> ProducerStore.State
         ) {
+            listenProducers()
+        }
+
+        override suspend fun executeIntent(
+            intent: ProducerStore.Intent,
+            getState: () -> ProducerStore.State
+        ) {
+            when (intent) {
+                ProducerStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
+                ProducerStore.Intent.OnFilterClicked -> {
+                }
+                is ProducerStore.Intent.OnProducerClicked -> {
+                    publish(ProducerStore.Label.ShowDetail(intent.id))
+                }
+                ProducerStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
+                is ProducerStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    listenProducers(intent.searchText)
+                }
+            }
+        }
+
+        private suspend fun listenProducers(searchText: String = "") {
             catchException {
                 dispatch(Result.Loading(true))
-                producerInteractor.getProducers()
+                producerInteractor.getProducers(searchQuery = searchText)
                     .catch {
                         handleError(it)
                     }
@@ -54,19 +77,13 @@ class ProducerStoreFactory(
             }
         }
 
-        override suspend fun executeIntent(
-            intent: ProducerStore.Intent,
-            getState: () -> ProducerStore.State
-        ) {
-            when (intent) {
-                ProducerStore.Intent.OnBackClicked -> publish(ProducerStore.Label.GoBack)
-                ProducerStore.Intent.OnFilterClicked -> {
-                }
-                is ProducerStore.Intent.OnProducerClicked -> {
-                    publish(ProducerStore.Label.ShowDetail(intent.id))
-                }
-                ProducerStore.Intent.OnSearchClicked -> {
-                }
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                listenProducers("")
+            } else {
+                publish(ProducerStore.Label.GoBack)
             }
         }
 
@@ -79,6 +96,8 @@ class ProducerStoreFactory(
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class Producers(val producers: List<ProducerDomain>) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<ProducerStore.State, Result> {
@@ -86,6 +105,8 @@ class ProducerStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.Producers -> copy(producers = result.producers)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
 }

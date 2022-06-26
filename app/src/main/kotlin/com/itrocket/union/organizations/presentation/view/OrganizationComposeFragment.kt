@@ -3,6 +3,7 @@ package com.itrocket.union.organizations.presentation.view
 import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
+import com.itrocket.union.inventories.presentation.store.InventoriesStore
 import com.itrocket.union.organizations.OrganizationModule.ORGANIZATION_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.organizations.presentation.store.OrganizationStore
 
@@ -24,7 +25,13 @@ class OrganizationComposeFragment :
                     accept(
                         OrganizationStore.Intent.OnOrganizationsClicked(it.id)
                     )
-                }
+                },
+                onSearchTextChanged = {
+                    accept(OrganizationStore.Intent.OnSearchTextChanged(it))
+                },
+                onSearchClickListener = {
+                    accept(OrganizationStore.Intent.OnSearchClicked)
+                },
             )
         }
     }

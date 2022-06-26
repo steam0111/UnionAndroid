@@ -5,6 +5,7 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.union.counterparties.CounterpartyModule.COUNTERPARTY_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.counterparties.presentation.store.CounterpartyStore
+import com.itrocket.union.inventories.presentation.store.InventoriesStore
 
 class CounterpartyComposeFragment :
     BaseComposeFragment<CounterpartyStore.Intent, CounterpartyStore.State, CounterpartyStore.Label>(
@@ -25,7 +26,13 @@ class CounterpartyComposeFragment :
                 },
                 onCounterpartyClickListener = {
                     accept(CounterpartyStore.Intent.OnCounterpartyClicked(it.id))
-                }
+                },
+                onSearchTextChanged = {
+                    accept(CounterpartyStore.Intent.OnSearchTextChanged(it))
+                },
+                onSearchClickListener = {
+                    accept(CounterpartyStore.Intent.OnSearchClicked)
+                },
             )
         }
     }

@@ -22,6 +22,7 @@ interface DocumentStore : Store<DocumentStore.Intent, DocumentStore.State, Docum
         object OnDocumentCreateClicked : Intent()
         data class OnDocumentClicked(val documentView: DocumentView.DocumentItemView) : Intent()
         data class OnDateArrowClicked(val date: String) : Intent()
+        data class OnSearchTextChanged(val searchText: String) : Intent()
     }
 
     data class State(
@@ -29,7 +30,9 @@ interface DocumentStore : Store<DocumentStore.Intent, DocumentStore.State, Docum
         val isDocumentCreateLoading: Boolean = false,
         val type: DocumentTypeDomain,
         val documents: List<DocumentView> = listOf(),
-        val rotatedDates: List<String> = listOf()
+        val rotatedDates: List<String> = listOf(),
+        val isShowSearch: Boolean = false,
+        val searchText: String = ""
     )
 
     sealed class Label {

@@ -38,7 +38,10 @@ class DocumentComposeFragment :
                 },
                 onDateArrowClickListener = {
                     accept(DocumentStore.Intent.OnDateArrowClicked(it))
-                }
+                },
+                onSearchTextChanged = {
+                    accept(DocumentStore.Intent.OnSearchTextChanged(it))
+                },
             )
         }
     }

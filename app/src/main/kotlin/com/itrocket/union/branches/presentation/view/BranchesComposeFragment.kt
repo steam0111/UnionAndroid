@@ -38,7 +38,13 @@ class BranchesComposeFragment :
                 appInsets = appInsets,
                 onBackClickListener = { accept(BranchesStore.Intent.OnBackClicked) },
                 onBranchClickListener = { accept(BranchesStore.Intent.OnBranchClicked(it.id)) },
-                onFilterClickListener = { accept(BranchesStore.Intent.OnFilterClicked) }
+                onFilterClickListener = { accept(BranchesStore.Intent.OnFilterClicked) },
+                onSearchClickListener = {
+                    accept(BranchesStore.Intent.OnSearchClicked)
+                },
+                onSearchTextChanged = {
+                    accept(BranchesStore.Intent.OnSearchTextChanged(it))
+                }
             )
         }
     }

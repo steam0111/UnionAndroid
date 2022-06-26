@@ -38,6 +38,12 @@ class EmployeeComposeFragment :
                 appInsets = appInsets,
                 onBackClickListener = { accept(EmployeeStore.Intent.OnBackClicked) },
                 onEmployeeClickListener = { accept(EmployeeStore.Intent.OnEmployeeClicked(it.id)) },
+                onSearchTextChanged = {
+                    accept(EmployeeStore.Intent.OnSearchTextChanged(it))
+                },
+                onSearchClickListener = {
+                    accept(EmployeeStore.Intent.OnSearchClicked)
+                },
                 onFilterClickListener = { accept(EmployeeStore.Intent.OnFilterClicked) }
             )
         }

@@ -25,6 +25,12 @@ class RegionComposeFragment :
                 },
                 onRegionClickListener = {
                     accept(RegionStore.Intent.OnRegionClicked(it.id))
+                },
+                onSearchClickListener = {
+                    accept(RegionStore.Intent.OnSearchClicked)
+                },
+                onSearchTextChanged = {
+                    accept(RegionStore.Intent.OnSearchTextChanged(it))
                 }
             )
         }

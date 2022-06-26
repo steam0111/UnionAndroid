@@ -27,6 +27,12 @@ class NomenclatureGroupComposeFragment :
                 },
                 onItemClick = {
                     accept(NomenclatureGroupStore.Intent.OnItemClick(it))
+                },
+                onSearchTextChanged = {
+                    accept(NomenclatureGroupStore.Intent.OnSearchTextChanged(it))
+                },
+                onSearchClickListener = {
+                    accept(NomenclatureGroupStore.Intent.OnSearchClicked)
                 }
             )
         }

@@ -44,13 +44,16 @@ import com.itrocket.union.producer.domain.entity.toDefaultItem
 import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.DefaultListItem
 import com.itrocket.union.ui.LoadingContent
+import com.itrocket.union.ui.SearchToolbar
 
 @Composable
 fun ProducerScreen(
     state: ProducerStore.State,
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
-    onProducerClickListener: (ProducerDomain) -> Unit
+    onProducerClickListener: (ProducerDomain) -> Unit,
+    onSearchTextChanged: (String) -> Unit,
+    onSearchClickListener: () -> Unit,
 ) {
     AppTheme {
         Column(
@@ -58,9 +61,13 @@ fun ProducerScreen(
                 .fillMaxSize()
                 .padding(top = appInsets.topInset.dp)
         ) {
-            BlackToolbar(
+            SearchToolbar(
                 title = stringResource(id = R.string.producer_title),
-                onBackClickListener = onBackClickListener
+                onBackClickListener = onBackClickListener,
+                onSearchTextChanged = onSearchTextChanged,
+                onSearchClickListener = onSearchClickListener,
+                isShowSearch = state.isShowSearch,
+                searchText = state.searchText
             )
             LoadingContent(isLoading = state.isLoading) {
                 Content(
@@ -138,5 +145,5 @@ fun ProducerScreenPreview() {
                 code = "code3"
             )
         )
-    ), AppInsets(topInset = previewTopInsetDp), {}, {})
+    ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
 }

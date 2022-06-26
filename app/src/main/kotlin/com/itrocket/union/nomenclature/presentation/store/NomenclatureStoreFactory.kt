@@ -51,7 +51,10 @@ class NomenclatureStoreFactory(
             getState: () -> NomenclatureStore.State
         ) {
             when (intent) {
-                NomenclatureStore.Intent.OnBackClicked -> publish(NomenclatureStore.Label.GoBack)
+                NomenclatureStore.Intent.OnBackClicked -> onBackClicked(
+                    getState().isShowSearch,
+                    params
+                )
                 is NomenclatureStore.Intent.OnItemClicked -> publish(
                     NomenclatureStore.Label.ShowDetail(
                         intent.id
@@ -64,8 +67,23 @@ class NomenclatureStoreFactory(
                 )
                 is NomenclatureStore.Intent.OnFilterResult -> {
                     params = intent.params
-                    getNomenclatures(params)
+                    getNomenclatures(params, getState().searchText)
                 }
+                NomenclatureStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
+                is NomenclatureStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    getNomenclatures(params, intent.searchText)
+                }
+            }
+        }
+
+        private suspend fun onBackClicked(isShowSearch: Boolean, params: List<ParamDomain>?) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                getNomenclatures(params = params)
+            } else {
+                publish(NomenclatureStore.Label.GoBack)
             }
         }
 
@@ -74,10 +92,20 @@ class NomenclatureStoreFactory(
             publish(NomenclatureStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
 
-        private suspend fun getNomenclatures(params: List<ParamDomain>? = null) {
+        private suspend fun getNomenclatures(
+            params: List<ParamDomain>? = null,
+            searchText: String = ""
+        ) {
             catchException {
                 dispatch(Result.Loading(true))
-                dispatch(Result.Nomenclatures(nomenclatureInteractor.getNomenclatures(params)))
+                dispatch(
+                    Result.Nomenclatures(
+                        nomenclatureInteractor.getNomenclatures(
+                            params,
+                            searchText
+                        )
+                    )
+                )
                 dispatch(Result.Loading(false))
             }
         }
@@ -86,6 +114,8 @@ class NomenclatureStoreFactory(
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class Nomenclatures(val nomenclatures: List<NomenclatureDomain>) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<NomenclatureStore.State, Result> {
@@ -93,6 +123,8 @@ class NomenclatureStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.Nomenclatures -> copy(nomenclatures = result.nomenclatures)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
 }

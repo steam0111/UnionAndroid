@@ -26,7 +26,10 @@ class DocumentInteractor(
     private val repository: DocumentRepository,
     private val coreDispatchers: CoreDispatchers
 ) {
-    suspend fun getDocuments(type: DocumentTypeDomain): Flow<List<DocumentView>> {
+    suspend fun getDocuments(
+        searchQuery: String = "",
+        type: DocumentTypeDomain
+    ): Flow<List<DocumentView>> {
         return withContext(coreDispatchers.io) {
             groupDocuments(
                 if (type == DocumentTypeDomain.ALL) {

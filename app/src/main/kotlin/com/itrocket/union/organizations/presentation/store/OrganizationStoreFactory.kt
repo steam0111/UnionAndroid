@@ -41,9 +41,32 @@ class OrganizationStoreFactory(
             action: Unit,
             getState: () -> OrganizationStore.State
         ) {
+            listenOrganizations()
+        }
+
+        override suspend fun executeIntent(
+            intent: OrganizationStore.Intent,
+            getState: () -> OrganizationStore.State
+        ) {
+            when (intent) {
+                OrganizationStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
+                OrganizationStore.Intent.OnFilterClicked -> {
+                }
+                OrganizationStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
+                is OrganizationStore.Intent.OnOrganizationsClicked -> {
+                    publish(OrganizationStore.Label.ShowDetail(intent.id))
+                }
+                is OrganizationStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    listenOrganizations(intent.searchText)
+                }
+            }
+        }
+
+        private suspend fun listenOrganizations(searchText: String = "") {
             catchException {
                 dispatch(Result.Loading(true))
-                organizationInteractor.getOrganizations()
+                organizationInteractor.getOrganizations(searchText)
                     .catch {
                         handleError(it)
                     }
@@ -52,22 +75,15 @@ class OrganizationStoreFactory(
                         dispatch(Result.Loading(false))
                     }
             }
-
         }
 
-        override suspend fun executeIntent(
-            intent: OrganizationStore.Intent,
-            getState: () -> OrganizationStore.State
-        ) {
-            when (intent) {
-                OrganizationStore.Intent.OnBackClicked -> publish(OrganizationStore.Label.GoBack)
-                OrganizationStore.Intent.OnFilterClicked -> {
-                }
-                OrganizationStore.Intent.OnSearchClicked -> {
-                }
-                is OrganizationStore.Intent.OnOrganizationsClicked -> {
-                    publish(OrganizationStore.Label.ShowDetail(intent.id))
-                }
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                listenOrganizations("")
+            } else {
+                publish(OrganizationStore.Label.GoBack)
             }
         }
 
@@ -80,6 +96,8 @@ class OrganizationStoreFactory(
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class Organizations(val organizations: List<OrganizationDomain>) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<OrganizationStore.State, Result> {
@@ -87,6 +105,8 @@ class OrganizationStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.Organizations -> copy(organizations = result.organizations)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
 }

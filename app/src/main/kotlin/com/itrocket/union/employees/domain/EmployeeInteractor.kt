@@ -11,7 +11,10 @@ class EmployeeInteractor(
     private val repository: EmployeeRepository,
     private val coreDispatchers: CoreDispatchers
 ) {
-    suspend fun getEmployees(params: List<ParamDomain>?): List<EmployeeDomain> =
+    suspend fun getEmployees(
+        params: List<ParamDomain>?,
+        searchQuery: String = ""
+    ): List<EmployeeDomain> =
         withContext(coreDispatchers.io) {
             repository.getEmployees(params)
         }

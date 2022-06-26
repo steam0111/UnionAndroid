@@ -16,11 +16,14 @@ interface RegionStore : Store<RegionStore.Intent, RegionStore.State, RegionStore
         object OnFilterClicked : Intent()
         object OnBackClicked : Intent()
         data class OnRegionClicked(val id: String) : Intent()
+        data class OnSearchTextChanged(val searchText: String) : Intent()
     }
 
     data class State(
         val isLoading: Boolean = false,
-        val regions: List<RegionDomain> = listOf()
+        val regions: List<RegionDomain> = listOf(),
+        val isShowSearch: Boolean = false,
+        val searchText: String = ""
     )
 
     sealed class Label {

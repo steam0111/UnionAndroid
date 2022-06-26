@@ -53,10 +53,11 @@ class AccountingObjectStoreFactory(
             getState: () -> AccountingObjectStore.State
         ) {
             when (intent) {
-                AccountingObjectStore.Intent.OnBackClicked -> publish(AccountingObjectStore.Label.GoBack())
-                AccountingObjectStore.Intent.OnSearchClicked -> publish(
-                    AccountingObjectStore.Label.ShowSearch
+                AccountingObjectStore.Intent.OnBackClicked -> onBackClicked(
+                    getState().isShowSearch,
+                    params.orEmpty()
                 )
+                AccountingObjectStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 AccountingObjectStore.Intent.OnFilterClicked -> publish(
                     AccountingObjectStore.Label.ShowFilter(
                         params ?: accountingObjectInteractor.getFilters()
@@ -64,19 +65,38 @@ class AccountingObjectStoreFactory(
                 )
                 is AccountingObjectStore.Intent.OnFilterResult -> {
                     params = intent.params
-                    getAccountingObjects(params.orEmpty())
+                    getAccountingObjects(params.orEmpty(), getState().searchText)
                 }
                 is AccountingObjectStore.Intent.OnItemClicked -> onItemClick(intent.item)
+                is AccountingObjectStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    getAccountingObjects(params.orEmpty(), intent.searchText)
+                }
             }
         }
 
-        private suspend fun getAccountingObjects(params: List<ParamDomain>) {
+
+        private suspend fun onBackClicked(isShowSearch: Boolean, params: List<ParamDomain>) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                getAccountingObjects(params, "")
+            } else {
+                publish(AccountingObjectStore.Label.GoBack())
+            }
+        }
+
+        private suspend fun getAccountingObjects(
+            params: List<ParamDomain>,
+            searchText: String = ""
+        ) {
             catchException {
                 dispatch(Result.Loading(true))
                 dispatch(
                     Result.AccountingObjects(
                         accountingObjectInteractor.getAccountingObjects(
                             params = params,
+                            searchQuery = searchText,
                             selectedAccountingObjectIds = accountingObjectArguments?.selectedAccountingObjectIds.orEmpty()
                         )
                     )
@@ -101,6 +121,8 @@ class AccountingObjectStoreFactory(
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<AccountingObjectStore.State, Result> {
@@ -108,6 +130,8 @@ class AccountingObjectStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.AccountingObjects -> copy(accountingObjects = result.accountingObjects)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
 }

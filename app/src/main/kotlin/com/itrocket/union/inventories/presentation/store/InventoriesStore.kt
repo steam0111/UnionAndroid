@@ -30,7 +30,6 @@ interface InventoriesStore :
 
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
-        object ShowSearch : Label()
         object ShowFilter : Label()
         data class ShowInventoryDetail(val inventory: InventoryCreateDomain) : Label(),
             ForwardNavigationLabel {
