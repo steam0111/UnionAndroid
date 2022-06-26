@@ -4,8 +4,6 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.manual.ParamDomain
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class AccountingObjectInteractor(
@@ -16,13 +14,11 @@ class AccountingObjectInteractor(
     suspend fun getAccountingObjects(
         params: List<ParamDomain>,
         selectedAccountingObjectIds: List<String> = listOf()
-    ): Flow<List<AccountingObjectDomain>> =
+    ): List<AccountingObjectDomain> =
         withContext(coreDispatchers.io) {
             //filter params
-            repository.getAccountingObjects(params).map {
-                it.filter {
-                    !selectedAccountingObjectIds.contains(it.id)
-                }
+            repository.getAccountingObjects(params).filter {
+                !selectedAccountingObjectIds.contains(it.id)
             }
         }
 }

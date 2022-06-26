@@ -39,11 +39,11 @@ class EmployeeStoreFactory(
             action: Unit,
             getState: () -> EmployeeStore.State
         ) {
-            dispatch(Result.Loading(true))
             catchException {
+                dispatch(Result.Loading(true))
                 dispatch(Result.Employees(employeeInteractor.getEmployees()))
+                dispatch(Result.Loading(false))
             }
-            dispatch(Result.Loading(false))
         }
 
         override suspend fun executeIntent(

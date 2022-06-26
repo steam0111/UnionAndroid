@@ -9,10 +9,15 @@ import com.example.union_sync_impl.utils.isEquals
 fun sqlAccountingObjectQuery(
     organizationId: String? = null,
     exploitingId: String? = null,
-    accountingObjectsIds: List<String>? = null,
     rfids: List<String>? = null,
     barcode: String? = null,
-    textQuery: String? = null
+    molId: String? = null,
+    departmentId: String? = null,
+    producerId: String? = null,
+    equipmentTypeId: String? = null,
+    providerId: String? = null,
+    textQuery: String? = null,
+    accountingObjectsIds: List<String>? = null
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT accounting_objects.*," +
             "" +
@@ -43,6 +48,21 @@ fun sqlAccountingObjectQuery(
                 }
                 barcode?.let {
                     add("barcodeValue" isEquals barcode)
+                }
+                molId?.let {
+                    add("molId" isEquals molId)
+                }
+                departmentId?.let {
+                    add("departmentId" isEquals departmentId)
+                }
+                producerId?.let {
+                    add("producerId" isEquals producerId)
+                }
+                equipmentTypeId?.let {
+                    add("equipmentTypeId" isEquals equipmentTypeId)
+                }
+                providerId?.let {
+                    add("providerId" isEquals providerId)
                 }
                 textQuery?.let {
                     add("name" contains textQuery)
