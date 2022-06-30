@@ -1,5 +1,6 @@
 package com.itrocket.union.accountingObjects.presentation.store
 
+import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -89,6 +90,8 @@ class AccountingObjectStoreFactory(
                         item
                     )
                 )
+                Log.d("SukhanovTest", "Click OS Item Button" + item.title )
+
             }
         }
     }

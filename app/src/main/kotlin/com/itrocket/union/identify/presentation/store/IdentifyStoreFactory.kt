@@ -1,14 +1,13 @@
 package com.itrocket.union.identify.presentation.store
 
+import android.util.Log
 import com.arkivanov.mvikotlin.core.store.*
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.identify.domain.IdentifyInteractor
-import com.itrocket.union.inventory.presentation.store.InventoryStoreFactory
 import com.itrocket.union.manual.ParamDomain
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
@@ -60,21 +59,35 @@ class IdentifyStoreFactory(
         ) {
             when (intent) {
                 IdentifyStore.Intent.OnBackClicked -> publish(IdentifyStore.Label.GoBack)
-                IdentifyStore.Intent.OnSearchClicked -> publish(
-                    IdentifyStore.Label.ShowSearch
-                )
-                IdentifyStore.Intent.OnFilterClicked -> publish(
+                IdentifyStore.Intent.OnSaveClicked -> {
+                    publish(IdentifyStore.Label.ShowSave)
+                    Log.d("SukhanovTest", "Click Identify Save Button")
+                }
+                    IdentifyStore.Intent.OnFilterClicked -> publish(
                     IdentifyStore.Label.ShowFilter(filterInteractor.getFilters())
                 )
-                is IdentifyStore.Intent.OnItemClicked -> publish(
-                    IdentifyStore.Label.ShowDetail(
-                        intent.item
-                    )
-                )
+                is IdentifyStore.Intent.OnOSClicked -> {
+                    publish(IdentifyStore.Label.ShowReadingMode(getState().readingMode))
+//                    publish(IdentifyStore.Label.ShowIdentifyItem(getState().bottomActionMenuTab))
+
+
+                    Log.d("SukhanovTest", "Click Identify Item Button" + intent.item.title )
+                }
+
                 IdentifyStore.Intent.OnDropClicked -> {
-                    TODO()
+                    Log.d("SukhanovTest", "Click Identify Drop Button")
                 }
                 is IdentifyStore.Intent.OnSelectPage -> dispatch((Result.SelectPage(intent.selectedPage)))
+                IdentifyStore.Intent.OnReadingModeClicked -> {
+                    Log.d("SukhanovTest", "Click ShowReadingMode Button")
+                    publish(IdentifyStore.Label.ShowReadingMode(getState().readingMode))
+                }
+//                is IdentifyStore.Intent.OnItemClicked -> publish(
+//                    IdentifyStore.Label.ShowDetail(intent.item)
+//                )
+                is IdentifyStore.Intent.OnReservesClicked -> publish(
+                    IdentifyStore.Label.ShowDetail(intent.item)
+                )
             }
         }
 

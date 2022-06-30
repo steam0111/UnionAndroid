@@ -1,12 +1,12 @@
 package com.itrocket.union.identify.presentation.view
 
+import android.util.Log
 import androidx.compose.ui.platform.ComposeView
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.union.identify.IdentifyModule.IDENTIFY_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.identify.presentation.store.IdentifyStore
-import com.itrocket.union.inventory.presentation.store.InventoryStore
 
 class IdentifyComposeFragment :
     BaseComposeFragment<IdentifyStore.Intent, IdentifyStore.State, IdentifyStore.Label>(
@@ -29,16 +29,19 @@ class IdentifyComposeFragment :
                     accept(IdentifyStore.Intent.OnBackClicked)
                 },
                 onSaveClickListener = {
-                    accept(IdentifyStore.Intent.OnCreateClicked)
+                    accept(IdentifyStore.Intent.OnSaveClicked)
                 },
-                onIdentifyClickListener = { accept(IdentifyStore.Intent.OnItemClicked(it)) },
+                onOSClickListener = { accept(IdentifyStore.Intent.OnReadingModeClicked) },
+//                onOSClickListener = { accept(IdentifyStore.Intent.OnOSClicked(it)) },
                 onDropClickListener = {
                     accept(IdentifyStore.Intent.OnDropClicked)
                 },
                 onPageChanged = {
                     accept(IdentifyStore.Intent.OnSelectPage(it))
                 },
-            )
+                onReservesClickListener = { accept(IdentifyStore.Intent.OnReservesClicked(it))
+                Log.d("SukhanovTest", "Reserves item click in Identify "+ it.title)
+                })
         }
     }
 }

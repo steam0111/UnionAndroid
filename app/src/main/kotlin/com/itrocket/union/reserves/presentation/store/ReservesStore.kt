@@ -13,8 +13,7 @@ import com.itrocket.union.reserves.presentation.view.ReservesComposeFragmentDire
 interface ReservesStore : Store<ReservesStore.Intent, ReservesStore.State, ReservesStore.Label> {
 
     sealed class Intent {
-        data class OnItemClicked(val item: ReservesDomain) :
-            Intent()
+        data class OnItemClicked(val item: ReservesDomain) : Intent()
 
         object OnFilterClicked : Intent()
         object OnBackClicked : Intent()

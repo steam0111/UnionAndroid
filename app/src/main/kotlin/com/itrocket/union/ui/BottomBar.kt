@@ -184,3 +184,78 @@ private fun StepBottomBarPreview() {
 
     }
 }
+
+@Composable
+fun BottomBarIdentifyItem(
+    text: String,
+    onClick: () -> Unit,
+    isEnabled: Boolean = true
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(graphite2)
+            .padding(8.dp)
+    ) {
+        ButtonWithLoaderPsb1(
+            onClick = onClick,
+            modifier = Modifier.fillMaxWidth(),
+            isEnabled = isEnabled,
+
+            ) {
+            Text(
+                text = text,
+                style = AppTheme.typography.body2,
+                color = white,
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+}
+
+@Composable
+@Preview
+private fun BottomBarIdentifyPreview() {
+    Column {
+        BottomBarIdentifyItem(
+            onClick = {/*TODO*/ },
+            isEnabled = true,
+            text = "Создать документ"
+        )
+        BottomBarIdentifyItem(
+            onClick = {/*TODO*/ },
+            isEnabled = true,
+            text = "Открыть карточку"
+        )
+        BottomBarIdentifyItem(
+            onClick = {/*TODO*/ },
+            isEnabled = true,
+            text = "Удалить из списка"
+        )
+    }
+}
+
+@Composable
+fun BottomBarIdentifyScreen(
+//    onClick: () -> Unit,
+//    isEnabled: Boolean = true
+) {
+    Column {
+        Text(text = "Выберите действие")
+        BottomBarIdentifyItem(
+            onClick = {/*TODO*/ },
+            isEnabled = true,
+            text = "Создать документ"
+        )
+        BottomBarIdentifyItem(
+            onClick = {/*TODO*/ },
+            isEnabled = true,
+            text = "Открыть карточку"
+        )
+        BottomBarIdentifyItem(
+            onClick = {/*TODO*/ },
+            isEnabled = true,
+            text = "Удалить из списка"
+        )
+    }
+}
