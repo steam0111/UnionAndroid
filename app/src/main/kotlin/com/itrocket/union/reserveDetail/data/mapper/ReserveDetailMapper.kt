@@ -1,5 +1,6 @@
 package com.itrocket.union.reserveDetail.data.mapper
 
+import android.util.Log
 import com.example.union_sync_api.entity.ReserveDetailSyncEntity
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain

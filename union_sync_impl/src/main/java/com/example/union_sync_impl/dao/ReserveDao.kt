@@ -18,10 +18,10 @@ interface ReserveDao {
     @Query(
         "SELECT reserves.*," +
                 "organizations.id AS businessUnit_id, " +
-                "organizations.catalogItemName AS business_unit_catalogItemName, " +
-                "organizations.name AS business_unit_name, " +
-                "organizations.actualAddress AS business_unit_actualAddress, " +
-                "organizations.legalAddress AS business_unit_legalAddress, " +
+                "organizations.catalogItemName AS businessUnit_catalogItemName, " +
+                "organizations.name AS businessUnit_name, " +
+                "organizations.actualAddress AS businessUnit_actualAddress, " +
+                "organizations.legalAddress AS businessUnit_legalAddress, " +
                 "" +
                 "molEmployees.id AS mol_id, " +
                 "molEmployees.catalogItemName AS mol_catalogItemName, " +
@@ -32,15 +32,10 @@ interface ReserveDao {
                 "molEmployees.number AS mol_number, " +
                 "molEmployees.nfc AS mol_nfc, " +
                 "" +
-                "location.id AS locations_id, " +
-                "location.catalogItemName AS locations_catalogItemName, " +
-                "location.name AS locations_name, " +
-                "location.parentId AS locations_parentId, " +
-                "" +
-                "departments.id AS structural_subdivision_id, " +
-                "departments.catalogItemName AS structural_subdivision_catalogItemName, " +
-                "departments.name AS structural_subdivision_name, " +
-                "departments.code AS structural_subdivision_code, " +
+                "departments.id AS structuralSubdivision_id, " +
+                "departments.catalogItemName AS structuralSubdivision_catalogItemName, " +
+                "departments.name AS structuralSubdivision_name, " +
+                "departments.code AS structuralSubdivision_code, " +
                 "" +
                 "nomenclature.id AS nomenclature_id, " +
                 "nomenclature.catalogItemName AS nomenclature_catalogItemName, " +
@@ -48,21 +43,26 @@ interface ReserveDao {
                 "nomenclature.number AS nomenclature_number, " +
                 "nomenclature.nomenclatureGroupId AS nomenclature_nomenclatureGroupId, " +
                 "" +
-                "nomenclature_group.id AS nomenclature_group_id, " +
-                "nomenclature_group.catalogItemName AS nomenclature_group_catalogItemName, " +
-                "nomenclature_group.name AS nomenclature_group_name, " +
+                "nomenclature_group.id AS nomenclatureGroup_id, " +
+                "nomenclature_group.catalogItemName AS nomenclatureGroup_catalogItemName, " +
+                "nomenclature_group.name AS nomenclatureGroup_name, " +
                 "" +
-                "reception_item_category.id AS reception_item_category_id, " +
-                "reception_item_category.name AS reception_item_category_name " +
+                "reception_item_category.id AS receptionItemCategory_id, " +
+                "reception_item_category.name AS receptionItemCategory_name, " +
+                "" +
+                "location.id AS locations_id, " +
+                "location.catalogItemName AS locations_catalogItemName, " +
+                "location.name AS locations_name, " +
+                "location.parentId AS locations_parentId " +
                 "" +
                 "FROM reserves " +
                 "LEFT JOIN departments ON reserves.structuralSubdivisionId = departments.id " +
                 "LEFT JOIN organizations ON reserves.businessUnitId = organizations.id " +
                 "LEFT JOIN location ON reserves.locationId = location.id " +
                 "LEFT JOIN employees molEmployees ON reserves.molId = molEmployees.id " +
-                "LEFT JOIN nomenclature ON reserves.businessUnitId = nomenclature.id " +
-                "LEFT JOIN nomenclature_group ON reserves.locationId = nomenclature_group.id " +
-                "LEFT JOIN reception_item_category ON reserves.molId = reception_item_category.id " +
+                "LEFT JOIN nomenclature ON reserves.nomenclatureId = nomenclature.id " +
+                "LEFT JOIN nomenclature_group ON reserves.nomenclatureGroupId = nomenclature_group.id " +
+                "LEFT JOIN reception_item_category ON reserves.receptionItemCategoryId = reception_item_category.id " +
                 "WHERE reserves.id = :id LIMIT 1"
     )
     suspend fun getById(id: String): FullReserve

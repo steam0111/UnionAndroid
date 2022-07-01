@@ -20,6 +20,6 @@ class FullReserve(
     val nomenclatureGroupDb: NomenclatureGroupDb?,
     @Embedded(prefix = "order_")
     val orderDb: OrderDb?,
-    @Embedded(prefix = "reception_item_category_")
+    @Embedded(prefix = "receptionItemCategory_")
     val receptionItemCategoryDb: ReceptionItemCategoryDb?
 )
