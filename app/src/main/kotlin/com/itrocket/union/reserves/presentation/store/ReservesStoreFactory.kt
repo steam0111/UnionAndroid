@@ -6,17 +6,21 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.reserves.domain.ReservesInteractor
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.delay
 
 class ReservesStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val reservesInteractor: ReservesInteractor,
-    private val filterInteractor: FilterInteractor
+    private val filterInteractor: FilterInteractor,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): ReservesStore =
         object : ReservesStore,
@@ -32,17 +36,18 @@ class ReservesStoreFactory(
         ReservesExecutor()
 
     private inner class ReservesExecutor :
-        SuspendExecutor<ReservesStore.Intent, Unit, ReservesStore.State, Result, ReservesStore.Label>(
-            mainContext = coreDispatchers.ui
+        BaseExecutor<ReservesStore.Intent, Unit, ReservesStore.State, Result, ReservesStore.Label>(
+            context = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
             action: Unit,
             getState: () -> ReservesStore.State
         ) {
-            dispatch(Result.Loading(true))
-            delay(500)
-            dispatch(Result.Reserves(reservesInteractor.getReserves()))
-            dispatch(Result.Loading(false))
+            catchException {
+                dispatch(Result.Loading(true))
+                dispatch(Result.Reserves(reservesInteractor.getReserves()))
+                dispatch(Result.Loading(false))
+            }
         }
 
         override suspend fun executeIntent(
@@ -61,6 +66,11 @@ class ReservesStoreFactory(
                     ReservesStore.Label.ShowDetail(intent.item)
                 )
             }
+        }
+
+        override fun handleError(throwable: Throwable) {
+            dispatch(Result.Loading(false))
+            publish(ReservesStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
     }
 

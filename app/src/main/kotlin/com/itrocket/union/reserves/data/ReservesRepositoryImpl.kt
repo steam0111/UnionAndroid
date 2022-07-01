@@ -1,8 +1,7 @@
 package com.itrocket.union.reserves.data
 
 import com.example.union_sync_api.data.ReserveSyncApi
-import com.itrocket.union.R
-import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
+import com.itrocket.union.reserveDetail.data.mapper.map
 import com.itrocket.union.reserves.data.mapper.map
 import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
@@ -32,4 +31,7 @@ class ReservesRepositoryImpl(
         ).map()
     }
 
+    override suspend fun getReserveById(id: String): ReservesDomain {
+        return syncApi.getById(id).map()
+    }
 }

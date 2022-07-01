@@ -6,22 +6,25 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.itrocket.core.base.BaseExecutor
 import com.itrocket.union.reserveDetail.domain.ReserveDetailInteractor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import com.itrocket.union.utils.ifBlankOrNull
 
 class ReserveDetailStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val reserveDetailInteractor: ReserveDetailInteractor,
-    private val reserveDetailArguments: ReserveDetailArguments
+    private val reserveDetailArguments: ReserveDetailArguments,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): ReserveDetailStore =
         object : ReserveDetailStore,
             Store<ReserveDetailStore.Intent, ReserveDetailStore.State, ReserveDetailStore.Label> by storeFactory.create(
                 name = "ReserveDetailStore",
-                initialState = ReserveDetailStore.State(
-                    reserve = reserveDetailArguments.argument
-                ),
+                initialState = ReserveDetailStore.State(),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
@@ -31,13 +34,24 @@ class ReserveDetailStoreFactory(
         ReserveDetailExecutor()
 
     private inner class ReserveDetailExecutor :
-        SuspendExecutor<ReserveDetailStore.Intent, Unit, ReserveDetailStore.State, Result, ReserveDetailStore.Label>(
-            mainContext = coreDispatchers.ui
+        BaseExecutor<ReserveDetailStore.Intent, Unit, ReserveDetailStore.State, Result, ReserveDetailStore.Label>(
+            context = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
             action: Unit,
             getState: () -> ReserveDetailStore.State
         ) {
+            catchException {
+                dispatch(Result.Loading(true))
+                dispatch(
+                    Result.Reserve(
+                        reserveDetailInteractor.getReserveById(
+                            reserveDetailArguments.id
+                        )
+                    )
+                )
+                dispatch(Result.Loading(false))
+            }
         }
 
         override suspend fun executeIntent(
@@ -59,16 +73,23 @@ class ReserveDetailStoreFactory(
                 }
             }
         }
+
+        override fun handleError(throwable: Throwable) {
+            dispatch(Result.Loading(false))
+            publish(ReserveDetailStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+        }
     }
 
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
+        data class Reserve(val reserve: ReservesDomain) : Result()
     }
 
     private object ReducerImpl : Reducer<ReserveDetailStore.State, Result> {
         override fun ReserveDetailStore.State.reduce(result: Result) =
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
+                is Result.Reserve -> copy(reserve = result.reserve)
             }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.union_sync_impl.data.mapper
 
 import com.example.union_sync_api.entity.LocationSyncEntity
+import com.example.union_sync_api.entity.ReserveDetailSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.entity.FullReserve
 import com.example.union_sync_impl.entity.ReserveDb
@@ -25,7 +26,7 @@ fun CustomRemainsDto.toReserveDb(): ReserveDb {
     )
 }
 
-fun ReserveDb.toSyncEntity(locationSyncEntity: LocationSyncEntity): ReserveSyncEntity {
+fun ReserveDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?): ReserveSyncEntity {
     return ReserveSyncEntity(
         id = id,
         catalogItemName = catalogItemName,
@@ -60,5 +61,19 @@ fun FullReserve.toSyncEntity(locationSyncEntity: LocationSyncEntity?): ReserveSy
         receptionDocumentNumber = reserveDb.receptionDocumentNumber,
         unitPrice = reserveDb.unitPrice,
         locationSyncEntity = locationSyncEntity,
+    )
+}
+
+fun FullReserve.toDetailSyncEntity(locationSyncEntity: LocationSyncEntity?): ReserveDetailSyncEntity {
+    return ReserveDetailSyncEntity(
+        reserveSyncEntity = reserveDb.toSyncEntity(locationSyncEntity),
+        businessUnitSyncEntity = businessUnitDb?.toSyncEntity(),
+        locationSyncEntity = locationSyncEntity,
+        molSyncEntity = molDb?.toSyncEntity(),
+        nomenclatureSyncEntity = nomenclatureDb?.toSyncEntity(),
+        nomenclatureGroupSyncEntity = nomenclatureGroupDb?.toSyncEntity(),
+        orderSyncEntity = orderDb?.toSyncEntity(),
+        receptionItemCategorySyncEntity = receptionItemCategoryDb?.toSyncEntity(),
+        structuralSubdivisionSyncEntity = structuralSubdivisionDb?.toSyncEntity(),
     )
 }

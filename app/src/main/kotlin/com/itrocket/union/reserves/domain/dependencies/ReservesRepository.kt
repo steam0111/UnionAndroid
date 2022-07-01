@@ -14,4 +14,6 @@ interface ReservesRepository {
         receptionItemCategoryId: String? = null,
         textQuery: String? = null,
     ): List<ReservesDomain>
+
+    suspend fun getReserveById(id: String): ReservesDomain
 }

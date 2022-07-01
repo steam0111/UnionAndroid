@@ -36,7 +36,8 @@ object ReserveDetailModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args.reserveDetailComposeFragmentArgs
+                args.reserveDetailComposeFragmentArgs,
+                get()
             ).create()
         }
     }

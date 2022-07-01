@@ -2,10 +2,12 @@ package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.ReserveSyncApi
 import com.example.union_sync_api.entity.LocationSyncEntity
+import com.example.union_sync_api.entity.ReserveDetailSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_impl.dao.sqlReserveQuery
+import com.example.union_sync_impl.data.mapper.toDetailSyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.entity.location.LocationDb
@@ -37,6 +39,11 @@ class ReserveSyncApiImpl(
                 textQuery = textQuery,
             )
         ).map { it.toSyncEntity(getLocationSyncEntity(it.locationDb)) }
+    }
+
+    override suspend fun getById(id: String): ReserveDetailSyncEntity {
+        val fullReserve = reserveDao.getById(id)
+        return fullReserve.toDetailSyncEntity(getLocationSyncEntity(fullReserve.locationDb))
     }
 
     //TODO переделать на join

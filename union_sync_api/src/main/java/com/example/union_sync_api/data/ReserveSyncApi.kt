@@ -1,5 +1,6 @@
 package com.example.union_sync_api.data
 
+import com.example.union_sync_api.entity.ReserveDetailSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 
 interface ReserveSyncApi {
@@ -14,4 +15,6 @@ interface ReserveSyncApi {
         receptionItemCategoryId: String? = null,
         textQuery: String? = null,
     ): List<ReserveSyncEntity>
+
+    suspend fun getById(id: String): ReserveDetailSyncEntity
 }

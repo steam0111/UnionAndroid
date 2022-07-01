@@ -144,6 +144,13 @@
     <string name="reserves_unit_price">Цена за ед.</string>
     <string name="reserves_reception_document_number">№ документа получения</string>
 
+    <!-- Reserves Detail -->
+    <string name="reserves_detail_nomenclature">Номенклатура</string>
+    <string name="reserves_detail_nomenclature_group">Номенклатурная группа</string>
+    <string name="reserves_detail_order">№ Заказ</string>
+    <string name="reserves_detail_reception_item_category">Приемная категория</string>
+    <string name="reserves_detail_count">Количество</string>
+
     <!-- Documents -->
     <string name="documents_title">Документы %s</string>
     <string name="documents_main_assets">ОС</string>

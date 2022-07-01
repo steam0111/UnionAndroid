@@ -32,6 +32,7 @@ object ReservesModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
+                get(),
                 get()
             ).create()
         }

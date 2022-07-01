@@ -9,17 +9,17 @@ class FullReserve(
     @Embedded(prefix = "locations_")
     val locationDb: LocationDb?,
     @Embedded(prefix = "mol_")
-    val mol: EmployeeDb?,
+    val molDb: EmployeeDb?,
     @Embedded(prefix = " businessUnit_")
-    val businessUnit: OrganizationDb?,
+    val businessUnitDb: OrganizationDb?,
     @Embedded(prefix = "structuralSubdivision_")
-    val structuralSubdivision: DepartmentDb?,
+    val structuralSubdivisionDb: DepartmentDb?,
     @Embedded(prefix = "nomenclature_")
-    val nomenclature: NomenclatureDb?,
+    val nomenclatureDb: NomenclatureDb?,
     @Embedded(prefix = "nomenclatureGroup_")
-    val nomenclatureGroup: NomenclatureGroupDb?,
+    val nomenclatureGroupDb: NomenclatureGroupDb?,
     @Embedded(prefix = "order_")
-    val order: OrderDb?,
+    val orderDb: OrderDb?,
     @Embedded(prefix = "reception_item_category_")
-    val receptionItemCategory: ReceptionItemCategoryDb?
+    val receptionItemCategoryDb: ReceptionItemCategoryDb?
 )
