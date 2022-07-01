@@ -27,6 +27,7 @@ import com.itrocket.union.reserves.presentation.store.ReservesStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.ReservesItem
+import java.math.BigDecimal
 
 @Composable
 fun ReservesScreen(
@@ -124,7 +125,7 @@ fun ReservesScreenPreview() {
                         R.string.auth_main_title,
                         "таылватвлыавыалвыоалвыа"
                     )
-                ), itemsCount = 1200
+                ), itemsCount = 1200L
             ),
             ReservesDomain(
                 id = "2",
@@ -141,7 +142,7 @@ fun ReservesScreenPreview() {
                         "таылватвлыавыалвыоалвыа"
                     )
                 ),
-                itemsCount = 56
+                itemsCount = 1200L
             ),
             ReservesDomain(
                 id = "3",
@@ -158,7 +159,7 @@ fun ReservesScreenPreview() {
                         "таылватвлыавыалвыоалвыа"
                     )
                 ),
-                itemsCount = 167
+                itemsCount = 1200L
             )
         )
     ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})

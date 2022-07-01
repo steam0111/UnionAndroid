@@ -141,6 +141,8 @@
 
     <!-- Reserves -->
     <string name="reserves_title">Запасы</string>
+    <string name="reserves_unit_price">Цена за ед.</string>
+    <string name="reserves_reception_document_number">№ документа получения</string>
 
     <!-- Documents -->
     <string name="documents_title">Документы %s</string>

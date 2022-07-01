@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import com.example.union_sync_impl.entity.core.CatalogItemDb
 import com.example.union_sync_impl.entity.location.LocationDb
+import java.math.BigDecimal
 
 @Entity(
     foreignKeys = [ForeignKey(
@@ -59,7 +60,7 @@ class ReserveDb(
     val nomenclatureGroupId: String?,
     val businessUnitId: String?,
     val name: String?,
-    val count: Int?,
+    val count: Long?,
     val receptionItemCategoryId: String?,
     val structuralSubdivisionId: String?,
     val receptionDocumentNumber: String?,

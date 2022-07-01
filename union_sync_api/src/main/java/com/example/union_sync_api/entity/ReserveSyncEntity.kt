@@ -10,7 +10,7 @@ data class ReserveSyncEntity(
     val nomenclatureGroupId: String?,
     val businessUnitId: String,
     val name: String,
-    val count: Int?,
+    val count: Long?,
     val receptionItemCategoryId: String?,
     val structuralSubdivisionId: String?,
     val receptionDocumentNumber: String?,
