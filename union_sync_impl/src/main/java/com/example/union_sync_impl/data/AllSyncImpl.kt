@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.data
 
+import android.util.Log
 import com.example.union_sync_api.data.AllSyncApi
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.AccountingObjectStatusDao
@@ -13,10 +14,13 @@ import com.example.union_sync_impl.dao.LocationPathDao
 import com.example.union_sync_impl.dao.NetworkSyncDao
 import com.example.union_sync_impl.dao.NomenclatureDao
 import com.example.union_sync_impl.dao.NomenclatureGroupDao
+import com.example.union_sync_impl.dao.OrderDao
 import com.example.union_sync_impl.dao.OrganizationDao
 import com.example.union_sync_impl.dao.ProducerDao
 import com.example.union_sync_impl.dao.ProviderDao
+import com.example.union_sync_impl.dao.ReceptionItemCategoryDao
 import com.example.union_sync_impl.dao.RegionDao
+import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDb
 import com.example.union_sync_impl.data.mapper.toBranchesDb
 import com.example.union_sync_impl.data.mapper.toCounterpartyDb
@@ -27,10 +31,13 @@ import com.example.union_sync_impl.data.mapper.toLocationDb
 import com.example.union_sync_impl.data.mapper.toLocationTypeDb
 import com.example.union_sync_impl.data.mapper.toNomenclatureDb
 import com.example.union_sync_impl.data.mapper.toNomenclatureGroupDb
+import com.example.union_sync_impl.data.mapper.toOrderDb
 import com.example.union_sync_impl.data.mapper.toOrganizationDb
 import com.example.union_sync_impl.data.mapper.toProducerDb
 import com.example.union_sync_impl.data.mapper.toProviderDb
+import com.example.union_sync_impl.data.mapper.toReceptionItemCategoryDb
 import com.example.union_sync_impl.data.mapper.toRegionDb
+import com.example.union_sync_impl.data.mapper.toReserveDb
 import com.example.union_sync_impl.data.mapper.toStatusDb
 import com.example.union_sync_impl.entity.NetworkSyncDb
 import org.openapitools.client.custom_api.AccountingObjectApi
@@ -41,9 +48,12 @@ import org.openapitools.client.custom_api.EmployeeApi
 import org.openapitools.client.custom_api.EquipmentTypeApi
 import org.openapitools.client.custom_api.LocationApi
 import org.openapitools.client.custom_api.NomenclaturesApi
+import org.openapitools.client.custom_api.OrderApi
 import org.openapitools.client.custom_api.OrganizationApi
 import org.openapitools.client.custom_api.ProducerApi
+import org.openapitools.client.custom_api.ReceptionItemCategoryApi
 import org.openapitools.client.custom_api.RegionApi
+import org.openapitools.client.custom_api.ReserveApi
 import org.openapitools.client.models.CustomLocationDto
 import org.openapitools.client.models.CustomLocationsTypeDto
 
@@ -75,7 +85,13 @@ class AllSyncImpl(
     private val regionApi: RegionApi,
     private val regionDao: RegionDao,
     private val statusesDao: AccountingObjectStatusDao,
-    private val networkSyncDao: NetworkSyncDao
+    private val networkSyncDao: NetworkSyncDao,
+    private val orderDao: OrderDao,
+    private val reserveDao: ReserveDao,
+    private val receptionItemCategoryDao: ReceptionItemCategoryDao,
+    private val orderApi: OrderApi,
+    private val reserveApi: ReserveApi,
+    private val receptionItemCategoryApi: ReceptionItemCategoryApi
 ) : AllSyncApi {
 
     override suspend fun syncAll() {
@@ -95,6 +111,10 @@ class AllSyncImpl(
         syncLocations()
 
         syncAccountingObjects()
+
+        syncOrder()
+        syncReceptionCategoryItem()
+        syncReserves()
 
         networkSyncDao.insert(
             NetworkSyncDb(
@@ -232,6 +252,57 @@ class AllSyncImpl(
             providerDao.insertAll(objects.mapNotNull { it.extendedProvider?.toProviderDb() })
             statusesDao.insertAll(objects.mapNotNull { it.extendedAccountingObjectStatus?.toStatusDb() })
             accountingObjectsDao.insertAll(objects.map { it.toAccountingObjectDb() })
+        }
+    }
+
+    private suspend fun syncReserves() {
+        reserveApi.apiRemainsGet().list?.let { reserves ->
+            organizationDao.insertAll(
+                reserves.mapNotNull { it.extendedBusinessUnit?.toOrganizationDb() } +
+                        reserves.mapNotNull { it.extendedMol?.extendedOrganization?.toOrganizationDb() } +
+                        reserves.mapNotNull { it.extendedStructuralSubdivision?.extendedOrganization?.toOrganizationDb() }
+                            .distinctBy { it.id }
+            )
+
+            employeeDao.insertAll(
+                reserves.mapNotNull { it.extendedMol?.toEmployeeDb() }.distinctBy { it.id }
+            )
+
+            nomenclatureGroupDao.insertAll(
+                (
+                        reserves.mapNotNull { it.extendedNomenclatureGroup?.toNomenclatureGroupDb() } +
+                                reserves.mapNotNull { it.extendedNomenclature?.extendedNomenclatureGroup?.toNomenclatureGroupDb() }
+                        ).distinctBy { it.id }
+            )
+
+            nomenclatureDao.insertAll(reserves.mapNotNull { it.extendedNomenclature?.toNomenclatureDb() })
+            locationDao.insertAll(reserves.mapNotNull { it.extendedLocation?.toLocationDb() })
+            departmentDao.insertAll(reserves.mapNotNull { it.extendedStructuralSubdivision?.toDepartmentDb() })
+            receptionItemCategoryDao.insertAll(reserves.mapNotNull { it.extendedReceptionItemCategory?.toReceptionItemCategoryDb() })
+            orderDao.insertAll(reserves.mapNotNull { it.extendedOrder?.toOrderDb() })
+            try {
+                reserveDao.insertAll(reserves.map { it.toReserveDb() })
+            } catch (t: Throwable) {
+                Log.e("Thro", "", t)
+                throw t
+            }
+
+        }
+    }
+
+    private suspend fun syncOrder() {
+        kotlin.runCatching { // TODO: убрать когда понадобятся
+            orderApi.apiCatalogsOrderGet().list?.let { orders ->
+                orderDao.insertAll(orders.mapNotNull { it?.toOrderDb() })
+            }
+        }
+    }
+
+    private suspend fun syncReceptionCategoryItem() {
+        kotlin.runCatching {
+            receptionItemCategoryApi.apiCatalogsReceptionItemCategoryGet().list?.let { receptionCategoryItems ->
+                receptionItemCategoryDao.insertAll(receptionCategoryItems.mapNotNull { it?.toReceptionItemCategoryDb() })
+            }
         }
     }
 }
