@@ -63,7 +63,7 @@ class IdentifyStoreFactory(
                     publish(IdentifyStore.Label.ShowSave)
                     Log.d("SukhanovTest", "Click Identify Save Button")
                 }
-                    IdentifyStore.Intent.OnFilterClicked -> publish(
+                IdentifyStore.Intent.OnFilterClicked -> publish(
                     IdentifyStore.Label.ShowFilter(filterInteractor.getFilters())
                 )
                 is IdentifyStore.Intent.OnOSClicked -> {
@@ -71,13 +71,14 @@ class IdentifyStoreFactory(
 //                    publish(IdentifyStore.Label.ShowIdentifyItem(getState().bottomActionMenuTab))
 
 
-                    Log.d("SukhanovTest", "Click Identify Item Button" + intent.item.title )
+                    Log.d("SukhanovTest", "Click Identify Item Button" + intent.item.title)
                 }
 
                 IdentifyStore.Intent.OnDropClicked -> {
                     Log.d("SukhanovTest", "Click Identify Drop Button")
                 }
                 is IdentifyStore.Intent.OnSelectPage -> dispatch((Result.SelectPage(intent.selectedPage)))
+
                 IdentifyStore.Intent.OnReadingModeClicked -> {
                     Log.d("SukhanovTest", "Click ShowReadingMode Button")
                     publish(IdentifyStore.Label.ShowReadingMode(getState().readingMode))
@@ -85,8 +86,10 @@ class IdentifyStoreFactory(
 //                is IdentifyStore.Intent.OnItemClicked -> publish(
 //                    IdentifyStore.Label.ShowDetail(intent.item)
 //                )
-                is IdentifyStore.Intent.OnReservesClicked -> publish(
-                    IdentifyStore.Label.ShowDetail(intent.item)
+                is IdentifyStore.Intent.OnReservesClicked ->
+                    publish(IdentifyStore.Label.ShowDetail(getState().bottomActionMenuTab)
+
+//                    publish(                    IdentifyStore.Label.ShowDetail(intent.item)
                 )
             }
         }

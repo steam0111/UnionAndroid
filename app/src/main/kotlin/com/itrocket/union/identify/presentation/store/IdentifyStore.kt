@@ -165,17 +165,29 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
                 get() = ReadingModeComposeFragment()
         }
 
-        data class ShowIdentifyItem(val item: BottomActionMenuTab) : Label(),
-            ShowIdentifyBottomBar {
-            override val fragment: Fragment
-                get() = BottomActionMenuFragment()
+        data class ShowDetail(val bottomActionMenuTab: BottomActionMenuTab) : Label(),
+            ShowBottomSheetNavigationLabel {
             override val arguments: Bundle
                 get() = bundleOf(
-                    BottomActionMenuFragment.BOTTOMACTIONMENU_ARGS to BottomActionMenuArguments(item)
+                    BottomActionMenuFragment.BOTTOMACTIONMENU_ARGS to BottomActionMenuArguments(bottomActionMenuTab)
                 )
+
             override val containerId: Int = R.id.mainActivityNavHostFragment
 
+            override val fragment: Fragment
+                get() = BottomActionMenuFragment()
         }
+
+//        data class ShowDetail(val item: ReservesDomain) : Label(),
+//            ShowIdentifyBottomBar {
+//            override val fragment: Fragment
+//                get() = BottomActionMenuFragment()
+//            override val arguments: Bundle
+//                get() = bundleOf(
+//                    BottomActionMenuFragment.BOTTOMACTIONMENU_ARGS to BottomActionMenuArguments(item)
+//                )
+//            override val containerId: Int = R.id.mainActivityNavHostFragment
+//        }
 
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
         data class ShowFilter(val filters: List<FilterDomain>) : IdentifyStore.Label(),
@@ -184,13 +196,13 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
                 get() = IdentifyComposeFragmentDirections.toFilter(FilterArguments(filters))
         }
 
-        data class ShowDetail(val item: ReservesDomain) :
-            Label(), ForwardNavigationLabel {
-            override val directions: NavDirections
-                get() = IdentifyComposeFragmentDirections.toReserveDetail(
-                    ReserveDetailArguments(argument = item)
-                )
-        }
+//        data class ShowDetail(val item: ReservesDomain) :
+//            Label(), ForwardNavigationLabel {
+//            override val directions: NavDirections
+//                get() = IdentifyComposeFragmentDirections.toReserveDetail(
+//                    ReserveDetailArguments(argument = item)
+//                )
+//        }
     }
 }
 

@@ -5,6 +5,7 @@ import com.itrocket.union.accountingObjects.AccountingObjectModule
 import com.itrocket.union.authContainer.AuthContainerModule
 import com.itrocket.union.authMain.AuthMainModule
 import com.itrocket.union.authUser.AuthUserModule
+import com.itrocket.union.bottomActionMenu.BottomActionMenuModule
 import com.itrocket.union.container.ContainerModule
 import com.itrocket.union.core.CoreModule
 import com.itrocket.union.organizations.OrganizationModule
@@ -86,6 +87,7 @@ object Modules {
         CounterpartyModule.module,
         ProducerModule.module,
         EquipmentTypeModule.module,
-        ErrorModule.module
+        ErrorModule.module,
+        BottomActionMenuModule.module
     )
 }
