@@ -1,10 +1,10 @@
-package com.itrocket.union.reserves.domain.dependencies
+package com.example.union_sync_api.data
 
-import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import com.example.union_sync_api.entity.ReserveSyncEntity
 
-interface ReservesRepository {
+interface ReserveSyncApi {
 
-    suspend fun getReserves(
+    suspend fun getAll(
         organizationId: String? = null,
         molId: String? = null,
         structuralSubdivisionId: String? = null,
@@ -13,5 +13,5 @@ interface ReservesRepository {
         orderId: String? = null,
         receptionItemCategoryId: String? = null,
         textQuery: String? = null,
-    ): List<ReservesDomain>
+    ): List<ReserveSyncEntity>
 }

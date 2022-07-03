@@ -39,6 +39,7 @@ import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.psb1
 import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
+import java.math.BigDecimal
 
 @Composable
 fun ReserveDetailScreen(
@@ -172,7 +173,7 @@ fun ReserveDetailScreenPreview() {
                     R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 )
-            ), itemsCount = 1200
+            ), itemsCount = 1200L
         )
     ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
 }

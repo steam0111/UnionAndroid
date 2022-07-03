@@ -17,10 +17,13 @@ import com.example.union_sync_impl.dao.LocationPathDao
 import com.example.union_sync_impl.dao.NetworkSyncDao
 import com.example.union_sync_impl.dao.NomenclatureDao
 import com.example.union_sync_impl.dao.NomenclatureGroupDao
+import com.example.union_sync_impl.dao.OrderDao
 import com.example.union_sync_impl.dao.OrganizationDao
 import com.example.union_sync_impl.dao.ProducerDao
 import com.example.union_sync_impl.dao.ProviderDao
+import com.example.union_sync_impl.dao.ReceptionItemCategoryDao
 import com.example.union_sync_impl.dao.RegionDao
+import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_impl.entity.AccountingObjectDb
 import com.example.union_sync_impl.entity.AccountingObjectStatusDb
 import com.example.union_sync_impl.entity.BranchesDb
@@ -33,10 +36,13 @@ import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.entity.NetworkSyncDb
 import com.example.union_sync_impl.entity.NomenclatureDb
 import com.example.union_sync_impl.entity.NomenclatureGroupDb
+import com.example.union_sync_impl.entity.OrderDb
 import com.example.union_sync_impl.entity.OrganizationDb
 import com.example.union_sync_impl.entity.ProducerDb
 import com.example.union_sync_impl.entity.ProviderDb
+import com.example.union_sync_impl.entity.ReceptionItemCategoryDb
 import com.example.union_sync_impl.entity.RegionDb
+import com.example.union_sync_impl.entity.ReserveDb
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationPath
 import com.example.union_sync_impl.entity.location.LocationTypeDb
@@ -62,7 +68,10 @@ import com.example.union_sync_impl.utils.Converters
         LocationTypeDb::class,
         DocumentDb::class,
         ProviderDb::class,
-        AccountingObjectStatusDb::class
+        AccountingObjectStatusDb::class,
+        ReceptionItemCategoryDb::class,
+        OrderDb::class,
+        ReserveDb::class
     ], version = 52
 )
 @TypeConverters(Converters::class)
@@ -85,4 +94,7 @@ abstract class UnionDatabase : RoomDatabase() {
     abstract fun documentDao(): DocumentDao
     abstract fun providerDao(): ProviderDao
     abstract fun statusDao(): AccountingObjectStatusDao
+    abstract fun receptionItemCategoryDao(): ReceptionItemCategoryDao
+    abstract fun orderDao(): OrderDao
+    abstract fun reserveDao(): ReserveDao
 }

@@ -15,9 +15,12 @@ import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.ManageSyncDataApi
 import com.example.union_sync_api.data.NomenclatureGroupSyncApi
 import com.example.union_sync_api.data.NomenclatureSyncApi
+import com.example.union_sync_api.data.OrderSyncApi
 import com.example.union_sync_api.data.OrganizationSyncApi
 import com.example.union_sync_api.data.ProducerSyncApi
+import com.example.union_sync_api.data.ReceptionItemCategorySyncApi
 import com.example.union_sync_api.data.RegionSyncApi
+import com.example.union_sync_api.data.ReserveSyncApi
 import com.example.union_sync_impl.UnionDatabase
 import com.example.union_sync_impl.data.AccountingObjectStatusSyncApiImpl
 import com.example.union_sync_impl.data.AccountingObjectSyncApiImpl
@@ -33,10 +36,14 @@ import com.example.union_sync_impl.data.LocationSyncApiImpl
 import com.example.union_sync_impl.data.ManageSyncDataImpl
 import com.example.union_sync_impl.data.NomenclatureGroupSyncApiImpl
 import com.example.union_sync_impl.data.NomenclatureSyncApiImpl
+import com.example.union_sync_impl.data.OrderSyncApiImpl
 import com.example.union_sync_impl.data.OrganizationSyncApiImpl
 import com.example.union_sync_impl.data.ProducerSyncApiImpl
+import com.example.union_sync_impl.data.ReceptionCategoryItemSyncApiImpl
 import com.example.union_sync_impl.data.RegionSyncApiImpl
+import com.example.union_sync_impl.data.ReserveSyncApiImpl
 import org.koin.dsl.module
+import org.openapitools.client.custom_api.ReceptionItemCategoryApi
 
 object SyncModule {
     val module = module {
@@ -110,6 +117,22 @@ object SyncModule {
                 equipmentTypeDao = get()
             )
         }
+        factory<ReserveSyncApi> {
+            ReserveSyncApiImpl(
+                locationDao = get(),
+                reserveDao = get()
+            )
+        }
+        factory<ReceptionItemCategorySyncApi> {
+            ReceptionCategoryItemSyncApiImpl(
+                receptionItemCategoryDao = get()
+            )
+        }
+        factory<OrderSyncApi> {
+            OrderSyncApiImpl(
+                orderDao = get()
+            )
+        }
         factory<NomenclatureSyncApi> {
             NomenclatureSyncApiImpl(nomenclatureDao = get())
         }
@@ -118,6 +141,12 @@ object SyncModule {
         }
         factory<AllSyncApi> {
             AllSyncImpl(
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
                 get(),
                 get(),
                 get(),
@@ -207,6 +236,15 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().statusDao()
+        }
+        factory {
+            get<UnionDatabase>().reserveDao()
+        }
+        factory {
+            get<UnionDatabase>().receptionItemCategoryDao()
+        }
+        factory {
+            get<UnionDatabase>().orderDao()
         }
         factory<ManageSyncDataApi> {
             ManageSyncDataImpl(

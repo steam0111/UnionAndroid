@@ -19,9 +19,12 @@ import org.openapitools.client.custom_api.EmployeeApi
 import org.openapitools.client.custom_api.EquipmentTypeApi
 import org.openapitools.client.custom_api.LocationApi
 import org.openapitools.client.custom_api.NomenclaturesApi
+import org.openapitools.client.custom_api.OrderApi
 import org.openapitools.client.custom_api.OrganizationApi
 import org.openapitools.client.custom_api.ProducerApi
+import org.openapitools.client.custom_api.ReceptionItemCategoryApi
 import org.openapitools.client.custom_api.RegionApi
+import org.openapitools.client.custom_api.ReserveApi
 import org.openapitools.client.infrastructure.BigDecimalAdapter
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -132,6 +135,18 @@ object NetworkModule {
         single<EquipmentTypeApi> {
             get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
                 .create(EquipmentTypeApi::class.java)
+        }
+        single<ReserveApi> {
+            get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
+                .create(ReserveApi::class.java)
+        }
+        single<OrderApi> {
+            get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
+                .create(OrderApi::class.java)
+        }
+        single<ReceptionItemCategoryApi> {
+            get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
+                .create(ReceptionItemCategoryApi::class.java)
         }
     }
 }

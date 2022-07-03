@@ -20,7 +20,7 @@ object ReservesModule {
         }
 
         factory<ReservesRepository> {
-            ReservesRepositoryImpl()
+            ReservesRepositoryImpl(syncApi = get())
         }
 
         factory {
