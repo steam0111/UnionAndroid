@@ -7,7 +7,8 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types.newParameterizedType
 import java.lang.reflect.Type
-
+import java.math.BigDecimal
+import org.openapitools.client.infrastructure.BigDecimalAdapter
 
 class Converters {
 
