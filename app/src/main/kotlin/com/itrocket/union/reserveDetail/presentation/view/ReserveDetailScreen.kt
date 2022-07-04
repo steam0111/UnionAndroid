@@ -35,6 +35,7 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ExpandedInfoField
+import com.itrocket.union.ui.LoadingContent
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.psb1
 import com.itrocket.union.ui.white
@@ -69,17 +70,19 @@ fun ReserveDetailScreen(
                 bottom = appInsets.bottomInset.dp
             )
         ) {
-            Column(modifier = Modifier.padding(it)) {
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = state.reserve.title,
-                    fontWeight = FontWeight.Medium,
-                    style = AppTheme.typography.body1,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                ListInfo(listInfo = state.reserve.listInfo)
+            LoadingContent(isLoading = state.isLoading) {
+                Column(modifier = Modifier.padding(it)) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = state.reserve?.title.orEmpty(),
+                        fontWeight = FontWeight.Medium,
+                        style = AppTheme.typography.body1,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ListInfo(listInfo = state.reserve?.listInfo.orEmpty())
+                }
             }
         }
     }

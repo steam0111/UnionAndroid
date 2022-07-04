@@ -2,8 +2,10 @@ package com.itrocket.union.reserves.presentation.store
 
 import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
+import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
+import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectStore
 import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.filter.presentation.store.FilterArguments
 import com.itrocket.union.manual.ParamDomain
@@ -20,16 +22,21 @@ interface ReservesStore : Store<ReservesStore.Intent, ReservesStore.State, Reser
         object OnFilterClicked : Intent()
         object OnBackClicked : Intent()
         object OnSearchClicked : Intent()
+        data class OnFilterResult(val params: List<ParamDomain>) : Intent()
+        data class OnSearchTextChanged(val searchText: String) : Intent()
     }
 
     data class State(
         val isLoading: Boolean = false,
-        val reserves: List<ReservesDomain> = listOf()
+        val reserves: List<ReservesDomain> = listOf(),
+        val isShowSearch: Boolean = false,
+        val searchText: String = "",
+        val params: List<ParamDomain> = listOf()
     )
 
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
-        object ShowSearch : Label()
+        data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
         data class ShowFilter(val filters: List<ParamDomain>) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = ReservesComposeFragmentDirections.toFilter(
@@ -44,7 +51,7 @@ interface ReservesStore : Store<ReservesStore.Intent, ReservesStore.State, Reser
             Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = ReservesComposeFragmentDirections.toReserveDetail(
-                    ReserveDetailArguments(argument = item)
+                    ReserveDetailArguments(id = item.id)
                 )
         }
     }

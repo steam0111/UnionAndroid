@@ -1,11 +1,14 @@
 package com.example.union_sync_impl.data
 
+import android.util.Log
 import com.example.union_sync_api.data.ReserveSyncApi
 import com.example.union_sync_api.entity.LocationSyncEntity
+import com.example.union_sync_api.entity.ReserveDetailSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_impl.dao.sqlReserveQuery
+import com.example.union_sync_impl.data.mapper.toDetailSyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.entity.location.LocationDb
@@ -19,7 +22,6 @@ class ReserveSyncApiImpl(
         organizationId: String?,
         molId: String?,
         structuralSubdivisionId: String?,
-        nomenclatureId: String?,
         nomenclatureGroupId: String?,
         orderId: String?,
         receptionItemCategoryId: String?,
@@ -30,13 +32,39 @@ class ReserveSyncApiImpl(
                 organizationId = organizationId,
                 molId = molId,
                 structuralSubdivisionId = structuralSubdivisionId,
-                nomenclatureId = nomenclatureId,
                 nomenclatureGroupId = nomenclatureGroupId,
                 orderId = orderId,
                 receptionItemCategoryId = receptionItemCategoryId,
                 textQuery = textQuery,
+                isFilterCount = false
             )
         ).map { it.toSyncEntity(getLocationSyncEntity(it.locationDb)) }
+    }
+
+    override suspend fun getById(id: String): ReserveDetailSyncEntity {
+        val fullReserve = reserveDao.getById(id)
+        return fullReserve.toDetailSyncEntity(getLocationSyncEntity(fullReserve.locationDb))
+    }
+
+    override suspend fun getReservesFilterCount(
+        organizationId: String?,
+        molId: String?,
+        structuralSubdivisionId: String?,
+        nomenclatureGroupId: String?,
+        orderId: String?,
+        receptionItemCategoryId: String?
+    ): Int {
+        return reserveDao.getFilterCount(
+            sqlReserveQuery(
+                organizationId = organizationId,
+                molId = molId,
+                structuralSubdivisionId = structuralSubdivisionId,
+                nomenclatureGroupId = nomenclatureGroupId,
+                orderId = orderId,
+                receptionItemCategoryId = receptionItemCategoryId,
+                isFilterCount = true
+            )
+        )
     }
 
     //TODO переделать на join
