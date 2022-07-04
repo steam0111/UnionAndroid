@@ -20,9 +20,11 @@ data class DocumentDomain(
     val objectType: ObjectType,
     val documentType: DocumentTypeDomain,
     val params: List<ParamDomain>,
-    val date: Long,
+    val creationDate: Long,
+    val completionDate: Long? = null,
     val accountingObjects: List<AccountingObjectDomain> = listOf(),
     val reserves: List<ReservesDomain> = listOf(),
+    val documentStatusId: String,
 ) : Parcelable
 
 fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
@@ -36,10 +38,13 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
         exploitingId = exploitingId,
         documentType = documentType.name,
         accountingObjectsIds = accountingObjects.map { it.id },
-        date = date,
+        creationDate = creationDate,
         locationIds = locationIds,
         id = number.toLong(),
         objectType = objectType.name,
-        reservesIds = reserves.map { it.id }
+        reservesIds = reserves.map { it.id },
+        documentStatusId = documentStatusId,
+        completionDate = completionDate,
+        documentStatus = documentStatus.name
     )
 }

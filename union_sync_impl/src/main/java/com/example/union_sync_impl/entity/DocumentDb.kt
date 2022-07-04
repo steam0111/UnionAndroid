@@ -9,11 +9,14 @@ class DocumentDb(
     val id: Long = 0L,
     val organizationId: String,
     val molId: String,
+    val creationDate: Long,
+    val completionDate: Long? = null,
     val exploitingId: String? = null,
     val documentType: String,
     val objectType: String,
     val accountingObjectsIds: List<String>? = null,
     val reservesIds: List<String>? = null,
     val locationIds: List<String>? = null,
-    val date: Long
+    val documentStatus: String,
+    val documentStatusId: String,
 )

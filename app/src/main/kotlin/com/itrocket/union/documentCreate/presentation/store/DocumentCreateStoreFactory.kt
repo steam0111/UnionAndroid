@@ -8,8 +8,10 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.documentCreate.domain.DocumentAccountingObjectManager
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import com.itrocket.union.documents.domain.entity.DocumentDomain
+import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.LocationParamDomain
@@ -23,6 +25,7 @@ class DocumentCreateStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val documentCreateInteractor: DocumentCreateInteractor,
     private val documentCreateArguments: DocumentCreateArguments,
+    private val documentAccountingObjectManager: DocumentAccountingObjectManager,
     private val errorInteractor: ErrorInteractor
 ) {
     fun create(): DocumentCreateStore =
@@ -137,7 +140,22 @@ class DocumentCreateStoreFactory(
                         )
                     )
                 )
+                DocumentCreateStore.Intent.OnCompleteClicked -> conductDocument(getState())
             }
+        }
+
+        private suspend fun conductDocument(state: DocumentCreateStore.State) {
+            documentCreateInteractor.conductDocument(
+                document = state.document,
+                accountingObjects = state.accountingObjects,
+                params = state.params
+            )
+            documentAccountingObjectManager.changeAccountingObjectsAfterConduct(
+                documentTypeDomain = state.document.documentType,
+                accountingObjects = state.accountingObjects,
+                params = state.params
+            )
+            dispatch(Result.Document(state.document.copy(documentStatus = DocumentStatus.CONDUCTED)))
         }
 
         private suspend fun handleBarcodeAccountingObjects(
@@ -199,18 +217,18 @@ class DocumentCreateStoreFactory(
             }
         }
 
-        private fun onChooseClicked(getState: () -> DocumentCreateStore.State) {
+        private suspend fun onChooseClicked(getState: () -> DocumentCreateStore.State) {
             if (getState().objectType == ObjectType.MAIN_ASSETS) {
                 publish(
                     DocumentCreateStore.Label.ShowAccountingObjects(
-                        getState().params,
+                        documentCreateInteractor.getFilterParams(getState().params),
                         documentCreateInteractor.getAccountingObjectIds(getState().accountingObjects)
                     )
                 )
             } else {
                 publish(
                     DocumentCreateStore.Label.ShowReserves(
-                        getState().params,
+                        documentCreateInteractor.getFilterParams(getState().params),
                         documentCreateInteractor.getReservesIds(getState().reserves)
                     )
                 )

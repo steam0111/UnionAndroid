@@ -1,6 +1,6 @@
 package com.example.union_sync_api.entity
 
-class AccountingObjectSyncEntity(
+data class AccountingObjectSyncEntity(
     val id: String,
     var catalogItemName: String,
     val barcodeValue: String?,
@@ -13,6 +13,8 @@ class AccountingObjectSyncEntity(
     val commissioningDate: String?,
     val internalNumber: String?,
     val inventoryStatus: String? = null,
+    val nomenclatureId: String?,
+    val nomenclatureGroupId: String?,
     val status: AccountingObjectStatusSyncEntity?,
     val statusId: String?,
     val providerId: String?,
@@ -26,3 +28,13 @@ class AccountingObjectSyncEntity(
     val model: String?,
     val locationSyncEntity: LocationSyncEntity?
 )
+
+fun AccountingObjectSyncEntity.toAccountingObjectUpdateSyncEntity(): AccountingObjectUpdateSyncEntity {
+    return AccountingObjectUpdateSyncEntity(
+        id = id,
+        locationId = locationId,
+        exploitingId = exploitingEmployeeId,
+        status = status,
+        statusId = statusId,
+    )
+}

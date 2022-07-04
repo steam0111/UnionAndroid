@@ -3,7 +3,6 @@ package com.itrocket.union.documentCreate.presentation.view
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,23 +11,14 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,8 +45,6 @@ import com.google.accompanist.pager.rememberPagerState
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.ui.BaseTab
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStoreFactory
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
@@ -102,7 +90,8 @@ fun DocumentCreateScreen(
     onParamCrossClickListener: (ParamDomain) -> Unit,
     onSettingsClickListener: () -> Unit,
     onChooseClickListener: () -> Unit,
-    onPrevClickListener: () -> Unit
+    onPrevClickListener: () -> Unit,
+    onConductClickListener: () -> Unit,
 ) {
     val pagerState = rememberPagerState(state.selectedPage)
     val coroutineScope = rememberCoroutineScope()
@@ -118,7 +107,9 @@ fun DocumentCreateScreen(
                     onNextClickListener = onNextClickListener,
                     isNextEnabled = state.isNextEnabled,
                     coroutineScope = coroutineScope,
-                    pagerState = pagerState
+                    pagerState = pagerState,
+                    documentStatus = state.document.documentStatus,
+                    onConductClickListener = onConductClickListener
                 )
             }
         ),
@@ -141,7 +132,9 @@ fun DocumentCreateScreen(
                         onSettingsClickListener = onSettingsClickListener,
                         onChooseClickListener = onChooseClickListener,
                         coroutineScope = coroutineScope,
-                        pagerState = pagerState
+                        pagerState = pagerState,
+                        documentStatus = state.document.documentStatus,
+                        onConductClickListener = onConductClickListener
                     )
                     ObjectType.RESERVES -> ReservesScreen(
                         isLoading = state.isLoading,
@@ -152,7 +145,9 @@ fun DocumentCreateScreen(
                         onSettingsClickListener = onSettingsClickListener,
                         onChooseClickListener = onChooseClickListener,
                         coroutineScope = coroutineScope,
-                        pagerState = pagerState
+                        pagerState = pagerState,
+                        documentStatus = state.document.documentStatus,
+                        onConductClickListener = onConductClickListener
                     )
                 }
             }
@@ -242,6 +237,8 @@ private fun Content(
 @Composable
 private fun ParamContent(
     params: List<ParamDomain>,
+    onConductClickListener: () -> Unit,
+    documentStatus: DocumentStatus,
     onParamClickListener: (ParamDomain) -> Unit,
     onCrossClickListener: (ParamDomain) -> Unit,
     onSaveClickListener: () -> Unit,
@@ -256,7 +253,9 @@ private fun ParamContent(
             onNextClickListener = onNextClickListener,
             isNextEnabled = isNextEnabled,
             coroutineScope = coroutineScope,
-            pagerState = pagerState
+            pagerState = pagerState,
+            onConductClickListener = onConductClickListener,
+            documentStatus = documentStatus
         )
     }, content = {
         LazyColumn(
@@ -301,6 +300,8 @@ private fun AccountingObjectScreen(
     onSaveClickListener: () -> Unit,
     onChooseClickListener: () -> Unit,
     onPrevClickListener: () -> Unit,
+    onConductClickListener: () -> Unit,
+    documentStatus: DocumentStatus,
     coroutineScope: CoroutineScope,
     pagerState: PagerState
 ) {
@@ -314,6 +315,8 @@ private fun AccountingObjectScreen(
                 onPrevClickListener = onPrevClickListener,
                 coroutineScope = coroutineScope,
                 pagerState = pagerState,
+                onConductClickListener = onConductClickListener,
+                documentStatus = documentStatus
             )
         }, content = {
             when {
@@ -356,6 +359,8 @@ private fun ReservesScreen(
     onSaveClickListener: () -> Unit,
     onChooseClickListener: () -> Unit,
     onPrevClickListener: () -> Unit,
+    onConductClickListener: () -> Unit,
+    documentStatus: DocumentStatus,
     coroutineScope: CoroutineScope,
     pagerState: PagerState
 ) {
@@ -368,7 +373,9 @@ private fun ReservesScreen(
                 onChooseClickListener = onChooseClickListener,
                 onPrevClickListener = onPrevClickListener,
                 coroutineScope = coroutineScope,
-                pagerState = pagerState
+                pagerState = pagerState,
+                onConductClickListener = onConductClickListener,
+                documentStatus = documentStatus
             )
         }, content = {
             when {
@@ -459,16 +466,25 @@ private fun Empty(paddingValues: PaddingValues) {
 private fun ParamBottomBar(
     onNextClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
+    onConductClickListener: () -> Unit,
     isNextEnabled: Boolean,
     pagerState: PagerState,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    documentStatus: DocumentStatus
 ) {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
         BaseButton(
             text = stringResource(id = R.string.common_save),
             onClick = onSaveClickListener,
             modifier = Modifier.weight(1f),
-            enabled = isNextEnabled
+            enabled = isNextEnabled && documentStatus != DocumentStatus.CONDUCTED
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        BaseButton(
+            text = stringResource(R.string.common_conduct),
+            onClick = onConductClickListener,
+            modifier = Modifier.weight(1f),
+            enabled = documentStatus != DocumentStatus.CONDUCTED && isNextEnabled
         )
         Spacer(modifier = Modifier.width(16.dp))
 
@@ -494,29 +510,41 @@ private fun ListBottomBar(
     onSettingsClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
     onChooseClickListener: () -> Unit,
+    onConductClickListener: () -> Unit,
     onPrevClickListener: () -> Unit,
     coroutineScope: CoroutineScope,
-    pagerState: PagerState
+    pagerState: PagerState,
+    documentStatus: DocumentStatus
 ) {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
         if (isAccountingObject) {
             ImageButton(
                 imageId = R.drawable.ic_settings,
                 paddings = PaddingValues(12.dp),
-                onClick = onSettingsClickListener
+                onClick = onSettingsClickListener,
+                isEnabled = documentStatus != DocumentStatus.CONDUCTED
             )
             Spacer(modifier = Modifier.width(16.dp))
         }
         BaseButton(
             text = stringResource(R.string.common_choose),
             onClick = onChooseClickListener,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            enabled = documentStatus != DocumentStatus.CONDUCTED
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        BaseButton(
+            text = stringResource(R.string.common_conduct),
+            onClick = onConductClickListener,
+            modifier = Modifier.weight(1f),
+            enabled = documentStatus != DocumentStatus.CONDUCTED
         )
         Spacer(modifier = Modifier.width(16.dp))
         ImageButton(
             imageId = R.drawable.ic_save,
             paddings = PaddingValues(12.dp),
-            onClick = onSaveClickListener
+            onClick = onSaveClickListener,
+            isEnabled = documentStatus != DocumentStatus.CONDUCTED
         )
         Spacer(modifier = Modifier.width(16.dp))
         OutlinedImageButton(
@@ -556,7 +584,7 @@ fun DocumentCreateScreenPreview() {
                 documentStatus = DocumentStatus.CREATED,
                 objectType = ObjectType.MAIN_ASSETS,
                 documentType = DocumentTypeDomain.WRITE_OFF,
-                date = 123213213,
+                creationDate = 123213213,
                 accountingObjects = listOf(),
                 params = listOf(
                     ParamDomain(
@@ -569,9 +597,10 @@ fun DocumentCreateScreenPreview() {
                     ),
                     ParamDomain(
                         "1", "fsdsfsdf",
-                        type = DocumentTypeDomain.WRITE_OFF.manualType
+                        type = ManualType.LOCATION
                     ),
                 ),
+                documentStatusId = "d1"
             ),
             accountingObjects = listOf(),
             params = listOf(
@@ -585,9 +614,9 @@ fun DocumentCreateScreenPreview() {
                 ),
                 ParamDomain(
                     "1", "fsdsfsdf",
-                    type = DocumentTypeDomain.WRITE_OFF.manualType
+                    type = ManualType.LOCATION
                 ),
             ),
             objectType = ObjectType.MAIN_ASSETS
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 }

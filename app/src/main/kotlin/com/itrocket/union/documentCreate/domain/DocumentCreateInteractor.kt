@@ -6,6 +6,7 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documentCreate.domain.dependencies.DocumentCreateRepository
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentDomain
+import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.toUpdateSyncEntity
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectsDomain
@@ -42,6 +43,24 @@ class DocumentCreateInteractor(
                     accountingObjects = accountingObjects,
                     params = params,
                     reserves = reserves
+                )
+                    .toUpdateSyncEntity()
+            )
+        }
+    }
+
+    suspend fun conductDocument(
+        document: DocumentDomain,
+        accountingObjects: List<AccountingObjectDomain>,
+        params: List<ParamDomain>
+    ) {
+        withContext(coreDispatchers.io) {
+            documentRepository.updateDocument(
+                document.copy(
+                    accountingObjects = accountingObjects,
+                    params = params,
+                    documentStatus = DocumentStatus.CONDUCTED,
+                    documentStatusId = DocumentStatus.CONDUCTED.name
                 )
                     .toUpdateSyncEntity()
             )
@@ -145,6 +164,10 @@ class DocumentCreateInteractor(
             }
             newAccountingObjectBarcode + accountingObjects
         }
+    }
+
+    suspend fun getFilterParams(params: List<ParamDomain>) = withContext(coreDispatchers.io) {
+        params.filter { it.isFilter }
     }
 
     companion object {

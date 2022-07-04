@@ -2,6 +2,7 @@ package com.example.union_sync_api.data
 
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
 
 interface AccountingObjectSyncApi {
     suspend fun getAccountingObjects(
@@ -20,4 +21,6 @@ interface AccountingObjectSyncApi {
     ): List<AccountingObjectSyncEntity>
 
     suspend fun getAccountingObjectDetailById(id: String): AccountingObjectDetailSyncEntity
+
+    suspend fun updateAccountingObjects(accountingObjects: List<AccountingObjectUpdateSyncEntity>)
 }

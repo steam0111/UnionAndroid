@@ -33,16 +33,17 @@ fun DocumentView.DocumentItemView.toDocumentDomain() = DocumentDomain(
     number = number,
     documentStatus = documentStatus,
     objectType = objectType,
-    date = date,
+    creationDate = date,
     documentType = documentType,
-    params = params
+    params = params,
+    documentStatusId = documentStatus.name
 )
 
 fun DocumentDomain.toDocumentItemView(dateUi: String) = DocumentView.DocumentItemView(
     number = number,
     documentStatus = documentStatus,
     objectType = objectType,
-    date = date,
+    date = creationDate,
     documentType = documentType,
     params = params,
     dateUi = dateUi

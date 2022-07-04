@@ -21,6 +21,7 @@
     <string name="common_reading">Считывание</string>
     <string name="common_add">Добавить</string>
     <string name="common_choose">Выбор</string>
+    <string name="common_conduct">Провести</string>
     <string name="common_error">Что-то пошло не так…</string>
     <string name="common_name">Название</string>
     <string name="common_kpp">КПП</string>

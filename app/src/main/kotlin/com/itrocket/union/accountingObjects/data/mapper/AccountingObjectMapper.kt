@@ -45,5 +45,5 @@ fun AccountingObjectSyncEntity.map(): AccountingObjectDomain {
 fun AccountingObjectStatusSyncEntity.toDomainStatus(): ObjectStatus =
     ObjectStatus(
         text = name.orEmpty(),
-        type = id?.let { ObjectStatusType.valueOf(it) }
+        type = ObjectStatusType.valueOf(id)
     )

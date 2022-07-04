@@ -17,8 +17,10 @@ fun DocumentCreateSyncEntity.toDocumentDb(): DocumentDb {
         exploitingId = exploitingId,
         accountingObjectsIds = accountingObjectsIds,
         documentType = documentType,
-        date = System.currentTimeMillis(),
         locationIds = locationIds,
+        creationDate = System.currentTimeMillis(),
+        documentStatus = documentStatus,
+        documentStatusId = documentStatusId,
         reservesIds = reservesIds,
         objectType = objectType
     )
@@ -32,8 +34,11 @@ fun DocumentUpdateSyncEntity.toDocumentDb(): DocumentDb {
         exploitingId = exploitingId,
         accountingObjectsIds = accountingObjectsIds,
         documentType = documentType,
-        date = date,
         locationIds = locationIds,
+        documentStatusId = documentStatusId,
+        documentStatus = documentStatus,
+        creationDate = creationDate,
+        completionDate = completionDate,
         objectType = objectType,
         reservesIds = reservesIds
     )
@@ -49,7 +54,6 @@ fun DocumentDb.toDocumentSyncEntity(
 ): DocumentSyncEntity {
     return DocumentSyncEntity(
         id = id.toString(),
-        date = date,
         organizationSyncEntity = organizationSyncEntity,
         mol = mol,
         exploiting = exploiting,
@@ -58,7 +62,10 @@ fun DocumentDb.toDocumentSyncEntity(
         reserves = reserves.orEmpty(),
         organizationId = organizationId,
         locations = locations,
+        documentStatus = documentStatus,
+        documentStatusId = documentStatusId,
+        completionDate = completionDate,
+        creationDate = creationDate,
         objectType = objectType
-
     )
 }

@@ -1,6 +1,5 @@
 package com.example.union_sync_impl.data
 
-import android.util.Log
 import com.example.union_sync_api.data.ReserveSyncApi
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.ReserveDetailSyncEntity

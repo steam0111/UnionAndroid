@@ -35,6 +35,7 @@ interface DocumentCreateStore :
         object OnPrevClicked : Intent()
         object OnSettingsClicked : Intent()
         object OnChooseClicked : Intent()
+        object OnCompleteClicked : Intent()
         data class OnSelectPage(val selectedPage: Int) : Intent()
         data class OnParamClicked(val param: ParamDomain) : Intent()
         data class OnParamCrossClicked(val param: ParamDomain) : Intent()
@@ -43,10 +44,13 @@ interface DocumentCreateStore :
             Intent()
         data class OnAccountingObjectSelected(val accountingObjectDomain: AccountingObjectDomain) :
             Intent()
+
         data class OnNewAccountingObjectRfidsHandled(val rfids: List<String>) :
             Intent()
+
         data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :
             Intent()
+
         data class OnLocationChanged(val location: LocationResult) : Intent()
     }
 

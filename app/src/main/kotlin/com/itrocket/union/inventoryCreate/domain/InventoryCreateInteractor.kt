@@ -1,6 +1,5 @@
 package com.itrocket.union.inventoryCreate.domain
 
-import android.util.Log
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain

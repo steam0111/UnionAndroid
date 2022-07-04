@@ -1,13 +1,12 @@
 package com.itrocket.union.reserves.domain
 
-import android.util.Log
-import kotlinx.coroutines.withContext
-import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import kotlinx.coroutines.withContext
 
 class ReservesInteractor(
     private val repository: ReservesRepository,

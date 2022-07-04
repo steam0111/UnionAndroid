@@ -128,6 +128,9 @@ class DocumentCreateComposeFragment :
                 },
                 onNextClickListener = {
                     accept(DocumentCreateStore.Intent.OnNextClicked)
+                },
+                onConductClickListener = {
+                    accept(DocumentCreateStore.Intent.OnCompleteClicked)
                 }
             )
         }

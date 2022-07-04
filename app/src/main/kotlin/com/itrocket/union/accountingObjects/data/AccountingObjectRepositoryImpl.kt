@@ -1,6 +1,8 @@
 package com.itrocket.union.accountingObjects.data
 
 import com.example.union_sync_api.data.AccountingObjectSyncApi
+import com.example.union_sync_api.entity.AccountingObjectSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.data.mapper.map
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
@@ -39,6 +41,12 @@ class AccountingObjectRepositoryImpl(
             ).map { it.map() }
         }
 
+    override suspend fun getAccountingObjectsByIds(ids: List<String>): List<AccountingObjectSyncEntity> {
+        return withContext(coreDispatchers.io) {
+            syncApi.getAccountingObjects(accountingObjectsIds = ids)
+        }
+    }
+
     override suspend fun getAccountingObjectsByRfids(rfids: List<String>): List<AccountingObjectDomain> {
         return withContext(coreDispatchers.io) {
             syncApi.getAccountingObjects(rfids = rfids).map()
@@ -51,4 +59,9 @@ class AccountingObjectRepositoryImpl(
         }
     }
 
+    override suspend fun updateAccountingObjects(accountingObjects: List<AccountingObjectUpdateSyncEntity>) {
+        withContext(coreDispatchers.io) {
+            syncApi.updateAccountingObjects(accountingObjects = accountingObjects)
+        }
+    }
 }
