@@ -2,6 +2,8 @@ package com.itrocket.union.reserves.presentation.view
 
 import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
+import androidx.navigation.NavArgs
+import androidx.navigation.fragment.navArgs
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
@@ -14,6 +16,8 @@ class ReservesComposeFragment :
     BaseComposeFragment<ReservesStore.Intent, ReservesStore.State, ReservesStore.Label>(
         RESERVES_VIEW_MODEL_QUALIFIER
     ) {
+
+    override val navArgs: NavArgs by navArgs<ReservesComposeFragmentArgs>()
 
     override val onBackPressedCallback by lazy {
         object : OnBackPressedCallback(true) {
@@ -62,5 +66,10 @@ class ReservesComposeFragment :
                 }
             )
         }
+    }
+
+    companion object {
+        const val RESERVES_RESULT_LABEL = "reserves result"
+        const val RESERVES_RESULT_CODE = "reserves result code"
     }
 }

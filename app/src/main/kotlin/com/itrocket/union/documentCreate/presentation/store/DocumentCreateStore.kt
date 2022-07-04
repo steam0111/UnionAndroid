@@ -14,11 +14,14 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectArguments
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragmentDirections
 import com.itrocket.union.documents.domain.entity.DocumentDomain
+import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.location.presentation.store.LocationArguments
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
+import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import com.itrocket.union.reserves.presentation.store.ReservesArguments
 import com.itrocket.union.selectParams.presentation.store.SelectParamsArguments
 
 interface DocumentCreateStore :
@@ -36,6 +39,8 @@ interface DocumentCreateStore :
         data class OnParamClicked(val param: ParamDomain) : Intent()
         data class OnParamCrossClicked(val param: ParamDomain) : Intent()
         data class OnParamsChanged(val params: List<ParamDomain>) : Intent()
+        data class OnReserveSelected(val reserve: ReservesDomain) :
+            Intent()
         data class OnAccountingObjectSelected(val accountingObjectDomain: AccountingObjectDomain) :
             Intent()
         data class OnNewAccountingObjectRfidsHandled(val rfids: List<String>) :
@@ -47,7 +52,9 @@ interface DocumentCreateStore :
 
     data class State(
         val document: DocumentDomain,
-        val accountingObjects: List<AccountingObjectDomain>,
+        val accountingObjects: List<AccountingObjectDomain> = listOf(),
+        val reserves: List<ReservesDomain> = listOf(),
+        val objectType: ObjectType,
         val params: List<ParamDomain>,
         val isLoading: Boolean = false,
         val selectedPage: Int = 0,
@@ -76,6 +83,20 @@ interface DocumentCreateStore :
                     AccountingObjectArguments(
                         params = params,
                         selectedAccountingObjectIds = selectedAccountingObjectIds
+                    )
+                )
+        }
+
+        data class ShowReserves(
+            val params: List<ParamDomain>,
+            val selectedReserveIds: List<String>
+        ) : Label(),
+            ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = DocumentCreateComposeFragmentDirections.toReserves(
+                    ReservesArguments(
+                        params = params,
+                        selectedReservesIds = selectedReserveIds
                     )
                 )
         }

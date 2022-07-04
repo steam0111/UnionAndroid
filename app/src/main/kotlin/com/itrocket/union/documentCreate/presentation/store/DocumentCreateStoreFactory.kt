@@ -32,7 +32,9 @@ class DocumentCreateStoreFactory(
                 initialState = DocumentCreateStore.State(
                     document = documentCreateArguments.document,
                     accountingObjects = documentCreateArguments.document.accountingObjects,
-                    params = documentCreateArguments.document.params
+                    params = documentCreateArguments.document.params,
+                    reserves = documentCreateArguments.document.reserves,
+                    objectType = documentCreateArguments.document.objectType
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
@@ -57,6 +59,7 @@ class DocumentCreateStoreFactory(
                 )
                 dispatch(Result.Document(document))
                 dispatch(Result.AccountingObjects(document.accountingObjects))
+                dispatch(Result.Reserves(document.reserves))
                 dispatch(Result.Params(document.params))
             }
             dispatch(Result.Loading(false))
@@ -69,12 +72,7 @@ class DocumentCreateStoreFactory(
         ) {
             when (intent) {
                 DocumentCreateStore.Intent.OnBackClicked -> publish(DocumentCreateStore.Label.GoBack)
-                DocumentCreateStore.Intent.OnChooseClicked -> publish(
-                    DocumentCreateStore.Label.ShowAccountingObjects(
-                        getState().params,
-                        documentCreateInteractor.getAccountingObjectIds(getState().accountingObjects)
-                    )
-                )
+                DocumentCreateStore.Intent.OnChooseClicked -> onChooseClicked(getState)
                 DocumentCreateStore.Intent.OnDropClicked -> {
                     changeParams(getState().document.params, getState)
                     dispatch(Result.AccountingObjects(getState().document.accountingObjects))
@@ -131,6 +129,14 @@ class DocumentCreateStoreFactory(
                     intent.rfids,
                     getState().accountingObjects
                 )
+                is DocumentCreateStore.Intent.OnReserveSelected -> dispatch(
+                    Result.Reserves(
+                        documentCreateInteractor.addReserve(
+                            reserves = getState().reserves,
+                            reserve = intent.reserve
+                        )
+                    )
+                )
             }
         }
 
@@ -169,15 +175,12 @@ class DocumentCreateStoreFactory(
         }
 
         private suspend fun saveDocument(getState: () -> DocumentCreateStore.State) {
-            if (getState().document.objectType == ObjectType.MAIN_ASSETS) {
-                documentCreateInteractor.saveDocument(
-                    accountingObjects = getState().accountingObjects,
-                    document = getState().document,
-                    params = getState().params
-                )
-            } else {
-                //no-op
-            }
+            documentCreateInteractor.saveDocument(
+                accountingObjects = getState().accountingObjects,
+                document = getState().document,
+                params = getState().params,
+                reserves = getState().reserves
+            )
             publish(DocumentCreateStore.Label.GoBack)
         }
 
@@ -191,6 +194,24 @@ class DocumentCreateStoreFactory(
                     DocumentCreateStore.Label.ShowParamSteps(
                         currentStep = params.indexOf(param) + 1,
                         params = params.filter { it.type != ManualType.LOCATION }
+                    )
+                )
+            }
+        }
+
+        private fun onChooseClicked(getState: () -> DocumentCreateStore.State) {
+            if (getState().objectType == ObjectType.MAIN_ASSETS) {
+                publish(
+                    DocumentCreateStore.Label.ShowAccountingObjects(
+                        getState().params,
+                        documentCreateInteractor.getAccountingObjectIds(getState().accountingObjects)
+                    )
+                )
+            } else {
+                publish(
+                    DocumentCreateStore.Label.ShowReserves(
+                        getState().params,
+                        documentCreateInteractor.getReservesIds(getState().reserves)
                     )
                 )
             }
@@ -218,7 +239,7 @@ class DocumentCreateStoreFactory(
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.AccountingObjects -> copy(accountingObjects = result.accountingObjects)
                 is Result.Params -> copy(params = result.params)
-                is Result.Reserves -> copy(document = document.copy(reserves = result.reserves))
+                is Result.Reserves -> copy(reserves = result.reserves)
                 is Result.SelectPage -> copy(selectedPage = result.page)
                 is Result.Enabled -> copy(isNextEnabled = result.enabled)
                 is Result.Document -> copy(document = result.document)

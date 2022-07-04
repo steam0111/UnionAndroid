@@ -38,6 +38,8 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
         accountingObjectsIds = accountingObjects.map { it.id },
         date = date,
         locationIds = locationIds,
-        id = number.toLong()
+        id = number.toLong(),
+        objectType = objectType.name,
+        reservesIds = reserves.map { it.id }
     )
 }

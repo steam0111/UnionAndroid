@@ -12,6 +12,7 @@ import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjec
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import kotlinx.coroutines.withContext
 
 class DocumentCreateInteractor(
@@ -32,11 +33,16 @@ class DocumentCreateInteractor(
     suspend fun saveDocument(
         document: DocumentDomain,
         accountingObjects: List<AccountingObjectDomain>,
+        reserves: List<ReservesDomain>,
         params: List<ParamDomain>
     ) {
         withContext(coreDispatchers.io) {
             documentRepository.updateDocument(
-                document.copy(accountingObjects = accountingObjects, params = params)
+                document.copy(
+                    accountingObjects = accountingObjects,
+                    params = params,
+                    reserves = reserves
+                )
                     .toUpdateSyncEntity()
             )
         }
@@ -79,6 +85,9 @@ class DocumentCreateInteractor(
     fun getAccountingObjectIds(accountingObjects: List<AccountingObjectDomain>): List<String> =
         accountingObjects.map { it.id }
 
+    fun getReservesIds(reserves: List<ReservesDomain>): List<String> =
+        reserves.map { it.id }
+
     fun isParamsValid(params: List<ParamDomain>): Boolean =
         params.all { it.value.isNotBlank() || it.type == ManualType.LOCATION }
 
@@ -88,6 +97,15 @@ class DocumentCreateInteractor(
     ): List<AccountingObjectDomain> {
         val mutableList = accountingObjects.toMutableList()
         mutableList.add(accountingObjectDomain)
+        return mutableList
+    }
+
+    fun addReserve(
+        reserves: List<ReservesDomain>,
+        reserve: ReservesDomain
+    ): List<ReservesDomain> {
+        val mutableList = reserves.toMutableList()
+        mutableList.add(reserve)
         return mutableList
     }
 

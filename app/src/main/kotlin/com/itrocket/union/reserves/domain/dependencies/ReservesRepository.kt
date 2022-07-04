@@ -7,6 +7,7 @@ interface ReservesRepository {
 
     suspend fun getReserves(
         params: List<ParamDomain>? = null,
+        reservesIds: List<String>? = null,
         textQuery: String? = null,
     ): List<ReservesDomain>
 

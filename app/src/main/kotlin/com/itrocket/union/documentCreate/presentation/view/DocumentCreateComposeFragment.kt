@@ -11,10 +11,10 @@ import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectR
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
 import com.itrocket.union.documentCreate.DocumentCreateModule.DOCUMENTCREATE_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
-import com.itrocket.union.inventory.presentation.store.InventoryStore
-import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.location.presentation.view.LocationComposeFragment
+import com.itrocket.union.reserves.presentation.store.ReservesResult
+import com.itrocket.union.reserves.presentation.view.ReservesComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 import com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFragment
 import kotlinx.coroutines.Dispatchers
@@ -52,6 +52,17 @@ class DocumentCreateComposeFragment :
                     (it as AccountingObjectResult?)?.accountingObject?.let {
                         accept(
                             DocumentCreateStore.Intent.OnAccountingObjectSelected(it)
+                        )
+                    }
+                }
+            ),
+            FragmentResult(
+                resultCode = ReservesComposeFragment.RESERVES_RESULT_CODE,
+                resultLabel = ReservesComposeFragment.RESERVES_RESULT_LABEL,
+                resultAction = {
+                    (it as ReservesResult?)?.reserve?.let {
+                        accept(
+                            DocumentCreateStore.Intent.OnReserveSelected(it)
                         )
                     }
                 }

@@ -1,16 +1,20 @@
 package com.example.union_sync_impl.data
 
+import android.util.Log
 import com.example.union_sync_api.data.DocumentSyncApi
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
+import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.DocumentDao
 import com.example.union_sync_impl.dao.LocationDao
+import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.dao.sqlDocumentsQuery
+import com.example.union_sync_impl.dao.sqlReserveQuery
 import com.example.union_sync_impl.data.mapper.toDocumentDb
 import com.example.union_sync_impl.data.mapper.toDocumentSyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationShortSyncEntity
@@ -24,7 +28,8 @@ import kotlinx.coroutines.flow.map
 class DocumentSyncApiImpl(
     private val documentDao: DocumentDao,
     private val locationDao: LocationDao,
-    private val accountingObjectDao: AccountingObjectDao
+    private val accountingObjectDao: AccountingObjectDao,
+    private val reserveDao: ReserveDao
 ) : DocumentSyncApi {
     override suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): Long {
         return documentDao.insert(documentCreateSyncEntity.toDocumentDb())
@@ -91,12 +96,17 @@ class DocumentSyncApiImpl(
                     it.toSyncEntity(getLocationSyncEntity(it.locationDb))
                 }
 
+        val reserves: List<ReserveSyncEntity> =
+            reserveDao.getAll(sqlReserveQuery(reservesIds = fullDocument.documentDb.reservesIds))
+                .map { it.toSyncEntity(getLocationSyncEntity(it.locationDb)) }
+
         return fullDocument.documentDb.toDocumentSyncEntity(
             organizationSyncEntity = fullDocument.organizationDb?.toSyncEntity(),
             mol = fullDocument.molDb?.toSyncEntity(),
             exploiting = fullDocument.exploitingDb?.toSyncEntity(),
             locations = locations,
-            accountingObjects = accountingObjects
+            accountingObjects = accountingObjects,
+            reserves = reserves
         )
     }
 

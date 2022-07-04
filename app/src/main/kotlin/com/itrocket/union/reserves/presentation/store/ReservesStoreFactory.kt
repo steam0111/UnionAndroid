@@ -22,14 +22,17 @@ class ReservesStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val reservesInteractor: ReservesInteractor,
     private val errorInteractor: ErrorInteractor,
-    private val searchManager: SearchManager
+    private val searchManager: SearchManager,
+    private val reservesArguments: ReservesArguments?
 ) {
 
     fun create(): ReservesStore =
         object : ReservesStore,
             Store<ReservesStore.Intent, ReservesStore.State, ReservesStore.Label> by storeFactory.create(
                 name = "ReservesStore",
-                initialState = ReservesStore.State(),
+                initialState = ReservesStore.State(
+                    params = reservesArguments?.params.orEmpty()
+                ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
@@ -65,9 +68,7 @@ class ReservesStoreFactory(
                         }
                     )
                 )
-                is ReservesStore.Intent.OnItemClicked -> publish(
-                    ReservesStore.Label.ShowDetail(intent.item)
-                )
+                is ReservesStore.Intent.OnItemClicked -> onItemClicked(intent.item)
                 ReservesStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is ReservesStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
@@ -80,6 +81,18 @@ class ReservesStoreFactory(
             }
         }
 
+        private fun onItemClicked(item: ReservesDomain) {
+            if (reservesArguments?.params.isNullOrEmpty()) {
+                publish(
+                    ReservesStore.Label.ShowDetail(item)
+                )
+            } else {
+                publish(
+                    ReservesStore.Label.GoBack(ReservesResult(item))
+                )
+            }
+        }
+
         private suspend fun listenReserves(params: List<ParamDomain>, searchText: String) {
             catchException {
                 dispatch(Result.Loading(true))
@@ -87,7 +100,8 @@ class ReservesStoreFactory(
                     Result.Reserves(
                         reservesInteractor.getReserves(
                             searchText = searchText,
-                            params = params
+                            params = params,
+                            selectedReservesIds = reservesArguments?.selectedReservesIds.orEmpty()
                         )
                     )
                 )
@@ -101,7 +115,7 @@ class ReservesStoreFactory(
                 dispatch(Result.SearchText(""))
                 searchManager.emit("")
             } else {
-                publish(ReservesStore.Label.GoBack)
+                publish(ReservesStore.Label.GoBack())
             }
         }
 

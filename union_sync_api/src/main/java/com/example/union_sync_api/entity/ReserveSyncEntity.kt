@@ -8,7 +8,7 @@ data class ReserveSyncEntity(
     val orderId: String?,
     val nomenclatureId: String?,
     val nomenclatureGroupId: String?,
-    val businessUnitId: String,
+    val businessUnitId: String?,
     val name: String,
     val count: Long?,
     val receptionItemCategoryId: String?,
