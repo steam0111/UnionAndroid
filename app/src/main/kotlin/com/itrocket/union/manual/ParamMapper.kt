@@ -8,6 +8,7 @@ import com.example.union_sync_api.entity.EquipmentTypeSyncEntity
 import com.example.union_sync_api.entity.NomenclatureGroupSyncEntity
 import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_api.entity.ProducerSyncEntity
+import com.example.union_sync_api.entity.ReceptionItemCategorySyncEntity
 
 fun OrganizationSyncEntity.toParam() = ParamDomain(
     id = id,
@@ -55,4 +56,10 @@ fun NomenclatureGroupSyncEntity.toParam() = ParamDomain(
     id = id,
     value = name,
     type = ManualType.NOMENCLATURE_GROUP
+)
+
+fun ReceptionItemCategorySyncEntity.toParam() = ParamDomain(
+    id = id,
+    value = name,
+    type = ManualType.RECEPTION_CATEGORY
 )

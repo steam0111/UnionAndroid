@@ -21,4 +21,6 @@ interface SelectParamsRepository {
     suspend fun getProducers(textQuery: String?): Flow<List<ParamDomain>>
 
     suspend fun getNomenclatureGroup(textQuery: String?): Flow<List<ParamDomain>>
+
+    suspend fun getReceptionCategory(textQuery: String?): Flow<List<ParamDomain>>
 }

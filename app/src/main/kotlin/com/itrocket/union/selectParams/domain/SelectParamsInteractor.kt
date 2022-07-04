@@ -24,6 +24,7 @@ class SelectParamsInteractor(
             ManualType.PRODUCER -> getProducers(searchText)
             ManualType.EQUIPMENT_TYPE -> getEquipmentTypes(searchText)
             ManualType.NOMENCLATURE_GROUP -> getNomenclatureGroup(searchText)
+            ManualType.RECEPTION_CATEGORY -> getReceptionCategory(searchText)
             else -> flow { }
         }
 
@@ -88,6 +89,10 @@ class SelectParamsInteractor(
 
     private suspend fun getNomenclatureGroup(searchText: String): Flow<List<ParamDomain>> {
         return selectParamsRepository.getNomenclatureGroup(textQuery = searchText)
+    }
+
+    private suspend fun getReceptionCategory(searchText: String): Flow<List<ParamDomain>> {
+        return selectParamsRepository.getReceptionCategory(textQuery = searchText)
     }
 
     companion object {

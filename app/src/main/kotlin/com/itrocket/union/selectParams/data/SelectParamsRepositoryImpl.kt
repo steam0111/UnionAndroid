@@ -8,6 +8,7 @@ import com.example.union_sync_api.data.EquipmentTypeSyncApi
 import com.example.union_sync_api.data.NomenclatureGroupSyncApi
 import com.example.union_sync_api.data.OrganizationSyncApi
 import com.example.union_sync_api.data.ProducerSyncApi
+import com.example.union_sync_api.data.ReceptionItemCategorySyncApi
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
@@ -28,6 +29,7 @@ class SelectParamsRepositoryImpl(
     private val producerSyncApi: ProducerSyncApi,
     private val providerSyncApi: CounterpartySyncApi,
     private val nomenclatureGroupSyncApi: NomenclatureGroupSyncApi,
+    private val receptionItemCategorySyncApi: ReceptionItemCategorySyncApi,
     private val coreDispatchers: CoreDispatchers
 ) : SelectParamsRepository {
 
@@ -39,7 +41,10 @@ class SelectParamsRepositoryImpl(
         }.flowOn(coreDispatchers.io)
     }
 
-    override suspend fun getEmployees(type: ManualType, textQuery: String?): Flow<List<ParamDomain>> {
+    override suspend fun getEmployees(
+        type: ManualType,
+        textQuery: String?
+    ): Flow<List<ParamDomain>> {
         return flow {
             emit(employeeSyncApi.getEmployees(textQuery = textQuery).map { it.toParam(type) })
         }.flowOn(coreDispatchers.io)
@@ -77,7 +82,15 @@ class SelectParamsRepositoryImpl(
 
     override suspend fun getNomenclatureGroup(textQuery: String?): Flow<List<ParamDomain>> {
         return flow {
-            emit(nomenclatureGroupSyncApi.getNomenclatureGroups(textQuery = textQuery).map { it.toParam() })
+            emit(
+                nomenclatureGroupSyncApi.getNomenclatureGroups(textQuery = textQuery)
+                    .map { it.toParam() })
+        }.flowOn(coreDispatchers.io)
+    }
+
+    override suspend fun getReceptionCategory(textQuery: String?): Flow<List<ParamDomain>> {
+        return flow {
+            emit(receptionItemCategorySyncApi.getAll(textQuery = textQuery).map { it.toParam() })
         }.flowOn(coreDispatchers.io)
     }
 }

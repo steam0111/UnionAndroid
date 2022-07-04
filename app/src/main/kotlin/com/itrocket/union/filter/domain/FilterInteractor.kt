@@ -15,6 +15,7 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
 import com.itrocket.union.nomenclature.domain.dependencies.NomenclatureRepository
 import com.itrocket.union.regions.domain.dependencies.RegionRepository
+import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.firstOrNull
@@ -29,7 +30,8 @@ class FilterInteractor(
     private val regionRepository: RegionRepository,
     private val coreDispatchers: CoreDispatchers,
     private val documentRepository: DocumentRepository,
-    private val inventoriesRepository: InventoryRepository
+    private val inventoriesRepository: InventoryRepository,
+    private val reservesRepository: ReservesRepository
 ) {
     fun getFilters() = repository.getFilters()
 
@@ -100,6 +102,9 @@ class FilterInteractor(
             }
             CatalogType.INVENTORIES -> {
                 inventoriesRepository.getInventories(params = params).firstOrNull()?.count() ?: 0
+            }
+            CatalogType.RESERVES -> {
+                reservesRepository.getReservesFilterCount(params = params)
             }
             else -> 0
         }

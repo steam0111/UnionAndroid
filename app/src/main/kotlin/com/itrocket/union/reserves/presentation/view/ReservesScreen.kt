@@ -25,9 +25,8 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.reserves.presentation.store.ReservesStore
 import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.ReservesItem
-import java.math.BigDecimal
+import com.itrocket.union.ui.SearchToolbar
 
 @Composable
 fun ReservesScreen(
@@ -36,7 +35,8 @@ fun ReservesScreen(
     onBackClickListener: () -> Unit,
     onSearchClickListener: () -> Unit,
     onFilterClickListener: () -> Unit,
-    onReservesListener: (ReservesDomain) -> Unit
+    onReservesListener: (ReservesDomain) -> Unit,
+    onSearchTextChanged: (String) -> Unit
 ) {
     AppTheme {
         Column(
@@ -44,11 +44,14 @@ fun ReservesScreen(
                 .fillMaxSize()
                 .padding(top = appInsets.topInset.dp)
         ) {
-            BlackToolbar(
+            SearchToolbar(
                 title = stringResource(id = R.string.reserves_title),
                 onBackClickListener = onBackClickListener,
                 onSearchClickListener = onSearchClickListener,
-                onFilterClickListener = onFilterClickListener
+                onFilterClickListener = onFilterClickListener,
+                onSearchTextChanged = onSearchTextChanged,
+                isShowSearch = state.isShowSearch,
+                searchText = state.searchText
             )
             when {
                 state.isLoading -> {
@@ -162,5 +165,5 @@ fun ReservesScreenPreview() {
                 itemsCount = 1200L
             )
         )
-    ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
+    ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {})
 }
