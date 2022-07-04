@@ -7,14 +7,16 @@ import kotlinx.parcelize.Parcelize
 open class ParamDomain(
     val id: String? = null,
     val value: String,
-    val type: ManualType
+    val type: ManualType,
+    val isFilter: Boolean = true
 ) : Parcelable {
     fun copy(
         id: String? = this.id,
         value: String = this.value,
-        type: ManualType = this.type
+        type: ManualType = this.type,
+        isFilter: Boolean = this.isFilter
     ): ParamDomain {
-        return ParamDomain(id = id, value = value, type = type)
+        return ParamDomain(id = id, value = value, type = type, isFilter = isFilter)
     }
 }
 
@@ -69,6 +71,12 @@ fun List<ParamDomain>.filterNotEmpty(): List<ParamDomain> {
 @Parcelize
 data class LocationParamDomain(
     val ids: List<String>,
-    val values: List<String>
+    val values: List<String>,
+    val filtered: Boolean = true
 ) : Parcelable,
-    ParamDomain(id = ids.toString(), value = values.joinToString(", "), type = ManualType.LOCATION)
+    ParamDomain(
+        id = ids.toString(),
+        value = values.joinToString(", "),
+        type = ManualType.LOCATION,
+        isFilter = filtered
+    )

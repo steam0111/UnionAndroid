@@ -3,11 +3,14 @@ package com.example.union_sync_impl.data
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
+import com.example.union_sync_impl.data.mapper.toAccountingObjectDb
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDetailSyncEntity
+import com.example.union_sync_impl.data.mapper.toAccountingObjectUpdate
 import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.entity.location.LocationDb
@@ -58,6 +61,10 @@ class AccountingObjectSyncApiImpl(
         val fullAccountingObjectDb = accountingObjectsDao.getById(id)
         val location = getLocationSyncEntity(fullAccountingObjectDb.locationDb)
         return fullAccountingObjectDb.toAccountingObjectDetailSyncEntity(location)
+    }
+
+    override suspend fun updateAccountingObjects(accountingObjects: List<AccountingObjectUpdateSyncEntity>) {
+        accountingObjectsDao.update(accountingObjects.map { it.toAccountingObjectUpdate() })
     }
 
     //TODO переделать на join

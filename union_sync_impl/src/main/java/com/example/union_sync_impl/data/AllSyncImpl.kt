@@ -1,6 +1,5 @@
 package com.example.union_sync_impl.data
 
-import android.util.Log
 import com.example.union_sync_api.data.AllSyncApi
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.AccountingObjectStatusDao
@@ -280,12 +279,7 @@ class AllSyncImpl(
             departmentDao.insertAll(reserves.mapNotNull { it.extendedStructuralSubdivision?.toDepartmentDb() })
             receptionItemCategoryDao.insertAll(reserves.mapNotNull { it.extendedReceptionItemCategory?.toReceptionItemCategoryDb() })
             orderDao.insertAll(reserves.mapNotNull { it.extendedOrder?.toOrderDb() })
-            try {
-                reserveDao.insertAll(reserves.map { it.toReserveDb() })
-            } catch (t: Throwable) {
-                Log.e("Thro", "", t)
-                throw t
-            }
+            reserveDao.insertAll(reserves.map { it.toReserveDb() })
 
         }
     }

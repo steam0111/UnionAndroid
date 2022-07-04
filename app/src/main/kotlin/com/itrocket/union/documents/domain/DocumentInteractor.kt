@@ -7,6 +7,7 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentDomain
+import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
@@ -49,12 +50,12 @@ class DocumentInteractor(
         listType: ObjectType
     ): DocumentDomain {
         return withContext(coreDispatchers.io) {
-            val exploitingId = if (type.manualType == ManualType.EXPLOITING) {
+            val exploitingId = if (type.manualTypes.contains(ManualType.EXPLOITING)) {
                 ""
             } else {
                 null
             }
-            val locationIds = if (type.manualType == ManualType.LOCATION) {
+            val locationIds = if (type.manualTypes.contains(ManualType.LOCATION)) {
                 listOf<String>()
             } else {
                 null
@@ -67,6 +68,9 @@ class DocumentInteractor(
                     documentType = type.name,
                     accountingObjectsIds = listOf(),
                     locationIds = locationIds,
+                    creationDate = System.currentTimeMillis(),
+                    documentStatus = DocumentStatus.CREATED.name,
+                    documentStatusId = DocumentStatus.CREATED.name,
                     reservesIds = listOf(),
                     objectType = listType.name
                 )
@@ -80,7 +84,7 @@ class DocumentInteractor(
             documents.map {
                 val documentViews = arrayListOf<DocumentView>()
                 it.groupBy {
-                    getStringDateFromMillis(it.date)
+                    getStringDateFromMillis(it.creationDate)
                 }.forEach {
                     val documentDateType = when {
                         isToday(it.key) -> DocumentDateType.TODAY
@@ -99,7 +103,7 @@ class DocumentInteractor(
                         )
                     )
                     documentViews.addAll(it.value.map {
-                        it.toDocumentItemView(getStringDateFromMillis(it.date))
+                        it.toDocumentItemView(getStringDateFromMillis(it.creationDate))
                     })
                 }
                 documentViews

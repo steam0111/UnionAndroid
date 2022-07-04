@@ -3,9 +3,11 @@ package com.example.union_sync_impl.data.mapper
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectStatusSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_impl.entity.AccountingObjectDb
 import com.example.union_sync_impl.entity.AccountingObjectStatusDb
+import com.example.union_sync_impl.entity.AccountingObjectUpdate
 import com.example.union_sync_impl.entity.FullAccountingObject
 import org.openapitools.client.models.AccountingObjectStatusDto
 import org.openapitools.client.models.CustomAccountingObjectDto
@@ -39,6 +41,35 @@ fun CustomAccountingObjectDto.toAccountingObjectDb(): AccountingObjectDb {
     )
 }
 
+fun AccountingObjectSyncEntity.toAccountingObjectDb(): AccountingObjectDb {
+    return AccountingObjectDb(
+        id = id,
+        catalogItemName = catalogItemName.orEmpty(),
+        organizationId = organizationId,
+        locationId = locationId,
+        molId = molId,
+        exploitingId = exploitingEmployeeId,
+        nomenclatureId = nomenclatureId,
+        nomenclatureGroupId = nomenclatureGroupId,
+        barcodeValue = barcodeValue,
+        name = name.orEmpty(),
+        rfidValue = rfidValue,
+        factoryNumber = factoryNumber,
+        inventoryNumber = inventoryNumber,
+        status = status?.toStatusDb(),
+        statusId = statusId,
+        producerId = producerId,
+        equipmentTypeId = equipmentTypeId,
+        actualPrice = actualPrice,
+        count = count,
+        commissioningDate = commissioningDate,
+        internalNumber = internalNumber,
+        departmentId = departmentId,
+        model = model,
+        providerId = providerId
+    )
+}
+
 fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
     locationSyncEntity: LocationSyncEntity?
 ): AccountingObjectDetailSyncEntity {
@@ -58,6 +89,7 @@ fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
 
 fun AccountingObjectStatusDto.toStatusDb() = AccountingObjectStatusDb(id.orEmpty(), name)
 
+fun AccountingObjectStatusSyncEntity.toStatusDb() = AccountingObjectStatusDb(id, name)
 
 fun AccountingObjectDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?) =
     AccountingObjectSyncEntity(
@@ -83,7 +115,9 @@ fun AccountingObjectDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?) =
         organizationId = organizationId,
         internalNumber = internalNumber,
         model = model,
-        locationSyncEntity = locationSyncEntity
+        locationSyncEntity = locationSyncEntity,
+        nomenclatureId = nomenclatureId,
+        nomenclatureGroupId = nomenclatureGroupId
     )
 
 fun FullAccountingObject.toSyncEntity(
@@ -113,7 +147,19 @@ fun FullAccountingObject.toSyncEntity(
     internalNumber = accountingObjectDb.internalNumber,
     model = accountingObjectDb.model,
     locationSyncEntity = locationSyncEntity,
-    statusId = accountingObjectDb.statusId
+    statusId = accountingObjectDb.statusId,
+    nomenclatureGroupId = accountingObjectDb.nomenclatureGroupId,
+    nomenclatureId = accountingObjectDb.nomenclatureId
 )
 
 fun AccountingObjectStatusDb.toSyncEntity() = AccountingObjectStatusSyncEntity(id, name)
+
+fun AccountingObjectUpdateSyncEntity.toAccountingObjectUpdate(): AccountingObjectUpdate {
+    return AccountingObjectUpdate(
+        id = id,
+        locationId = locationId,
+        exploitingId = exploitingId,
+        status = status?.toStatusDb(),
+        statusId = statusId,
+    )
+}

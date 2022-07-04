@@ -1,6 +1,5 @@
 package com.example.union_sync_impl.data
 
-import android.util.Log
 import com.example.union_sync_api.data.DocumentSyncApi
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
