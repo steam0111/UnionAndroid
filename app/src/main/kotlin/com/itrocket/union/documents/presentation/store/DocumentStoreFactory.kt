@@ -85,10 +85,7 @@ class DocumentStoreFactory(
                 is DocumentStore.Intent.OnDocumentClicked -> {
                     showDocument(intent.documentView.toDocumentDomain())
                 }
-                DocumentStore.Intent.OnDocumentCreateClicked -> createDocument(
-                    listType = ObjectType.MAIN_ASSETS,
-                    documentType = getState().type
-                )
+                DocumentStore.Intent.OnDocumentCreateClicked -> publish(DocumentStore.Label.ShowChooseAction)
                 is DocumentStore.Intent.OnDateArrowClicked -> {
                     val newRotatedDates =
                         documentInteractor.resolveRotatedDates(getState().rotatedDates, intent.date)
@@ -98,6 +95,10 @@ class DocumentStoreFactory(
                     dispatch(Result.SearchText(intent.searchText))
                     searchManager.emit(intent.searchText)
                 }
+                is DocumentStore.Intent.OnObjectTypeSelected -> createDocument(
+                    listType = intent.objectType,
+                    documentType = getState().type
+                )
             }
 
         }
@@ -135,7 +136,7 @@ class DocumentStoreFactory(
 
         private suspend fun createDocument(listType: ObjectType, documentType: DocumentTypeDomain) {
             dispatch(Result.IsDocumentCreateLoading(true))
-            val document = documentInteractor.createDocument(documentType)
+            val document = documentInteractor.createDocument(documentType, listType)
             showDocument(document)
             dispatch(Result.IsDocumentCreateLoading(false))
         }

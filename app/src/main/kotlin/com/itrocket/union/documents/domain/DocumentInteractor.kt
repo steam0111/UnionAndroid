@@ -8,6 +8,7 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
+import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.documents.presentation.view.toDocumentItemView
 import com.itrocket.union.manual.ManualType
@@ -44,7 +45,8 @@ class DocumentInteractor(
     }
 
     suspend fun createDocument(
-        type: DocumentTypeDomain
+        type: DocumentTypeDomain,
+        listType: ObjectType
     ): DocumentDomain {
         return withContext(coreDispatchers.io) {
             val exploitingId = if (type.manualType == ManualType.EXPLOITING) {
@@ -64,7 +66,9 @@ class DocumentInteractor(
                     molId = "",
                     documentType = type.name,
                     accountingObjectsIds = listOf(),
-                    locationIds = locationIds
+                    locationIds = locationIds,
+                    reservesIds = listOf(),
+                    objectType = listType.name
                 )
             )
             repository.getDocumentById(documentId)

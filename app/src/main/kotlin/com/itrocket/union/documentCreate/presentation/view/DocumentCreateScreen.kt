@@ -123,7 +123,13 @@ fun DocumentCreateScreen(
             }
         ),
         BaseTab(
-            title = stringResource(R.string.document_create_accounting_object),
+            title = stringResource(
+                if (state.objectType == ObjectType.MAIN_ASSETS) {
+                    R.string.document_create_accounting_object
+                } else {
+                    R.string.document_create_reserves
+                }
+            ),
             screen = {
                 when (state.document.objectType) {
                     ObjectType.MAIN_ASSETS -> AccountingObjectScreen(
@@ -139,7 +145,7 @@ fun DocumentCreateScreen(
                     )
                     ObjectType.RESERVES -> ReservesScreen(
                         isLoading = state.isLoading,
-                        reserves = state.document.reserves,
+                        reserves = state.reserves,
                         onReservesClickListener = {},
                         onSaveClickListener = onSaveClickListener,
                         onPrevClickListener = onPrevClickListener,
@@ -581,6 +587,7 @@ fun DocumentCreateScreenPreview() {
                     "1", "fsdsfsdf",
                     type = DocumentTypeDomain.WRITE_OFF.manualType
                 ),
-            )
+            ),
+            objectType = ObjectType.MAIN_ASSETS
         ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 }

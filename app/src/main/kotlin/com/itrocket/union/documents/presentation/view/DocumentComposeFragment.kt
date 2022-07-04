@@ -6,6 +6,8 @@ import androidx.navigation.fragment.navArgs
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
+import com.itrocket.union.chooseAction.presentation.store.ChooseActionResult
+import com.itrocket.union.chooseAction.presentation.view.ChooseActionComposeFragment
 import com.itrocket.union.documents.DocumentModule.DOCUMENT_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.documents.presentation.store.DocumentStore
 import com.itrocket.union.filter.presentation.view.FilterComposeFragment
@@ -32,6 +34,15 @@ class DocumentComposeFragment :
                 resultAction = {
                     (it as SelectParamsResult?)?.params?.let {
                         accept(DocumentStore.Intent.OnFilterResult(it))
+                    }
+                }
+            ),
+            FragmentResult(
+                resultCode = ChooseActionComposeFragment.CHOOSE_ACTION_RESULT_CODE,
+                resultLabel = ChooseActionComposeFragment.CHOOSE_ACTION_RESULT_LABEL,
+                resultAction = {
+                    (it as ChooseActionResult?)?.type?.let {
+                        accept(DocumentStore.Intent.OnObjectTypeSelected(it))
                     }
                 }
             )

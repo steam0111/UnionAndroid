@@ -51,6 +51,7 @@ import com.itrocket.union.switcher.SwitcherModule
 import com.itrocket.union.syncAll.SyncAllModule
 import com.itrocket.union.token.TokenModule
 import com.union.sdk.SyncModule
+import com.itrocket.union.chooseAction.ChooseActionModule
 
 object Modules {
 
@@ -109,6 +110,7 @@ object Modules {
         CounterpartyDetailModule.module,
         ProducerDetailModule.module,
         EquipmentTypeDetailModule.module,
-        SearchModule.module
+        SearchModule.module,
+        ChooseActionModule.module
     )
 }

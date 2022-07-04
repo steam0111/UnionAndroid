@@ -115,6 +115,11 @@
         <action
             android:id="@+id/to_filter"
             app:destination="@id/filter" />
+
+        <argument
+            android:name="ReservesArguments"
+            app:argType="com.itrocket.union.reserves.presentation.store.ReservesArguments"
+            app:nullable="true" />
     </fragment>
 
     <fragment
@@ -278,6 +283,9 @@
         <action
             android:id="@+id/to_accountingObjects"
             app:destination="@id/accountingObjects" />
+        <action
+            android:id="@+id/to_reserves"
+            app:destination="@id/reserves" />
         <argument
             android:name="DocumentCreateArguments"
             app:argType="com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments" />
@@ -467,4 +475,9 @@
             app:argType="com.itrocket.union.equipmentTypeDetail.presentation.store.EquipmentTypeDetailArguments"
             app:nullable="false" />
     </fragment>
+
+    <fragment
+        android:id="@+id/chooseAction"
+        android:name="com.itrocket.union.chooseAction.presentation.view.ChooseActionComposeFragment"
+        android:label="ChooseAction" />
 </navigation>

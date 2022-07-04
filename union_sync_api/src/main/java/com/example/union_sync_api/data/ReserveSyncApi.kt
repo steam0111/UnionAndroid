@@ -12,6 +12,7 @@ interface ReserveSyncApi {
         nomenclatureGroupId: String? = null,
         orderId: String? = null,
         receptionItemCategoryId: String? = null,
+        reservesIds: List<String>? = null,
         textQuery: String? = null,
     ): List<ReserveSyncEntity>
 

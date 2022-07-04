@@ -40,12 +40,13 @@ fun BaseButton(
     onClick: () -> Unit,
     modifier: Modifier,
     enabled: Boolean = true,
-    isAllUppercase: Boolean = true
+    isAllUppercase: Boolean = true,
+    backgroundColor: Color = psb6
 ) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = psb6,
+            backgroundColor = backgroundColor,
             disabledBackgroundColor = graphite2
         ),
         shape = RoundedCornerShape(8.dp),

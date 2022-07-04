@@ -1,5 +1,6 @@
 package com.itrocket.union.reserves.domain
 
+import android.util.Log
 import kotlinx.coroutines.withContext
 import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
 import com.itrocket.core.base.CoreDispatchers
@@ -13,9 +14,19 @@ class ReservesInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    suspend fun getReserves(searchText: String, params: List<ParamDomain>): List<ReservesDomain> =
+    suspend fun getReserves(
+        searchText: String,
+        params: List<ParamDomain>,
+        selectedReservesIds: List<String> = listOf()
+    ): List<ReservesDomain> =
         withContext(coreDispatchers.io) {
-            repository.getReserves(textQuery = searchText, params = params)
+            val reserves = repository.getReserves(
+                textQuery = searchText,
+                params = params
+            ).filter {
+                !selectedReservesIds.contains(it.id)
+            }
+            reserves
         }
 
     fun getFilters() = listOf(

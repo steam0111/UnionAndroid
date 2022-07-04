@@ -165,6 +165,7 @@
     <!-- Document create -->
     <string name="document_create_title">%s &quot;%s&quot;</string>
     <string name="document_create_accounting_object">Объекты учета</string>
+    <string name="document_create_reserves">Запасы</string>
     <string name="document_create_empty">Для начала считывания нажмите курок или выберите из списка</string>
 
     <!-- ModuleSettings -->
@@ -243,4 +244,7 @@
     <string name="equipment_type_code">Код оборудования</string>
     <string name="equipment_type_title">Типы оборудования</string>
     <string name="equipment_type">Тип оборудования</string>
+
+    <!-- ChooseAction -->
+    <string name="choose_action_title">Выберите действие</string>
 </resources>

@@ -17,6 +17,7 @@ class ReservesRepositoryImpl(
 ) : ReservesRepository {
     override suspend fun getReserves(
         params: List<ParamDomain>?,
+        reservesIds: List<String>?,
         textQuery: String?,
     ): List<ReservesDomain> {
         return syncApi.getAll(
@@ -25,6 +26,7 @@ class ReservesRepositoryImpl(
             structuralSubdivisionId = params?.getDepartmentId(),
             nomenclatureGroupId = params?.getNomenclatureGroupId(),
             receptionItemCategoryId = params?.getReceptionCategoryId(),
+            reservesIds = reservesIds,
             textQuery = textQuery
         ).map()
     }

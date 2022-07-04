@@ -12,6 +12,7 @@ import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.reserves.data.mapper.map
 
 fun List<DocumentSyncEntity>.map(): List<DocumentDomain> = map {
     it.map()
@@ -22,9 +23,10 @@ fun DocumentSyncEntity.map(): DocumentDomain =
         number = id,
         date = date,
         accountingObjects = accountingObjects.map(),
+        reserves = reserves.map(),
         documentStatus = DocumentStatus.CREATED,
         documentType = DocumentTypeDomain.valueOf(documentType),
-        objectType = ObjectType.MAIN_ASSETS,
+        objectType = ObjectType.valueOf(objectType),
         params = getParams(
             mol = mol,
             exploiting = exploiting,

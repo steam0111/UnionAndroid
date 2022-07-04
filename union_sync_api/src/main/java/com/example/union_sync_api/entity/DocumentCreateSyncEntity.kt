@@ -6,5 +6,7 @@ data class DocumentCreateSyncEntity(
     val exploitingId: String? = null,
     val documentType: String,
     val locationIds: List<String>? = null,
-    val accountingObjectsIds: List<String>
+    val accountingObjectsIds: List<String>? = null,
+    val reservesIds: List<String>? = null,
+    val objectType: String
 )

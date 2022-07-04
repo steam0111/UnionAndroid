@@ -14,6 +14,7 @@ fun sqlReserveQuery(
     orderId: String? = null,
     receptionItemCategoryId: String? = null,
     textQuery: String? = null,
+    reservesIds: List<String>? = null,
     isFilterCount: Boolean = false
 ): SimpleSQLiteQuery {
 
@@ -37,9 +38,8 @@ fun sqlReserveQuery(
             tableName = "reserves",
             filter = buildList {
                 organizationId?.let {
-                    add("organizationId" isEquals organizationId)
+                    add("businessUnitId" isEquals organizationId)
                 }
-
                 molId?.let {
                     add("molId" isEquals molId)
                 }
@@ -54,6 +54,9 @@ fun sqlReserveQuery(
                 }
                 receptionItemCategoryId?.let {
                     add("receptionItemCategoryId" isEquals receptionItemCategoryId)
+                }
+                reservesIds?.let {
+                    add("id" isEquals reservesIds)
                 }
                 textQuery?.let {
                     add("name" contains textQuery)

@@ -25,6 +25,7 @@ class ReserveSyncApiImpl(
         nomenclatureGroupId: String?,
         orderId: String?,
         receptionItemCategoryId: String?,
+        reservesIds: List<String>?,
         textQuery: String?,
     ): List<ReserveSyncEntity> {
         return reserveDao.getAll(
@@ -35,6 +36,7 @@ class ReserveSyncApiImpl(
                 nomenclatureGroupId = nomenclatureGroupId,
                 orderId = orderId,
                 receptionItemCategoryId = receptionItemCategoryId,
+                reservesIds = reservesIds,
                 textQuery = textQuery,
                 isFilterCount = false
             )

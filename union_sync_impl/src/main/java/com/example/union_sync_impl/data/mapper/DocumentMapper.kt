@@ -7,6 +7,7 @@ import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
 import com.example.union_sync_api.entity.LocationShortSyncEntity
 import com.example.union_sync_api.entity.OrganizationSyncEntity
+import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.entity.DocumentDb
 
 fun DocumentCreateSyncEntity.toDocumentDb(): DocumentDb {
@@ -17,7 +18,9 @@ fun DocumentCreateSyncEntity.toDocumentDb(): DocumentDb {
         accountingObjectsIds = accountingObjectsIds,
         documentType = documentType,
         date = System.currentTimeMillis(),
-        locationIds = locationIds
+        locationIds = locationIds,
+        reservesIds = reservesIds,
+        objectType = objectType
     )
 }
 
@@ -30,7 +33,9 @@ fun DocumentUpdateSyncEntity.toDocumentDb(): DocumentDb {
         accountingObjectsIds = accountingObjectsIds,
         documentType = documentType,
         date = date,
-        locationIds = locationIds
+        locationIds = locationIds,
+        objectType = objectType,
+        reservesIds = reservesIds
     )
 }
 
@@ -39,7 +44,8 @@ fun DocumentDb.toDocumentSyncEntity(
     mol: EmployeeSyncEntity?,
     exploiting: EmployeeSyncEntity?,
     locations: List<LocationShortSyncEntity>?,
-    accountingObjects: List<AccountingObjectSyncEntity>
+    accountingObjects: List<AccountingObjectSyncEntity>? = null,
+    reserves: List<ReserveSyncEntity>? = null
 ): DocumentSyncEntity {
     return DocumentSyncEntity(
         id = id.toString(),
@@ -48,8 +54,11 @@ fun DocumentDb.toDocumentSyncEntity(
         mol = mol,
         exploiting = exploiting,
         documentType = documentType,
-        accountingObjects = accountingObjects,
+        accountingObjects = accountingObjects.orEmpty(),
+        reserves = reserves.orEmpty(),
         organizationId = organizationId,
-        locations = locations
+        locations = locations,
+        objectType = objectType
+
     )
 }
