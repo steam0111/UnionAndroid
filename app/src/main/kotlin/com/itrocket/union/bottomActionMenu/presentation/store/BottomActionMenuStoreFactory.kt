@@ -1,7 +1,7 @@
 package com.itrocket.union.bottomActionMenu.presentation.store
 
+import android.util.Log
 import com.arkivanov.mvikotlin.core.store.*
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.itrocket.core.base.CoreDispatchers
 
@@ -39,8 +39,18 @@ class BottomActionMenuStoreFactory(
             intent: BottomActionMenuStore.Intent,
             getState: () -> BottomActionMenuStore.State
         ) {
-        }
+            when (intent) {
+                BottomActionMenuStore.Intent.OnCreateDocClicked -> {
+                    Log.d("SukhanovTest", "Click CREATE ")
+                }
+                is BottomActionMenuStore.Intent.OnOpenItemClicked -> {
 
+                }
+                is BottomActionMenuStore.Intent.OnDeleteItemClicked -> {
+
+                }
+            }
+        }
     }
 
     private sealed class Result {

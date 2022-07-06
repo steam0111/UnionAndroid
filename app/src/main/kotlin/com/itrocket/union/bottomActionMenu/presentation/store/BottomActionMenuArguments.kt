@@ -6,4 +6,4 @@ import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class BottomActionMenuArguments (val selectedAction: BottomActionMenuTab): Parcelable
+ class BottomActionMenuArguments (): Parcelable

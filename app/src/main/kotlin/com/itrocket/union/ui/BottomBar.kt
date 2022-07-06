@@ -2,17 +2,7 @@ package com.itrocket.union.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -182,80 +172,5 @@ private fun StepBottomBarPreview() {
         isButtonNextEnabled = true
     ) {
 
-    }
-}
-
-@Composable
-fun BottomBarIdentifyItem(
-    text: String,
-    onClick: () -> Unit,
-    isEnabled: Boolean = true
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(graphite2)
-            .padding(8.dp)
-    ) {
-        ButtonWithLoaderPsb1(
-            onClick = onClick,
-            modifier = Modifier.fillMaxWidth(),
-            isEnabled = isEnabled,
-
-            ) {
-            Text(
-                text = text,
-                style = AppTheme.typography.body2,
-                color = white,
-                fontWeight = FontWeight.Medium
-            )
-        }
-    }
-}
-
-@Composable
-@Preview
-private fun BottomBarIdentifyPreview() {
-    Column {
-        BottomBarIdentifyItem(
-            onClick = {/*TODO*/ },
-            isEnabled = true,
-            text = "Создать документ"
-        )
-        BottomBarIdentifyItem(
-            onClick = {/*TODO*/ },
-            isEnabled = true,
-            text = "Открыть карточку"
-        )
-        BottomBarIdentifyItem(
-            onClick = {/*TODO*/ },
-            isEnabled = true,
-            text = "Удалить из списка"
-        )
-    }
-}
-
-@Composable
-fun BottomBarIdentifyScreen(
-//    onClick: () -> Unit,
-//    isEnabled: Boolean = true
-) {
-    Column {
-        Text(text = "Выберите действие")
-        BottomBarIdentifyItem(
-            onClick = {/*TODO*/ },
-            isEnabled = true,
-            text = "Создать документ"
-        )
-        BottomBarIdentifyItem(
-            onClick = {/*TODO*/ },
-            isEnabled = true,
-            text = "Открыть карточку"
-        )
-        BottomBarIdentifyItem(
-            onClick = {/*TODO*/ },
-            isEnabled = true,
-            text = "Удалить из списка"
-        )
     }
 }

@@ -87,7 +87,7 @@ class IdentifyStoreFactory(
 //                    IdentifyStore.Label.ShowDetail(intent.item)
 //                )
                 is IdentifyStore.Intent.OnReservesClicked ->
-                    publish(IdentifyStore.Label.ShowDetail(getState().bottomActionMenuTab)
+                    publish(IdentifyStore.Label.ShowDetail()
 
 //                    publish(                    IdentifyStore.Label.ShowDetail(intent.item)
                 )
@@ -108,7 +108,6 @@ class IdentifyStoreFactory(
         }
     }
 
-
     private sealed class Result {
         data class IsAccountingObjectsLoading(val isLoading: Boolean) :
             IdentifyStoreFactory.Result()
@@ -117,8 +116,6 @@ class IdentifyStoreFactory(
         data class Identify(val identifies: List<AccountingObjectDomain>) : Result()
 
         data class SelectPage(val page: Int) : IdentifyStoreFactory.Result()
-
-
     }
 
     private object ReducerImpl : Reducer<IdentifyStore.State, Result> {

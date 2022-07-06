@@ -8,19 +8,31 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeBottomSheet
 import com.itrocket.union.bottomActionMenu.BottomActionMenuModule.BOTTOMACTIONMENU_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuStore
-import com.itrocket.union.ui.BottomBarIdentifyItem
-import com.itrocket.union.ui.BottomBarIdentifyScreen
 
-class BottomActionMenuFragment: BaseComposeBottomSheet<BottomActionMenuStore.Intent, BottomActionMenuStore.State, BottomActionMenuStore.Label>(
-    BOTTOMACTIONMENU_VIEW_MODEL_QUALIFIER
-) {
+class BottomActionMenuFragment :
+    BaseComposeBottomSheet<BottomActionMenuStore.Intent, BottomActionMenuStore.State, BottomActionMenuStore.Label>(
+        BOTTOMACTIONMENU_VIEW_MODEL_QUALIFIER
+    ) {
     override fun renderState(
         state: BottomActionMenuStore.State,
         composeView: ComposeView,
         appInsets: AppInsets
     ) {
         composeView.setContent {
-            BottomBarIdentifyScreen(
+            BottomActionMenuScreen(
+                state = state,
+                appInsets = appInsets,
+                onCreateDocClickListener = {
+                    accept(BottomActionMenuStore.Intent.OnCreateDocClicked)
+                },
+                onDeleteItemClickListener = {
+                    accept(
+                        BottomActionMenuStore.Intent.OnDeleteItemClicked(
+                            it
+                        )
+                    )
+                },
+                onOpenItemClickListener = { accept(BottomActionMenuStore.Intent.OnOpenItemClicked(it)) }
             )
         }
     }

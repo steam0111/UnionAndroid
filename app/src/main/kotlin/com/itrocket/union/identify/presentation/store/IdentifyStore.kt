@@ -165,11 +165,11 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
                 get() = ReadingModeComposeFragment()
         }
 
-        data class ShowDetail(val bottomActionMenuTab: BottomActionMenuTab) : Label(),
+        class ShowDetail() : Label(),
             ShowBottomSheetNavigationLabel {
             override val arguments: Bundle
                 get() = bundleOf(
-                    BottomActionMenuFragment.BOTTOMACTIONMENU_ARGS to BottomActionMenuArguments(bottomActionMenuTab)
+                    BottomActionMenuFragment.BOTTOMACTIONMENU_ARGS to BottomActionMenuArguments()
                 )
 
             override val containerId: Int = R.id.mainActivityNavHostFragment
