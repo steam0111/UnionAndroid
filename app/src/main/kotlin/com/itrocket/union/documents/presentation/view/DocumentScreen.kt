@@ -57,6 +57,7 @@ import com.itrocket.union.ui.ButtonBottomBar
 import com.itrocket.union.ui.ButtonLoaderBottomBar
 import com.itrocket.union.ui.DocumentDateItem
 import com.itrocket.union.ui.DocumentInfoItem
+import com.itrocket.union.ui.SearchToolbar
 
 @Composable
 fun DocumentScreen(
@@ -67,19 +68,23 @@ fun DocumentScreen(
     onFilterClickListener: () -> Unit,
     onDocumentClickListener: (DocumentView.DocumentItemView) -> Unit,
     onCreateRequestClickListener: () -> Unit,
-    onDateArrowClickListener: (String) -> Unit
+    onDateArrowClickListener: (String) -> Unit,
+    onSearchTextChanged: (String) -> Unit
 ) {
     AppTheme {
         Scaffold(
             topBar = {
-                BlackToolbar(
+                SearchToolbar(
                     title = stringResource(
                         id = R.string.documents_title,
                         stringResource(id = state.type.titleId)
                     ),
                     onSearchClickListener = onSearchClickListener,
                     onBackClickListener = onBackClickListener,
-                    onFilterClickListener = onFilterClickListener
+                    onFilterClickListener = onFilterClickListener,
+                    onSearchTextChanged = onSearchTextChanged,
+                    isShowSearch = state.isShowSearch,
+                    searchText = state.searchText
                 )
             },
             bottomBar = {
@@ -275,6 +280,7 @@ fun DocumentScreenPreview() {
             )
         ),
         AppInsets(topInset = previewTopInsetDp),
+        {},
         {},
         {},
         {},

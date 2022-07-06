@@ -11,7 +11,7 @@ class OrganizationRepositoryImpl(
     private val organizationSyncApi: OrganizationSyncApi
 ) : OrganizationRepository {
 
-    override suspend fun getOrganizations(): Flow<List<OrganizationDomain>> =
-        organizationSyncApi.getOrganizations().map { it.map() }
+    override suspend fun getOrganizations(textQuery: String?): Flow<List<OrganizationDomain>> =
+        organizationSyncApi.getOrganizations(textQuery).map { it.map() }
 
 }

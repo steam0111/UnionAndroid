@@ -1,6 +1,6 @@
 package com.itrocket.union.equipmentTypes.data
 
-import com.example.union_sync_api.data.EquipmentTypesSyncApi
+import com.example.union_sync_api.data.EquipmentTypeSyncApi
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.equipmentTypes.domain.dependencies.EquipmentTypeRepository
 import com.itrocket.union.equipmentTypes.domain.entity.EquipmentTypesDomain
@@ -11,12 +11,12 @@ import kotlinx.coroutines.flow.map
 
 class EquipmentTypeRepositoryImpl(
     private val coreDispatchers: CoreDispatchers,
-    private val equipmentTypesSyncApi: EquipmentTypesSyncApi
+    private val equipmentTypesSyncApi: EquipmentTypeSyncApi
 ) : EquipmentTypeRepository {
 
-    override suspend fun getEquipmentTypes(): Flow<List<EquipmentTypesDomain>> {
+    override suspend fun getEquipmentTypes(textQuery: String?): Flow<List<EquipmentTypesDomain>> {
         return withContext(coreDispatchers.io) {
-            equipmentTypesSyncApi.getEquipmentTypes().map { it.map() }
+            equipmentTypesSyncApi.getEquipmentTypes(textQuery).map { it.map() }
         }
     }
 }

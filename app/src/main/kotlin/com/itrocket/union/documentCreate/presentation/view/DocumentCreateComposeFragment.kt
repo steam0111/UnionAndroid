@@ -1,6 +1,8 @@
 package com.itrocket.union.documentCreate.presentation.view
 
+import android.os.Bundle
 import androidx.compose.ui.platform.ComposeView
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
@@ -9,11 +11,20 @@ import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectR
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
 import com.itrocket.union.documentCreate.DocumentCreateModule.DOCUMENTCREATE_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
-import com.itrocket.union.inventory.presentation.store.InventoryStore
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.location.presentation.view.LocationComposeFragment
+import com.itrocket.union.reserves.presentation.store.ReservesResult
+import com.itrocket.union.reserves.presentation.view.ReservesComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 import com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.inject
+import ru.interid.scannerclient.domain.reader.ReaderMode
+import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
+import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class DocumentCreateComposeFragment :
     BaseComposeFragment<DocumentCreateStore.Intent, DocumentCreateStore.State, DocumentCreateStore.Label>(
@@ -46,6 +57,17 @@ class DocumentCreateComposeFragment :
                 }
             ),
             FragmentResult(
+                resultCode = ReservesComposeFragment.RESERVES_RESULT_CODE,
+                resultLabel = ReservesComposeFragment.RESERVES_RESULT_LABEL,
+                resultAction = {
+                    (it as ReservesResult?)?.reserve?.let {
+                        accept(
+                            DocumentCreateStore.Intent.OnReserveSelected(it)
+                        )
+                    }
+                }
+            ),
+            FragmentResult(
                 resultCode = LocationComposeFragment.LOCATION_RESULT_CODE,
                 resultLabel = LocationComposeFragment.LOCATION_RESULT,
                 resultAction = {
@@ -57,6 +79,16 @@ class DocumentCreateComposeFragment :
                 }
             )
         )
+
+    private val serviceEntryManager: ServiceEntryManager by inject()
+
+    private val scanningDataRfid: MutableSet<String> = mutableSetOf()
+    private var scanningDataBarcode: String = ""
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        observeScanning()
+    }
 
     override fun renderState(
         state: DocumentCreateStore.State,
@@ -96,8 +128,67 @@ class DocumentCreateComposeFragment :
                 },
                 onNextClickListener = {
                     accept(DocumentCreateStore.Intent.OnNextClicked)
+                },
+                onConductClickListener = {
+                    accept(DocumentCreateStore.Intent.OnCompleteClicked)
                 }
             )
+        }
+    }
+
+    private fun observeScanning() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            launch {
+                observeTriggerPress()
+            }
+            launch {
+                serviceEntryManager.barcodeScanDataFlow.collect {
+                    scanningDataBarcode = it.data
+                }
+            }
+            launch {
+                serviceEntryManager.epcInventoryDataFlow.collect {
+                    scanningDataRfid.add(it)
+                }
+            }
+        }
+    }
+
+    private suspend fun observeTriggerPress() {
+        serviceEntryManager.triggerPressFlow.collect {
+            when (it) {
+                TriggerEvent.Pressed -> {
+                    if (serviceEntryManager.currentMode == ReaderMode.RFID) {
+                        serviceEntryManager.epcInventory()
+                    } else {
+                        serviceEntryManager.startBarcodeScan()
+                    }
+                }
+                TriggerEvent.Released -> {
+                    if (serviceEntryManager.currentMode == ReaderMode.RFID) {
+                        serviceEntryManager.stopRfidOperation()
+                    } else {
+                        serviceEntryManager.stopBarcodeScan()
+                    }
+                    withContext(Dispatchers.Main) {
+                        if (scanningDataRfid.isNotEmpty()) {
+                            accept(
+                                DocumentCreateStore.Intent.OnNewAccountingObjectRfidsHandled(
+                                    scanningDataRfid.toList()
+                                )
+                            )
+                        } else {
+                            accept(
+                                DocumentCreateStore.Intent.OnNewAccountingObjectBarcodeHandled(
+                                    scanningDataBarcode
+                                )
+                            )
+                        }
+                        scanningDataRfid.clear()
+                        scanningDataBarcode = ""
+                    }
+                }
+            }
         }
     }
 }

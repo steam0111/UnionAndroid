@@ -13,16 +13,19 @@ class SelectParamsInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    private var organizations: Flow<List<ParamDomain>>? = null
-    private var mols: Flow<List<ParamDomain>>? = null
-    private var exploitings: Flow<List<ParamDomain>>? = null
-
     suspend fun getParamValues(type: ManualType, searchText: String): Flow<List<ParamDomain>> =
         when (type) {
             ManualType.ORGANIZATION -> getOrganizations(searchText)
             ManualType.MOL -> getMols(searchText)
-            ManualType.LOCATION -> selectParamsRepository.getParamValues(type, searchText)
             ManualType.EXPLOITING -> getExploiting(searchText)
+            ManualType.STATUS -> getAccountingObjectStatuses(searchText)
+            ManualType.DEPARTMENT -> getDepartments(searchText)
+            ManualType.PROVIDER -> getProviders(searchText)
+            ManualType.PRODUCER -> getProducers(searchText)
+            ManualType.EQUIPMENT_TYPE -> getEquipmentTypes(searchText)
+            ManualType.NOMENCLATURE_GROUP -> getNomenclatureGroup(searchText)
+            ManualType.RECEPTION_CATEGORY -> getReceptionCategory(searchText)
+            else -> flow { }
         }
 
 
@@ -50,36 +53,46 @@ class SelectParamsInteractor(
     }
 
     private suspend fun getOrganizations(searchText: String): Flow<List<ParamDomain>> {
-        if (organizations == null) {
-            organizations = selectParamsRepository.getOrganizationList()
-        }
-        return (organizations ?: selectParamsRepository.getOrganizationList()).map {
-            it.filter {
-                it.value.contains(other = searchText, ignoreCase = true)
-            }
-        }
+        return selectParamsRepository.getOrganizationList(textQuery = searchText)
     }
 
     private suspend fun getMols(searchText: String): Flow<List<ParamDomain>> {
-        if (mols == null) {
-            mols = selectParamsRepository.getEmployees(ManualType.MOL)
-        }
-        return (mols ?: selectParamsRepository.getEmployees(ManualType.MOL)).map {
-            it.filter {
-                it.value.contains(other = searchText, ignoreCase = true)
-            }
-        }
+        return selectParamsRepository.getEmployees(type = ManualType.MOL, textQuery = searchText)
     }
 
     private suspend fun getExploiting(searchText: String): Flow<List<ParamDomain>> {
-        if (exploitings == null) {
-            exploitings = selectParamsRepository.getEmployees(ManualType.EXPLOITING)
-        }
-        return (exploitings ?: selectParamsRepository.getEmployees(ManualType.EXPLOITING)).map {
-            it.filter {
-                it.value.contains(other = searchText, ignoreCase = true)
-            }
-        }
+        return selectParamsRepository.getEmployees(
+            type = ManualType.EXPLOITING,
+            textQuery = searchText
+        )
+    }
+
+    private suspend fun getAccountingObjectStatuses(searchText: String): Flow<List<ParamDomain>> {
+        return selectParamsRepository.getStatuses(textQuery = searchText)
+    }
+
+    private suspend fun getEquipmentTypes(searchText: String): Flow<List<ParamDomain>> {
+        return selectParamsRepository.getEquipmentTypes(textQuery = searchText)
+    }
+
+    private suspend fun getProviders(searchText: String): Flow<List<ParamDomain>> {
+        return selectParamsRepository.getProviders(textQuery = searchText)
+    }
+
+    private suspend fun getProducers(searchText: String): Flow<List<ParamDomain>> {
+        return selectParamsRepository.getProducers(textQuery = searchText)
+    }
+
+    private suspend fun getDepartments(searchText: String): Flow<List<ParamDomain>> {
+        return selectParamsRepository.getDepartments(textQuery = searchText)
+    }
+
+    private suspend fun getNomenclatureGroup(searchText: String): Flow<List<ParamDomain>> {
+        return selectParamsRepository.getNomenclatureGroup(textQuery = searchText)
+    }
+
+    private suspend fun getReceptionCategory(searchText: String): Flow<List<ParamDomain>> {
+        return selectParamsRepository.getReceptionCategory(textQuery = searchText)
     }
 
     companion object {

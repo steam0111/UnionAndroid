@@ -37,6 +37,7 @@ object NomenclatureGroupModule {
                 get(),
                 get(),
                 args.nomenclatureGroupArguments,
+                get(),
                 get()
             ).create()
         }

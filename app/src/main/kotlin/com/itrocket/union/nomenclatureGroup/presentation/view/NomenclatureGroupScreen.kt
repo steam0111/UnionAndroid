@@ -24,12 +24,16 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.DefaultListItem
 import com.itrocket.union.ui.LoadingContent
+import com.itrocket.union.ui.SearchToolbar
 
 @Composable
 fun NomenclatureGroupScreen(
     state: NomenclatureGroupStore.State,
     appInsets: AppInsets,
-    onBackClickListener: () -> Unit
+    onBackClickListener: () -> Unit,
+    onItemClick: (String) -> Unit,
+    onSearchTextChanged: (String) -> Unit,
+    onSearchClickListener: () -> Unit,
 ) {
     AppTheme {
         Column(
@@ -37,14 +41,19 @@ fun NomenclatureGroupScreen(
                 .fillMaxSize()
                 .padding(top = appInsets.topInset.dp)
         ) {
-            BlackToolbar(
+            SearchToolbar(
                 title = stringResource(id = R.string.nomenclature_group_title),
-                onBackClickListener = onBackClickListener
+                onBackClickListener = onBackClickListener,
+                onSearchClickListener = onSearchClickListener,
+                onSearchTextChanged = onSearchTextChanged,
+                isShowSearch = state.isShowSearch,
+                searchText = state.searchText
             )
             LoadingContent(isLoading = state.isLoading) {
                 Content(
                     nomenclatureGroupsDomain = state.nomenclatureGroups,
-                    navBarPadding = appInsets.bottomInset
+                    navBarPadding = appInsets.bottomInset,
+                    onItemClick = onItemClick
                 )
             }
         }
@@ -54,7 +63,8 @@ fun NomenclatureGroupScreen(
 @Composable
 private fun Content(
     nomenclatureGroupsDomain: List<NomenclatureGroupDomain>,
-    navBarPadding: Int
+    navBarPadding: Int,
+    onItemClick: (String) -> Unit
 ) {
     LazyColumn(Modifier.fillMaxSize()) {
         itemsIndexed(nomenclatureGroupsDomain, key = { index, item ->
@@ -63,7 +73,7 @@ private fun Content(
             val isShowBottomLine = nomenclatureGroupsDomain.lastIndex != index
             DefaultListItem(
                 item = item.toDefaultItem(),
-                onItemClickListener = {},
+                onItemClickListener = { onItemClick(it.id) },
                 isShowBottomLine = isShowBottomLine
             )
         }
@@ -107,5 +117,5 @@ fun NomenclatureGroupScreenPreview() {
                 "name 3"
             )
         )
-    ), AppInsets(), {})
+    ), AppInsets(), {}, {}, {}, {})
 }

@@ -11,6 +11,7 @@ import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.location.domain.LocationInteractor
 import com.itrocket.union.location.domain.entity.LocationDomain
 import com.itrocket.union.manual.LocationParamDomain
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.delay
 
@@ -18,7 +19,8 @@ class LocationStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val locationInteractor: LocationInteractor,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val searchManager: SearchManager
 ) {
     fun create(): LocationStore =
         object : LocationStore,
@@ -41,6 +43,9 @@ class LocationStoreFactory(
             action: Unit,
             getState: () -> LocationStore.State
         ) {
+            searchManager.listenSearch {
+                search(getState, it)
+            }
             dispatch(Result.Loading(true))
             catchException {
                 val placeList = locationInteractor.getPlaceList(listOf())
@@ -69,19 +74,23 @@ class LocationStoreFactory(
                     selectPlace(getState, intent.place)
                 }
                 is LocationStore.Intent.OnSearchTextChanged -> {
-                    val selectedPlaceScheme = getState().selectPlaceScheme
-                    dispatch(Result.Loading(true))
-                    catchException {
-                        dispatch(
-                            Result.PlaceValues(
-                                locationInteractor.getPlaceList(selectedPlaceScheme, intent.searchText)
-                            )
-                        )
-                    }
                     dispatch(Result.SearchText(intent.searchText))
-                    dispatch(Result.Loading(false))
+                    searchManager.emit(intent.searchText)
                 }
             }
+        }
+
+        private suspend fun search(getState: () -> LocationStore.State, searchText: String) {
+            val selectedPlaceScheme = getState().selectPlaceScheme
+            dispatch(Result.Loading(true))
+            catchException {
+                dispatch(
+                    Result.PlaceValues(
+                        locationInteractor.getPlaceList(selectedPlaceScheme, searchText)
+                    )
+                )
+            }
+            dispatch(Result.Loading(false))
         }
 
         private fun goBack(getState: () -> LocationStore.State) {

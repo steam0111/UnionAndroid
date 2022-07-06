@@ -2,13 +2,18 @@ package com.itrocket.union.accountingObjectDetail.presentation.view
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,9 +29,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -111,6 +118,8 @@ fun AccountingObjectDetailScreen(
         Scaffold(
             topBar = {
                 Toolbar(
+                    isFullCharacteristicChecked = state.isFullCharacteristicChecked,
+                    accountingObjectName = state.accountingObjectDomain.title,
                     onBackClickListener = onBackClickListener,
                     onDocumentAddClickListener = onDocumentAddClickListener,
                     onDocumentSearchClickListener = onDocumentSearchClickListener
@@ -151,14 +160,16 @@ private fun Content(
     onTabClickListener: (Int) -> Unit
 ) {
     Column(modifier = Modifier.padding(paddingValues)) {
-        Header(
-            tabs = tabs,
-            pagerState = pagerState,
-            selectedPage = state.selectedPage,
-            accountingObjectItem = state.accountingObjectDomain,
-            onTabClickListener = onTabClickListener,
-            coroutineScope = coroutineScope
-        )
+        AnimatedVisibility(visible = !state.isFullCharacteristicChecked) {
+            Header(
+                tabs = tabs,
+                pagerState = pagerState,
+                selectedPage = state.selectedPage,
+                accountingObjectItem = state.accountingObjectDomain,
+                onTabClickListener = onTabClickListener,
+                coroutineScope = coroutineScope
+            )
+        }
         FullCharacteristicsSwitcher(
             isChecked = state.isFullCharacteristicChecked,
             onCheckedChangeListener = onCheckedFullCharacteristicsChangeListener
@@ -213,32 +224,75 @@ private fun Header(
 
 @Composable
 private fun Toolbar(
+    isFullCharacteristicChecked: Boolean,
+    accountingObjectName: String,
     onBackClickListener: () -> Unit,
     onDocumentAddClickListener: () -> Unit,
     onDocumentSearchClickListener: () -> Unit
 ) {
-    BaseToolbar(
-        title = stringResource(id = R.string.accounting_object_detail_title),
-        startImageId = R.drawable.ic_cross,
-        onStartImageClickListener = onBackClickListener,
-        backgroundColor = psb1,
-        textColor = white,
-        content = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_document_add),
-                    contentDescription = null,
-                    modifier = Modifier.clickableUnbounded(onClick = onDocumentAddClickListener)
+    Row(
+        verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp)
+            .shadow(4.dp)
+            .background(psb1)
+            .padding(horizontal = 16.dp)
+    ) {
+        Image(
+            painter = painterResource(R.drawable.ic_cross),
+            contentDescription = null,
+            modifier = Modifier.clickableUnbounded(
+                onClick = onBackClickListener
+            )
+        )
+        Box(
+            modifier = Modifier.fillMaxHeight(),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            androidx.compose.animation.AnimatedVisibility(
+                visible = !isFullCharacteristicChecked,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Text(
+                    text = stringResource(id = R.string.accounting_object_detail_title),
+                    modifier = Modifier.padding(start = 16.dp),
+                    style = AppTheme.typography.body1,
+                    fontWeight = FontWeight.Medium,
+                    lineHeight = 18.sp,
+                    color = white
                 )
-                Spacer(modifier = Modifier.width(24.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.ic_document_search),
-                    contentDescription = null,
-                    modifier = Modifier.clickableUnbounded(onClick = onDocumentSearchClickListener)
+            }
+            androidx.compose.animation.AnimatedVisibility(
+                visible = isFullCharacteristicChecked,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Text(
+                    text = accountingObjectName,
+                    modifier = Modifier
+                        .padding(start = 16.dp)
+                        .fillMaxWidth(0.7f),
+                    style = AppTheme.typography.caption,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    color = white
                 )
             }
         }
-    )
+        Spacer(modifier = Modifier.weight(1f))
+        Image(
+            painter = painterResource(id = R.drawable.ic_document_add),
+            contentDescription = null,
+            modifier = Modifier.clickableUnbounded(onClick = onDocumentAddClickListener)
+        )
+        Spacer(modifier = Modifier.width(24.dp))
+        Image(
+            painter = painterResource(id = R.drawable.ic_document_search),
+            contentDescription = null,
+            modifier = Modifier.clickableUnbounded(onClick = onDocumentSearchClickListener)
+        )
+    }
 }
 
 @Composable
@@ -265,7 +319,7 @@ private fun ListInfo(listInfo: List<ObjectInfoDomain>) {
         items(listInfo) {
             ExpandedInfoField(
                 label = stringResource(id = it.title),
-                value = it.value,
+                value = it.value.orEmpty(),
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -309,6 +363,8 @@ fun AccountingObjectDetailScreenPreview(isFullCharacteristicChecked: Boolean = t
                     ObjectInfoDomain(R.string.auth_main_title, "blabla2")
                 ),
                 inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
+                barcodeValue = "",
+                rfidValue = ""
             ),
             isFullCharacteristicChecked = isFullCharacteristicChecked
         ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {})

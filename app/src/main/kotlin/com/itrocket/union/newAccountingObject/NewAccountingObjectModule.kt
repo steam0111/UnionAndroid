@@ -26,6 +26,7 @@ object NewAccountingObjectModule {
             NewAccountingObjectStoreFactory(
                 DefaultStoreFactory,
                 get(),
+                get(),
                 args
             ).create()
         }

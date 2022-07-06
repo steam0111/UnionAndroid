@@ -1,14 +1,19 @@
 package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.DocumentSyncApi
+import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
+import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.DocumentDao
 import com.example.union_sync_impl.dao.LocationDao
+import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
+import com.example.union_sync_impl.dao.sqlDocumentsQuery
+import com.example.union_sync_impl.dao.sqlReserveQuery
 import com.example.union_sync_impl.data.mapper.toDocumentDb
 import com.example.union_sync_impl.data.mapper.toDocumentSyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationShortSyncEntity
@@ -22,14 +27,27 @@ import kotlinx.coroutines.flow.map
 class DocumentSyncApiImpl(
     private val documentDao: DocumentDao,
     private val locationDao: LocationDao,
-    private val accountingObjectDao: AccountingObjectDao
+    private val accountingObjectDao: AccountingObjectDao,
+    private val reserveDao: ReserveDao
 ) : DocumentSyncApi {
     override suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): Long {
         return documentDao.insert(documentCreateSyncEntity.toDocumentDb())
     }
 
-    override suspend fun getAllDocuments(): Flow<List<DocumentSyncEntity>> {
-        return documentDao.getAll().map {
+    override suspend fun getAllDocuments(
+        textQuery: String?,
+        molId: String?,
+        exploitingId: String?,
+        organizationId: String?
+    ): Flow<List<DocumentSyncEntity>> {
+        return documentDao.getAll(
+            sqlDocumentsQuery(
+                textQuery = textQuery,
+                molId = molId,
+                exploitingId = exploitingId,
+                organizationId = organizationId
+            )
+        ).map {
             it.map {
                 it.documentDb.toDocumentSyncEntity(
                     organizationSyncEntity = it.organizationDb?.toSyncEntity(),
@@ -42,7 +60,10 @@ class DocumentSyncApiImpl(
         }
     }
 
-    override suspend fun getDocuments(type: String): Flow<List<DocumentSyncEntity>> {
+    override suspend fun getDocuments(
+        type: String,
+        textQuery: String?
+    ): Flow<List<DocumentSyncEntity>> {
         return documentDao.getDocumentsByType(type).map {
             it.map {
                 it.documentDb.toDocumentSyncEntity(
@@ -68,18 +89,23 @@ class DocumentSyncApiImpl(
             null
         }
 
-        val accountingObjects =
+        val accountingObjects: List<AccountingObjectSyncEntity> =
             accountingObjectDao.getAll(sqlAccountingObjectQuery(accountingObjectsIds = fullDocument.documentDb.accountingObjectsIds))
                 .map {
-                    it.toSyncEntity(it, getLocationSyncEntity(it.locationDb))
+                    it.toSyncEntity(getLocationSyncEntity(it.locationDb))
                 }
+
+        val reserves: List<ReserveSyncEntity> =
+            reserveDao.getAll(sqlReserveQuery(reservesIds = fullDocument.documentDb.reservesIds))
+                .map { it.toSyncEntity(getLocationSyncEntity(it.locationDb)) }
 
         return fullDocument.documentDb.toDocumentSyncEntity(
             organizationSyncEntity = fullDocument.organizationDb?.toSyncEntity(),
             mol = fullDocument.molDb?.toSyncEntity(),
             exploiting = fullDocument.exploitingDb?.toSyncEntity(),
             locations = locations,
-            accountingObjects = accountingObjects
+            accountingObjects = accountingObjects,
+            reserves = reserves
         )
     }
 
@@ -93,7 +119,8 @@ class DocumentSyncApiImpl(
             return null
         }
         val locationTypeId = locationDb.locationTypeId ?: return null
-        val locationTypeDb: LocationTypeDb = locationDao.getLocationTypeById(locationTypeId)
+        val locationTypeDb: LocationTypeDb =
+            locationDao.getLocationTypeById(locationTypeId) ?: return null
 
         return locationDb.toLocationSyncEntity(locationTypeDb)
     }

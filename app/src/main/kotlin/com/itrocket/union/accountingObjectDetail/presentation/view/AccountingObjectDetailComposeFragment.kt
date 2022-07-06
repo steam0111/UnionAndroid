@@ -8,7 +8,6 @@ import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjectDetail.AccountingObjectDetailModule.ACCOUNTINGOBJECTDETAIL_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailStore
-import com.itrocket.union.readingMode.presentation.store.ReadingModeArguments
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.utils.showBottomSheet
 
@@ -45,19 +44,6 @@ class AccountingObjectDetailComposeFragment :
                 onPageChangeListener = {
                     accept(AccountingObjectDetailStore.Intent.OnPageSelected(it))
                 }
-            )
-        }
-    }
-
-    override fun handleLabel(label: AccountingObjectDetailStore.Label) {
-        super.handleLabel(label)
-        when (label) {
-            is AccountingObjectDetailStore.Label.ShowReadingMode -> requireActivity().showBottomSheet(
-                containerId = R.id.mainActivityNavHostFragment,
-                bottomSheetFragment = ReadingModeComposeFragment(),
-                args = bundleOf(
-                    ReadingModeComposeFragment.READING_MODE_ARGS to ReadingModeArguments(label.readingMode)
-                )
             )
         }
     }

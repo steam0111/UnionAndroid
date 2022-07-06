@@ -8,8 +8,10 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.documentCreate.domain.DocumentAccountingObjectManager
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import com.itrocket.union.documents.domain.entity.DocumentDomain
+import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.LocationParamDomain
@@ -23,6 +25,7 @@ class DocumentCreateStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val documentCreateInteractor: DocumentCreateInteractor,
     private val documentCreateArguments: DocumentCreateArguments,
+    private val documentAccountingObjectManager: DocumentAccountingObjectManager,
     private val errorInteractor: ErrorInteractor
 ) {
     fun create(): DocumentCreateStore =
@@ -32,7 +35,9 @@ class DocumentCreateStoreFactory(
                 initialState = DocumentCreateStore.State(
                     document = documentCreateArguments.document,
                     accountingObjects = documentCreateArguments.document.accountingObjects,
-                    params = documentCreateArguments.document.params
+                    params = documentCreateArguments.document.params,
+                    reserves = documentCreateArguments.document.reserves,
+                    objectType = documentCreateArguments.document.objectType
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
@@ -57,6 +62,7 @@ class DocumentCreateStoreFactory(
                 )
                 dispatch(Result.Document(document))
                 dispatch(Result.AccountingObjects(document.accountingObjects))
+                dispatch(Result.Reserves(document.reserves))
                 dispatch(Result.Params(document.params))
             }
             dispatch(Result.Loading(false))
@@ -69,12 +75,7 @@ class DocumentCreateStoreFactory(
         ) {
             when (intent) {
                 DocumentCreateStore.Intent.OnBackClicked -> publish(DocumentCreateStore.Label.GoBack)
-                DocumentCreateStore.Intent.OnChooseClicked -> publish(
-                    DocumentCreateStore.Label.ShowAccountingObjects(
-                        getState().params,
-                        documentCreateInteractor.getAccountingObjectIds(getState().accountingObjects)
-                    )
-                )
+                DocumentCreateStore.Intent.OnChooseClicked -> onChooseClicked(getState)
                 DocumentCreateStore.Intent.OnDropClicked -> {
                     changeParams(getState().document.params, getState)
                     dispatch(Result.AccountingObjects(getState().document.accountingObjects))
@@ -105,9 +106,7 @@ class DocumentCreateStoreFactory(
                 DocumentCreateStore.Intent.OnPrevClicked -> dispatch(Result.SelectPage(PARAMS_PAGE))
                 DocumentCreateStore.Intent.OnSaveClicked -> saveDocument(getState)
                 is DocumentCreateStore.Intent.OnSelectPage -> dispatch(Result.SelectPage(intent.selectedPage))
-                DocumentCreateStore.Intent.OnSettingsClicked -> {
-                    //no-op
-                }
+                DocumentCreateStore.Intent.OnSettingsClicked -> publish(DocumentCreateStore.Label.ShowReadingMode)
                 is DocumentCreateStore.Intent.OnLocationChanged -> {
                     val params = documentCreateInteractor.changeLocation(
                         getState().params,
@@ -125,7 +124,60 @@ class DocumentCreateStoreFactory(
                         )
                     )
                 }
+                is DocumentCreateStore.Intent.OnNewAccountingObjectBarcodeHandled -> handleBarcodeAccountingObjects(
+                    intent.barcode,
+                    getState().accountingObjects
+                )
+                is DocumentCreateStore.Intent.OnNewAccountingObjectRfidsHandled -> handleRfidsAccountingObjects(
+                    intent.rfids,
+                    getState().accountingObjects
+                )
+                is DocumentCreateStore.Intent.OnReserveSelected -> dispatch(
+                    Result.Reserves(
+                        documentCreateInteractor.addReserve(
+                            reserves = getState().reserves,
+                            reserve = intent.reserve
+                        )
+                    )
+                )
+                DocumentCreateStore.Intent.OnCompleteClicked -> conductDocument(getState())
             }
+        }
+
+        private suspend fun conductDocument(state: DocumentCreateStore.State) {
+            documentCreateInteractor.conductDocument(
+                document = state.document,
+                accountingObjects = state.accountingObjects,
+                params = state.params
+            )
+            documentAccountingObjectManager.changeAccountingObjectsAfterConduct(
+                documentTypeDomain = state.document.documentType,
+                accountingObjects = state.accountingObjects,
+                params = state.params
+            )
+            dispatch(Result.Document(state.document.copy(documentStatus = DocumentStatus.CONDUCTED)))
+        }
+
+        private suspend fun handleBarcodeAccountingObjects(
+            barcode: String,
+            accountingObjects: List<AccountingObjectDomain>
+        ) {
+            val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectBarcode(
+                accountingObjects = accountingObjects,
+                barcode = barcode
+            )
+            dispatch(Result.AccountingObjects(newAccountingObjects))
+        }
+
+        private suspend fun handleRfidsAccountingObjects(
+            rfids: List<String>,
+            accountingObjects: List<AccountingObjectDomain>
+        ) {
+            val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectRfids(
+                accountingObjects = accountingObjects,
+                handledAccountingObjectRfids = rfids
+            )
+            dispatch(Result.AccountingObjects(newAccountingObjects))
         }
 
         private fun changeParams(
@@ -141,15 +193,12 @@ class DocumentCreateStoreFactory(
         }
 
         private suspend fun saveDocument(getState: () -> DocumentCreateStore.State) {
-            if (getState().document.objectType == ObjectType.MAIN_ASSETS) {
-                documentCreateInteractor.saveDocument(
-                    accountingObjects = getState().accountingObjects,
-                    document = getState().document,
-                    params = getState().params
-                )
-            } else {
-                //no-op
-            }
+            documentCreateInteractor.saveDocument(
+                accountingObjects = getState().accountingObjects,
+                document = getState().document,
+                params = getState().params,
+                reserves = getState().reserves
+            )
             publish(DocumentCreateStore.Label.GoBack)
         }
 
@@ -163,6 +212,24 @@ class DocumentCreateStoreFactory(
                     DocumentCreateStore.Label.ShowParamSteps(
                         currentStep = params.indexOf(param) + 1,
                         params = params.filter { it.type != ManualType.LOCATION }
+                    )
+                )
+            }
+        }
+
+        private suspend fun onChooseClicked(getState: () -> DocumentCreateStore.State) {
+            if (getState().objectType == ObjectType.MAIN_ASSETS) {
+                publish(
+                    DocumentCreateStore.Label.ShowAccountingObjects(
+                        documentCreateInteractor.getFilterParams(getState().params),
+                        documentCreateInteractor.getAccountingObjectIds(getState().accountingObjects)
+                    )
+                )
+            } else {
+                publish(
+                    DocumentCreateStore.Label.ShowReserves(
+                        documentCreateInteractor.getFilterParams(getState().params),
+                        documentCreateInteractor.getReservesIds(getState().reserves)
                     )
                 )
             }
@@ -190,7 +257,7 @@ class DocumentCreateStoreFactory(
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.AccountingObjects -> copy(accountingObjects = result.accountingObjects)
                 is Result.Params -> copy(params = result.params)
-                is Result.Reserves -> copy(document = document.copy(reserves = result.reserves))
+                is Result.Reserves -> copy(reserves = result.reserves)
                 is Result.SelectPage -> copy(selectedPage = result.page)
                 is Result.Enabled -> copy(isNextEnabled = result.enabled)
                 is Result.Document -> copy(document = result.document)

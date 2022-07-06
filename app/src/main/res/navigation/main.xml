@@ -8,9 +8,15 @@
     <fragment
         android:id="@+id/auth"
         android:name="com.itrocket.union.authContainer.presentation.view.AuthContainerComposeFragment">
+
         <action
             android:id="@+id/to_documentsMenu"
             app:destination="@id/documentsMenu"
+            app:popUpTo="@id/main" />
+
+        <action
+            android:id="@+id/to_SyncAll"
+            app:destination="@+id/syncAll"
             app:popUpTo="@id/main" />
     </fragment>
 
@@ -45,8 +51,8 @@
             android:id="@+id/to_moduleSettings"
             app:destination="@id/moduleSettings" />
         <action
-            android:id="@+id/to_inventory"
-            app:destination="@id/inventory" />
+            android:id="@+id/to_inventoryContainer"
+            app:destination="@id/inventoryContainer" />
         <action
             android:id="@+id/to_organizations"
             app:destination="@id/organization" />
@@ -79,17 +85,17 @@
     <fragment
         android:id="@+id/accountingObjects"
         android:name="com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment">
+        <action
+            android:id="@+id/to_accountingObjectsDetails"
+            app:destination="@id/accountingObjectsDetails" />
+        <action
+            android:id="@+id/to_filter"
+            app:destination="@id/filter" />
+
         <argument
             android:name="AccountingObjectArguments"
             app:argType="com.itrocket.union.accountingObjects.presentation.store.AccountingObjectArguments"
             app:nullable="true" />
-        <action
-            android:id="@+id/to_accountingObjectsDetails"
-            app:destination="@id/accountingObjectsDetails" />
-
-        <action
-            android:id="@+id/to_Filter"
-            app:destination="@id/filter" />
     </fragment>
 
     <fragment
@@ -127,8 +133,13 @@
             app:destination="@id/reserveDetail" />
 
         <action
-            android:id="@+id/to_Filter"
+            android:id="@+id/to_filter"
             app:destination="@id/filter" />
+
+        <argument
+            android:name="ReservesArguments"
+            app:argType="com.itrocket.union.reserves.presentation.store.ReservesArguments"
+            app:nullable="true" />
     </fragment>
 
     <fragment
@@ -143,18 +154,29 @@
     <fragment
         android:id="@+id/documents"
         android:name="com.itrocket.union.documents.presentation.view.DocumentComposeFragment">
+        <action
+            android:id="@+id/to_documentCreate"
+            app:destination="@id/documentCreate" />
+        <action
+            android:id="@+id/to_filter"
+            app:destination="@id/filter" />
         <argument
             android:name="DocumentComposeFragmentArgs"
             app:argType="com.itrocket.union.documents.presentation.store.DocumentArguments"
             app:nullable="false" />
-        <action
-            android:id="@+id/to_documentCreate"
-            app:destination="@id/documentCreate" />
     </fragment>
 
     <fragment
         android:id="@+id/employees"
-        android:name="com.itrocket.union.employees.presentation.view.EmployeeComposeFragment" />
+        android:name="com.itrocket.union.employees.presentation.view.EmployeeComposeFragment">
+
+        <action
+            android:id="@+id/to_employee_detail"
+            app:destination="@id/employeeDetail" />
+        <action
+            android:id="@+id/to_filter"
+            app:destination="@id/filter" />
+    </fragment>
 
     <fragment
         android:id="@+id/filter"
@@ -163,10 +185,15 @@
         <action
             android:id="@+id/to_location"
             app:destination="@id/location" />
+
         <argument
             android:name="FilterArguments"
             app:argType="com.itrocket.union.filter.presentation.store.FilterArguments"
             app:nullable="false" />
+
+        <action
+            android:id="@+id/to_selectParams"
+            app:destination="@id/selectParams" />
     </fragment>
 
     <fragment
@@ -200,6 +227,10 @@
         android:name="com.itrocket.union.nomenclatureGroup.presentation.view.NomenclatureGroupComposeFragment"
         android:label="NomenclatureGroup">
 
+        <action
+            android:id="@+id/to_nomenclatureGroupDetail"
+            app:destination="@id/nomenclatureGroupDetail" />
+
         <argument
             android:name="NomenclatureGroupArguments"
             app:argType="com.itrocket.union.nomenclatureGroup.presentation.store.NomenclatureGroupArguments" />
@@ -209,6 +240,14 @@
         android:id="@+id/nomenclature"
         android:name="com.itrocket.union.nomenclature.presentation.view.NomenclatureComposeFragment"
         android:label="Nomenclature">
+
+        <action
+            android:id="@+id/to_nomenclatureDetail"
+            app:destination="@id/nomenclatureDetail" />
+
+        <action
+            android:id="@+id/to_filter"
+            app:destination="@id/filter" />
 
         <argument
             android:name="NomenclatureArguments"
@@ -221,24 +260,6 @@
         android:label="@string/module_settings_label" />
 
     <fragment
-        android:id="@+id/inventory"
-        android:name="com.itrocket.union.inventory.presentation.view.InventoryComposeFragment"
-        android:label="Inventory">
-        <action
-            android:id="@+id/to_selectParams"
-            app:destination="@id/selectParams" />
-        <action
-            android:id="@+id/to_location"
-            app:destination="@id/location" />
-        <action
-            android:id="@+id/to_accountingObjectsDetails"
-            app:destination="@id/accountingObjectsDetails" />
-        <action
-            android:id="@+id/to_inventoryCreate"
-            app:destination="@id/inventoryCreate" />
-    </fragment>
-
-    <fragment
         android:id="@+id/selectParams"
         android:name="com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFragment">
 
@@ -248,31 +269,31 @@
     </fragment>
 
     <fragment
-        android:id="@+id/inventoryCreate"
-        android:name="com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateComposeFragment"
-        android:label="InventoryCreate">
-
-        <argument
-            android:name="InventoryCreateArguments"
-            app:argType="com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateArguments" />
+        android:id="@+id/organization"
+        android:name="com.itrocket.union.organizations.presentation.view.OrganizationComposeFragment">
+        <action
+            android:id="@+id/to_organizationDetail"
+            app:destination="@+id/organizationDetail" />
     </fragment>
 
     <fragment
-        android:id="@+id/organization"
-        android:name="com.itrocket.union.organizations.presentation.view.OrganizationComposeFragment" />
-
-    <fragment
         android:id="@+id/departments"
-        android:name="com.itrocket.union.departments.presentation.view.DepartmentComposeFragment" />
+        android:name="com.itrocket.union.departments.presentation.view.DepartmentComposeFragment">
+
+        <action
+            android:id="@+id/to_department_detail"
+            app:destination="@id/departmentDetail" />
+
+        <action
+            android:id="@+id/to_filter"
+            app:destination="@id/filter" />
+    </fragment>
 
     <fragment
         android:id="@+id/documentCreate"
         android:name="com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragment"
         android:label="DocumentCreate">
 
-        <argument
-            android:name="DocumentCreateArguments"
-            app:argType="com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments" />
         <action
             android:id="@+id/to_selectParams"
             app:destination="@id/selectParams" />
@@ -282,6 +303,12 @@
         <action
             android:id="@+id/to_accountingObjects"
             app:destination="@id/accountingObjects" />
+        <action
+            android:id="@+id/to_reserves"
+            app:destination="@id/reserves" />
+        <argument
+            android:name="DocumentCreateArguments"
+            app:argType="com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments" />
     </fragment>
 
     <fragment
@@ -290,32 +317,187 @@
         android:label="Inventories">
 
         <action
-            android:id="@+id/to_inventoryCreate"
-            app:destination="@id/inventoryCreate" />
+            android:id="@+id/to_inventoryContainer"
+            app:destination="@id/inventoryContainer" />
+
+        <action
+            android:id="@+id/to_filter"
+            app:destination="@id/filter" />
     </fragment>
 
     <fragment
         android:id="@+id/producer"
         android:name="com.itrocket.union.producer.presentation.view.ProducerComposeFragment"
-        android:label="Producer" />
+        android:label="Producer">
+        <action
+            android:id="@+id/to_producerDetail"
+            app:destination="@+id/producerDetail" />
+    </fragment>
 
     <fragment
         android:id="@+id/branches"
         android:name="com.itrocket.union.branches.presentation.view.BranchesComposeFragment"
-        android:label="Branches" />
+        android:label="Branches">
+        <action
+            android:id="@+id/to_branchDetail"
+            app:destination="@id/branchDetail" />
+        <action
+            android:id="@+id/to_filter"
+            app:destination="@id/filter" />
+    </fragment>
 
     <fragment
         android:id="@+id/region"
         android:name="com.itrocket.union.regions.presentation.view.RegionComposeFragment"
-        android:label="Region" />
+        android:label="Region">
+
+        <action
+            android:id="@+id/to_regionDetail"
+            app:destination="@id/regionDetail" />
+    </fragment>
 
     <fragment
         android:id="@+id/counterparty"
         android:name="com.itrocket.union.counterparties.presentation.view.CounterpartyComposeFragment"
-        android:label="Counterparty" />
+        android:label="Counterparty">
+        <action
+            android:id="@+id/to_counterpartyDetail"
+            app:destination="@+id/counterpartyDetail" />
+    </fragment>
 
     <fragment
         android:id="@+id/equipmentTypes"
-        android:name="com.itrocket.union.equipmentTypes.presentation.view.EquipmentTypeComposeFragment" />
+        android:name="com.itrocket.union.equipmentTypes.presentation.view.EquipmentTypeComposeFragment">
 
+        <action
+            android:id="@+id/to_equipmentTypeDetail"
+            app:destination="@+id/equipmentTypeDetail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/employeeDetail"
+        android:name="com.itrocket.union.employeeDetail.presentation.view.EmployeeDetailComposeFragment">
+        <argument
+            android:name="EmployeeDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.employeeDetail.presentation.store.EmployeeDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nomenclatureDetail"
+        android:name="com.itrocket.union.nomenclatureDetail.presentation.view.NomenclatureDetailComposeFragment">
+        <argument
+            android:name="NomenclatureDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.nomenclatureDetail.presentation.store.NomenclatureDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/departmentDetail"
+        android:name="com.itrocket.union.departmentDetail.presentation.view.DepartmentDetailComposeFragment">
+        <argument
+            android:name="DepartmentComposeFragmentArgs"
+            app:argType="com.itrocket.union.departmentDetail.presentation.store.DepartmentDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nomenclatureGroupDetail"
+        android:name="com.itrocket.union.nomenclatureGroupDetail.presentation.view.NomenclatureGroupDetailComposeFragment">
+        <argument
+            android:name="NomenclatureGroupDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.nomenclatureGroupDetail.presentation.store.NomenclatureGroupDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/organizationDetail"
+        android:name="com.itrocket.union.organizationDetail.presentation.view.OrganizationDetailComposeFragment">
+        <argument
+            android:name="OrganizationDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.organizationDetail.presentation.store.OrganizationDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/inventoryContainer"
+        android:name="com.itrocket.union.inventoryContainer.presentation.view.InventoryContainerComposeFragment"
+        android:label="InventoryContainer">
+        <action
+            android:id="@+id/to_selectParams"
+            app:destination="@id/selectParams" />
+        <action
+            android:id="@+id/to_location"
+            app:destination="@id/location" />
+        <action
+            android:id="@+id/to_accountingObjectsDetails"
+            app:destination="@id/accountingObjectsDetails" />
+
+        <argument
+            android:name="InventoryContainerArguments"
+            app:argType="com.itrocket.union.inventoryContainer.presentation.store.InventoryContainerArguments"
+            app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/syncAll"
+        android:name="com.itrocket.union.syncAll.presentation.view.SyncAllComposeFragment"
+        android:label="SyncAll">
+
+        <action
+            android:id="@+id/to_documentsMenu"
+            app:destination="@id/documentsMenu"
+            app:popUpTo="@id/main" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/branchDetail"
+        android:name="com.itrocket.union.branchDetail.presentation.view.BranchDetailComposeFragment">
+        <argument
+            android:name="BranchDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.branchDetail.presentation.store.BranchDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/regionDetail"
+        android:name="com.itrocket.union.regionDetail.presentation.view.RegionDetailComposeFragment">
+        <argument
+            android:name="RegionDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.regionDetail.presentation.store.RegionDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/counterpartyDetail"
+        android:name="com.itrocket.union.conterpartyDetail.presentation.view.CounterpartyDetailComposeFragment">
+        <argument
+            android:name="CounterpartyDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.conterpartyDetail.presentation.store.CounterpartyDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/producerDetail"
+        android:name="com.itrocket.union.producerDetail.presentation.view.ProducerDetailComposeFragment">
+        <argument
+            android:name="ProducerDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.producerDetail.presentation.store.ProducerDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/equipmentTypeDetail"
+        android:name="com.itrocket.union.equipmentTypeDetail.presentation.view.EquipmentTypeDetailComposeFragment">
+        <argument
+            android:name="EquipmentTypeDetailComposeFragmentArgs"
+            app:argType="com.itrocket.union.equipmentTypeDetail.presentation.store.EquipmentTypeDetailArguments"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/chooseAction"
+        android:name="com.itrocket.union.chooseAction.presentation.view.ChooseActionComposeFragment"
+        android:label="ChooseAction" />
 </navigation>

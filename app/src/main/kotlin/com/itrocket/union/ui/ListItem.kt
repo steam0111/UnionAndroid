@@ -51,10 +51,12 @@ import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
+import com.itrocket.union.employees.domain.entity.EmployeeStatus
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.utils.clickableUnbounded
+import java.math.BigDecimal
 
 private const val MAX_LIST_INFO = 3
 private const val DATE_ITEM_ROTATION_DURATION = 200
@@ -114,7 +116,7 @@ fun AccountingObjectItem(
                     text = stringResource(
                         R.string.common_two_dots,
                         stringResource(id = it.title),
-                        it.value
+                        it.value.orEmpty()
                     ),
                     style = AppTheme.typography.caption,
                     color = psb3
@@ -294,7 +296,7 @@ fun ReservesItem(
                     text = stringResource(
                         R.string.common_two_dots,
                         stringResource(id = it.title),
-                        it.value
+                        it.value.orEmpty()
                     ),
                     style = AppTheme.typography.caption,
                     color = psb3
@@ -707,7 +709,7 @@ fun ReservesItemPreview() {
                     R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 )
-            ), itemsCount = 1200
+            ), itemsCount = 1200L
         ), onReservesListener = {},
         isShowBottomLine = true
     )
@@ -721,7 +723,7 @@ fun AccountingObjectItemPreview() {
             id = "1",
             isBarcode = true,
             title = "Ширикоформатный жидкокристалический монитор Samsung",
-            status = ObjectStatus("available", ObjectStatusType.UNDER_REVIEW),
+            status = ObjectStatus("available", ObjectStatusType.REVIEW),
             listMainInfo = listOf(
                 ObjectInfoDomain(
                     R.string.auth_main_title,
@@ -741,9 +743,11 @@ fun AccountingObjectItemPreview() {
                     R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 ),
-            )
+            ),
+            barcodeValue = "",
+            rfidValue = ""
         ), onAccountingObjectListener = {}, isShowBottomLine = true,
-        status = ObjectStatusType.UNDER_REVIEW
+        status = ObjectStatusType.REVIEW
     )
 }
 
@@ -849,7 +853,9 @@ fun EmployeeItemPreview() {
             number = "BO_173470001290",
             firstname = "Ким",
             lastname = "У",
-            patronymic = "Бин"
+            patronymic = "Бин",
+            post = "bb",
+            employeeStatus = EmployeeStatus.MOL
         ), onEmployeeClickListener = {}, isShowBottomLine = true
     )
 }

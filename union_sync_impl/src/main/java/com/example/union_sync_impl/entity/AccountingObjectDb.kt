@@ -2,7 +2,6 @@ package com.example.union_sync_impl.entity
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import com.example.union_sync_api.entity.AccountingObjectStatus
 import com.example.union_sync_impl.entity.core.CatalogItemDb
 import com.example.union_sync_impl.entity.location.LocationDb
 
@@ -50,6 +49,7 @@ class AccountingObjectDb(
     val organizationId: String?,
     val departmentId: String?,
     val locationId: String?,
+    val providerId: String?,
     val molId: String?,
     val producerId: String?,
     val exploitingId: String?,
@@ -60,7 +60,8 @@ class AccountingObjectDb(
     val rfidValue: String?,
     val factoryNumber: String?,
     val inventoryNumber: String?,
-    val status: AccountingObjectStatus?,
+    val status: AccountingObjectStatusDb?,
+    val statusId: String?,
     val equipmentTypeId: String?,
     val actualPrice: String?,
     val count: Int?,
@@ -68,3 +69,4 @@ class AccountingObjectDb(
     val internalNumber: String?,
     val model: String?
 ) : CatalogItemDb(id)
+

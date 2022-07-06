@@ -5,42 +5,78 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 open class ParamDomain(
-    val id: String,
+    val id: String? = null,
     val value: String,
-    val type: ManualType
+    val type: ManualType,
+    val isFilter: Boolean = true
 ) : Parcelable {
     fun copy(
-        id: String = this.id,
+        id: String? = this.id,
         value: String = this.value,
-        type: ManualType = this.type
+        type: ManualType = this.type,
+        isFilter: Boolean = this.isFilter
     ): ParamDomain {
-        return ParamDomain(id = id, value = value, type = type)
+        return ParamDomain(id = id, value = value, type = type, isFilter = isFilter)
     }
 }
 
 fun List<ParamDomain>.getOrganizationId(): String? {
-    return find { it.type == ManualType.ORGANIZATION }?.id
+    return filterNotEmpty().find { it.type == ManualType.ORGANIZATION }?.id
 }
 
 fun List<ParamDomain>.getLocationIds(): List<String>? {
-    return (find { it.type == ManualType.LOCATION } as? LocationParamDomain)?.ids
+    return (filterNotEmpty().find { it.type == ManualType.LOCATION } as? LocationParamDomain)?.ids
 }
 
 fun List<ParamDomain>.getExploitingId(): String? {
-    return find { it.type == ManualType.EXPLOITING }?.id
+    return filterNotEmpty().find { it.type == ManualType.EXPLOITING }?.id
 }
 
 fun List<ParamDomain>.getMolId(): String? {
-    return find { it.type == ManualType.MOL }?.id
+    return filterNotEmpty().find { it.type == ManualType.MOL }?.id
+}
+
+fun List<ParamDomain>.getDepartmentId(): String? {
+    return filterNotEmpty().find { it.type == ManualType.DEPARTMENT }?.id
+}
+
+fun List<ParamDomain>.getProducerId(): String? {
+    return filterNotEmpty().find { it.type == ManualType.PRODUCER }?.id
+}
+
+fun List<ParamDomain>.getProviderId(): String? {
+    return filterNotEmpty().find { it.type == ManualType.PROVIDER }?.id
+}
+
+fun List<ParamDomain>.getStatusId(): String? {
+    return filterNotEmpty().find { it.type == ManualType.STATUS }?.id
+}
+
+fun List<ParamDomain>.getNomenclatureGroupId(): String? {
+    return filterNotEmpty().find { it.type == ManualType.NOMENCLATURE_GROUP }?.id
+}
+
+fun List<ParamDomain>.getEquipmentTypeId(): String? {
+    return filterNotEmpty().find { it.type == ManualType.EQUIPMENT_TYPE }?.id
+}
+
+fun List<ParamDomain>.getReceptionCategoryId(): String? {
+    return filterNotEmpty().find { it.type == ManualType.RECEPTION_CATEGORY }?.id
 }
 
 fun List<ParamDomain>.filterNotEmpty(): List<ParamDomain> {
-    return filterNot { it.id.isBlank() }
+    return filterNot { it.id.isNullOrBlank() }
 }
 
 @Parcelize
 data class LocationParamDomain(
     val ids: List<String>,
-    val values: List<String>
+    val values: List<String>,
+    val filtered: Boolean = true
 ) : Parcelable,
-    ParamDomain(id = ids.toString(), value = values.joinToString(", "), type = ManualType.LOCATION)
+    ParamDomain(
+        id = ids.toString(),
+        value = values.joinToString(", "),
+        type = ManualType.LOCATION,
+        isFilter = filtered
+    )

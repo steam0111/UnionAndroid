@@ -2,6 +2,7 @@ package com.itrocket.union.accountingObjects.domain.entity
 
 import android.os.Parcelable
 import com.example.union_sync_api.entity.AccountingObjectInfoSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import kotlinx.parcelize.Parcelize
 
@@ -14,6 +15,8 @@ data class AccountingObjectDomain(
     val status: ObjectStatus?,
     val inventoryStatus: InventoryAccountingObjectStatus = InventoryAccountingObjectStatus.NOT_FOUND,
     val isBarcode: Boolean = false,
+    val rfidValue: String?,
+    val barcodeValue: String?,
     val listMainInfo: List<ObjectInfoDomain>,
     val listAdditionallyInfo: List<ObjectInfoDomain>
 ) : Parcelable {
@@ -22,7 +25,11 @@ data class AccountingObjectDomain(
 }
 
 @Parcelize
-data class ObjectInfoDomain(val title: Int, val value: String) : Parcelable
+data class ObjectInfoDomain(
+    val title: Int,
+    val value: String? = null,
+    val valueRes: Int? = null
+) : Parcelable
 
 fun AccountingObjectDomain.toAccountingObjectIdSyncEntity() =
     AccountingObjectInfoSyncEntity(id = id, status = inventoryStatus.name)

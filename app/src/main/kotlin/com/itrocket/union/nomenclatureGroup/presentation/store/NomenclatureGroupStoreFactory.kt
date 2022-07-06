@@ -10,6 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.nomenclatureGroup.domain.NomenclatureGroupInteractor
 import com.itrocket.union.nomenclatureGroup.domain.entity.NomenclatureGroupDomain
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 
 class NomenclatureGroupStoreFactory(
@@ -17,7 +18,8 @@ class NomenclatureGroupStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val nomenclatureGroupInteractor: NomenclatureGroupInteractor,
     private val nomenclatureGroupArguments: NomenclatureGroupArguments,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val searchManager: SearchManager
 ) {
     fun create(): NomenclatureGroupStore =
         object : NomenclatureGroupStore,
@@ -40,11 +42,9 @@ class NomenclatureGroupStoreFactory(
             action: Unit,
             getState: () -> NomenclatureGroupStore.State
         ) {
-            dispatch(Result.Loading(true))
-            catchException {
-                dispatch(Result.NomenclatureGroups(nomenclatureGroupInteractor.getNomenclatureGroups()))
+            searchManager.listenSearch {
+                getNomenclatureGroup(searchText = it)
             }
-            dispatch(Result.Loading(false))
         }
 
         override suspend fun executeIntent(
@@ -52,7 +52,41 @@ class NomenclatureGroupStoreFactory(
             getState: () -> NomenclatureGroupStore.State
         ) {
             when (intent) {
-                NomenclatureGroupStore.Intent.OnBackClicked -> publish(NomenclatureGroupStore.Label.GoBack)
+                is NomenclatureGroupStore.Intent.OnItemClick -> publish(
+                    NomenclatureGroupStore.Label.ShowDetail(
+                        intent.id
+                    )
+                )
+                NomenclatureGroupStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
+                NomenclatureGroupStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
+                is NomenclatureGroupStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    searchManager.emit(intent.searchText)
+                }
+            }
+        }
+
+        private suspend fun getNomenclatureGroup(searchText: String = "") {
+            dispatch(Result.Loading(true))
+            catchException {
+                dispatch(
+                    Result.NomenclatureGroups(
+                        nomenclatureGroupInteractor.getNomenclatureGroups(
+                            searchQuery = searchText
+                        )
+                    )
+                )
+            }
+            dispatch(Result.Loading(false))
+        }
+
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                searchManager.emit("")
+            } else {
+                publish(NomenclatureGroupStore.Label.GoBack)
             }
         }
 
@@ -64,7 +98,11 @@ class NomenclatureGroupStoreFactory(
 
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
-        data class NomenclatureGroups(val nomenclatureGroupsDomain: List<NomenclatureGroupDomain>) : Result()
+        data class NomenclatureGroups(val nomenclatureGroupsDomain: List<NomenclatureGroupDomain>) :
+            Result()
+
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<NomenclatureGroupStore.State, Result> {
@@ -72,6 +110,8 @@ class NomenclatureGroupStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.NomenclatureGroups -> copy(nomenclatureGroups = result.nomenclatureGroupsDomain)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
 }

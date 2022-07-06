@@ -6,7 +6,7 @@ java = "11"
 
 kotlin = "1.6.10"
 agp = "7.0.3"
-koin = "3.1.4"
+koin = "3.2.0"
 mvi = "2.0.4"
 
 compose = "1.1.1"
@@ -37,13 +37,15 @@ okhttp3-logging = "4.9.3"
 datastore = "1.0.0"
 
 core = "1.1.5"
-ui = "1.0.1"
+ui = "1.0.2"
 utils = "1.0.0"
 
 database = "2.4.2"
 
 scannerclient = "1.0.9"
 scannerclient_impl = "1.1.0"
+
+junit = "4.13.2"
 
 [libraries]
 
@@ -104,6 +106,8 @@ database-compiler = { module = "androidx.room:room-compiler", version.ref = "dat
 scannerclient-impl = { module = "ru.interid:scannerclient-impl", version.ref = "scannerclient_impl"}
 scannerclient = { module = "ru.interid:scanner_client", version.ref = "scannerclient"}
 
+junit = { module = "junit:junit", version.ref = "junit"}
+
 [bundles]
 android-ext = ["android-ext-lifecycle", "android-ext-fragment"]
 
@@ -132,8 +136,7 @@ itrocket = [
 
 
 koin-android = [
-    "koin-android",
-    "koin-navigation"
+    "koin-android"
 ]
 
 retrofit = [

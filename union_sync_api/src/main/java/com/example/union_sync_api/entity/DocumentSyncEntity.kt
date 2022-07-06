@@ -5,9 +5,14 @@ data class DocumentSyncEntity(
     val documentType: String,
     val accountingObjects: List<AccountingObjectSyncEntity>,
     val id: String,
-    val date: Long,
     val organizationSyncEntity: OrganizationSyncEntity?,
     val mol: EmployeeSyncEntity?,
     val exploiting: EmployeeSyncEntity? = null,
-    val locations: List<LocationShortSyncEntity>? = null
+    val locations: List<LocationShortSyncEntity>? = null,
+    val creationDate: Long,
+    val completionDate: Long? = null,
+    val documentStatus: String,
+    val documentStatusId: String,
+    val objectType: String,
+    val reserves: List<ReserveSyncEntity>
 )

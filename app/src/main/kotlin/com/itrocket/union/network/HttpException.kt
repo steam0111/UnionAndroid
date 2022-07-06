@@ -3,8 +3,20 @@ package com.itrocket.union.network
 import com.squareup.moshi.Moshi
 import java.io.IOException
 
-data class HttpException(val error: String? = "") :
-    IOException(error) {
+data class HttpException(val error: String? = "", val path: String? = "") : IOException() {
+
+    fun getFormattedMessage(): String? =
+        formatError(error, path)
+
+    private fun formatError(
+        error: String? = "",
+        path: String? = ""
+    ): String? {
+        if (error.isNullOrBlank() || path.isNullOrBlank()) return null
+
+        return "error:$error " +
+                "path:$path"
+    }
 
     companion object {
 

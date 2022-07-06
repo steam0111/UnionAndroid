@@ -1,13 +1,13 @@
 package com.itrocket.union.equipmentTypes.data.mapper
 
-import com.example.union_sync_api.entity.EquipmentTypesSyncEntity
+import com.example.union_sync_api.entity.EquipmentTypeSyncEntity
 import com.itrocket.union.equipmentTypes.domain.entity.EquipmentTypesDomain
 
-fun List<EquipmentTypesSyncEntity>.map(): List<EquipmentTypesDomain> = map {
+fun List<EquipmentTypeSyncEntity>.map(): List<EquipmentTypesDomain> = map {
     EquipmentTypesDomain(
         id = it.id,
         catalogItemName = it.catalogItemName,
-        name = it.name,
-        code = it.code
+        name = it.name.orEmpty(),
+        code = it.code.orEmpty()
     )
 }

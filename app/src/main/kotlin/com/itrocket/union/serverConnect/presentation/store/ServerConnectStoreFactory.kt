@@ -6,8 +6,8 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import com.itrocket.union.serverConnect.domain.ServerConnectInteractor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.serverConnect.domain.ServerConnectInteractor
 
 class ServerConnectStoreFactory(
     private val storeFactory: StoreFactory,
@@ -36,6 +36,14 @@ class ServerConnectStoreFactory(
             action: Unit,
             getState: () -> ServerConnectStore.State
         ) {
+            val serverUrl = serverConnectInteractor.getBaseUrl()
+            val port = serverConnectInteractor.getPort()
+            if (!serverUrl.isNullOrBlank()) {
+                dispatch(Result.ServerAddress(serverUrl))
+            }
+            if (!port.isNullOrBlank()) {
+                dispatch(Result.Port(port))
+            }
             publish(
                 ServerConnectStore.Label.ChangeEnable(
                     isEnabled(
@@ -80,6 +88,10 @@ class ServerConnectStoreFactory(
                     }
                 }
                 ServerConnectStore.Intent.OnNextClicked -> {
+                    serverConnectInteractor.clearAllSyncDataIfNeeded(
+                        getState().serverAddress,
+                        getState().port
+                    )
                     serverConnectInteractor.saveBaseUrl(getState().serverAddress)
                     serverConnectInteractor.savePort(getState().port)
                     publish(ServerConnectStore.Label.NextFinish)

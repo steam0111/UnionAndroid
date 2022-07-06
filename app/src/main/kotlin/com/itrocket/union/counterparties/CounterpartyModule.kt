@@ -31,6 +31,7 @@ object CounterpartyModule {
             CounterpartyStoreFactory(
                 DefaultStoreFactory,
                 get(),
+                get(),
                 get()
             ).create()
         }

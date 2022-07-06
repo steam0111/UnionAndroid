@@ -12,6 +12,7 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
 import com.itrocket.union.newAccountingObject.presentation.view.NewAccountingObjectComposeFragment
+import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 import com.itrocket.union.switcher.presentation.store.SwitcherArguments
 import com.itrocket.union.switcher.presentation.store.SwitcherResult
@@ -27,9 +28,10 @@ interface InventoryCreateStore :
         data class OnAccountingObjectStatusChanged(val switcherResult: SwitcherResult) :
             Intent()
 
-        data class OnNewAccountingObjectsHandled(val handledAccountingObjectIds: List<String>) :
+        data class OnNewAccountingObjectRfidsHandled(val handledAccountingObjectIds: List<String>) :
             Intent()
-
+        data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :
+            Intent()
         object OnBackClicked : Intent()
         object OnDropClicked : Intent()
         object OnHideFoundAccountingObjectClicked : Intent()
@@ -47,7 +49,7 @@ interface InventoryCreateStore :
     )
 
     sealed class Label {
-        object GoBack : Label(), GoBackNavigationLabel
+        object GoBack : Label()
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
         data class ShowChangeStatus(val switcherData: SwitcherDomain) : Label(),
             ShowBottomSheetNavigationLabel {
@@ -78,6 +80,16 @@ interface InventoryCreateStore :
 
         }
         object ShowLeaveWithoutSave : Label()
-        object ShowReading : Label()
+        object ShowReadingMode : Label(),
+            ShowBottomSheetNavigationLabel {
+
+            override val arguments: Bundle
+                get() = bundleOf()
+
+            override val containerId: Int = R.id.mainActivityNavHostFragment
+
+            override val fragment: Fragment
+                get() = ReadingModeComposeFragment()
+        }
     }
 }

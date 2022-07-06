@@ -11,6 +11,7 @@ import com.itrocket.union.authMain.domain.dependencies.AuthMainRepository
 import com.itrocket.union.authMain.domain.entity.AuthCredsDomain
 import com.itrocket.union.authMain.domain.entity.AuthDomain
 import com.itrocket.union.network.InvalidNetworkDataException
+import kotlin.math.log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
@@ -22,6 +23,7 @@ class AuthMainRepositoryImpl(
     private val dataStore: DataStore<Preferences>,
     private val accessTokenPreferencesKey: Preferences.Key<String>,
     private val refreshTokenPreferencesKey: Preferences.Key<String>,
+    private val loginPreferencesKey: Preferences.Key<String>,
 ) : AuthMainRepository {
     override suspend fun signIn(authCreds: AuthCredsDomain): AuthDomain {
         return (api.apiAuthSignInPost(authCreds.toAuthJwtRequest()).body()
@@ -29,7 +31,10 @@ class AuthMainRepositoryImpl(
     }
 
     override suspend fun refreshToken(refreshToken: String, accessToken: String): AuthCredentials {
-        return (api.apiAuthRefreshTokenPost(RefreshJwtRequest(refreshToken), "$BEARER_TOKEN $accessToken").body()
+        return (api.apiAuthRefreshTokenPost(
+            RefreshJwtRequest(refreshToken),
+            "$BEARER_TOKEN $accessToken"
+        ).body()
             ?: throw InvalidNetworkDataException()).toAuthCredentials()
     }
 
@@ -37,6 +42,18 @@ class AuthMainRepositoryImpl(
         dataStore.edit { preferences ->
             preferences[accessTokenPreferencesKey] = credentials.accessToken
             preferences[refreshTokenPreferencesKey] = credentials.refreshToken
+        }
+    }
+
+    override suspend fun getLogin(): Flow<String> {
+        return dataStore.data.map {
+            it[loginPreferencesKey].orEmpty()
+        }
+    }
+
+    override suspend fun saveLogin(login: String) {
+        dataStore.edit { preferences ->
+            preferences[loginPreferencesKey] = login
         }
     }
 

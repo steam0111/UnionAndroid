@@ -1,6 +1,6 @@
 package com.example.union_sync_api.entity
 
-class AccountingObjectSyncEntity(
+data class AccountingObjectSyncEntity(
     val id: String,
     var catalogItemName: String,
     val barcodeValue: String?,
@@ -8,23 +8,33 @@ class AccountingObjectSyncEntity(
     val rfidValue: String?,
     val factoryNumber: String?,
     val inventoryNumber: String?,
-    val locationSyncEntity: LocationSyncEntity?,
-    val status: AccountingObjectStatus?,
-    val mol: EmployeeSyncEntity?,
-    val exploitingEmployee: EmployeeSyncEntity?,
-    val organizationSyncEntity: OrganizationSyncEntity?,
     val actualPrice: String?,
-    val producerSyncEntity: ProducerSyncEntity?,
-    val equipmentTypesSyncEntity: EquipmentTypesSyncEntity?,
-    val providerSyncEntity: ProviderSyncEntity?,
     val count: Int?,
     val commissioningDate: String?,
     val internalNumber: String?,
-    val departmentSyncEntity: DepartmentSyncEntity?,
-    val inventoryStatus: String? = null
+    val inventoryStatus: String? = null,
+    val nomenclatureId: String?,
+    val nomenclatureGroupId: String?,
+    val status: AccountingObjectStatusSyncEntity?,
+    val statusId: String?,
+    val providerId: String?,
+    val departmentId: String?,
+    val producerId: String?,
+    val equipmentTypeId: String?,
+    val locationId: String?,
+    val molId: String?,
+    val exploitingEmployeeId: String?,
+    val organizationId: String?,
+    val model: String?,
+    val locationSyncEntity: LocationSyncEntity?
 )
 
-class AccountingObjectStatus(
-    val id: String,
-    val name: String
-)
+fun AccountingObjectSyncEntity.toAccountingObjectUpdateSyncEntity(): AccountingObjectUpdateSyncEntity {
+    return AccountingObjectUpdateSyncEntity(
+        id = id,
+        locationId = locationId,
+        exploitingId = exploitingEmployeeId,
+        status = status,
+        statusId = statusId,
+    )
+}

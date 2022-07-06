@@ -1,44 +1,49 @@
 package com.itrocket.union.accountingObjects.data.mapper
 
-import com.example.union_sync_api.entity.AccountingObjectStatus
+import com.example.union_sync_api.entity.AccountingObjectStatusSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.*
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 
 fun List<AccountingObjectSyncEntity>.map(): List<AccountingObjectDomain> = map { syncEntity ->
+    syncEntity.map()
+}
+
+fun AccountingObjectSyncEntity.map(): AccountingObjectDomain {
     val listMainInfo = mutableListOf<ObjectInfoDomain>()
-    syncEntity.factoryNumber?.let {
+    factoryNumber?.let {
         listMainInfo.add(ObjectInfoDomain(R.string.accounting_objects_factory_number, it))
     }
-    syncEntity.inventoryNumber?.let {
+    inventoryNumber?.let {
         listMainInfo.add(ObjectInfoDomain(R.string.accounting_objects_inventory_number, it))
     }
-    syncEntity.locationSyncEntity?.name?.let {
+    locationSyncEntity?.name?.let {
         listMainInfo.add(ObjectInfoDomain(R.string.accounting_objects_location, it))
     }
 
-    val status = syncEntity.inventoryStatus
-    val inventoryStatus = if(!status.isNullOrBlank()){
+    val status = inventoryStatus
+    val inventoryStatus = if (!status.isNullOrBlank()) {
         InventoryAccountingObjectStatus.valueOf(status)
     } else {
         InventoryAccountingObjectStatus.NOT_FOUND
     }
 
-    AccountingObjectDomain(
-        id = syncEntity.id,
-        title = syncEntity.name,
-        status = syncEntity.status?.toDomainStatus(),
-        isBarcode = syncEntity.barcodeValue != null,
+    return AccountingObjectDomain(
+        id = id,
+        title = name,
+        status = this.status?.toDomainStatus(),
+        isBarcode = barcodeValue != null,
         listMainInfo = listMainInfo,
         listAdditionallyInfo = emptyList(),
-        inventoryStatus = inventoryStatus
+        inventoryStatus = inventoryStatus,
+        barcodeValue = barcodeValue,
+        rfidValue = rfidValue
     )
-
 }
 
-fun AccountingObjectStatus.toDomainStatus(): ObjectStatus =
+fun AccountingObjectStatusSyncEntity.toDomainStatus(): ObjectStatus =
     ObjectStatus(
-        text = name,
+        text = name.orEmpty(),
         type = ObjectStatusType.valueOf(id)
     )

@@ -139,14 +139,14 @@ class InventoryStoreFactory(
         private suspend fun observeAccountingObjects(params: List<ParamDomain> = listOf()) {
             dispatch(Result.IsAccountingObjectsLoading(true))
             catchException {
-                accountingObjectInteractor.getAccountingObjects(params)
-                    .catch { dispatch(Result.IsAccountingObjectsLoading(false)) }
-                    .collect {
-                        dispatch(Result.AccountingObjects(it))
-                        dispatch(Result.IsAccountingObjectsLoading(false))
-                    }
+                dispatch(Result.IsAccountingObjectsLoading(false))
+                dispatch(
+                    Result.AccountingObjects(
+                        accountingObjectInteractor.getAccountingObjects("", params)
+                    )
+                )
+                dispatch(Result.IsAccountingObjectsLoading(false))
             }
-            dispatch(Result.IsAccountingObjectsLoading(false))
         }
     }
 

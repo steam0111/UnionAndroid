@@ -16,13 +16,17 @@ class LocationRepositoryImpl(
         selectedPlaceScheme: List<LocationDomain>,
         searchText: String
     ): List<LocationDomain> = withContext(coreDispatchers.io) {
-        getLocations(selectedPlaceScheme)
+        getLocations(selectedPlaceScheme, textQuery = searchText)
     }
 
     private suspend fun getLocations(
-        selectedPlaceScheme: List<LocationDomain>
+        selectedPlaceScheme: List<LocationDomain>,
+        textQuery: String?
     ): List<LocationDomain> {
-        return locationSyncApi.getLocations(selectedPlaceScheme.firstOrNull()?.locationTypeId).map {
+        return locationSyncApi.getLocations(
+            selectedPlaceScheme.firstOrNull()?.locationTypeId,
+            textQuery
+        ).map {
             it.toLocationDomain()
         }
     }

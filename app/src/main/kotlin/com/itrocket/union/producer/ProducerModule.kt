@@ -32,6 +32,7 @@ object ProducerModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
+                get(),
                 get()
             ).create()
         }

@@ -20,6 +20,7 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.DefaultListItem
 import com.itrocket.union.ui.LoadingContent
+import com.itrocket.union.ui.SearchToolbar
 
 @Composable
 fun DepartmentScreen(
@@ -27,6 +28,9 @@ fun DepartmentScreen(
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
     onItemClickListener: (DefaultItem) -> Unit,
+    onSearchTextChanged: (String) -> Unit,
+    onSearchClickListener: () -> Unit,
+    onFilterClickListener: () -> Unit
 ) {
     AppTheme {
         Column(
@@ -34,9 +38,14 @@ fun DepartmentScreen(
                 .fillMaxSize()
                 .padding(top = appInsets.topInset.dp)
         ) {
-            BlackToolbar(
+            SearchToolbar(
                 title = stringResource(id = R.string.departments_title),
-                onBackClickListener = onBackClickListener
+                onBackClickListener = onBackClickListener,
+                onSearchClickListener = onSearchClickListener,
+                onSearchTextChanged = onSearchTextChanged,
+                isShowSearch = state.isShowSearch,
+                searchText = state.searchText,
+                onFilterClickListener = onFilterClickListener
             )
             LoadingContent(isLoading = state.isLoading) {
                 Content(
@@ -115,5 +124,11 @@ fun DepartmentScreenPreview() {
                     code = "code3"
                 )
             )
-        ), appInsets = AppInsets(), onBackClickListener = {}, onItemClickListener = {})
+        ),
+        appInsets = AppInsets(),
+        onBackClickListener = {},
+        onItemClickListener = {},
+        onSearchClickListener = {},
+        onSearchTextChanged = {},
+        onFilterClickListener = {})
 }

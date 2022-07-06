@@ -24,7 +24,18 @@ object SelectParamsModule {
         }
 
         factory<SelectParamsRepository> {
-            SelectParamsRepositoryImpl(get(), get(), get())
+            SelectParamsRepositoryImpl(
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get()
+            )
         }
 
         factory {
@@ -37,6 +48,7 @@ object SelectParamsModule {
                 get(),
                 get(),
                 args.selectParamsComposeFragmentArgs,
+                get(),
                 get()
             ).create()
         }

@@ -1,28 +1,26 @@
 package com.itrocket.union.filter.presentation.store
 
-import android.os.Bundle
-import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
+import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
-import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
-import com.itrocket.union.R
-import com.itrocket.union.filter.domain.entity.FilterDomain
-import com.itrocket.union.filter.presentation.view.FilterComposeFragment.Companion.FILTER_ARG
+import com.itrocket.union.filter.domain.entity.CatalogType
+import com.itrocket.union.filter.presentation.view.FilterComposeFragment
 import com.itrocket.union.filter.presentation.view.FilterComposeFragmentDirections
-import com.itrocket.union.filterValues.presentation.store.FilterValueArguments
-import com.itrocket.union.filterValues.presentation.view.FilterValueComposeFragment
 import com.itrocket.union.location.presentation.store.LocationArguments
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.manual.LocationParamDomain
+import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.Params
+import com.itrocket.union.selectParams.presentation.store.SelectParamsArguments
+import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 
 interface FilterStore : Store<FilterStore.Intent, FilterStore.State, FilterStore.Label> {
 
     sealed class Intent {
-        data class OnFieldClicked(val filter: FilterDomain) : Intent()
-        data class OnFilterChanged(val filter: FilterDomain) : Intent()
+        data class OnFieldClicked(val filter: ParamDomain) : Intent()
+        data class OnFilterChanged(val filters: List<ParamDomain>) : Intent()
         data class OnFilterLocationChanged(val locationResult: LocationResult) : Intent()
         object OnShowClicked : Intent()
         object OnCrossClicked : Intent()
@@ -30,26 +28,38 @@ interface FilterStore : Store<FilterStore.Intent, FilterStore.State, FilterStore
     }
 
     data class State(
-        val filterFields: List<FilterDomain>,
-        val resultCount: Int = 0
+        val params: Params,
+        val resultCount: Int = 0,
+        val from: CatalogType = CatalogType.DEFAULT
     )
 
     sealed class Label {
-        object GoBack : Label(), GoBackNavigationLabel
-        data class ShowFilterValues(val filter: FilterDomain) : Label(),
-            ShowBottomSheetNavigationLabel {
-            override val arguments: Bundle
-                get() = bundleOf(FILTER_ARG to FilterValueArguments(filter))
-            override val containerId: Int
-                get() = R.id.mainActivityNavHostFragment
-            override val fragment: Fragment
-                get() = FilterValueComposeFragment()
+        class GoBack(override val result: SelectParamsResult? = null) : Label(),
+            GoBackNavigationLabel {
+            override val resultCode: String = FilterComposeFragment.FILTER_RESULT_CODE
+            override val resultLabel: String = FilterComposeFragment.FILTER_RESULT_LABEL
         }
 
-        data class ShowLocation(val location: LocationParamDomain) : Label(), ForwardNavigationLabel {
+        data class ShowFilters(
+            val currentStep: Int,
+            val filters: List<ParamDomain>
+        ) : Label(), ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = FilterComposeFragmentDirections.toSelectParams(
+                    SelectParamsArguments(
+                        params = filters,
+                        currentStep = currentStep
+                    )
+                )
+        }
+
+        data class ShowLocation(val location: LocationParamDomain) : Label(),
+            ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = FilterComposeFragmentDirections.toLocation(LocationArguments(location))
 
         }
+
+        data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
     }
 }

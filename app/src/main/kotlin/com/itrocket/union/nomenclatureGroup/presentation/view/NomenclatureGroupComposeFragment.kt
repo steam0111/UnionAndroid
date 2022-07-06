@@ -1,5 +1,6 @@
 package com.itrocket.union.nomenclatureGroup.presentation.view
 
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.navArgs
 import com.itrocket.core.base.AppInsets
@@ -13,13 +14,34 @@ class NomenclatureGroupComposeFragment :
     ) {
     override val navArgs by navArgs<NomenclatureGroupComposeFragmentArgs>()
 
-    override fun renderState(state: NomenclatureGroupStore.State, composeView: ComposeView, appInsets: AppInsets) {
+    override val onBackPressedCallback by lazy {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                accept(NomenclatureGroupStore.Intent.OnBackClicked)
+            }
+        }
+    }
+
+    override fun renderState(
+        state: NomenclatureGroupStore.State,
+        composeView: ComposeView,
+        appInsets: AppInsets
+    ) {
         composeView.setContent {
             NomenclatureGroupScreen(
                 state = state,
                 appInsets = appInsets,
                 onBackClickListener = {
                     accept(NomenclatureGroupStore.Intent.OnBackClicked)
+                },
+                onItemClick = {
+                    accept(NomenclatureGroupStore.Intent.OnItemClick(it))
+                },
+                onSearchTextChanged = {
+                    accept(NomenclatureGroupStore.Intent.OnSearchTextChanged(it))
+                },
+                onSearchClickListener = {
+                    accept(NomenclatureGroupStore.Intent.OnSearchClicked)
                 }
             )
         }

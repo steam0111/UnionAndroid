@@ -5,10 +5,9 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
+import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
-import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.readingMode.presentation.store.ReadingModeArguments
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
@@ -24,20 +23,19 @@ interface ReserveDetailStore :
     }
 
     data class State(
-        val reserve: ReservesDomain,
+        val reserve: ReservesDomain? = null,
         val isLoading: Boolean = false,
         val readingMode: ReadingModeTab = ReadingModeTab.RFID,
     )
 
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
+        data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
         data class ShowReadingMode(val readingMode: ReadingModeTab) : Label(),
             ShowBottomSheetNavigationLabel {
 
             override val arguments: Bundle
-                get() = bundleOf(
-                    ReadingModeComposeFragment.READING_MODE_ARGS to ReadingModeArguments(readingMode)
-                )
+                get() = bundleOf()
 
             override val containerId: Int = R.id.mainActivityNavHostFragment
 

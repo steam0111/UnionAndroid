@@ -45,6 +45,7 @@ object AuthUserModule {
                 initialState = getSavedState<AuthUserStore.State, AuthContainerModule>(
                     AUTHUSER_STATE_SAVER
                 ),
+                get(),
                 get()
             ).create()
         }

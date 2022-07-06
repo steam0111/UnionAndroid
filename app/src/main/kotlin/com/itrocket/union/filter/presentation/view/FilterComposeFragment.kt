@@ -6,11 +6,11 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.filter.FilterModule.FILTER_VIEW_MODEL_QUALIFIER
-import com.itrocket.union.filter.domain.entity.FilterDomain
 import com.itrocket.union.filter.presentation.store.FilterStore
-import com.itrocket.union.filterValues.presentation.view.FilterValueComposeFragment
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.location.presentation.view.LocationComposeFragment
+import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
+import com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFragment
 
 class FilterComposeFragment :
     BaseComposeFragment<FilterStore.Intent, FilterStore.State, FilterStore.Label>(
@@ -22,14 +22,14 @@ class FilterComposeFragment :
     override val fragmentResultList: List<FragmentResult>
         get() = listOf(
             FragmentResult(
-                resultCode = FilterValueComposeFragment.FILTER_VALUE_RESULT_CODE,
-                resultLabel = FilterValueComposeFragment.FILTER_RESULT,
+                resultCode = SelectParamsComposeFragment.SELECT_PARAMS_RESULT_CODE,
+                resultLabel = SelectParamsComposeFragment.SELECT_PARAMS_RESULT,
                 resultAction = {
-                    accept(
-                        FilterStore.Intent.OnFilterChanged(
-                            it as FilterDomain? ?: return@FragmentResult
+                    (it as SelectParamsResult?)?.params?.let {
+                        accept(
+                            FilterStore.Intent.OnFilterChanged(it)
                         )
-                    )
+                    }
                 }
             ),
             FragmentResult(
@@ -65,5 +65,7 @@ class FilterComposeFragment :
 
     companion object {
         const val FILTER_ARG = "filter arg"
+        const val FILTER_RESULT_CODE = "filter result code"
+        const val FILTER_RESULT_LABEL = "filter result label"
     }
 }

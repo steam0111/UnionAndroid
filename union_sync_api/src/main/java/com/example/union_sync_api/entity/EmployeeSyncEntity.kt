@@ -1,6 +1,6 @@
 package com.example.union_sync_api.entity
 
-class EmployeeSyncEntity(
+data class EmployeeSyncEntity(
     val id: String,
     val catalogItemName: String,
     val firstname: String,
@@ -8,5 +8,10 @@ class EmployeeSyncEntity(
     val patronymic: String,
     val organizationId: String?,
     val number: String,
-    val nfc: String?
-)
+    val nfc: String?,
+    val statusId: String?,
+    val post: String?
+) {
+    val fullName: String
+        get() = "$lastname $firstname $patronymic"
+}

@@ -14,8 +14,8 @@ class ProducerRepositoryImpl(
     private val producerSyncApi: ProducerSyncApi
 ) : ProducerRepository {
 
-    override suspend fun getProducers(): Flow<List<ProducerDomain>> =
+    override suspend fun getProducers(textQuery: String?): Flow<List<ProducerDomain>> =
         withContext(coreDispatchers.io) {
-            producerSyncApi.getProducers().map { it.map() }
+            producerSyncApi.getProducers(textQuery).map { it.map() }
         }
 }

@@ -12,6 +12,7 @@ import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStoreFactory
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragmentArgs
 import com.itrocket.core.base.BaseViewModel
+import com.itrocket.union.documentCreate.domain.DocumentAccountingObjectManager
 
 object DocumentCreateModule {
     val DOCUMENTCREATE_VIEW_MODEL_QUALIFIER = named("DOCUMENTCREATE_VIEW_MODEL")
@@ -28,7 +29,11 @@ object DocumentCreateModule {
         }
 
         factory {
-            DocumentCreateInteractor(get(), get(), get())
+            DocumentCreateInteractor(get(), get(), get(), get())
+        }
+
+        factory {
+            DocumentAccountingObjectManager(get(), get(), get())
         }
 
         factory { (args: DocumentCreateComposeFragmentArgs) ->
@@ -37,6 +42,7 @@ object DocumentCreateModule {
                 get(),
                 get(),
                 args.documentCreateArguments,
+                get(),
                 get()
             ).create()
         }

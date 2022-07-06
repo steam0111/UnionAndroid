@@ -80,16 +80,16 @@ class InventoryCreateStoreFactory(
                     dispatch(Result.HideFoundedAccountingObjects(!getState().isHideFoundAccountingObjects))
                 }
                 InventoryCreateStore.Intent.OnReadingClicked -> {
-                    publish(InventoryCreateStore.Label.ShowReading)
+                    publish(InventoryCreateStore.Label.ShowReadingMode)
                 }
                 InventoryCreateStore.Intent.OnSaveClicked -> saveInventory(
                     inventoryDocument = getState().inventoryDocument,
-                    accountingObjects = getState().inventoryDocument.accountingObjects
+                    accountingObjects = getState().inventoryDocument.accountingObjects + getState().newAccountingObjects
                 )
-                is InventoryCreateStore.Intent.OnNewAccountingObjectsHandled -> handleNewAccountingObjects(
+                is InventoryCreateStore.Intent.OnNewAccountingObjectBarcodeHandled -> handleNewAccountingObjectBarcode(
                     accountingObjects = getState().inventoryDocument.accountingObjects,
                     newAccountingObjects = getState().newAccountingObjects.toList(),
-                    handledAccountingObjectIds = intent.handledAccountingObjectIds,
+                    barcode = intent.barcode,
                 )
                 is InventoryCreateStore.Intent.OnAccountingObjectStatusChanged -> {
                     dispatch(
@@ -101,10 +101,15 @@ class InventoryCreateStoreFactory(
                         )
                     )
                 }
+                is InventoryCreateStore.Intent.OnNewAccountingObjectRfidsHandled -> handleNewAccountingObjectRfids(
+                    accountingObjects = getState().inventoryDocument.accountingObjects,
+                    newAccountingObjects = getState().newAccountingObjects.toList(),
+                    handledAccountingObjectIds = intent.handledAccountingObjectIds,
+                )
             }
         }
 
-        private suspend fun handleNewAccountingObjects(
+        private suspend fun handleNewAccountingObjectRfids(
             accountingObjects: List<AccountingObjectDomain>,
             handledAccountingObjectIds: List<String>,
             newAccountingObjects: List<AccountingObjectDomain>
@@ -112,9 +117,31 @@ class InventoryCreateStoreFactory(
             dispatch(Result.Loading(true))
             catchException {
                 val inventoryAccountingObjects =
-                    inventoryCreateInteractor.handleNewAccountingObjects(
+                    inventoryCreateInteractor.handleNewAccountingObjectRfids(
                         accountingObjects = accountingObjects,
-                        handledAccountingObjectIds = handledAccountingObjectIds
+                        handledAccountingObjectIds = handledAccountingObjectIds,
+                        newAccountingObjects = newAccountingObjects
+                    )
+                dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
+                dispatch(
+                    Result.NewAccountingObjects((newAccountingObjects + inventoryAccountingObjects.newAccountingObjects).toSet())
+                )
+            }
+            dispatch(Result.Loading(true))
+        }
+
+        private suspend fun handleNewAccountingObjectBarcode(
+            accountingObjects: List<AccountingObjectDomain>,
+            barcode: String,
+            newAccountingObjects: List<AccountingObjectDomain>
+        ) {
+            dispatch(Result.Loading(true))
+            catchException {
+                val inventoryAccountingObjects =
+                    inventoryCreateInteractor.handleNewAccountingObjectBarcode(
+                        accountingObjects = accountingObjects,
+                        barcode = barcode,
+                        newAccountingObjects = newAccountingObjects
                     )
                 dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
                 dispatch(
@@ -150,7 +177,7 @@ class InventoryCreateStoreFactory(
                 publish(
                     InventoryCreateStore.Label.ShowNewAccountingObjectDetail(
                         NewAccountingObjectArguments(
-                            accountingObject
+                            accountingObject.id
                         )
                     )
                 )

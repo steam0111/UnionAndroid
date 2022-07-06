@@ -10,6 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.producer.domain.ProducerInteractor
 import com.itrocket.union.producer.domain.entity.ProducerDomain
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -18,7 +19,8 @@ class ProducerStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val producerInteractor: ProducerInteractor,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val searchManager: SearchManager
 ) {
     fun create(): ProducerStore =
         object : ProducerStore,
@@ -41,9 +43,34 @@ class ProducerStoreFactory(
             action: Unit,
             getState: () -> ProducerStore.State
         ) {
+            searchManager.listenSearch {
+                listenProducers(searchText = it)
+            }
+        }
+
+        override suspend fun executeIntent(
+            intent: ProducerStore.Intent,
+            getState: () -> ProducerStore.State
+        ) {
+            when (intent) {
+                ProducerStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
+                ProducerStore.Intent.OnFilterClicked -> {
+                }
+                is ProducerStore.Intent.OnProducerClicked -> {
+                    publish(ProducerStore.Label.ShowDetail(intent.id))
+                }
+                ProducerStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
+                is ProducerStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    searchManager.emit(intent.searchText)
+                }
+            }
+        }
+
+        private suspend fun listenProducers(searchText: String = "") {
             catchException {
                 dispatch(Result.Loading(true))
-                producerInteractor.getProducers()
+                producerInteractor.getProducers(searchQuery = searchText)
                     .catch {
                         handleError(it)
                     }
@@ -54,18 +81,13 @@ class ProducerStoreFactory(
             }
         }
 
-        override suspend fun executeIntent(
-            intent: ProducerStore.Intent,
-            getState: () -> ProducerStore.State
-        ) {
-            when (intent) {
-                ProducerStore.Intent.OnBackClicked -> publish(ProducerStore.Label.GoBack)
-                ProducerStore.Intent.OnFilterClicked -> {
-                }
-                is ProducerStore.Intent.OnProducerClicked -> {
-                }
-                ProducerStore.Intent.OnSearchClicked -> {
-                }
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                searchManager.emit("")
+            } else {
+                publish(ProducerStore.Label.GoBack)
             }
         }
 
@@ -78,6 +100,8 @@ class ProducerStoreFactory(
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class Producers(val producers: List<ProducerDomain>) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<ProducerStore.State, Result> {
@@ -85,6 +109,8 @@ class ProducerStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.Producers -> copy(producers = result.producers)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
 }

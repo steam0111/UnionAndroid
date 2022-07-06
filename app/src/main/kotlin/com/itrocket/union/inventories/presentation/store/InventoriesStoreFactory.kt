@@ -10,6 +10,8 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.inventories.domain.InventoriesInteractor
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
+import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -18,7 +20,8 @@ class InventoriesStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val inventoriesInteractor: InventoriesInteractor,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val searchManager: SearchManager
 ) {
     fun create(): InventoriesStore =
         object : InventoriesStore,
@@ -41,15 +44,8 @@ class InventoriesStoreFactory(
             action: Unit,
             getState: () -> InventoriesStore.State
         ) {
-            catchException {
-                dispatch(Result.Loading(true))
-                inventoriesInteractor.getInventories()
-                    .catch {
-                        handleError(it)
-                    }.collect {
-                        dispatch(Result.Inventories(it))
-                        dispatch(Result.Loading(false))
-                    }
+            searchManager.listenSearch {
+                listenInventories(searchQuery = it, params = getState().params)
             }
         }
 
@@ -58,18 +54,59 @@ class InventoriesStoreFactory(
             getState: () -> InventoriesStore.State
         ) {
             when (intent) {
-                InventoriesStore.Intent.OnBackClicked -> publish(InventoriesStore.Label.GoBack)
-                InventoriesStore.Intent.OnFilterClicked -> publish(InventoriesStore.Label.ShowFilter)
+                InventoriesStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
+                InventoriesStore.Intent.OnFilterClicked -> publish(
+                    InventoriesStore.Label.ShowFilter(
+                        getState().params ?: inventoriesInteractor.getFilters()
+                    )
+                )
+                is InventoriesStore.Intent.OnFilterResult -> {
+                    dispatch(Result.FilterParams(intent.params))
+                    listenInventories(params = getState().params, searchQuery = "")
+                }
                 is InventoriesStore.Intent.OnInventoryClicked -> publish(
                     InventoriesStore.Label.ShowInventoryDetail(
                         intent.inventory
                     )
                 )
-                InventoriesStore.Intent.OnSearchClicked -> publish(InventoriesStore.Label.ShowSearch)
+                InventoriesStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
+                is InventoriesStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    searchManager.emit(intent.searchText)
+                }
+            }
+        }
+
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                searchManager.emit("")
+            } else {
+                publish(InventoriesStore.Label.GoBack)
+            }
+        }
+
+        private suspend fun listenInventories(
+            searchQuery: String = "",
+            params: List<ParamDomain>?
+        ) {
+            catchException {
+                dispatch(Result.Loading(true))
+                inventoriesInteractor.getInventories(searchQuery = searchQuery, params = params)
+                    .catch {
+                        handleError(it)
+                    }.collect {
+                        dispatch(Result.Inventories(it))
+                        dispatch(Result.Loading(false))
+                    }
+                dispatch(Result.Loading(false))
+
             }
         }
 
         override fun handleError(throwable: Throwable) {
+            dispatch(Result.Loading(false))
             publish(InventoriesStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
     }
@@ -77,6 +114,9 @@ class InventoriesStoreFactory(
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class Inventories(val inventories: List<InventoryCreateDomain>) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
+        data class FilterParams(val params: List<ParamDomain>) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoriesStore.State, Result> {
@@ -84,6 +124,9 @@ class InventoriesStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.Inventories -> copy(inventories = result.inventories)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
+                is Result.FilterParams -> copy(params = result.params)
             }
     }
 }

@@ -1,6 +1,7 @@
 package com.itrocket.union.container
 
 import com.itrocket.union.authMain.AuthMainModule
+import com.itrocket.union.container.domain.IsDbSyncedUseCase
 import com.itrocket.union.container.domain.IsUserAuthorizedUseCase
 import com.itrocket.union.container.domain.OnSessionExpiredUseCase
 import com.itrocket.union.container.domain.ScannerManager
@@ -21,10 +22,16 @@ object ContainerModule {
             OnSessionExpiredUseCase(get())
         }
         viewModel {
-            MainViewModel(get(), get())
+            MainViewModel(get(), get(), get())
         }
-        single {
+        single(createdAtStart = true) {
             ScannerManager(get(), get(), get())
+        }
+        factory {
+            IsDbSyncedUseCase(
+                get(),
+                get()
+            )
         }
     }
 }

@@ -9,8 +9,10 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.authUser.domain.AuthUserInteractor
+import com.itrocket.union.container.domain.IsDbSyncedUseCase
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.utils.ifBlankOrNull
+import kotlin.math.log
 
 class AuthUserStoreFactory(
     private val storeFactory: StoreFactory,
@@ -18,7 +20,8 @@ class AuthUserStoreFactory(
     private val authUserInteractor: AuthUserInteractor,
     private val authMainInteractor: AuthMainInteractor,
     private val initialState: AuthUserStore.State?,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val isDbSyncedUseCase: IsDbSyncedUseCase
 ) {
     fun create(): AuthUserStore =
         object : AuthUserStore,
@@ -41,6 +44,10 @@ class AuthUserStoreFactory(
             action: Unit,
             getState: () -> AuthUserStore.State
         ) {
+            val login = authMainInteractor.getLogin()
+            if (!login.isNullOrBlank()) {
+                dispatch(Result.Login(login))
+            }
             publish(
                 AuthUserStore.Label.ChangeEnable(
                     isEnabled(
@@ -87,7 +94,11 @@ class AuthUserStoreFactory(
                             login = getState().login,
                             password = getState().password
                         )
-                        publish(AuthUserStore.Label.ShowDocumentMenu)
+                        if (isDbSyncedUseCase.execute()) {
+                            publish(AuthUserStore.Label.ShowDocumentMenu)
+                        } else {
+                            publish(AuthUserStore.Label.ShowDbSync)
+                        }
                     }
                     publish(AuthUserStore.Label.ParentLoading(false))
                 }

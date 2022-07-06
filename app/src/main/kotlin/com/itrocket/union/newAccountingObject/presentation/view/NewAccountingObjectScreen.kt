@@ -41,6 +41,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.ColorFilter
@@ -54,6 +55,7 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.ui.BottomLine
 import com.itrocket.union.ui.ExpandedInfoField
+import com.itrocket.union.ui.LoadingContent
 import com.itrocket.union.ui.TextButton
 import com.itrocket.union.ui.graphite4
 import com.itrocket.union.ui.psb4
@@ -81,10 +83,18 @@ fun NewAccountingObjectScreen(
                     .background(white, RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                     .padding(top = 16.dp),
             ) {
-                Content(
-                    accountingObject = state.accountingObject,
-                    onCrossClickListener = onCrossClickListener
-                )
+                when {
+                    state.accountingObject != null -> Content(
+                        accountingObject = state.accountingObject,
+                        onCrossClickListener = onCrossClickListener
+                    )
+                    state.isLoading -> Box(
+                        modifier = Modifier.height(200.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
             }
         }
     }
@@ -138,7 +148,7 @@ private fun Content(accountingObject: AccountingObjectDomain, onCrossClickListen
             items(accountingObject.listMainInfo) {
                 ExpandedInfoField(
                     label = stringResource(id = it.title),
-                    value = it.value,
+                    value = it.value.orEmpty(),
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -180,7 +190,9 @@ fun NewAccountingObjectScreenPreview() {
                     "6134509345098749"
                 ),
             ),
-            listAdditionallyInfo = listOf()
+            listAdditionallyInfo = listOf(),
+            barcodeValue = "",
+            rfidValue = ""
         )
     ), AppInsets(topInset = previewTopInsetDp), {})
 }

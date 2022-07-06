@@ -5,20 +5,20 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.itrocket.core.base.BaseExecutor
+import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.regions.domain.RegionInteractor
 import com.itrocket.union.regions.domain.entity.RegionDomain
-import com.itrocket.core.base.CoreDispatchers
-import com.itrocket.core.base.BaseExecutor
-import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 
 class RegionStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val regionInteractor: RegionInteractor,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val searchManager: SearchManager
 ) {
     fun create(): RegionStore =
         object : RegionStore,
@@ -41,14 +41,8 @@ class RegionStoreFactory(
             action: Unit,
             getState: () -> RegionStore.State
         ) {
-            catchException {
-                dispatch(Result.Loading(true))
-                regionInteractor.getRegions()
-                    .catch { handleError(it) }
-                    .collect {
-                        dispatch(Result.Regions(it))
-                        dispatch(Result.Loading(false))
-                    }
+            searchManager.listenSearch {
+                listenRegions(searchText = it)
             }
         }
 
@@ -57,13 +51,35 @@ class RegionStoreFactory(
             getState: () -> RegionStore.State
         ) {
             when (intent) {
-                RegionStore.Intent.OnBackClicked -> publish(RegionStore.Label.GoBack)
+                RegionStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
                 RegionStore.Intent.OnFilterClicked -> {
                 }
                 is RegionStore.Intent.OnRegionClicked -> {
+                    publish(RegionStore.Label.ShowDetail(intent.id))
                 }
-                RegionStore.Intent.OnSearchClicked -> {
+                RegionStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
+                is RegionStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    searchManager.emit(intent.searchText)
                 }
+            }
+        }
+
+        private suspend fun listenRegions(searchText: String = "") {
+            catchException {
+                dispatch(Result.Loading(true))
+                dispatch(Result.Regions(regionInteractor.getRegions(searchText)))
+            }
+            dispatch(Result.Loading(false))
+        }
+
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                searchManager.emit("")
+            } else {
+                publish(RegionStore.Label.GoBack)
             }
         }
 
@@ -76,6 +92,8 @@ class RegionStoreFactory(
     private sealed class Result {
         data class Regions(val regions: List<RegionDomain>) : Result()
         data class Loading(val isLoading: Boolean) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<RegionStore.State, Result> {
@@ -83,6 +101,8 @@ class RegionStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.Regions -> copy(regions = result.regions)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
 }

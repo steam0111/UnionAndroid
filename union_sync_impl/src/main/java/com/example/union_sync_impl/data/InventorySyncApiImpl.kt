@@ -9,6 +9,7 @@ import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
+import com.example.union_sync_impl.dao.sqlInventoryQuery
 import com.example.union_sync_impl.data.mapper.toInventoryDb
 import com.example.union_sync_impl.data.mapper.toInventorySyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationShortSyncEntity
@@ -30,8 +31,18 @@ class InventorySyncApiImpl(
         return inventoryDao.insert(inventoryCreateSyncEntity.toInventoryDb())
     }
 
-    override suspend fun getInventories(): Flow<List<InventorySyncEntity>> {
-        return inventoryDao.getAll().map {
+    override suspend fun getInventories(
+        textQuery: String?,
+        organizationId: String?,
+        molId: String?
+    ): Flow<List<InventorySyncEntity>> {
+        return inventoryDao.getAll(
+            sqlInventoryQuery(
+                textQuery = textQuery,
+                organizationId = organizationId,
+                molId = molId
+            )
+        ).map {
             it.map {
                 it.inventoryDb.toInventorySyncEntity(
                     organizationSyncEntity = requireNotNull(it.organizationDb).toSyncEntity(),
@@ -65,7 +76,6 @@ class InventorySyncApiImpl(
                         fullAccountingObject = fullAccountingObject
                     )
                     fullAccountingObject.toSyncEntity(
-                        fullAccountingObject,
                         getLocationSyncEntity(fullAccountingObject.locationDb),
                         inventoryStatus
                     )
@@ -89,7 +99,8 @@ class InventorySyncApiImpl(
             return null
         }
         val locationTypeId = locationDb.locationTypeId ?: return null
-        val locationTypeDb: LocationTypeDb = locationDao.getLocationTypeById(locationTypeId)
+        val locationTypeDb: LocationTypeDb =
+            locationDao.getLocationTypeById(locationTypeId) ?: return null
 
         return locationDb.toLocationSyncEntity(locationTypeDb)
     }

@@ -28,7 +28,19 @@ object FilterModule {
         }
 
         factory {
-            FilterInteractor(get(), get())
+            FilterInteractor(
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get()
+            )
         }
 
         factory { (args: FilterComposeFragmentArgs) ->
@@ -36,7 +48,8 @@ object FilterModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args.filterArguments
+                args.filterArguments,
+                get()
             ).create()
         }
     }

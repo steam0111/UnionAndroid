@@ -19,13 +19,16 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.DefaultListItem
 import com.itrocket.union.ui.LoadingContent
+import com.itrocket.union.ui.SearchToolbar
 
 @Composable
 fun EquipmentTypesScreen(
     state: EquipmentTypeStore.State,
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
-    onItemClickListener: (EquipmentTypesDomain) -> Unit
+    onItemClickListener: (EquipmentTypesDomain) -> Unit,
+    onSearchTextChanged: (String) -> Unit,
+    onSearchClickListener: () -> Unit,
 ) {
     AppTheme {
         Column(
@@ -33,9 +36,13 @@ fun EquipmentTypesScreen(
                 .fillMaxSize()
                 .padding(top = appInsets.topInset.dp)
         ) {
-            BlackToolbar(
+            SearchToolbar(
                 title = stringResource(id = R.string.equipment_type_title),
-                onBackClickListener = onBackClickListener
+                onBackClickListener = onBackClickListener,
+                onSearchTextChanged = onSearchTextChanged,
+                onSearchClickListener = onSearchClickListener,
+                isShowSearch = state.isShowSearch,
+                searchText = state.searchText
             )
             LoadingContent(isLoading = state.isLoading) {
                 Content(
@@ -110,5 +117,5 @@ fun EquipmentTypesScreenPreview() {
                 code = "code3"
             ),
         )
-    ), AppInsets(), {}, {})
+    ), AppInsets(), {}, {}, {}, {})
 }

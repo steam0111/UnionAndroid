@@ -35,10 +35,12 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ExpandedInfoField
+import com.itrocket.union.ui.LoadingContent
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.psb1
 import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
+import java.math.BigDecimal
 
 @Composable
 fun ReserveDetailScreen(
@@ -68,17 +70,19 @@ fun ReserveDetailScreen(
                 bottom = appInsets.bottomInset.dp
             )
         ) {
-            Column(modifier = Modifier.padding(it)) {
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = state.reserve.title,
-                    fontWeight = FontWeight.Medium,
-                    style = AppTheme.typography.body1,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                ListInfo(listInfo = state.reserve.listInfo)
+            LoadingContent(isLoading = state.isLoading) {
+                Column(modifier = Modifier.padding(it)) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = state.reserve?.title.orEmpty(),
+                        fontWeight = FontWeight.Medium,
+                        style = AppTheme.typography.body1,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ListInfo(listInfo = state.reserve?.listInfo.orEmpty())
+                }
             }
         }
     }
@@ -138,7 +142,7 @@ private fun ListInfo(listInfo: List<ObjectInfoDomain>) {
         items(listInfo) {
             ExpandedInfoField(
                 label = stringResource(id = it.title),
-                value = it.value,
+                value = it.value.orEmpty(),
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -172,7 +176,7 @@ fun ReserveDetailScreenPreview() {
                     R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 )
-            ), itemsCount = 1200
+            ), itemsCount = 1200L
         )
     ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
 }

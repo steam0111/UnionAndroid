@@ -1,7 +1,9 @@
 package com.example.union_sync_impl.data.mapper
 
+import com.example.union_sync_api.entity.DepartmentDetailSyncEntity
 import com.example.union_sync_api.entity.DepartmentSyncEntity
 import com.example.union_sync_impl.entity.DepartmentDb
+import com.example.union_sync_impl.entity.FullDepartmentDb
 import org.openapitools.client.models.CustomDepartmentDto
 import org.openapitools.client.models.DepartmentDto
 
@@ -24,3 +26,8 @@ fun DepartmentDb.toSyncEntity(): DepartmentSyncEntity {
         code = code
     )
 }
+
+fun FullDepartmentDb.toDetailSyncEntity() = DepartmentDetailSyncEntity(
+    department = departmentDb.toSyncEntity(),
+    organization = organizationDb?.toSyncEntity()
+)

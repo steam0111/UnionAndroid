@@ -6,4 +6,8 @@ data class OrganizationSyncEntity(
     val catalogItemName: String,
     val actualAddress: String?,
     val legalAddress: String?,
+    val inn: String?,
+    val kpp: String?,
+    val comment: String?,
+    val employeeId: String?
 )

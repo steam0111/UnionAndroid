@@ -14,11 +14,13 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
+import com.itrocket.union.employees.domain.entity.EmployeeStatus
 import com.itrocket.union.employees.presentation.store.EmployeeStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.EmployeeItem
 import com.itrocket.union.ui.LoadingContent
+import com.itrocket.union.ui.SearchToolbar
 
 @Composable
 fun EmployeesScreen(
@@ -27,7 +29,8 @@ fun EmployeesScreen(
     onBackClickListener: () -> Unit,
     onSearchClickListener: () -> Unit = {},
     onFilterClickListener: () -> Unit = {},
-    onEmployeeClickListener: (EmployeeDomain) -> Unit = {}
+    onEmployeeClickListener: (EmployeeDomain) -> Unit = {},
+    onSearchTextChanged: (String) -> Unit
 ) {
     AppTheme {
         Column(
@@ -35,11 +38,14 @@ fun EmployeesScreen(
                 .fillMaxSize()
                 .padding(top = appInsets.topInset.dp)
         ) {
-            BlackToolbar(
+            SearchToolbar(
                 title = stringResource(id = R.string.employees_title),
                 onBackClickListener = onBackClickListener,
                 onSearchClickListener = onSearchClickListener,
-                onFilterClickListener = onFilterClickListener
+                onFilterClickListener = onFilterClickListener,
+                onSearchTextChanged = onSearchTextChanged,
+                isShowSearch = state.isShowSearch,
+                searchText = state.searchText,
             )
             LoadingContent(isLoading = state.isLoading) {
                 EmployeesList(
@@ -102,7 +108,9 @@ fun EmployeeScreenPreview() {
                     patronymic = "Хо",
                     catalogItemName = "Ли Мин Хо",
                     number = "12345667890",
-                    nfc = "dbdj"
+                    nfc = "dbdj",
+                    post = "dfdf",
+                    employeeStatus = EmployeeStatus.MOL
                 ),
                 EmployeeDomain(
                     id = "2",
@@ -111,8 +119,10 @@ fun EmployeeScreenPreview() {
                     patronymic = "Бин",
                     catalogItemName = "Ким У Бин",
                     number = "0987654321",
-                    nfc = null
+                    nfc = null,
+                    post = "dfdf",
+                    employeeStatus = EmployeeStatus.WITHOUT_ORGANIZATION
                 )
             )
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {})
 }

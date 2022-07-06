@@ -37,7 +37,8 @@ object DocumentModule {
                 get(),
                 get(),
                 args.documentComposeFragmentArgs,
-                get()
+                get(),
+                get(),
             ).create()
         }
     }

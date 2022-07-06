@@ -30,6 +30,7 @@ import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectS
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BlackToolbar
+import com.itrocket.union.ui.SearchToolbar
 
 @ExperimentalPagerApi
 @Composable
@@ -39,7 +40,8 @@ fun AccountingObjectScreen(
     onBackClickListener: () -> Unit,
     onSearchClickListener: () -> Unit,
     onFilterClickListener: () -> Unit,
-    onAccountingObjectListener: (AccountingObjectDomain) -> Unit
+    onAccountingObjectListener: (AccountingObjectDomain) -> Unit,
+    onSearchTextChanged: (String) -> Unit
 ) {
     AppTheme {
         Column(
@@ -47,11 +49,14 @@ fun AccountingObjectScreen(
                 .fillMaxSize()
                 .padding(top = appInsets.topInset.dp)
         ) {
-            BlackToolbar(
+            SearchToolbar(
                 title = stringResource(id = R.string.accounting_objects_title),
                 onBackClickListener = onBackClickListener,
                 onSearchClickListener = onSearchClickListener,
-                onFilterClickListener = onFilterClickListener
+                onFilterClickListener = onFilterClickListener,
+                isShowSearch = state.isShowSearch,
+                onSearchTextChanged = onSearchTextChanged,
+                searchText = state.searchText
             )
             when {
                 state.isLoading -> {
@@ -136,7 +141,9 @@ fun AccountingObjectScreenPreview() {
                             "таылватвлыавыалвыоалвыа"
                         ),
                     ),
-                    listAdditionallyInfo = listOf()
+                    listAdditionallyInfo = listOf(),
+                    barcodeValue = "",
+                    rfidValue = ""
                 ),
                 AccountingObjectDomain(
                     id = "8",
@@ -153,8 +160,10 @@ fun AccountingObjectScreenPreview() {
                             "таылватвлыавыалвыоалвыа"
                         ),
                     ),
-                    listAdditionallyInfo = listOf()
+                    listAdditionallyInfo = listOf(),
+                    barcodeValue = "",
+                    rfidValue = ""
                 )
             )
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {})
 }

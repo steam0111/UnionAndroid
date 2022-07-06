@@ -5,6 +5,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.union.R
+import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectArguments
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.presentation.store.DocumentArguments
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
@@ -46,6 +47,10 @@ interface DocumentMenuStore :
                     R.string.main_accounting_object -> DocumentMenuComposeFragmentDirections.toAccountingObjects(null)
                     R.string.main_identification -> DocumentMenuComposeFragmentDirections.toIdentify()
                     R.string.main_reserves -> DocumentMenuComposeFragmentDirections.toReserves()
+                    R.string.main_accounting_object -> DocumentMenuComposeFragmentDirections.toAccountingObjects(
+                        null
+                    )
+                    R.string.main_reserves -> DocumentMenuComposeFragmentDirections.toReserves(null)
                     R.string.main_documents -> DocumentMenuComposeFragmentDirections.toDocuments(
                         DocumentArguments(DocumentTypeDomain.ALL)
                     )
@@ -70,7 +75,9 @@ interface DocumentMenuStore :
                     R.string.nomenclature -> DocumentMenuComposeFragmentDirections.toNomenclature(
                         NomenclatureArguments(0)
                     )
-                    R.string.main_inventory -> DocumentMenuComposeFragmentDirections.toInventory()
+                    R.string.main_inventory -> DocumentMenuComposeFragmentDirections.toInventoryContainer(
+                        null
+                    )
                     R.string.organizations -> DocumentMenuComposeFragmentDirections.toOrganizations()
                     R.string.departments -> DocumentMenuComposeFragmentDirections.toDepartments()
                     R.string.main_employees -> DocumentMenuComposeFragmentDirections.toEmployees()

@@ -24,6 +24,7 @@ import com.itrocket.union.nomenclature.presentation.store.NomenclatureStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.DefaultListItem
+import com.itrocket.union.ui.SearchToolbar
 
 @Composable
 fun NomenclatureScreen(
@@ -31,6 +32,9 @@ fun NomenclatureScreen(
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
     onItemClickListener: (DefaultItem) -> Unit,
+    onSearchTextChanged: (String) -> Unit,
+    onSearchClickListener: () -> Unit,
+    onFilterClickListener: () -> Unit
 ) {
     AppTheme {
         Column(
@@ -38,9 +42,14 @@ fun NomenclatureScreen(
                 .fillMaxSize()
                 .padding(top = appInsets.topInset.dp)
         ) {
-            BlackToolbar(
+            SearchToolbar(
                 title = stringResource(id = R.string.nomenclature_title),
-                onBackClickListener = onBackClickListener
+                onBackClickListener = onBackClickListener,
+                onSearchClickListener = onSearchClickListener,
+                onSearchTextChanged = onSearchTextChanged,
+                isShowSearch = state.isShowSearch,
+                searchText = state.searchText,
+                onFilterClickListener = onFilterClickListener
             )
             Content(
                 nomenclatureGroupsDomain = state.nomenclatures,
@@ -89,5 +98,5 @@ private fun Content(
 @Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
 @Composable
 fun NomenclatureScreenPreview() {
-    NomenclatureScreen(NomenclatureStore.State(), AppInsets(), {}, {})
+    NomenclatureScreen(NomenclatureStore.State(), AppInsets(), {}, {}, {}, {}, {})
 }

@@ -7,10 +7,13 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.inventoryCreate.data.mapper.map
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
+import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.getMolId
+import com.itrocket.union.manual.getOrganizationId
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 
 class InventoryRepositoryImpl(
     private val coreDispatchers: CoreDispatchers,
@@ -32,10 +35,18 @@ class InventoryRepositoryImpl(
             inventorySyncApi.getInventoryById(id).map()
         }
 
-    override suspend fun getInventories(): Flow<List<InventoryCreateDomain>> =
+    override suspend fun getInventories(
+        textQuery: String?,
+        params: List<ParamDomain>?
+    ): Flow<List<InventoryCreateDomain>> =
         withContext(coreDispatchers.io) {
-            inventorySyncApi.getInventories().map {
+            inventorySyncApi.getInventories(
+                textQuery = textQuery,
+                organizationId = params?.getOrganizationId(),
+                molId = params?.getMolId()
+            ).map {
                 it.map()
             }.flowOn(coreDispatchers.io)
         }
+
 }

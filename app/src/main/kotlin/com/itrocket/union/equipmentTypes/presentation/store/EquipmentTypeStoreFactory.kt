@@ -1,11 +1,16 @@
 package com.itrocket.union.equipmentTypes.presentation.store
 
-import com.arkivanov.mvikotlin.core.store.*
+import com.arkivanov.mvikotlin.core.store.Executor
+import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
+import com.arkivanov.mvikotlin.core.store.Store
+import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.equipmentTypes.domain.EquipmentTypeInteractor
 import com.itrocket.union.equipmentTypes.domain.entity.EquipmentTypesDomain
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -14,7 +19,8 @@ class EquipmentTypeStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val typesInteractor: EquipmentTypeInteractor,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val searchManager: SearchManager
 ) {
     fun create(): EquipmentTypeStore =
         object : EquipmentTypeStore,
@@ -37,14 +43,8 @@ class EquipmentTypeStoreFactory(
             action: Unit,
             getState: () -> EquipmentTypeStore.State
         ) {
-            catchException {
-                dispatch(Result.Loading(true))
-                typesInteractor.getEquipmentTypes()
-                    .catch { handleError(it) }
-                    .collect {
-                        dispatch(Result.Types(it))
-                        dispatch(Result.Loading(false))
-                    }
+            searchManager.listenSearch {
+                listenEquipment(searchText = it)
             }
         }
 
@@ -53,9 +53,37 @@ class EquipmentTypeStoreFactory(
             getState: () -> EquipmentTypeStore.State
         ) {
             when (intent) {
-                EquipmentTypeStore.Intent.OnBackClicked -> publish(EquipmentTypeStore.Label.GoBack)
+                EquipmentTypeStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
                 is EquipmentTypeStore.Intent.OnItemClicked -> {
+                    publish(EquipmentTypeStore.Label.ShowDetail(intent.id))
                 }
+                EquipmentTypeStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
+                is EquipmentTypeStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    searchManager.emit(intent.searchText)
+                }
+            }
+        }
+
+        private suspend fun listenEquipment(searchText: String = "") {
+            catchException {
+                dispatch(Result.Loading(true))
+                typesInteractor.getEquipmentTypes(searchQuery = searchText)
+                    .catch { handleError(it) }
+                    .collect {
+                        dispatch(Result.Types(it))
+                        dispatch(Result.Loading(false))
+                    }
+            }
+        }
+
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                searchManager.emit("")
+            } else {
+                publish(EquipmentTypeStore.Label.GoBack)
             }
         }
 
@@ -68,6 +96,8 @@ class EquipmentTypeStoreFactory(
     private sealed class Result {
         data class Types(val types: List<EquipmentTypesDomain>) : Result()
         data class Loading(val isLoading: Boolean) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<EquipmentTypeStore.State, Result> {
@@ -75,6 +105,8 @@ class EquipmentTypeStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.Types -> copy(types = result.types)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
 }
