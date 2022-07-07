@@ -18,7 +18,8 @@ fun NomenclatureGroupDtoV2.toNomenclatureGroupDb(): NomenclatureGroupDb {
     return NomenclatureGroupDb(
         id = id,
         catalogItemName = catalogItemName.orEmpty(),
-        name = name.orEmpty()
+        name = name.orEmpty(),
+        updateDate = System.currentTimeMillis()
     )
 }
 

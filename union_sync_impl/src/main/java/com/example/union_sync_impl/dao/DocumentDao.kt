@@ -93,6 +93,9 @@ interface DocumentDao {
     @Query("SELECT COUNT(*) FROM documents")
     suspend fun getDocumentCount(): Int
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(documents: List<DocumentDb>)
+
     @Update
     suspend fun update(documentDb: DocumentDb)
 }

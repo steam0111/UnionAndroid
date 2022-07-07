@@ -7,6 +7,7 @@ import com.example.union_sync_impl.entity.location.LocationTypeDb
 import org.openapitools.client.models.CustomLocationDto
 import org.openapitools.client.models.CustomLocationsTypeDto
 import org.openapitools.client.models.LocationDtoV2
+import org.openapitools.client.models.LocationsTypeDtoV2
 
 fun CustomLocationDto.toLocationDb(): LocationDb {
     return LocationDb(
@@ -24,12 +25,23 @@ fun LocationDtoV2.toLocationDb(): LocationDb {
         id = id,
         catalogItemName = catalogItemName.orEmpty(),
         parentId = parentId,
-        name = name,
-        locationTypeId = locationTypeId
+        name = name.orEmpty(),
+        locationTypeId = locationTypeId,
+        updateDate = System.currentTimeMillis()
     )
 }
 
 fun CustomLocationsTypeDto.toLocationTypeDb(): LocationTypeDb {
+    return LocationTypeDb(
+        id = id,
+        catalogItemName = catalogItemName.orEmpty(),
+        parentId = parentId,
+        name = name,
+        updateDate = System.currentTimeMillis()
+    )
+}
+
+fun LocationsTypeDtoV2.toLocationTypeDb(): LocationTypeDb {
     return LocationTypeDb(
         id = id,
         catalogItemName = catalogItemName.orEmpty(),

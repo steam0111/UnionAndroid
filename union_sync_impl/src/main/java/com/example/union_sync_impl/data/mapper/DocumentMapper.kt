@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.data.mapper
 
+import android.util.Log
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
@@ -9,7 +10,24 @@ import com.example.union_sync_api.entity.LocationShortSyncEntity
 import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.entity.DocumentDb
-import java.util.*
+import org.openapitools.client.models.ActionDtoV2
+
+fun ActionDtoV2.toDocumentDb(): DocumentDb {
+    return DocumentDb(
+        organizationId = organizationId.orEmpty(),
+        molId = molId.orEmpty(),
+        exploitingId = exploitingId,
+        accountingObjectsIds = listOf(),
+        documentType = extendedActionType?.name.orEmpty(),
+        locationIds = listOf(locationToId.orEmpty()),
+        creationDate = System.currentTimeMillis(),
+        documentStatus = extendedActionStatus?.name.orEmpty(),
+        documentStatusId = actionStatusId.orEmpty(),
+        reservesIds = listOf(),
+        objectType = "MAIN_ASSETS",
+        updateDate = System.currentTimeMillis()
+    )
+}
 
 fun DocumentCreateSyncEntity.toDocumentDb(id: String): DocumentDb {
     return DocumentDb(

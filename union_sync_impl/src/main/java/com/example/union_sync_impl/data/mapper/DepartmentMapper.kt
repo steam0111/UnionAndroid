@@ -24,7 +24,8 @@ fun DepartmentDtoV2.toDepartmentDb(): DepartmentDb {
         catalogItemName = catalogItemName.orEmpty(),
         organizationId = organizationId,
         name = name,
-        code = code
+        code = code,
+        updateDate = System.currentTimeMillis()
     )
 }
 

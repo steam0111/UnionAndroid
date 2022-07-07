@@ -61,7 +61,9 @@ abstract class SyncEntity<SyncType>(
     "accountingObjectCharacteristicValue",
     "inventoryNumberTemplate",
     "printTemplate",
-    "floor"
+    "floor",
+    "location",
+    "locationType"
     ]
      */
     abstract val id: String

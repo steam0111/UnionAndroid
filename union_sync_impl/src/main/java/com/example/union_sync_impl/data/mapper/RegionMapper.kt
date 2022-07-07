@@ -5,8 +5,9 @@ import com.example.union_sync_api.entity.RegionSyncEntity
 import com.example.union_sync_impl.entity.FullRegionDb
 import com.example.union_sync_impl.entity.RegionDb
 import org.openapitools.client.models.Region
+import org.openapitools.client.models.RegionDtoV2
 
-fun Region.toRegionDb(): RegionDb {
+fun RegionDtoV2.toRegionDb(): RegionDb {
     return RegionDb(
         id = id,
         catalogItemName = catalogItemName.orEmpty(),

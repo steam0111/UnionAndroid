@@ -33,7 +33,7 @@ import com.squareup.moshi.Json
 data class ReceptionItemCategoryDtoV2 (
 
     @Json(name = "id")
-    val id: kotlin.String? = null,
+    val id: kotlin.String,
 
     @Json(name = "name")
     val name: kotlin.String? = null

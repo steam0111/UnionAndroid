@@ -69,7 +69,8 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
         internalNumber = internalNumber,
         departmentId = departmentId,
         model = model,
-        providerId = providerId
+        providerId = providerId,
+        updateDate = System.currentTimeMillis()
     )
 }
 

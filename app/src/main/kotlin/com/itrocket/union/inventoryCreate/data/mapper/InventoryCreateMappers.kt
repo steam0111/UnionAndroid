@@ -19,8 +19,8 @@ fun InventorySyncEntity.map(): InventoryCreateDomain =
         documentInfo = buildList {
             add(
                 ParamDomain(
-                    organizationSyncEntity.id,
-                    organizationSyncEntity.name,
+                    organizationSyncEntity?.id,
+                    organizationSyncEntity?.name.orEmpty(),
                     ManualType.ORGANIZATION
                 )
             )

@@ -22,9 +22,10 @@ fun NomenclatureDtoV2.toNomenclatureDb(): NomenclatureDb {
     return NomenclatureDb(
         id = id,
         catalogItemName = catalogItemName.orEmpty(),
-        nomenclatureGroupId = nomenclatureGroupId.orEmpty(),
+        nomenclatureGroupId = nomenclatureGroupId,
         number = code.orEmpty(),
-        name = name.orEmpty()
+        name = name.orEmpty(),
+        updateDate = System.currentTimeMillis()
     )
 }
 
