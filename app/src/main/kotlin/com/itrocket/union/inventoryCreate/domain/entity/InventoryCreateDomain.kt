@@ -31,14 +31,16 @@ data class InventoryCreateDomain(
 fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
     val organizationId = requireNotNull(documentInfo.getOrganizationId())
     val molId = documentInfo.getMolId()
-    val locationIds = (documentInfo.find { it.type == ManualType.LOCATION } as? LocationParamDomain)?.ids
+    val locationIds =
+        (documentInfo.find { it.type == ManualType.LOCATION } as? LocationParamDomain)?.ids
 
     return InventoryUpdateSyncEntity(
-        id = number.toLong(),
+        id = number,
         organizationId = organizationId,
         employeeId = molId,
-        accountingObjectsIds = accountingObjects.map { it.toAccountingObjectIdSyncEntity()},
+        accountingObjectsIds = accountingObjects.map { it.toAccountingObjectIdSyncEntity() },
         date = date,
-        locationIds = locationIds
+        locationIds = locationIds,
+        updateDate = System.currentTimeMillis()
     )
 }

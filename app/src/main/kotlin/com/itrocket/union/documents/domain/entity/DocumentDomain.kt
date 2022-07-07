@@ -28,8 +28,8 @@ data class DocumentDomain(
 ) : Parcelable
 
 fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
-    val organizationId = requireNotNull(params.getOrganizationId())
-    val molId = requireNotNull(params.getMolId())
+    val organizationId = params.getOrganizationId()
+    val molId = params.getMolId()
     val exploitingId = params.getExploitingId()
     val locationIds = params.getLocationIds()
     return DocumentUpdateSyncEntity(
@@ -40,7 +40,7 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
         accountingObjectsIds = accountingObjects.map { it.id },
         creationDate = creationDate,
         locationIds = locationIds,
-        id = number.toLong(),
+        id = number,
         objectType = objectType.name,
         reservesIds = reserves.map { it.id },
         documentStatusId = documentStatusId,

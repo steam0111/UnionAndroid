@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.utils
 
+import android.util.Log
 import org.junit.Test
 
 class AddFiltersToQueryTest {
@@ -54,8 +55,9 @@ class AddFiltersToQueryTest {
     fun rightQuery_onContain() {
         val mainQuery = "SELECT * FROM accounting_objects"
 
-        val expect = mainQuery + " WHERE accounting_objects.organizationId = '396397f6-0f00-47de-8d40-29db735673f2' " +
-                "AND accounting_objects.name LIKE '%ic%'"
+        val expect =
+            mainQuery + " WHERE accounting_objects.organizationId = '396397f6-0f00-47de-8d40-29db735673f2' " +
+                    "AND accounting_objects.name LIKE '%ic%'"
 
         val result = mainQuery.addFilters(
             sqlTableFilters = SqlTableFilters(
@@ -83,6 +85,24 @@ class AddFiltersToQueryTest {
                 listOf(
                     "organizationId" isEquals "009988098711",
                     listOf("firstname", "lastname") contains "sss"
+                )
+            )
+        )
+
+        assert(expect == result)
+    }
+
+    @Test
+    fun rightQuery_onMoreThatField() {
+        val mainQuery = "SELECT * FROM accounting_objects"
+
+        val expect = "$mainQuery WHERE accounting_objects.updateDate > '1657206886505'"
+
+        val result = mainQuery.addFilters(
+            sqlTableFilters = SqlTableFilters(
+                "accounting_objects",
+                listOf(
+                    "updateDate" more 1657206886505
                 )
             )
         )

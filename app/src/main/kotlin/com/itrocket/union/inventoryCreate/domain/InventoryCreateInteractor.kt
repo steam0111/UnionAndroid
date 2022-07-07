@@ -19,7 +19,7 @@ class InventoryCreateInteractor(
 
     suspend fun getInventoryById(id: String) =
         withContext(coreDispatchers.io) {
-            inventoryRepository.getInventoryById(id.toLong())
+            inventoryRepository.getInventoryById(id)
         }
 
     suspend fun saveInventoryDocument(

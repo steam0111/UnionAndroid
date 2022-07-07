@@ -5,10 +5,12 @@ import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
 import com.example.union_sync_impl.utils.contains
 import com.example.union_sync_impl.utils.isEquals
+import com.example.union_sync_impl.utils.more
 
 fun sqlEmployeeQuery(
     organizationId: String? = null,
     textQuery: String? = null,
+    updateDate: Long? = null
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT * FROM employees"
 
@@ -27,6 +29,9 @@ fun sqlEmployeeQuery(
                             "patronymic"
                         ) contains textQuery
                     )
+                }
+                updateDate?.let {
+                    add("updateDate" more updateDate)
                 }
             }
         )

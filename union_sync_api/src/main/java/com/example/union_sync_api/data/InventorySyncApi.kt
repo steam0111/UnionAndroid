@@ -6,13 +6,13 @@ import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import kotlinx.coroutines.flow.Flow
 
 interface InventorySyncApi {
-    suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): Long
+    suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): String
     suspend fun getInventories(
         textQuery: String? = null,
         organizationId: String? = null,
         molId: String? = null
     ): Flow<List<InventorySyncEntity>>
 
-    suspend fun getInventoryById(id: Long): InventorySyncEntity
+    suspend fun getInventoryById(id: String): InventorySyncEntity
     suspend fun updateInventory(inventoryUpdateSyncEntity: InventoryUpdateSyncEntity)
 }

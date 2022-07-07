@@ -10,5 +10,6 @@ class LocationTypeDb(
     id: String,
     override var catalogItemName: String,
     val parentId: String? = null,
-    val name: String
-) : CatalogItemDb(id)
+    val name: String,
+    updateDate: Long?
+) : CatalogItemDb(id, updateDate)

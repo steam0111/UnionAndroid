@@ -13,12 +13,12 @@ interface DocumentSyncApi {
         organizationId: String? = null
     ): Flow<List<DocumentSyncEntity>>
 
-    suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): Long
+    suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): String
     suspend fun getDocuments(
         type: String,
         textQuery: String? = null
     ): Flow<List<DocumentSyncEntity>>
 
-    suspend fun getDocumentById(id: Long): DocumentSyncEntity
+    suspend fun getDocumentById(id: String): DocumentSyncEntity
     suspend fun updateDocument(documentUpdateSyncEntity: DocumentUpdateSyncEntity)
 }

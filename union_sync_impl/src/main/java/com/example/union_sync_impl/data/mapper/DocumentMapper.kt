@@ -9,9 +9,11 @@ import com.example.union_sync_api.entity.LocationShortSyncEntity
 import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.entity.DocumentDb
+import java.util.*
 
-fun DocumentCreateSyncEntity.toDocumentDb(): DocumentDb {
+fun DocumentCreateSyncEntity.toDocumentDb(id: String): DocumentDb {
     return DocumentDb(
+        id = id,
         organizationId = organizationId,
         molId = molId,
         exploitingId = exploitingId,
@@ -22,7 +24,8 @@ fun DocumentCreateSyncEntity.toDocumentDb(): DocumentDb {
         documentStatus = documentStatus,
         documentStatusId = documentStatusId,
         reservesIds = reservesIds,
-        objectType = objectType
+        objectType = objectType,
+        updateDate = System.currentTimeMillis()
     )
 }
 
@@ -40,7 +43,8 @@ fun DocumentUpdateSyncEntity.toDocumentDb(): DocumentDb {
         creationDate = creationDate,
         completionDate = completionDate,
         objectType = objectType,
-        reservesIds = reservesIds
+        reservesIds = reservesIds,
+        updateDate = System.currentTimeMillis()
     )
 }
 
@@ -53,7 +57,7 @@ fun DocumentDb.toDocumentSyncEntity(
     reserves: List<ReserveSyncEntity>? = null
 ): DocumentSyncEntity {
     return DocumentSyncEntity(
-        id = id.toString(),
+        id = id,
         organizationSyncEntity = organizationSyncEntity,
         mol = mol,
         exploiting = exploiting,

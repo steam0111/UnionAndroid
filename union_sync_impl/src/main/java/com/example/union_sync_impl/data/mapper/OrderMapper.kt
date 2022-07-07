@@ -10,7 +10,8 @@ fun CustomOrderDto.toOrderDb(): OrderDb {
         catalogItemName = catalogItemName.orEmpty(),
         number = number,
         summary = summary,
-        date = date
+        date = date,
+        updateDate = System.currentTimeMillis()
     )
 }
 

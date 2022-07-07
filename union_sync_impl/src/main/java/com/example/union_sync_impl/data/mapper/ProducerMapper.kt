@@ -9,7 +9,8 @@ fun Producer.toProducerDb(): ProducerDb {
         id = id,
         catalogItemName = catalogItemName.orEmpty(),
         name = name,
-        code = code
+        code = code,
+        updateDate = System.currentTimeMillis()
     )
 }
 

@@ -12,7 +12,8 @@ fun Counterparty.toCounterpartyDb(): CounterpartyDb {
         actualAddress = actualAddress,
         legalAddress = legalAddress,
         kpp = kpp,
-        inn = inn
+        inn = inn,
+        updateDate = System.currentTimeMillis()
     )
 }
 

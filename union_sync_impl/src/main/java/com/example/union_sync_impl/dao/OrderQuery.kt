@@ -4,9 +4,11 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
 import com.example.union_sync_impl.utils.contains
+import com.example.union_sync_impl.utils.more
 
 fun sqlOrderQuery(
     textQuery: String? = null,
+    updateDate: Long? = null
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT * FROM orders"
 
@@ -16,6 +18,9 @@ fun sqlOrderQuery(
             filter = buildList {
                 textQuery?.let {
                     add("number" contains textQuery)
+                }
+                updateDate?.let {
+                    add("updateDate" more updateDate)
                 }
             }
         )

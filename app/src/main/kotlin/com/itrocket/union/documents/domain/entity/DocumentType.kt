@@ -11,11 +11,11 @@ enum class DocumentTypeDomain(@StringRes val titleId: Int, val manualTypes: List
     Parcelable {
     EXTRADITION(
         titleId = R.string.main_issue,
-        manualTypes = listOf(ManualType.EXPLOITING, ManualType.LOCATION)
+        manualTypes = listOf(ManualType.EXPLOITING)
     ),
     RETURN(
         titleId = R.string.main_return,
-        manualTypes = listOf(ManualType.EXPLOITING, ManualType.LOCATION)
+        manualTypes = listOf(ManualType.EXPLOITING)
     ),
     MOVING(titleId = R.string.main_moved, manualTypes = listOf(ManualType.LOCATION)),
     WRITE_OFF(titleId = R.string.main_write_off, manualTypes = listOf(ManualType.EXPLOITING)),

@@ -5,10 +5,12 @@ import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
 import com.example.union_sync_impl.utils.contains
 import com.example.union_sync_impl.utils.isEquals
+import com.example.union_sync_impl.utils.more
 
 
 fun sqlNomenclatureGroupQuery(
     textQuery: String? = null,
+    updateDate: Long? = null
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT * FROM nomenclature_group"
 
@@ -18,6 +20,9 @@ fun sqlNomenclatureGroupQuery(
             filter = buildList {
                 textQuery?.let {
                     add("name" contains textQuery)
+                }
+                updateDate?.let {
+                    add("updateDate" more updateDate)
                 }
             }
         )

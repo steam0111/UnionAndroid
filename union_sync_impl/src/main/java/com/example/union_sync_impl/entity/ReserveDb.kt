@@ -65,4 +65,5 @@ class ReserveDb(
     val structuralSubdivisionId: String?,
     val receptionDocumentNumber: String?,
     val unitPrice: String?,
-) : CatalogItemDb(id)
+    updateDate: Long?
+) : CatalogItemDb(id, updateDate)

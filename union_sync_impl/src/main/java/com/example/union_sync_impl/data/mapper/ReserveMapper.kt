@@ -22,7 +22,8 @@ fun CustomRemainsDto.toReserveDb(): ReserveDb {
         receptionItemCategoryId = receptionItemCategoryId,
         structuralSubdivisionId = structuralSubdivisionId,
         receptionDocumentNumber = receptionDocumentNumber,
-        unitPrice = unitPrice
+        unitPrice = unitPrice,
+        updateDate = System.currentTimeMillis()
     )
 }
 

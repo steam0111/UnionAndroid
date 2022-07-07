@@ -7,6 +7,7 @@ import com.itrocket.union.documentCreate.domain.dependencies.DocumentCreateRepos
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
+import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.toUpdateSyncEntity
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectsDomain
@@ -27,7 +28,7 @@ class DocumentCreateInteractor(
         id: String
     ): DocumentDomain {
         return withContext(coreDispatchers.io) {
-            documentRepository.getDocumentById(id.toLong())
+            documentRepository.getDocumentById(id)
         }
     }
 
@@ -107,8 +108,11 @@ class DocumentCreateInteractor(
     fun getReservesIds(reserves: List<ReservesDomain>): List<String> =
         reserves.map { it.id }
 
-    fun isParamsValid(params: List<ParamDomain>): Boolean =
-        params.all { it.value.isNotBlank() || it.type == ManualType.LOCATION }
+    fun isParamsValid(params: List<ParamDomain>, documentTypeDomain: DocumentTypeDomain): Boolean {
+        val validateParams = params.filter { documentTypeDomain.manualTypes.contains(it.type) }
+        return validateParams.all { it.value.isNotBlank() }
+    }
+
 
     fun addAccountingObject(
         accountingObjects: List<AccountingObjectDomain>,

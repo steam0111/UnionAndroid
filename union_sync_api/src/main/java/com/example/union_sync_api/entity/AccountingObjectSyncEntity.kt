@@ -36,5 +36,6 @@ fun AccountingObjectSyncEntity.toAccountingObjectUpdateSyncEntity(): AccountingO
         exploitingId = exploitingEmployeeId,
         status = status,
         statusId = statusId,
+        updateDate = System.currentTimeMillis()
     )
 }

@@ -85,10 +85,13 @@ interface DocumentDao {
                 "LEFT JOIN employees exploitingEmployees ON documents.exploitingId = exploitingEmployees.id " +
                 "WHERE documents.id = :id LIMIT 1 "
     )
-    suspend fun getDocumentById(id: Long): FullDocument
+    suspend fun getDocumentById(id: String): FullDocument
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(documentDb: DocumentDb): Long
+    suspend fun insert(documentDb: DocumentDb)
+
+    @Query("SELECT COUNT(*) FROM documents")
+    suspend fun getDocumentCount(): Int
 
     @Update
     suspend fun update(documentDb: DocumentDb)

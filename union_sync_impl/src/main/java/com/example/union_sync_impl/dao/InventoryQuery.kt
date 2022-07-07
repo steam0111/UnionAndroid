@@ -5,11 +5,13 @@ import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
 import com.example.union_sync_impl.utils.contains
 import com.example.union_sync_impl.utils.isEquals
+import com.example.union_sync_impl.utils.more
 
 fun sqlInventoryQuery(
     textQuery: String? = null,
     organizationId: String? = null,
-    molId: String? = null
+    molId: String? = null,
+    updateDate: Long? = null
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT inventories.*," +
             "" +
@@ -46,6 +48,9 @@ fun sqlInventoryQuery(
 
                 molId?.let {
                     add("employeeId" isEquals molId)
+                }
+                updateDate?.let {
+                    add("updateDate" more updateDate)
                 }
             }
         )

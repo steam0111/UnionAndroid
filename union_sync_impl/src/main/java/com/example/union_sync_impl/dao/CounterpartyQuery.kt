@@ -4,9 +4,11 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
 import com.example.union_sync_impl.utils.contains
+import com.example.union_sync_impl.utils.more
 
 fun sqlCounterpartyQuery(
-    textQuery: String? = null
+    textQuery: String? = null,
+    updateDate: Long? = null
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT * FROM counterparty"
 
@@ -16,6 +18,9 @@ fun sqlCounterpartyQuery(
             filter = buildList {
                 textQuery?.let {
                     add("name" contains textQuery)
+                }
+                updateDate?.let {
+                    add("updateDate" more updateDate)
                 }
             }
         )

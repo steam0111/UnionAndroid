@@ -15,7 +15,8 @@ import com.example.union_sync_impl.entity.core.CatalogItemDb
 class BranchesDb(
     id: String,
     override var catalogItemName: String,
+    updateDate: Long?,
     val organizationId: String?,
     val name: String?,
     val code: String?,
-) : CatalogItemDb(id)
+) : CatalogItemDb(id, updateDate)

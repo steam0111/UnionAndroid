@@ -34,7 +34,7 @@ class DocumentRepositoryImpl(private val documentSyncApi: DocumentSyncApi) : Doc
         return documentSyncApi.getDocuments(type.name, textQuery).map { it.map() }
     }
 
-    override suspend fun getDocumentById(id: Long): DocumentDomain {
+    override suspend fun getDocumentById(id: String): DocumentDomain {
         return documentSyncApi.getDocumentById(id).map()
     }
 
@@ -42,7 +42,7 @@ class DocumentRepositoryImpl(private val documentSyncApi: DocumentSyncApi) : Doc
         return documentSyncApi.updateDocument(documentUpdateSyncEntity)
     }
 
-    override suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): Long {
+    override suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): String {
         return documentSyncApi.createDocument(documentCreateSyncEntity)
     }
 }
