@@ -5,9 +5,19 @@ import com.example.union_sync_api.entity.DepartmentSyncEntity
 import com.example.union_sync_impl.entity.DepartmentDb
 import com.example.union_sync_impl.entity.FullDepartmentDb
 import org.openapitools.client.models.CustomDepartmentDto
-import org.openapitools.client.models.DepartmentDto
+import org.openapitools.client.models.DepartmentDtoV2
 
 fun CustomDepartmentDto.toDepartmentDb(): DepartmentDb {
+    return DepartmentDb(
+        id = id,
+        catalogItemName = catalogItemName.orEmpty(),
+        organizationId = organizationId,
+        name = name,
+        code = code
+    )
+}
+
+fun DepartmentDtoV2.toDepartmentDb(): DepartmentDb {
     return DepartmentDb(
         id = id,
         catalogItemName = catalogItemName.orEmpty(),

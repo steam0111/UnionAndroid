@@ -24,11 +24,16 @@ import org.openapitools.client.custom_api.OrganizationApi
 import org.openapitools.client.custom_api.ProducerApi
 import org.openapitools.client.custom_api.ReceptionItemCategoryApi
 import org.openapitools.client.custom_api.RegionApi
+import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.custom_api.ReserveApi
 import org.openapitools.client.infrastructure.BigDecimalAdapter
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.util.concurrent.TimeUnit
+
+@JvmInline
+value class Seconds(val value: Long)
 
 object NetworkModule {
 
@@ -37,6 +42,8 @@ object NetworkModule {
 
     private val UNAUTHORIZED_CLIENT_QUALIFIER = named("unauthorizedClient")
     private val UNAUTHORIZED_RETROFIT_QUALIFIER = named("unauthorizedRetrofit")
+
+    private val timeout: Seconds = Seconds(120L)
 
     val module = module {
         single { Moshi.Builder().add(BigDecimalAdapter()).build() }
@@ -51,6 +58,9 @@ object NetworkModule {
         single(UNAUTHORIZED_CLIENT_QUALIFIER) {
             OkHttpClient()
                 .newBuilder()
+                .connectTimeout(timeout.value, TimeUnit.SECONDS)
+                .readTimeout(timeout.value, TimeUnit.SECONDS)
+                .writeTimeout(timeout.value, TimeUnit.SECONDS)
                 .addInterceptor(get<ErrorHandlerInterceptor>())
                 .addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BODY
@@ -68,6 +78,9 @@ object NetworkModule {
         single(AUTHORIZED_CLIENT_QUALIFIER) {
             OkHttpClient()
                 .newBuilder()
+                .connectTimeout(timeout.value, TimeUnit.SECONDS)
+                .readTimeout(timeout.value, TimeUnit.SECONDS)
+                .writeTimeout(timeout.value, TimeUnit.SECONDS)
                 .authenticator(get<Authenticator>())
                 .addInterceptor(get<ErrorHandlerInterceptor>())
                 .addInterceptor(get<TokenInterceptor>())
@@ -135,6 +148,10 @@ object NetworkModule {
         single<EquipmentTypeApi> {
             get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
                 .create(EquipmentTypeApi::class.java)
+        }
+        single<SyncControllerApi> {
+            get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
+                .create(SyncControllerApi::class.java)
         }
         single<ReserveApi> {
             get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)

@@ -9,10 +9,41 @@ import com.example.union_sync_impl.entity.AccountingObjectDb
 import com.example.union_sync_impl.entity.AccountingObjectStatusDb
 import com.example.union_sync_impl.entity.AccountingObjectUpdate
 import com.example.union_sync_impl.entity.FullAccountingObject
+import org.openapitools.client.models.AccountingObjectDtoV2
 import org.openapitools.client.models.AccountingObjectStatusDto
+import org.openapitools.client.models.AccountingObjectStatusDtoV2
 import org.openapitools.client.models.CustomAccountingObjectDto
 
 fun CustomAccountingObjectDto.toAccountingObjectDb(): AccountingObjectDb {
+    return AccountingObjectDb(
+        id = id,
+        catalogItemName = catalogItemName.orEmpty(),
+        organizationId = organizationId,
+        locationId = locationId,
+        molId = molId,
+        exploitingId = exploitingId,
+        nomenclatureId = nomenclatureId,
+        nomenclatureGroupId = nomenclatureGroupId,
+        barcodeValue = barcodeValue,
+        name = name.orEmpty(),
+        rfidValue = rfidValue,
+        factoryNumber = factoryNumber,
+        inventoryNumber = inventoryNumber,
+        status = extendedAccountingObjectStatus?.toStatusDb(),
+        statusId = accountingObjectStatusId,
+        producerId = producerId,
+        equipmentTypeId = typeId,
+        actualPrice = actualPrice,
+        count = count?.toInt(),
+        commissioningDate = commissioningDate,
+        internalNumber = internalNumber,
+        departmentId = departmentId,
+        model = model,
+        providerId = providerId
+    )
+}
+
+fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
     return AccountingObjectDb(
         id = id,
         catalogItemName = catalogItemName.orEmpty(),
@@ -88,6 +119,8 @@ fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
 }
 
 fun AccountingObjectStatusDto.toStatusDb() = AccountingObjectStatusDb(id.orEmpty(), name)
+
+fun AccountingObjectStatusDtoV2.toStatusDb() = AccountingObjectStatusDb(id.orEmpty(), name)
 
 fun AccountingObjectStatusSyncEntity.toStatusDb() = AccountingObjectStatusDb(id, name)
 

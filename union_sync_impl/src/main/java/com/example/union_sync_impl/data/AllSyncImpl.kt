@@ -38,7 +38,9 @@ import com.example.union_sync_impl.data.mapper.toReceptionItemCategoryDb
 import com.example.union_sync_impl.data.mapper.toRegionDb
 import com.example.union_sync_impl.data.mapper.toReserveDb
 import com.example.union_sync_impl.data.mapper.toStatusDb
-import com.example.union_sync_impl.entity.NetworkSyncDb
+import com.example.union_sync_impl.sync.SyncRepository
+import com.itrocket.core.base.CoreDispatchers
+import kotlinx.coroutines.withContext
 import org.openapitools.client.custom_api.AccountingObjectApi
 import org.openapitools.client.custom_api.BranchesApi
 import org.openapitools.client.custom_api.CounterpartyApi
@@ -52,9 +54,11 @@ import org.openapitools.client.custom_api.OrganizationApi
 import org.openapitools.client.custom_api.ProducerApi
 import org.openapitools.client.custom_api.ReceptionItemCategoryApi
 import org.openapitools.client.custom_api.RegionApi
+import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.custom_api.ReserveApi
 import org.openapitools.client.models.CustomLocationDto
 import org.openapitools.client.models.CustomLocationsTypeDto
+import org.openapitools.client.models.StarSyncRequestV2
 
 class AllSyncImpl(
     private val api: AccountingObjectApi,
@@ -85,6 +89,9 @@ class AllSyncImpl(
     private val regionDao: RegionDao,
     private val statusesDao: AccountingObjectStatusDao,
     private val networkSyncDao: NetworkSyncDao,
+    private val syncControllerApi: SyncControllerApi,
+    private val syncRepository: SyncRepository,
+    private val coreDispatchers: CoreDispatchers,
     private val orderDao: OrderDao,
     private val reserveDao: ReserveDao,
     private val receptionItemCategoryDao: ReceptionItemCategoryDao,
@@ -93,33 +100,31 @@ class AllSyncImpl(
     private val receptionItemCategoryApi: ReceptionItemCategoryApi
 ) : AllSyncApi {
 
-    override suspend fun syncAll() {
-        syncProducers()
-        syncCounterparty()
-        syncNomenclatureGroup()
+    override suspend fun syncAll() = withContext(coreDispatchers.io) {
+        startNewSync()
+    }
 
-        syncNomenclature()
+    private suspend fun startNewSync() {
+        //TODO - "2021-07-03T10:09:31.603Z" пока берется дефолтная дата
+        val syncInfo = syncControllerApi.apiSyncPost(StarSyncRequestV2("2021-07-03T10:09:31.603Z"))
+        startExportFromServer(syncInfo.id)
+    }
 
-        syncOrganization()
-        syncEmployee()
-        syncDepartment()
-        syncBranches()
-        syncRegions()
+    private suspend fun startExportFromServer(syncId: String) {
+        val exportSyncInfo = syncControllerApi.apiSyncIdStartExportPost(syncId)
+        val syncEntities = syncRepository.getSyncEntities()
 
-        syncEquipment()
-        syncLocations()
+        exportSyncInfo.exportPartBufferInformation.exportPartsInformation.forEach { exportPartInformationV2 ->
+            val exportPartId = exportPartInformationV2.id
+            val entityId = exportPartInformationV2.entityModel.id
 
-        syncAccountingObjects()
-
-        syncOrder()
-        syncReceptionCategoryItem()
-        syncReserves()
-
-        networkSyncDao.insert(
-            NetworkSyncDb(
-                isAllSynced = true
-            )
-        )
+            if (syncEntities.contains(entityId)) {
+                val syncEntity = syncEntities.getOrElse(entityId) {
+                    throw IllegalStateException()
+                }
+                syncEntity.exportFromServer(syncId, exportPartId)
+            }
+        }
     }
 
     private suspend fun syncRegions() {
