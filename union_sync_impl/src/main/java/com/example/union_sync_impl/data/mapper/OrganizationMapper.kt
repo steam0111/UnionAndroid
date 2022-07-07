@@ -32,7 +32,8 @@ fun OrganizationDtoV2.toOrganizationDb(): OrganizationDb {
         kpp = kpp,
         inn = inn,
         employeeId = employeeId,
-        comment = comment
+        comment = comment,
+        updateDate = System.currentTimeMillis()
     )
 }
 

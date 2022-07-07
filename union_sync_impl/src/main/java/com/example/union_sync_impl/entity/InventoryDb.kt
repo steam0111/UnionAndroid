@@ -9,7 +9,7 @@ import com.example.union_sync_impl.entity.core.SyncItemDb
 class InventoryDb(
     id: String = "",
     updateDate: Long?,
-    val organizationId: String,
+    val organizationId: String?,
     val employeeId: String?,
     val accountingObjectsIds: List<AccountingObjectInfoSyncEntity>,
     val locationIds: List<String>? = listOf(),

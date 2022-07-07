@@ -8,6 +8,18 @@ import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import com.example.union_sync_api.entity.LocationShortSyncEntity
 import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_impl.entity.InventoryDb
+import org.openapitools.client.models.InventoryDtoV2
+
+fun InventoryDtoV2.toInventoryDb(): InventoryDb {
+    return InventoryDb(
+        accountingObjectsIds = listOf(),
+        locationIds = listOf(locationId.orEmpty()),
+        organizationId = organizationId,
+        employeeId = molId,
+        date = System.currentTimeMillis(),//creationDate
+        updateDate = System.currentTimeMillis()
+    )
+}
 
 fun InventoryCreateSyncEntity.toInventoryDb(id: String): InventoryDb {
     return InventoryDb(
@@ -34,7 +46,7 @@ fun InventoryUpdateSyncEntity.toInventoryDb(): InventoryDb {
 }
 
 fun InventoryDb.toInventorySyncEntity(
-    organizationSyncEntity: OrganizationSyncEntity,
+    organizationSyncEntity: OrganizationSyncEntity?,
     mol: EmployeeSyncEntity?,
     locationSyncEntities: List<LocationShortSyncEntity>?,
     accountingObjects: List<AccountingObjectSyncEntity>

@@ -48,7 +48,7 @@ class InventorySyncApiImpl(
         ).map {
             it.map {
                 it.inventoryDb.toInventorySyncEntity(
-                    organizationSyncEntity = requireNotNull(it.organizationDb).toSyncEntity(),
+                    organizationSyncEntity = it.organizationDb?.toSyncEntity(),
                     mol = it.employeeDb?.toSyncEntity(),
                     locationSyncEntities = listOf(),
                     accountingObjects = listOf()

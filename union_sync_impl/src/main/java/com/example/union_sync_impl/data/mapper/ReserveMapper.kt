@@ -5,9 +5,9 @@ import com.example.union_sync_api.entity.ReserveDetailSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.entity.FullReserve
 import com.example.union_sync_impl.entity.ReserveDb
-import org.openapitools.client.models.CustomRemainsDto
+import org.openapitools.client.models.RemainsDtoV2
 
-fun CustomRemainsDto.toReserveDb(): ReserveDb {
+fun RemainsDtoV2.toReserveDb(): ReserveDb {
     return ReserveDb(
         id = id,
         catalogItemName = catalogItemName.orEmpty(),
