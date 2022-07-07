@@ -39,7 +39,8 @@ class InventoryInteractor(
                 accountingObjectsIds = accountingObjects.map {
                     it.toAccountingObjectIdSyncEntity()
                 },
-                locationIds = locationIds
+                locationIds = locationIds,
+                updateDate = System.currentTimeMillis()
             )
         )
         repository.getInventoryById(id)

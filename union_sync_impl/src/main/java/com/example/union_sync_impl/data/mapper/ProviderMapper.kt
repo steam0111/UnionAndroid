@@ -9,7 +9,8 @@ fun CounterpartyDto.toProviderDb(): ProviderDb {
     return ProviderDb(
         id = id,
         catalogItemName = catalogItemName.orEmpty(),
-        name = name
+        name = name,
+        updateDate = System.currentTimeMillis()
     )
 }
 

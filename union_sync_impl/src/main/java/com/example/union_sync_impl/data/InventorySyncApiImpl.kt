@@ -19,6 +19,7 @@ import com.example.union_sync_impl.entity.FullAccountingObject
 import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
+import java.util.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -27,8 +28,10 @@ class InventorySyncApiImpl(
     private val locationDao: LocationDao,
     private val accountingObjectDao: AccountingObjectDao
 ) : InventorySyncApi {
-    override suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): Long {
-        return inventoryDao.insert(inventoryCreateSyncEntity.toInventoryDb())
+    override suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): String {
+        val inventoryId = UUID.randomUUID().toString()
+        inventoryDao.insert(inventoryCreateSyncEntity.toInventoryDb(inventoryId))
+        return inventoryId
     }
 
     override suspend fun getInventories(
@@ -54,7 +57,7 @@ class InventorySyncApiImpl(
         }
     }
 
-    override suspend fun getInventoryById(id: Long): InventorySyncEntity {
+    override suspend fun getInventoryById(id: String): InventorySyncEntity {
         val fullInventory = inventoryDao.getInventoryById(id)
 
         val locationIds = fullInventory.inventoryDb.locationIds

@@ -189,7 +189,14 @@ class DocumentCreateStoreFactory(
         }
 
         private fun isNextEnabled(getState: () -> DocumentCreateStore.State) {
-            dispatch(Result.Enabled(documentCreateInteractor.isParamsValid(getState().params)))
+            dispatch(
+                Result.Enabled(
+                    documentCreateInteractor.isParamsValid(
+                        getState().params,
+                        getState().document.documentType
+                    )
+                )
+            )
         }
 
         private suspend fun saveDocument(getState: () -> DocumentCreateStore.State) {

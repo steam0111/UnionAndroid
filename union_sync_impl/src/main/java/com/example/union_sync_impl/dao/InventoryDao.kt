@@ -39,11 +39,14 @@ interface InventoryDao {
                 "LEFT JOIN employees ON inventories.employeeId = employees.id " +
                 "WHERE inventories.id = :id LIMIT 1 "
     )
-    suspend fun getInventoryById(id: Long): FullInventory
+    suspend fun getInventoryById(id: String): FullInventory
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(inventoryDb: InventoryDb): Long
 
     @Update
     suspend fun update(inventoryDb: InventoryDb)
+
+    @Query("SELECT COUNT(*) FROM inventories")
+    suspend fun getInventoriesCount(): Int
 }

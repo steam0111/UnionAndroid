@@ -21,6 +21,7 @@ import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
+import java.util.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -30,8 +31,10 @@ class DocumentSyncApiImpl(
     private val accountingObjectDao: AccountingObjectDao,
     private val reserveDao: ReserveDao
 ) : DocumentSyncApi {
-    override suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): Long {
-        return documentDao.insert(documentCreateSyncEntity.toDocumentDb())
+    override suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): String {
+        val documentId = UUID.randomUUID().toString()
+        documentDao.insert(documentCreateSyncEntity.toDocumentDb(documentId))
+        return documentId
     }
 
     override suspend fun getAllDocuments(
@@ -78,7 +81,7 @@ class DocumentSyncApiImpl(
     }
 
 
-    override suspend fun getDocumentById(id: Long): DocumentSyncEntity {
+    override suspend fun getDocumentById(id: String): DocumentSyncEntity {
         val fullDocument = documentDao.getDocumentById(id)
         val locationIds = fullDocument.documentDb.locationIds
         val locations = if (locationIds != null) {

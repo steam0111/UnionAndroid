@@ -13,5 +13,6 @@ class OrganizationDb(
     val inn: String?,
     val kpp: String?,
     val comment: String?,
-    val employeeId: String?
-) : CatalogItemDb(id)
+    val employeeId: String?,
+    updateDate: Long?
+) : CatalogItemDb(id, updateDate)

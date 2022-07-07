@@ -5,12 +5,14 @@ import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
 import com.example.union_sync_impl.utils.contains
 import com.example.union_sync_impl.utils.isEquals
+import com.example.union_sync_impl.utils.more
 
 fun sqlDocumentsQuery(
     textQuery: String? = null,
     molId: String? = null,
     exploitingId: String? = null,
-    organizationId: String? = null
+    organizationId: String? = null,
+    updateDate: Long? = null
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT documents.*," +
             "" +
@@ -58,6 +60,9 @@ fun sqlDocumentsQuery(
                 }
                 organizationId?.let {
                     add("organizationId" isEquals organizationId)
+                }
+                updateDate?.let {
+                    add("updateDate" more updateDate)
                 }
             }
         )

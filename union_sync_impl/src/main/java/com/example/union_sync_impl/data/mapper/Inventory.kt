@@ -9,13 +9,15 @@ import com.example.union_sync_api.entity.LocationShortSyncEntity
 import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_impl.entity.InventoryDb
 
-fun InventoryCreateSyncEntity.toInventoryDb(): InventoryDb {
+fun InventoryCreateSyncEntity.toInventoryDb(id: String): InventoryDb {
     return InventoryDb(
+        id = id,
         organizationId = organizationId,
         employeeId = employeeId,
         accountingObjectsIds = accountingObjectsIds,
         date = System.currentTimeMillis(),
-        locationIds = locationIds
+        locationIds = locationIds,
+        updateDate = updateDate
     )
 }
 
@@ -27,6 +29,7 @@ fun InventoryUpdateSyncEntity.toInventoryDb(): InventoryDb {
         accountingObjectsIds = accountingObjectsIds,
         date = date,
         locationIds = locationIds,
+        updateDate = updateDate
     )
 }
 
@@ -37,11 +40,12 @@ fun InventoryDb.toInventorySyncEntity(
     accountingObjects: List<AccountingObjectSyncEntity>
 ): InventorySyncEntity {
     return InventorySyncEntity(
-        id = id.toString(),
+        id = id,
         date = date,
         organizationSyncEntity = organizationSyncEntity,
         mol = mol,
         locationSyncEntities = locationSyncEntities,
-        accountingObjects = accountingObjects
+        accountingObjects = accountingObjects,
+        updateDate = updateDate
     )
 }

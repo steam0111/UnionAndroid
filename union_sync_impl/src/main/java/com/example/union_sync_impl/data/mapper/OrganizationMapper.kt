@@ -17,7 +17,8 @@ fun CustomOrganizationDto.toOrganizationDb(): OrganizationDb {
         kpp = kpp,
         inn = inn,
         employeeId = employeeId,
-        comment = comment
+        comment = comment,
+        updateDate = System.currentTimeMillis()
     )
 }
 

@@ -9,7 +9,8 @@ fun EquipmentTypeDto.toEquipmentTypeDb(): EquipmentTypesDb {
         id = id,
         catalogItemName = catalogItemName.orEmpty(),
         name = name,
-        code = code
+        code = code,
+        updateDate = System.currentTimeMillis()
     )
 }
 

@@ -39,7 +39,8 @@ fun CustomAccountingObjectDto.toAccountingObjectDb(): AccountingObjectDb {
         internalNumber = internalNumber,
         departmentId = departmentId,
         model = model,
-        providerId = providerId
+        providerId = providerId,
+        updateDate = System.currentTimeMillis()
     )
 }
 
@@ -75,7 +76,7 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
 fun AccountingObjectSyncEntity.toAccountingObjectDb(): AccountingObjectDb {
     return AccountingObjectDb(
         id = id,
-        catalogItemName = catalogItemName.orEmpty(),
+        catalogItemName = catalogItemName,
         organizationId = organizationId,
         locationId = locationId,
         molId = molId,
@@ -83,7 +84,7 @@ fun AccountingObjectSyncEntity.toAccountingObjectDb(): AccountingObjectDb {
         nomenclatureId = nomenclatureId,
         nomenclatureGroupId = nomenclatureGroupId,
         barcodeValue = barcodeValue,
-        name = name.orEmpty(),
+        name = name,
         rfidValue = rfidValue,
         factoryNumber = factoryNumber,
         inventoryNumber = inventoryNumber,
@@ -97,7 +98,8 @@ fun AccountingObjectSyncEntity.toAccountingObjectDb(): AccountingObjectDb {
         internalNumber = internalNumber,
         departmentId = departmentId,
         model = model,
-        providerId = providerId
+        providerId = providerId,
+        updateDate = System.currentTimeMillis()
     )
 }
 
@@ -194,5 +196,6 @@ fun AccountingObjectUpdateSyncEntity.toAccountingObjectUpdate(): AccountingObjec
         exploitingId = exploitingId,
         status = status?.toStatusDb(),
         statusId = statusId,
+        updateDate = updateDate
     )
 }

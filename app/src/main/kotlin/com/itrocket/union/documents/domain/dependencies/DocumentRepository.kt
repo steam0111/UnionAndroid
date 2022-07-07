@@ -19,9 +19,9 @@ interface DocumentRepository {
         textQuery: String?
     ): Flow<List<DocumentDomain>>
 
-    suspend fun getDocumentById(id: Long): DocumentDomain
+    suspend fun getDocumentById(id: String): DocumentDomain
 
     suspend fun updateDocument(documentUpdateSyncEntity: DocumentUpdateSyncEntity)
 
-    suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): Long
+    suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): String
 }

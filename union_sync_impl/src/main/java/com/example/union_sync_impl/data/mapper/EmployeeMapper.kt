@@ -18,7 +18,8 @@ fun CustomEmployeeDto.toEmployeeDb(): EmployeeDb {
         nfc = nfc,
         organizationId = organizationId,
         post = post,
-        statusId = employeeStatusId
+        statusId = employeeStatusId,
+        updateDate = System.currentTimeMillis()
     )
 }
 

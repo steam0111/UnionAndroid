@@ -14,7 +14,8 @@ fun CustomLocationDto.toLocationDb(): LocationDb {
         catalogItemName = catalogItemName.orEmpty(),
         parentId = parentId,
         name = name,
-        locationTypeId = locationTypeId
+        locationTypeId = locationTypeId,
+        updateDate = System.currentTimeMillis()
     )
 }
 
@@ -33,7 +34,8 @@ fun CustomLocationsTypeDto.toLocationTypeDb(): LocationTypeDb {
         id = id,
         catalogItemName = catalogItemName.orEmpty(),
         parentId = parentId,
-        name = name
+        name = name,
+        updateDate = System.currentTimeMillis()
     )
 }
 

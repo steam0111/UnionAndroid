@@ -67,6 +67,7 @@ class AccountingObjectDb(
     val count: Int?,
     val commissioningDate: String?,
     val internalNumber: String?,
-    val model: String?
-) : CatalogItemDb(id)
+    val model: String?,
+    updateDate: Long?,
+) : CatalogItemDb(id, updateDate)
 

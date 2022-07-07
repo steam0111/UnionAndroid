@@ -5,6 +5,7 @@ import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
 import com.example.union_sync_impl.utils.contains
 import com.example.union_sync_impl.utils.isEquals
+import com.example.union_sync_impl.utils.more
 
 fun sqlAccountingObjectQuery(
     organizationId: String? = null,
@@ -18,7 +19,8 @@ fun sqlAccountingObjectQuery(
     providerId: String? = null,
     statusId: String? = null,
     textQuery: String? = null,
-    accountingObjectsIds: List<String>? = null
+    accountingObjectsIds: List<String>? = null,
+    updateDate: Long? = null
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT accounting_objects.*," +
             "" +
@@ -70,6 +72,9 @@ fun sqlAccountingObjectQuery(
                 }
                 textQuery?.let {
                     add("name" contains textQuery)
+                }
+                updateDate?.let {
+                    add("updateDate" more updateDate)
                 }
             }
         )

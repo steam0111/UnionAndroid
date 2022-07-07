@@ -5,6 +5,7 @@ import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
 import com.example.union_sync_impl.utils.contains
 import com.example.union_sync_impl.utils.isEquals
+import com.example.union_sync_impl.utils.more
 
 fun sqlReserveQuery(
     organizationId: String? = null,
@@ -15,7 +16,8 @@ fun sqlReserveQuery(
     receptionItemCategoryId: String? = null,
     textQuery: String? = null,
     reservesIds: List<String>? = null,
-    isFilterCount: Boolean = false
+    isFilterCount: Boolean = false,
+    updateDate: Long? = null
 ): SimpleSQLiteQuery {
 
     val mainQuery = if (isFilterCount) {
@@ -61,6 +63,9 @@ fun sqlReserveQuery(
                 }
                 textQuery?.let {
                     add("name" contains textQuery)
+                }
+                updateDate?.let {
+                    add("updateDate" more updateDate)
                 }
             }
         )
