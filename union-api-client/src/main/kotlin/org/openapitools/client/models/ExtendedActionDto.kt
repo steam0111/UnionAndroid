@@ -68,7 +68,7 @@ data class ExtendedActionDto (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int,
+    val version: kotlin.Int?=null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,

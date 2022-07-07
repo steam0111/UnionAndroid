@@ -48,6 +48,7 @@ android {
 dependencies {
     implementation project(":token_auth")
     implementation project(":union-api-client")
+    implementation project(":union-api-client_v2")
     implementation project(":union_sync_sdk")
 
     implementation(libs.androidx.core)

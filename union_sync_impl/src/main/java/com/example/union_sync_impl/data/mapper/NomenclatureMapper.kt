@@ -5,8 +5,19 @@ import com.example.union_sync_api.entity.NomenclatureSyncEntity
 import com.example.union_sync_impl.entity.FullNomenclatureDb
 import com.example.union_sync_impl.entity.NomenclatureDb
 import org.openapitools.client.models.CustomNomenclatureDto
+import org.openapitools.client.models.NomenclatureDtoV2
 
 fun CustomNomenclatureDto.toNomenclatureDb(): NomenclatureDb {
+    return NomenclatureDb(
+        id = id,
+        catalogItemName = catalogItemName.orEmpty(),
+        nomenclatureGroupId = nomenclatureGroupId.orEmpty(),
+        number = code.orEmpty(),
+        name = name.orEmpty()
+    )
+}
+
+fun NomenclatureDtoV2.toNomenclatureDb(): NomenclatureDb {
     return NomenclatureDb(
         id = id,
         catalogItemName = catalogItemName.orEmpty(),

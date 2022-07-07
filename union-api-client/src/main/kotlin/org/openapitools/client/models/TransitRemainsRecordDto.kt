@@ -47,7 +47,7 @@ data class TransitRemainsRecordDto (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int,
+    val version: kotlin.Int?=null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -71,7 +71,7 @@ data class TransitRemainsRecordDto (
     val extendedRemains: RemainsDto? = null,
 
     @Json(name = "count")
-    val count: java.math.BigDecimal? = null
+    val count: Long? = null
 
 )
 

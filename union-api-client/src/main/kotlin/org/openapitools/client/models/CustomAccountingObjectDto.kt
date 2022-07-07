@@ -119,7 +119,7 @@ data class CustomAccountingObjectDto(
     val category: String? = null,
 
     @Json(name = "count")
-    val count: java.math.BigDecimal? = null,
+    val count: Long? = null,
 
     @Json(name = "unit")
     val unit: String? = null,

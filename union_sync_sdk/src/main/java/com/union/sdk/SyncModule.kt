@@ -41,6 +41,7 @@ import com.example.union_sync_impl.data.OrganizationSyncApiImpl
 import com.example.union_sync_impl.data.ProducerSyncApiImpl
 import com.example.union_sync_impl.data.ReceptionCategoryItemSyncApiImpl
 import com.example.union_sync_impl.data.RegionSyncApiImpl
+import com.example.union_sync_impl.sync.SyncRepository
 import com.example.union_sync_impl.data.ReserveSyncApiImpl
 import org.koin.dsl.module
 import org.openapitools.client.custom_api.ReceptionItemCategoryApi
@@ -176,6 +177,9 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
+                get(),
+                get(),
+                get(),
             )
         }
         single {
@@ -183,6 +187,21 @@ object SyncModule {
                 get(),
                 UnionDatabase::class.java, "union_database"
             ).fallbackToDestructiveMigration().build()
+        }
+        factory {
+            SyncRepository(
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+            )
         }
         factory {
             get<UnionDatabase>().nomenclatureGroupDao()

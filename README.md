@@ -54,9 +54,18 @@ openapi-generator generate \
 -o полный_путь_до_файла/ozna-android/ozna-api-client \
 --additional-properties=library=jvm-retrofit2,useCoroutines=true,dateLibrary=string
 
+Пример : 
+openapi-generator generate \
+-i union-api-client_v2/api-docs-v2.json \
+-g kotlin \
+-o /Users/aLuckyVegas777/Desktop/example/union/union-api-client_v2 \
+--api-name-suffix V2 \
+--model-name-suffix V2 \
+--additional-properties=library=jvm-retrofit2,useCoroutines=true,dateLibrary=string
+
 TODO:
 - требуется разобраться с датами в DTO моделях, сейчас дата представляется в формате string, используя параметр dateLibrary=string
-- регулярка для вырезания поля operationId,"operationId":"[a-zA-Z0-9_]{1,}"
+- регулярка для вырезания поля operationId в скобках (,"operationId":"[a-zA-Z0-9_]{1,}")
 
 Инструкция при добавление/обновление UI существующего экрана:
 Если добавляем новый экран, то необходимо добавить его в app/src/androidTest/kotlin/ru/interid/weatherford/ScreensTest.kt

@@ -64,7 +64,7 @@ data class RemainsDto (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int,
+    val version: kotlin.Int?=null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -100,7 +100,7 @@ data class RemainsDto (
     val extendedMol: EmployeeDto? = null,
 
     @Json(name = "count")
-    val count: java.math.BigDecimal? = null,
+    val count: Long? = null,
 
     @Json(name = "receptionItemCategoryId")
     val receptionItemCategoryId: kotlin.String? = null,

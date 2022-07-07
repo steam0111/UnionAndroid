@@ -58,7 +58,7 @@ data class InventoryDto (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int,
+    val version: kotlin.Int?=null,
 
     @Json(name = "organizationId")
     val organizationId: kotlin.String,
