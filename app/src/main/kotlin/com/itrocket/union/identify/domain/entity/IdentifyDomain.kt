@@ -26,4 +26,5 @@ data class ObjectInfoDomain(val title: String, val value: String) : Parcelable
 
 abstract class OSandReserves(
     open val id: String,
+    open val title: String,
 )

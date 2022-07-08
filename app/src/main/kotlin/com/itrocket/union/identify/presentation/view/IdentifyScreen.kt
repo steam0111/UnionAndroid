@@ -28,6 +28,7 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.ui.BaseTab
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.identify.domain.entity.OSandReserves
 import com.itrocket.union.identify.presentation.store.IdentifyStore
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.ui.*
@@ -45,8 +46,8 @@ fun IdentifyScreen(
     onReadingModeClickListener: () -> Unit,
     onBackClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
-    onOSClickListener: (AccountingObjectDomain) -> Unit,
-    onReservesClickListener: (ReservesDomain) -> Unit,
+    onObjectClickListener: (OSandReserves) -> Unit,
+//    onReservesClickListener: (ReservesDomain) -> Unit,
     onDropClickListener: () -> Unit,
     onPageChanged: (Int) -> Unit
 ) {
@@ -75,11 +76,8 @@ fun IdentifyScreen(
                     coroutineScope = coroutineScope,
                     paddingValues = it,
                     state = state,
-                    onOSClickListener = {
-                        onOSClickListener(it)
-                    },
-                    onReservesClickListener = {
-                        onReservesClickListener(it)
+                    onObjectClickListener = {
+                        onObjectClickListener(it)
                     },
                     isLoading = state.isBottomActionMenuLoading
                 )
@@ -108,8 +106,8 @@ private fun Content(
     state: IdentifyStore.State,
     onTabClickListener: (Int) -> Unit,
     coroutineScope: CoroutineScope,
-    onOSClickListener: (AccountingObjectDomain) -> Unit,
-    onReservesClickListener: (ReservesDomain) -> Unit,
+    onObjectClickListener: (OSandReserves) -> Unit,
+//    onReservesClickListener: (ReservesDomain) -> Unit,
     selectedPage: Int,
     pagerState: PagerState,
     paddingValues: PaddingValues,
@@ -117,14 +115,19 @@ private fun Content(
 ) {
     val tabs = listOf(
         BaseTab(
-            title = (stringResource(R.string.documents_main_assets) + "(" + state.identifies.size + ")"),
+            title = (stringResource(R.string.documents_main_assets) + "(" + state.os.size + ")"),
             screen = {
-                IdentifyList(
-                    state = state,
-                    identifies = state.identifies,
-                    navBarPadding = 0,
-                    onIdentifyListener = onOSClickListener
-                )
+                when {
+                    state.os.isNotEmpty() -> {
+                        ObjectList(
+                            items = state.os,
+                            onObjectClickListener = onObjectClickListener
+                        )
+                    }
+                    state.os.isEmpty() -> {
+                        ObjectListEmpty()
+                    }
+                }
             }
         ),
         BaseTab(
@@ -132,14 +135,13 @@ private fun Content(
             screen = {
                 when {
                     state.reserves.isNotEmpty() -> {
-                        ReservesList(
-                            reserves = state.reserves,
-                            navBarPadding = 1,
-                            onReservesListener = onReservesClickListener
+                        ObjectList(
+                            items = state.reserves,
+                            onObjectClickListener = onObjectClickListener
                         )
                     }
                     state.reserves.isEmpty() -> {
-                        ReservesListEmpty()
+                        ObjectListEmpty()
                     }
                 }
 
@@ -205,79 +207,47 @@ private fun Toolbar(
     )
 }
 
-@Composable
-private fun IdentifyList(
-    state: IdentifyStore.State,
-    identifies: List<AccountingObjectDomain>,
-    navBarPadding: Int,
-    onIdentifyListener: (AccountingObjectDomain) -> Unit
-) {
-    if (navBarPadding != 0) {//TODO Изменить на реальное условие 
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceAround,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Image(painter = painterResource(id = R.drawable.ic_tsd), contentDescription = null)
-            Text( //TODO Добавить шрифт Roboto
-                text = stringResource(R.string.text_begin_identify),
-                modifier = Modifier
-                    .width(217.dp)
-                    .size(16.dp)
-                    .weight(400F),
-                textAlign = TextAlign.Center,
-                color = colorResource(id = R.color.main_gray)
-//                color = Color(red = 0x84, green = 0x84, blue = 0x8E)
-            )
-        }
 
-    } else {
-        LazyColumn(Modifier.fillMaxSize()) {
-            itemsIndexed(identifies, key = { index, item ->
-                item.id
-            }) { index, item ->
-                val isShowBottomLine = identifies.lastIndex != index
-                IdentifyItem(
-                    identifies = item,
-                    onIdentifyListener = onIdentifyListener,
-                    isShowBottomLine = isShowBottomLine,
-                    status = item.status?.type
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.height(navBarPadding.dp))
-            }
-        }
-    }
-}
 
 @Composable
-private fun ReservesList(
-    reserves: List<ReservesDomain>,
-    navBarPadding: Int,
-    onReservesListener: (ReservesDomain) -> Unit
+private fun ObjectList(
+    items: List<OSandReserves>,
+    onObjectClickListener: (OSandReserves) -> Unit
 ) {
 
     LazyColumn(Modifier.fillMaxSize()) {
-        itemsIndexed(reserves, key = { index, item ->
+        itemsIndexed(items, key = { index, item ->
             item.id
         }) { index, item ->
-            val isShowBottomLine = reserves.lastIndex != index
-            ReservesItem(
-                reserves = item,
-                onReservesListener = onReservesListener,
-                isShowBottomLine = isShowBottomLine
-            )
+            val isShowBottomLine = items.lastIndex != index
+            when (item) {
+                is AccountingObjectDomain -> {
+                    AccountingObjectItem(
+                        accountingObject = item,
+                        onAccountingObjectListener = onObjectClickListener,
+                        status = null,
+                        isShowBottomLine = isShowBottomLine
+                    )
+                }
+                is ReservesDomain -> {
+                    ReservesItem(
+                        reserves = item,
+                        onReservesListener = onObjectClickListener,
+                        isShowBottomLine = isShowBottomLine
+                    )
+                }
+            }
+
         }
         item {
-            Spacer(modifier = Modifier.height(navBarPadding.dp))
+            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
 
 
 @Composable
-private fun ReservesListEmpty() {
+private fun ObjectListEmpty() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceAround,

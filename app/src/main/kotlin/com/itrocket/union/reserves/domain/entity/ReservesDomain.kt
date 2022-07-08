@@ -9,9 +9,9 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ReservesDomain(
     override val id: String,
-    val title: String,
+    override val title: String,
     val isBarcode: Boolean,
     val listInfo: List<ObjectInfoDomain>,
     val itemsCount: Long,
     val comment: String = ""
-) : Parcelable, OSandReserves(id)
+) : Parcelable, OSandReserves(id, title)

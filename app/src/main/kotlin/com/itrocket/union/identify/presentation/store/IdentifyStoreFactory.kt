@@ -25,7 +25,7 @@ class IdentifyStoreFactory(
 //    private val accountingObjectDetailArguments: AccountingObjectDetailArguments
 
 ) {
-    lateinit var itemReservesDomain: OSandReserves
+    lateinit var itemDomain: OSandReserves
     fun create(): IdentifyStore =
         object : IdentifyStore,
             Store<IdentifyStore.Intent, IdentifyStore.State, IdentifyStore.Label> by storeFactory.create(
@@ -91,7 +91,7 @@ class IdentifyStoreFactory(
 //                    IdentifyStore.Label.ShowDetail(intent.item)
 //                )
                 is IdentifyStore.Intent.OnReservesClicked -> {
-                    itemReservesDomain = intent.item
+                    itemDomain = intent.item
                     publish(
                         IdentifyStore.Label.ShowDetail(intent.item))}
 
@@ -107,8 +107,16 @@ class IdentifyStoreFactory(
                             Log.d("SukhanovTest", "Click DELETE")
                         }
                         ObjectAction.OPEN_CARD -> {
-                            Log.d("SukhanovTest", "Click OPEN $itemReservesDomain")
-                            publish(IdentifyStore.Label.OpenCard(itemReservesDomain))
+                            Log.d("SukhanovTest", "Click OPEN $itemDomain")
+                            when(itemDomain) {
+                                is AccountingObjectDomain -> {
+                                    publish(IdentifyStore.Label.OpenCardOS(itemDomain))
+
+                                }
+                                is ReservesDomain -> {
+                                    publish(IdentifyStore.Label.OpenCardReserves(itemDomain))
+                                }
+                            }
 
                         }
                     }
@@ -181,7 +189,7 @@ class IdentifyStoreFactory(
         override fun IdentifyStore.State.reduce(result: Result): IdentifyStore.State =
             when (result) {
                 is Result.Loading -> copy(isIdentifyLoading = result.isLoading)
-                is Result.Identify -> copy(identifies = result.identifies)
+//                is Result.AccountingObjects -> copy(identifies = result.identifies)
                 is Result.IsBottomActionMenuLoading -> copy(isBottomActionMenuLoading = result.isLoading)
 
                 else -> copy(isIdentifyLoading = true)

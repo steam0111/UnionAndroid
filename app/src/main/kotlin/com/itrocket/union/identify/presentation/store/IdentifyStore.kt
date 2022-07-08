@@ -9,7 +9,9 @@ import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.*
 import com.itrocket.union.R
+import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailArguments
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragmentDirections
 import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuArguments
 import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment
 import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuTab
@@ -55,7 +57,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         val isIdentifyLoading: Boolean = false,
         val readingMode: ReadingModeTab = ReadingModeTab.RFID,
         val bottomActionMenuTab: BottomActionMenuTab = BottomActionMenuTab.CREATE,
-        val identifies: List<AccountingObjectDomain>
+        val os: List<AccountingObjectDomain>
         = listOf(
             AccountingObjectDomain(
                 id = "4",
@@ -194,10 +196,16 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
                 get() = BottomActionMenuFragment()
         }
 
-      data  class OpenCard(val item: OSandReserves) : Label(), ForwardNavigationLabel {
+      data  class OpenCardReserves(val item: OSandReserves) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = ReservesComposeFragmentDirections.toReserveDetail(
                     ReserveDetailArguments(id = item.id)
+                )
+        }
+        data  class OpenCardOS(val item: OSandReserves) : Label(), ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = AccountingObjectComposeFragmentDirections.toAccountingObjectsDetails(
+                    AccountingObjectDetailArguments(argument = item as AccountingObjectDomain)
                 )
         }
 

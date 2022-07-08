@@ -51,7 +51,8 @@ class IdentifyComposeFragment :
                 onSaveClickListener = {
                     accept(IdentifyStore.Intent.OnSaveClicked)
                 },
-                onOSClickListener = { accept(IdentifyStore.Intent.OnReservesClicked(it))
+                onObjectClickListener = {
+                    accept(IdentifyStore.Intent.OnReservesClicked(it))
                     Log.d("SukhanovTest", "Reserves item click in Identify " + it.title)
                 },
 //                onOSClickListener = { accept(IdentifyStore.Intent.OnOSClicked(it)) },
@@ -60,11 +61,8 @@ class IdentifyComposeFragment :
                 },
                 onPageChanged = {
                     accept(IdentifyStore.Intent.OnSelectPage(it))
-                },
-                onReservesClickListener = {
-                    accept(IdentifyStore.Intent.OnReservesClicked(it))
-                    Log.d("SukhanovTest", "Reserves item click in Identify " + it.title)
-                })
+                }
+            )
         }
     }
 }

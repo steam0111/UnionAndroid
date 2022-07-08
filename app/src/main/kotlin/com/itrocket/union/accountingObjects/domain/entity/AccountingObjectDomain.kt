@@ -12,7 +12,7 @@ private const val MAX_SHORT_INFO_LIST = 5
 @Parcelize
 data class AccountingObjectDomain(
     override val id: String,
-    val title: String,
+    override val title: String,
     val status: ObjectStatus?,
     val inventoryStatus: InventoryAccountingObjectStatus = InventoryAccountingObjectStatus.NOT_FOUND,
     val isBarcode: Boolean = false,
@@ -20,7 +20,7 @@ data class AccountingObjectDomain(
     val barcodeValue: String?,
     val listMainInfo: List<ObjectInfoDomain>,
     val listAdditionallyInfo: List<ObjectInfoDomain>
-) : Parcelable, OSandReserves(id) {
+) : Parcelable, OSandReserves(id, title) {
     fun getShortMainInfoList() = listMainInfo.take(MAX_SHORT_INFO_LIST)
     fun getShortAdditionallyInfoList() = listAdditionallyInfo.take(MAX_SHORT_INFO_LIST)
 }
