@@ -15,7 +15,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -25,7 +24,6 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.ui.BaseTab
 import com.itrocket.union.R
@@ -65,10 +63,6 @@ fun IdentifyScreen(
                 )
             },
             bottomBar = {
-//                ButtonBottomBar(
-//                    onClick = onReadingModeClickListener,
-//                    text = stringResource(R.string.accounting_object_detail_reading_mode),
-//                )
                 BottomBar(
                     onReadingModeClickListener = onReadingModeClickListener
                 )
@@ -81,10 +75,13 @@ fun IdentifyScreen(
                     coroutineScope = coroutineScope,
                     paddingValues = it,
                     state = state,
-                    onIdentifyClickListener = onOSClickListener,
+                    onOSClickListener = {
+                        onOSClickListener(it)
+                    },
                     onReservesClickListener = {
                         onReservesClickListener(it)
-                    }
+                    },
+                    isLoading = state.isBottomActionMenuLoading
                 )
             },
 
@@ -111,11 +108,12 @@ private fun Content(
     state: IdentifyStore.State,
     onTabClickListener: (Int) -> Unit,
     coroutineScope: CoroutineScope,
-    onIdentifyClickListener: (AccountingObjectDomain) -> Unit,
+    onOSClickListener: (AccountingObjectDomain) -> Unit,
     onReservesClickListener: (ReservesDomain) -> Unit,
     selectedPage: Int,
     pagerState: PagerState,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    isLoading: Boolean
 ) {
     val tabs = listOf(
         BaseTab(
@@ -125,7 +123,7 @@ private fun Content(
                     state = state,
                     identifies = state.identifies,
                     navBarPadding = 0,
-                    onIdentifyListener = onIdentifyClickListener
+                    onIdentifyListener = onOSClickListener
                 )
             }
         ),
@@ -296,42 +294,6 @@ private fun ReservesListEmpty() {
             color = colorResource(id = R.color.main_gray)
         )
     }
-}
-
-@Composable
-fun BottomNavigationBar() {
-    val items = listOf(
-        NavigationItem.OpenItem,
-        NavigationItem.CreateDoc,
-        NavigationItem.DeleteItem
-    )
-    BottomNavigation(
-        backgroundColor = colorResource(id = R.color.design_default_color_primary),
-        contentColor = Color.White
-    ) {
-        items.forEach { item ->
-            BottomNavigationItem(
-                selected = false,
-                onClick = { /*TODO*/ },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_tsd),
-                        contentDescription = ""
-                    )
-                },
-                label = { Text(text = item.title) },
-                selectedContentColor = Color.White,
-                unselectedContentColor = Color.White.copy(0.4f)
-            )
-        }
-
-    }
-}
-
-sealed class NavigationItem(var title: String) {
-    object OpenItem : NavigationItem("Открыть карточку")
-    object CreateDoc : NavigationItem("Создать документ")
-    object DeleteItem : NavigationItem("Удалить из списка")
 }
 
 @Composable

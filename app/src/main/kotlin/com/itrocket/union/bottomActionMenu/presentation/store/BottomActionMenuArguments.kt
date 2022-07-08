@@ -6,4 +6,6 @@ import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
- class BottomActionMenuArguments (): Parcelable
+data class BottomActionMenuArguments(
+    val bottomActionMenuDocument: ReservesDomain
+) : Parcelable

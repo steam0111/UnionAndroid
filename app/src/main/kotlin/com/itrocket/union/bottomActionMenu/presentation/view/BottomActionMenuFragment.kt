@@ -1,8 +1,5 @@
 package com.itrocket.union.bottomActionMenu.presentation.view
 
-import android.os.Bundle
-import android.view.View
-import android.widget.Toast
 import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeBottomSheet
@@ -22,6 +19,7 @@ class BottomActionMenuFragment :
             BottomActionMenuScreen(
                 state = state,
                 appInsets = appInsets,
+                onTypeClickListener = { accept(BottomActionMenuStore.Intent.OnTypeClicked(it)) },
                 onCreateDocClickListener = {
                     accept(BottomActionMenuStore.Intent.OnCreateDocClicked)
                 },
@@ -37,16 +35,9 @@ class BottomActionMenuFragment :
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initObservers()
-    }
-
-    private fun initObservers() {
-        Toast.makeText(requireContext(), "Запускаем нижнее меню кнопок", Toast.LENGTH_SHORT).show()
-    }
-
     companion object {
         const val BOTTOMACTIONMENU_ARGS = "bottom action menu args"
+        const val BOTTOM_ACTION_RESULT_CODE = "bottom action result code"
+        const val BOTTOM_ACTION_RESULT_LABEL = "bottom action result label"
     }
 }

@@ -14,5 +14,6 @@ enum class CatalogType : Parcelable {
     RESERVES,
     DOCUMENTS,
     DEFAULT,
-    INVENTORIES
+    INVENTORIES,
+    IDENTIFIES
 }

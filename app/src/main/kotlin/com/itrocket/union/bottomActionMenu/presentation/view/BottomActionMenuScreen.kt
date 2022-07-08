@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
 import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuStore
+import com.itrocket.union.documents.domain.entity.ObjectAction
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.ui.*
 
@@ -22,6 +23,7 @@ import com.itrocket.union.ui.*
 fun BottomActionMenuScreen(
     state: BottomActionMenuStore.State,
     appInsets: AppInsets,
+    onTypeClickListener: (ObjectAction) -> Unit,
     onCreateDocClickListener: (ReservesDomain) -> Unit,
     onOpenItemClickListener: (ReservesDomain) -> Unit,
     onDeleteItemClickListener: (ReservesDomain) -> Unit
@@ -55,22 +57,33 @@ fun BottomActionMenuScreen(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-                BottomMenuButtons(
-                    onCreateDocClickListener = {
-                        onCreateDocClickListener
-                    },
-                    onOpenItemClickListener = { onOpenItemClickListener },
-                    onDeleteItemClickListener = { onDeleteItemClickListener }
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                BottomBar {
-
+                state.types.forEach {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    BaseButton(
+                        text = stringResource(id = it.textId),
+                        onClick = { onTypeClickListener(it) },
+                        modifier = Modifier.fillMaxWidth(),
+                        backgroundColor = psb1
+                    )
                 }
+                Spacer(modifier = Modifier.height(16.dp))
+
+//                BottomMenuButtons(
+//                    onCreateDocClickListener = {
+//                        onCreateDocClickListener
+//                    },
+//                    onOpenItemClickListener = { onOpenItemClickListener },
+//                    onDeleteItemClickListener = { onDeleteItemClickListener }
+//                )
+//                Spacer(modifier = Modifier.height(16.dp))
+//                BottomBar {
+//
+//                }
             }
         }
     }
 }
+
 @Composable
 private fun BottomBar(
     onReadingModeClickListener: () -> Unit

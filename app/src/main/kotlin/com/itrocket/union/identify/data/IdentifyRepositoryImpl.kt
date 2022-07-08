@@ -13,7 +13,10 @@ class IdentifyRepositoryImpl: IdentifyRepository {
             status = null,
             inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
             listAdditionallyInfo = listOf(),
-            listMainInfo = listOf()
+            listMainInfo = listOf(),
+            rfidValue = null,
+            isBarcode = true,
+            barcodeValue = null
         ),
         AccountingObjectDomain(
             id = "5",
@@ -21,7 +24,10 @@ class IdentifyRepositoryImpl: IdentifyRepository {
             status = null,
             inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
             listAdditionallyInfo = listOf(),
-            listMainInfo = listOf()
+            listMainInfo = listOf(),
+            rfidValue = null,
+            isBarcode = true,
+            barcodeValue = null
         ),
     )
 }

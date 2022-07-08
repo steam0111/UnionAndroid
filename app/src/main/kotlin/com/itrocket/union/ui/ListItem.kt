@@ -208,7 +208,7 @@ fun IdentifyItem(
             Spacer(modifier = Modifier.height(4.dp))
             identifies.listMainInfo.take(MAX_LIST_INFO).forEach {
                 Text(
-                    text = stringResource(R.string.common_two_dots, it.title, it.value),
+                    text = stringResource(R.string.common_two_dots, it.title),
                     style = AppTheme.typography.caption,
                     color = psb3
                 )

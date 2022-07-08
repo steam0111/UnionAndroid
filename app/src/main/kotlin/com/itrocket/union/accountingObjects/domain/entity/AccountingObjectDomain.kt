@@ -3,6 +3,7 @@ package com.itrocket.union.accountingObjects.domain.entity
 import android.os.Parcelable
 import com.example.union_sync_api.entity.AccountingObjectInfoSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
+import com.itrocket.union.identify.domain.entity.OSandReserves
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import kotlinx.parcelize.Parcelize
 
@@ -10,7 +11,7 @@ private const val MAX_SHORT_INFO_LIST = 5
 
 @Parcelize
 data class AccountingObjectDomain(
-    val id: String,
+    override val id: String,
     val title: String,
     val status: ObjectStatus?,
     val inventoryStatus: InventoryAccountingObjectStatus = InventoryAccountingObjectStatus.NOT_FOUND,
@@ -19,7 +20,7 @@ data class AccountingObjectDomain(
     val barcodeValue: String?,
     val listMainInfo: List<ObjectInfoDomain>,
     val listAdditionallyInfo: List<ObjectInfoDomain>
-) : Parcelable {
+) : Parcelable, OSandReserves(id) {
     fun getShortMainInfoList() = listMainInfo.take(MAX_SHORT_INFO_LIST)
     fun getShortAdditionallyInfoList() = listAdditionallyInfo.take(MAX_SHORT_INFO_LIST)
 }

@@ -6,23 +6,26 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.documents.domain.entity.ObjectAction
 import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.identify.domain.IdentifyInteractor
+import com.itrocket.union.identify.domain.entity.OSandReserves
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 
 class IdentifyStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val identifyInteractor: IdentifyInteractor,
     private val filterInteractor: FilterInteractor,
-    private val accountingObjectInteractor: AccountingObjectInteractor
+    private val accountingObjectInteractor: AccountingObjectInteractor,
+
 
 //    private val accountingObjectDetailArguments: AccountingObjectDetailArguments
 
 ) {
+    lateinit var itemReservesDomain: OSandReserves
     fun create(): IdentifyStore =
         object : IdentifyStore,
             Store<IdentifyStore.Intent, IdentifyStore.State, IdentifyStore.Label> by storeFactory.create(
@@ -42,6 +45,7 @@ class IdentifyStoreFactory(
         BaseExecutor<IdentifyStore.Intent, Unit, IdentifyStore.State, Result, IdentifyStore.Label>(
             context = coreDispatchers.ui
         ) {
+
         override suspend fun executeAction(
             action: Unit,
             getState: () -> IdentifyStore.State
@@ -86,25 +90,76 @@ class IdentifyStoreFactory(
 //                is IdentifyStore.Intent.OnItemClicked -> publish(
 //                    IdentifyStore.Label.ShowDetail(intent.item)
 //                )
-                is IdentifyStore.Intent.OnReservesClicked ->
-                    publish(IdentifyStore.Label.ShowDetail()
+                is IdentifyStore.Intent.OnReservesClicked -> {
+                    itemReservesDomain = intent.item
+                    publish(
+                        IdentifyStore.Label.ShowDetail(intent.item))}
 
 //                    publish(                    IdentifyStore.Label.ShowDetail(intent.item)
-                )
+
+                is IdentifyStore.Intent.OnObjectActionSelected ->
+                    when (intent.objectAction) {
+                        ObjectAction.CREATE_DOC -> {
+                            Log.d("SukhanovTest", "Click CREATE")
+
+                        }
+                        ObjectAction.DELETE_FROM_LIST -> {
+                            Log.d("SukhanovTest", "Click DELETE")
+                        }
+                        ObjectAction.OPEN_CARD -> {
+                            Log.d("SukhanovTest", "Click OPEN $itemReservesDomain")
+                            publish(IdentifyStore.Label.OpenCard(itemReservesDomain))
+
+                        }
+                    }
+//                is IdentifyStore.Intent.OnObjectActionSelected ->
+//                    initAction(listType = intent.objectAction)
+//                is IdentifyStore.Intent.OnOpenCard -> {
+//                    publish(IdentifyStore.Label.OpenCard(intent.item))
+
             }
         }
+
+
+//        private suspend fun initAction(listType: ObjectAction) {
+//            dispatch(Result.IsBottomActionMenuLoading(true))
+//            when (listType) {
+//                ObjectAction.CREATE_DOC -> {
+//                    Log.d("SukhanovTest", "Click CREATE")
+//
+//                }
+//                ObjectAction.DELETE_FROM_LIST -> {
+//                    Log.d("SukhanovTest", "Click DELETE")
+//                }
+//                ObjectAction.OPEN_CARD -> {
+//                    Log.d("SukhanovTest", "Click OPEN")
+//                    accept(IdentifyStore.Intent.OnReservesClicked(it))
+//                }
+//            }
+////            val document = identifyInteractor.createDocument(listType)
+////            showDocument(document)
+//            dispatch(Result.IsBottomActionMenuLoading(false))
+//        }
+
+//        private fun showDocument(document: IdentifyDomain) {
+//            publish(
+//                IdentifyStore.Label.ShowDocumentCreate(
+//                    document = document
+//                )
+//            )
+//        }
 
         private suspend fun observeAccountingObjects(params: List<ParamDomain> = listOf()) {
             dispatch(Result.IsAccountingObjectsLoading(true))
             catchException {
-                accountingObjectInteractor.getAccountingObjects(params)
-                    .catch { dispatch(Result.IsAccountingObjectsLoading(false)) }
-                    .collect {
-                        dispatch(Result.Identify(it))
-                        dispatch(Result.IsAccountingObjectsLoading(false))
-                    }
+                dispatch(Result.IsAccountingObjectsLoading(false))
+                dispatch(
+                    Result.AccountingObjects(
+                        accountingObjectInteractor.getAccountingObjects("", params)
+                    )
+                )
+                dispatch(Result.IsAccountingObjectsLoading(false))
             }
-            dispatch(Result.IsAccountingObjectsLoading(false))
         }
     }
 
@@ -114,8 +169,12 @@ class IdentifyStoreFactory(
 
         data class Loading(val isLoading: Boolean) : Result()
         data class Identify(val identifies: List<AccountingObjectDomain>) : Result()
+        data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) :
+            Result()
 
         data class SelectPage(val page: Int) : IdentifyStoreFactory.Result()
+        data class IsBottomActionMenuLoading(val isLoading: Boolean) : IdentifyStoreFactory.Result()
+
     }
 
     private object ReducerImpl : Reducer<IdentifyStore.State, Result> {
@@ -123,6 +182,8 @@ class IdentifyStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isIdentifyLoading = result.isLoading)
                 is Result.Identify -> copy(identifies = result.identifies)
+                is Result.IsBottomActionMenuLoading -> copy(isBottomActionMenuLoading = result.isLoading)
+
                 else -> copy(isIdentifyLoading = true)
             }
     }

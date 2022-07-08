@@ -8,6 +8,7 @@ import com.itrocket.union.authUser.AuthUserModule
 import com.itrocket.union.bottomActionMenu.BottomActionMenuModule
 import com.itrocket.union.branchDetail.BranchDetailModule
 import com.itrocket.union.branches.BranchesModule
+import com.itrocket.union.chooseAction.ChooseActionModule
 import com.itrocket.union.container.ContainerModule
 import com.itrocket.union.conterpartyDetail.CounterpartyDetailModule
 import com.itrocket.union.core.CoreModule
@@ -23,6 +24,7 @@ import com.itrocket.union.equipmentTypeDetail.EquipmentTypeDetailModule
 import com.itrocket.union.equipmentTypes.EquipmentTypeModule
 import com.itrocket.union.error.ErrorModule
 import com.itrocket.union.filter.FilterModule
+import com.itrocket.union.identify.IdentifyModule
 import com.itrocket.union.inventories.InventoriesModule
 import com.itrocket.union.inventory.InventoryModule
 import com.itrocket.union.inventoryContainer.InventoryContainerModule
@@ -49,81 +51,66 @@ import com.itrocket.union.search.SearchModule
 import com.itrocket.union.selectParams.SelectParamsModule
 import com.itrocket.union.serverConnect.ServerConnectModule
 import com.itrocket.union.switcher.SwitcherModule
-import com.itrocket.union.newAccountingObject.NewAccountingObjectModule
-import com.itrocket.union.documentCreate.DocumentCreateModule
-import com.itrocket.union.inventories.InventoriesModule
-import com.itrocket.union.producer.ProducerModule
-import com.itrocket.union.counterparties.CounterpartyModule
-import com.itrocket.union.regions.RegionModule
-import com.itrocket.union.branches.BranchesModule
-import com.itrocket.union.equipmentTypes.EquipmentTypeModule
-import com.itrocket.union.error.ErrorModule
-import com.itrocket.union.identify.IdentifyModule
 import com.itrocket.union.syncAll.SyncAllModule
 import com.itrocket.union.token.TokenModule
 import com.union.sdk.SyncModule
-import com.itrocket.union.chooseAction.ChooseActionModule
 
 object Modules {
 
     val modules = listOf(
-        NetworkModule.module,
-        CoreModule.module,
-        ContainerModule.module,
-        DocumentMenuModule.module,
+        AccountingObjectDetailModule.module,
         AccountingObjectModule.module,
-        AccountingObjectDetailModule.module,
-        FilterModule.module,
-        AccountingObjectDetailModule.module,
-        ReadingModeModule.module,
-        ReservesModule.module,
-        ReserveDetailModule.module,
-        LocationModule.module,
-        ReserveDetailModule.module,
-        DocumentModule.module,
         AuthContainerModule.module,
-        ServerConnectModule.module,
-        AuthUserModule.module,
         AuthMainModule.module,
-        NomenclatureGroupModule.module,
-        NomenclatureModule.module,
-        ModuleSettingsModule.module,
-        ScannerModule.module,
-        InventoryModule.module,
-        SelectParamsModule.module,
-        TokenModule.module,
-        SyncModule.module,
-        InventoryCreateModule.module,
-        OrganizationModule.module,
-        DepartmentModule.module,
-        EmployeeModule.module,
-        NewAccountingObjectModule.module,
-        SwitcherModule.module,
-        InventoriesModule.module,
-        RegionModule.module,
-        DocumentCreateModule.module,
+        AuthUserModule.module,
+        BottomActionMenuModule.module,
+        BranchDetailModule.module,
         BranchesModule.module,
+        ChooseActionModule.module,
+        ContainerModule.module,
+        CoreModule.module,
+        CounterpartyDetailModule.module,
         CounterpartyModule.module,
-        ProducerModule.module,
+        DepartmentDetailModule.module,
+        DepartmentModule.module,
+        DocumentCreateModule.module,
+        DocumentMenuModule.module,
+        DocumentModule.module,
+        EmployeeDetailModule.module,
+        EmployeeModule.module,
+        EquipmentTypeDetailModule.module,
         EquipmentTypeModule.module,
         ErrorModule.module,
-        BottomActionMenuModule.module
-        ErrorModule.module,
+        FilterModule.module,
+        IdentifyModule.module,
+        InventoriesModule.module,
         InventoryContainerModule.module,
-        ErrorModule.module,
-        EmployeeDetailModule.module,
+        InventoryCreateModule.module,
+        InventoryModule.module,
+        LocationModule.module,
+        ModuleSettingsModule.module,
+        NetworkModule.module,
+        NewAccountingObjectModule.module,
         NomenclatureDetailModule.module,
-        DepartmentDetailModule.module,
         NomenclatureGroupDetailModule.module,
+        NomenclatureGroupModule.module,
+        NomenclatureModule.module,
         OrganizationDetailModule.module,
-        SyncAllModule.module,
-        OrganizationDetailModule.module,
-        BranchDetailModule.module,
-        RegionDetailModule.module,
-        CounterpartyDetailModule.module,
+        OrganizationModule.module,
         ProducerDetailModule.module,
-        EquipmentTypeDetailModule.module,
+        ProducerModule.module,
+        ReadingModeModule.module,
+        RegionDetailModule.module,
+        RegionModule.module,
+        ReserveDetailModule.module,
+        ReservesModule.module,
+        ScannerModule.module,
         SearchModule.module,
-        ChooseActionModule.module
+        SelectParamsModule.module,
+        ServerConnectModule.module,
+        SwitcherModule.module,
+        SyncAllModule.module,
+        SyncModule.module,
+        TokenModule.module,
     )
 }
