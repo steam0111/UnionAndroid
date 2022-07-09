@@ -72,7 +72,7 @@ import com.example.union_sync_impl.utils.Converters
         ReceptionItemCategoryDb::class,
         OrderDb::class,
         ReserveDb::class
-    ], version = 53
+    ], version = 57
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {

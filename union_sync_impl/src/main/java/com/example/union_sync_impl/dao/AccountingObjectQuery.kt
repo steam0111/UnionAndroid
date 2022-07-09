@@ -3,6 +3,7 @@ package com.example.union_sync_impl.dao
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
+import com.example.union_sync_impl.utils.addPagination
 import com.example.union_sync_impl.utils.contains
 import com.example.union_sync_impl.utils.isEquals
 import com.example.union_sync_impl.utils.more
@@ -20,7 +21,9 @@ fun sqlAccountingObjectQuery(
     statusId: String? = null,
     textQuery: String? = null,
     accountingObjectsIds: List<String>? = null,
-    updateDate: Long? = null
+    updateDate: Long? = null,
+    limit: Long? = null,
+    offset: Long? = null
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT accounting_objects.*," +
             "" +
@@ -78,6 +81,9 @@ fun sqlAccountingObjectQuery(
                 }
             }
         )
+    ).addPagination(
+        limit,
+        offset
     )
 
     return SimpleSQLiteQuery(query)

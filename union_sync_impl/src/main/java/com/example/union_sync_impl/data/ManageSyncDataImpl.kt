@@ -14,6 +14,6 @@ class ManageSyncDataImpl(
     }
 
     override suspend fun isSynced(): Boolean {
-        return networkSyncDao.getNetworkSync()?.isAllSynced ?: false
+        return networkSyncDao.getNetworkSync()?.isSynced ?: false
     }
 }

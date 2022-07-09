@@ -75,6 +75,8 @@ dependencies {
     implementation(libs.database.runtime)
     kapt(libs.database.compiler)
 
+    implementation(libs.logger)
+
     androidTestImplementation(libs.androidx.compose.junit4)
     debugImplementation(libs.androidx.compose.manifest)
 }

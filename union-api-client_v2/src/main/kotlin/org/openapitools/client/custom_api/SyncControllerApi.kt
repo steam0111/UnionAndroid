@@ -22,7 +22,7 @@ interface SyncControllerApi {
      * @return [SyncInformationV2]
      */
     @POST("api/sync/{id}/complete-export")
-    suspend fun apiSyncIdCompleteExportPost(@Path("id") id: kotlin.String): Response<SyncInformationV2>
+    suspend fun apiSyncIdCompleteExportPost(@Path("id") id: String): Response<SyncInformationV2>
 
     /**
      *
@@ -34,7 +34,7 @@ interface SyncControllerApi {
      * @return [ExportPartBufferInformationV2]
      */
     @POST("api/sync/{id}/complete-import")
-    suspend fun apiSyncIdCompleteImportPost(@Path("id") id: kotlin.String): Response<ExportPartBufferInformationV2>
+    suspend fun apiSyncIdCompleteImportPost(@Path("id") id: String): Response<ExportPartBufferInformationV2>
 
     /**
      *
@@ -46,7 +46,7 @@ interface SyncControllerApi {
      * @return [SyncInformationV2]
      */
     @POST("api/sync/{id}/complete-sync")
-    suspend fun apiSyncIdCompleteSyncPost(@Path("id") id: kotlin.String): Response<SyncInformationV2>
+    suspend fun apiSyncIdCompleteSyncPost(@Path("id") id: String): SyncInformationV2
 
     /**
      *
@@ -59,7 +59,11 @@ interface SyncControllerApi {
      * @return [SyncInformationV2]
      */
     @POST("api/sync/{id}/import-parts/")
-    suspend fun apiSyncIdImportPartsPost(@Path("id") id: kotlin.String, @Body importPartDtoV2: ImportPartDtoV2): Response<SyncInformationV2>
+    @JvmSuppressWildcards
+    suspend fun apiSyncIdImportPartsPost(
+        @Path("id") id: String,
+        @Body importPartDtoV2: ImportPartDtoV2
+    ): Response<SyncInformationV2>
 
     /**
      *
@@ -71,7 +75,7 @@ interface SyncControllerApi {
      * @return [SyncInformationV2]
      */
     @POST("api/sync/{id}/start-export")
-    suspend fun apiSyncIdStartExportPost(@Path("id") id: kotlin.String): SyncInformationV2
+    suspend fun apiSyncIdStartExportPost(@Path("id") id: String): SyncInformationV2
 
     /**
      *
@@ -83,7 +87,7 @@ interface SyncControllerApi {
      * @return [SyncInformationV2]
      */
     @POST("api/sync/{id}/start-import")
-    suspend fun apiSyncIdStartImportPost(@Path("id") id: kotlin.String): Response<SyncInformationV2>
+    suspend fun apiSyncIdStartImportPost(@Path("id") id: String): Response<SyncInformationV2>
 
     /**
      *
@@ -109,7 +113,7 @@ interface SyncControllerApi {
      */
     @GET("api/sync/{syncId}/export-parts/{exportPartId}")
     suspend fun apiSyncSyncIdExportPartsExportPartIdGet(
-        @Path("syncId") syncId: kotlin.String,
-        @Path("exportPartId") exportPartId: kotlin.String
+        @Path("syncId") syncId: String,
+        @Path("exportPartId") exportPartId: String
     ): String
 }
