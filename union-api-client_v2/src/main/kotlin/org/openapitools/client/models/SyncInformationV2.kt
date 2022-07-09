@@ -41,7 +41,7 @@ data class SyncInformationV2(
     val id: kotlin.String,
 
     @Json(name = "importPartBufferInformation")
-    val importPartBufferInformation: ImportPartBufferInformationV2? = null,
+    val importPartBufferInformation: ImportPartBufferInformationV2,
 
     @Json(name = "exportPartBufferInformation")
     val exportPartBufferInformation: ExportPartBufferInformationV2,

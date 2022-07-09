@@ -9,8 +9,8 @@ import com.example.union_sync_impl.entity.NetworkSyncDb
 @Dao
 interface NetworkSyncDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(networkSyncDb: NetworkSyncDb)
+    suspend fun insert(networkSyncDb: NetworkSyncDb)
 
     @Query("SELECT * FROM network_sync LIMIT 1")
-    fun getNetworkSync(): NetworkSyncDb?
+    suspend fun getNetworkSync(): NetworkSyncDb?
 }

@@ -24,8 +24,8 @@ import org.openapitools.client.custom_api.OrganizationApi
 import org.openapitools.client.custom_api.ProducerApi
 import org.openapitools.client.custom_api.ReceptionItemCategoryApi
 import org.openapitools.client.custom_api.RegionApi
-import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.custom_api.ReserveApi
+import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.infrastructure.BigDecimalAdapter
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -62,6 +62,7 @@ object NetworkModule {
                 .readTimeout(timeout.value, TimeUnit.SECONDS)
                 .writeTimeout(timeout.value, TimeUnit.SECONDS)
                 .addInterceptor(get<ErrorHandlerInterceptor>())
+                .addInterceptor(get<HeadersInterceptor>())
                 .addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BODY
                 })
@@ -84,6 +85,7 @@ object NetworkModule {
                 .authenticator(get<Authenticator>())
                 .addInterceptor(get<ErrorHandlerInterceptor>())
                 .addInterceptor(get<TokenInterceptor>())
+                .addInterceptor(get<HeadersInterceptor>())
                 .addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BODY
                 })
@@ -97,6 +99,9 @@ object NetworkModule {
         }
         single {
             TokenInterceptor(get())
+        }
+        single {
+            HeadersInterceptor()
         }
         single {
             Authenticator(get())

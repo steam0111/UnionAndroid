@@ -188,6 +188,17 @@ fun FullAccountingObject.toSyncEntity(
     nomenclatureId = accountingObjectDb.nomenclatureId
 )
 
+fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObjectDtoV2> {
+    return map { fullAccountingObject ->
+        AccountingObjectDtoV2(
+            id = fullAccountingObject.accountingObjectDb.id,
+            locationId = fullAccountingObject.accountingObjectDb.locationId,
+            exploitingId = fullAccountingObject.accountingObjectDb.exploitingId,
+            accountingObjectStatusId = fullAccountingObject.accountingObjectDb.status?.id,
+        )
+    }
+}
+
 fun AccountingObjectStatusDb.toSyncEntity() = AccountingObjectStatusSyncEntity(id, name)
 
 fun AccountingObjectUpdateSyncEntity.toAccountingObjectUpdate(): AccountingObjectUpdate {

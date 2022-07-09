@@ -19,7 +19,9 @@ import com.example.union_sync_impl.dao.ProviderDao
 import com.example.union_sync_impl.dao.ReceptionItemCategoryDao
 import com.example.union_sync_impl.dao.RegionDao
 import com.example.union_sync_impl.dao.ReserveDao
+import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDb
+import com.example.union_sync_impl.data.mapper.toAccountingObjectDtosV2
 import com.example.union_sync_impl.data.mapper.toBranchesDb
 import com.example.union_sync_impl.data.mapper.toCounterpartyDb
 import com.example.union_sync_impl.data.mapper.toDepartmentDb
@@ -40,6 +42,10 @@ import com.example.union_sync_impl.data.mapper.toRegionDb
 import com.example.union_sync_impl.data.mapper.toReserveDb
 import com.example.union_sync_impl.data.mapper.toStatusDb
 import com.squareup.moshi.Moshi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.flow
 import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.models.AccountingObjectDtoV2
 import org.openapitools.client.models.ActionDtoV2
@@ -83,11 +89,21 @@ class SyncRepository(
     private val inventoryDao: InventoryDao,
     private val documentDao: DocumentDao
 ) {
+    fun getUploadSyncEntities(): List<UploadableSyncEntity> = listOf(
+        AccountingObjectSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::accountingObjectDbSaver,
+            getAccountingObjectDbCollector()
+        )
+    )
+
     fun getSyncEntities(): Map<String, SyncEntity<*>> = listOf(
         AccountingObjectSyncEntity(
             syncControllerApi,
             moshi,
-            ::accountingObjectDbSaver
+            ::accountingObjectDbSaver,
+            getAccountingObjectDbCollector()
         ),
         LocationSyncEntity(
             syncControllerApi,
@@ -176,6 +192,40 @@ class SyncRepository(
         )
     ).associateBy {
         it.id
+    }
+
+    private fun getAccountingObjectDbCollector(): Flow<List<AccountingObjectDtoV2>> {
+        return flow {
+            paginationEmitter(
+                getData = { limit, offset ->
+                    accountingObjectsDao.getAll(
+                        sqlAccountingObjectQuery(
+                            limit = limit,
+                            offset = offset,
+                            updateDate = System.currentTimeMillis()
+                        )
+                    )
+                },
+                localToNetworkMapper = { localObjects ->
+                    localObjects.toAccountingObjectDtosV2()
+                }
+            )
+        }.filterNot { it.isEmpty() }
+    }
+
+    private suspend fun <NetworkEntity, LocalEntity> FlowCollector<List<NetworkEntity>>.paginationEmitter(
+        getData: suspend (Long, Long) -> List<LocalEntity>,
+        localToNetworkMapper: (List<LocalEntity>) -> List<NetworkEntity>
+    ) {
+        val limit = 50L
+        var offset = 0L
+        var objects: List<LocalEntity>
+
+        do {
+            objects = getData(limit, offset)
+            offset += objects.size
+            emit(localToNetworkMapper(objects))
+        } while (objects.isNotEmpty())
     }
 
     private suspend fun accountingObjectDbSaver(objects: List<AccountingObjectDtoV2>) {

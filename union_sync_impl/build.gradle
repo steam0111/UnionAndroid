@@ -39,6 +39,7 @@ dependencies {
     implementation(libs.retrofit.moshi)
     implementation(libs.bundles.itrocket)
     implementation(libs.database.runtime)
+    implementation(libs.logger)
     kapt(libs.database.compiler)
 
     testImplementation(libs.junit)

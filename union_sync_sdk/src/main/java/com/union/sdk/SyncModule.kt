@@ -41,10 +41,9 @@ import com.example.union_sync_impl.data.OrganizationSyncApiImpl
 import com.example.union_sync_impl.data.ProducerSyncApiImpl
 import com.example.union_sync_impl.data.ReceptionCategoryItemSyncApiImpl
 import com.example.union_sync_impl.data.RegionSyncApiImpl
-import com.example.union_sync_impl.sync.SyncRepository
 import com.example.union_sync_impl.data.ReserveSyncApiImpl
+import com.example.union_sync_impl.sync.SyncRepository
 import org.koin.dsl.module
-import org.openapitools.client.custom_api.ReceptionItemCategoryApi
 
 object SyncModule {
     val module = module {
@@ -146,6 +145,7 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
+                get()
             )
         }
         single {
