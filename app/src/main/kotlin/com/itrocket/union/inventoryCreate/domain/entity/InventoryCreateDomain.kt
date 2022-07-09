@@ -18,7 +18,7 @@ import kotlinx.parcelize.Parcelize
 data class InventoryCreateDomain(
     val number: String,
     val date: Long,
-    val inventoryStatus: InventoryStatus = InventoryStatus.CREATED,
+    val inventoryStatus: InventoryStatus,
     val documentInfo: List<ParamDomain>,
     val accountingObjects: List<AccountingObjectDomain>,
 ) : Parcelable {
@@ -41,6 +41,7 @@ fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
         accountingObjectsIds = accountingObjects.map { it.toAccountingObjectIdSyncEntity() },
         date = date,
         locationIds = locationIds,
+        inventoryStatus = this.inventoryStatus.name,
         updateDate = System.currentTimeMillis()
     )
 }

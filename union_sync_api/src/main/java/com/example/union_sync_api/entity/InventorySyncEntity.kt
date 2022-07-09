@@ -7,5 +7,6 @@ data class InventorySyncEntity(
     val accountingObjects: List<AccountingObjectSyncEntity>,
     val mol: EmployeeSyncEntity?,
     val locationSyncEntities: List<LocationShortSyncEntity>?,
+    val inventoryStatus: String,
     val updateDate: Long?
 )

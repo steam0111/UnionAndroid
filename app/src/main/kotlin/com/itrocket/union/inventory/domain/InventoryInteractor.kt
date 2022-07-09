@@ -4,6 +4,7 @@ import com.example.union_sync_api.entity.InventoryCreateSyncEntity
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.toAccountingObjectIdSyncEntity
+import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
@@ -40,6 +41,7 @@ class InventoryInteractor(
                     it.toAccountingObjectIdSyncEntity()
                 },
                 locationIds = locationIds,
+                inventoryStatus = InventoryStatus.CREATED.name,
                 updateDate = System.currentTimeMillis()
             )
         )

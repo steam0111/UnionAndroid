@@ -30,14 +30,18 @@ interface InventoryCreateStore :
 
         data class OnNewAccountingObjectRfidsHandled(val handledAccountingObjectIds: List<String>) :
             Intent()
+
         data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :
             Intent()
+
         object OnBackClicked : Intent()
         object OnDropClicked : Intent()
         object OnHideFoundAccountingObjectClicked : Intent()
         object OnAddNewClicked : Intent()
         object OnSaveClicked : Intent()
         object OnReadingClicked : Intent()
+        object OnInWorkClicked : Intent()
+        object OnCompleteClicked : Intent()
     }
 
     data class State(
@@ -79,6 +83,7 @@ interface InventoryCreateStore :
                 get() = NewAccountingObjectComposeFragment()
 
         }
+
         object ShowLeaveWithoutSave : Label()
         object ShowReadingMode : Label(),
             ShowBottomSheetNavigationLabel {

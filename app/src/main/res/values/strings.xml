@@ -26,6 +26,8 @@
     <string name="common_name">Название</string>
     <string name="common_kpp">КПП</string>
     <string name="common_inn">ИНН</string>
+    <string name="common_in_work">В работу</string>
+    <string name="common_complete">Завершить</string>
     <string name="search_hint">Введите запрос</string>
 
     <!-- Auth -->
@@ -179,6 +181,9 @@
     <string name="inventory_ao_title">Инвентаризация «ОС»</string>
     <string name="inventory_params">Параметры</string>
     <string name="inventory_accounting_object">Объекты учета</string>
+    <string name="inventory_created">Создана</string>
+    <string name="inventory_in_work">В работе</string>
+    <string name="inventory_done">Завершена</string>
 
     <!-- InventoryCreate -->
     <string name="inventory_create_hide_found_ao">Скрывать найденные ОС</string>
