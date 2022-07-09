@@ -17,7 +17,8 @@ fun InventoryDtoV2.toInventoryDb(): InventoryDb {
         organizationId = organizationId,
         employeeId = molId,
         date = System.currentTimeMillis(),//creationDate
-        updateDate = System.currentTimeMillis()
+        updateDate = System.currentTimeMillis(),
+        inventoryStatus = extendedInventoryState?.id.orEmpty()
     )
 }
 
@@ -29,6 +30,7 @@ fun InventoryCreateSyncEntity.toInventoryDb(id: String): InventoryDb {
         accountingObjectsIds = accountingObjectsIds,
         date = System.currentTimeMillis(),
         locationIds = locationIds,
+        inventoryStatus = inventoryStatus,
         updateDate = updateDate
     )
 }
@@ -41,6 +43,7 @@ fun InventoryUpdateSyncEntity.toInventoryDb(): InventoryDb {
         accountingObjectsIds = accountingObjectsIds,
         date = date,
         locationIds = locationIds,
+        inventoryStatus = inventoryStatus,
         updateDate = updateDate
     )
 }
@@ -58,6 +61,7 @@ fun InventoryDb.toInventorySyncEntity(
         mol = mol,
         locationSyncEntities = locationSyncEntities,
         accountingObjects = accountingObjects,
+        inventoryStatus = inventoryStatus,
         updateDate = updateDate
     )
 }

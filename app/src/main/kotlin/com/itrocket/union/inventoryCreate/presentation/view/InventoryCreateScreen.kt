@@ -31,6 +31,7 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
+import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
@@ -45,6 +46,7 @@ import com.itrocket.union.ui.InventoryDocumentItem
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.psb1
+import com.itrocket.union.ui.psb3
 import com.itrocket.union.ui.psb6
 import com.itrocket.union.ui.white
 
@@ -58,20 +60,26 @@ fun InventoryCreateScreen(
     onReadingClickListener: () -> Unit,
     onAddNewChanged: () -> Unit,
     onHideFoundAccountingObjectChanged: () -> Unit,
-    onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit
+    onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit,
+    onInWorkClickListener: () -> Unit,
+    onFinishClickListener: () -> Unit,
 ) {
     AppTheme {
         Scaffold(
             topBar = {
                 Toolbar(
                     onDropClickListener = onDropClickListener,
-                    onBackClickListener = onBackClickListener
+                    onBackClickListener = onBackClickListener,
+                    inventoryStatus = state.inventoryDocument.inventoryStatus
                 )
             },
             bottomBar = {
                 BottomBar(
                     onSaveClickListener = onSaveClickListener,
-                    onReadingClickListener = onReadingClickListener
+                    onReadingClickListener = onReadingClickListener,
+                    onInWorkClickListener = onInWorkClickListener,
+                    onFinishClickListener = onFinishClickListener,
+                    inventoryStatus = state.inventoryDocument.inventoryStatus
                 )
             },
             content = {
@@ -111,7 +119,7 @@ private fun Content(
             .fillMaxSize()
             .padding(paddingValues)
     ) {
-        InventoryDocumentItem(item = state.inventoryDocument)
+        InventoryDocumentItem(item = state.inventoryDocument, isShowStatus = false)
         MediumSpacer()
         SettingsBar(
             isHideFoundAccountingObjects = state.isHideFoundAccountingObjects,
@@ -129,7 +137,8 @@ private fun Content(
                     accountingObject = item,
                     onAccountingObjectListener = onAccountingObjectClickListener,
                     isShowBottomLine = isShowBottomLine,
-                    status = item.inventoryStatus
+                    status = item.inventoryStatus,
+                    isEnabled = state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED
                 )
             }
         }
@@ -187,7 +196,10 @@ fun SettingsBar(
 @Composable
 private fun BottomBar(
     onSaveClickListener: () -> Unit,
-    onReadingClickListener: () -> Unit
+    onReadingClickListener: () -> Unit,
+    onInWorkClickListener: () -> Unit,
+    onFinishClickListener: () -> Unit,
+    inventoryStatus: InventoryStatus
 ) {
     Row(
         modifier = Modifier
@@ -195,16 +207,41 @@ private fun BottomBar(
             .padding(16.dp)
     ) {
         BaseButton(
+            enabled = inventoryStatus == InventoryStatus.CREATED,
             text = stringResource(R.string.common_reading),
             onClick = onReadingClickListener,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            disabledBackgroundColor = psb3
         )
         Spacer(modifier = Modifier.width(16.dp))
         BaseButton(
+            enabled = inventoryStatus != InventoryStatus.COMPLETED,
             text = stringResource(R.string.common_save),
             onClick = onSaveClickListener,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            disabledBackgroundColor = psb3
         )
+        when (inventoryStatus) {
+            InventoryStatus.CREATED -> {
+                Spacer(modifier = Modifier.width(16.dp))
+                BaseButton(
+                    text = stringResource(R.string.common_in_work),
+                    onClick = onInWorkClickListener,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            InventoryStatus.IN_PROGRESS -> {
+                Spacer(modifier = Modifier.width(16.dp))
+                BaseButton(
+                    text = stringResource(R.string.common_complete),
+                    onClick = onFinishClickListener,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            InventoryStatus.COMPLETED -> {
+                //Nothing
+            }
+        }
     }
 }
 
@@ -212,6 +249,7 @@ private fun BottomBar(
 private fun Toolbar(
     onBackClickListener: () -> Unit,
     onDropClickListener: () -> Unit,
+    inventoryStatus: InventoryStatus
 ) {
     BaseToolbar(
         title = stringResource(id = R.string.inventory_ao_title),
@@ -224,7 +262,10 @@ private fun Toolbar(
                 text = stringResource(R.string.common_drop),
                 style = AppTheme.typography.body2,
                 color = psb6,
-                modifier = Modifier.clickable(onClick = onDropClickListener)
+                modifier = Modifier.clickable(
+                    onClick = onDropClickListener,
+                    enabled = inventoryStatus == InventoryStatus.CREATED
+                )
             )
         }
     )
@@ -293,7 +334,8 @@ fun InventoryCreateScreenPreview() {
                     barcodeValue = "",
                     rfidValue = ""
                 ),
-            )
+            ),
+            inventoryStatus = InventoryStatus.CREATED
         ),
-    ), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {}, {}, {})
+    ), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {})
 }

@@ -52,6 +52,7 @@ import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
 import com.itrocket.union.employees.domain.entity.EmployeeStatus
+import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
@@ -67,14 +68,15 @@ fun AccountingObjectItem(
     onAccountingObjectListener: (AccountingObjectDomain) -> Unit,
     status: Status?,
     isShowBottomLine: Boolean,
-    statusText: String? = null
+    statusText: String? = null,
+    isEnabled: Boolean = true
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = {
                 onAccountingObjectListener(accountingObject)
-            })
+            }, enabled = isEnabled)
             .padding(vertical = 12.dp, horizontal = 16.dp)
     ) {
         Column(
@@ -228,7 +230,8 @@ fun ReservesItem(
 fun InventoryDocumentItem(
     item: InventoryCreateDomain,
     onInventoryClickListener: () -> Unit = {},
-    enabled: Boolean = false
+    enabled: Boolean = false,
+    isShowStatus: Boolean
 ) {
     val annotatedTitle = getInventoryAnnotatedTitle(item)
     val annotatedInfo = buildAnnotatedString {
@@ -264,8 +267,15 @@ fun InventoryDocumentItem(
                 style = AppTheme.typography.body1,
                 fontWeight = FontWeight.Medium,
                 lineHeight = 20.sp,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .padding(end = 40.dp)
+                    .fillMaxWidth(0.7f)
             )
+            if (isShowStatus) {
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
+                    SmallStatusLabel(status = item.inventoryStatus, null)
+                }
+            }
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(text = annotatedInfo, style = AppTheme.typography.caption, color = graphite6)
@@ -667,7 +677,9 @@ fun InventoryDocumentItemPreview() {
                 ParamDomain("3", "Систмный интегратор", ManualType.MOL),
             ),
             accountingObjects = listOf(),
-        )
+            inventoryStatus = InventoryStatus.CREATED,
+        ),
+        isShowStatus = true
     )
 }
 

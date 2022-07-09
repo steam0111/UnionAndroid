@@ -87,6 +87,12 @@ class InventoryCreateComposeFragment :
                 },
                 onReadingClickListener = {
                     accept(InventoryCreateStore.Intent.OnReadingClicked)
+                },
+                onFinishClickListener = {
+                    accept(InventoryCreateStore.Intent.OnCompleteClicked)
+                },
+                onInWorkClickListener = {
+                    accept(InventoryCreateStore.Intent.OnInWorkClicked)
                 }
             )
         }

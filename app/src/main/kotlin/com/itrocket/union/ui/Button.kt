@@ -41,13 +41,14 @@ fun BaseButton(
     modifier: Modifier,
     enabled: Boolean = true,
     isAllUppercase: Boolean = true,
-    backgroundColor: Color = psb6
+    backgroundColor: Color = psb6,
+    disabledBackgroundColor: Color = graphite2
 ) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             backgroundColor = backgroundColor,
-            disabledBackgroundColor = graphite2
+            disabledBackgroundColor = disabledBackgroundColor
         ),
         shape = RoundedCornerShape(8.dp),
         enabled = enabled,

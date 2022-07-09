@@ -2,6 +2,7 @@ package com.itrocket.union.inventoryCreate.data.mapper
 
 import com.example.union_sync_api.entity.InventorySyncEntity
 import com.itrocket.union.accountingObjects.data.mapper.map
+import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
@@ -34,5 +35,6 @@ fun InventorySyncEntity.map(): InventoryCreateDomain =
                         values = locationSyncEntities.map { it.name })
                 )
             }
-        }
+        },
+        inventoryStatus = InventoryStatus.valueOf(inventoryStatus)
     )

@@ -13,5 +13,6 @@ class InventoryDb(
     val employeeId: String?,
     val accountingObjectsIds: List<AccountingObjectInfoSyncEntity>,
     val locationIds: List<String>? = listOf(),
-    val date: Long
+    val date: Long,
+    val inventoryStatus: String
 ) : SyncItemDb(id, updateDate)
