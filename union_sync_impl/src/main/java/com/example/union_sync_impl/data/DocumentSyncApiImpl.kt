@@ -203,12 +203,10 @@ class DocumentSyncApiImpl(
                 accountingObjectIds = accountingObjectIds
             )
         )
-        val newRecords = accountingObjectIds.filter { accountingObjectId ->
+        val newRecords = accountingObjectIds.map { accountingObjectId ->
             val existRecord = existRecords.find { it.accountingObjectId == accountingObjectId }
-            existRecord == null
-        }.map { accountingObjectId ->
             ActionRecordDb(
-                id = UUID.randomUUID().toString(),
+                id = existRecord?.id ?: UUID.randomUUID().toString(),
                 accountingObjectId = accountingObjectId,
                 actionId = actionId,
                 updateDate = System.currentTimeMillis()
@@ -227,12 +225,10 @@ class DocumentSyncApiImpl(
                 remainIds = remainIds
             )
         )
-        val newRecords = remainIds.filter { remainId ->
+        val newRecords = remainIds.map { remainId ->
             val existRecord = existRecords.find { it.remainId == remainId }
-            existRecord == null
-        }.map { remainId ->
             ActionRemainsRecordDb(
-                id = UUID.randomUUID().toString(),
+                id = existRecord?.id ?: UUID.randomUUID().toString(),
                 remainId = remainId,
                 actionId = actionId,
                 updateDate = System.currentTimeMillis()

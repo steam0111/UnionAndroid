@@ -35,12 +35,16 @@ abstract class SyncEntity<SyncType>(
     abstract suspend fun saveInDb(objects: List<SyncType>)
 
     suspend inline fun <reified T> defaultGetAndSave(syncId: String, exportPartId: String) {
-        val objects = getEntitiesFromNetwork<T>(syncId, exportPartId)
+        try {
+            val objects = getEntitiesFromNetwork<T>(syncId, exportPartId)
 
-        Timber.tag(AllSyncImpl.SYNC_TAG).d("${objects?.size} $id downloaded")
+            Timber.tag(AllSyncImpl.SYNC_TAG).d("${objects?.size} $id downloaded")
 
-        if (objects != null) {
-            saveInDb(objects as List<SyncType>)
+            if (objects != null) {
+                saveInDb(objects as List<SyncType>)
+            }
+        } catch (e: Throwable) {
+            Timber.d("$id download failed with $e")
         }
     }
 
@@ -70,6 +74,7 @@ abstract class SyncEntity<SyncType>(
 
             Timber.tag(AllSyncImpl.SYNC_TAG).d("${importPart.value?.size} $id uploaded")
         }
+        Timber.tag(AllSyncImpl.SYNC_TAG).d("finish upload $id")
     }
 
     private fun createImportPart(objects: List<Any>) = ImportPartDtoV2(

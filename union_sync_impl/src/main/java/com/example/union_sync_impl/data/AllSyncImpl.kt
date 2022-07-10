@@ -33,6 +33,7 @@ class AllSyncImpl(
         Timber.tag(SYNC_TAG).d("sync started ${syncInfo.id}")
 
         startExportFromLocalToServer(syncInfo.id)
+
         startExportFromServerToLocal(syncInfo.id)
 
         val syncCompletedInfo = syncControllerApi.apiSyncIdCompleteSyncPost(syncInfo.id)

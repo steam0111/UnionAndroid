@@ -3,6 +3,7 @@ package com.example.union_sync_impl.dao
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
+import com.example.union_sync_impl.utils.addPagination
 import com.example.union_sync_impl.utils.contains
 import com.example.union_sync_impl.utils.isEquals
 import com.example.union_sync_impl.utils.more
@@ -13,6 +14,8 @@ fun sqlDocumentsQuery(
     exploitingId: String? = null,
     organizationId: String? = null,
     updateDate: Long? = null,
+    limit: Long? = null,
+    offset: Long? = null,
     isFilterCount: Boolean = false
 ): SimpleSQLiteQuery {
     val mainQuery = if (isFilterCount) {
@@ -50,42 +53,31 @@ fun sqlDocumentsQuery(
                 "LEFT JOIN employees exploitingEmployees ON documents.exploitingId = exploitingEmployees.id "
     }
 
-    return SimpleSQLiteQuery(
-        mainQuery.getDocumentsFilterPartQuery(
-            textQuery = textQuery,
-            molId = molId,
-            exploitingId = exploitingId,
-            organizationId = organizationId,
-            updateDate = updateDate
+    val query = mainQuery.addFilters(
+        sqlTableFilters = SqlTableFilters(
+            tableName = "documents",
+            filter = buildList {
+                textQuery?.let {
+                    add("id" contains textQuery)
+                }
+                molId?.let {
+                    add("molId" isEquals molId)
+                }
+                exploitingId?.let {
+                    add("exploitingId" isEquals exploitingId)
+                }
+                organizationId?.let {
+                    add("organizationId" isEquals organizationId)
+                }
+                updateDate?.let {
+                    add("updateDate" more updateDate)
+                }
+            }
         )
+    ).addPagination(
+        limit,
+        offset
     )
-}
 
-private fun String.getDocumentsFilterPartQuery(
-    textQuery: String? = null,
-    molId: String? = null,
-    exploitingId: String? = null,
-    organizationId: String? = null,
-    updateDate: Long? = null
-): String = addFilters(
-    sqlTableFilters = SqlTableFilters(
-        tableName = "documents",
-        filter = buildList {
-            textQuery?.let {
-                add("id" contains textQuery)
-            }
-            molId?.let {
-                add("molId" isEquals molId)
-            }
-            exploitingId?.let {
-                add("exploitingId" isEquals exploitingId)
-            }
-            organizationId?.let {
-                add("organizationId" isEquals organizationId)
-            }
-            updateDate?.let {
-                add("updateDate" more updateDate)
-            }
-        }
-    )
-)
+    return SimpleSQLiteQuery(query)
+}

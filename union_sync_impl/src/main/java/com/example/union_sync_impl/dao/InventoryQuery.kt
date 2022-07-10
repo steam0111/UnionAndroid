@@ -3,6 +3,7 @@ package com.example.union_sync_impl.dao
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
+import com.example.union_sync_impl.utils.addPagination
 import com.example.union_sync_impl.utils.contains
 import com.example.union_sync_impl.utils.isEquals
 import com.example.union_sync_impl.utils.more
@@ -12,6 +13,8 @@ fun sqlInventoryQuery(
     organizationId: String? = null,
     molId: String? = null,
     updateDate: Long? = null,
+    limit: Long? = null,
+    offset: Long? = null,
     isFilterCount: Boolean = false
 ): SimpleSQLiteQuery {
     val mainQuery = if (isFilterCount) {
@@ -44,7 +47,9 @@ fun sqlInventoryQuery(
             textQuery = textQuery,
             organizationId = organizationId,
             molId = molId,
-            updateDate = updateDate
+            updateDate = updateDate,
+            limit = limit,
+            offset = offset
         )
     )
 }
@@ -71,7 +76,9 @@ fun String.getInventoriesFilterPartQuery(
     textQuery: String? = null,
     organizationId: String? = null,
     molId: String? = null,
-    updateDate: Long? = null
+    updateDate: Long? = null,
+    limit: Long? = null,
+    offset: Long? = null,
 ): String = addFilters(
     sqlTableFilters = SqlTableFilters(
         tableName = "inventories",
@@ -84,12 +91,16 @@ fun String.getInventoriesFilterPartQuery(
                 add("organizationId" isEquals organizationId)
             }
 
-            molId?.let {
-                add("employeeId" isEquals molId)
+                molId?.let {
+                    add("employeeId" isEquals molId)
+                }
+                updateDate?.let {
+                    add("updateDate" more updateDate)
+                }
             }
-            updateDate?.let {
-                add("updateDate" more updateDate)
-            }
-        }
+        )
+    ).addPagination(
+        limit,
+        offset
     )
-)
+

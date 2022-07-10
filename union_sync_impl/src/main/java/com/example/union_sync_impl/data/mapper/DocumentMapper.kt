@@ -1,6 +1,5 @@
 package com.example.union_sync_impl.data.mapper
 
-import android.util.Log
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
@@ -12,6 +11,8 @@ import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.entity.DocumentDb
 import com.example.union_sync_impl.entity.DocumentUpdateReserves
+import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
+import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.ActionDtoV2
 
 fun ActionDtoV2.toDocumentDb(): DocumentDb {
@@ -21,11 +22,26 @@ fun ActionDtoV2.toDocumentDb(): DocumentDb {
         exploitingId = exploitingId,
         documentType = extendedActionType?.id ?: "EXTRADITION",
         locationIds = listOf(locationToId.orEmpty()),
-        creationDate = System.currentTimeMillis(),
+        creationDate = getMillisDateFromServerFormat(creationDate.orEmpty()),
         documentStatus = extendedActionStatus?.id.orEmpty(),
         documentStatusId = actionStatusId.orEmpty(),
         updateDate = System.currentTimeMillis(),
         objectType = null
+    )
+}
+
+fun DocumentDb.toActionDtoV2(): ActionDtoV2 {
+    return ActionDtoV2(
+        organizationId = organizationId.orEmpty(),
+        molId = molId.orEmpty(),
+        exploitingId = exploitingId,
+        actionTypeId = documentType,
+        locationToId = locationIds?.lastOrNull(),
+        actionStatusId = documentStatus,
+        creationDate = getStringDateFromMillis(creationDate),
+        dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
+        id = id,
+        deleted = false
     )
 }
 
