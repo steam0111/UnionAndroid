@@ -92,6 +92,7 @@ fun DocumentCreateScreen(
     onChooseClickListener: () -> Unit,
     onPrevClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
+    onReserveClickListener: (ReservesDomain) -> Unit
 ) {
     val pagerState = rememberPagerState(state.selectedPage)
     val coroutineScope = rememberCoroutineScope()
@@ -139,7 +140,7 @@ fun DocumentCreateScreen(
                     ObjectType.RESERVES -> ReservesScreen(
                         isLoading = state.isLoading,
                         reserves = state.reserves,
-                        onReservesClickListener = {},
+                        onReservesClickListener = onReserveClickListener,
                         onSaveClickListener = onSaveClickListener,
                         onPrevClickListener = onPrevClickListener,
                         onSettingsClickListener = onSettingsClickListener,
@@ -477,14 +478,14 @@ private fun ParamBottomBar(
             text = stringResource(id = R.string.common_save),
             onClick = onSaveClickListener,
             modifier = Modifier.weight(1f),
-            enabled = isNextEnabled && documentStatus != DocumentStatus.CONDUCTED
+            enabled = isNextEnabled && documentStatus != DocumentStatus.COMPLETED
         )
         Spacer(modifier = Modifier.width(16.dp))
         BaseButton(
             text = stringResource(R.string.common_conduct),
             onClick = onConductClickListener,
             modifier = Modifier.weight(1f),
-            enabled = documentStatus != DocumentStatus.CONDUCTED && isNextEnabled
+            enabled = documentStatus != DocumentStatus.COMPLETED && isNextEnabled
         )
         Spacer(modifier = Modifier.width(16.dp))
 
@@ -522,7 +523,7 @@ private fun ListBottomBar(
                 imageId = R.drawable.ic_settings,
                 paddings = PaddingValues(12.dp),
                 onClick = onSettingsClickListener,
-                isEnabled = documentStatus != DocumentStatus.CONDUCTED
+                isEnabled = documentStatus != DocumentStatus.COMPLETED
             )
             Spacer(modifier = Modifier.width(16.dp))
         }
@@ -530,21 +531,21 @@ private fun ListBottomBar(
             text = stringResource(R.string.common_choose),
             onClick = onChooseClickListener,
             modifier = Modifier.weight(1f),
-            enabled = documentStatus != DocumentStatus.CONDUCTED
+            enabled = documentStatus != DocumentStatus.COMPLETED
         )
         Spacer(modifier = Modifier.width(16.dp))
         BaseButton(
             text = stringResource(R.string.common_conduct),
             onClick = onConductClickListener,
             modifier = Modifier.weight(1f),
-            enabled = documentStatus != DocumentStatus.CONDUCTED
+            enabled = documentStatus != DocumentStatus.COMPLETED
         )
         Spacer(modifier = Modifier.width(16.dp))
         ImageButton(
             imageId = R.drawable.ic_save,
             paddings = PaddingValues(12.dp),
             onClick = onSaveClickListener,
-            isEnabled = documentStatus != DocumentStatus.CONDUCTED
+            isEnabled = documentStatus != DocumentStatus.COMPLETED
         )
         Spacer(modifier = Modifier.width(16.dp))
         OutlinedImageButton(
@@ -618,5 +619,5 @@ fun DocumentCreateScreenPreview() {
                 ),
             ),
             objectType = ObjectType.MAIN_ASSETS
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 }

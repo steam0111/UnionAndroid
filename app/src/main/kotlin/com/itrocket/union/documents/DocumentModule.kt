@@ -24,7 +24,7 @@ object DocumentModule {
         }
 
         factory<DocumentRepository> {
-            DocumentRepositoryImpl(get())
+            DocumentRepositoryImpl(get(), get())
         }
 
         factory {

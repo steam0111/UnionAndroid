@@ -19,7 +19,7 @@ enum class DocumentStatus(
         backgroundColor = graphite2,
         textColor = graphite6
     ),
-    CONDUCTED(textId = R.string.documents_conducted,
+    COMPLETED(textId = R.string.documents_conducted,
         backgroundColor = green7,
         textColor = white
     )

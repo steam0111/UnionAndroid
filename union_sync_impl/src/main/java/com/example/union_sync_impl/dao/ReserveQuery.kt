@@ -1,6 +1,7 @@
 package com.example.union_sync_impl.dao
 
 import androidx.sqlite.db.SimpleSQLiteQuery
+import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
 import com.example.union_sync_impl.utils.contains
@@ -16,6 +17,7 @@ fun sqlReserveQuery(
     receptionItemCategoryId: String? = null,
     textQuery: String? = null,
     reservesIds: List<String>? = null,
+    reservesShorts: List<ReserveShortSyncEntity>? = null,
     isFilterCount: Boolean = false,
     updateDate: Long? = null
 ): SimpleSQLiteQuery {
@@ -66,6 +68,17 @@ fun sqlReserveQuery(
                 }
                 updateDate?.let {
                     add("updateDate" more updateDate)
+                }
+                reservesShorts?.let {
+                    val names = it.map { it.name }
+                    val nomenclatureIds = it.mapNotNull { it.nomenclatureId }
+                    val locationIds = it.mapNotNull { it.locationId }
+                    val orderIds = it.mapNotNull { it.orderId }
+
+                    add("name" isEquals names)
+                    add("nomenclatureId" isEquals nomenclatureIds)
+                    add("locationId" isEquals locationIds)
+                    add("orderId" isEquals orderIds)
                 }
             }
         )
