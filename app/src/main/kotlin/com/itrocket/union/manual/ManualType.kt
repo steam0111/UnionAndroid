@@ -15,5 +15,5 @@ enum class ManualType(@StringRes val titleId: Int) {
     EQUIPMENT_TYPE(R.string.equipment_type),
     PROVIDER(R.string.accounting_objects_provider),
     NOMENCLATURE_GROUP(R.string.nomenclature_group),
-    RECEPTION_CATEGORY(R.string.reception_category)
+    RECEPTION_CATEGORY(R.string.reception_category),
 }

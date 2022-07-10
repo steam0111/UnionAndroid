@@ -3,8 +3,10 @@ package com.example.union_sync_impl.data.mapper
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.ReserveDetailSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
+import com.example.union_sync_api.entity.ReserveUpdateSyncEntity
 import com.example.union_sync_impl.entity.FullReserve
 import com.example.union_sync_impl.entity.ReserveDb
+import com.example.union_sync_impl.entity.ReserveUpdate
 import org.openapitools.client.models.RemainsDtoV2
 
 fun RemainsDtoV2.toReserveDb(): ReserveDb {
@@ -19,6 +21,26 @@ fun RemainsDtoV2.toReserveDb(): ReserveDb {
         businessUnitId = businessUnitId,
         name = name.orEmpty(),
         count = count?.toLong(),
+        receptionItemCategoryId = receptionItemCategoryId,
+        structuralSubdivisionId = structuralSubdivisionId,
+        receptionDocumentNumber = receptionDocumentNumber,
+        unitPrice = unitPrice,
+        updateDate = System.currentTimeMillis()
+    )
+}
+
+fun ReserveSyncEntity.toReserveDb(): ReserveDb {
+    return ReserveDb(
+        id = id,
+        catalogItemName = catalogItemName,
+        locationId = locationSyncEntity?.id,
+        molId = molId,
+        orderId = orderId,
+        nomenclatureId = nomenclatureId,
+        nomenclatureGroupId = nomenclatureGroupId,
+        businessUnitId = businessUnitId,
+        name = name,
+        count = count,
         receptionItemCategoryId = receptionItemCategoryId,
         structuralSubdivisionId = structuralSubdivisionId,
         receptionDocumentNumber = receptionDocumentNumber,
@@ -78,3 +100,10 @@ fun FullReserve.toDetailSyncEntity(locationSyncEntity: LocationSyncEntity?): Res
         structuralSubdivisionSyncEntity = structuralSubdivisionDb?.toSyncEntity(),
     )
 }
+
+fun ReserveUpdateSyncEntity.toReserveUpdate() = ReserveUpdate(
+    id = id,
+    count = count,
+    locationId = locationId,
+    updateDate = System.currentTimeMillis()
+)

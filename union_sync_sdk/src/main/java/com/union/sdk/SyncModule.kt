@@ -7,6 +7,7 @@ import com.example.union_sync_api.data.AllSyncApi
 import com.example.union_sync_api.data.BranchesSyncApi
 import com.example.union_sync_api.data.CounterpartySyncApi
 import com.example.union_sync_api.data.DepartmentSyncApi
+import com.example.union_sync_api.data.DocumentReserveCountSyncApi
 import com.example.union_sync_api.data.DocumentSyncApi
 import com.example.union_sync_api.data.EmployeeSyncApi
 import com.example.union_sync_api.data.EquipmentTypeSyncApi
@@ -28,6 +29,7 @@ import com.example.union_sync_impl.data.AllSyncImpl
 import com.example.union_sync_impl.data.BranchesSyncApiImpl
 import com.example.union_sync_impl.data.CounterpartySyncApiImpl
 import com.example.union_sync_impl.data.DepartmentSyncApiImpl
+import com.example.union_sync_impl.data.DocumentReserveCountSyncApiImpl
 import com.example.union_sync_impl.data.DocumentSyncApiImpl
 import com.example.union_sync_impl.data.EmployeeSyncApiImpl
 import com.example.union_sync_impl.data.EquipmentTypeSyncApiImpl
@@ -100,7 +102,8 @@ object SyncModule {
                 documentDao = get(),
                 locationDao = get(),
                 accountingObjectDao = get(),
-                reserveDao = get()
+                reserveDao = get(),
+                documentReserveCountSyncApi = get()
             )
         }
         factory<LocationSyncApi> {
@@ -139,6 +142,9 @@ object SyncModule {
         }
         factory<AccountingObjectStatusSyncApi> {
             AccountingObjectStatusSyncApiImpl(dao = get())
+        }
+        factory<DocumentReserveCountSyncApi> {
+            DocumentReserveCountSyncApiImpl(documentReserveCountDao = get())
         }
         factory<AllSyncApi> {
             AllSyncImpl(
@@ -241,6 +247,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().orderDao()
+        }
+        factory {
+            get<UnionDatabase>().documentReserveCountDao()
         }
         factory<ManageSyncDataApi> {
             ManageSyncDataImpl(

@@ -8,9 +8,8 @@ import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
+import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.domain.entity.toUpdateSyncEntity
-import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectsDomain
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
@@ -53,6 +52,7 @@ class DocumentCreateInteractor(
     suspend fun conductDocument(
         document: DocumentDomain,
         accountingObjects: List<AccountingObjectDomain>,
+        reserves: List<ReservesDomain>,
         params: List<ParamDomain>
     ) {
         withContext(coreDispatchers.io) {
@@ -60,8 +60,9 @@ class DocumentCreateInteractor(
                 document.copy(
                     accountingObjects = accountingObjects,
                     params = params,
-                    documentStatus = DocumentStatus.CONDUCTED,
-                    documentStatusId = DocumentStatus.CONDUCTED.name
+                    documentStatus = DocumentStatus.COMPLETED,
+                    documentStatusId = DocumentStatus.COMPLETED.name,
+                    reserves = reserves
                 )
                     .toUpdateSyncEntity()
             )
@@ -108,8 +109,19 @@ class DocumentCreateInteractor(
     fun getReservesIds(reserves: List<ReservesDomain>): List<String> =
         reserves.map { it.id }
 
-    fun isParamsValid(params: List<ParamDomain>, documentTypeDomain: DocumentTypeDomain): Boolean {
-        val validateParams = params.filter { documentTypeDomain.manualTypes.contains(it.type) }
+    fun isParamsValid(
+        params: List<ParamDomain>,
+        documentTypeDomain: DocumentTypeDomain,
+        objectType: ObjectType
+    ): Boolean {
+        val validateParams = params.filter {
+            val manualTypes = if(objectType == ObjectType.MAIN_ASSETS){
+                documentTypeDomain.accountingObjectManualTypes
+            } else {
+                documentTypeDomain.reserveManualTypes
+            }
+            manualTypes.contains(it.type)
+        }
         return validateParams.all { it.value.isNotBlank() }
     }
 
@@ -120,6 +132,18 @@ class DocumentCreateInteractor(
     ): List<AccountingObjectDomain> {
         val mutableList = accountingObjects.toMutableList()
         mutableList.add(accountingObjectDomain)
+        return mutableList
+    }
+
+    fun updateReserveCount(
+        reserves: List<ReservesDomain>,
+        id: String,
+        count: Long
+    ): List<ReservesDomain> {
+        val mutableList = reserves.toMutableList()
+        val index = mutableList.indexOfFirst { it.id == id }
+        val reserve = mutableList[index]
+        mutableList[index] = reserve.copy(itemsCount = count)
         return mutableList
     }
 

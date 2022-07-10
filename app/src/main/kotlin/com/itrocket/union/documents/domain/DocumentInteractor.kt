@@ -50,16 +50,20 @@ class DocumentInteractor(
         listType: ObjectType
     ): DocumentDomain {
         return withContext(coreDispatchers.io) {
-            val exploitingId = if (type.manualTypes.contains(ManualType.EXPLOITING)) {
-                ""
-            } else {
-                null
+            val exploitingId: String?
+            val locationIds: List<String>?
+
+            when (listType) {
+                ObjectType.MAIN_ASSETS -> {
+                    exploitingId = getExploitingByManualTypes(type.accountingObjectManualTypes)
+                    locationIds = getLocationsByManualTypes(type.accountingObjectManualTypes)
+                }
+                ObjectType.RESERVES -> {
+                    exploitingId = getExploitingByManualTypes(type.reserveManualTypes)
+                    locationIds = getLocationsByManualTypes(type.reserveManualTypes)
+                }
             }
-            val locationIds = if (type.manualTypes.contains(ManualType.LOCATION)) {
-                listOf<String>()
-            } else {
-                null
-            }
+
             val documentId = repository.createDocument(
                 DocumentCreateSyncEntity(
                     organizationId = "",
@@ -76,6 +80,22 @@ class DocumentInteractor(
                 )
             )
             repository.getDocumentById(documentId)
+        }
+    }
+
+    private fun getExploitingByManualTypes(manualTypes: List<ManualType>): String? {
+        return if (manualTypes.contains(ManualType.EXPLOITING)) {
+            ""
+        } else {
+            null
+        }
+    }
+
+    private fun getLocationsByManualTypes(manualTypes: List<ManualType>): List<String>? {
+        return if (manualTypes.contains(ManualType.LOCATION)) {
+            listOf()
+        } else {
+            null
         }
     }
 

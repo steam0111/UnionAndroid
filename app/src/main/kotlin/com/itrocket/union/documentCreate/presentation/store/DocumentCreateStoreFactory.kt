@@ -10,6 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documentCreate.domain.DocumentAccountingObjectManager
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
+import com.itrocket.union.documentCreate.domain.DocumentReservesManager
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.ObjectType
@@ -26,6 +27,7 @@ class DocumentCreateStoreFactory(
     private val documentCreateInteractor: DocumentCreateInteractor,
     private val documentCreateArguments: DocumentCreateArguments,
     private val documentAccountingObjectManager: DocumentAccountingObjectManager,
+    private val documentReservesManager: DocumentReservesManager,
     private val errorInteractor: ErrorInteractor
 ) {
     fun create(): DocumentCreateStore =
@@ -141,6 +143,21 @@ class DocumentCreateStoreFactory(
                     )
                 )
                 DocumentCreateStore.Intent.OnCompleteClicked -> conductDocument(getState())
+                is DocumentCreateStore.Intent.OnReserveCountSelected -> dispatch(
+                    Result.Reserves(
+                        documentCreateInteractor.updateReserveCount(
+                            reserves = getState().reserves,
+                            id = intent.result.id,
+                            count = intent.result.count
+                        )
+                    )
+                )
+                is DocumentCreateStore.Intent.OnReserveClicked -> publish(
+                    DocumentCreateStore.Label.ShowSelectCount(
+                        id = intent.reserve.id,
+                        count = intent.reserve.itemsCount
+                    )
+                )
             }
         }
 
@@ -148,14 +165,24 @@ class DocumentCreateStoreFactory(
             documentCreateInteractor.conductDocument(
                 document = state.document,
                 accountingObjects = state.accountingObjects,
-                params = state.params
+                params = state.params,
+                reserves = state.reserves
             )
-            documentAccountingObjectManager.changeAccountingObjectsAfterConduct(
-                documentTypeDomain = state.document.documentType,
-                accountingObjects = state.accountingObjects,
-                params = state.params
-            )
-            dispatch(Result.Document(state.document.copy(documentStatus = DocumentStatus.CONDUCTED)))
+            if (state.objectType == ObjectType.MAIN_ASSETS) {
+                documentAccountingObjectManager.changeAccountingObjectsAfterConduct(
+                    documentTypeDomain = state.document.documentType,
+                    accountingObjects = state.accountingObjects,
+                    params = state.params
+                )
+            } else {
+                documentReservesManager.changeReservesAfterConduct(
+                    documentId = state.document.number,
+                    documentTypeDomain = state.document.documentType,
+                    reserves = state.reserves,
+                    params = state.params
+                )
+            }
+            dispatch(Result.Document(state.document.copy(documentStatus = DocumentStatus.COMPLETED)))
         }
 
         private suspend fun handleBarcodeAccountingObjects(
@@ -193,7 +220,8 @@ class DocumentCreateStoreFactory(
                 Result.Enabled(
                     documentCreateInteractor.isParamsValid(
                         getState().params,
-                        getState().document.documentType
+                        getState().document.documentType,
+                        getState().objectType
                     )
                 )
             )

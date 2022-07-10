@@ -4,12 +4,14 @@ import android.util.Log
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
+import com.example.union_sync_api.entity.DocumentUpdateReservesSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
 import com.example.union_sync_api.entity.LocationShortSyncEntity
 import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.entity.DocumentDb
+import com.example.union_sync_impl.entity.DocumentUpdateReserves
 import org.openapitools.client.models.ActionDtoV2
 
 fun ActionDtoV2.toDocumentDb(): DocumentDb {
@@ -18,10 +20,10 @@ fun ActionDtoV2.toDocumentDb(): DocumentDb {
         molId = molId.orEmpty(),
         exploitingId = exploitingId,
         accountingObjectsIds = listOf(),
-        documentType = extendedActionType?.name.orEmpty(),
+        documentType = extendedActionType?.id ?: "EXTRADITION",
         locationIds = listOf(locationToId.orEmpty()),
         creationDate = System.currentTimeMillis(),
-        documentStatus = extendedActionStatus?.name.orEmpty(),
+        documentStatus = extendedActionStatus?.id.orEmpty(),
         documentStatusId = actionStatusId.orEmpty(),
         reservesIds = listOf(),
         objectType = "MAIN_ASSETS",
@@ -91,3 +93,8 @@ fun DocumentDb.toDocumentSyncEntity(
         objectType = objectType
     )
 }
+
+fun DocumentUpdateReservesSyncEntity.toDocumentUpdateReserves() = DocumentUpdateReserves(
+    id = id,
+    reservesIds = reservesIds
+)

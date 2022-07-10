@@ -13,6 +13,7 @@ import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStoreF
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragmentArgs
 import com.itrocket.core.base.BaseViewModel
 import com.itrocket.union.documentCreate.domain.DocumentAccountingObjectManager
+import com.itrocket.union.documentCreate.domain.DocumentReservesManager
 
 object DocumentCreateModule {
     val DOCUMENTCREATE_VIEW_MODEL_QUALIFIER = named("DOCUMENTCREATE_VIEW_MODEL")
@@ -36,12 +37,17 @@ object DocumentCreateModule {
             DocumentAccountingObjectManager(get(), get(), get())
         }
 
+        factory {
+            DocumentReservesManager(get(), get(), get(), get())
+        }
+
         factory { (args: DocumentCreateComposeFragmentArgs) ->
             DocumentCreateStoreFactory(
                 DefaultStoreFactory,
                 get(),
                 get(),
                 args.documentCreateArguments,
+                get(),
                 get(),
                 get()
             ).create()

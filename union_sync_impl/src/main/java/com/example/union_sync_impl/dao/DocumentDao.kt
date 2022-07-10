@@ -8,6 +8,7 @@ import androidx.room.RawQuery
 import androidx.room.Update
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.union_sync_impl.entity.DocumentDb
+import com.example.union_sync_impl.entity.DocumentUpdateReserves
 import com.example.union_sync_impl.entity.FullDocument
 import kotlinx.coroutines.flow.Flow
 
@@ -98,4 +99,7 @@ interface DocumentDao {
 
     @Update
     suspend fun update(documentDb: DocumentDb)
+
+    @Update(entity = DocumentDb::class)
+    suspend fun update(documentUpdateReserves: DocumentUpdateReserves)
 }

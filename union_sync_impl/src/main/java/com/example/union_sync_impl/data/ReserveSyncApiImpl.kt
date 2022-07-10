@@ -3,12 +3,16 @@ package com.example.union_sync_impl.data
 import com.example.union_sync_api.data.ReserveSyncApi
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.ReserveDetailSyncEntity
+import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
+import com.example.union_sync_api.entity.ReserveUpdateSyncEntity
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_impl.dao.sqlReserveQuery
 import com.example.union_sync_impl.data.mapper.toDetailSyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
+import com.example.union_sync_impl.data.mapper.toReserveDb
+import com.example.union_sync_impl.data.mapper.toReserveUpdate
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
@@ -25,6 +29,7 @@ class ReserveSyncApiImpl(
         orderId: String?,
         receptionItemCategoryId: String?,
         reservesIds: List<String>?,
+        reservesShorts: List<ReserveShortSyncEntity>?,
         textQuery: String?,
     ): List<ReserveSyncEntity> {
         return reserveDao.getAll(
@@ -78,5 +83,13 @@ class ReserveSyncApiImpl(
             locationDao.getLocationTypeById(locationTypeId) ?: return null
 
         return locationDb.toLocationSyncEntity(locationTypeDb)
+    }
+
+    override suspend fun updateReserves(reserves: List<ReserveUpdateSyncEntity>) {
+        reserveDao.update(reserves.map { it.toReserveUpdate() })
+    }
+
+    override suspend fun insertAll(reserves: List<ReserveSyncEntity>) {
+        reserveDao.insertAll(reserves.map { it.toReserveDb() })
     }
 }

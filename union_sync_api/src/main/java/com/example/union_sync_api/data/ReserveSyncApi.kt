@@ -1,7 +1,9 @@
 package com.example.union_sync_api.data
 
 import com.example.union_sync_api.entity.ReserveDetailSyncEntity
+import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
+import com.example.union_sync_api.entity.ReserveUpdateSyncEntity
 
 interface ReserveSyncApi {
 
@@ -13,6 +15,7 @@ interface ReserveSyncApi {
         orderId: String? = null,
         receptionItemCategoryId: String? = null,
         reservesIds: List<String>? = null,
+        reservesShorts: List<ReserveShortSyncEntity>? = null,
         textQuery: String? = null,
     ): List<ReserveSyncEntity>
 
@@ -26,4 +29,8 @@ interface ReserveSyncApi {
         orderId: String? = null,
         receptionItemCategoryId: String? = null,
     ): Int
+
+    suspend fun updateReserves(reserves: List<ReserveUpdateSyncEntity>)
+
+    suspend fun insertAll(reserves: List<ReserveSyncEntity>)
 }
