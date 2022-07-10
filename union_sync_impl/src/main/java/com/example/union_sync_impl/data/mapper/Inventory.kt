@@ -12,7 +12,6 @@ import org.openapitools.client.models.InventoryDtoV2
 
 fun InventoryDtoV2.toInventoryDb(): InventoryDb {
     return InventoryDb(
-        accountingObjectsIds = listOf(),
         locationIds = listOf(locationId.orEmpty()),
         organizationId = organizationId,
         employeeId = molId,
@@ -27,7 +26,6 @@ fun InventoryCreateSyncEntity.toInventoryDb(id: String): InventoryDb {
         id = id,
         organizationId = organizationId,
         employeeId = employeeId,
-        accountingObjectsIds = accountingObjectsIds,
         date = System.currentTimeMillis(),
         locationIds = locationIds,
         inventoryStatus = inventoryStatus,
@@ -40,7 +38,6 @@ fun InventoryUpdateSyncEntity.toInventoryDb(): InventoryDb {
         id = id,
         organizationId = organizationId,
         employeeId = employeeId,
-        accountingObjectsIds = accountingObjectsIds,
         date = date,
         locationIds = locationIds,
         inventoryStatus = inventoryStatus,

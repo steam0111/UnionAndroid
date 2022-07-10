@@ -2,6 +2,8 @@ package com.example.union_sync_impl.sync
 
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.AccountingObjectStatusDao
+import com.example.union_sync_impl.dao.ActionRecordDao
+import com.example.union_sync_impl.dao.ActionRemainsRecordDao
 import com.example.union_sync_impl.dao.BranchesDao
 import com.example.union_sync_impl.dao.CounterpartyDao
 import com.example.union_sync_impl.dao.DepartmentDao
@@ -9,6 +11,7 @@ import com.example.union_sync_impl.dao.DocumentDao
 import com.example.union_sync_impl.dao.EmployeeDao
 import com.example.union_sync_impl.dao.EquipmentTypeDao
 import com.example.union_sync_impl.dao.InventoryDao
+import com.example.union_sync_impl.dao.InventoryRecordDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.NomenclatureDao
 import com.example.union_sync_impl.dao.NomenclatureGroupDao
@@ -21,6 +24,8 @@ import com.example.union_sync_impl.dao.RegionDao
 import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDb
+import com.example.union_sync_impl.data.mapper.toActionRecordDb
+import com.example.union_sync_impl.data.mapper.toActionRemainsRecordDb
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDtosV2
 import com.example.union_sync_impl.data.mapper.toBranchesDb
 import com.example.union_sync_impl.data.mapper.toCounterpartyDb
@@ -29,6 +34,7 @@ import com.example.union_sync_impl.data.mapper.toDocumentDb
 import com.example.union_sync_impl.data.mapper.toEmployeeDb
 import com.example.union_sync_impl.data.mapper.toEquipmentTypeDb
 import com.example.union_sync_impl.data.mapper.toInventoryDb
+import com.example.union_sync_impl.data.mapper.toInventoryRecordDb
 import com.example.union_sync_impl.data.mapper.toLocationDb
 import com.example.union_sync_impl.data.mapper.toLocationTypeDb
 import com.example.union_sync_impl.data.mapper.toNomenclatureDb
@@ -49,12 +55,15 @@ import kotlinx.coroutines.flow.flow
 import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.models.AccountingObjectDtoV2
 import org.openapitools.client.models.ActionDtoV2
+import org.openapitools.client.models.ActionRecordDtoV2
+import org.openapitools.client.models.ActionRemainsRecordDtoV2
 import org.openapitools.client.models.BranchDtoV2
 import org.openapitools.client.models.CounterpartyDtoV2
 import org.openapitools.client.models.DepartmentDtoV2
 import org.openapitools.client.models.EmployeeDtoV2
 import org.openapitools.client.models.EquipmentTypeDtoV2
 import org.openapitools.client.models.InventoryDtoV2
+import org.openapitools.client.models.InventoryRecordDtoV2
 import org.openapitools.client.models.LocationDtoV2
 import org.openapitools.client.models.LocationsTypeDtoV2
 import org.openapitools.client.models.NomenclatureDtoV2
@@ -87,7 +96,10 @@ class SyncRepository(
     private val receptionItemCategoryDao: ReceptionItemCategoryDao,
     private val reserveDao: ReserveDao,
     private val inventoryDao: InventoryDao,
-    private val documentDao: DocumentDao
+    private val documentDao: DocumentDao,
+    private val actionRecordDao: ActionRecordDao,
+    private val actionRemainsRecordDao: ActionRemainsRecordDao,
+    private val inventoryRecordDao: InventoryRecordDao
 ) {
     fun getUploadSyncEntities(): List<UploadableSyncEntity> = listOf(
         AccountingObjectSyncEntity(
@@ -98,7 +110,7 @@ class SyncRepository(
         )
     )
 
-    fun getSyncEntities(): Map<String, SyncEntity<*>> = listOf(
+    fun getSyncEntities(): Map<Pair<String, String>, SyncEntity<*>> = listOf(
         AccountingObjectSyncEntity(
             syncControllerApi,
             moshi,
@@ -189,9 +201,24 @@ class SyncRepository(
             syncControllerApi,
             moshi,
             ::documentDbSaver
+        ),
+        ActionRecordSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::actionRecordDbSaver
+        ),
+        ActionRemainsRecordSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::actionRemainsRecordDbSaver
+        ),
+        InventoryRecordSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::inventoryRecordDbSaver
         )
     ).associateBy {
-        it.id
+        it.id to it.table
     }
 
     private fun getAccountingObjectDbCollector(): Flow<List<AccountingObjectDtoV2>> {
@@ -382,4 +409,15 @@ class SyncRepository(
         documentDao.insertAll(objects.map { it.toDocumentDb() })
     }
 
+    private suspend fun actionRecordDbSaver(objects: List<ActionRecordDtoV2>) {
+        actionRecordDao.insertAll(objects.map { it.toActionRecordDb() })
+    }
+
+    private suspend fun actionRemainsRecordDbSaver(objects: List<ActionRemainsRecordDtoV2>) {
+        actionRemainsRecordDao.insertAll(objects.map { it.toActionRemainsRecordDb() })
+    }
+
+    private suspend fun inventoryRecordDbSaver(objects: List<InventoryRecordDtoV2>) {
+        inventoryRecordDao.insertAll(objects.map { it.toInventoryRecordDb() })
+    }
 }

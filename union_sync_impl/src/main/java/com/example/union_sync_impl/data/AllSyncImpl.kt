@@ -83,11 +83,12 @@ class AllSyncImpl(
         exportSyncInfo.exportPartBufferInformation.exportPartsInformation.forEach { exportPartInformationV2 ->
             val exportPartId = exportPartInformationV2.id
             val entityId = exportPartInformationV2.entityModel.id
+            val tableId = exportPartInformationV2.table
 
             entityModelIds.add(entityId)
 
-            if (syncEntities.contains(entityId)) {
-                val syncEntity = syncEntities.getOrElse(entityId) {
+            if (syncEntities.contains(entityId to tableId)) {
+                val syncEntity = syncEntities.getOrElse(entityId to tableId) {
                     throw IllegalStateException()
                 }
                 syncEntity.exportFromServer(syncId, exportPartId)

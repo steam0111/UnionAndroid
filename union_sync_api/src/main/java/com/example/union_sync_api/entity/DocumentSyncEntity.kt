@@ -13,6 +13,6 @@ data class DocumentSyncEntity(
     val completionDate: Long? = null,
     val documentStatus: String,
     val documentStatusId: String,
-    val objectType: String,
-    val reserves: List<ReserveSyncEntity>
+    val reserves: List<ReserveSyncEntity>,
+    val objectType: String?
 )
