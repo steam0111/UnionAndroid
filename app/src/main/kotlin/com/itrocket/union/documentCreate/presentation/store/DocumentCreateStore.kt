@@ -22,6 +22,9 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.reserves.presentation.store.ReservesArguments
+import com.itrocket.union.selectCount.presentation.store.SelectCountArguments
+import com.itrocket.union.selectCount.presentation.store.SelectCountResult
+import com.itrocket.union.selectCount.presentation.view.SelectCountComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsArguments
 
 interface DocumentCreateStore :
@@ -42,6 +45,8 @@ interface DocumentCreateStore :
         data class OnParamsChanged(val params: List<ParamDomain>) : Intent()
         data class OnReserveSelected(val reserve: ReservesDomain) :
             Intent()
+
+        data class OnReserveCountSelected(val result: SelectCountResult) : Intent()
         data class OnAccountingObjectSelected(val accountingObjectDomain: AccountingObjectDomain) :
             Intent()
 
@@ -52,6 +57,7 @@ interface DocumentCreateStore :
             Intent()
 
         data class OnLocationChanged(val location: LocationResult) : Intent()
+        data class OnReserveClicked(val reserve: ReservesDomain) : Intent()
     }
 
     data class State(
@@ -128,6 +134,21 @@ interface DocumentCreateStore :
 
             override val fragment: Fragment
                 get() = ReadingModeComposeFragment()
+        }
+
+        data class ShowSelectCount(val id: String, val count: Long) : Label(),
+            ShowBottomSheetNavigationLabel {
+            override val arguments: Bundle
+                get() = bundleOf(
+                    SelectCountComposeFragment.SELECT_COUNT_ARG to SelectCountArguments(
+                        id = id,
+                        count = count
+                    )
+                )
+            override val containerId: Int = R.id.mainActivityNavHostFragment
+            override val fragment: Fragment
+                get() = SelectCountComposeFragment()
+
         }
     }
 }

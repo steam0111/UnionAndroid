@@ -1,6 +1,7 @@
 package com.itrocket.union.location.data
 
 import com.example.union_sync_api.data.LocationSyncApi
+import com.example.union_sync_api.entity.LocationSyncEntity
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.location.data.mapper.toLocationDomain
 import com.itrocket.union.location.domain.dependencies.LocationRepository
@@ -18,6 +19,11 @@ class LocationRepositoryImpl(
     ): List<LocationDomain> = withContext(coreDispatchers.io) {
         getLocations(selectedPlaceScheme, textQuery = searchText)
     }
+
+    override suspend fun getLocationById(locationId: String): LocationSyncEntity =
+        withContext(coreDispatchers.io) {
+            locationSyncApi.getLocationById(locationId)
+        }
 
     private suspend fun getLocations(
         selectedPlaceScheme: List<LocationDomain>,

@@ -78,6 +78,7 @@
     <string name="equipment_types">Типы оборуд.</string>
     <string name="sync">Синхронизация</string>
     <string name="reception_category">Приеная категория</string>
+    <string name="count">Количество</string>
     <string name="save">Сохранение</string>
 
     <!-- Manual -->
@@ -254,4 +255,7 @@
 
     <!-- ChooseAction -->
     <string name="choose_action_title">Выберите действие</string>
+
+    <!-- SelectCount -->
+    <string name="select_count_title">Выберите количество</string>
 </resources>

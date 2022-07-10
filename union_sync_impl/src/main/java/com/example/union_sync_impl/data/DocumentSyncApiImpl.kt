@@ -1,22 +1,27 @@
 package com.example.union_sync_impl.data
 
-import android.util.Log
+import com.example.union_sync_api.data.DocumentReserveCountSyncApi
 import com.example.union_sync_api.data.DocumentSyncApi
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
+import com.example.union_sync_api.entity.DocumentReserveCountSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
+import com.example.union_sync_api.entity.DocumentUpdateReservesSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.DocumentDao
+import com.example.union_sync_impl.dao.DocumentReserveCountDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
+import com.example.union_sync_impl.dao.sqlDocumentReserveCountQuery
 import com.example.union_sync_impl.dao.sqlDocumentsQuery
 import com.example.union_sync_impl.dao.sqlReserveQuery
 import com.example.union_sync_impl.data.mapper.toDocumentDb
 import com.example.union_sync_impl.data.mapper.toDocumentSyncEntity
+import com.example.union_sync_impl.data.mapper.toDocumentUpdateReserves
 import com.example.union_sync_impl.data.mapper.toLocationShortSyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
@@ -30,7 +35,8 @@ class DocumentSyncApiImpl(
     private val documentDao: DocumentDao,
     private val locationDao: LocationDao,
     private val accountingObjectDao: AccountingObjectDao,
-    private val reserveDao: ReserveDao
+    private val reserveDao: ReserveDao,
+    private val documentReserveCountSyncApi: DocumentReserveCountSyncApi
 ) : DocumentSyncApi {
     override suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): String {
         val documentId = UUID.randomUUID().toString()
@@ -99,9 +105,21 @@ class DocumentSyncApiImpl(
                     it.toSyncEntity(getLocationSyncEntity(it.locationDb))
                 }
 
-        val reserves: List<ReserveSyncEntity> =
+        var reserves: List<ReserveSyncEntity> =
             reserveDao.getAll(sqlReserveQuery(reservesIds = fullDocument.documentDb.reservesIds))
                 .map { it.toSyncEntity(getLocationSyncEntity(it.locationDb)) }
+
+        val documentReservesCounts: List<DocumentReserveCountSyncEntity> =
+            documentReserveCountSyncApi.getAll(reserves.map { it.id })
+
+        reserves = reserves.map { reserve ->
+            val documentReserveCount = documentReservesCounts.find { it.id == reserve.id }
+            if (documentReserveCount != null) {
+                reserve.copy(count = documentReserveCount.count)
+            } else {
+                reserve
+            }
+        }
 
         return fullDocument.documentDb.toDocumentSyncEntity(
             organizationSyncEntity = fullDocument.organizationDb?.toSyncEntity(),
@@ -115,6 +133,10 @@ class DocumentSyncApiImpl(
 
     override suspend fun updateDocument(documentUpdateSyncEntity: DocumentUpdateSyncEntity) {
         documentDao.update(documentUpdateSyncEntity.toDocumentDb())
+    }
+
+    override suspend fun updateDocumentReserves(documentUpdateReservesSyncEntity: DocumentUpdateReservesSyncEntity) {
+        documentDao.update(documentUpdateReservesSyncEntity.toDocumentUpdateReserves())
     }
 
     //TODO переделать на join

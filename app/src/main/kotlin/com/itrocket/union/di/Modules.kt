@@ -52,6 +52,7 @@ import com.itrocket.union.syncAll.SyncAllModule
 import com.itrocket.union.token.TokenModule
 import com.union.sdk.SyncModule
 import com.itrocket.union.chooseAction.ChooseActionModule
+import com.itrocket.union.selectCount.SelectCountModule
 
 object Modules {
 
@@ -111,6 +112,7 @@ object Modules {
         ProducerDetailModule.module,
         EquipmentTypeDetailModule.module,
         SearchModule.module,
-        ChooseActionModule.module
+        ChooseActionModule.module,
+        SelectCountModule.module
     )
 }

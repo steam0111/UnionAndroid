@@ -33,7 +33,8 @@ fun DocumentSyncEntity.map(): DocumentDomain =
             exploiting = exploiting,
             organization = organizationSyncEntity,
             documentType = documentType,
-            locations = locations
+            locations = locations,
+            objectType = ObjectType.valueOf(objectType)
         ),
         documentStatusId = documentStatusId,
     )
@@ -43,10 +44,73 @@ private fun getParams(
     exploiting: EmployeeSyncEntity?,
     organization: OrganizationSyncEntity?,
     locations: List<LocationShortSyncEntity>?,
-    documentType: String
+    documentType: String,
+    objectType: ObjectType
+): List<ParamDomain> {
+    return when (objectType) {
+        ObjectType.MAIN_ASSETS -> getAccountingObjectParams(
+            mol = mol,
+            exploiting = exploiting,
+            organization = organization,
+            locations = locations,
+            documentType = documentType
+        )
+        ObjectType.RESERVES -> getReserveParams(
+            mol = mol,
+            organization = organization,
+            locations = locations,
+            documentType = documentType
+        )
+    }
+}
+
+private fun getAccountingObjectParams(
+    mol: EmployeeSyncEntity?,
+    exploiting: EmployeeSyncEntity?,
+    organization: OrganizationSyncEntity?,
+    locations: List<LocationShortSyncEntity>?,
+    documentType: String,
 ): List<ParamDomain> {
     val params = mutableListOf<ParamDomain>()
     val type = DocumentTypeDomain.valueOf(documentType)
+
+    addOrganizationParam(params = params, organization = organization)
+    addMolParam(params = params, mol = mol)
+    addExploitingParam(
+        params = params,
+        exploiting = exploiting,
+        documentType = type,
+        manualTypes = type.accountingObjectManualTypes
+    )
+    addLocationParam(
+        params = params,
+        types = type.accountingObjectManualTypes,
+        locations = locations
+    )
+
+    return params
+}
+
+private fun getReserveParams(
+    mol: EmployeeSyncEntity?,
+    organization: OrganizationSyncEntity?,
+    locations: List<LocationShortSyncEntity>?,
+    documentType: String,
+): List<ParamDomain> {
+    val params = mutableListOf<ParamDomain>()
+    val type = DocumentTypeDomain.valueOf(documentType)
+
+    addOrganizationParam(params = params, organization = organization)
+    addMolParam(params = params, mol = mol)
+    addLocationParam(params = params, types = type.reserveManualTypes, locations = locations)
+
+    return params
+}
+
+private fun addOrganizationParam(
+    params: MutableList<ParamDomain>,
+    organization: OrganizationSyncEntity?
+) {
     params.add(
         ParamDomain(
             organization?.id.orEmpty(),
@@ -54,60 +118,50 @@ private fun getParams(
             ManualType.ORGANIZATION
         )
     )
+}
+
+private fun addMolParam(params: MutableList<ParamDomain>, mol: EmployeeSyncEntity?) {
     val molValue = if (mol != null) {
         "${mol.firstname} ${mol.lastname}"
     } else {
         ""
     }
     params.add(ParamDomain(mol?.id.orEmpty(), molValue, ManualType.MOL))
-
-    val exploitingParam = getExploitingParam(
-        exploiting = exploiting,
-        documentType = type
-    )
-    if (exploitingParam != null) {
-        params.add(exploitingParam)
-    }
-
-    val locationParam = getLocationParam(types = type.manualTypes, locations = locations)
-    if (locationParam != null) {
-        params.add(locationParam)
-    }
-    return params
 }
 
-private fun getLocationParam(
+private fun addLocationParam(
+    params: MutableList<ParamDomain>,
     types: List<ManualType>,
     locations: List<LocationShortSyncEntity>?
-): LocationParamDomain? {
-    return if (types.contains(ManualType.LOCATION)) {
-        LocationParamDomain(
+) {
+    if (types.contains(ManualType.LOCATION)) {
+        val locationParam = LocationParamDomain(
             ids = locations?.map { it.id }.orEmpty(),
             values = locations?.map { it.name }.orEmpty(),
             filtered = false
         )
-    } else {
-        null
+        params.add(locationParam)
     }
 }
 
-private fun getExploitingParam(
+private fun addExploitingParam(
+    params: MutableList<ParamDomain>,
     exploiting: EmployeeSyncEntity?,
-    documentType: DocumentTypeDomain
-): ParamDomain? {
-    return if (documentType.manualTypes.contains(ManualType.EXPLOITING)) {
+    documentType: DocumentTypeDomain,
+    manualTypes: List<ManualType>
+) {
+    if (manualTypes.contains(ManualType.EXPLOITING)) {
         val exploitingValue = if (exploiting != null) {
             "${exploiting.firstname} ${exploiting.lastname}"
         } else {
             ""
         }
-        ParamDomain(
+        val param = ParamDomain(
             id = exploiting?.id.orEmpty(),
             value = exploitingValue,
             type = ManualType.EXPLOITING,
             isFilter = documentType == DocumentTypeDomain.RETURN
         )
-    } else {
-        null
+        params.add(param)
     }
 }
