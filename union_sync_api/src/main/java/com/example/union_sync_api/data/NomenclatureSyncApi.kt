@@ -9,5 +9,10 @@ interface NomenclatureSyncApi {
         textQuery: String? = null
     ): List<NomenclatureSyncEntity>
 
+    suspend fun getNomenclaturesCount(
+        groupId: String? = null,
+        textQuery: String? = null
+    ): Long
+
     suspend fun getNomenclatureDetail(id: String): NomenclatureDetailSyncEntity
 }

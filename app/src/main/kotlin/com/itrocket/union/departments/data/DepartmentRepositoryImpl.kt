@@ -21,4 +21,9 @@ class DepartmentRepositoryImpl(
         withContext(coreDispatchers.io) {
             departmentSyncApi.getDepartments(textQuery, params?.getOrganizationId()).map()
         }
+
+    override suspend fun getDepartmentsCount(textQuery: String?, params: List<ParamDomain>?): Long =
+        withContext(coreDispatchers.io) {
+            departmentSyncApi.getDepartmentsCount(textQuery, params?.getOrganizationId())
+        }
 }

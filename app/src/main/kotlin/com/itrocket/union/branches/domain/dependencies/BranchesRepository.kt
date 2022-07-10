@@ -9,4 +9,9 @@ interface BranchesRepository {
         textQuery: String? = null,
         params: List<ParamDomain>?
     ): List<BranchesDomain>
+
+    suspend fun getBranchesCount(
+        textQuery: String? = null,
+        params: List<ParamDomain>?
+    ): Long
 }

@@ -8,4 +8,9 @@ interface NomenclatureRepository {
         textQuery: String? = null,
         params: List<ParamDomain>?
     ): List<NomenclatureDomain>
+
+    suspend fun getNomenclaturesCount(
+        textQuery: String? = null,
+        params: List<ParamDomain>?
+    ): Long
 }

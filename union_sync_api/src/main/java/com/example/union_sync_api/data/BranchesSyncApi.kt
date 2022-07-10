@@ -9,5 +9,10 @@ interface BranchesSyncApi {
         textQuery: String? = null
     ): List<BranchSyncEntity>
 
+    suspend fun getBranchesCount(
+        organizationId: String? = null,
+        textQuery: String? = null
+    ): Long
+
     suspend fun getBranchDetail(id: String): BranchDetailSyncEntity
 }

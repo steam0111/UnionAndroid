@@ -20,6 +20,16 @@ class NomenclatureSyncApiImpl(
             .map { it.toSyncEntity() }
     }
 
+    override suspend fun getNomenclaturesCount(groupId: String?, textQuery: String?): Long {
+        return nomenclatureDao.getCount(
+            sqlNomenclatureQuery(
+                groupId,
+                textQuery,
+                isFilterCount = true
+            )
+        )
+    }
+
     override suspend fun getNomenclatureDetail(id: String): NomenclatureDetailSyncEntity {
         return nomenclatureDao.getById(id).toDetailSyncEntity()
     }

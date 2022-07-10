@@ -28,7 +28,7 @@ interface ReserveSyncApi {
         nomenclatureGroupId: String? = null,
         orderId: String? = null,
         receptionItemCategoryId: String? = null,
-    ): Int
+    ): Long
 
     suspend fun updateReserves(reserves: List<ReserveUpdateSyncEntity>)
 

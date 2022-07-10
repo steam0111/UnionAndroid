@@ -9,7 +9,6 @@ import com.example.union_sync_api.entity.DocumentReserveCountSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateReservesSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
-import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.ActionRecordDao
@@ -29,16 +28,15 @@ import com.example.union_sync_impl.data.mapper.toDocumentDb
 import com.example.union_sync_impl.data.mapper.toDocumentSyncEntity
 import com.example.union_sync_impl.data.mapper.toDocumentUpdateReserves
 import com.example.union_sync_impl.data.mapper.toLocationShortSyncEntity
-import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
 import com.example.union_sync_impl.entity.InventoryRecordDb
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
 import java.util.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 class DocumentSyncApiImpl(
     private val documentDao: DocumentDao,
@@ -89,6 +87,23 @@ class DocumentSyncApiImpl(
         }
     }
 
+    override suspend fun getAllDocumentsCount(
+        textQuery: String?,
+        molId: String?,
+        exploitingId: String?,
+        organizationId: String?
+    ): Long {
+        return documentDao.getCount(
+            sqlDocumentsQuery(
+                textQuery = textQuery,
+                molId = molId,
+                exploitingId = exploitingId,
+                organizationId = organizationId,
+                isFilterCount = true
+            )
+        )
+    }
+
     override suspend fun getDocuments(
         type: String,
         textQuery: String?
@@ -127,7 +142,7 @@ class DocumentSyncApiImpl(
                 )
             )
                 .map {
-                    it.toSyncEntity(getLocationSyncEntity(it.locationDb))
+                    it.toSyncEntity()
                 }
 
         val reserveIds =
@@ -135,7 +150,7 @@ class DocumentSyncApiImpl(
 
         var reserves: List<ReserveSyncEntity> =
             reserveDao.getAll(sqlReserveQuery(reservesIds = reserveIds))
-                .map { it.toSyncEntity(getLocationSyncEntity(it.locationDb)) }
+                .map { it.toSyncEntity() }
 
         val documentReservesCounts: List<DocumentReserveCountSyncEntity> =
             documentReserveCountSyncApi.getAll(reserves.map { it.id })
@@ -176,18 +191,6 @@ class DocumentSyncApiImpl(
             remainIds = documentUpdateReservesSyncEntity.reservesIds,
             actionId = documentUpdateReservesSyncEntity.id
         )
-    }
-
-    //TODO переделать на join
-    private suspend fun getLocationSyncEntity(locationDb: LocationDb?): LocationSyncEntity? {
-        if (locationDb == null) {
-            return null
-        }
-        val locationTypeId = locationDb.locationTypeId ?: return null
-        val locationTypeDb: LocationTypeDb =
-            locationDao.getLocationTypeById(locationTypeId) ?: return null
-
-        return locationDb.toLocationSyncEntity(locationTypeDb)
     }
 
     private suspend fun updateActionRecords(

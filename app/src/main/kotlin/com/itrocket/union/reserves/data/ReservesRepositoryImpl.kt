@@ -35,7 +35,7 @@ class ReservesRepositoryImpl(
         ).map()
     }
 
-    override suspend fun getReservesFilterCount(params: List<ParamDomain>?): Int {
+    override suspend fun getReservesFilterCount(params: List<ParamDomain>?): Long {
         return syncApi.getReservesFilterCount(
             organizationId = params?.getOrganizationId(),
             molId = params?.getMolId(),

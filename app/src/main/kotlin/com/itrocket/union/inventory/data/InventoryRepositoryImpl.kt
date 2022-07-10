@@ -49,4 +49,13 @@ class InventoryRepositoryImpl(
             }.flowOn(coreDispatchers.io)
         }
 
+    override suspend fun getInventoriesCount(textQuery: String?, params: List<ParamDomain>?): Long =
+        withContext(coreDispatchers.io) {
+            inventorySyncApi.getInventoriesCount(
+                textQuery = textQuery,
+                organizationId = params?.getOrganizationId(),
+                molId = params?.getMolId()
+            )
+        }
+
 }

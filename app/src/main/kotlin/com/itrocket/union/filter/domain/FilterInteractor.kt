@@ -76,32 +76,31 @@ class FilterInteractor(
         return mutableFilters
     }
 
-    //TODO переделать через базу данных
-    suspend fun getResultCount(from: CatalogType?, params: List<ParamDomain>): Int {
+    suspend fun getResultCount(from: CatalogType?, params: List<ParamDomain>): Long {
         return when (from) {
             CatalogType.ACCOUNTING_OBJECTS -> {
-                accountingObjectRepository.getAccountingObjects(params = params).count()
+                accountingObjectRepository.getAccountingObjectsCount(params = params)
             }
             CatalogType.EMPLOYEES -> {
-                employeeRepository.getEmployees(params = params).count()
+                employeeRepository.getEmployeesCount(params = params)
             }
             CatalogType.BRANCHES -> {
-                branchesRepository.getBranches(params = params).count()
+                branchesRepository.getBranchesCount(params = params)
             }
             CatalogType.DEPARTMENTS -> {
-                departmentRepository.getDepartments(params = params).count()
+                departmentRepository.getDepartmentsCount(params = params)
             }
             CatalogType.NOMENCLATURES -> {
-                nomenclatureRepository.getNomenclatures(params = params).count()
+                nomenclatureRepository.getNomenclaturesCount(params = params)
             }
             CatalogType.REGIONS -> {
-                regionRepository.getRegions().count()
+                regionRepository.getRegionsCount()
             }
             CatalogType.DOCUMENTS -> {
-                documentRepository.getAllDocuments(params = params).firstOrNull()?.count() ?: 0
+                documentRepository.getAllDocumentsCount(params = params)
             }
             CatalogType.INVENTORIES -> {
-                inventoriesRepository.getInventories(params = params).firstOrNull()?.count() ?: 0
+                inventoriesRepository.getInventoriesCount(params = params)
             }
             CatalogType.RESERVES -> {
                 reservesRepository.getReservesFilterCount(params = params)

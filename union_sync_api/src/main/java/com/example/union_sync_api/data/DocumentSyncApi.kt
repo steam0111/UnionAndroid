@@ -14,6 +14,13 @@ interface DocumentSyncApi {
         organizationId: String? = null
     ): Flow<List<DocumentSyncEntity>>
 
+    suspend fun getAllDocumentsCount(
+        textQuery: String? = null,
+        molId: String? = null,
+        exploitingId: String?,
+        organizationId: String? = null
+    ): Long
+
     suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): String
     suspend fun getDocuments(
         type: String,

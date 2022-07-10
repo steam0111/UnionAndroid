@@ -24,4 +24,13 @@ class BranchesRepositoryImpl(
             ).map()
         }
     }
+
+    override suspend fun getBranchesCount(textQuery: String?, params: List<ParamDomain>?): Long {
+        return withContext(coreDispatchers.io) {
+            branchesSyncApi.getBranchesCount(
+                organizationId = params?.getOrganizationId(),
+                textQuery = textQuery
+            )
+        }
+    }
 }

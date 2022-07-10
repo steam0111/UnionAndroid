@@ -25,4 +25,15 @@ class NomenclatureRepositoryImpl(
                 textQuery = textQuery
             ).map()
         }
+
+    override suspend fun getNomenclaturesCount(
+        textQuery: String?,
+        params: List<ParamDomain>?
+    ): Long =
+        withContext(coreDispatchers.io) {
+            syncApi.getNomenclaturesCount(
+                groupId = params?.getNomenclatureGroupId(),
+                textQuery = textQuery
+            )
+        }
 }

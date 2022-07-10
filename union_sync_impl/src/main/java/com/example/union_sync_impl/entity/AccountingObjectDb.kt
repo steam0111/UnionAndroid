@@ -49,6 +49,7 @@ class AccountingObjectDb(
     val organizationId: String?,
     val departmentId: String?,
     val locationId: String?,
+    val locationTypeId: String?,
     val providerId: String?,
     val molId: String?,
     val producerId: String?,

@@ -9,5 +9,10 @@ interface DepartmentSyncApi {
         organizationId: String? = null
     ): List<DepartmentSyncEntity>
 
+    suspend fun getDepartmentsCount(
+        textQuery: String? = null,
+        organizationId: String? = null
+    ): Long
+
     suspend fun getDepartmentDetail(id: String): DepartmentDetailSyncEntity
 }

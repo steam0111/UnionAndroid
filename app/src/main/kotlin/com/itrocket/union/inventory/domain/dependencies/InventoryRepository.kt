@@ -14,4 +14,9 @@ interface InventoryRepository {
         textQuery: String? = null,
         params: List<ParamDomain>?
     ): Flow<List<InventoryCreateDomain>>
+
+    suspend fun getInventoriesCount(
+        textQuery: String? = null,
+        params: List<ParamDomain>?
+    ): Long
 }

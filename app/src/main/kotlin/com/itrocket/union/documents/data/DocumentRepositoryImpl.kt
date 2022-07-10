@@ -6,6 +6,7 @@ import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.example.union_sync_api.entity.DocumentReserveCountSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateReservesSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
+import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.documents.data.mapper.map
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentDomain
@@ -16,10 +17,12 @@ import com.itrocket.union.manual.getMolId
 import com.itrocket.union.manual.getOrganizationId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 class DocumentRepositoryImpl(
     private val documentSyncApi: DocumentSyncApi,
-    private val documentReserveCountSyncApi: DocumentReserveCountSyncApi
+    private val documentReserveCountSyncApi: DocumentReserveCountSyncApi,
+    private val coreDispatchers: CoreDispatchers
 ) : DocumentRepository {
     override suspend fun getAllDocuments(
         textQuery: String?,
@@ -31,6 +34,17 @@ class DocumentRepositoryImpl(
             exploitingId = params?.getExploitingId(),
             organizationId = params?.getOrganizationId()
         ).map { it.map() }
+    }
+
+    override suspend fun getAllDocumentsCount(textQuery: String?, params: List<ParamDomain>?): Long {
+        return withContext(coreDispatchers.io) {
+            documentSyncApi.getAllDocumentsCount(
+                textQuery = textQuery,
+                molId = params?.getMolId(),
+                exploitingId = params?.getExploitingId(),
+                organizationId = params?.getOrganizationId()
+            )
+        }
     }
 
     override suspend fun getDocuments(

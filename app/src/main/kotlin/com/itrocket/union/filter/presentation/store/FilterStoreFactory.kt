@@ -100,7 +100,7 @@ class FilterStoreFactory(
         private suspend fun getResultCount(
             params: List<ParamDomain>,
             state: FilterStore.State
-        ): Int {
+        ): Long {
             return filterInteractor.getResultCount(state.from, params)
         }
 
@@ -134,7 +134,7 @@ class FilterStoreFactory(
 
     private sealed class Result {
         data class Filters(val filters: List<ParamDomain>) : Result()
-        data class Count(val count: Int) : Result()
+        data class Count(val count: Long) : Result()
     }
 
     private object ReducerImpl : Reducer<FilterStore.State, Result> {

@@ -13,6 +13,12 @@ interface InventorySyncApi {
         molId: String? = null
     ): Flow<List<InventorySyncEntity>>
 
+    suspend fun getInventoriesCount(
+        textQuery: String? = null,
+        organizationId: String? = null,
+        molId: String? = null
+    ): Long
+
     suspend fun getInventoryById(id: String): InventorySyncEntity
     suspend fun updateInventory(inventoryUpdateSyncEntity: InventoryUpdateSyncEntity)
 }

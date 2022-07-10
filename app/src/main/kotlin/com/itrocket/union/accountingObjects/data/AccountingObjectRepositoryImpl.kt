@@ -41,6 +41,24 @@ class AccountingObjectRepositoryImpl(
             ).map { it.map() }
         }
 
+    override suspend fun getAccountingObjectsCount(
+        textQuery: String?,
+        params: List<ParamDomain>
+    ): Long =
+        withContext(coreDispatchers.io) {
+            syncApi.getAccountingObjectsCount(
+                textQuery = textQuery,
+                organizationId = params.getOrganizationId(),
+                exploitingId = params.getExploitingId(),
+                molId = params.getMolId(),
+                departmentId = params.getDepartmentId(),
+                producerId = params.getProducerId(),
+                equipmentTypeId = params.getEquipmentTypeId(),
+                providerId = params.getProviderId(),
+                statusId = params.getStatusId()
+            )
+        }
+
     override suspend fun getAccountingObjectsByIds(ids: List<String>): List<AccountingObjectSyncEntity> {
         return withContext(coreDispatchers.io) {
             syncApi.getAccountingObjects(accountingObjectsIds = ids)
