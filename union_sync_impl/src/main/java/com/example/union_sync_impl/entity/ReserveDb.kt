@@ -54,6 +54,7 @@ class ReserveDb(
     id: String,
     override var catalogItemName: String,
     val locationId: String?,
+    val locationTypeId: String?,
     val molId: String?,
     val orderId: String?,
     val nomenclatureId: String?,

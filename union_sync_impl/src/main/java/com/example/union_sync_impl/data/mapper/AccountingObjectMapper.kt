@@ -12,37 +12,6 @@ import com.example.union_sync_impl.entity.FullAccountingObject
 import org.openapitools.client.models.AccountingObjectDtoV2
 import org.openapitools.client.models.AccountingObjectStatusDto
 import org.openapitools.client.models.AccountingObjectStatusDtoV2
-import org.openapitools.client.models.CustomAccountingObjectDto
-
-fun CustomAccountingObjectDto.toAccountingObjectDb(): AccountingObjectDb {
-    return AccountingObjectDb(
-        id = id,
-        catalogItemName = catalogItemName.orEmpty(),
-        organizationId = organizationId,
-        locationId = locationId,
-        molId = molId,
-        exploitingId = exploitingId,
-        nomenclatureId = nomenclatureId,
-        nomenclatureGroupId = nomenclatureGroupId,
-        barcodeValue = barcodeValue,
-        name = name.orEmpty(),
-        rfidValue = rfidValue,
-        factoryNumber = factoryNumber,
-        inventoryNumber = inventoryNumber,
-        status = extendedAccountingObjectStatus?.toStatusDb(),
-        statusId = accountingObjectStatusId,
-        producerId = producerId,
-        equipmentTypeId = typeId,
-        actualPrice = actualPrice,
-        count = count?.toInt(),
-        commissioningDate = commissioningDate,
-        internalNumber = internalNumber,
-        departmentId = departmentId,
-        model = model,
-        providerId = providerId,
-        updateDate = System.currentTimeMillis()
-    )
-}
 
 fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
     return AccountingObjectDb(
@@ -50,6 +19,7 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
         catalogItemName = catalogItemName.orEmpty(),
         organizationId = organizationId,
         locationId = locationId,
+        locationTypeId = extendedLocation?.locationTypeId,
         molId = molId,
         exploitingId = exploitingId,
         nomenclatureId = nomenclatureId,
@@ -74,40 +44,8 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
     )
 }
 
-fun AccountingObjectSyncEntity.toAccountingObjectDb(): AccountingObjectDb {
-    return AccountingObjectDb(
-        id = id,
-        catalogItemName = catalogItemName,
-        organizationId = organizationId,
-        locationId = locationId,
-        molId = molId,
-        exploitingId = exploitingEmployeeId,
-        nomenclatureId = nomenclatureId,
-        nomenclatureGroupId = nomenclatureGroupId,
-        barcodeValue = barcodeValue,
-        name = name,
-        rfidValue = rfidValue,
-        factoryNumber = factoryNumber,
-        inventoryNumber = inventoryNumber,
-        status = status?.toStatusDb(),
-        statusId = statusId,
-        producerId = producerId,
-        equipmentTypeId = equipmentTypeId,
-        actualPrice = actualPrice,
-        count = count,
-        commissioningDate = commissioningDate,
-        internalNumber = internalNumber,
-        departmentId = departmentId,
-        model = model,
-        providerId = providerId,
-        updateDate = System.currentTimeMillis()
-    )
-}
-
-fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
-    locationSyncEntity: LocationSyncEntity?
-): AccountingObjectDetailSyncEntity {
-
+fun FullAccountingObject.toAccountingObjectDetailSyncEntity(): AccountingObjectDetailSyncEntity {
+    val locationSyncEntity = locationDb?.toLocationSyncEntity(locationTypeDb)
     return AccountingObjectDetailSyncEntity(
         accountingObject = accountingObjectDb.toSyncEntity(locationSyncEntity),
         location = locationSyncEntity,
@@ -157,7 +95,6 @@ fun AccountingObjectDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?) =
     )
 
 fun FullAccountingObject.toSyncEntity(
-    locationSyncEntity: LocationSyncEntity?,
     inventoryStatus: String? = null
 ) = AccountingObjectSyncEntity(
     id = accountingObjectDb.id,
@@ -182,7 +119,7 @@ fun FullAccountingObject.toSyncEntity(
     organizationId = accountingObjectDb.organizationId,
     internalNumber = accountingObjectDb.internalNumber,
     model = accountingObjectDb.model,
-    locationSyncEntity = locationSyncEntity,
+    locationSyncEntity = locationDb?.toLocationSyncEntity(locationTypeDb),
     statusId = accountingObjectDb.statusId,
     nomenclatureGroupId = accountingObjectDb.nomenclatureGroupId,
     nomenclatureId = accountingObjectDb.nomenclatureId

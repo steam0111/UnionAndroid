@@ -2,6 +2,7 @@ package com.example.union_sync_impl.data.mapper
 
 import com.example.union_sync_api.entity.LocationShortSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
+import com.example.union_sync_api.entity.LocationTypeSyncEntity
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
 import org.openapitools.client.models.CustomLocationDto
@@ -53,11 +54,15 @@ fun LocationsTypeDtoV2.toLocationTypeDb(): LocationTypeDb {
 
 fun LocationDb.toLocationShortSyncEntity() = LocationShortSyncEntity(id = id, name = name)
 
-fun LocationDb.toLocationSyncEntity(locationTypeDb: LocationTypeDb): LocationSyncEntity {
+fun LocationDb.toLocationSyncEntity(locationTypeDb: LocationTypeDb?): LocationSyncEntity {
     return LocationSyncEntity(
         id = id,
         name = name,
-        locationType = locationTypeDb.name,
-        locationTypeId = locationTypeDb.id
+        locationType = locationTypeDb?.name.orEmpty(),
+        locationTypeId = locationTypeDb?.id.orEmpty()
     )
 }
+
+fun LocationTypeDb.toSyncEntity() = LocationTypeSyncEntity(
+    id, name
+)

@@ -23,4 +23,12 @@ class EmployeeRepositoryImpl(
                 textQuery = textQuery
             ).map()
         }
+
+    override suspend fun getEmployeesCount(textQuery: String?, params: List<ParamDomain>?): Long =
+        withContext(coreDispatchers.io) {
+            employeeSyncApi.getEmployeesCount(
+                organizationId = params?.getOrganizationId(),
+                textQuery = textQuery
+            )
+        }
 }

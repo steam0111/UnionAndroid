@@ -14,6 +14,9 @@ interface EmployeeDao {
     @RawQuery
     fun getAll(query: SupportSQLiteQuery): List<EmployeeDb>
 
+    @RawQuery
+    fun getCount(query: SupportSQLiteQuery): Long
+
     @Query(
         "SELECT employees.*," +
                 "organizations.id AS organizations_id, " +

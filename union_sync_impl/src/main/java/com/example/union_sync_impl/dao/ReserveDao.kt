@@ -18,7 +18,7 @@ interface ReserveDao {
     fun getAll(query: SupportSQLiteQuery): List<FullReserve>
 
     @RawQuery
-    suspend fun getFilterCount(query: SupportSQLiteQuery): Int
+    suspend fun getFilterCount(query: SupportSQLiteQuery): Long
 
     @Query(
         "SELECT reserves.*," +
@@ -58,7 +58,12 @@ interface ReserveDao {
                 "location.id AS locations_id, " +
                 "location.catalogItemName AS locations_catalogItemName, " +
                 "location.name AS locations_name, " +
-                "location.parentId AS locations_parentId " +
+                "location.parentId AS locations_parentId, " +
+                "" +
+                "locationTypes.id AS location_type_id, " +
+                "locationTypes.catalogItemName AS location_type_catalogItemName, " +
+                "locationTypes.name AS location_type_name, " +
+                "locationTypes.parentId AS location_type_parentId " +
                 "" +
                 "FROM reserves " +
                 "LEFT JOIN departments ON reserves.structuralSubdivisionId = departments.id " +
@@ -68,6 +73,7 @@ interface ReserveDao {
                 "LEFT JOIN nomenclature ON reserves.nomenclatureId = nomenclature.id " +
                 "LEFT JOIN nomenclature_group ON reserves.nomenclatureGroupId = nomenclature_group.id " +
                 "LEFT JOIN reception_item_category ON reserves.receptionItemCategoryId = reception_item_category.id " +
+                "LEFT JOIN locationTypes ON reserves.locationTypeId = locationTypes.id " +
                 "WHERE reserves.id = :id LIMIT 1"
     )
     suspend fun getById(id: String): FullReserve

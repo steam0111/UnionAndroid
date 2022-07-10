@@ -23,7 +23,7 @@ interface ReservesRepository {
         reservesShorts: List<ReserveShortSyncEntity>? = null
     ): List<ReserveSyncEntity>
 
-    suspend fun getReservesFilterCount(params: List<ParamDomain>? = null): Int
+    suspend fun getReservesFilterCount(params: List<ParamDomain>? = null): Long
 
     suspend fun getReserveById(id: String): ReservesDomain
 

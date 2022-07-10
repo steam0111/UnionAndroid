@@ -15,6 +15,9 @@ interface RegionDao {
     @RawQuery
     fun getAll(query: SupportSQLiteQuery): List<RegionDb>
 
+    @RawQuery
+    fun getCount(query: SupportSQLiteQuery): Long
+
     @Query("SELECT * FROM regions WHERE id = :id LIMIT 1")
     suspend fun getFullById(id: String): FullRegionDb
 

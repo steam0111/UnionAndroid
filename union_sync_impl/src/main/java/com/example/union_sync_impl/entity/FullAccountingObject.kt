@@ -2,12 +2,15 @@ package com.example.union_sync_impl.entity
 
 import androidx.room.Embedded
 import com.example.union_sync_impl.entity.location.LocationDb
+import com.example.union_sync_impl.entity.location.LocationTypeDb
 
 class FullAccountingObject(
     @Embedded
     val accountingObjectDb: AccountingObjectDb,
     @Embedded(prefix = "locations_")
     val locationDb: LocationDb?,
+    @Embedded(prefix = "location_type_")
+    val locationTypeDb: LocationTypeDb?,
     @Embedded(prefix = "mol_")
     val mol: EmployeeDb?,
     @Embedded(prefix = "exploiting_")

@@ -16,8 +16,23 @@ class DepartmentSyncApiImpl(
         textQuery: String?,
         organizationId: String?
     ): List<DepartmentSyncEntity> {
-        val departmentDb = departmentDao.getAll(sqlDepartmentsQuery(organizationId = organizationId, textQuery = textQuery))
+        val departmentDb = departmentDao.getAll(
+            sqlDepartmentsQuery(
+                organizationId = organizationId,
+                textQuery = textQuery
+            )
+        )
         return departmentDb.map { it.toSyncEntity() }
+    }
+
+    override suspend fun getDepartmentsCount(textQuery: String?, organizationId: String?): Long {
+        return departmentDao.getCount(
+            sqlDepartmentsQuery(
+                organizationId = organizationId,
+                textQuery = textQuery,
+                isFilterCount = true
+            )
+        )
     }
 
     override suspend fun getDepartmentDetail(id: String): DepartmentDetailSyncEntity {

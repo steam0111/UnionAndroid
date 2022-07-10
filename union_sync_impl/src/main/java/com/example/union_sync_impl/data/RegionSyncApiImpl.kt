@@ -15,7 +15,22 @@ class RegionSyncApiImpl(
         organizationId: String?,
         textQuery: String?
     ): List<RegionSyncEntity> {
-        return regionDao.getAll(sqlRegionQuery(organizationId = organizationId, textQuery = textQuery)).map { it.toSyncEntity() }
+        return regionDao.getAll(
+            sqlRegionQuery(
+                organizationId = organizationId,
+                textQuery = textQuery
+            )
+        ).map { it.toSyncEntity() }
+    }
+
+    override suspend fun getRegionsCount(organizationId: String?, textQuery: String?): Long {
+        return regionDao.getCount(
+            sqlRegionQuery(
+                organizationId = organizationId,
+                textQuery = textQuery,
+                isFilterCount = true
+            )
+        )
     }
 
     override suspend fun getRegionDetail(id: String): RegionDetailSyncEntity {

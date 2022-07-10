@@ -18,6 +18,9 @@ interface DocumentDao {
     @RawQuery(observedEntities = [FullDocument::class])
     fun getAll(query: SupportSQLiteQuery): Flow<List<FullDocument>>
 
+    @RawQuery
+    fun getCount(query: SupportSQLiteQuery): Long
+
     @Query(
         "SELECT documents.*," +
                 "" +

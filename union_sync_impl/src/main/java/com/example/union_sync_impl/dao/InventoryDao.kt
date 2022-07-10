@@ -17,6 +17,9 @@ interface InventoryDao {
     @RawQuery(observedEntities = [FullInventory::class])
     fun getAll(query: SupportSQLiteQuery): Flow<List<FullInventory>>
 
+    @RawQuery
+    suspend fun getCount(query: SupportSQLiteQuery): Long
+
     @Query(
         "SELECT inventories.*," +
                 "" +

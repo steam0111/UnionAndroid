@@ -16,6 +16,11 @@ interface DocumentRepository {
         params: List<ParamDomain>?
     ): Flow<List<DocumentDomain>>
 
+    suspend fun getAllDocumentsCount(
+        textQuery: String? = null,
+        params: List<ParamDomain>?
+    ): Long
+
     suspend fun getDocuments(
         type: DocumentTypeDomain,
         textQuery: String?

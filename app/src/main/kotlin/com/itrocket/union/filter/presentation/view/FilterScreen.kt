@@ -119,7 +119,7 @@ private fun FilterContent(
 
 @Composable
 private fun FilterBottomBar(
-    resultCount: Int,
+    resultCount: Long,
     onBtnClickListener: () -> Unit,
     resources: Resources
 ) {

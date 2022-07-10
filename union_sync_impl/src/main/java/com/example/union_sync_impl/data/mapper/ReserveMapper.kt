@@ -14,6 +14,7 @@ fun RemainsDtoV2.toReserveDb(): ReserveDb {
         id = id,
         catalogItemName = catalogItemName.orEmpty(),
         locationId = locationToId,
+        locationTypeId = extendedLocation?.locationTypeId,
         molId = molId,
         orderId = orderId,
         nomenclatureId = nomenclatureId,
@@ -34,6 +35,7 @@ fun ReserveSyncEntity.toReserveDb(): ReserveDb {
         id = id,
         catalogItemName = catalogItemName,
         locationId = locationSyncEntity?.id,
+        locationTypeId = locationSyncEntity?.locationTypeId,
         molId = molId,
         orderId = orderId,
         nomenclatureId = nomenclatureId,
@@ -68,7 +70,7 @@ fun ReserveDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?): ReserveSync
     )
 }
 
-fun FullReserve.toSyncEntity(locationSyncEntity: LocationSyncEntity?): ReserveSyncEntity {
+fun FullReserve.toSyncEntity(): ReserveSyncEntity {
     return ReserveSyncEntity(
         id = reserveDb.id,
         catalogItemName = reserveDb.catalogItemName,
@@ -83,15 +85,17 @@ fun FullReserve.toSyncEntity(locationSyncEntity: LocationSyncEntity?): ReserveSy
         structuralSubdivisionId = reserveDb.structuralSubdivisionId,
         receptionDocumentNumber = reserveDb.receptionDocumentNumber,
         unitPrice = reserveDb.unitPrice,
-        locationSyncEntity = locationSyncEntity,
+        locationSyncEntity = locationDb?.toLocationSyncEntity(locationTypeDb),
     )
 }
 
-fun FullReserve.toDetailSyncEntity(locationSyncEntity: LocationSyncEntity?): ReserveDetailSyncEntity {
+fun FullReserve.toDetailSyncEntity(): ReserveDetailSyncEntity {
+    val locationEntity = locationDb?.toLocationSyncEntity(locationTypeDb)
     return ReserveDetailSyncEntity(
-        reserveSyncEntity = reserveDb.toSyncEntity(locationSyncEntity),
+        reserveSyncEntity = reserveDb.toSyncEntity(locationEntity),
         businessUnitSyncEntity = businessUnitDb?.toSyncEntity(),
-        locationSyncEntity = locationSyncEntity,
+        locationSyncEntity = locationEntity,
+        locationTypeSyncEntity = locationTypeDb?.toSyncEntity(),
         molSyncEntity = molDb?.toSyncEntity(),
         nomenclatureSyncEntity = nomenclatureDb?.toSyncEntity(),
         nomenclatureGroupSyncEntity = nomenclatureGroupDb?.toSyncEntity(),

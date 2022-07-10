@@ -18,6 +18,9 @@ interface AccountingObjectDao {
     @RawQuery
     fun getAll(query: SupportSQLiteQuery): List<FullAccountingObject>
 
+    @RawQuery
+    fun getCount(query: SupportSQLiteQuery): Long
+
     @Query(
         "SELECT accounting_objects.*," +
                 "organizations.id AS organizations_id, " +
@@ -49,6 +52,11 @@ interface AccountingObjectDao {
                 "location.name AS locations_name, " +
                 "location.parentId AS locations_parentId, " +
                 "" +
+                "locationTypes.id AS location_type_id, " +
+                "locationTypes.catalogItemName AS location_type_catalogItemName, " +
+                "locationTypes.name AS location_type_name, " +
+                "locationTypes.parentId AS location_type_parentId, " +
+                "" +
                 "producer.id AS producer_id, " +
                 "producer.catalogItemName AS producer_catalogItemName, " +
                 "producer.name AS producer_name, " +
@@ -74,6 +82,7 @@ interface AccountingObjectDao {
                 "LEFT JOIN equipment_types ON accounting_objects.equipmentTypeId = equipment_types.id " +
                 "LEFT JOIN producer ON accounting_objects.producerId = producer.id " +
                 "LEFT JOIN organizations ON accounting_objects.organizationId = organizations.id " +
+                "LEFT JOIN locationTypes ON accounting_objects.locationTypeId = locationTypes.id " +
                 "LEFT JOIN location ON accounting_objects.locationId = location.id " +
                 "LEFT JOIN employees molEmployees ON accounting_objects.molId = molEmployees.id " +
                 "LEFT JOIN employees exploitingEmployees ON accounting_objects.exploitingId = exploitingEmployees.id " +

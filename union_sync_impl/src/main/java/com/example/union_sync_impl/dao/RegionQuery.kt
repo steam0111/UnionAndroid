@@ -10,26 +10,40 @@ import com.example.union_sync_impl.utils.more
 fun sqlRegionQuery(
     organizationId: String? = null,
     textQuery: String? = null,
-    updateDate: Long? = null
+    updateDate: Long? = null,
+    isFilterCount: Boolean = false
 ): SimpleSQLiteQuery {
-    val mainQuery = "SELECT * FROM regions"
-
-    val query = mainQuery.addFilters(
-        sqlTableFilters = SqlTableFilters(
-            tableName = "regions",
-            filter = buildList {
-                organizationId?.let {
-                    add("organizationId" contains organizationId)
-                }
-                textQuery?.let {
-                    add("name" contains textQuery)
-                }
-                updateDate?.let {
-                    add("updateDate" more updateDate)
-                }
-            }
+    val mainQuery = if (isFilterCount) {
+        "SELECT COUNT(*) FROM regions"
+    } else {
+        "SELECT * FROM regions"
+    }
+    return SimpleSQLiteQuery(
+        mainQuery.getRegionsFilterPartQuery(
+            organizationId,
+            textQuery,
+            updateDate
         )
     )
-
-    return SimpleSQLiteQuery(query)
 }
+
+private fun String.getRegionsFilterPartQuery(
+    organizationId: String? = null,
+    textQuery: String? = null,
+    updateDate: Long? = null
+): String = addFilters(
+    sqlTableFilters = SqlTableFilters(
+        tableName = "regions",
+        filter = buildList {
+            organizationId?.let {
+                add("organizationId" contains organizationId)
+            }
+            textQuery?.let {
+                add("name" contains textQuery)
+            }
+            updateDate?.let {
+                add("updateDate" more updateDate)
+            }
+        }
+    )
+)

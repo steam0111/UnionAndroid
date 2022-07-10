@@ -9,5 +9,10 @@ interface RegionSyncApi {
         textQuery: String? = null
     ): List<RegionSyncEntity>
 
+    suspend fun getRegionsCount(
+        organizationId: String? = null,
+        textQuery: String? = null
+    ): Long
+
     suspend fun getRegionDetail(id: String): RegionDetailSyncEntity
 }

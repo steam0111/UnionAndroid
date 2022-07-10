@@ -92,8 +92,7 @@ object SyncModule {
         }
         factory<AccountingObjectSyncApi> {
             AccountingObjectSyncApiImpl(
-                accountingObjectsDao = get(),
-                locationDao = get(),
+                accountingObjectsDao = get()
             )
         }
         factory<InventorySyncApi> {
@@ -132,7 +131,6 @@ object SyncModule {
         }
         factory<ReserveSyncApi> {
             ReserveSyncApiImpl(
-                locationDao = get(),
                 reserveDao = get()
             )
         }

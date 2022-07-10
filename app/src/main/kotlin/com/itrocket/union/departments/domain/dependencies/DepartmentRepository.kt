@@ -8,4 +8,9 @@ interface DepartmentRepository {
         textQuery: String? = null,
         params: List<ParamDomain>?
     ): List<DepartmentDomain>
+
+    suspend fun getDepartmentsCount(
+        textQuery: String? = null,
+        params: List<ParamDomain>?
+    ): Long
 }
