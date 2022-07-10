@@ -11,7 +11,6 @@ class InventoryDb(
     updateDate: Long?,
     val organizationId: String?,
     val employeeId: String?,
-    val accountingObjectsIds: List<AccountingObjectInfoSyncEntity>,
     val locationIds: List<String>? = listOf(),
     val date: Long,
     val inventoryStatus: String

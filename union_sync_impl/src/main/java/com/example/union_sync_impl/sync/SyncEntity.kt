@@ -28,6 +28,8 @@ abstract class SyncEntity<SyncType>(
      */
     abstract val id: String
 
+    open val table: String = id
+
     abstract suspend fun exportFromServer(syncId: String, exportPartId: String)
 
     abstract suspend fun saveInDb(objects: List<SyncType>)

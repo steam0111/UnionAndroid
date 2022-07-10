@@ -99,7 +99,4 @@ interface DocumentDao {
 
     @Update
     suspend fun update(documentDb: DocumentDb)
-
-    @Update(entity = DocumentDb::class)
-    suspend fun update(documentUpdateReserves: DocumentUpdateReserves)
 }

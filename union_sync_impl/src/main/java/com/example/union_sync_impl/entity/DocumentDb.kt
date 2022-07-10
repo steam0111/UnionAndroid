@@ -14,10 +14,8 @@ class DocumentDb(
     val completionDate: Long? = null,
     val exploitingId: String? = null,
     val documentType: String,
-    val objectType: String,
-    val accountingObjectsIds: List<String>? = null,
-    val reservesIds: List<String>? = null,
     val locationIds: List<String>? = null,
     val documentStatus: String,
     val documentStatusId: String,
+    val objectType: String?
 ) : SyncItemDb(id, updateDate)

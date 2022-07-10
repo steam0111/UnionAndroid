@@ -1,22 +1,29 @@
 package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.InventorySyncApi
+import com.example.union_sync_api.entity.AccountingObjectInfoSyncEntity
 import com.example.union_sync_api.entity.InventoryCreateSyncEntity
+import com.example.union_sync_api.entity.InventoryRecordSyncEntity
 import com.example.union_sync_api.entity.InventorySyncEntity
 import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.InventoryDao
+import com.example.union_sync_impl.dao.InventoryRecordDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
+import com.example.union_sync_impl.dao.sqlActionRecordQuery
 import com.example.union_sync_impl.dao.sqlInventoryQuery
+import com.example.union_sync_impl.dao.sqlInventoryRecordQuery
 import com.example.union_sync_impl.data.mapper.toInventoryDb
 import com.example.union_sync_impl.data.mapper.toInventorySyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationShortSyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
+import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.FullAccountingObject
 import com.example.union_sync_impl.entity.InventoryDb
+import com.example.union_sync_impl.entity.InventoryRecordDb
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
 import java.util.*
@@ -26,11 +33,16 @@ import kotlinx.coroutines.flow.map
 class InventorySyncApiImpl(
     private val inventoryDao: InventoryDao,
     private val locationDao: LocationDao,
-    private val accountingObjectDao: AccountingObjectDao
+    private val accountingObjectDao: AccountingObjectDao,
+    private val inventoryRecordDao: InventoryRecordDao
 ) : InventorySyncApi {
     override suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): String {
         val inventoryId = UUID.randomUUID().toString()
         inventoryDao.insert(inventoryCreateSyncEntity.toInventoryDb(inventoryId))
+        updateRecords(
+            inventoryId = inventoryId,
+            accountingObjectIds = inventoryCreateSyncEntity.accountingObjectsIds
+        )
         return inventoryId
     }
 
@@ -69,13 +81,19 @@ class InventorySyncApiImpl(
         } else {
             null
         }
-        val accountingObjectIds = fullInventory.inventoryDb.accountingObjectsIds.map { it.id }
+
+        val inventoryRecords =
+            inventoryRecordDao.getAll(sqlInventoryRecordQuery(fullInventory.inventoryDb.id))
+
+        val accountingObjectIds = inventoryRecords.map {
+            it.accountingObjectId
+        }
 
         val accountingObjects =
             accountingObjectDao.getAll(sqlAccountingObjectQuery(accountingObjectsIds = accountingObjectIds))
                 .map { fullAccountingObject ->
                     val inventoryStatus = getInventoryStatus(
-                        inventoryDb = fullInventory.inventoryDb,
+                        inventoryRecords = inventoryRecords,
                         fullAccountingObject = fullAccountingObject
                     )
                     fullAccountingObject.toSyncEntity(
@@ -94,6 +112,33 @@ class InventorySyncApiImpl(
 
     override suspend fun updateInventory(inventoryUpdateSyncEntity: InventoryUpdateSyncEntity) {
         inventoryDao.update(inventoryUpdateSyncEntity.toInventoryDb())
+        updateRecords(
+            inventoryId = inventoryUpdateSyncEntity.id,
+            accountingObjectIds = inventoryUpdateSyncEntity.accountingObjectsIds
+        )
+    }
+
+    private suspend fun updateRecords(
+        accountingObjectIds: List<AccountingObjectInfoSyncEntity>,
+        inventoryId: String
+    ) {
+        val existRecords = inventoryRecordDao.getAll(
+            sqlInventoryRecordQuery(
+                inventoryId = inventoryId,
+                accountingObjectIds = accountingObjectIds.map { it.id }
+            )
+        )
+        val newRecords = accountingObjectIds.map { info ->
+            val existRecord = existRecords.find { it.accountingObjectId == info.id }
+            InventoryRecordDb(
+                id = existRecord?.id ?: UUID.randomUUID().toString(),
+                accountingObjectId = info.id,
+                inventoryStatus = info.status,
+                inventoryId = inventoryId,
+                updateDate = System.currentTimeMillis()
+            )
+        }
+        inventoryRecordDao.insertAll(newRecords)
     }
 
     //TODO переделать на join
@@ -109,11 +154,11 @@ class InventorySyncApiImpl(
     }
 
     private fun getInventoryStatus(
-        inventoryDb: InventoryDb,
+        inventoryRecords: List<InventoryRecordDb>,
         fullAccountingObject: FullAccountingObject
     ): String? {
-        return inventoryDb.accountingObjectsIds.find {
-            fullAccountingObject.accountingObjectDb.id == it.id
-        }?.status
+        return inventoryRecords.find {
+            fullAccountingObject.accountingObjectDb.id == it.accountingObjectId
+        }?.inventoryStatus
     }
 }

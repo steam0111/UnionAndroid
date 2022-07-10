@@ -19,15 +19,13 @@ fun ActionDtoV2.toDocumentDb(): DocumentDb {
         organizationId = organizationId.orEmpty(),
         molId = molId.orEmpty(),
         exploitingId = exploitingId,
-        accountingObjectsIds = listOf(),
         documentType = extendedActionType?.id ?: "EXTRADITION",
         locationIds = listOf(locationToId.orEmpty()),
         creationDate = System.currentTimeMillis(),
         documentStatus = extendedActionStatus?.id.orEmpty(),
         documentStatusId = actionStatusId.orEmpty(),
-        reservesIds = listOf(),
-        objectType = "MAIN_ASSETS",
-        updateDate = System.currentTimeMillis()
+        updateDate = System.currentTimeMillis(),
+        objectType = null
     )
 }
 
@@ -37,15 +35,13 @@ fun DocumentCreateSyncEntity.toDocumentDb(id: String): DocumentDb {
         organizationId = organizationId,
         molId = molId,
         exploitingId = exploitingId,
-        accountingObjectsIds = accountingObjectsIds,
         documentType = documentType,
         locationIds = locationIds,
         creationDate = System.currentTimeMillis(),
         documentStatus = documentStatus,
         documentStatusId = documentStatusId,
-        reservesIds = reservesIds,
-        objectType = objectType,
-        updateDate = System.currentTimeMillis()
+        updateDate = System.currentTimeMillis(),
+        objectType = objectType
     )
 }
 
@@ -55,16 +51,14 @@ fun DocumentUpdateSyncEntity.toDocumentDb(): DocumentDb {
         organizationId = organizationId,
         molId = molId,
         exploitingId = exploitingId,
-        accountingObjectsIds = accountingObjectsIds,
         documentType = documentType,
         locationIds = locationIds,
         documentStatusId = documentStatusId,
         documentStatus = documentStatus,
         creationDate = creationDate,
         completionDate = completionDate,
-        objectType = objectType,
-        reservesIds = reservesIds,
-        updateDate = System.currentTimeMillis()
+        updateDate = System.currentTimeMillis(),
+        objectType = objectType
     )
 }
 
