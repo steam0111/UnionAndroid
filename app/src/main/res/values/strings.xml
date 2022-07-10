@@ -76,6 +76,7 @@
     <string name="regions">Регионы</string>
     <string name="branches">Филиалы</string>
     <string name="equipment_types">Типы оборуд.</string>
+    <string name="sync">Синхронизация</string>
     <string name="reception_category">Приеная категория</string>
     <string name="save">Сохранение</string>
 

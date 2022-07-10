@@ -5,7 +5,6 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.union.R
-import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectArguments
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.presentation.store.DocumentArguments
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
@@ -84,6 +83,7 @@ interface DocumentMenuStore :
                     R.string.branches -> DocumentMenuComposeFragmentDirections.toBranches()
                     R.string.producer -> DocumentMenuComposeFragmentDirections.toProducer()
                     R.string.equipment_types -> DocumentMenuComposeFragmentDirections.toEquipmentTypes()
+                    R.string.sync -> DocumentMenuComposeFragmentDirections.toSync()
                     else -> DocumentMenuComposeFragmentDirections.toAccountingObjects(null)
                 }
         }

@@ -54,7 +54,7 @@ class AllSyncImpl(
         syncDao.insert(
             NetworkSyncDb(
                 lastSyncTime = System.currentTimeMillis(),
-                isSynced = false //TODO пока для тестирования так проще
+                isSynced = true
             )
         )
     }

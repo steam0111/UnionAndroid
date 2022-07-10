@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation android:id="@+id/main"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
     app:startDestination="@id/auth">
 
     <fragment
@@ -76,6 +76,9 @@
         <action
             android:id="@+id/to_equipment_types"
             app:destination="@+id/equipmentTypes" />
+        <action
+            android:id="@+id/to_sync"
+            app:destination="@+id/syncAll" />
     </fragment>
 
     <fragment
@@ -166,14 +169,14 @@
             android:id="@+id/to_location"
             app:destination="@id/location" />
 
+        <action
+            android:id="@+id/to_selectParams"
+            app:destination="@id/selectParams" />
+
         <argument
             android:name="FilterArguments"
             app:argType="com.itrocket.union.filter.presentation.store.FilterArguments"
             app:nullable="false" />
-
-        <action
-            android:id="@+id/to_selectParams"
-            app:destination="@id/selectParams" />
     </fragment>
 
     <fragment
