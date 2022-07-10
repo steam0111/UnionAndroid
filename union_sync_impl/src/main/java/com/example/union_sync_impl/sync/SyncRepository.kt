@@ -13,6 +13,7 @@ import com.example.union_sync_impl.dao.EquipmentTypeDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.InventoryRecordDao
 import com.example.union_sync_impl.dao.LocationDao
+import com.example.union_sync_impl.dao.NetworkSyncDao
 import com.example.union_sync_impl.dao.NomenclatureDao
 import com.example.union_sync_impl.dao.NomenclatureGroupDao
 import com.example.union_sync_impl.dao.OrderDao
@@ -23,10 +24,19 @@ import com.example.union_sync_impl.dao.ReceptionItemCategoryDao
 import com.example.union_sync_impl.dao.RegionDao
 import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
+import com.example.union_sync_impl.dao.sqlActionRecordQuery
+import com.example.union_sync_impl.dao.sqlActionRemainsRecordQuery
+import com.example.union_sync_impl.dao.sqlDocumentsQuery
+import com.example.union_sync_impl.dao.sqlInventoryQuery
+import com.example.union_sync_impl.dao.sqlInventoryRecordQuery
+import com.example.union_sync_impl.dao.sqlReserveQuery
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDb
 import com.example.union_sync_impl.data.mapper.toActionRecordDb
 import com.example.union_sync_impl.data.mapper.toActionRemainsRecordDb
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDtosV2
+import com.example.union_sync_impl.data.mapper.toActionDtoV2
+import com.example.union_sync_impl.data.mapper.toActionRecordDtoV2
+import com.example.union_sync_impl.data.mapper.toActionRemainsRecordDtoV2
 import com.example.union_sync_impl.data.mapper.toBranchesDb
 import com.example.union_sync_impl.data.mapper.toCounterpartyDb
 import com.example.union_sync_impl.data.mapper.toDepartmentDb
@@ -34,7 +44,9 @@ import com.example.union_sync_impl.data.mapper.toDocumentDb
 import com.example.union_sync_impl.data.mapper.toEmployeeDb
 import com.example.union_sync_impl.data.mapper.toEquipmentTypeDb
 import com.example.union_sync_impl.data.mapper.toInventoryDb
+import com.example.union_sync_impl.data.mapper.toInventoryDtoV2
 import com.example.union_sync_impl.data.mapper.toInventoryRecordDb
+import com.example.union_sync_impl.data.mapper.toInventoryRecordDtoV2
 import com.example.union_sync_impl.data.mapper.toLocationDb
 import com.example.union_sync_impl.data.mapper.toLocationTypeDb
 import com.example.union_sync_impl.data.mapper.toNomenclatureDb
@@ -45,12 +57,14 @@ import com.example.union_sync_impl.data.mapper.toProducerDb
 import com.example.union_sync_impl.data.mapper.toProviderDb
 import com.example.union_sync_impl.data.mapper.toReceptionItemCategoryDb
 import com.example.union_sync_impl.data.mapper.toRegionDb
+import com.example.union_sync_impl.data.mapper.toRemainsDtoV2
 import com.example.union_sync_impl.data.mapper.toReserveDb
 import com.example.union_sync_impl.data.mapper.toStatusDb
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.models.AccountingObjectDtoV2
@@ -99,7 +113,8 @@ class SyncRepository(
     private val documentDao: DocumentDao,
     private val actionRecordDao: ActionRecordDao,
     private val actionRemainsRecordDao: ActionRemainsRecordDao,
-    private val inventoryRecordDao: InventoryRecordDao
+    private val inventoryRecordDao: InventoryRecordDao,
+    private val syncDao: NetworkSyncDao
 ) {
     fun getUploadSyncEntities(): List<UploadableSyncEntity> = listOf(
         AccountingObjectSyncEntity(
@@ -107,6 +122,42 @@ class SyncRepository(
             moshi,
             ::accountingObjectDbSaver,
             getAccountingObjectDbCollector()
+        ),
+        ReserveSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::reservesDbSaver,
+            getRemainsDbCollector()
+        ),
+        InventorySyncEntity(
+            syncControllerApi,
+            moshi,
+            ::inventoryDbSaver,
+            getInventoryDbCollector()
+        ),
+        DocumentSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::documentDbSaver,
+            getActionDbCollector()
+        ),
+        ActionRecordSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::actionRecordDbSaver,
+            getActionRecordDbCollector()
+        ),
+        ActionRemainsRecordSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::actionRemainsRecordDbSaver,
+            getActionRecordRemainsDbCollector()
+        ),
+        InventoryRecordSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::inventoryRecordDbSaver,
+            getInventoryRecordDbCollector()
         )
     )
 
@@ -190,32 +241,38 @@ class SyncRepository(
         ReserveSyncEntity(
             syncControllerApi,
             moshi,
-            ::reservesDbSaver
+            ::reservesDbSaver,
+            getRemainsDbCollector()
         ),
         InventorySyncEntity(
             syncControllerApi,
             moshi,
-            ::inventoryDbSaver
+            ::inventoryDbSaver,
+            getInventoryDbCollector()
         ),
         DocumentSyncEntity(
             syncControllerApi,
             moshi,
-            ::documentDbSaver
+            ::documentDbSaver,
+            getActionDbCollector()
         ),
         ActionRecordSyncEntity(
             syncControllerApi,
             moshi,
-            ::actionRecordDbSaver
+            ::actionRecordDbSaver,
+            getActionRecordDbCollector()
         ),
         ActionRemainsRecordSyncEntity(
             syncControllerApi,
             moshi,
-            ::actionRemainsRecordDbSaver
+            ::actionRemainsRecordDbSaver,
+            getActionRecordRemainsDbCollector()
         ),
         InventoryRecordSyncEntity(
             syncControllerApi,
             moshi,
-            ::inventoryRecordDbSaver
+            ::inventoryRecordDbSaver,
+            getInventoryRecordDbCollector()
         )
     ).associateBy {
         it.id to it.table
@@ -229,12 +286,128 @@ class SyncRepository(
                         sqlAccountingObjectQuery(
                             limit = limit,
                             offset = offset,
-                            updateDate = System.currentTimeMillis()
+                            updateDate = getLastSyncTime()
                         )
                     )
                 },
                 localToNetworkMapper = { localObjects ->
                     localObjects.toAccountingObjectDtosV2()
+                }
+            )
+        }.filterNot { it.isEmpty() }
+    }
+
+    private fun getRemainsDbCollector(): Flow<List<RemainsDtoV2>> {
+        return flow {
+            paginationEmitter(
+                getData = { limit, offset ->
+                    reserveDao.getAll(
+                        sqlReserveQuery(
+                            limit = limit,
+                            offset = offset,
+                            updateDate = getLastSyncTime()
+                        )
+                    )
+                },
+                localToNetworkMapper = { localObjects ->
+                    localObjects.map { it.reserveDb.toRemainsDtoV2() }
+                }
+            )
+        }.filterNot { it.isEmpty() }
+    }
+
+    private fun getInventoryDbCollector(): Flow<List<InventoryDtoV2>> {
+        return flow {
+            paginationEmitter(
+                getData = { limit, offset ->
+                    inventoryDao.getAll(
+                        sqlInventoryQuery(
+                            limit = limit,
+                            offset = offset,
+                            updateDate = getLastSyncTime()
+                        )
+                    ).firstOrNull().orEmpty()
+                },
+                localToNetworkMapper = { localObjects ->
+                    localObjects.map { it.inventoryDb.toInventoryDtoV2() }
+                }
+            )
+        }.filterNot { it.isEmpty() }
+    }
+
+    private fun getActionDbCollector(): Flow<List<ActionDtoV2>> {
+        return flow {
+            paginationEmitter(
+                getData = { limit, offset ->
+                    documentDao.getAll(
+                        sqlDocumentsQuery(
+                            limit = limit,
+                            offset = offset,
+                            updateDate = getLastSyncTime()
+                        )
+                    ).firstOrNull().orEmpty()
+                },
+                localToNetworkMapper = { localObjects ->
+                    localObjects.map { it.documentDb.toActionDtoV2() }
+                }
+            )
+        }.filterNot {
+            it.isEmpty()
+        }
+    }
+
+    private fun getActionRecordRemainsDbCollector(): Flow<List<ActionRemainsRecordDtoV2>> {
+        return flow {
+            paginationEmitter(
+                getData = { limit, offset ->
+                    actionRemainsRecordDao.getAll(
+                        sqlActionRemainsRecordQuery(
+                            limit = limit,
+                            offset = offset,
+                            updateDate = getLastSyncTime()
+                        )
+                    )
+                },
+                localToNetworkMapper = { localObjects ->
+                    localObjects.map { it.toActionRemainsRecordDtoV2() }
+                }
+            )
+        }.filterNot { it.isEmpty() }
+    }
+
+    private fun getInventoryRecordDbCollector(): Flow<List<InventoryRecordDtoV2>> {
+        return flow {
+            paginationEmitter(
+                getData = { limit, offset ->
+                    inventoryRecordDao.getAll(
+                        sqlInventoryRecordQuery(
+                            limit = limit,
+                            offset = offset,
+                            updateDate = getLastSyncTime()
+                        )
+                    )
+                },
+                localToNetworkMapper = { localObjects ->
+                    localObjects.map { it.toInventoryRecordDtoV2() }
+                }
+            )
+        }.filterNot { it.isEmpty() }
+    }
+
+    private fun getActionRecordDbCollector(): Flow<List<ActionRecordDtoV2>> {
+        return flow {
+            paginationEmitter(
+                getData = { limit, offset ->
+                    actionRecordDao.getAll(
+                        sqlActionRecordQuery(
+                            limit = limit,
+                            offset = offset,
+                            updateDate = getLastSyncTime()
+                        )
+                    )
+                },
+                localToNetworkMapper = { localObjects ->
+                    localObjects.map { it.toActionRecordDtoV2() }
                 }
             )
         }.filterNot { it.isEmpty() }
@@ -419,5 +592,9 @@ class SyncRepository(
 
     private suspend fun inventoryRecordDbSaver(objects: List<InventoryRecordDtoV2>) {
         inventoryRecordDao.insertAll(objects.map { it.toInventoryRecordDb() })
+    }
+
+    private suspend fun getLastSyncTime(): Long {
+        return syncDao.getNetworkSync()?.lastSyncTime ?: 0
     }
 }

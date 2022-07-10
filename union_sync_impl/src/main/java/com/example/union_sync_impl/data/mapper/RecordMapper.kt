@@ -6,6 +6,7 @@ import com.example.union_sync_api.entity.InventoryRecordSyncEntity
 import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
 import com.example.union_sync_impl.entity.InventoryRecordDb
+import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.ActionRecordDtoV2
 import org.openapitools.client.models.ActionRemainsRecordDtoV2
 import org.openapitools.client.models.InventoryRecordDtoV2
@@ -17,11 +18,27 @@ fun ActionRecordDtoV2.toActionRecordDb() = ActionRecordDb(
     updateDate = System.currentTimeMillis()
 )
 
+fun ActionRecordDb.toActionRecordDtoV2() = ActionRecordDtoV2(
+    id = id,
+    accountingObjectId = accountingObjectId,
+    actionId = actionId,
+    deleted = false,
+    dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
+)
+
 fun ActionRemainsRecordDtoV2.toActionRemainsRecordDb() = ActionRemainsRecordDb(
     id = id,
     remainId = remainsId.orEmpty(),
     actionId = actionId.orEmpty(),
     updateDate = System.currentTimeMillis()
+)
+
+fun ActionRemainsRecordDb.toActionRemainsRecordDtoV2() = ActionRemainsRecordDtoV2(
+    id = id,
+    remainsId = remainId,
+    actionId = actionId,
+    deleted = false,
+    dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
 )
 
 fun InventoryRecordDtoV2.toInventoryRecordDb() = InventoryRecordDb(
@@ -51,4 +68,12 @@ fun InventoryRecordDb.toSyncEntity() = InventoryRecordSyncEntity(
     accountingObjectId = accountingObjectId,
     inventoryId = inventoryId,
     updateDate = updateDate ?: System.currentTimeMillis()
+)
+
+fun InventoryRecordDb.toInventoryRecordDtoV2() = InventoryRecordDtoV2(
+    id = id,
+    accountingObjectId = accountingObjectId,
+    inventoryId = inventoryId,
+    deleted = false,
+    dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
 )

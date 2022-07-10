@@ -8,6 +8,8 @@ import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import com.example.union_sync_api.entity.LocationShortSyncEntity
 import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_impl.entity.InventoryDb
+import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
+import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.InventoryDtoV2
 
 fun InventoryDtoV2.toInventoryDb(): InventoryDb {
@@ -15,9 +17,23 @@ fun InventoryDtoV2.toInventoryDb(): InventoryDb {
         locationIds = listOf(locationId.orEmpty()),
         organizationId = organizationId,
         employeeId = molId,
-        date = System.currentTimeMillis(),//creationDate
+        date = getMillisDateFromServerFormat(creationDate.orEmpty()),
         updateDate = System.currentTimeMillis(),
         inventoryStatus = extendedInventoryState?.id.orEmpty()
+    )
+}
+
+fun InventoryDb.toInventoryDtoV2(): InventoryDtoV2 {
+    return InventoryDtoV2(
+        locationId = locationIds?.lastOrNull(),
+        organizationId = organizationId.orEmpty(),
+        molId = employeeId,
+        inventoryStateId = inventoryStatus,
+        inventoryTypeId = "",
+        creationDate = getStringDateFromMillis(date),
+        dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
+        id = id,
+        deleted = false
     )
 }
 

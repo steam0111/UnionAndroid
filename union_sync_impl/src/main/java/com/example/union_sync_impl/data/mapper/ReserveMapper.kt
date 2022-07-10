@@ -7,6 +7,7 @@ import com.example.union_sync_api.entity.ReserveUpdateSyncEntity
 import com.example.union_sync_impl.entity.FullReserve
 import com.example.union_sync_impl.entity.ReserveDb
 import com.example.union_sync_impl.entity.ReserveUpdate
+import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.RemainsDtoV2
 
 fun RemainsDtoV2.toReserveDb(): ReserveDb {
@@ -27,6 +28,27 @@ fun RemainsDtoV2.toReserveDb(): ReserveDb {
         receptionDocumentNumber = receptionDocumentNumber,
         unitPrice = unitPrice,
         updateDate = System.currentTimeMillis()
+    )
+}
+
+fun ReserveDb.toRemainsDtoV2(): RemainsDtoV2 {
+    return RemainsDtoV2(
+        id = id,
+        catalogItemName = catalogItemName,
+        locationToId = locationId,
+        molId = molId,
+        orderId = orderId,
+        nomenclatureId = nomenclatureId,
+        nomenclatureGroupId = nomenclatureGroupId,
+        businessUnitId = businessUnitId,
+        name = name.orEmpty(),
+        count = count,
+        dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
+        receptionItemCategoryId = receptionItemCategoryId,
+        structuralSubdivisionId = structuralSubdivisionId,
+        receptionDocumentNumber = receptionDocumentNumber,
+        unitPrice = unitPrice,
+        deleted = false
     )
 }
 

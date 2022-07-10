@@ -9,7 +9,6 @@ private const val DATE_FORMAT = "dd.MM.yyyy"
 private const val UI_DATE_FORMAT = "dd MMMM"
 private const val TIME_FORMAT = "HH:mm"
 
-
 //Sample: 12 December
 fun getTextDateFromMillis(dateMillis: Long): String {
     val date = getDateFromMillis(dateMillis)

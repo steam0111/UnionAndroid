@@ -4,6 +4,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
+import com.example.union_sync_impl.utils.addPagination
 import com.example.union_sync_impl.utils.contains
 import com.example.union_sync_impl.utils.isEquals
 import com.example.union_sync_impl.utils.more
@@ -19,7 +20,9 @@ fun sqlReserveQuery(
     reservesIds: List<String>? = null,
     reservesShorts: List<ReserveShortSyncEntity>? = null,
     isFilterCount: Boolean = false,
-    updateDate: Long? = null
+    updateDate: Long? = null,
+    limit: Long? = null,
+    offset: Long? = null
 ): SimpleSQLiteQuery {
 
     val mainQuery = if (isFilterCount) {
@@ -82,6 +85,9 @@ fun sqlReserveQuery(
                 }
             }
         )
+    ).addPagination(
+        limit,
+        offset
     )
 
     return SimpleSQLiteQuery(query)
