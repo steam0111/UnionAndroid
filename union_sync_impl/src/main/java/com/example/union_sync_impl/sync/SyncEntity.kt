@@ -11,7 +11,7 @@ import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.models.ImportPartDtoV2
 import timber.log.Timber
 import java.lang.reflect.Type
-import java.util.UUID
+import java.util.*
 
 @Suppress("BlockingMethodInNonBlockingContext")
 abstract class SyncEntity<SyncType>(
@@ -64,7 +64,7 @@ abstract class SyncEntity<SyncType>(
     }
 
     suspend fun defaultUpload(syncId: String, dbPartsCollector: Flow<List<Any>>) {
-        Timber.tag(AllSyncImpl.SYNC_TAG).d("upload $id")
+        Timber.tag(AllSyncImpl.SYNC_TAG).d("upload id = $id table = $table")
 
         dbPartsCollector.collect { objects ->
             Timber.tag(AllSyncImpl.SYNC_TAG).d("${objects.size} $id got from db")
@@ -74,7 +74,7 @@ abstract class SyncEntity<SyncType>(
 
             Timber.tag(AllSyncImpl.SYNC_TAG).d("${importPart.value?.size} $id uploaded")
         }
-        Timber.tag(AllSyncImpl.SYNC_TAG).d("finish upload $id")
+        Timber.tag(AllSyncImpl.SYNC_TAG).d("finish id = $id table = $table")
     }
 
     private fun createImportPart(objects: List<Any>) = ImportPartDtoV2(
