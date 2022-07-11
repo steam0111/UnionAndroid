@@ -86,7 +86,7 @@ class DocumentCreateInteractor(
     ): List<ParamDomain> {
         val mutableParams = params.toMutableList()
         val locationIndex = params.indexOfFirst { it.type == ManualType.LOCATION }
-        mutableParams[locationIndex] = location
+        mutableParams[locationIndex] = location.copy(filtered = false)
         return mutableParams
     }
 
