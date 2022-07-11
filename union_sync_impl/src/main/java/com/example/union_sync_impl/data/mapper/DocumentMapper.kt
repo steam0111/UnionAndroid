@@ -7,6 +7,7 @@ import com.example.union_sync_api.entity.DocumentUpdateReservesSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
 import com.example.union_sync_api.entity.LocationShortSyncEntity
+import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.entity.DocumentDb
@@ -82,7 +83,7 @@ fun DocumentDb.toDocumentSyncEntity(
     organizationSyncEntity: OrganizationSyncEntity?,
     mol: EmployeeSyncEntity?,
     exploiting: EmployeeSyncEntity?,
-    locations: List<LocationShortSyncEntity>?,
+    locations: List<LocationSyncEntity>?,
     accountingObjects: List<AccountingObjectSyncEntity>? = null,
     reserves: List<ReserveSyncEntity>? = null
 ): DocumentSyncEntity {

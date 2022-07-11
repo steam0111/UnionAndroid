@@ -3,11 +3,9 @@ package com.itrocket.union.documents.domain.entity
 import android.os.Parcelable
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.manual.LocationParamDomain
-import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getExploitingId
-import com.itrocket.union.manual.getLocationIds
+import com.itrocket.union.manual.getFilterLocationIds
 import com.itrocket.union.manual.getMolId
 import com.itrocket.union.manual.getOrganizationId
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
@@ -31,7 +29,7 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
     val organizationId = params.getOrganizationId()
     val molId = params.getMolId()
     val exploitingId = params.getExploitingId()
-    val locationIds = params.getLocationIds()
+    val locationIds = params.getFilterLocationIds()
     return DocumentUpdateSyncEntity(
         organizationId = organizationId,
         molId = molId,

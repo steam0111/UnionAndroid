@@ -25,7 +25,8 @@ class AccountingObjectRepositoryImpl(
 
     override suspend fun getAccountingObjects(
         textQuery: String?,
-        params: List<ParamDomain>
+        params: List<ParamDomain>,
+        selectedLocationIds: List<String?>
     ): List<AccountingObjectDomain> =
         withContext(coreDispatchers.io) {
             syncApi.getAccountingObjects(
@@ -37,13 +38,15 @@ class AccountingObjectRepositoryImpl(
                 producerId = params.getProducerId(),
                 equipmentTypeId = params.getEquipmentTypeId(),
                 providerId = params.getProviderId(),
-                statusId = params.getStatusId()
+                statusId = params.getStatusId(),
+                locationIds = selectedLocationIds
             ).map { it.map() }
         }
 
     override suspend fun getAccountingObjectsCount(
         textQuery: String?,
-        params: List<ParamDomain>
+        params: List<ParamDomain>,
+        selectedLocationIds: List<String?>
     ): Long =
         withContext(coreDispatchers.io) {
             syncApi.getAccountingObjectsCount(
@@ -55,7 +58,8 @@ class AccountingObjectRepositoryImpl(
                 producerId = params.getProducerId(),
                 equipmentTypeId = params.getEquipmentTypeId(),
                 providerId = params.getProviderId(),
-                statusId = params.getStatusId()
+                statusId = params.getStatusId(),
+                locationIds = selectedLocationIds
             )
         }
 

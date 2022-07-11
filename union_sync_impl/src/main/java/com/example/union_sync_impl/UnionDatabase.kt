@@ -52,7 +52,7 @@ import com.example.union_sync_impl.entity.ReceptionItemCategoryDb
 import com.example.union_sync_impl.entity.RegionDb
 import com.example.union_sync_impl.entity.ReserveDb
 import com.example.union_sync_impl.entity.location.LocationDb
-import com.example.union_sync_impl.entity.location.LocationPath
+import com.example.union_sync_impl.entity.location.LocationPathDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
 import com.example.union_sync_impl.utils.Converters
 
@@ -61,7 +61,7 @@ import com.example.union_sync_impl.utils.Converters
         NomenclatureGroupDb::class,
         NomenclatureDb::class,
         LocationDb::class,
-        LocationPath::class,
+        LocationPathDb::class,
         OrganizationDb::class,
         DepartmentDb::class,
         EmployeeDb::class,
@@ -84,7 +84,7 @@ import com.example.union_sync_impl.utils.Converters
         ActionRecordDb::class,
         ActionRemainsRecordDb::class,
         InventoryRecordDb::class
-    ], version = 62
+    ], version = 66
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {

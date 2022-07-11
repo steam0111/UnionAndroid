@@ -6,6 +6,7 @@ import com.example.union_sync_api.entity.InventoryCreateSyncEntity
 import com.example.union_sync_api.entity.InventorySyncEntity
 import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import com.example.union_sync_api.entity.LocationShortSyncEntity
+import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
@@ -64,7 +65,7 @@ fun InventoryUpdateSyncEntity.toInventoryDb(): InventoryDb {
 fun InventoryDb.toInventorySyncEntity(
     organizationSyncEntity: OrganizationSyncEntity?,
     mol: EmployeeSyncEntity?,
-    locationSyncEntities: List<LocationShortSyncEntity>?,
+    locationSyncEntities: List<LocationSyncEntity>?,
     accountingObjects: List<AccountingObjectSyncEntity>
 ): InventorySyncEntity {
     return InventorySyncEntity(

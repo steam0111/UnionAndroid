@@ -26,7 +26,8 @@ class AccountingObjectSyncApiImpl(
         barcode: String?,
         statusId: String?,
         textQuery: String?,
-        accountingObjectsIds: List<String>?
+        accountingObjectsIds: List<String>?,
+        locationIds: List<String?>?
     ): List<AccountingObjectSyncEntity> {
         return accountingObjectsDao.getAll(
             sqlAccountingObjectQuery(
@@ -41,7 +42,8 @@ class AccountingObjectSyncApiImpl(
                 barcode = barcode,
                 statusId = statusId,
                 accountingObjectsIds = accountingObjectsIds,
-                textQuery = textQuery
+                textQuery = textQuery,
+                locationIds = locationIds
             )
         ).map { it.toSyncEntity() }
     }
@@ -58,7 +60,8 @@ class AccountingObjectSyncApiImpl(
         barcode: String?,
         statusId: String?,
         textQuery: String?,
-        accountingObjectsIds: List<String>?
+        accountingObjectsIds: List<String>?,
+        locationIds: List<String?>?
     ): Long {
         return accountingObjectsDao.getCount(
             sqlAccountingObjectQuery(
@@ -74,7 +77,8 @@ class AccountingObjectSyncApiImpl(
                 statusId = statusId,
                 accountingObjectsIds = accountingObjectsIds,
                 textQuery = textQuery,
-                isFilterCount = true
+                isFilterCount = true,
+                locationIds = locationIds
             )
         )
     }

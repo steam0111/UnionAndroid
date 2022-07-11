@@ -24,7 +24,8 @@ fun sqlAccountingObjectQuery(
     updateDate: Long? = null,
     isFilterCount: Boolean = false,
     limit: Long? = null,
-    offset: Long? = null
+    offset: Long? = null,
+    locationIds: List<String?>? = null
 ): SimpleSQLiteQuery {
     val mainQuery = if (isFilterCount) {
         "SELECT COUNT(*) FROM accounting_objects"
@@ -60,7 +61,8 @@ fun sqlAccountingObjectQuery(
         statusId = statusId,
         accountingObjectsIds = accountingObjectsIds,
         textQuery = textQuery,
-        updateDate = updateDate
+        updateDate = updateDate,
+        locationIds = locationIds
     ).addPagination(
         limit,
         offset
@@ -82,7 +84,8 @@ private fun String.getAccountingObjectsFilterPartQuery(
     statusId: String? = null,
     textQuery: String? = null,
     accountingObjectsIds: List<String>? = null,
-    updateDate: Long? = null
+    updateDate: Long? = null,
+    locationIds: List<String?>? = null
 ): String = addFilters(
     sqlTableFilters = SqlTableFilters(
         tableName = "accounting_objects",
@@ -125,6 +128,9 @@ private fun String.getAccountingObjectsFilterPartQuery(
             }
             updateDate?.let {
                 add("updateDate" more updateDate)
+            }
+            locationIds?.let {
+                add("locationId" isEquals locationIds)
             }
         }
     )

@@ -5,9 +5,8 @@ import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.toAccountingObjectIdSyncEntity
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
-import com.itrocket.union.manual.LocationParamDomain
-import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.getFilterLocationIds
 import com.itrocket.union.manual.getMolId
 import com.itrocket.union.manual.getOrganizationId
 import com.itrocket.union.utils.getStringDateFromMillis
@@ -31,8 +30,7 @@ data class InventoryCreateDomain(
 fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
     val organizationId = requireNotNull(documentInfo.getOrganizationId())
     val molId = documentInfo.getMolId()
-    val locationIds =
-        (documentInfo.find { it.type == ManualType.LOCATION } as? LocationParamDomain)?.ids
+    val locationIds = documentInfo.getFilterLocationIds()
 
     return InventoryUpdateSyncEntity(
         id = number,

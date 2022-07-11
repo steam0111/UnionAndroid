@@ -93,13 +93,13 @@ class DocumentCreateInteractor(
     fun clearParam(list: List<ParamDomain>, param: ParamDomain): List<ParamDomain> {
         val mutableList = list.toMutableList()
         val currentIndex = mutableList.indexOfFirst { it.type == param.type }
-        mutableList[currentIndex] = mutableList[currentIndex].copy(value = "")
+        mutableList[currentIndex] = mutableList[currentIndex].toInitialState()
         return mutableList
     }
 
     fun clearParams(list: List<ParamDomain>): List<ParamDomain> {
         return list.map {
-            it.copy(value = "")
+            it.toInitialState()
         }
     }
 
@@ -115,7 +115,7 @@ class DocumentCreateInteractor(
         objectType: ObjectType
     ): Boolean {
         val validateParams = params.filter {
-            val manualTypes = if(objectType == ObjectType.MAIN_ASSETS){
+            val manualTypes = if (objectType == ObjectType.MAIN_ASSETS) {
                 documentTypeDomain.accountingObjectManualTypes
             } else {
                 documentTypeDomain.reserveManualTypes

@@ -9,6 +9,7 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
+import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
@@ -107,8 +108,7 @@ class FilterStoreFactory(
         private fun showFilters(filter: ParamDomain, getState: () -> FilterStore.State) {
             when (filter.type) {
                 ManualType.LOCATION -> {
-                    //no-op
-                    //publish(FilterStore.Label.ShowLocation(filter as LocationParamDomain))
+                    publish(FilterStore.Label.ShowLocation(filter as LocationParamDomain))
                 }
                 ManualType.DATE -> {
                     //no-op

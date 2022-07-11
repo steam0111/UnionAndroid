@@ -21,6 +21,7 @@ fun sqlReserveQuery(
     reservesShorts: List<ReserveShortSyncEntity>? = null,
     isFilterCount: Boolean = false,
     updateDate: Long? = null,
+    locationIds: List<String?>? = null,
     limit: Long? = null,
     offset: Long? = null
 ): SimpleSQLiteQuery {
@@ -66,6 +67,9 @@ fun sqlReserveQuery(
                 reservesIds?.let {
                     add("id" isEquals reservesIds)
                 }
+                locationIds?.let {
+                    add("locationId" isEquals locationIds)
+                }
                 textQuery?.let {
                     add("name" contains textQuery)
                 }
@@ -75,12 +79,12 @@ fun sqlReserveQuery(
                 reservesShorts?.let {
                     val names = it.map { it.name }
                     val nomenclatureIds = it.mapNotNull { it.nomenclatureId }
-                    val locationIds = it.mapNotNull { it.locationId }
+                    val shortLocationIds = it.mapNotNull { it.locationId }
                     val orderIds = it.mapNotNull { it.orderId }
 
                     add("name" isEquals names)
                     add("nomenclatureId" isEquals nomenclatureIds)
-                    add("locationId" isEquals locationIds)
+                    add("locationId" isEquals shortLocationIds)
                     add("orderId" isEquals orderIds)
                 }
             }

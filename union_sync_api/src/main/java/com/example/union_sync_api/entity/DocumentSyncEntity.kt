@@ -8,7 +8,7 @@ data class DocumentSyncEntity(
     val organizationSyncEntity: OrganizationSyncEntity?,
     val mol: EmployeeSyncEntity?,
     val exploiting: EmployeeSyncEntity? = null,
-    val locations: List<LocationShortSyncEntity>? = null,
+    val locations: List<LocationSyncEntity>? = null,
     val creationDate: Long,
     val completionDate: Long? = null,
     val documentStatus: String,

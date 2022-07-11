@@ -2,40 +2,36 @@ package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.DocumentReserveCountSyncApi
 import com.example.union_sync_api.data.DocumentSyncApi
-import com.example.union_sync_api.entity.AccountingObjectInfoSyncEntity
+import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.example.union_sync_api.entity.DocumentReserveCountSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateReservesSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
+import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.ActionRecordDao
 import com.example.union_sync_impl.dao.ActionRemainsRecordDao
 import com.example.union_sync_impl.dao.DocumentDao
-import com.example.union_sync_impl.dao.DocumentReserveCountDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.dao.sqlActionRecordQuery
 import com.example.union_sync_impl.dao.sqlActionRemainsRecordQuery
-import com.example.union_sync_impl.dao.sqlDocumentReserveCountQuery
-import com.example.union_sync_impl.dao.sqlDocumentReserveCountQuery
 import com.example.union_sync_impl.dao.sqlDocumentsQuery
 import com.example.union_sync_impl.dao.sqlReserveQuery
 import com.example.union_sync_impl.data.mapper.toDocumentDb
 import com.example.union_sync_impl.data.mapper.toDocumentSyncEntity
-import com.example.union_sync_impl.data.mapper.toDocumentUpdateReserves
-import com.example.union_sync_impl.data.mapper.toLocationShortSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
-import com.example.union_sync_impl.entity.InventoryRecordDb
-import com.example.union_sync_impl.entity.location.LocationDb
-import com.example.union_sync_impl.entity.location.LocationTypeDb
+import com.example.union_sync_impl.entity.DocumentDb
+import com.example.union_sync_impl.entity.FullDocument
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import org.w3c.dom.Document
 import java.util.*
 
 class DocumentSyncApiImpl(
@@ -44,6 +40,7 @@ class DocumentSyncApiImpl(
     private val accountingObjectDao: AccountingObjectDao,
     private val reserveDao: ReserveDao,
     private val documentReserveCountSyncApi: DocumentReserveCountSyncApi,
+    private val locationSyncApi: LocationSyncApi,
     private val actionRecordDao: ActionRecordDao,
     private val actionRemainsRecordDao: ActionRemainsRecordDao
 ) : DocumentSyncApi {
@@ -74,13 +71,13 @@ class DocumentSyncApiImpl(
                 exploitingId = exploitingId,
                 organizationId = organizationId
             )
-        ).map {
-            it.map {
-                it.documentDb.toDocumentSyncEntity(
-                    organizationSyncEntity = it.organizationDb?.toSyncEntity(),
-                    mol = it.molDb?.toSyncEntity(),
-                    exploiting = it.exploitingDb?.toSyncEntity(),
-                    locations = null,
+        ).map { documents ->
+            documents.map { document ->
+                document.documentDb.toDocumentSyncEntity(
+                    organizationSyncEntity = document.organizationDb?.toSyncEntity(),
+                    mol = document.molDb?.toSyncEntity(),
+                    exploiting = document.exploitingDb?.toSyncEntity(),
+                    locations = document.getLocations(),
                     accountingObjects = listOf()
                 )
             }
@@ -108,13 +105,14 @@ class DocumentSyncApiImpl(
         type: String,
         textQuery: String?
     ): Flow<List<DocumentSyncEntity>> {
-        return documentDao.getDocumentsByType(type).map {
-            it.map {
-                it.documentDb.toDocumentSyncEntity(
-                    organizationSyncEntity = it.organizationDb?.toSyncEntity(),
-                    mol = it.molDb?.toSyncEntity(),
-                    exploiting = it.exploitingDb?.toSyncEntity(),
-                    locations = null,
+
+        return documentDao.getDocumentsByType(type).map { documents ->
+            documents.map { document ->
+                document.documentDb.toDocumentSyncEntity(
+                    organizationSyncEntity = document.organizationDb?.toSyncEntity(),
+                    mol = document.molDb?.toSyncEntity(),
+                    exploiting = document.exploitingDb?.toSyncEntity(),
+                    locations = document.getLocations(),
                     accountingObjects = listOf()
                 )
             }
@@ -124,14 +122,7 @@ class DocumentSyncApiImpl(
 
     override suspend fun getDocumentById(id: String): DocumentSyncEntity {
         val fullDocument = documentDao.getDocumentById(id)
-        val locationIds = fullDocument.documentDb.locationIds
-        val locations = if (locationIds != null) {
-            locationDao.getLocationsByIds(fullDocument.documentDb.locationIds).map {
-                it.toLocationShortSyncEntity()
-            }
-        } else {
-            null
-        }
+        val locations = fullDocument.getLocations()
 
         val accountingObjectIds =
             actionRecordDao.getAll(sqlActionRecordQuery(id)).map { it.accountingObjectId }
@@ -235,5 +226,11 @@ class DocumentSyncApiImpl(
             )
         }
         actionRemainsRecordDao.insertAll(newRecords)
+    }
+
+    private suspend fun FullDocument.getLocations(): List<LocationSyncEntity> {
+        return documentDb.locationIds?.map {
+            locationSyncApi.getLocationById(it)
+        }.orEmpty()
     }
 }

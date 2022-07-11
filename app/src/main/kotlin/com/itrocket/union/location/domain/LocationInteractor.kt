@@ -11,9 +11,9 @@ class LocationInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    suspend fun getPlaceList(selectedPlaceScheme: List<LocationDomain>, searchText: String = "") =
+    suspend fun getPlaceList(selectedPlace: LocationDomain? = null, searchText: String = "") =
         withContext(coreDispatchers.io) {
-            repository.getPlaceList(selectedPlaceScheme, searchText)
+            repository.getPlaceList(selectedPlace, searchText)
         }
 
     fun getPrevPlaceScheme(selectedPlaceScheme: List<LocationDomain>): List<LocationDomain> {

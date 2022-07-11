@@ -3,6 +3,7 @@ package com.itrocket.union.documents.data.mapper
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
 import com.example.union_sync_api.entity.LocationShortSyncEntity
+import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.itrocket.union.accountingObjects.data.mapper.map
@@ -11,6 +12,7 @@ import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
+import com.itrocket.union.location.data.mapper.toLocationDomain
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
@@ -57,7 +59,7 @@ private fun getParams(
     mol: EmployeeSyncEntity?,
     exploiting: EmployeeSyncEntity?,
     organization: OrganizationSyncEntity?,
-    locations: List<LocationShortSyncEntity>?,
+    locations: List<LocationSyncEntity>?,
     documentType: String,
     objectType: ObjectType
 ): List<ParamDomain> {
@@ -82,7 +84,7 @@ private fun getAccountingObjectParams(
     mol: EmployeeSyncEntity?,
     exploiting: EmployeeSyncEntity?,
     organization: OrganizationSyncEntity?,
-    locations: List<LocationShortSyncEntity>?,
+    locations: List<LocationSyncEntity>?,
     documentType: String,
 ): List<ParamDomain> {
     val params = mutableListOf<ParamDomain>()
@@ -108,7 +110,7 @@ private fun getAccountingObjectParams(
 private fun getReserveParams(
     mol: EmployeeSyncEntity?,
     organization: OrganizationSyncEntity?,
-    locations: List<LocationShortSyncEntity>?,
+    locations: List<LocationSyncEntity>?,
     documentType: String,
 ): List<ParamDomain> {
     val params = mutableListOf<ParamDomain>()
@@ -146,12 +148,11 @@ private fun addMolParam(params: MutableList<ParamDomain>, mol: EmployeeSyncEntit
 private fun addLocationParam(
     params: MutableList<ParamDomain>,
     types: List<ManualType>,
-    locations: List<LocationShortSyncEntity>?
+    locations: List<LocationSyncEntity>?
 ) {
     if (types.contains(ManualType.LOCATION)) {
         val locationParam = LocationParamDomain(
-            ids = locations?.map { it.id }.orEmpty(),
-            values = locations?.map { it.name }.orEmpty(),
+            locations = locations?.map { it.toLocationDomain() }.orEmpty(),
             filtered = false
         )
         params.add(locationParam)

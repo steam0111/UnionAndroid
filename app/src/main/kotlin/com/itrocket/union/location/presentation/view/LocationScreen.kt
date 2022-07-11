@@ -143,19 +143,15 @@ private fun Content(
             underlineColor = underlineColor
         )
         MediumSpacer()
-        if (state.isLoading) {
-            Loader(contentPadding = PaddingValues())
-        } else {
-            LazyColumn {
-                items(state.placeValues) {
-                    RadioButtonField(
-                        label = it.value,
-                        onFieldClickListener = {
-                            onPlaceSelected(it)
-                        },
-                        isSelected = state.selectPlaceScheme.contains(it),
-                    )
-                }
+        LazyColumn {
+            items(state.placeValues) {
+                RadioButtonField(
+                    label = it.value,
+                    onFieldClickListener = {
+                        onPlaceSelected(it)
+                    },
+                    isSelected = state.selectPlaceScheme.contains(it),
+                )
             }
         }
     }
@@ -326,17 +322,17 @@ private fun ArrowBackButton(enabled: Boolean, onClick: () -> Unit) {
 fun LocationScreenPreview() {
     LocationScreen(LocationStore.State(
         placeValues = listOf(
-            LocationDomain("1","1", "Стелаж", "A"),
-            LocationDomain("1","1", "Стелаж", "Б"),
-            LocationDomain("1","1", "Стелаж", "С"),
-            LocationDomain("1","1", "Стелаж", "D")
+            LocationDomain("1", "1", "Стелаж", "A"),
+            LocationDomain("1", "1", "Стелаж", "Б"),
+            LocationDomain("1", "1", "Стелаж", "С"),
+            LocationDomain("1", "1", "Стелаж", "D")
         ),
         levelHint = "Стелаж",
         selectPlaceScheme = listOf(
-            LocationDomain("1","1", "Склад", "ГО"),
-            LocationDomain("1","1", "Суп", "авыаывавыаывавыа"),
-            LocationDomain("1","1", "Склад", "ГО"),
-            LocationDomain("1","1", "Склад", "ГО")
+            LocationDomain("1", "1", "Склад", "ГО"),
+            LocationDomain("1", "1", "Суп", "авыаывавыаывавыа"),
+            LocationDomain("1", "1", "Склад", "ГО"),
+            LocationDomain("1", "1", "Склад", "ГО")
         )
     ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {})
 }
