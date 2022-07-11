@@ -21,7 +21,7 @@ import androidx.room.PrimaryKey
     ],
     tableName = "locationPath"
 )
-class LocationPath(
+class LocationPathDb(
     @PrimaryKey(autoGenerate = false)
     var descendantLocationId: String,
     var ancestorLocationId: String? = null

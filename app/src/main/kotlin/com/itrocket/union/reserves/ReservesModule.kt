@@ -28,7 +28,7 @@ object ReservesModule {
         }
 
         factory {
-            ReservesInteractor(get(), get())
+            ReservesInteractor(get(), get(), get())
         }
 
         factory { (args: ReservesComposeFragmentArgs) ->

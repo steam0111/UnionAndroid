@@ -17,7 +17,8 @@ interface AccountingObjectSyncApi {
         barcode: String? = null,
         statusId: String? = null,
         textQuery: String? = null,
-        accountingObjectsIds: List<String>? = null
+        accountingObjectsIds: List<String>? = null,
+        locationIds: List<String?>? = null
     ): List<AccountingObjectSyncEntity>
 
     suspend fun getAccountingObjectsCount(
@@ -32,7 +33,8 @@ interface AccountingObjectSyncApi {
         barcode: String? = null,
         statusId: String? = null,
         textQuery: String? = null,
-        accountingObjectsIds: List<String>? = null
+        accountingObjectsIds: List<String>? = null,
+        locationIds: List<String?>? = null
     ): Long
 
     suspend fun getAccountingObjectDetailById(id: String): AccountingObjectDetailSyncEntity

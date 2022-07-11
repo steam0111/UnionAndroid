@@ -100,7 +100,8 @@ object SyncModule {
                 inventoryDao = get(),
                 locationDao = get(),
                 accountingObjectDao = get(),
-                inventoryRecordDao = get()
+                inventoryRecordDao = get(),
+                locationSyncApi = get()
             )
         }
         factory<DocumentSyncApi> {
@@ -111,7 +112,8 @@ object SyncModule {
                 reserveDao = get(),
                 documentReserveCountSyncApi = get(),
                 actionRecordDao = get(),
-                actionRemainsRecordDao = get()
+                actionRemainsRecordDao = get(),
+                locationSyncApi = get()
             )
         }
         factory<LocationSyncApi> {
@@ -178,6 +180,7 @@ object SyncModule {
         }
         factory {
             SyncRepository(
+                get(),
                 get(),
                 get(),
                 get(),

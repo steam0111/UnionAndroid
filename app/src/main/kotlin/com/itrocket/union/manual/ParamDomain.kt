@@ -1,12 +1,13 @@
 package com.itrocket.union.manual
 
 import android.os.Parcelable
+import com.itrocket.union.location.domain.entity.LocationDomain
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 open class ParamDomain(
     val id: String? = null,
-    val value: String,
+    val value: String = "",
     val type: ManualType,
     val isFilter: Boolean = true
 ) : Parcelable {
@@ -18,14 +19,24 @@ open class ParamDomain(
     ): ParamDomain {
         return ParamDomain(id = id, value = value, type = type, isFilter = isFilter)
     }
+
+    open fun toInitialState() = ParamDomain(type = type)
 }
 
 fun List<ParamDomain>.getOrganizationId(): String? {
     return filterNotEmpty().find { it.type == ManualType.ORGANIZATION }?.id
 }
 
-fun List<ParamDomain>.getLocationIds(): List<String>? {
-    return (filterNotEmpty().find { it.type == ManualType.LOCATION } as? LocationParamDomain)?.ids
+fun List<ParamDomain>.getFilterLocationLastId(): String? {
+    return getLocationParamDomain()?.locations?.lastOrNull()?.id
+}
+
+fun List<ParamDomain>.getFilterLocationIds(): List<String>? {
+    return getLocationParamDomain()?.locations?.map { it.id }
+}
+
+fun List<ParamDomain>.getLocationParamDomain(): LocationParamDomain? {
+    return (filterNotEmpty().find { it.type == ManualType.LOCATION } as? LocationParamDomain)
 }
 
 fun List<ParamDomain>.getExploitingId(): String? {
@@ -70,13 +81,17 @@ fun List<ParamDomain>.filterNotEmpty(): List<ParamDomain> {
 
 @Parcelize
 data class LocationParamDomain(
-    val ids: List<String>,
-    val values: List<String>,
-    val filtered: Boolean = true
+    val filtered: Boolean = true,
+    val locations: List<LocationDomain> = emptyList()
 ) : Parcelable,
     ParamDomain(
-        id = ids.toString(),
-        value = values.joinToString(", "),
+        id = locations.lastOrNull()?.id.toString(),
+        value = locations.joinToString(", ") { it.value },
         type = ManualType.LOCATION,
         isFilter = filtered
-    )
+    ) {
+
+    override fun toInitialState(): LocationParamDomain {
+        return LocationParamDomain()
+    }
+}

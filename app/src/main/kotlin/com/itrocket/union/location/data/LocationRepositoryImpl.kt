@@ -14,10 +14,10 @@ class LocationRepositoryImpl(
 ) : LocationRepository {
 
     override suspend fun getPlaceList(
-        selectedPlaceScheme: List<LocationDomain>,
+        selectedPlace: LocationDomain?,
         searchText: String
     ): List<LocationDomain> = withContext(coreDispatchers.io) {
-        getLocations(selectedPlaceScheme, textQuery = searchText)
+        getLocations(selectedPlace, textQuery = searchText)
     }
 
     override suspend fun getLocationById(locationId: String): LocationSyncEntity =
@@ -25,13 +25,18 @@ class LocationRepositoryImpl(
             locationSyncApi.getLocationById(locationId)
         }
 
+    override suspend fun getAllLocationsIdsByParent(parentId: String?): List<String?> {
+        return locationSyncApi.getAllLocationsIdsByParentId(parentId)
+    }
+
     private suspend fun getLocations(
-        selectedPlaceScheme: List<LocationDomain>,
+        selectedPlace: LocationDomain?,
         textQuery: String?
     ): List<LocationDomain> {
         return locationSyncApi.getLocations(
-            selectedPlaceScheme.firstOrNull()?.locationTypeId,
-            textQuery
+            locationId = selectedPlace?.id,
+            locationTypeId = selectedPlace?.locationTypeId,
+            textQuery = textQuery
         ).map {
             it.toLocationDomain()
         }

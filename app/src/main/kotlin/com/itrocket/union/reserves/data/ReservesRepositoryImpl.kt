@@ -22,7 +22,8 @@ class ReservesRepositoryImpl(
         params: List<ParamDomain>?,
         reservesIds: List<String>?,
         textQuery: String?,
-        reservesShorts: List<ReserveShortSyncEntity>?
+        reservesShorts: List<ReserveShortSyncEntity>?,
+        selectedLocationIds: List<String?>
     ): List<ReservesDomain> {
         return syncApi.getAll(
             organizationId = params?.getOrganizationId(),
@@ -31,17 +32,19 @@ class ReservesRepositoryImpl(
             nomenclatureGroupId = params?.getNomenclatureGroupId(),
             receptionItemCategoryId = params?.getReceptionCategoryId(),
             reservesIds = reservesIds,
-            textQuery = textQuery
+            textQuery = textQuery,
+            locationIds = selectedLocationIds
         ).map()
     }
 
-    override suspend fun getReservesFilterCount(params: List<ParamDomain>?): Long {
+    override suspend fun getReservesFilterCount(params: List<ParamDomain>?,  selectedLocationIds: List<String?>): Long {
         return syncApi.getReservesFilterCount(
             organizationId = params?.getOrganizationId(),
             molId = params?.getMolId(),
             structuralSubdivisionId = params?.getDepartmentId(),
             nomenclatureGroupId = params?.getNomenclatureGroupId(),
             receptionItemCategoryId = params?.getReceptionCategoryId(),
+            locationIds = selectedLocationIds
         )
     }
 

@@ -13,6 +13,7 @@ import com.example.union_sync_impl.dao.EquipmentTypeDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.InventoryRecordDao
 import com.example.union_sync_impl.dao.LocationDao
+import com.example.union_sync_impl.dao.LocationPathDao
 import com.example.union_sync_impl.dao.NetworkSyncDao
 import com.example.union_sync_impl.dao.NomenclatureDao
 import com.example.union_sync_impl.dao.NomenclatureGroupDao
@@ -48,6 +49,7 @@ import com.example.union_sync_impl.data.mapper.toInventoryDtoV2
 import com.example.union_sync_impl.data.mapper.toInventoryRecordDb
 import com.example.union_sync_impl.data.mapper.toInventoryRecordDtoV2
 import com.example.union_sync_impl.data.mapper.toLocationDb
+import com.example.union_sync_impl.data.mapper.toLocationPathDb
 import com.example.union_sync_impl.data.mapper.toLocationTypeDb
 import com.example.union_sync_impl.data.mapper.toNomenclatureDb
 import com.example.union_sync_impl.data.mapper.toNomenclatureGroupDb
@@ -79,6 +81,7 @@ import org.openapitools.client.models.EquipmentTypeDtoV2
 import org.openapitools.client.models.InventoryDtoV2
 import org.openapitools.client.models.InventoryRecordDtoV2
 import org.openapitools.client.models.LocationDtoV2
+import org.openapitools.client.models.LocationPathDto
 import org.openapitools.client.models.LocationsTypeDtoV2
 import org.openapitools.client.models.NomenclatureDtoV2
 import org.openapitools.client.models.NomenclatureGroupDtoV2
@@ -98,6 +101,7 @@ class SyncRepository(
     private val nomenclatureDao: NomenclatureDao,
     private val nomenclatureGroupDao: NomenclatureGroupDao,
     private val locationDao: LocationDao,
+    private val locationPathDao: LocationPathDao,
     private val departmentDao: DepartmentDao,
     private val providerDao: ProviderDao,
     private val statusesDao: AccountingObjectStatusDao,
@@ -267,6 +271,11 @@ class SyncRepository(
             moshi,
             ::actionRemainsRecordDbSaver,
             getActionRecordRemainsDbCollector()
+        ),
+        LocationPathSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::locationPathDbSaver
         ),
         InventoryRecordSyncEntity(
             syncControllerApi,
@@ -592,6 +601,12 @@ class SyncRepository(
 
     private suspend fun inventoryRecordDbSaver(objects: List<InventoryRecordDtoV2>) {
         inventoryRecordDao.insertAll(objects.map { it.toInventoryRecordDb() })
+    }
+
+    private suspend fun locationPathDbSaver(objects: List<LocationPathDto>) {
+        locationPathDao.insertAll(
+            objects.map { it.toLocationPathDb() }
+        )
     }
 
     private suspend fun getLastSyncTime(): Long {

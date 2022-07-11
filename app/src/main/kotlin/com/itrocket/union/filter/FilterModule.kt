@@ -39,6 +39,7 @@ object FilterModule {
                 get(),
                 get(),
                 get(),
+                get(),
                 get()
             )
         }

@@ -13,10 +13,6 @@ data class Params(val paramList: List<ParamDomain>) {
         return paramList.find { it.type == ManualType.ORGANIZATION }?.id
     }
 
-    fun getLocationIds(): List<String>? {
-        return (paramList.find { it.type == ManualType.LOCATION } as? LocationParamDomain)?.ids
-    }
-
     fun getExploitingId(): String? {
         return paramList.find { it.type == ManualType.EXPLOITING }?.id
     }

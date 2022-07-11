@@ -1,8 +1,6 @@
 package com.itrocket.union.documentCreate.domain
 
-import android.util.Log
 import com.example.union_sync_api.entity.DocumentUpdateReservesSyncEntity
-import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_api.entity.toDocumentReserveCountSyncEntity
@@ -13,7 +11,7 @@ import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.location.domain.dependencies.LocationRepository
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.getLocationIds
+import com.itrocket.union.manual.getFilterLocationLastId
 import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import java.util.*
@@ -33,7 +31,7 @@ class DocumentReservesManager(
         params: List<ParamDomain>
     ) {
         withContext(coreDispatchers.io) {
-            val locationId = params.getLocationIds()?.lastOrNull()
+            val locationId = params.getFilterLocationLastId()
             val newReserves = when (documentTypeDomain) {
                 DocumentTypeDomain.EXTRADITION -> changeExtradition(reserves)
                 DocumentTypeDomain.MOVING -> changeMove(documentId, reserves, locationId)

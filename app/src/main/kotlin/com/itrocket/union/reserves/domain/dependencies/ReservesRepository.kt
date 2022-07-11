@@ -12,7 +12,8 @@ interface ReservesRepository {
         params: List<ParamDomain>? = null,
         reservesIds: List<String>? = null,
         textQuery: String? = null,
-        reservesShorts: List<ReserveShortSyncEntity>? = null
+        reservesShorts: List<ReserveShortSyncEntity>? = null,
+        selectedLocationIds: List<String?>
     ): List<ReservesDomain>
 
     suspend fun getReservesByIds(
@@ -23,7 +24,10 @@ interface ReservesRepository {
         reservesShorts: List<ReserveShortSyncEntity>? = null
     ): List<ReserveSyncEntity>
 
-    suspend fun getReservesFilterCount(params: List<ParamDomain>? = null): Long
+    suspend fun getReservesFilterCount(
+        params: List<ParamDomain>? = null,
+        selectedLocationIds: List<String?>
+    ): Long
 
     suspend fun getReserveById(id: String): ReservesDomain
 

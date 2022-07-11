@@ -10,7 +10,7 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getExploitingId
-import com.itrocket.union.manual.getLocationIds
+import com.itrocket.union.manual.getFilterLocationLastId
 import kotlinx.coroutines.withContext
 
 class DocumentAccountingObjectManager(
@@ -26,21 +26,20 @@ class DocumentAccountingObjectManager(
     ) {
         withContext(coreDispatchers.io) {
             val accountingObjectIds = accountingObjects.map { it.id }
-            val locationIds = params.getLocationIds()
             val exploitingId = params.getExploitingId()
             val newAccountingObjects = when (documentTypeDomain) {
                 DocumentTypeDomain.EXTRADITION -> changeExtradition(
                     accountingObjectIds = accountingObjectIds,
                     exploitingId = requireNotNull(exploitingId),
-                    locationIds = locationIds
+                    locationId = params.getFilterLocationLastId()
                 )
                 DocumentTypeDomain.RETURN -> changeReturn(
                     accountingObjectIds = accountingObjectIds,
-                    locationIds = locationIds
+                    locationId = params.getFilterLocationLastId()
                 )
                 DocumentTypeDomain.MOVING -> changeMove(
                     accountingObjectIds = accountingObjectIds,
-                    locationIds = locationIds
+                    locationId = params.getFilterLocationLastId()
                 )
                 else -> {
                     listOf()
@@ -55,7 +54,7 @@ class DocumentAccountingObjectManager(
     private suspend fun changeExtradition(
         accountingObjectIds: List<String>,
         exploitingId: String,
-        locationIds: List<String>?
+        locationId: String?
     ): List<AccountingObjectSyncEntity> {
         return withContext(coreDispatchers.io) {
             val accountingObjects = repository.getAccountingObjectsByIds(accountingObjectIds)
@@ -66,7 +65,7 @@ class DocumentAccountingObjectManager(
                     exploitingEmployeeId = exploitingId,
                     status = newStatus,
                     statusId = newStatus.id,
-                    locationId = locationIds?.lastOrNull() ?: it.locationId
+                    locationId = locationId
                 )
             }
         }
@@ -74,7 +73,7 @@ class DocumentAccountingObjectManager(
 
     private suspend fun changeReturn(
         accountingObjectIds: List<String>,
-        locationIds: List<String>?
+        locationId: String?
     ): List<AccountingObjectSyncEntity> {
         return withContext(coreDispatchers.io) {
             val accountingObjects = repository.getAccountingObjectsByIds(accountingObjectIds)
@@ -86,7 +85,7 @@ class DocumentAccountingObjectManager(
                     exploitingEmployeeId = null,
                     status = newStatus,
                     statusId = newStatus.id,
-                    locationId = locationIds?.lastOrNull() ?: it.locationId
+                    locationId = locationId
                 )
             }
         }
@@ -94,7 +93,7 @@ class DocumentAccountingObjectManager(
 
     private suspend fun changeMove(
         accountingObjectIds: List<String>,
-        locationIds: List<String>?
+        locationId: String?
     ): List<AccountingObjectSyncEntity> {
         return withContext(coreDispatchers.io) {
             val accountingObjects = repository.getAccountingObjectsByIds(accountingObjectIds)
@@ -105,7 +104,7 @@ class DocumentAccountingObjectManager(
                 it.copy(
                     status = newStatus,
                     statusId = newStatus.id,
-                    locationId = locationIds?.lastOrNull() ?: it.locationId
+                    locationId = locationId
                 )
             }
         }

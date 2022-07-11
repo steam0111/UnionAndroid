@@ -4,10 +4,12 @@ import com.example.union_sync_api.entity.LocationShortSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.LocationTypeSyncEntity
 import com.example.union_sync_impl.entity.location.LocationDb
+import com.example.union_sync_impl.entity.location.LocationPathDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
 import org.openapitools.client.models.CustomLocationDto
 import org.openapitools.client.models.CustomLocationsTypeDto
 import org.openapitools.client.models.LocationDtoV2
+import org.openapitools.client.models.LocationPathDto
 import org.openapitools.client.models.LocationsTypeDtoV2
 
 fun CustomLocationDto.toLocationDb(): LocationDb {
@@ -66,3 +68,11 @@ fun LocationDb.toLocationSyncEntity(locationTypeDb: LocationTypeDb?): LocationSy
 fun LocationTypeDb.toSyncEntity() = LocationTypeSyncEntity(
     id, name
 )
+
+fun LocationPathDto.toLocationPathDb(): LocationPathDb {
+    val ancestor = if (descendantId == ancestorId) null else ancestorId
+    return LocationPathDb(
+        descendantLocationId = descendantId,
+        ancestorLocationId = ancestor
+    )
+}

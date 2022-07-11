@@ -3,7 +3,6 @@ package com.example.union_sync_impl.sync
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.Flow
 import org.openapitools.client.custom_api.SyncControllerApi
-import org.openapitools.client.models.ActionRemainsRecordDtoV2
 import org.openapitools.client.models.InventoryRecordDtoV2
 
 class InventoryRecordSyncEntity(
