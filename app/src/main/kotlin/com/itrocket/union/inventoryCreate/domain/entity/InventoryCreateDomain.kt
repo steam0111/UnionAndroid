@@ -28,7 +28,7 @@ data class InventoryCreateDomain(
 }
 
 fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
-    val organizationId = requireNotNull(documentInfo.getOrganizationId())
+    val organizationId = documentInfo.getOrganizationId()
     val molId = documentInfo.getMolId()
     val locationIds = documentInfo.getFilterLocationIds()
 

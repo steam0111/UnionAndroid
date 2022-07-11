@@ -67,8 +67,12 @@ class InventorySyncApiImpl(
 
     private suspend fun FullInventory.getLocations(): List<LocationSyncEntity> {
         return inventoryDb.locationIds?.map {
-            locationSyncApi.getLocationById(it)
-        }.orEmpty()
+            if (it.isNotBlank()) {
+                locationSyncApi.getLocationById(it)
+            } else {
+                null
+            }
+        }?.filterNotNull().orEmpty()
     }
 
     override suspend fun getInventoriesCount(
@@ -90,8 +94,12 @@ class InventorySyncApiImpl(
         val fullInventory = inventoryDao.getInventoryById(id)
 
         val locations = fullInventory.inventoryDb.locationIds?.map { locationId ->
-            locationSyncApi.getLocationById(locationId)
-        }
+            if (locationId.isNotBlank()) {
+                locationSyncApi.getLocationById(locationId)
+            } else {
+                null
+            }
+        }?.filterNotNull()
 
         val inventoryRecords =
             inventoryRecordDao.getAll(sqlInventoryRecordQuery(fullInventory.inventoryDb.id))
@@ -113,7 +121,7 @@ class InventorySyncApiImpl(
                 }
 
         return fullInventory.inventoryDb.toInventorySyncEntity(
-            organizationSyncEntity = requireNotNull(fullInventory.organizationDb).toSyncEntity(),
+            organizationSyncEntity = fullInventory.organizationDb?.toSyncEntity(),
             mol = fullInventory.employeeDb?.toSyncEntity(),
             locationSyncEntities = locations,
             accountingObjects = accountingObjects

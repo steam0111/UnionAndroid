@@ -230,7 +230,11 @@ class DocumentSyncApiImpl(
 
     private suspend fun FullDocument.getLocations(): List<LocationSyncEntity> {
         return documentDb.locationIds?.map {
-            locationSyncApi.getLocationById(it)
-        }.orEmpty()
+            if (it.isNotBlank()) {
+                locationSyncApi.getLocationById(it)
+            } else {
+                null
+            }
+        }?.filterNotNull().orEmpty()
     }
 }
