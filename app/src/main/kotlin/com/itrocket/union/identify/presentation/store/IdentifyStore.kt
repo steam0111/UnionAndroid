@@ -2,23 +2,23 @@ package com.itrocket.union.identify.presentation.store
 
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent.changeAction
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
-import com.itrocket.core.navigation.*
+import com.itrocket.core.navigation.DefaultNavigationErrorLabel
+import com.itrocket.core.navigation.ForwardNavigationLabel
+import com.itrocket.core.navigation.GoBackNavigationLabel
+import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailArguments
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragmentDirections
-import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuArguments
 import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment
 import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuTab
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.ObjectAction
-import com.itrocket.union.documents.presentation.store.DocumentStore
 import com.itrocket.union.documents.presentation.view.DocumentComposeFragmentDirections
 import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.filter.presentation.store.FilterArguments
@@ -134,40 +134,10 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
             ),
         ),
         val selectedPage: Int = 0,
-//        val accountingObject: AccountingObjectDomain
-//        = listOf(
-//            AccountingObjectDomain(
-//                id = "4",
-//                title = "Name",
-//                status = null,
-//                inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
-//                listAdditionallyInfo = listOf(),
-//                listMainInfo = listOf()
-//            ),
-//            AccountingObjectDomain(
-//                id = "5",
-//                title = "Name2",
-//                status = null,
-//                inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
-//                listAdditionallyInfo = listOf(),
-//                listMainInfo = listOf()
-//            ),
     )
 
 
     sealed class Label {
-        data class ShowDocumentCreate(
-            private val document: DocumentDomain
-        ) : IdentifyStore.Label(),
-            ForwardNavigationLabel {
-            override val directions: NavDirections
-                get() = DocumentComposeFragmentDirections.toDocumentCreate(
-                    DocumentCreateArguments(
-                        document = document
-                    )
-                )
-        }
-
         object GoBack : Label(), GoBackNavigationLabel
         object ShowSave : Label()
 
@@ -196,30 +166,19 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
                 get() = BottomActionMenuFragment()
         }
 
-      data  class OpenCardReserves(val item: OSandReserves) : Label(), ForwardNavigationLabel {
+        data class OpenCardReserves(val item: OSandReserves) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = ReservesComposeFragmentDirections.toReserveDetail(
                     ReserveDetailArguments(id = item.id)
                 )
         }
-        data  class OpenCardOS(val item: OSandReserves) : Label(), ForwardNavigationLabel {
+
+        data class OpenCardOS(val item: OSandReserves) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = AccountingObjectComposeFragmentDirections.toAccountingObjectsDetails(
                     AccountingObjectDetailArguments(argument = item as AccountingObjectDomain)
                 )
         }
-
-
-//        data class ShowDetail(val item: ReservesDomain) : Label(),
-//            ShowIdentifyBottomBar {
-//            override val fragment: Fragment
-//                get() = BottomActionMenuFragment()
-//            override val arguments: Bundle
-//                get() = bundleOf(
-//                    BottomActionMenuFragment.BOTTOMACTIONMENU_ARGS to BottomActionMenuArguments(item)
-//                )
-//            override val containerId: Int = R.id.mainActivityNavHostFragment
-//        }
 
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
         data class ShowFilter(val filters: List<ParamDomain>) : IdentifyStore.Label(),
@@ -231,29 +190,6 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
                         CatalogType.IDENTIFIES
                     )
                 )
-        }
-
-//        data class ShowDetail(val item: ReservesDomain) :
-//            Label(), ForwardNavigationLabel {
-//            override val directions: NavDirections
-//                get() = IdentifyComposeFragmentDirections.toReserveDetail(
-//                    ReserveDetailArguments(argument = item)
-//                )
-//        }
-    }
-
-    fun changeAction(item: ObjectAction) {
-        when (item) {
-            ObjectAction.CREATE_DOC -> {
-                Log.d("SukhanovTest", "Click CREATE")
-
-            }
-            ObjectAction.DELETE_FROM_LIST -> {
-                Log.d("SukhanovTest", "Click DELETE")
-            }
-            ObjectAction.OPEN_CARD -> {
-                Log.d("SukhanovTest", "Click OPEN")
-            }
         }
     }
 }

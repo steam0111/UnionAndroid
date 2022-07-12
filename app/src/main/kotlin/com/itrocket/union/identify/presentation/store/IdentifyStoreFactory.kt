@@ -93,7 +93,9 @@ class IdentifyStoreFactory(
                 is IdentifyStore.Intent.OnReservesClicked -> {
                     itemDomain = intent.item
                     publish(
-                        IdentifyStore.Label.ShowDetail(intent.item))}
+                        IdentifyStore.Label.ShowDetail(intent.item)
+                    )
+                }
 
 //                    publish(                    IdentifyStore.Label.ShowDetail(intent.item)
 
@@ -108,7 +110,7 @@ class IdentifyStoreFactory(
                         }
                         ObjectAction.OPEN_CARD -> {
                             Log.d("SukhanovTest", "Click OPEN $itemDomain")
-                            when(itemDomain) {
+                            when (itemDomain) {
                                 is AccountingObjectDomain -> {
                                     publish(IdentifyStore.Label.OpenCardOS(itemDomain))
 
@@ -176,7 +178,7 @@ class IdentifyStoreFactory(
             IdentifyStoreFactory.Result()
 
         data class Loading(val isLoading: Boolean) : Result()
-        data class Identify(val identifies: List<AccountingObjectDomain>) : Result()
+        data class Reserves(val reserves: List<ReservesDomain>) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) :
             Result()
 
@@ -189,7 +191,8 @@ class IdentifyStoreFactory(
         override fun IdentifyStore.State.reduce(result: Result): IdentifyStore.State =
             when (result) {
                 is Result.Loading -> copy(isIdentifyLoading = result.isLoading)
-//                is Result.AccountingObjects -> copy(identifies = result.identifies)
+                is Result.AccountingObjects -> copy(os = result.accountingObjects)
+                is Result.Reserves -> copy(reserves = result.reserves)
                 is Result.IsBottomActionMenuLoading -> copy(isBottomActionMenuLoading = result.isLoading)
 
                 else -> copy(isIdentifyLoading = true)
