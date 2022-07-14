@@ -130,8 +130,11 @@ class DocumentCreateComposeFragment :
                 onSaveClickListener = {
                     accept(DocumentCreateStore.Intent.OnSaveClicked)
                 },
-                onChooseClickListener = {
-                    accept(DocumentCreateStore.Intent.OnChooseClicked)
+                onChooseAccountingObjectClickListener = {
+                    accept(DocumentCreateStore.Intent.OnChooseAccountingObjectClicked)
+                },
+                onChooseReserveClickListener = {
+                    accept(DocumentCreateStore.Intent.OnChooseReserveClicked)
                 },
                 onSettingsClickListener = {
                     accept(DocumentCreateStore.Intent.OnSettingsClicked)

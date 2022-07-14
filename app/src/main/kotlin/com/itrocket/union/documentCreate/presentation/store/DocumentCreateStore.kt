@@ -14,7 +14,6 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectArguments
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragmentDirections
 import com.itrocket.union.documents.domain.entity.DocumentDomain
-import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.location.presentation.store.LocationArguments
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.manual.LocationParamDomain
@@ -37,7 +36,8 @@ interface DocumentCreateStore :
         object OnNextClicked : Intent()
         object OnPrevClicked : Intent()
         object OnSettingsClicked : Intent()
-        object OnChooseClicked : Intent()
+        object OnChooseAccountingObjectClicked : Intent()
+        object OnChooseReserveClicked : Intent()
         object OnCompleteClicked : Intent()
         data class OnSelectPage(val selectedPage: Int) : Intent()
         data class OnParamClicked(val param: ParamDomain) : Intent()
@@ -64,7 +64,6 @@ interface DocumentCreateStore :
         val document: DocumentDomain,
         val accountingObjects: List<AccountingObjectDomain> = listOf(),
         val reserves: List<ReservesDomain> = listOf(),
-        val objectType: ObjectType,
         val params: List<ParamDomain>,
         val isLoading: Boolean = false,
         val selectedPage: Int = 0,

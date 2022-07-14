@@ -43,6 +43,6 @@ class LocationSyncApiImpl(
         val locationType =
             locationDao.getLocationTypeById(requireNotNull(locationDb.locationTypeId))
         return locationDao.getLocationById(locationId)
-            .toLocationSyncEntity(requireNotNull(locationType))
+            .toLocationSyncEntity(locationType)
     }
 }

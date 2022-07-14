@@ -343,7 +343,6 @@ fun DocumentInfoItem(
     val numberId = "number"
     val timeId = "time"
     val statusId = "status"
-    val objectTypeId = "objectType"
     val annotatedTitle = buildAnnotatedString {
         appendInlineContent(numberId, "[icon1]")
         append(item.number)
@@ -355,10 +354,6 @@ fun DocumentInfoItem(
 
         appendInlineContent(statusId, "[icon3]")
         append(stringResource(item.documentType.titleId))
-        append("  ")
-
-        appendInlineContent(objectTypeId, "[icon4]")
-        append(stringResource(item.objectType.textId))
     }
     val numberContent = mapOf(
         numberId to InlineTextContent(
@@ -387,15 +382,6 @@ fun DocumentInfoItem(
             )
         ) {
             Image(painter = painterResource(R.drawable.ic_document), contentDescription = null)
-        },
-        objectTypeId to InlineTextContent(
-            Placeholder(
-                width = 20.sp,
-                height = 16.sp,
-                placeholderVerticalAlign = PlaceholderVerticalAlign.Center
-            )
-        ) {
-            Image(painter = painterResource(R.drawable.ic_category), contentDescription = null)
         },
     )
     val annotatedInfo = buildAnnotatedString {
@@ -568,7 +554,6 @@ fun DocumentInfoItemPreview() {
         item = DocumentView.DocumentItemView(
             number = "БП-00001374",
             documentStatus = DocumentStatus.CREATED,
-            objectType = ObjectType.MAIN_ASSETS,
             date = 123123,
             params = listOf(
                 ParamDomain(

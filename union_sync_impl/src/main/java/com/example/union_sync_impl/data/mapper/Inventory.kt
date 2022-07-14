@@ -15,6 +15,7 @@ import org.openapitools.client.models.InventoryDtoV2
 
 fun InventoryDtoV2.toInventoryDb(): InventoryDb {
     return InventoryDb(
+        id = id,
         locationIds = listOf(locationId.orEmpty()),
         organizationId = organizationId,
         employeeId = molId,

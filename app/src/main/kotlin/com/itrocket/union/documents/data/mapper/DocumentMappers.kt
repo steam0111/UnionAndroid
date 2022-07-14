@@ -32,28 +32,15 @@ fun DocumentSyncEntity.map(): DocumentDomain =
         reserves = reserves.map(),
         documentStatus = DocumentStatus.valueOf(documentStatus.ifEmpty { DocumentStatus.CREATED.name }),
         documentType = DocumentTypeDomain.valueOf(documentType.ifBlank { DocumentTypeDomain.EXTRADITION.name }),
-        objectType = getObjectType(objectType = objectType, reserves = reserves),
         params = getParams(
             mol = mol,
             exploiting = exploiting,
             organization = organizationSyncEntity,
             documentType = documentType,
             locations = locations,
-            objectType = getObjectType(objectType = objectType, reserves = reserves)
         ),
         documentStatusId = documentStatusId,
     )
-
-private fun getObjectType(
-    objectType: String?,
-    reserves: List<ReserveSyncEntity>,
-): ObjectType {
-    return when {
-        !objectType.isNullOrBlank() -> ObjectType.valueOf(objectType)
-        reserves.isNotEmpty() -> ObjectType.RESERVES
-        else -> ObjectType.MAIN_ASSETS
-    }
-}
 
 private fun getParams(
     mol: EmployeeSyncEntity?,
@@ -61,23 +48,14 @@ private fun getParams(
     organization: OrganizationSyncEntity?,
     locations: List<LocationSyncEntity>?,
     documentType: String,
-    objectType: ObjectType
 ): List<ParamDomain> {
-    return when (objectType) {
-        ObjectType.MAIN_ASSETS -> getAccountingObjectParams(
-            mol = mol,
-            exploiting = exploiting,
-            organization = organization,
-            locations = locations,
-            documentType = documentType
-        )
-        ObjectType.RESERVES -> getReserveParams(
-            mol = mol,
-            organization = organization,
-            locations = locations,
-            documentType = documentType
-        )
-    }
+    return getAccountingObjectParams(
+        mol = mol,
+        exploiting = exploiting,
+        organization = organization,
+        locations = locations,
+        documentType = documentType
+    )
 }
 
 private fun getAccountingObjectParams(
@@ -96,29 +74,13 @@ private fun getAccountingObjectParams(
         params = params,
         exploiting = exploiting,
         documentType = type,
-        manualTypes = type.accountingObjectManualTypes
+        manualTypes = type.manualTypes
     )
     addLocationParam(
         params = params,
-        types = type.accountingObjectManualTypes,
+        types = type.manualTypes,
         locations = locations
     )
-
-    return params
-}
-
-private fun getReserveParams(
-    mol: EmployeeSyncEntity?,
-    organization: OrganizationSyncEntity?,
-    locations: List<LocationSyncEntity>?,
-    documentType: String,
-): List<ParamDomain> {
-    val params = mutableListOf<ParamDomain>()
-    val type = DocumentTypeDomain.valueOf(documentType)
-
-    addOrganizationParam(params = params, organization = organization)
-    addMolParam(params = params, mol = mol)
-    addLocationParam(params = params, types = type.reserveManualTypes, locations = locations)
 
     return params
 }

@@ -13,7 +13,6 @@ sealed class DocumentView {
     data class DocumentItemView(
         val number: String,
         val documentStatus: DocumentStatus,
-        val objectType: ObjectType,
         val documentType: DocumentTypeDomain,
         val params: List<ParamDomain>,
         val date: Long,
@@ -32,7 +31,6 @@ sealed class DocumentView {
 fun DocumentView.DocumentItemView.toDocumentDomain() = DocumentDomain(
     number = number,
     documentStatus = documentStatus,
-    objectType = objectType,
     creationDate = date,
     documentType = documentType,
     params = params,
@@ -42,7 +40,6 @@ fun DocumentView.DocumentItemView.toDocumentDomain() = DocumentDomain(
 fun DocumentDomain.toDocumentItemView(dateUi: String) = DocumentView.DocumentItemView(
     number = number,
     documentStatus = documentStatus,
-    objectType = objectType,
     date = creationDate,
     documentType = documentType,
     params = params,

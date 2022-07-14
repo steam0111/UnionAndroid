@@ -18,16 +18,17 @@ import org.openapitools.client.models.ActionDtoV2
 
 fun ActionDtoV2.toDocumentDb(): DocumentDb {
     return DocumentDb(
+        id = id,
         organizationId = organizationId.orEmpty(),
         molId = molId.orEmpty(),
         exploitingId = exploitingId,
         documentType = extendedActionType?.id ?: "EXTRADITION",
         locationIds = listOf(locationToId.orEmpty()),
-        creationDate = getMillisDateFromServerFormat(creationDate.orEmpty()),
+        completionDate = getMillisDateFromServerFormat(completionDate),
+        creationDate = getMillisDateFromServerFormat(creationDate),
         documentStatus = extendedActionStatus?.id.orEmpty(),
         documentStatusId = actionStatusId.orEmpty(),
         updateDate = System.currentTimeMillis(),
-        objectType = null
     )
 }
 
@@ -58,7 +59,6 @@ fun DocumentCreateSyncEntity.toDocumentDb(id: String): DocumentDb {
         documentStatus = documentStatus,
         documentStatusId = documentStatusId,
         updateDate = System.currentTimeMillis(),
-        objectType = objectType
     )
 }
 
@@ -75,7 +75,6 @@ fun DocumentUpdateSyncEntity.toDocumentDb(): DocumentDb {
         creationDate = creationDate,
         completionDate = completionDate,
         updateDate = System.currentTimeMillis(),
-        objectType = objectType
     )
 }
 
@@ -101,7 +100,6 @@ fun DocumentDb.toDocumentSyncEntity(
         documentStatusId = documentStatusId,
         completionDate = completionDate,
         creationDate = creationDate,
-        objectType = objectType
     )
 }
 

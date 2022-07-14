@@ -48,7 +48,6 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStoreFactory
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
-import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
@@ -89,7 +88,8 @@ fun DocumentCreateScreen(
     onParamClickListener: (ParamDomain) -> Unit,
     onParamCrossClickListener: (ParamDomain) -> Unit,
     onSettingsClickListener: () -> Unit,
-    onChooseClickListener: () -> Unit,
+    onChooseAccountingObjectClickListener: () -> Unit,
+    onChooseReserveClickListener: () -> Unit,
     onPrevClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
     onReserveClickListener: (ReservesDomain) -> Unit
@@ -115,42 +115,39 @@ fun DocumentCreateScreen(
             }
         ),
         BaseTab(
-            title = stringResource(
-                if (state.objectType == ObjectType.MAIN_ASSETS) {
-                    R.string.document_create_accounting_object
-                } else {
-                    R.string.document_create_reserves
-                }
-            ),
+            title = stringResource(R.string.document_create_accounting_object),
             screen = {
-                when (state.document.objectType) {
-                    ObjectType.MAIN_ASSETS -> AccountingObjectScreen(
-                        isLoading = state.isLoading,
-                        accountingObjectList = state.accountingObjects,
-                        onAccountingObjectClickListener = {},
-                        onSaveClickListener = onSaveClickListener,
-                        onPrevClickListener = onPrevClickListener,
-                        onSettingsClickListener = onSettingsClickListener,
-                        onChooseClickListener = onChooseClickListener,
-                        coroutineScope = coroutineScope,
-                        pagerState = pagerState,
-                        documentStatus = state.document.documentStatus,
-                        onConductClickListener = onConductClickListener
-                    )
-                    ObjectType.RESERVES -> ReservesScreen(
-                        isLoading = state.isLoading,
-                        reserves = state.reserves,
-                        onReservesClickListener = onReserveClickListener,
-                        onSaveClickListener = onSaveClickListener,
-                        onPrevClickListener = onPrevClickListener,
-                        onSettingsClickListener = onSettingsClickListener,
-                        onChooseClickListener = onChooseClickListener,
-                        coroutineScope = coroutineScope,
-                        pagerState = pagerState,
-                        documentStatus = state.document.documentStatus,
-                        onConductClickListener = onConductClickListener
-                    )
-                }
+                AccountingObjectScreen(
+                    isLoading = state.isLoading,
+                    accountingObjectList = state.accountingObjects,
+                    onAccountingObjectClickListener = {},
+                    onSaveClickListener = onSaveClickListener,
+                    onPrevClickListener = onPrevClickListener,
+                    onSettingsClickListener = onSettingsClickListener,
+                    onChooseClickListener = onChooseAccountingObjectClickListener,
+                    coroutineScope = coroutineScope,
+                    pagerState = pagerState,
+                    documentStatus = state.document.documentStatus,
+                    onConductClickListener = onConductClickListener
+                )
+            }
+        ),
+        BaseTab(
+            title = stringResource(R.string.document_create_reserves),
+            screen = {
+                ReservesScreen(
+                    isLoading = state.isLoading,
+                    reserves = state.reserves,
+                    onReservesClickListener = onReserveClickListener,
+                    onSaveClickListener = onSaveClickListener,
+                    onPrevClickListener = onPrevClickListener,
+                    onSettingsClickListener = onSettingsClickListener,
+                    onChooseClickListener = onChooseReserveClickListener,
+                    coroutineScope = coroutineScope,
+                    pagerState = pagerState,
+                    documentStatus = state.document.documentStatus,
+                    onConductClickListener = onConductClickListener
+                )
             }
         )
     )
@@ -159,7 +156,6 @@ fun DocumentCreateScreen(
         Scaffold(
             topBar = {
                 Toolbar(
-                    objectType = state.document.objectType,
                     documentType = state.document.documentType,
                     onDropClickListener = onDropClickListener,
                     onBackClickListener = onBackClickListener
@@ -410,17 +406,12 @@ private fun ReservesScreen(
 
 @Composable
 private fun Toolbar(
-    objectType: ObjectType,
     documentType: DocumentTypeDomain,
     onBackClickListener: () -> Unit,
     onDropClickListener: () -> Unit,
 ) {
     BaseToolbar(
-        title = stringResource(
-            id = R.string.document_create_title,
-            stringResource(id = documentType.titleId),
-            stringResource(objectType.textId)
-        ),
+        title = stringResource(id = documentType.titleId),
         onStartImageClickListener = onBackClickListener,
         startImageId = R.drawable.ic_arrow_back,
         backgroundColor = psb1,
@@ -583,7 +574,6 @@ fun DocumentCreateScreenPreview() {
             document = DocumentDomain(
                 number = "1234543",
                 documentStatus = DocumentStatus.CREATED,
-                objectType = ObjectType.MAIN_ASSETS,
                 documentType = DocumentTypeDomain.WRITE_OFF,
                 creationDate = 123213213,
                 accountingObjects = listOf(),
@@ -618,6 +608,5 @@ fun DocumentCreateScreenPreview() {
                     type = ManualType.LOCATION
                 ),
             ),
-            objectType = ObjectType.MAIN_ASSETS
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 }

@@ -17,5 +17,4 @@ class DocumentDb(
     val locationIds: List<String>? = null,
     val documentStatus: String,
     val documentStatusId: String,
-    val objectType: String?
 ) : SyncItemDb(id, updateDate)

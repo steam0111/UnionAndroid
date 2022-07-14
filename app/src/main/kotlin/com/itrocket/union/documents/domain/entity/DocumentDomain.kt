@@ -15,7 +15,6 @@ import kotlinx.parcelize.Parcelize
 data class DocumentDomain(
     val number: String,
     val documentStatus: DocumentStatus,
-    val objectType: ObjectType,
     val documentType: DocumentTypeDomain,
     val params: List<ParamDomain>,
     val creationDate: Long,
@@ -39,7 +38,6 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
         creationDate = creationDate,
         locationIds = locationIds,
         id = number,
-        objectType = objectType.name,
         reservesIds = reserves.map { it.id },
         documentStatusId = documentStatusId,
         completionDate = completionDate,
