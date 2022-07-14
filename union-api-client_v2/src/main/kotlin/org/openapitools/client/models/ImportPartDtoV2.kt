@@ -43,6 +43,9 @@ data class ImportPartDtoV2(
     val entityModelId: kotlin.String,
 
     @Json(name = "dateTime")
-    val dateTime: kotlin.String? = null
+    val dateTime: kotlin.String? = null,
+
+    @Json(name = "table")
+    val table: String
 )
 

@@ -43,6 +43,5 @@ data class ExportPartInformationV2(
 
     @Json(name = "table")
     val table: String
-
 )
 
