@@ -54,13 +54,13 @@ interface DocumentMenuStore :
                         DocumentArguments(DocumentTypeDomain.COMMISSIONING)
                     )
                     R.string.main_issue -> DocumentMenuComposeFragmentDirections.toDocuments(
-                        DocumentArguments(DocumentTypeDomain.EXTRADITION)
+                        DocumentArguments(DocumentTypeDomain.GIVE)
                     )
                     R.string.main_return -> DocumentMenuComposeFragmentDirections.toDocuments(
                         DocumentArguments(DocumentTypeDomain.RETURN)
                     )
                     R.string.main_moved -> DocumentMenuComposeFragmentDirections.toDocuments(
-                        DocumentArguments(DocumentTypeDomain.MOVING)
+                        DocumentArguments(DocumentTypeDomain.RELOCATION)
                     )
                     R.string.main_write_off -> DocumentMenuComposeFragmentDirections.toDocuments(
                         DocumentArguments(DocumentTypeDomain.WRITE_OFF)

@@ -3,14 +3,14 @@ package com.example.union_sync_impl.utils
 import java.text.SimpleDateFormat
 import java.util.*
 
-private const val SERVER_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
+private const val SERVER_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SS"
 
-fun getMillisDateFromServerFormat(date: String?): Long {
+fun getMillisDateFromServerFormat(date: String?): Long? {
     val formatter = SimpleDateFormat(SERVER_FORMAT, Locale.getDefault())
     return try {
         formatter.parse(date)?.time ?: 0
     } catch (t: Throwable) {
-        System.currentTimeMillis()
+        null
     }
 }
 

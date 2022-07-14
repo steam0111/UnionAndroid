@@ -7,5 +7,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class AccountingObjectArguments(
     val params: List<ParamDomain>,
-    val selectedAccountingObjectIds: List<String>
+    val selectedAccountingObjectIds: List<String>,
+    val isFromDocument: Boolean
 ) : Parcelable

@@ -28,7 +28,7 @@ class DocumentAccountingObjectManager(
             val accountingObjectIds = accountingObjects.map { it.id }
             val exploitingId = params.getExploitingId()
             val newAccountingObjects = when (documentTypeDomain) {
-                DocumentTypeDomain.EXTRADITION -> changeExtradition(
+                DocumentTypeDomain.GIVE -> changeExtradition(
                     accountingObjectIds = accountingObjectIds,
                     exploitingId = requireNotNull(exploitingId),
                     locationId = params.getFilterLocationLastId()
@@ -37,7 +37,7 @@ class DocumentAccountingObjectManager(
                     accountingObjectIds = accountingObjectIds,
                     locationId = params.getFilterLocationLastId()
                 )
-                DocumentTypeDomain.MOVING -> changeMove(
+                DocumentTypeDomain.RELOCATION -> changeMove(
                     accountingObjectIds = accountingObjectIds,
                     locationId = params.getFilterLocationLastId()
                 )

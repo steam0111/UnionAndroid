@@ -22,7 +22,7 @@ fun ActionDtoV2.toDocumentDb(): DocumentDb {
         organizationId = organizationId.orEmpty(),
         molId = molId.orEmpty(),
         exploitingId = exploitingId,
-        documentType = extendedActionType?.id ?: "EXTRADITION",
+        documentType = actionTypeId ?: "GIVE",
         locationIds = listOf(locationToId.orEmpty()),
         completionDate = getMillisDateFromServerFormat(completionDate),
         creationDate = getMillisDateFromServerFormat(creationDate),

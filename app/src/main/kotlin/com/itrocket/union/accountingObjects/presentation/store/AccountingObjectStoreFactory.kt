@@ -117,7 +117,7 @@ class AccountingObjectStoreFactory(
         }
 
         private fun onItemClick(item: AccountingObjectDomain) {
-            if (accountingObjectArguments?.params?.isNotEmpty() == true) {
+            if(accountingObjectArguments?.isFromDocument == true){
                 publish(AccountingObjectStore.Label.GoBack(AccountingObjectResult(item)))
             } else {
                 publish(

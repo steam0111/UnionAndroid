@@ -91,7 +91,7 @@ class DocumentInteractor(
         return withContext(coreDispatchers.io) {
             documents.map {
                 val documentViews = arrayListOf<DocumentView>()
-                it.groupBy {
+                it.sortedByDescending { it.creationDate }.groupBy {
                     getStringDateFromMillis(it.creationDate)
                 }.forEach {
                     val documentDateType = when {

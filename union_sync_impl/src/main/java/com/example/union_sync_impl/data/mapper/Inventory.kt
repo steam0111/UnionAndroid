@@ -19,7 +19,7 @@ fun InventoryDtoV2.toInventoryDb(): InventoryDb {
         locationIds = listOf(locationId.orEmpty()),
         organizationId = organizationId,
         employeeId = molId,
-        date = getMillisDateFromServerFormat(creationDate.orEmpty()),
+        date = getMillisDateFromServerFormat(creationDate.orEmpty()) ?: System.currentTimeMillis(),
         updateDate = System.currentTimeMillis(),
         inventoryStatus = extendedInventoryState?.id.orEmpty()
     )

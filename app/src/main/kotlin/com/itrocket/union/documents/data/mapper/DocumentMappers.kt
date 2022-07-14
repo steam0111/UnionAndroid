@@ -2,22 +2,17 @@ package com.itrocket.union.documents.data.mapper
 
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
-import com.example.union_sync_api.entity.LocationShortSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.OrganizationSyncEntity
-import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.itrocket.union.accountingObjects.data.mapper.map
-import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
-import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.location.data.mapper.toLocationDomain
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.reserves.data.mapper.map
-import com.itrocket.union.reserves.domain.entity.ReservesDomain
 
 fun List<DocumentSyncEntity>.map(): List<DocumentDomain> = map {
     it.map()
@@ -31,7 +26,7 @@ fun DocumentSyncEntity.map(): DocumentDomain =
         accountingObjects = accountingObjects.map(),
         reserves = reserves.map(),
         documentStatus = DocumentStatus.valueOf(documentStatus.ifEmpty { DocumentStatus.CREATED.name }),
-        documentType = DocumentTypeDomain.valueOf(documentType.ifBlank { DocumentTypeDomain.EXTRADITION.name }),
+        documentType = DocumentTypeDomain.valueOf(documentType.ifBlank { DocumentTypeDomain.GIVE.name }),
         params = getParams(
             mol = mol,
             exploiting = exploiting,

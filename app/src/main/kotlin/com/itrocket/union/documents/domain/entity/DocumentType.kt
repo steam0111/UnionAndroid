@@ -12,7 +12,7 @@ enum class DocumentTypeDomain(
     val manualTypes: List<ManualType>
 ) :
     Parcelable {
-    EXTRADITION(
+    GIVE(
         titleId = R.string.main_issue,
         manualTypes = listOf(ManualType.EXPLOITING),
     ),
@@ -20,7 +20,7 @@ enum class DocumentTypeDomain(
         titleId = R.string.main_return,
         manualTypes = listOf(ManualType.EXPLOITING),
     ),
-    MOVING(
+    RELOCATION(
         titleId = R.string.main_moved,
         manualTypes = listOf(ManualType.LOCATION),
     ),
