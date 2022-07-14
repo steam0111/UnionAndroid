@@ -48,14 +48,19 @@ abstract class SyncEntity<SyncType>(
         }
     }
 
-    suspend inline fun <reified T> getEntitiesFromNetwork(syncId: String, exportPartId: String): List<T>? {
-        val resultJsonString = syncControllerApi.apiSyncSyncIdExportPartsExportPartIdGet(syncId, exportPartId)
+    suspend inline fun <reified T> getEntitiesFromNetwork(
+        syncId: String,
+        exportPartId: String
+    ): List<T>? {
+        val resultJsonString =
+            syncControllerApi.apiSyncSyncIdExportPartsExportPartIdGet(syncId, exportPartId)
         val resultObjectsString = getListEntitiesFromString(resultJsonString)
         return getJsonAdapter<T>().fromJson(resultObjectsString)
     }
 
     fun getListEntitiesFromString(networkResult: String): String {
-        return JSONObject(networkResult).getJSONObject("value").getJSONArray("itemsForExport").toString()
+        return JSONObject(networkResult).getJSONObject("value").getJSONArray("itemsForExport")
+            .toString()
     }
 
     inline fun <reified T> getJsonAdapter(): JsonAdapter<List<T>> {
@@ -81,6 +86,7 @@ abstract class SyncEntity<SyncType>(
         id = UUID.randomUUID().toString(),
         value = objects,
         entityModelId = id,
-        dateTime = null
+        dateTime = null,
+        table = table
     )
 }
