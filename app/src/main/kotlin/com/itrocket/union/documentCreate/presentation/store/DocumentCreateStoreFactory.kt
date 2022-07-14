@@ -13,7 +13,6 @@ import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import com.itrocket.union.documentCreate.domain.DocumentReservesManager
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
-import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
@@ -39,7 +38,6 @@ class DocumentCreateStoreFactory(
                     accountingObjects = documentCreateArguments.document.accountingObjects,
                     params = documentCreateArguments.document.params,
                     reserves = documentCreateArguments.document.reserves,
-                    objectType = documentCreateArguments.document.objectType
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
@@ -77,7 +75,8 @@ class DocumentCreateStoreFactory(
         ) {
             when (intent) {
                 DocumentCreateStore.Intent.OnBackClicked -> publish(DocumentCreateStore.Label.GoBack)
-                DocumentCreateStore.Intent.OnChooseClicked -> onChooseClicked(getState)
+                DocumentCreateStore.Intent.OnChooseAccountingObjectClicked -> onChooseAccountingObjectClicked(getState)
+                DocumentCreateStore.Intent.OnChooseReserveClicked -> onChooseReserveClicked(getState)
                 DocumentCreateStore.Intent.OnDropClicked -> {
                     changeParams(getState().document.params, getState)
                     dispatch(Result.AccountingObjects(getState().document.accountingObjects))
@@ -168,20 +167,17 @@ class DocumentCreateStoreFactory(
                 params = state.params,
                 reserves = state.reserves
             )
-            if (state.objectType == ObjectType.MAIN_ASSETS) {
-                documentAccountingObjectManager.changeAccountingObjectsAfterConduct(
-                    documentTypeDomain = state.document.documentType,
-                    accountingObjects = state.accountingObjects,
-                    params = state.params
-                )
-            } else {
-                documentReservesManager.changeReservesAfterConduct(
-                    documentId = state.document.number,
-                    documentTypeDomain = state.document.documentType,
-                    reserves = state.reserves,
-                    params = state.params
-                )
-            }
+            documentAccountingObjectManager.changeAccountingObjectsAfterConduct(
+                documentTypeDomain = state.document.documentType,
+                accountingObjects = state.accountingObjects,
+                params = state.params
+            )
+            documentReservesManager.changeReservesAfterConduct(
+                documentId = state.document.number,
+                documentTypeDomain = state.document.documentType,
+                reserves = state.reserves,
+                params = state.params
+            )
             dispatch(Result.Document(state.document.copy(documentStatus = DocumentStatus.COMPLETED)))
         }
 
@@ -220,8 +216,7 @@ class DocumentCreateStoreFactory(
                 Result.Enabled(
                     documentCreateInteractor.isParamsValid(
                         getState().params,
-                        getState().document.documentType,
-                        getState().objectType
+                        getState().document.documentType
                     )
                 )
             )
@@ -252,22 +247,22 @@ class DocumentCreateStoreFactory(
             }
         }
 
-        private suspend fun onChooseClicked(getState: () -> DocumentCreateStore.State) {
-            if (getState().objectType == ObjectType.MAIN_ASSETS) {
-                publish(
-                    DocumentCreateStore.Label.ShowAccountingObjects(
-                        documentCreateInteractor.getFilterParams(getState().params),
-                        documentCreateInteractor.getAccountingObjectIds(getState().accountingObjects)
-                    )
+        private suspend fun onChooseAccountingObjectClicked(getState: () -> DocumentCreateStore.State) {
+            publish(
+                DocumentCreateStore.Label.ShowAccountingObjects(
+                    documentCreateInteractor.getFilterParams(getState().params),
+                    documentCreateInteractor.getAccountingObjectIds(getState().accountingObjects)
                 )
-            } else {
-                publish(
-                    DocumentCreateStore.Label.ShowReserves(
-                        documentCreateInteractor.getFilterParams(getState().params),
-                        documentCreateInteractor.getReservesIds(getState().reserves)
-                    )
+            )
+        }
+
+        private suspend fun onChooseReserveClicked(getState: () -> DocumentCreateStore.State) {
+            publish(
+                DocumentCreateStore.Label.ShowReserves(
+                    documentCreateInteractor.getFilterParams(getState().params),
+                    documentCreateInteractor.getReservesIds(getState().reserves)
                 )
-            }
+            )
         }
 
         override fun handleError(throwable: Throwable) {

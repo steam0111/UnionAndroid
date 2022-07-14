@@ -8,7 +8,6 @@ import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
-import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.domain.entity.toUpdateSyncEntity
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
@@ -112,15 +111,9 @@ class DocumentCreateInteractor(
     fun isParamsValid(
         params: List<ParamDomain>,
         documentTypeDomain: DocumentTypeDomain,
-        objectType: ObjectType
     ): Boolean {
         val validateParams = params.filter {
-            val manualTypes = if (objectType == ObjectType.MAIN_ASSETS) {
-                documentTypeDomain.accountingObjectManualTypes
-            } else {
-                documentTypeDomain.reserveManualTypes
-            }
-            manualTypes.contains(it.type)
+            documentTypeDomain.manualTypes.contains(it.type)
         }
         return validateParams.all { it.value.isNotBlank() }
     }

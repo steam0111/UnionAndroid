@@ -9,38 +9,31 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 enum class DocumentTypeDomain(
     @StringRes val titleId: Int,
-    val accountingObjectManualTypes: List<ManualType>,
-    val reserveManualTypes: List<ManualType>
+    val manualTypes: List<ManualType>
 ) :
     Parcelable {
     EXTRADITION(
         titleId = R.string.main_issue,
-        accountingObjectManualTypes = listOf(ManualType.EXPLOITING),
-        reserveManualTypes = listOf()
+        manualTypes = listOf(ManualType.EXPLOITING),
     ),
     RETURN(
         titleId = R.string.main_return,
-        accountingObjectManualTypes = listOf(ManualType.EXPLOITING),
-        reserveManualTypes = listOf()
+        manualTypes = listOf(ManualType.EXPLOITING),
     ),
     MOVING(
         titleId = R.string.main_moved,
-        accountingObjectManualTypes = listOf(ManualType.LOCATION),
-        reserveManualTypes = listOf(ManualType.LOCATION)
+        manualTypes = listOf(ManualType.LOCATION),
     ),
     WRITE_OFF(
         titleId = R.string.main_write_off,
-        accountingObjectManualTypes = listOf(ManualType.EXPLOITING),
-        reserveManualTypes = listOf()
+        manualTypes = listOf(ManualType.EXPLOITING),
     ),
     COMMISSIONING(
         titleId = R.string.main_commissioning,
-        accountingObjectManualTypes = listOf(ManualType.EXPLOITING),
-        reserveManualTypes = listOf()
+        manualTypes = listOf(ManualType.EXPLOITING),
     ),
     ALL(
         titleId = R.string.common_empty,
-        accountingObjectManualTypes = listOf(ManualType.EXPLOITING),
-        reserveManualTypes = listOf()
+        manualTypes = listOf(ManualType.EXPLOITING),
     )
 }

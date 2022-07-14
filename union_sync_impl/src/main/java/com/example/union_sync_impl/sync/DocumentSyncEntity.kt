@@ -4,7 +4,6 @@ import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.Flow
 import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.models.ActionDtoV2
-import org.openapitools.client.models.InventoryDtoV2
 
 class DocumentSyncEntity(
     syncControllerApi: SyncControllerApi,

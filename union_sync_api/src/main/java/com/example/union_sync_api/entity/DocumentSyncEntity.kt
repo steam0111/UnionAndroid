@@ -14,5 +14,4 @@ data class DocumentSyncEntity(
     val documentStatus: String,
     val documentStatusId: String,
     val reserves: List<ReserveSyncEntity>,
-    val objectType: String?
 )

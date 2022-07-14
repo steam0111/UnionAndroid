@@ -47,22 +47,11 @@ class DocumentInteractor(
 
     suspend fun createDocument(
         type: DocumentTypeDomain,
-        listType: ObjectType
     ): DocumentDomain {
         return withContext(coreDispatchers.io) {
-            val exploitingId: String?
-            val locationIds: List<String>?
 
-            when (listType) {
-                ObjectType.MAIN_ASSETS -> {
-                    exploitingId = getExploitingByManualTypes(type.accountingObjectManualTypes)
-                    locationIds = getLocationsByManualTypes(type.accountingObjectManualTypes)
-                }
-                ObjectType.RESERVES -> {
-                    exploitingId = getExploitingByManualTypes(type.reserveManualTypes)
-                    locationIds = getLocationsByManualTypes(type.reserveManualTypes)
-                }
-            }
+            val exploitingId: String? = getExploitingByManualTypes(type.manualTypes)
+            val locationIds: List<String>? = getLocationsByManualTypes(type.manualTypes)
 
             val documentId = repository.createDocument(
                 DocumentCreateSyncEntity(
@@ -76,7 +65,6 @@ class DocumentInteractor(
                     documentStatus = DocumentStatus.CREATED.name,
                     documentStatusId = DocumentStatus.CREATED.name,
                     reservesIds = listOf(),
-                    objectType = listType.name
                 )
             )
             repository.getDocumentById(documentId)

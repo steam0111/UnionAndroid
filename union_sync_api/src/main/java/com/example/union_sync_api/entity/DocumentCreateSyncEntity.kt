@@ -11,5 +11,4 @@ data class DocumentCreateSyncEntity(
     val locationIds: List<String>? = null,
     val accountingObjectsIds: List<String>? = null,
     val reservesIds: List<String>? = null,
-    val objectType: String
 )

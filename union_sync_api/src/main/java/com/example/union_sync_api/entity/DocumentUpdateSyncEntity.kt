@@ -13,5 +13,4 @@ data class DocumentUpdateSyncEntity(
     val documentStatus: String,
     val documentStatusId: String,
     val reservesIds: List<String>? = null,
-    val objectType: String
 )
