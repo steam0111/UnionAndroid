@@ -172,9 +172,10 @@ class DocumentSyncApiImpl(
             actionId = documentUpdateSyncEntity.id
         )
         updateRemainsActionRecords(
-            remainIds = documentUpdateSyncEntity.reservesIds.orEmpty(),
+            remainIds = documentUpdateSyncEntity.reservesIds.orEmpty().map { it.id },
             actionId = documentUpdateSyncEntity.id
         )
+        documentReserveCountSyncApi.insertAll(documentUpdateSyncEntity.reservesIds.orEmpty())
     }
 
     override suspend fun updateDocumentReserves(documentUpdateReservesSyncEntity: DocumentUpdateReservesSyncEntity) {

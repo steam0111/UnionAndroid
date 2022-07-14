@@ -250,7 +250,7 @@ class DocumentCreateStoreFactory(
         private suspend fun onChooseAccountingObjectClicked(getState: () -> DocumentCreateStore.State) {
             publish(
                 DocumentCreateStore.Label.ShowAccountingObjects(
-                    documentCreateInteractor.getFilterParams(getState().params),
+                    listOf(),//documentCreateInteractor.getFilterParams(getState().params),
                     documentCreateInteractor.getAccountingObjectIds(getState().accountingObjects)
                 )
             )
@@ -259,7 +259,7 @@ class DocumentCreateStoreFactory(
         private suspend fun onChooseReserveClicked(getState: () -> DocumentCreateStore.State) {
             publish(
                 DocumentCreateStore.Label.ShowReserves(
-                    documentCreateInteractor.getFilterParams(getState().params),
+                    listOf(),//documentCreateInteractor.getFilterParams(getState().params),
                     documentCreateInteractor.getReservesIds(getState().reserves)
                 )
             )

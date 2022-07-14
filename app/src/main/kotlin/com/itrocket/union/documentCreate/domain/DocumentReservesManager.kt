@@ -33,8 +33,8 @@ class DocumentReservesManager(
         withContext(coreDispatchers.io) {
             val locationId = params.getFilterLocationLastId()
             val newReserves = when (documentTypeDomain) {
-                DocumentTypeDomain.EXTRADITION -> changeExtradition(reserves)
-                DocumentTypeDomain.MOVING -> changeMove(documentId, reserves, locationId)
+                DocumentTypeDomain.GIVE -> changeExtradition(reserves)
+                DocumentTypeDomain.RELOCATION -> changeMove(documentId, reserves, locationId)
                 else -> {
                     listOf()
                 }

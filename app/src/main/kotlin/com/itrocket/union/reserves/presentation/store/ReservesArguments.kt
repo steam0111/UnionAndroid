@@ -7,5 +7,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ReservesArguments(
     val params: List<ParamDomain>,
-    val selectedReservesIds: List<String>
+    val selectedReservesIds: List<String>,
+    val isFromDocument: Boolean
 ) : Parcelable

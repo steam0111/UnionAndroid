@@ -91,7 +91,8 @@ interface DocumentCreateStore :
                 get() = DocumentCreateComposeFragmentDirections.toAccountingObjects(
                     AccountingObjectArguments(
                         params = params,
-                        selectedAccountingObjectIds = selectedAccountingObjectIds
+                        selectedAccountingObjectIds = selectedAccountingObjectIds,
+                        isFromDocument = true
                     )
                 )
         }
@@ -105,7 +106,8 @@ interface DocumentCreateStore :
                 get() = DocumentCreateComposeFragmentDirections.toReserves(
                     ReservesArguments(
                         params = params,
-                        selectedReservesIds = selectedReserveIds
+                        selectedReservesIds = selectedReserveIds,
+                        isFromDocument = true
                     )
                 )
         }

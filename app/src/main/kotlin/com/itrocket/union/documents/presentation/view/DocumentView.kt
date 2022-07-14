@@ -15,7 +15,7 @@ sealed class DocumentView {
         val documentStatus: DocumentStatus,
         val documentType: DocumentTypeDomain,
         val params: List<ParamDomain>,
-        val date: Long,
+        val date: Long?,
         val dateUi: String,
     ) : DocumentView() {
         fun getTextTime() = getTimeFromMillis(date)

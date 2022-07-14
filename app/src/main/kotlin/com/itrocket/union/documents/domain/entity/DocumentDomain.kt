@@ -1,6 +1,7 @@
 package com.itrocket.union.documents.domain.entity
 
 import android.os.Parcelable
+import com.example.union_sync_api.entity.DocumentReserveCountSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.manual.ParamDomain
@@ -17,7 +18,7 @@ data class DocumentDomain(
     val documentStatus: DocumentStatus,
     val documentType: DocumentTypeDomain,
     val params: List<ParamDomain>,
-    val creationDate: Long,
+    val creationDate: Long?,
     val completionDate: Long? = null,
     val accountingObjects: List<AccountingObjectDomain> = listOf(),
     val reserves: List<ReservesDomain> = listOf(),
@@ -38,7 +39,7 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
         creationDate = creationDate,
         locationIds = locationIds,
         id = number,
-        reservesIds = reserves.map { it.id },
+        reservesIds = reserves.map { DocumentReserveCountSyncEntity(id = it.id, count = it.itemsCount) },
         documentStatusId = documentStatusId,
         completionDate = completionDate,
         documentStatus = documentStatus.name
