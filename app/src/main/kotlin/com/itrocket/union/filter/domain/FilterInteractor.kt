@@ -115,8 +115,13 @@ class FilterInteractor(
         }
     }
 
-    private suspend fun List<ParamDomain>.getFilterLocationIds(): List<String?> {
-        return locationRepository.getAllLocationsIdsByParent(getFilterLocationLastId())
+    private suspend fun List<ParamDomain>.getFilterLocationIds(): List<String?>? {
+        val lastLocationId = getFilterLocationLastId()
+        return if (lastLocationId == null) {
+            null
+        } else {
+            locationRepository.getAllLocationsIdsByParent(lastLocationId)
+        }
     }
 
     companion object {

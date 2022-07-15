@@ -10,13 +10,13 @@ interface AccountingObjectRepository {
     suspend fun getAccountingObjects(
         textQuery: String? = null,
         params: List<ParamDomain>,
-        selectedLocationIds: List<String?>
+        selectedLocationIds: List<String?>?
     ): List<AccountingObjectDomain>
 
     suspend fun getAccountingObjectsCount(
         textQuery: String? = null,
         params: List<ParamDomain>,
-        selectedLocationIds: List<String?>
+        selectedLocationIds: List<String?>?
     ): Long
 
     suspend fun getAccountingObjectsByIds(ids: List<String>): List<AccountingObjectSyncEntity>

@@ -22,11 +22,17 @@ class AccountingObjectInteractor(
         selectedAccountingObjectIds: List<String> = listOf()
     ): List<AccountingObjectDomain> =
         withContext(coreDispatchers.io) {
-            //filter params
+            val lastLocationId = params.getFilterLocationLastId()
+            val filterLocationIds = if (lastLocationId == null) {
+                null
+            } else {
+                locationRepository.getAllLocationsIdsByParent(lastLocationId)
+            }
+
             repository.getAccountingObjects(
                 searchQuery,
                 params,
-                locationRepository.getAllLocationsIdsByParent(params.getFilterLocationLastId())
+                filterLocationIds
             ).filter {
                 !selectedAccountingObjectIds.contains(it.id)
             }
