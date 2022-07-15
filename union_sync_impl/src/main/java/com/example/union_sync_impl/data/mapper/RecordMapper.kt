@@ -30,7 +30,8 @@ fun ActionRemainsRecordDtoV2.toActionRemainsRecordDb() = ActionRemainsRecordDb(
     id = id,
     remainId = remainsId.orEmpty(),
     actionId = actionId.orEmpty(),
-    updateDate = System.currentTimeMillis()
+    updateDate = System.currentTimeMillis(),
+    count = count
 )
 
 fun ActionRemainsRecordDb.toActionRemainsRecordDtoV2() = ActionRemainsRecordDtoV2(
@@ -38,6 +39,7 @@ fun ActionRemainsRecordDb.toActionRemainsRecordDtoV2() = ActionRemainsRecordDtoV
     remainsId = remainId,
     actionId = actionId,
     deleted = false,
+    count = count,
     dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
 )
 
@@ -46,7 +48,7 @@ fun InventoryRecordDtoV2.toInventoryRecordDb() = InventoryRecordDb(
     accountingObjectId = accountingObjectId.orEmpty(),
     inventoryId = inventoryId.orEmpty(),
     updateDate = System.currentTimeMillis(),
-    inventoryStatus = extendedInventoryRecordStatus?.id.orEmpty()
+    inventoryStatus = inventoryRecordStatusId.orEmpty()
 )
 
 fun ActionRecordDb.toSyncEntity() = ActionRecordSyncEntity(
@@ -75,5 +77,6 @@ fun InventoryRecordDb.toInventoryRecordDtoV2() = InventoryRecordDtoV2(
     accountingObjectId = accountingObjectId,
     inventoryId = inventoryId,
     deleted = false,
+    inventoryRecordStatusId = inventoryStatus,
     dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
 )

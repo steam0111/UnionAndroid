@@ -1,6 +1,6 @@
 package com.itrocket.union.documents.data
 
-import com.example.union_sync_api.data.DocumentReserveCountSyncApi
+import com.example.union_sync_api.data.ActionRemainsRecordSyncApi
 import com.example.union_sync_api.data.DocumentSyncApi
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.example.union_sync_api.entity.DocumentReserveCountSyncEntity
@@ -21,8 +21,8 @@ import kotlinx.coroutines.withContext
 
 class DocumentRepositoryImpl(
     private val documentSyncApi: DocumentSyncApi,
-    private val documentReserveCountSyncApi: DocumentReserveCountSyncApi,
-    private val coreDispatchers: CoreDispatchers
+    private val coreDispatchers: CoreDispatchers,
+    private val documentRemainsRecordSyncApi: ActionRemainsRecordSyncApi
 ) : DocumentRepository {
     override suspend fun getAllDocuments(
         textQuery: String?,
@@ -71,6 +71,6 @@ class DocumentRepositoryImpl(
     }
 
     override suspend fun insertDocumentReserveCount(documentReserveCounts: List<DocumentReserveCountSyncEntity>) {
-        return documentReserveCountSyncApi.insertAll(documentReserveCounts)
+        return documentRemainsRecordSyncApi.updateCounts(documentReserveCounts)
     }
 }

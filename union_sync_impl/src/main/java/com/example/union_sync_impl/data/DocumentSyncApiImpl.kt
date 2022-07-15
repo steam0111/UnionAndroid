@@ -1,6 +1,5 @@
 package com.example.union_sync_impl.data
 
-import com.example.union_sync_api.data.DocumentReserveCountSyncApi
 import com.example.union_sync_api.data.DocumentSyncApi
 import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
@@ -39,7 +38,6 @@ class DocumentSyncApiImpl(
     private val locationDao: LocationDao,
     private val accountingObjectDao: AccountingObjectDao,
     private val reserveDao: ReserveDao,
-    private val documentReserveCountSyncApi: DocumentReserveCountSyncApi,
     private val locationSyncApi: LocationSyncApi,
     private val actionRecordDao: ActionRecordDao,
     private val actionRemainsRecordDao: ActionRemainsRecordDao
@@ -136,18 +134,15 @@ class DocumentSyncApiImpl(
                     it.toSyncEntity()
                 }
 
-        val reserveIds =
-            actionRemainsRecordDao.getAll((sqlActionRemainsRecordQuery(id))).map { it.remainId }
+        val reserveRecords =
+            actionRemainsRecordDao.getAll((sqlActionRemainsRecordQuery(actionId = id)))
 
         var reserves: List<ReserveSyncEntity> =
-            reserveDao.getAll(sqlReserveQuery(reservesIds = reserveIds))
+            reserveDao.getAll(sqlReserveQuery(reservesIds = reserveRecords.map { it.remainId }))
                 .map { it.toSyncEntity() }
 
-        val documentReservesCounts: List<DocumentReserveCountSyncEntity> =
-            documentReserveCountSyncApi.getAll(reserves.map { it.id })
-
         reserves = reserves.map { reserve ->
-            val documentReserveCount = documentReservesCounts.find { it.id == reserve.id }
+            val documentReserveCount = reserveRecords.find { it.remainId == reserve.id }
             if (documentReserveCount != null) {
                 reserve.copy(count = documentReserveCount.count)
             } else {
@@ -172,10 +167,9 @@ class DocumentSyncApiImpl(
             actionId = documentUpdateSyncEntity.id
         )
         updateRemainsActionRecords(
-            remainIds = documentUpdateSyncEntity.reservesIds.orEmpty().map { it.id },
+            remainIds = documentUpdateSyncEntity.reservesIds.orEmpty(),
             actionId = documentUpdateSyncEntity.id
         )
-        documentReserveCountSyncApi.insertAll(documentUpdateSyncEntity.reservesIds.orEmpty())
     }
 
     override suspend fun updateDocumentReserves(documentUpdateReservesSyncEntity: DocumentUpdateReservesSyncEntity) {
@@ -208,22 +202,23 @@ class DocumentSyncApiImpl(
     }
 
     private suspend fun updateRemainsActionRecords(
-        remainIds: List<String>,
+        remainIds: List<DocumentReserveCountSyncEntity>,
         actionId: String
     ) {
         val existRecords = actionRemainsRecordDao.getAll(
             sqlActionRemainsRecordQuery(
                 actionId = actionId,
-                remainIds = remainIds
+                remainIds = remainIds.map { it.id }
             )
         )
-        val newRecords = remainIds.map { remainId ->
-            val existRecord = existRecords.find { it.remainId == remainId }
+        val newRecords = remainIds.map { remain ->
+            val existRecord = existRecords.find { it.remainId == remain.id }
             ActionRemainsRecordDb(
                 id = existRecord?.id ?: UUID.randomUUID().toString(),
-                remainId = remainId,
+                remainId = remain.id,
                 actionId = actionId,
-                updateDate = System.currentTimeMillis()
+                updateDate = System.currentTimeMillis(),
+                count = remain.count
             )
         }
         actionRemainsRecordDao.insertAll(newRecords)

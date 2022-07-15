@@ -1,5 +1,6 @@
 package com.itrocket.union.documentCreate.domain
 
+import com.example.union_sync_api.entity.DocumentReserveCountSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateReservesSyncEntity
 import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
@@ -157,7 +158,17 @@ class DocumentReservesManager(
         existingReserves: List<ReserveSyncEntity>,
         newReserves: List<ReserveSyncEntity>
     ) {
-        val reservesIds = existingReserves.map { it.id } + newReserves.map { it.id }
+        val reservesIds = existingReserves.map {
+            DocumentReserveCountSyncEntity(
+                id = it.id,
+                count = it.count
+            )
+        } + newReserves.map {
+            DocumentReserveCountSyncEntity(
+                id = it.id,
+                count = it.count
+            )
+        }
         reservesRepository.insertAll(newReserves)
         val documentUpdateReserves =
             DocumentUpdateReservesSyncEntity(id = documentId, reservesIds = reservesIds)

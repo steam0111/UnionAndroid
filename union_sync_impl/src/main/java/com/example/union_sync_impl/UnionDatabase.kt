@@ -11,7 +11,6 @@ import com.example.union_sync_impl.dao.BranchesDao
 import com.example.union_sync_impl.dao.CounterpartyDao
 import com.example.union_sync_impl.dao.DepartmentDao
 import com.example.union_sync_impl.dao.DocumentDao
-import com.example.union_sync_impl.dao.DocumentReserveCountDao
 import com.example.union_sync_impl.dao.EmployeeDao
 import com.example.union_sync_impl.dao.EquipmentTypeDao
 import com.example.union_sync_impl.dao.InventoryDao
@@ -36,7 +35,6 @@ import com.example.union_sync_impl.entity.BranchesDb
 import com.example.union_sync_impl.entity.CounterpartyDb
 import com.example.union_sync_impl.entity.DepartmentDb
 import com.example.union_sync_impl.entity.DocumentDb
-import com.example.union_sync_impl.entity.DocumentReserveCountDb
 import com.example.union_sync_impl.entity.EmployeeDb
 import com.example.union_sync_impl.entity.EquipmentTypesDb
 import com.example.union_sync_impl.entity.InventoryDb
@@ -80,7 +78,6 @@ import com.example.union_sync_impl.utils.Converters
         ReceptionItemCategoryDb::class,
         OrderDb::class,
         ReserveDb::class,
-        DocumentReserveCountDb::class,
         ActionRecordDb::class,
         ActionRemainsRecordDb::class,
         InventoryRecordDb::class
@@ -109,7 +106,6 @@ abstract class UnionDatabase : RoomDatabase() {
     abstract fun receptionItemCategoryDao(): ReceptionItemCategoryDao
     abstract fun orderDao(): OrderDao
     abstract fun reserveDao(): ReserveDao
-    abstract fun documentReserveCountDao(): DocumentReserveCountDao
     abstract fun actionRecordDao(): ActionRecordDao
     abstract fun actionRemainsRecordDao(): ActionRemainsRecordDao
     abstract fun inventoryRecordDao(): InventoryRecordDao
