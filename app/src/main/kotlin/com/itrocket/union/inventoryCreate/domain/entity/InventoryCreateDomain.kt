@@ -16,7 +16,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class InventoryCreateDomain(
     val number: String,
-    val date: Long,
+    val date: Long?,
     val inventoryStatus: InventoryStatus,
     val documentInfo: List<ParamDomain>,
     val accountingObjects: List<AccountingObjectDomain>,

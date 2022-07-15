@@ -102,8 +102,3 @@ fun DocumentDb.toDocumentSyncEntity(
         creationDate = creationDate,
     )
 }
-
-fun DocumentUpdateReservesSyncEntity.toDocumentUpdateReserves() = DocumentUpdateReserves(
-    id = id,
-    reservesIds = reservesIds
-)
