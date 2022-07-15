@@ -22,10 +22,16 @@ class ReservesInteractor(
         selectedReservesIds: List<String> = listOf()
     ): List<ReservesDomain> =
         withContext(coreDispatchers.io) {
+            val lastLocationId = params.getFilterLocationLastId()
+            val filterLocationIds = if (lastLocationId == null) {
+                null
+            } else {
+                locationRepository.getAllLocationsIdsByParent(lastLocationId)
+            }
             val reserves = repository.getReserves(
                 textQuery = searchText,
                 params = params,
-                selectedLocationIds = locationRepository.getAllLocationsIdsByParent(params.getFilterLocationLastId())
+                selectedLocationIds = filterLocationIds
             ).filter {
                 !selectedReservesIds.contains(it.id)
             }

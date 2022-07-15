@@ -9,6 +9,7 @@ import com.example.union_sync_impl.entity.AccountingObjectDb
 import com.example.union_sync_impl.entity.AccountingObjectStatusDb
 import com.example.union_sync_impl.entity.AccountingObjectUpdate
 import com.example.union_sync_impl.entity.FullAccountingObject
+import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.AccountingObjectDtoV2
 import org.openapitools.client.models.AccountingObjectStatusDto
 import org.openapitools.client.models.AccountingObjectStatusDtoV2
@@ -127,11 +128,32 @@ fun FullAccountingObject.toSyncEntity(
 
 fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObjectDtoV2> {
     return map { fullAccountingObject ->
+        val accountingObjectDb = fullAccountingObject.accountingObjectDb
         AccountingObjectDtoV2(
-            id = fullAccountingObject.accountingObjectDb.id,
-            locationId = fullAccountingObject.accountingObjectDb.locationId,
-            exploitingId = fullAccountingObject.accountingObjectDb.exploitingId,
-            accountingObjectStatusId = fullAccountingObject.accountingObjectDb.status?.id,
+            id = accountingObjectDb.id,
+            locationId = accountingObjectDb.locationId,
+            exploitingId = accountingObjectDb.exploitingId,
+            accountingObjectStatusId = accountingObjectDb.status?.id,
+            dateUpdate = getStringDateFromMillis(accountingObjectDb.updateDate),
+            catalogItemName = accountingObjectDb.catalogItemName,
+            barcodeValue = accountingObjectDb.barcodeValue,
+            actualPrice = accountingObjectDb.actualPrice,
+            startingPrice = accountingObjectDb.actualPrice,
+            name = accountingObjectDb.name,
+            model = accountingObjectDb.model,
+            organizationId = accountingObjectDb.organizationId,
+            molId = accountingObjectDb.molId,
+            producerId = accountingObjectDb.producerId,
+            typeId = accountingObjectDb.equipmentTypeId,
+            providerId = accountingObjectDb.providerId,
+            factoryNumber = accountingObjectDb.factoryNumber,
+            internalNumber = accountingObjectDb.internalNumber,
+            inventoryNumber = accountingObjectDb.inventoryNumber,
+            rfidValue = accountingObjectDb.rfidValue,
+            departmentId = accountingObjectDb.departmentId,
+            count = accountingObjectDb.count?.toLong(),
+            nomenclatureId = accountingObjectDb.nomenclatureId,
+            nomenclatureGroupId = accountingObjectDb.nomenclatureGroupId
         )
     }
 }

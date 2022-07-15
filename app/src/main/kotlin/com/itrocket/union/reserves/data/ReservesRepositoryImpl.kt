@@ -23,7 +23,7 @@ class ReservesRepositoryImpl(
         reservesIds: List<String>?,
         textQuery: String?,
         reservesShorts: List<ReserveShortSyncEntity>?,
-        selectedLocationIds: List<String?>
+        selectedLocationIds: List<String?>?
     ): List<ReservesDomain> {
         return syncApi.getAll(
             organizationId = params?.getOrganizationId(),
@@ -37,7 +37,10 @@ class ReservesRepositoryImpl(
         ).map()
     }
 
-    override suspend fun getReservesFilterCount(params: List<ParamDomain>?,  selectedLocationIds: List<String?>): Long {
+    override suspend fun getReservesFilterCount(
+        params: List<ParamDomain>?,
+        selectedLocationIds: List<String?>?
+    ): Long {
         return syncApi.getReservesFilterCount(
             organizationId = params?.getOrganizationId(),
             molId = params?.getMolId(),

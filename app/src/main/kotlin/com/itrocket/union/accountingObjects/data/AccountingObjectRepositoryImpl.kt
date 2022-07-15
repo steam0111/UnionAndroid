@@ -26,7 +26,7 @@ class AccountingObjectRepositoryImpl(
     override suspend fun getAccountingObjects(
         textQuery: String?,
         params: List<ParamDomain>,
-        selectedLocationIds: List<String?>
+        selectedLocationIds: List<String?>?
     ): List<AccountingObjectDomain> =
         withContext(coreDispatchers.io) {
             syncApi.getAccountingObjects(
@@ -46,7 +46,7 @@ class AccountingObjectRepositoryImpl(
     override suspend fun getAccountingObjectsCount(
         textQuery: String?,
         params: List<ParamDomain>,
-        selectedLocationIds: List<String?>
+        selectedLocationIds: List<String?>?
     ): Long =
         withContext(coreDispatchers.io) {
             syncApi.getAccountingObjectsCount(

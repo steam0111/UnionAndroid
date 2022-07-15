@@ -13,7 +13,7 @@ interface ReservesRepository {
         reservesIds: List<String>? = null,
         textQuery: String? = null,
         reservesShorts: List<ReserveShortSyncEntity>? = null,
-        selectedLocationIds: List<String?>
+        selectedLocationIds: List<String?>?
     ): List<ReservesDomain>
 
     suspend fun getReservesByIds(
@@ -26,7 +26,7 @@ interface ReservesRepository {
 
     suspend fun getReservesFilterCount(
         params: List<ParamDomain>? = null,
-        selectedLocationIds: List<String?>
+        selectedLocationIds: List<String?>?
     ): Long
 
     suspend fun getReserveById(id: String): ReservesDomain
