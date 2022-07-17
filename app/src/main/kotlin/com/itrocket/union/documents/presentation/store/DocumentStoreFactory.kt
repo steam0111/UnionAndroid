@@ -9,6 +9,7 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.documents.domain.DocumentInteractor
 import com.itrocket.union.documents.domain.entity.DocumentDomain
+import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
@@ -19,6 +20,7 @@ import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import java.util.*
 
 class DocumentStoreFactory(
     private val storeFactory: StoreFactory,
@@ -132,11 +134,18 @@ class DocumentStoreFactory(
             }
         }
 
-        private suspend fun createDocument( documentType: DocumentTypeDomain) {
-            dispatch(Result.IsDocumentCreateLoading(true))
-            val document = documentInteractor.createDocument(documentType)
-            showDocument(document)
-            dispatch(Result.IsDocumentCreateLoading(false))
+        private fun createDocument(documentType: DocumentTypeDomain) {
+            showDocument(
+                DocumentDomain(
+                    documentType = documentType,
+                    accountingObjects = listOf(),
+                    creationDate = System.currentTimeMillis(),
+                    documentStatus = DocumentStatus.CREATED,
+                    documentStatusId = DocumentStatus.CREATED.name,
+                    reserves = listOf(),
+                    number = null
+                )
+            )
         }
 
         private fun showDocument(document: DocumentDomain) {

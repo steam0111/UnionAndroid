@@ -25,7 +25,7 @@ fun ActionDtoV2.toDocumentDb(): DocumentDb {
         documentType = actionTypeId ?: "GIVE",
         locationIds = listOf(locationToId.orEmpty()),
         completionDate = getMillisDateFromServerFormat(completionDate),
-        creationDate = getMillisDateFromServerFormat(creationDate),
+        creationDate = getMillisDateFromServerFormat(creationDate) ?: System.currentTimeMillis(),
         documentStatus = extendedActionStatus?.id.orEmpty(),
         documentStatusId = actionStatusId.orEmpty(),
         updateDate = System.currentTimeMillis(),

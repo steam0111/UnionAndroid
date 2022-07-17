@@ -8,7 +8,7 @@ data class DocumentUpdateSyncEntity(
     val documentType: String,
     val accountingObjectsIds: List<String>? = null,
     val locationIds: List<String>? = null,
-    val creationDate: Long?,
+    val creationDate: Long,
     val completionDate: Long?,
     val documentStatus: String,
     val documentStatusId: String,
