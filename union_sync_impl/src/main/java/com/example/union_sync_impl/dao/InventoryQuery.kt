@@ -1,12 +1,7 @@
 package com.example.union_sync_impl.dao
 
 import androidx.sqlite.db.SimpleSQLiteQuery
-import com.example.union_sync_impl.utils.SqlTableFilters
-import com.example.union_sync_impl.utils.addFilters
-import com.example.union_sync_impl.utils.addPagination
-import com.example.union_sync_impl.utils.contains
-import com.example.union_sync_impl.utils.isEquals
-import com.example.union_sync_impl.utils.more
+import com.example.union_sync_impl.utils.*
 
 fun sqlInventoryQuery(
     textQuery: String? = null,
@@ -79,18 +74,17 @@ fun String.getInventoriesFilterPartQuery(
     updateDate: Long? = null,
     limit: Long? = null,
     offset: Long? = null,
-): String = addFilters(
-    sqlTableFilters = SqlTableFilters(
-        tableName = "inventories",
-        filter = buildList {
-            textQuery?.let {
-                add("id" contains textQuery)
-            }
-
-            organizationId?.let {
-                add("organizationId" isEquals organizationId)
-            }
-
+): String =
+    addFilters(
+        sqlTableFilters = SqlTableFilters(
+            tableName = "inventories",
+            filter = buildList {
+                textQuery?.let {
+                    add("id" contains textQuery)
+                }
+                organizationId?.let {
+                    add("organizationId" isEquals organizationId)
+                }
                 molId?.let {
                     add("employeeId" isEquals molId)
                 }
@@ -99,7 +93,7 @@ fun String.getInventoriesFilterPartQuery(
                 }
             }
         )
-    ).addPagination(
+    ).addOrder("updateDate").addPagination(
         limit,
         offset
     )

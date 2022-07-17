@@ -1,13 +1,6 @@
 package com.example.union_sync_impl.data.mapper
 
-import com.example.union_sync_api.entity.AccountingObjectSyncEntity
-import com.example.union_sync_api.entity.EmployeeSyncEntity
-import com.example.union_sync_api.entity.InventoryCreateSyncEntity
-import com.example.union_sync_api.entity.InventorySyncEntity
-import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
-import com.example.union_sync_api.entity.LocationShortSyncEntity
-import com.example.union_sync_api.entity.LocationSyncEntity
-import com.example.union_sync_api.entity.OrganizationSyncEntity
+import com.example.union_sync_api.entity.*
 import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import com.example.union_sync_impl.utils.getStringDateFromMillis
@@ -16,7 +9,11 @@ import org.openapitools.client.models.InventoryDtoV2
 fun InventoryDtoV2.toInventoryDb(): InventoryDb {
     return InventoryDb(
         id = id,
-        locationIds = listOf(locationId.orEmpty()),
+        locationIds = buildList {
+            locationId?.let {
+                add(it)
+            }
+        },
         organizationId = organizationId,
         employeeId = molId,
         date = getMillisDateFromServerFormat(creationDate.orEmpty()),
