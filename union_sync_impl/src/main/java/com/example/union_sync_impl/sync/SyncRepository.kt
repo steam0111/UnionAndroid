@@ -464,6 +464,7 @@ class SyncRepository(
         departmentDao.insertAll(objects.mapNotNull { it.extendedDepartment?.toDepartmentDb() })
         providerDao.insertAll(objects.mapNotNull { it.extendedProvider?.toProviderDb() })
         statusesDao.insertAll(objects.mapNotNull { it.extendedAccountingObjectStatus?.toStatusDb() })
+        branchesDao.insertAll(objects.mapNotNull { it.extendedBranch?.toBranchesDb() })
         accountingObjectsDao.insertAll(objects.map { it.toAccountingObjectDb() })
     }
 

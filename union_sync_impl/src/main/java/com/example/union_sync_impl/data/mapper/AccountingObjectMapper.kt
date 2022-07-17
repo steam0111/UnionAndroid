@@ -41,7 +41,8 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
         departmentId = departmentId,
         model = model,
         providerId = providerId,
-        updateDate = System.currentTimeMillis()
+        updateDate = System.currentTimeMillis(),
+        branchId = branchId
     )
 }
 
@@ -56,7 +57,8 @@ fun FullAccountingObject.toAccountingObjectDetailSyncEntity(): AccountingObjectD
         provider = provider?.toSyncEntity(),
         mol = mol?.toSyncEntity(),
         organization = organization?.toSyncEntity(),
-        department = department?.toSyncEntity()
+        department = department?.toSyncEntity(),
+        branch = branch?.toSyncEntity()
     )
 }
 

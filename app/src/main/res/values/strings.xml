@@ -217,6 +217,7 @@
     <string name="branches_title">Филиалы</string>
     <string name="branches_code">Код филиала</string>
     <string name="branch">Филиал</string>
+    <string name="balance_unit">Балансовая единица</string>
 
 
     <!-- Departments -->
