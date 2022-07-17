@@ -68,6 +68,5 @@ data class BranchDtoV2 (
 
     @Json(name = "extendedOrganization")
     val extendedOrganization: OrganizationDtoV2? = null
-
 )
 
