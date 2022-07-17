@@ -74,7 +74,13 @@ interface AccountingObjectDao {
                 "departments.id AS department_id, " +
                 "departments.catalogItemName AS department_catalogItemName, " +
                 "departments.name AS department_name, " +
-                "departments.code AS department_code " +
+                "departments.code AS department_code, " +
+                "" +
+                "branches.id AS branches_id, " +
+                "branches.catalogItemName AS branches_catalogItemName, " +
+                "branches.name AS branches_name, " +
+                "branches.organizationId AS branches_organizationId, " +
+                "branches.code AS branches_code " +
                 "" +
                 "FROM accounting_objects " +
                 "LEFT JOIN departments ON accounting_objects.departmentId = departments.id " +
@@ -86,6 +92,7 @@ interface AccountingObjectDao {
                 "LEFT JOIN location ON accounting_objects.locationId = location.id " +
                 "LEFT JOIN employees molEmployees ON accounting_objects.molId = molEmployees.id " +
                 "LEFT JOIN employees exploitingEmployees ON accounting_objects.exploitingId = exploitingEmployees.id " +
+                "LEFT JOIN branches ON accounting_objects.branchId = branches.id " +
                 "WHERE accounting_objects.id = :id LIMIT 1"
     )
     suspend fun getById(id: String): FullAccountingObject

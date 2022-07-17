@@ -24,5 +24,7 @@ class FullAccountingObject(
     @Embedded(prefix = "equipment_type_")
     val equipmentType: EquipmentTypesDb?,
     @Embedded(prefix = "provider_")
-    val provider: ProviderDb?
+    val provider: ProviderDb?,
+    @Embedded(prefix = "branches_")
+    val branch: BranchesDb?
 )

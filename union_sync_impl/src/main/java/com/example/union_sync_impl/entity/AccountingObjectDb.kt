@@ -37,6 +37,12 @@ import com.example.union_sync_impl.entity.location.LocationDb
             //onDelete = ForeignKey.CASCADE TODO выставить посже когда появиться больше требования к бд
         ),
         ForeignKey(
+            entity = BranchesDb::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("branchId"),
+            //onDelete = ForeignKey.CASCADE TODO выставить посже когда появиться больше требования к бд
+        ),
+        ForeignKey(
             entity = NomenclatureGroupDb::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("nomenclatureGroupId"),
@@ -52,6 +58,7 @@ class AccountingObjectDb(
     val locationTypeId: String?,
     val providerId: String?,
     val molId: String?,
+    val branchId: String?,
     val producerId: String?,
     val exploitingId: String?,
     val nomenclatureId: String?,
