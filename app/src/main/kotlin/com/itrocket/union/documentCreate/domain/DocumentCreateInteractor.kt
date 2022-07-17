@@ -3,11 +3,11 @@ package com.itrocket.union.documentCreate.domain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.documentCreate.domain.dependencies.DocumentCreateRepository
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
+import com.itrocket.union.documents.domain.entity.toCreateSyncEntity
 import com.itrocket.union.documents.domain.entity.toUpdateSyncEntity
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
@@ -16,7 +16,6 @@ import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import kotlinx.coroutines.withContext
 
 class DocumentCreateInteractor(
-    private val repository: DocumentCreateRepository,
     private val documentRepository: DocumentRepository,
     private val accountingObjectRepository: AccountingObjectRepository,
     private val coreDispatchers: CoreDispatchers
@@ -30,41 +29,36 @@ class DocumentCreateInteractor(
         }
     }
 
-    suspend fun saveDocument(
+    suspend fun createOrUpdateDocument(
         document: DocumentDomain,
         accountingObjects: List<AccountingObjectDomain>,
         reserves: List<ReservesDomain>,
-        params: List<ParamDomain>
-    ) {
-        withContext(coreDispatchers.io) {
-            documentRepository.updateDocument(
-                document.copy(
-                    accountingObjects = accountingObjects,
-                    params = params,
-                    reserves = reserves
+        params: List<ParamDomain>,
+        status: DocumentStatus
+    ): String {
+        return withContext(coreDispatchers.io) {
+            if (!document.isDocumentCreated) {
+                documentRepository.createDocument(
+                    document.copy(
+                        accountingObjects = accountingObjects,
+                        params = params,
+                        documentStatus = status,
+                        documentStatusId = status.name,
+                        reserves = reserves
+                    ).toCreateSyncEntity()
                 )
-                    .toUpdateSyncEntity()
-            )
-        }
-    }
-
-    suspend fun conductDocument(
-        document: DocumentDomain,
-        accountingObjects: List<AccountingObjectDomain>,
-        reserves: List<ReservesDomain>,
-        params: List<ParamDomain>
-    ) {
-        withContext(coreDispatchers.io) {
-            documentRepository.updateDocument(
-                document.copy(
-                    accountingObjects = accountingObjects,
-                    params = params,
-                    documentStatus = DocumentStatus.COMPLETED,
-                    documentStatusId = DocumentStatus.COMPLETED.name,
-                    reserves = reserves
+            } else {
+                documentRepository.updateDocument(
+                    document.copy(
+                        accountingObjects = accountingObjects,
+                        params = params,
+                        documentStatus = status,
+                        documentStatusId = status.name,
+                        reserves = reserves
+                    ).toUpdateSyncEntity()
                 )
-                    .toUpdateSyncEntity()
-            )
+                document.number.orEmpty()
+            }
         }
     }
 

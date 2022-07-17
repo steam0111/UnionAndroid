@@ -66,8 +66,7 @@ interface DocumentCreateStore :
         val reserves: List<ReservesDomain> = listOf(),
         val params: List<ParamDomain>,
         val isLoading: Boolean = false,
-        val selectedPage: Int = 0,
-        val isNextEnabled: Boolean = false
+        val selectedPage: Int = 0
     )
 
     sealed class Label {

@@ -1,21 +1,15 @@
 package com.itrocket.union.documents.domain
 
-import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentDomain
-import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
-import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.documents.presentation.view.toDocumentItemView
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.utils.getStringDateFromMillis
-import com.itrocket.union.utils.getTextDateFromMillis
 import com.itrocket.union.utils.getTextDateFromStringDate
 import com.itrocket.union.utils.isCurrentYear
 import com.itrocket.union.utils.isToday
@@ -42,48 +36,6 @@ class DocumentInteractor(
                     repository.getDocuments(type, searchQuery)
                 }
             )
-        }
-    }
-
-    suspend fun createDocument(
-        type: DocumentTypeDomain,
-    ): DocumentDomain {
-        return withContext(coreDispatchers.io) {
-
-            val exploitingId: String? = getExploitingByManualTypes(type.manualTypes)
-            val locationIds: List<String>? = getLocationsByManualTypes(type.manualTypes)
-
-            val documentId = repository.createDocument(
-                DocumentCreateSyncEntity(
-                    organizationId = "",
-                    exploitingId = exploitingId,
-                    molId = "",
-                    documentType = type.name,
-                    accountingObjectsIds = listOf(),
-                    locationIds = locationIds,
-                    creationDate = System.currentTimeMillis(),
-                    documentStatus = DocumentStatus.CREATED.name,
-                    documentStatusId = DocumentStatus.CREATED.name,
-                    reservesIds = listOf(),
-                )
-            )
-            repository.getDocumentById(documentId)
-        }
-    }
-
-    private fun getExploitingByManualTypes(manualTypes: List<ManualType>): String? {
-        return if (manualTypes.contains(ManualType.EXPLOITING)) {
-            ""
-        } else {
-            null
-        }
-    }
-
-    private fun getLocationsByManualTypes(manualTypes: List<ManualType>): List<String>? {
-        return if (manualTypes.contains(ManualType.LOCATION)) {
-            listOf()
-        } else {
-            null
         }
     }
 

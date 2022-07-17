@@ -106,7 +106,6 @@ fun DocumentCreateScreen(
                     onCrossClickListener = onParamCrossClickListener,
                     onSaveClickListener = onSaveClickListener,
                     onNextClickListener = onNextClickListener,
-                    isNextEnabled = state.isNextEnabled,
                     coroutineScope = coroutineScope,
                     pagerState = pagerState,
                     documentStatus = state.document.documentStatus,
@@ -167,8 +166,7 @@ fun DocumentCreateScreen(
                     pagerState = pagerState,
                     selectedPage = state.selectedPage,
                     coroutineScope = coroutineScope,
-                    tabs = tabs,
-                    isNextEnabled = state.isNextEnabled
+                    tabs = tabs
                 )
             },
             modifier = Modifier.padding(
@@ -179,11 +177,7 @@ fun DocumentCreateScreen(
     }
 
     LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.collect {
-            if (state.isNextEnabled) {
-                onPageChanged(it)
-            }
-        }
+        snapshotFlow { pagerState.currentPage }.collect { onPageChanged(it) }
     }
 }
 
@@ -194,7 +188,6 @@ private fun Content(
     coroutineScope: CoroutineScope,
     selectedPage: Int,
     pagerState: PagerState,
-    isNextEnabled: Boolean,
     tabs: List<BaseTab>
 ) {
     Column {
@@ -210,21 +203,17 @@ private fun Content(
             targetPage = pagerState.getTargetPage(),
             tabs = tabs,
             onTabClickListener = {
-                if (isNextEnabled) {
                     onTabClickListener(it)
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(it)
                     }
-                }
             },
             tabIndicator = {
                 TabIndicatorBlack(tabPositions = it, pagerState = pagerState)
             }
         )
         MediumSpacer()
-        val pagerModifier =
-            if (isNextEnabled) Modifier else Modifier.disabledHorizontalPointerInputScroll()
-        HorizontalPager(count = tabs.size, state = pagerState, modifier = pagerModifier) { page ->
+        HorizontalPager(count = tabs.size, state = pagerState, modifier = Modifier) { page ->
             tabs[page].screen()
         }
     }
@@ -240,7 +229,6 @@ private fun ParamContent(
     onCrossClickListener: (ParamDomain) -> Unit,
     onSaveClickListener: () -> Unit,
     onNextClickListener: () -> Unit,
-    isNextEnabled: Boolean,
     coroutineScope: CoroutineScope,
     pagerState: PagerState
 ) {
@@ -248,7 +236,6 @@ private fun ParamContent(
         ParamBottomBar(
             onSaveClickListener = onSaveClickListener,
             onNextClickListener = onNextClickListener,
-            isNextEnabled = isNextEnabled,
             coroutineScope = coroutineScope,
             pagerState = pagerState,
             onConductClickListener = onConductClickListener,
@@ -459,7 +446,6 @@ private fun ParamBottomBar(
     onNextClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
-    isNextEnabled: Boolean,
     pagerState: PagerState,
     coroutineScope: CoroutineScope,
     documentStatus: DocumentStatus
@@ -469,14 +455,14 @@ private fun ParamBottomBar(
             text = stringResource(id = R.string.common_save),
             onClick = onSaveClickListener,
             modifier = Modifier.weight(1f),
-            enabled = isNextEnabled && documentStatus != DocumentStatus.COMPLETED
+            enabled = documentStatus != DocumentStatus.COMPLETED
         )
         Spacer(modifier = Modifier.width(16.dp))
         BaseButton(
             text = stringResource(R.string.common_conduct),
             onClick = onConductClickListener,
             modifier = Modifier.weight(1f),
-            enabled = documentStatus != DocumentStatus.COMPLETED && isNextEnabled
+            enabled = documentStatus != DocumentStatus.COMPLETED
         )
         Spacer(modifier = Modifier.width(16.dp))
 
@@ -489,7 +475,7 @@ private fun ParamBottomBar(
                     pagerState.animateScrollToPage(DocumentCreateStoreFactory.ACCOUNTING_OBJECT_PAGE)
                 }
             },
-            enabled = isNextEnabled,
+            enabled = true,
             modifier = Modifier
         )
     }

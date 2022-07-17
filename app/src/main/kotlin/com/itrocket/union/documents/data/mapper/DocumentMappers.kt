@@ -37,11 +37,11 @@ fun DocumentSyncEntity.map(): DocumentDomain =
         documentStatusId = documentStatusId,
     )
 
-private fun getParams(
-    mol: EmployeeSyncEntity?,
-    exploiting: EmployeeSyncEntity?,
-    organization: OrganizationSyncEntity?,
-    locations: List<LocationSyncEntity>?,
+fun getParams(
+    mol: EmployeeSyncEntity? = null,
+    exploiting: EmployeeSyncEntity? = null,
+    organization: OrganizationSyncEntity? = null,
+    locations: List<LocationSyncEntity>? = null,
     documentType: String,
 ): List<ParamDomain> {
     return getAccountingObjectParams(

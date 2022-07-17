@@ -5,9 +5,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.core.parameter.parametersOf
-import com.itrocket.union.documentCreate.data.DocumentCreateRepositoryImpl
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
-import com.itrocket.union.documentCreate.domain.dependencies.DocumentCreateRepository
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStoreFactory
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragmentArgs
@@ -25,12 +23,8 @@ object DocumentCreateModule {
             })
         }
 
-        factory<DocumentCreateRepository> {
-            DocumentCreateRepositoryImpl(get())
-        }
-
         factory {
-            DocumentCreateInteractor(get(), get(), get(), get())
+            DocumentCreateInteractor(get(), get(), get())
         }
 
         factory {

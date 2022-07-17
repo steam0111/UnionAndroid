@@ -11,6 +11,7 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documentCreate.domain.DocumentAccountingObjectManager
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import com.itrocket.union.documentCreate.domain.DocumentReservesManager
+import com.itrocket.union.documents.data.mapper.getParams
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.error.ErrorInteractor
@@ -57,16 +58,24 @@ class DocumentCreateStoreFactory(
         ) {
             dispatch(Result.Loading(true))
             catchException {
-                val document = documentCreateInteractor.getDocumentById(
-                    documentCreateArguments.document.number
+                val docArgument = documentCreateArguments.document
+                val document = if (docArgument.isDocumentCreated) {
+                    documentCreateInteractor.getDocumentById(docArgument.number.orEmpty())
+                } else {
+                    null
+                }
+
+                document?.let { dispatch(Result.Document(it)) }
+                dispatch(Result.AccountingObjects(document?.accountingObjects ?: listOf()))
+                dispatch(Result.Reserves(document?.reserves ?: listOf()))
+                dispatch(
+                    Result.Params(
+                        document?.params
+                            ?: getParams(documentType = documentCreateArguments.document.documentType.name)
+                    )
                 )
-                dispatch(Result.Document(document))
-                dispatch(Result.AccountingObjects(document.accountingObjects))
-                dispatch(Result.Reserves(document.reserves))
-                dispatch(Result.Params(document.params))
             }
             dispatch(Result.Loading(false))
-            isNextEnabled(getState)
         }
 
         override suspend fun executeIntent(
@@ -75,7 +84,9 @@ class DocumentCreateStoreFactory(
         ) {
             when (intent) {
                 DocumentCreateStore.Intent.OnBackClicked -> publish(DocumentCreateStore.Label.GoBack)
-                DocumentCreateStore.Intent.OnChooseAccountingObjectClicked -> onChooseAccountingObjectClicked(getState)
+                DocumentCreateStore.Intent.OnChooseAccountingObjectClicked -> onChooseAccountingObjectClicked(
+                    getState
+                )
                 DocumentCreateStore.Intent.OnChooseReserveClicked -> onChooseReserveClicked(getState)
                 DocumentCreateStore.Intent.OnDropClicked -> {
                     changeParams(getState().document.params, getState)
@@ -86,10 +97,14 @@ class DocumentCreateStoreFactory(
                         ACCOUNTING_OBJECT_PAGE
                     )
                 )
-                is DocumentCreateStore.Intent.OnParamClicked -> showParams(
-                    params = getState().params,
-                    param = intent.param
-                )
+                is DocumentCreateStore.Intent.OnParamClicked -> {
+                    if (!getState().document.isStatusCompleted) {
+                        showParams(
+                            params = getState().params,
+                            param = intent.param
+                        )
+                    }
+                }
                 is DocumentCreateStore.Intent.OnParamCrossClicked -> {
                     val params = documentCreateInteractor.clearParam(
                         getState().params,
@@ -161,11 +176,12 @@ class DocumentCreateStoreFactory(
         }
 
         private suspend fun conductDocument(state: DocumentCreateStore.State) {
-            documentCreateInteractor.conductDocument(
+            val documentId = documentCreateInteractor.createOrUpdateDocument(
                 document = state.document,
                 accountingObjects = state.accountingObjects,
                 params = state.params,
-                reserves = state.reserves
+                reserves = state.reserves,
+                status = DocumentStatus.COMPLETED
             )
             documentAccountingObjectManager.changeAccountingObjectsAfterConduct(
                 documentTypeDomain = state.document.documentType,
@@ -173,7 +189,7 @@ class DocumentCreateStoreFactory(
                 params = state.params
             )
             documentReservesManager.changeReservesAfterConduct(
-                documentId = state.document.number,
+                documentId = documentId,
                 documentTypeDomain = state.document.documentType,
                 reserves = state.reserves,
                 params = state.params
@@ -208,26 +224,15 @@ class DocumentCreateStoreFactory(
             getState: () -> DocumentCreateStore.State
         ) {
             dispatch(Result.Params(params))
-            isNextEnabled(getState)
-        }
-
-        private fun isNextEnabled(getState: () -> DocumentCreateStore.State) {
-            dispatch(
-                Result.Enabled(
-                    documentCreateInteractor.isParamsValid(
-                        getState().params,
-                        getState().document.documentType
-                    )
-                )
-            )
         }
 
         private suspend fun saveDocument(getState: () -> DocumentCreateStore.State) {
-            documentCreateInteractor.saveDocument(
+            documentCreateInteractor.createOrUpdateDocument(
                 accountingObjects = getState().accountingObjects,
                 document = getState().document,
                 params = getState().params,
-                reserves = getState().reserves
+                reserves = getState().reserves,
+                status = getState().document.documentStatus
             )
             publish(DocumentCreateStore.Label.GoBack)
         }
@@ -278,7 +283,6 @@ class DocumentCreateStoreFactory(
         data class SelectPage(val page: Int) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
         data class Reserves(val reserves: List<ReservesDomain>) : Result()
-        data class Enabled(val enabled: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<DocumentCreateStore.State, Result> {
@@ -289,7 +293,6 @@ class DocumentCreateStoreFactory(
                 is Result.Params -> copy(params = result.params)
                 is Result.Reserves -> copy(reserves = result.reserves)
                 is Result.SelectPage -> copy(selectedPage = result.page)
-                is Result.Enabled -> copy(isNextEnabled = result.enabled)
                 is Result.Document -> copy(document = result.document)
             }
     }

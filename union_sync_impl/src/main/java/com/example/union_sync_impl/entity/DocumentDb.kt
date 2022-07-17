@@ -9,7 +9,7 @@ class DocumentDb(
     id: String = "",
     val organizationId: String?,
     val molId: String?,
-    val creationDate: Long?,
+    val creationDate: Long,
     updateDate: Long?,
     val completionDate: Long? = null,
     val exploitingId: String? = null,
