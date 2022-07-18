@@ -10,7 +10,6 @@ import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.toCreateSyncEntity
 import com.itrocket.union.documents.domain.entity.toUpdateSyncEntity
 import com.itrocket.union.manual.LocationParamDomain
-import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import kotlinx.coroutines.withContext
@@ -78,7 +77,7 @@ class DocumentCreateInteractor(
         location: LocationParamDomain
     ): List<ParamDomain> {
         val mutableParams = params.toMutableList()
-        val locationIndex = params.indexOfFirst { it.type == ManualType.LOCATION }
+        val locationIndex = params.indexOfFirst { it.type == location.manualType }
         mutableParams[locationIndex] = location.copy(filtered = false)
         return mutableParams
     }

@@ -33,7 +33,7 @@ class DocumentInteractor(
                 if (type == DocumentTypeDomain.ALL) {
                     repository.getAllDocuments(searchQuery, params)
                 } else {
-                    repository.getDocuments(type, searchQuery)
+                    repository.getDocumentsByType(type, searchQuery)
                 }
             )
         }

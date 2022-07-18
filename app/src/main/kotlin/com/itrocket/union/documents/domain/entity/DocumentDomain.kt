@@ -5,14 +5,17 @@ import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.example.union_sync_api.entity.DocumentReserveCountSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.getActionBaseId
+import com.itrocket.union.manual.getBranchId
+import com.itrocket.union.manual.getDepartmentId
 import com.itrocket.union.manual.getExploitingId
-import com.itrocket.union.manual.getFilterLocationIds
+import com.itrocket.union.manual.getFilterLocationLastId
 import com.itrocket.union.manual.getMolId
 import com.itrocket.union.manual.getOrganizationId
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import kotlinx.parcelize.Parcelize
-import java.util.*
 
 @Parcelize
 data class DocumentDomain(
@@ -37,7 +40,6 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
     val organizationId = params.getOrganizationId()
     val molId = params.getMolId()
     val exploitingId = params.getExploitingId()
-    val locationIds = params.getFilterLocationIds()
     val trueCompletionDate =
         if (documentStatus == DocumentStatus.COMPLETED) System.currentTimeMillis() else completionDate
     return DocumentUpdateSyncEntity(
@@ -47,7 +49,6 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
         documentType = documentType.name,
         accountingObjectsIds = accountingObjects.map { it.id },
         creationDate = creationDate,
-        locationIds = locationIds,
         id = number.orEmpty(),
         reservesIds = reserves.map {
             DocumentReserveCountSyncEntity(
@@ -57,7 +58,17 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
         },
         documentStatusId = documentStatusId,
         completionDate = trueCompletionDate,
-        documentStatus = documentStatus.name
+        documentStatus = documentStatus.name,
+        locationFromId = params.getFilterLocationLastId(ManualType.LOCATION_FROM),
+        locationToId = if (documentType == DocumentTypeDomain.RELOCATION) {
+            params.getFilterLocationLastId(ManualType.RELOCATION_LOCATION_TO)
+        } else {
+            params.getFilterLocationLastId(ManualType.LOCATION_TO)
+        },
+        departmentFromId = params.getDepartmentId(type = ManualType.DEPARTMENT_FROM),
+        departmentToId = params.getDepartmentId(type = ManualType.DEPARTMENT_TO),
+        branchId = params.getBranchId(),
+        actionBaseId = params.getActionBaseId()
     )
 }
 
@@ -65,7 +76,6 @@ fun DocumentDomain.toCreateSyncEntity(): DocumentCreateSyncEntity {
     val organizationId = params.getOrganizationId()
     val molId = params.getMolId()
     val exploitingId = params.getExploitingId()
-    val locationIds = params.getFilterLocationIds()
     val trueCompletionDate = if (documentStatus == DocumentStatus.COMPLETED) {
         System.currentTimeMillis()
     } else {
@@ -80,7 +90,6 @@ fun DocumentDomain.toCreateSyncEntity(): DocumentCreateSyncEntity {
         accountingObjectsIds = accountingObjects.map { it.id },
         creationDate = creationDate,
         completionDate = trueCompletionDate,
-        locationIds = locationIds,
         reservesIds = reserves.map {
             DocumentReserveCountSyncEntity(
                 id = it.id,
@@ -88,6 +97,16 @@ fun DocumentDomain.toCreateSyncEntity(): DocumentCreateSyncEntity {
             )
         },
         documentStatusId = documentStatusId,
-        documentStatus = documentStatus.name
+        documentStatus = documentStatus.name,
+        locationFromId = params.getFilterLocationLastId(ManualType.LOCATION_FROM),
+        locationToId = if (documentType == DocumentTypeDomain.RELOCATION) {
+            params.getFilterLocationLastId(ManualType.RELOCATION_LOCATION_TO)
+        } else {
+            params.getFilterLocationLastId(ManualType.LOCATION_TO)
+        },
+        departmentFromId = params.getDepartmentId(type = ManualType.DEPARTMENT_FROM),
+        departmentToId = params.getDepartmentId(type = ManualType.DEPARTMENT_TO),
+        branchId = params.getBranchId(),
+        actionBaseId = params.getActionBaseId()
     )
 }

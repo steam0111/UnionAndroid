@@ -1,6 +1,8 @@
 package com.itrocket.union.selectParams.data
 
 import com.example.union_sync_api.data.AccountingObjectStatusSyncApi
+import com.example.union_sync_api.data.ActionBaseSyncApi
+import com.example.union_sync_api.data.BranchesSyncApi
 import com.example.union_sync_api.data.CounterpartySyncApi
 import com.example.union_sync_api.data.DepartmentSyncApi
 import com.example.union_sync_api.data.EmployeeSyncApi
@@ -25,6 +27,8 @@ class SelectParamsRepositoryImpl(
     private val employeeSyncApi: EmployeeSyncApi,
     private val statusesSyncApi: AccountingObjectStatusSyncApi,
     private val departmentSyncApi: DepartmentSyncApi,
+    private val branchesSyncApi: BranchesSyncApi,
+    private val actionBaseSyncApi: ActionBaseSyncApi,
     private val equipmentTypeSyncApi: EquipmentTypeSyncApi,
     private val producerSyncApi: ProducerSyncApi,
     private val providerSyncApi: CounterpartySyncApi,
@@ -62,9 +66,12 @@ class SelectParamsRepositoryImpl(
         }
     }
 
-    override suspend fun getDepartments(textQuery: String?): Flow<List<ParamDomain>> {
+    override suspend fun getDepartments(
+        textQuery: String?,
+        type: ManualType
+    ): Flow<List<ParamDomain>> {
         return flow {
-            emit(departmentSyncApi.getDepartments(textQuery = textQuery).map { it.toParam() })
+            emit(departmentSyncApi.getDepartments(textQuery = textQuery).map { it.toParam(type) })
         }.flowOn(coreDispatchers.io)
     }
 
@@ -91,6 +98,18 @@ class SelectParamsRepositoryImpl(
     override suspend fun getReceptionCategory(textQuery: String?): Flow<List<ParamDomain>> {
         return flow {
             emit(receptionItemCategorySyncApi.getAll(textQuery = textQuery).map { it.toParam() })
+        }.flowOn(coreDispatchers.io)
+    }
+
+    override suspend fun getBranches(textQuery: String?): Flow<List<ParamDomain>> {
+        return flow {
+            emit(branchesSyncApi.getBranches(textQuery = textQuery).map { it.toParam() })
+        }.flowOn(coreDispatchers.io)
+    }
+
+    override suspend fun getActionBases(textQuery: String?): Flow<List<ParamDomain>> {
+        return flow {
+            emit(actionBaseSyncApi.getActionBases(textQuery = textQuery).map { it.toParam() })
         }.flowOn(coreDispatchers.io)
     }
 }

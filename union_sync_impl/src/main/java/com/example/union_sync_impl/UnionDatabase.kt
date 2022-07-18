@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.AccountingObjectStatusDao
+import com.example.union_sync_impl.dao.ActionBaseDao
 import com.example.union_sync_impl.dao.ActionRecordDao
 import com.example.union_sync_impl.dao.ActionRemainsRecordDao
 import com.example.union_sync_impl.dao.BranchesDao
@@ -29,6 +30,7 @@ import com.example.union_sync_impl.dao.RegionDao
 import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_impl.entity.AccountingObjectDb
 import com.example.union_sync_impl.entity.AccountingObjectStatusDb
+import com.example.union_sync_impl.entity.ActionBaseDb
 import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
 import com.example.union_sync_impl.entity.BranchesDb
@@ -80,8 +82,9 @@ import com.example.union_sync_impl.utils.Converters
         ReserveDb::class,
         ActionRecordDb::class,
         ActionRemainsRecordDb::class,
-        InventoryRecordDb::class
-    ], version = 75
+        InventoryRecordDb::class,
+        ActionBaseDb::class
+    ], version = 80
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {
@@ -109,4 +112,5 @@ abstract class UnionDatabase : RoomDatabase() {
     abstract fun actionRecordDao(): ActionRecordDao
     abstract fun actionRemainsRecordDao(): ActionRemainsRecordDao
     abstract fun inventoryRecordDao(): InventoryRecordDao
+    abstract fun actionBaseDao(): ActionBaseDao
 }

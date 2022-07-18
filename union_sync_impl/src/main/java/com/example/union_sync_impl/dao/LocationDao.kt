@@ -30,10 +30,10 @@ interface LocationDao {
     suspend fun getLocationTypeById(id: String): LocationTypeDb?
 
     @Query("SELECT * FROM location WHERE id IN (:ids)")
-    suspend fun getLocationsByIds(ids: List<String>): List<LocationDb>
+    suspend fun getLocationsByIds(ids: List<String?>): List<LocationDb>
 
-    @Query("SELECT * FROM location WHERE id = :id LIMIT 1")
-    suspend fun getLocationById(id: String): LocationDb
+    @Query("SELECT * FROM location WHERE id is :id LIMIT 1")
+    suspend fun getLocationById(id: String?): LocationDb?
 
     @Query("SELECT * FROM location WHERE locationTypeId is :locationTypeId")
     suspend fun getLocationsByType(locationTypeId: String): List<LocationDb>

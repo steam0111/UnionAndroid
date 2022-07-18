@@ -8,10 +8,15 @@ data class DocumentSyncEntity(
     val organizationSyncEntity: OrganizationSyncEntity?,
     val mol: EmployeeSyncEntity?,
     val exploiting: EmployeeSyncEntity? = null,
-    val locations: List<LocationSyncEntity>? = null,
     val creationDate: Long,
     val completionDate: Long? = null,
     val documentStatus: String,
     val documentStatusId: String,
     val reserves: List<ReserveSyncEntity>,
+    val locationFrom: LocationSyncEntity? = null,
+    val locationTo: LocationSyncEntity? = null,
+    val departmentFrom: DepartmentSyncEntity? = null,
+    val departmentTo: DepartmentSyncEntity? = null,
+    val branch: BranchSyncEntity? = null,
+    val actionBase: ActionBaseSyncEntity? = null
 )

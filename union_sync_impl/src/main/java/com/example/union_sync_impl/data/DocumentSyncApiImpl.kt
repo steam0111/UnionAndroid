@@ -26,11 +26,8 @@ import com.example.union_sync_impl.data.mapper.toDocumentSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
-import com.example.union_sync_impl.entity.DocumentDb
-import com.example.union_sync_impl.entity.FullDocument
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import org.w3c.dom.Document
 import java.util.*
 
 class DocumentSyncApiImpl(
@@ -75,7 +72,12 @@ class DocumentSyncApiImpl(
                     organizationSyncEntity = document.organizationDb?.toSyncEntity(),
                     mol = document.molDb?.toSyncEntity(),
                     exploiting = document.exploitingDb?.toSyncEntity(),
-                    locations = document.getLocations(),
+                    locationFrom = locationSyncApi.getLocationById(document.documentDb.locationFromId),
+                    locationTo = locationSyncApi.getLocationById(document.documentDb.locationToId),
+                    departmentFrom = document.departmentFromDb?.toSyncEntity(),
+                    departmentTo = document.departmentToDb?.toSyncEntity(),
+                    branch = document.branchDb?.toSyncEntity(),
+                    actionBase = document.actionBaseDb?.toSyncEntity(),
                     accountingObjects = listOf()
                 )
             }
@@ -99,19 +101,23 @@ class DocumentSyncApiImpl(
         )
     }
 
-    override suspend fun getDocuments(
+    override suspend fun getDocumentsByType(
         type: String,
         textQuery: String?
     ): Flow<List<DocumentSyncEntity>> {
-
         return documentDao.getDocumentsByType(type).map { documents ->
             documents.map { document ->
                 document.documentDb.toDocumentSyncEntity(
                     organizationSyncEntity = document.organizationDb?.toSyncEntity(),
                     mol = document.molDb?.toSyncEntity(),
                     exploiting = document.exploitingDb?.toSyncEntity(),
-                    locations = document.getLocations(),
-                    accountingObjects = listOf()
+                    accountingObjects = listOf(),
+                    locationFrom = locationSyncApi.getLocationById(document.documentDb.locationFromId),
+                    locationTo = locationSyncApi.getLocationById(document.documentDb.locationToId),
+                    departmentFrom = document.departmentFromDb?.toSyncEntity(),
+                    departmentTo = document.departmentToDb?.toSyncEntity(),
+                    branch = document.branchDb?.toSyncEntity(),
+                    actionBase = document.actionBaseDb?.toSyncEntity()
                 )
             }
         }
@@ -120,8 +126,6 @@ class DocumentSyncApiImpl(
 
     override suspend fun getDocumentById(id: String): DocumentSyncEntity {
         val fullDocument = documentDao.getDocumentById(id)
-        val locations = fullDocument.getLocations()
-
         val accountingObjectIds =
             actionRecordDao.getAll(sqlActionRecordQuery(id)).map { it.accountingObjectId }
         val accountingObjects: List<AccountingObjectSyncEntity> =
@@ -129,10 +133,10 @@ class DocumentSyncApiImpl(
                 sqlAccountingObjectQuery(
                     accountingObjectsIds = accountingObjectIds
                 )
-            )
-                .map {
-                    it.toSyncEntity()
-                }
+            ).map {
+                val location = locationSyncApi.getLocationById(it.accountingObjectDb.locationId)
+                it.toSyncEntity(locationSyncEntity = location)
+            }
 
         val reserveRecords =
             actionRemainsRecordDao.getAll((sqlActionRemainsRecordQuery(actionId = id)))
@@ -154,9 +158,14 @@ class DocumentSyncApiImpl(
             organizationSyncEntity = fullDocument.organizationDb?.toSyncEntity(),
             mol = fullDocument.molDb?.toSyncEntity(),
             exploiting = fullDocument.exploitingDb?.toSyncEntity(),
-            locations = locations,
             accountingObjects = accountingObjects,
-            reserves = reserves
+            reserves = reserves,
+            locationFrom = locationSyncApi.getLocationById(fullDocument.documentDb.locationFromId),
+            locationTo = locationSyncApi.getLocationById(fullDocument.documentDb.locationToId),
+            departmentFrom = fullDocument.departmentFromDb?.toSyncEntity(),
+            departmentTo = fullDocument.departmentToDb?.toSyncEntity(),
+            branch = fullDocument.branchDb?.toSyncEntity(),
+            actionBase = fullDocument.actionBaseDb?.toSyncEntity()
         )
     }
 
@@ -224,13 +233,7 @@ class DocumentSyncApiImpl(
         actionRemainsRecordDao.insertAll(newRecords)
     }
 
-    private suspend fun FullDocument.getLocations(): List<LocationSyncEntity> {
-        return documentDb.locationIds?.map {
-            if (it.isNotBlank()) {
-                locationSyncApi.getLocationById(it)
-            } else {
-                null
-            }
-        }?.filterNotNull().orEmpty()
+    private suspend fun List<String?>?.getLocations(): List<LocationSyncEntity> {
+        return this?.let { locationSyncApi.getLocationsByIds(it) }.orEmpty()
     }
 }

@@ -21,7 +21,7 @@ interface DocumentRepository {
         params: List<ParamDomain>?
     ): Long
 
-    suspend fun getDocuments(
+    suspend fun getDocumentsByType(
         type: DocumentTypeDomain,
         textQuery: String?
     ): Flow<List<DocumentDomain>>

@@ -43,6 +43,7 @@ object DocumentCreateModule {
                 args.documentCreateArguments,
                 get(),
                 get(),
+                get(),
                 get()
             ).create()
         }

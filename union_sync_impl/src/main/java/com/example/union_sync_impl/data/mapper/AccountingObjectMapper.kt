@@ -20,7 +20,6 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
         catalogItemName = catalogItemName.orEmpty(),
         organizationId = organizationId,
         locationId = locationId,
-        locationTypeId = extendedLocation?.locationTypeId,
         molId = molId,
         exploitingId = exploitingId,
         nomenclatureId = nomenclatureId,
@@ -46,8 +45,9 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
     )
 }
 
-fun FullAccountingObject.toAccountingObjectDetailSyncEntity(): AccountingObjectDetailSyncEntity {
-    val locationSyncEntity = locationDb?.toLocationSyncEntity(locationTypeDb)
+fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
+    locationSyncEntity: LocationSyncEntity?
+): AccountingObjectDetailSyncEntity {
     return AccountingObjectDetailSyncEntity(
         accountingObject = accountingObjectDb.toSyncEntity(locationSyncEntity),
         location = locationSyncEntity,
@@ -94,11 +94,13 @@ fun AccountingObjectDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?) =
         model = model,
         locationSyncEntity = locationSyncEntity,
         nomenclatureId = nomenclatureId,
-        nomenclatureGroupId = nomenclatureGroupId
+        nomenclatureGroupId = nomenclatureGroupId,
+        branchId = branchId
     )
 
 fun FullAccountingObject.toSyncEntity(
-    inventoryStatus: String? = null
+    inventoryStatus: String? = null,
+    locationSyncEntity: LocationSyncEntity?
 ) = AccountingObjectSyncEntity(
     id = accountingObjectDb.id,
     catalogItemName = accountingObjectDb.catalogItemName,
@@ -122,10 +124,11 @@ fun FullAccountingObject.toSyncEntity(
     organizationId = accountingObjectDb.organizationId,
     internalNumber = accountingObjectDb.internalNumber,
     model = accountingObjectDb.model,
-    locationSyncEntity = locationDb?.toLocationSyncEntity(locationTypeDb),
+    locationSyncEntity = locationSyncEntity,
     statusId = accountingObjectDb.statusId,
     nomenclatureGroupId = accountingObjectDb.nomenclatureGroupId,
-    nomenclatureId = accountingObjectDb.nomenclatureId
+    nomenclatureId = accountingObjectDb.nomenclatureId,
+    branchId = accountingObjectDb.branchId
 )
 
 fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObjectDtoV2> {
@@ -169,6 +172,9 @@ fun AccountingObjectUpdateSyncEntity.toAccountingObjectUpdate(): AccountingObjec
         exploitingId = exploitingId,
         status = status?.toStatusDb(),
         statusId = statusId,
-        updateDate = updateDate
+        updateDate = updateDate,
+        molId = molId,
+        departmentId = departmentId,
+        branchId = branchId
     )
 }

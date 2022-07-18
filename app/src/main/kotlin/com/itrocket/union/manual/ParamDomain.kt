@@ -27,16 +27,16 @@ fun List<ParamDomain>.getOrganizationId(): String? {
     return filterNotEmpty().find { it.type == ManualType.ORGANIZATION }?.id
 }
 
-fun List<ParamDomain>.getFilterLocationLastId(): String? {
-    return getLocationParamDomain()?.locations?.lastOrNull()?.id
+fun List<ParamDomain>.getFilterLocationLastId(type: ManualType = ManualType.LOCATION): String? {
+    return getLocationParamDomain(type)?.locations?.lastOrNull()?.id
 }
 
-fun List<ParamDomain>.getFilterLocationIds(): List<String>? {
-    return getLocationParamDomain()?.locations?.map { it.id }
+fun List<ParamDomain>.getFilterLocationIds(type: ManualType = ManualType.LOCATION): List<String>? {
+    return getLocationParamDomain(type)?.locations?.map { it.id }
 }
 
-fun List<ParamDomain>.getLocationParamDomain(): LocationParamDomain? {
-    return (filterNotEmpty().find { it.type == ManualType.LOCATION } as? LocationParamDomain)
+fun List<ParamDomain>.getLocationParamDomain(type: ManualType): LocationParamDomain? {
+    return (filterNotEmpty().find { it.type == type } as? LocationParamDomain)
 }
 
 fun List<ParamDomain>.getExploitingId(): String? {
@@ -47,8 +47,16 @@ fun List<ParamDomain>.getMolId(): String? {
     return filterNotEmpty().find { it.type == ManualType.MOL }?.id
 }
 
-fun List<ParamDomain>.getDepartmentId(): String? {
-    return filterNotEmpty().find { it.type == ManualType.DEPARTMENT }?.id
+fun List<ParamDomain>.getDepartmentId(type: ManualType = ManualType.DEPARTMENT): String? {
+    return filterNotEmpty().find { it.type == type }?.id
+}
+
+fun List<ParamDomain>.getBranchId(): String? {
+    return filterNotEmpty().find { it.type == ManualType.BRANCH }?.id
+}
+
+fun List<ParamDomain>.getActionBaseId(): String? {
+    return filterNotEmpty().find { it.type == ManualType.ACTION_BASE }?.id
 }
 
 fun List<ParamDomain>.getProducerId(): String? {
@@ -82,12 +90,13 @@ fun List<ParamDomain>.filterNotEmpty(): List<ParamDomain> {
 @Parcelize
 data class LocationParamDomain(
     val filtered: Boolean = true,
-    val locations: List<LocationDomain> = emptyList()
+    val locations: List<LocationDomain> = emptyList(),
+    val manualType: ManualType = ManualType.LOCATION
 ) : Parcelable,
     ParamDomain(
         id = locations.lastOrNull()?.id.toString(),
         value = locations.joinToString(", ") { it.value },
-        type = ManualType.LOCATION,
+        type = manualType,
         isFilter = filtered
     ) {
 

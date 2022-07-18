@@ -1,12 +1,15 @@
 package com.example.union_sync_impl.data.mapper
 
+import com.example.union_sync_api.entity.ActionBaseSyncEntity
 import com.example.union_sync_api.entity.ActionRecordSyncEntity
 import com.example.union_sync_api.entity.ActionRemainsRecordSyncEntity
 import com.example.union_sync_api.entity.InventoryRecordSyncEntity
+import com.example.union_sync_impl.entity.ActionBaseDb
 import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
 import com.example.union_sync_impl.entity.InventoryRecordDb
 import com.example.union_sync_impl.utils.getStringDateFromMillis
+import org.openapitools.client.models.ActionBaseDtoV2
 import org.openapitools.client.models.ActionRecordDtoV2
 import org.openapitools.client.models.ActionRemainsRecordDtoV2
 import org.openapitools.client.models.InventoryRecordDtoV2
@@ -79,4 +82,16 @@ fun InventoryRecordDb.toInventoryRecordDtoV2() = InventoryRecordDtoV2(
     deleted = false,
     inventoryRecordStatusId = inventoryStatus,
     dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
+)
+
+fun ActionBaseDtoV2.toActionBaseDb() = ActionBaseDb(
+    id = id.orEmpty(),
+    name = name.orEmpty(),
+    updateDate = System.currentTimeMillis()
+)
+
+fun ActionBaseDb.toSyncEntity() = ActionBaseSyncEntity(
+    id = id,
+    name = name,
+    updateDate = updateDate
 )

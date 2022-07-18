@@ -36,15 +36,9 @@ fun sqlAccountingObjectQuery(
                 "location.catalogItemName AS locations_catalogItemName, " +
                 "location.name AS locations_name, " +
                 "location.parentId AS locations_parentId, " +
-                "location.locationTypeId AS locations_locationTypeId, " +
-                "" +
-                "locationTypes.id AS location_type_id, " +
-                "locationTypes.catalogItemName AS location_type_catalogItemName, " +
-                "locationTypes.name AS location_type_name, " +
-                "locationTypes.parentId AS location_type_parentId " +
+                "location.locationTypeId AS locations_locationTypeId " +
                 "" +
                 "FROM accounting_objects " +
-                "LEFT JOIN locationTypes ON accounting_objects.locationTypeId = locationTypes.id " +
                 "LEFT JOIN location ON accounting_objects.locationId = location.id"
     }
 

@@ -12,8 +12,10 @@ import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectArguments
+import com.itrocket.union.departments.domain.entity.DepartmentDomain
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragmentDirections
 import com.itrocket.union.documents.domain.entity.DocumentDomain
+import com.itrocket.union.location.domain.entity.LocationDomain
 import com.itrocket.union.location.presentation.store.LocationArguments
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.manual.LocationParamDomain
@@ -66,7 +68,9 @@ interface DocumentCreateStore :
         val reserves: List<ReservesDomain> = listOf(),
         val params: List<ParamDomain>,
         val isLoading: Boolean = false,
-        val selectedPage: Int = 0
+        val selectedPage: Int = 0,
+        val departureLocation: List<LocationDomain> = emptyList(),
+        val senderDepartment: DepartmentDomain? = null
     )
 
     sealed class Label {

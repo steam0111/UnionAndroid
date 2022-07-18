@@ -15,9 +15,11 @@ import com.itrocket.union.documents.data.mapper.getParams
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.Params
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.utils.ifBlankOrNull
 
@@ -28,7 +30,8 @@ class DocumentCreateStoreFactory(
     private val documentCreateArguments: DocumentCreateArguments,
     private val documentAccountingObjectManager: DocumentAccountingObjectManager,
     private val documentReservesManager: DocumentReservesManager,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val filterInteractor: FilterInteractor
 ) {
     fun create(): DocumentCreateStore =
         object : DocumentCreateStore,
@@ -238,15 +241,22 @@ class DocumentCreateStoreFactory(
         }
 
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
-            if (param.type == ManualType.LOCATION) {
+            if (param.type == ManualType.LOCATION
+                || param.type == ManualType.LOCATION_FROM
+                || param.type == ManualType.RELOCATION_LOCATION_TO
+                || param.type == ManualType.LOCATION_TO
+            ) {
                 publish(
                     DocumentCreateStore.Label.ShowLocation(param as LocationParamDomain)
                 )
             } else {
+                val defaultTypeParams =
+                    filterInteractor.getDefaultTypeParams(Params(params))
+                val currentStep = defaultTypeParams.indexOf(param) + 1
                 publish(
                     DocumentCreateStore.Label.ShowParamSteps(
-                        currentStep = params.indexOf(param) + 1,
-                        params = params.filter { it.type != ManualType.LOCATION }
+                        currentStep = currentStep,
+                        params = defaultTypeParams
                     )
                 )
             }
