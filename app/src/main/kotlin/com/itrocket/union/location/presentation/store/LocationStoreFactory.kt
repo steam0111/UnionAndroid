@@ -14,8 +14,6 @@ import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 class LocationStoreFactory(
     private val storeFactory: StoreFactory,
@@ -51,7 +49,7 @@ class LocationStoreFactory(
                 val placeList =
                     locationInteractor.getPlaceList(
                         getState().selectPlaceScheme.getOrNull(
-                            getState().selectPlaceScheme.lastIndex - 1
+                            getState().selectPlaceScheme.lastIndex
                         )
                     )
                 dispatch(Result.PlaceValues(placeList))
@@ -89,7 +87,9 @@ class LocationStoreFactory(
         }
 
         private suspend fun search(getState: () -> LocationStore.State, searchText: String) {
-            val selectedPlaceScheme = getState().selectPlaceScheme.getSelectedLocationParent()
+            val selectedPlaceScheme = getState().selectPlaceScheme.getOrNull(
+                getState().selectPlaceScheme.lastIndex
+            )
             catchException {
                 dispatch(
                     Result.PlaceValues(
