@@ -9,7 +9,7 @@ interface LocationRepository {
         searchText: String
     ): List<LocationDomain>
 
-    suspend fun getLocationById(locationId: String): LocationSyncEntity
+    suspend fun getLocationById(locationId: String): LocationSyncEntity?
 
     suspend fun getAllLocationsIdsByParent(parentId: String?): List<String?>
 }

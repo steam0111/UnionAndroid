@@ -14,7 +14,7 @@ interface SelectParamsRepository {
 
     suspend fun getEquipmentTypes(textQuery: String?): Flow<List<ParamDomain>>
 
-    suspend fun getDepartments(textQuery: String?): Flow<List<ParamDomain>>
+    suspend fun getDepartments(textQuery: String?, type: ManualType): Flow<List<ParamDomain>>
 
     suspend fun getProviders(textQuery: String?): Flow<List<ParamDomain>>
 
@@ -23,4 +23,8 @@ interface SelectParamsRepository {
     suspend fun getNomenclatureGroup(textQuery: String?): Flow<List<ParamDomain>>
 
     suspend fun getReceptionCategory(textQuery: String?): Flow<List<ParamDomain>>
+
+    suspend fun getBranches(textQuery: String?): Flow<List<ParamDomain>>
+
+    suspend fun getActionBases(textQuery: String?): Flow<List<ParamDomain>>
 }

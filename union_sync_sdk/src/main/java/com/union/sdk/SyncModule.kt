@@ -3,6 +3,7 @@ package com.union.sdk
 import androidx.room.Room
 import com.example.union_sync_api.data.AccountingObjectStatusSyncApi
 import com.example.union_sync_api.data.AccountingObjectSyncApi
+import com.example.union_sync_api.data.ActionBaseSyncApi
 import com.example.union_sync_api.data.ActionRecordSyncApi
 import com.example.union_sync_api.data.ActionRemainsRecordSyncApi
 import com.example.union_sync_api.data.AllSyncApi
@@ -27,6 +28,7 @@ import com.example.union_sync_api.data.ReserveSyncApi
 import com.example.union_sync_impl.UnionDatabase
 import com.example.union_sync_impl.data.AccountingObjectStatusSyncApiImpl
 import com.example.union_sync_impl.data.AccountingObjectSyncApiImpl
+import com.example.union_sync_impl.data.ActionBaseSyncApiImpl
 import com.example.union_sync_impl.data.ActionRecordSyncApiImpl
 import com.example.union_sync_impl.data.ActionRemainsRecordSyncApiImpl
 import com.example.union_sync_impl.data.AllSyncImpl
@@ -88,9 +90,15 @@ object SyncModule {
                 branchesDao = get(),
             )
         }
+        factory<ActionBaseSyncApi> {
+            ActionBaseSyncApiImpl(
+                actionBaseDao = get(),
+            )
+        }
         factory<AccountingObjectSyncApi> {
             AccountingObjectSyncApiImpl(
-                accountingObjectsDao = get()
+                accountingObjectsDao = get(),
+                locationSyncApi = get()
             )
         }
         factory<InventorySyncApi> {
@@ -199,6 +207,7 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
+                get(),
                 get()
             )
         }
@@ -273,6 +282,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().inventoryRecordDao()
+        }
+        factory {
+            get<UnionDatabase>().actionBaseDao()
         }
         factory<ManageSyncDataApi> {
             ManageSyncDataImpl(

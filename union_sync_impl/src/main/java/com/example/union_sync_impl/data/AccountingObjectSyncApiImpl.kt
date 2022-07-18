@@ -1,6 +1,7 @@
 package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.AccountingObjectSyncApi
+import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
@@ -11,7 +12,8 @@ import com.example.union_sync_impl.data.mapper.toAccountingObjectUpdate
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 
 class AccountingObjectSyncApiImpl(
-    private val accountingObjectsDao: AccountingObjectDao
+    private val accountingObjectsDao: AccountingObjectDao,
+    private val locationSyncApi: LocationSyncApi
 ) : AccountingObjectSyncApi {
 
     override suspend fun getAccountingObjects(
@@ -45,7 +47,10 @@ class AccountingObjectSyncApiImpl(
                 textQuery = textQuery,
                 locationIds = locationIds
             )
-        ).map { it.toSyncEntity() }
+        ).map {
+            val location = locationSyncApi.getLocationById(it.accountingObjectDb.locationId)
+            it.toSyncEntity(locationSyncEntity = location)
+        }
     }
 
     override suspend fun getAccountingObjectsCount(
@@ -85,7 +90,9 @@ class AccountingObjectSyncApiImpl(
 
     override suspend fun getAccountingObjectDetailById(id: String): AccountingObjectDetailSyncEntity {
         val fullAccountingObjectDb = accountingObjectsDao.getById(id)
-        return fullAccountingObjectDb.toAccountingObjectDetailSyncEntity()
+        val location =
+            locationSyncApi.getLocationById(fullAccountingObjectDb.accountingObjectDb.locationId)
+        return fullAccountingObjectDb.toAccountingObjectDetailSyncEntity(location)
     }
 
     override suspend fun updateAccountingObjects(accountingObjects: List<AccountingObjectUpdateSyncEntity>) {

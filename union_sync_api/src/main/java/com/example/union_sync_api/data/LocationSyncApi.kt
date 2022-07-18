@@ -14,5 +14,7 @@ interface LocationSyncApi {
 
     suspend fun getAllLocationsIdsByParentId(parentId: String?): List<String?>
 
-    suspend fun getLocationById(locationId: String): LocationSyncEntity
+    suspend fun getLocationById(locationId: String?): LocationSyncEntity?
+
+    suspend fun getLocationsByIds(ids: List<String?>): List<LocationSyncEntity>
 }

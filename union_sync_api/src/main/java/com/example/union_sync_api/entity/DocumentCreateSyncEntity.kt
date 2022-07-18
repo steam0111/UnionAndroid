@@ -9,7 +9,12 @@ data class DocumentCreateSyncEntity(
     val documentStatusId: String,
     val creationDate: Long,
     val completionDate: Long?,
-    val locationIds: List<String>? = null,
+    val locationFromId: String? = null,
+    val locationToId: String? = null,
+    val departmentFromId: String? = null,
+    val departmentToId: String? = null,
+    val actionBaseId: String? = null,
+    val branchId: String? = null,
     val accountingObjectsIds: List<String>? = null,
     val reservesIds: List<DocumentReserveCountSyncEntity>? = null,
 )

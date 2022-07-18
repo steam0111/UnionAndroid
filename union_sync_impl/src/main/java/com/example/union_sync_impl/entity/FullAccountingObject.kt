@@ -9,8 +9,6 @@ class FullAccountingObject(
     val accountingObjectDb: AccountingObjectDb,
     @Embedded(prefix = "locations_")
     val locationDb: LocationDb?,
-    @Embedded(prefix = "location_type_")
-    val locationTypeDb: LocationTypeDb?,
     @Embedded(prefix = "mol_")
     val mol: EmployeeDb?,
     @Embedded(prefix = "exploiting_")

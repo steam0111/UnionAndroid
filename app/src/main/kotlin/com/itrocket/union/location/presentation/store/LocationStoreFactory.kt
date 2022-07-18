@@ -107,6 +107,7 @@ class LocationStoreFactory(
                 LocationStore.Label.GoBack(
                     LocationResult(
                         LocationParamDomain(
+                            manualType = args.location.manualType,
                             locations = getState().selectPlaceScheme
                         )
                     )

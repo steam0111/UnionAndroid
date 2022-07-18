@@ -83,11 +83,17 @@
 
     <!-- Manual -->
     <string name="manual_organization">Организация</string>
-    <string name="manual_mol">МОЛ</string>
+    <string name="manual_mol">Ответственный</string>
     <string name="manual_location">Местоположение</string>
     <string name="manual_exploiting">Эксплуатирующий</string>
     <string name="manual_status">Статус</string>
     <string name="manual_date">Дата заявки</string>
+    <string name="location_from">Место отправления</string>
+    <string name="location_to">Место получения</string>
+    <string name="department_from">Подразделение отправителя</string>
+    <string name="department_to">Подразделение получателя</string>
+    <string name="action_base">Основание</string>
+    <string name="relocate_location_to">Место назначения</string>
 
     <!-- AccountingObjectScreen -->
     <string name="main_marking">Маркировка</string>

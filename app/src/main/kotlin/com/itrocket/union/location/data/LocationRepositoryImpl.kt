@@ -20,7 +20,7 @@ class LocationRepositoryImpl(
         getLocations(selectedPlace, textQuery = searchText)
     }
 
-    override suspend fun getLocationById(locationId: String): LocationSyncEntity =
+    override suspend fun getLocationById(locationId: String): LocationSyncEntity? =
         withContext(coreDispatchers.io) {
             locationSyncApi.getLocationById(locationId)
         }

@@ -2,6 +2,7 @@ package com.example.union_sync_impl.sync
 
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.AccountingObjectStatusDao
+import com.example.union_sync_impl.dao.ActionBaseDao
 import com.example.union_sync_impl.dao.ActionRecordDao
 import com.example.union_sync_impl.dao.ActionRemainsRecordDao
 import com.example.union_sync_impl.dao.BranchesDao
@@ -35,6 +36,7 @@ import com.example.union_sync_impl.data.mapper.toAccountingObjectDb
 import com.example.union_sync_impl.data.mapper.toActionRecordDb
 import com.example.union_sync_impl.data.mapper.toActionRemainsRecordDb
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDtosV2
+import com.example.union_sync_impl.data.mapper.toActionBaseDb
 import com.example.union_sync_impl.data.mapper.toActionDtoV2
 import com.example.union_sync_impl.data.mapper.toActionRecordDtoV2
 import com.example.union_sync_impl.data.mapper.toActionRemainsRecordDtoV2
@@ -70,6 +72,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.models.AccountingObjectDtoV2
+import org.openapitools.client.models.ActionBaseDtoV2
 import org.openapitools.client.models.ActionDtoV2
 import org.openapitools.client.models.ActionRecordDtoV2
 import org.openapitools.client.models.ActionRemainsRecordDtoV2
@@ -118,6 +121,7 @@ class SyncRepository(
     private val actionRecordDao: ActionRecordDao,
     private val actionRemainsRecordDao: ActionRemainsRecordDao,
     private val inventoryRecordDao: InventoryRecordDao,
+    private val actionBaseDao: ActionBaseDao,
     private val syncDao: NetworkSyncDao
 ) {
     fun getUploadSyncEntities(): List<UploadableSyncEntity> = listOf(
@@ -282,6 +286,11 @@ class SyncRepository(
             moshi,
             ::inventoryRecordDbSaver,
             getInventoryRecordDbCollector()
+        ),
+        ActionBasesSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::actionBasesDbSaver
         )
     ).associateBy {
         it.id to it.table
@@ -590,6 +599,10 @@ class SyncRepository(
             objects.mapNotNull { it.extendedMol?.toEmployeeDb() }.distinctBy { it.id }
         )
         documentDao.insertAll(objects.map { it.toDocumentDb() })
+
+        actionBaseDao.insertAll(
+            objects.mapNotNull { it.extendedActionBase?.toActionBaseDb() }
+        )
     }
 
     private suspend fun actionRecordDbSaver(objects: List<ActionRecordDtoV2>) {
@@ -602,6 +615,10 @@ class SyncRepository(
 
     private suspend fun inventoryRecordDbSaver(objects: List<InventoryRecordDtoV2>) {
         inventoryRecordDao.insertAll(objects.map { it.toInventoryRecordDb() })
+    }
+
+    private suspend fun actionBasesDbSaver(objects: List<ActionBaseDtoV2>) {
+        actionBaseDao.insertAll(objects.map { it.toActionBaseDb() })
     }
 
     private suspend fun locationPathDbSaver(objects: List<LocationPathDto>) {

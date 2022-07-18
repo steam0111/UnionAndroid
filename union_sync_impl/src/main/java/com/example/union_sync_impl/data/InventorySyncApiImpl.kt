@@ -104,7 +104,7 @@ class InventorySyncApiImpl(
         }
     }
 
-    private fun getAccountingObjects(
+    private suspend fun getAccountingObjects(
         inventoryDb: InventoryDb
     ): List<AccountingObjectSyncEntity> {
         /*
@@ -131,7 +131,8 @@ class InventorySyncApiImpl(
                     }
                 )
             ).map {
-                it.toSyncEntity()
+                val location = locationSyncApi.getLocationById(it.accountingObjectDb.locationId)
+                it.toSyncEntity(locationSyncEntity = location)
             }
         } else {
             val inventoryRecords =
@@ -147,8 +148,11 @@ class InventorySyncApiImpl(
                         inventoryRecords = inventoryRecords,
                         fullAccountingObject = fullAccountingObject
                     )
+                    val location =
+                        locationSyncApi.getLocationById(fullAccountingObject.accountingObjectDb.locationId)
                     fullAccountingObject.toSyncEntity(
-                        inventoryStatus
+                        inventoryStatus = inventoryStatus,
+                        locationSyncEntity = location
                     )
                 }
         }

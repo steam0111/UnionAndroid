@@ -14,15 +14,39 @@ enum class DocumentTypeDomain(
     Parcelable {
     GIVE(
         titleId = R.string.main_issue,
-        manualTypes = listOf(ManualType.EXPLOITING),
+        manualTypes = listOf(
+            ManualType.MOL,
+            ManualType.EXPLOITING,
+            ManualType.LOCATION_FROM,
+            ManualType.LOCATION_TO,
+            ManualType.DEPARTMENT_FROM,
+            ManualType.DEPARTMENT_TO,
+            ManualType.ACTION_BASE
+        ),
     ),
     RETURN(
         titleId = R.string.main_return,
-        manualTypes = listOf(ManualType.EXPLOITING),
+        manualTypes = listOf(
+            ManualType.MOL,
+            ManualType.EXPLOITING,
+            ManualType.LOCATION_FROM,
+            ManualType.LOCATION_TO,
+            ManualType.DEPARTMENT_FROM,
+            ManualType.DEPARTMENT_TO,
+            ManualType.ACTION_BASE
+        ),
     ),
     RELOCATION(
         titleId = R.string.main_moved,
-        manualTypes = listOf(ManualType.LOCATION),
+        manualTypes = listOf(
+            ManualType.MOL,
+            ManualType.LOCATION_FROM,
+            ManualType.RELOCATION_LOCATION_TO,
+            ManualType.DEPARTMENT_FROM,
+            ManualType.DEPARTMENT_TO,
+            ManualType.BRANCH,
+            ManualType.ACTION_BASE
+        ),
     ),
     WRITE_OFF(
         titleId = R.string.main_write_off,

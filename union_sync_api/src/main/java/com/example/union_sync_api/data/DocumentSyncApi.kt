@@ -22,7 +22,7 @@ interface DocumentSyncApi {
     ): Long
 
     suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): String
-    suspend fun getDocuments(
+    suspend fun getDocumentsByType(
         type: String,
         textQuery: String? = null
     ): Flow<List<DocumentSyncEntity>>

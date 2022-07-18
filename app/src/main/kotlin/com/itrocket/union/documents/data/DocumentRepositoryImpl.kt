@@ -36,7 +36,10 @@ class DocumentRepositoryImpl(
         ).map { it.map() }
     }
 
-    override suspend fun getAllDocumentsCount(textQuery: String?, params: List<ParamDomain>?): Long {
+    override suspend fun getAllDocumentsCount(
+        textQuery: String?,
+        params: List<ParamDomain>?
+    ): Long {
         return withContext(coreDispatchers.io) {
             documentSyncApi.getAllDocumentsCount(
                 textQuery = textQuery,
@@ -47,11 +50,11 @@ class DocumentRepositoryImpl(
         }
     }
 
-    override suspend fun getDocuments(
+    override suspend fun getDocumentsByType(
         type: DocumentTypeDomain,
         textQuery: String?
     ): Flow<List<DocumentDomain>> {
-        return documentSyncApi.getDocuments(type.name, textQuery).map { it.map() }
+        return documentSyncApi.getDocumentsByType(type.name, textQuery).map { it.map() }
     }
 
     override suspend fun getDocumentById(id: String): DocumentDomain {

@@ -20,7 +20,6 @@ import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import java.util.*
 
 class DocumentStoreFactory(
     private val storeFactory: StoreFactory,

@@ -38,11 +38,16 @@ class LocationSyncApiImpl(
         }
     }
 
-    override suspend fun getLocationById(locationId: String): LocationSyncEntity {
+    override suspend fun getLocationById(locationId: String?): LocationSyncEntity? {
         val locationDb = locationDao.getLocationById(locationId)
-        val locationType =
-            locationDao.getLocationTypeById(requireNotNull(locationDb.locationTypeId))
-        return locationDao.getLocationById(locationId)
-            .toLocationSyncEntity(locationType)
+        val locationType = locationDb?.locationTypeId?.let { locationDao.getLocationTypeById(it) }
+        return locationDao.getLocationById(locationId)?.toLocationSyncEntity(locationType)
+    }
+
+    override suspend fun getLocationsByIds(ids: List<String?>): List<LocationSyncEntity> {
+        return locationDao.getLocationsByIds(ids).map {
+            val locationType = locationDao.getLocationTypeById(requireNotNull(it.locationTypeId))
+            it.toLocationSyncEntity(locationType)
+        }
     }
 }
