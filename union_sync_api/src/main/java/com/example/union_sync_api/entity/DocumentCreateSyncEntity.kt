@@ -17,4 +17,5 @@ data class DocumentCreateSyncEntity(
     val branchId: String? = null,
     val accountingObjectsIds: List<String>? = null,
     val reservesIds: List<DocumentReserveCountSyncEntity>? = null,
+    val code: String?
 )

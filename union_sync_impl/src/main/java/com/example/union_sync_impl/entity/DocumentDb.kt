@@ -21,5 +21,6 @@ class DocumentDb(
     val departmentFromId: String? = null,
     val departmentToId: String? = null,
     val actionBaseId: String? = null,
-    val branchId: String? = null
+    val branchId: String? = null,
+    val code: String?
 ) : SyncItemDb(id, updateDate)

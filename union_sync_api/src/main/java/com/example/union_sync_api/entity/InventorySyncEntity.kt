@@ -8,5 +8,7 @@ data class InventorySyncEntity(
     val mol: EmployeeSyncEntity?,
     val locationSyncEntities: List<LocationSyncEntity>?,
     val inventoryStatus: String,
-    val updateDate: Long?
+    val updateDate: Long?,
+    val code: String?,
+    val name: String?
 )

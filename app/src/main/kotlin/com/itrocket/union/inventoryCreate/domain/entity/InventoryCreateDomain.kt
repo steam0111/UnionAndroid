@@ -40,6 +40,7 @@ fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
         date = date,
         locationIds = locationIds,
         inventoryStatus = this.inventoryStatus.name,
-        updateDate = System.currentTimeMillis()
+        updateDate = System.currentTimeMillis(),
+        code = number
     )
 }

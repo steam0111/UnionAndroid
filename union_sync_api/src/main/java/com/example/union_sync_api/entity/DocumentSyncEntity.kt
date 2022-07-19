@@ -18,5 +18,6 @@ data class DocumentSyncEntity(
     val departmentFrom: DepartmentSyncEntity? = null,
     val departmentTo: DepartmentSyncEntity? = null,
     val branch: BranchSyncEntity? = null,
-    val actionBase: ActionBaseSyncEntity? = null
+    val actionBase: ActionBaseSyncEntity? = null,
+    val code: String?
 )

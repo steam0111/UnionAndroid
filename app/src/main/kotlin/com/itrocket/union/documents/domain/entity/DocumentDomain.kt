@@ -68,7 +68,8 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
         departmentFromId = params.getDepartmentId(type = ManualType.DEPARTMENT_FROM),
         departmentToId = params.getDepartmentId(type = ManualType.DEPARTMENT_TO),
         branchId = params.getBranchId(),
-        actionBaseId = params.getActionBaseId()
+        actionBaseId = params.getActionBaseId(),
+        code = number
     )
 }
 
@@ -107,6 +108,7 @@ fun DocumentDomain.toCreateSyncEntity(): DocumentCreateSyncEntity {
         departmentFromId = params.getDepartmentId(type = ManualType.DEPARTMENT_FROM),
         departmentToId = params.getDepartmentId(type = ManualType.DEPARTMENT_TO),
         branchId = params.getBranchId(),
-        actionBaseId = params.getActionBaseId()
+        actionBaseId = params.getActionBaseId(),
+        code = number
     )
 }

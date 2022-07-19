@@ -84,7 +84,7 @@ import com.example.union_sync_impl.utils.Converters
         ActionRemainsRecordDb::class,
         InventoryRecordDb::class,
         ActionBaseDb::class
-    ], version = 80
+    ], version = 82
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {
