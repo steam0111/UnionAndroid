@@ -4,6 +4,7 @@ import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
+import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.presentation.store.DocumentArguments
@@ -20,15 +21,19 @@ interface DocumentMenuStore :
         object OnProfileClicked : Intent()
         object OnLogoutClicked : Intent()
         object OnSettingsClicked : Intent()
+        object OnBackClicked : Intent()
     }
 
     data class State(
         val documents: List<DocumentMenuDomain> = listOf(),
+        val menuDeepLevel: Int = 0,
         val userName: String = "",
-        val loading: Boolean = false
+        val loading: Boolean = false,
     )
 
     sealed class Label {
+        object GoBack : Label(), GoBackNavigationLabel
+
         object ShowAuth : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = DocumentMenuComposeFragmentDirections.toAuth()
