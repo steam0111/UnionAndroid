@@ -11,6 +11,7 @@ import com.itrocket.union.utils.getTimeFromMillis
 
 sealed class DocumentView {
     data class DocumentItemView(
+        val id: String?,
         val number: String,
         val documentStatus: DocumentStatus,
         val documentType: DocumentTypeDomain,
@@ -29,6 +30,7 @@ sealed class DocumentView {
 }
 
 fun DocumentView.DocumentItemView.toDocumentDomain() = DocumentDomain(
+    id = id,
     number = number,
     documentStatus = documentStatus,
     creationDate = date,
@@ -38,6 +40,7 @@ fun DocumentView.DocumentItemView.toDocumentDomain() = DocumentDomain(
 )
 
 fun DocumentDomain.toDocumentItemView(dateUi: String) = DocumentView.DocumentItemView(
+    id = id,
     number = number.orEmpty(),
     documentStatus = documentStatus,
     date = creationDate,

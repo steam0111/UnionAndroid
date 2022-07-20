@@ -552,6 +552,7 @@ fun DocumentDateItemPreview() {
 fun DocumentInfoItemPreview() {
     DocumentInfoItem(
         item = DocumentView.DocumentItemView(
+            id = "dd",
             number = "БП-00001374",
             documentStatus = DocumentStatus.CREATED,
             date = 123123,

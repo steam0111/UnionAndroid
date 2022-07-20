@@ -19,6 +19,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class DocumentDomain(
+    val id: String? = null,
     val number: String?,
     val documentStatus: DocumentStatus,
     val documentType: DocumentTypeDomain,
@@ -29,8 +30,8 @@ data class DocumentDomain(
     val reserves: List<ReservesDomain> = listOf(),
     val documentStatusId: String,
 ) : Parcelable {
-    val isDocumentCreated: Boolean
-        get() = number != null
+    val isDocumentExists: Boolean
+        get() = id != null
 
     val isStatusCompleted: Boolean
         get() = documentStatus == DocumentStatus.COMPLETED
@@ -43,13 +44,13 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
     val trueCompletionDate =
         if (documentStatus == DocumentStatus.COMPLETED) System.currentTimeMillis() else completionDate
     return DocumentUpdateSyncEntity(
+        id = id.orEmpty(),
         organizationId = organizationId,
         molId = molId,
         exploitingId = exploitingId,
         documentType = documentType.name,
         accountingObjectsIds = accountingObjects.map { it.id },
         creationDate = creationDate,
-        id = number.orEmpty(),
         reservesIds = reserves.map {
             DocumentReserveCountSyncEntity(
                 id = it.id,

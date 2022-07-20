@@ -23,6 +23,7 @@ fun List<DocumentSyncEntity>.map(): List<DocumentDomain> = map {
 
 fun DocumentSyncEntity.map(): DocumentDomain =
     DocumentDomain(
+        id = id,
         number = code,
         completionDate = completionDate,
         creationDate = creationDate,

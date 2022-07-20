@@ -36,7 +36,7 @@ class DocumentCreateInteractor(
         status: DocumentStatus
     ): String {
         return withContext(coreDispatchers.io) {
-            if (!document.isDocumentCreated) {
+            if (!document.isDocumentExists) {
                 documentRepository.createDocument(
                     document.copy(
                         accountingObjects = accountingObjects,
@@ -56,7 +56,7 @@ class DocumentCreateInteractor(
                         reserves = reserves
                     ).toUpdateSyncEntity()
                 )
-                document.number.orEmpty()
+                document.id.orEmpty()
             }
         }
     }

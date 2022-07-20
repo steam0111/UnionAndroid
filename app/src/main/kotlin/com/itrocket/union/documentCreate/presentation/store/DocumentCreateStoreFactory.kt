@@ -62,8 +62,8 @@ class DocumentCreateStoreFactory(
             dispatch(Result.Loading(true))
             catchException {
                 val docArgument = documentCreateArguments.document
-                val document = if (docArgument.isDocumentCreated) {
-                    documentCreateInteractor.getDocumentById(docArgument.number.orEmpty())
+                val document = if (docArgument.isDocumentExists) {
+                    docArgument.id?.let { documentCreateInteractor.getDocumentById(it) }
                 } else {
                     null
                 }

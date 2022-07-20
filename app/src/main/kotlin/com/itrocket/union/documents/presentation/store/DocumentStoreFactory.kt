@@ -136,6 +136,7 @@ class DocumentStoreFactory(
         private fun createDocument(documentType: DocumentTypeDomain) {
             showDocument(
                 DocumentDomain(
+                    id = null,
                     documentType = documentType,
                     accountingObjects = listOf(),
                     creationDate = System.currentTimeMillis(),
