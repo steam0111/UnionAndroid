@@ -83,6 +83,7 @@
     <string name="reception_category">Приеная категория</string>
     <string name="count">Количество</string>
     <string name="save">Сохранение</string>
+    <string name="create_inventory">Создание инв.</string>
 
     <!-- Manual -->
     <string name="manual_organization">Организация</string>

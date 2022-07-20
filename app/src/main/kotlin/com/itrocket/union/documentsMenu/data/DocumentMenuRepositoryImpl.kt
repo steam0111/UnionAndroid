@@ -50,10 +50,6 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
                         iconId = R.drawable.ic_employees
                     ),
                     DocumentMenuDomain(
-                        titleId = R.string.inventories,
-                        iconId = R.drawable.ic_inventory
-                    ),
-                    DocumentMenuDomain(
                         titleId = R.string.nomenclature_group,
                         iconId = R.drawable.ic_inventory
                     ),
@@ -87,6 +83,18 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
                     ),
                     DocumentMenuDomain(
                         titleId = R.string.equipment_types,
+                        iconId = R.drawable.ic_inventory
+                    ),
+                )
+            }
+            currentDocument?.titleId == R.string.main_inventory -> {
+                listOf(
+                    DocumentMenuDomain(
+                        titleId = R.string.inventories,
+                        iconId = R.drawable.ic_inventory
+                    ),
+                    DocumentMenuDomain(
+                        titleId = R.string.create_inventory,
                         iconId = R.drawable.ic_inventory
                     ),
                 )
