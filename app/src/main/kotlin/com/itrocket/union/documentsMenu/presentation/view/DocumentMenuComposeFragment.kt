@@ -1,5 +1,6 @@
 package com.itrocket.union.documentsMenu.presentation.view
 
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
@@ -19,6 +20,14 @@ class DocumentMenuComposeFragment :
         appInsets: AppInsets
     ) {
         setContent(composeView, state, appInsets)
+    }
+
+    override val onBackPressedCallback by lazy {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                accept(DocumentMenuStore.Intent.OnBackClicked)
+            }
+        }
     }
 
     @OptIn(ExperimentalFoundationApi::class)

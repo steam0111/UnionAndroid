@@ -6,16 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -37,11 +28,7 @@ import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 import com.itrocket.union.documentsMenu.presentation.store.DocumentMenuStore
-import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.ui.BaseToolbar
-import com.itrocket.union.ui.psb1
-import com.itrocket.union.ui.psb6
-import com.itrocket.union.ui.white
+import com.itrocket.union.ui.*
 import com.itrocket.utils.clickableUnbounded
 
 @ExperimentalFoundationApi
@@ -58,13 +45,9 @@ fun DocumentMenuScreen(
         Scaffold(topBar = {
             BaseToolbar(
                 title = state.userName,
-                startImageId = R.drawable.ic_user,
+                startImageId = null,
                 onStartImageClickListener = onProfileIconClick
             ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_question),
-                    contentDescription = null
-                )
                 Spacer(modifier = Modifier.width(16.dp))
                 Image(
                     painter = painterResource(R.drawable.ic_settings),

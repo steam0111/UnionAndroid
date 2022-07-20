@@ -55,6 +55,9 @@
 
     <!-- MainScreen -->
     <string name="common_hint">Введите значение</string>
+    <string name="main_property">Имущество</string>
+    <string name="main_operations">Операции</string>
+    <string name="main_books">Справочники</string>
     <string name="main_inventory">Инвентариз.</string>
     <string name="main_identification">Идентификац.</string>
     <string name="main_accounting_object">Объекты уч.</string>

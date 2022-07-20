@@ -1,11 +1,6 @@
 package com.itrocket.union.documentsMenu.presentation.store
 
-import com.arkivanov.mvikotlin.core.store.Executor
-import com.arkivanov.mvikotlin.core.store.Reducer
-import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
-import com.arkivanov.mvikotlin.core.store.Store
-import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.arkivanov.mvikotlin.core.store.*
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.authMain.domain.AuthMainInteractor
@@ -39,7 +34,7 @@ class DocumentMenuStoreFactory(
             action: Unit,
             getState: () -> DocumentMenuStore.State
         ) {
-            dispatch(Result.Documents(documentMenuInteractor.getDocuments()))
+            dispatch(Result.Documents(documentMenuInteractor.getDocuments(), 0))
         }
 
         override suspend fun executeIntent(
@@ -48,7 +43,12 @@ class DocumentMenuStoreFactory(
         ) {
             when (intent) {
                 is DocumentMenuStore.Intent.OnDocumentClicked -> {
-                    publish(DocumentMenuStore.Label.ShowDocumentDetail(intent.item))
+                    val newDocuments = documentMenuInteractor.getDocuments(intent.item)
+                    if (newDocuments.isEmpty()) {
+                        publish(DocumentMenuStore.Label.ShowDocumentDetail(intent.item))
+                    } else {
+                        dispatch(Result.Documents(newDocuments, getState().menuDeepLevel + 1))
+                    }
                 }
                 DocumentMenuStore.Intent.OnProfileClicked -> {
                     // no-op
@@ -62,6 +62,13 @@ class DocumentMenuStoreFactory(
                     dispatch(Result.Loading(false))
                 }
                 DocumentMenuStore.Intent.OnSettingsClicked -> publish(DocumentMenuStore.Label.ShowSettings)
+                DocumentMenuStore.Intent.OnBackClicked -> {
+                    if (getState().menuDeepLevel == 1) {
+                        dispatch(Result.Documents(documentMenuInteractor.getDocuments(), 0))
+                    } else if (getState().menuDeepLevel == 0) {
+                        publish(DocumentMenuStore.Label.GoBack)
+                    }
+                }
             }
         }
 
@@ -71,14 +78,19 @@ class DocumentMenuStoreFactory(
     }
 
     private sealed class Result {
-        data class Documents(val documents: List<DocumentMenuDomain>) : Result()
+        data class Documents(val documents: List<DocumentMenuDomain>, val menuDeepLevel: Int) :
+            Result()
+
         data class Loading(val loading: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<DocumentMenuStore.State, Result> {
         override fun DocumentMenuStore.State.reduce(result: Result) =
             when (result) {
-                is Result.Documents -> copy(documents = result.documents)
+                is Result.Documents -> copy(
+                    documents = result.documents,
+                    menuDeepLevel = result.menuDeepLevel
+                )
                 is Result.Loading -> copy(loading = result.loading)
             }
     }
