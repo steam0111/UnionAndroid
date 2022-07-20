@@ -53,7 +53,7 @@ class InventoryCreateStoreFactory(
                 dispatch(
                     Result.Inventory(
                         inventoryCreateInteractor.getInventoryById(
-                            inventoryCreateArguments.inventoryDocument.number
+                            inventoryCreateArguments.inventoryDocument.id.orEmpty()
                         )
                     )
                 )

@@ -15,6 +15,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class InventoryCreateDomain(
+    val id: String?,
     val number: String,
     val date: Long?,
     val inventoryStatus: InventoryStatus,
@@ -33,7 +34,7 @@ fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
     val locationIds = documentInfo.getFilterLocationIds()
 
     return InventoryUpdateSyncEntity(
-        id = number,
+        id = id.orEmpty(),
         organizationId = organizationId,
         employeeId = molId,
         accountingObjectsIds = accountingObjects.map { it.toAccountingObjectIdSyncEntity() },

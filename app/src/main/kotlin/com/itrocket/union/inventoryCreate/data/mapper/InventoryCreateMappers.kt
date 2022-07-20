@@ -15,6 +15,7 @@ fun List<InventorySyncEntity>.map(): List<InventoryCreateDomain> = map {
 
 fun InventorySyncEntity.map(): InventoryCreateDomain =
     InventoryCreateDomain(
+        id = id,
         number = code.orEmpty(),
         date = date,
         accountingObjects = accountingObjects.map(),

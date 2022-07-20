@@ -288,6 +288,7 @@ private fun Toolbar(
 fun InventoryCreateScreenPreview() {
     InventoryCreateScreen(InventoryCreateStore.State(
         inventoryDocument = InventoryCreateDomain(
+            id = "",
             number = "БП-00001374",
             date = System.currentTimeMillis(),
             documentInfo = listOf(

@@ -119,6 +119,7 @@ fun InventoriesScreenPreview() {
         InventoriesStore.State(
             inventories = listOf(
                 InventoryCreateDomain(
+                    id = "bh",
                     number = "БП-00001375",
                     date = System.currentTimeMillis(),
                     documentInfo = listOf(
@@ -130,6 +131,7 @@ fun InventoriesScreenPreview() {
                     inventoryStatus = InventoryStatus.CREATED
                 ),
                 InventoryCreateDomain(
+                    id = "",
                     number = "БП-00001376",
                     date = System.currentTimeMillis(),
                     documentInfo = listOf(
@@ -141,6 +143,7 @@ fun InventoriesScreenPreview() {
                     inventoryStatus = InventoryStatus.CREATED
                 ),
                 InventoryCreateDomain(
+                    id = "",
                     number = "БП-00001377",
                     date = System.currentTimeMillis(),
                     documentInfo = listOf(
