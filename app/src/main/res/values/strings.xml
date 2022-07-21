@@ -52,6 +52,7 @@
     <string name="auth_main_password">Пароль</string>
     <string name="auth_main_user_change">Сменить пользователя</string>
     <string name="auth_main_database_settings">Настройки БД</string>
+    <string name="auth_title">Авторизация</string>
 
     <!-- MainScreen -->
     <string name="common_hint">Введите значение</string>
@@ -269,4 +270,7 @@
 
     <!-- SelectCount -->
     <string name="select_count_title">Выберите количество</string>
+    <string name="to_sync">Синхронизировать</string>
+    <string name="to_clear_db">Полная очистка базы данных</string>
+    <string name="to_auth">Авторизация</string>
 </resources>

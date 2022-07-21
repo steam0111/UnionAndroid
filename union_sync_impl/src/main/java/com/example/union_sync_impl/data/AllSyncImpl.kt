@@ -43,7 +43,6 @@ class AllSyncImpl(
                     "isUploadComplete : ${syncCompletedInfo.importComplete}, uploaded parts count: ${syncCompletedInfo.importPartBufferInformation.importRequestsInformation?.size}\n" +
                     "isDownloadComplete : ${syncCompletedInfo.exportComplete}, all parts count from server: ${syncCompletedInfo.exportPartBufferInformation.exportPartsInformation?.size}"
         )
-
         updateLastSyncTime()
     }
 

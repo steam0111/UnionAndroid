@@ -23,6 +23,7 @@ object SyncAllModule {
             SyncAllRepositoryImpl(
                 get(),
                 get(),
+                get()
             )
         }
 
@@ -35,7 +36,7 @@ object SyncAllModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                get()
+                get(),
             ).create()
         }
     }

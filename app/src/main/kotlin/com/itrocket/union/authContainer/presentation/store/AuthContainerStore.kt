@@ -18,6 +18,7 @@ interface AuthContainerStore :
     data class State(
         val isLoading: Boolean = false,
         val isEnable: Boolean = false,
+        val isShowBackButton: Boolean = false,
         val currentStep: AuthContainerStep = AuthContainerStep.CONNECT_TO_SERVER
     )
 
