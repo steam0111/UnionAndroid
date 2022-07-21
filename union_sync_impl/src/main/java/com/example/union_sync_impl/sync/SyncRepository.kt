@@ -1,99 +1,14 @@
 package com.example.union_sync_impl.sync
 
-import com.example.union_sync_impl.dao.AccountingObjectDao
-import com.example.union_sync_impl.dao.AccountingObjectStatusDao
-import com.example.union_sync_impl.dao.ActionBaseDao
-import com.example.union_sync_impl.dao.ActionRecordDao
-import com.example.union_sync_impl.dao.ActionRemainsRecordDao
-import com.example.union_sync_impl.dao.BranchesDao
-import com.example.union_sync_impl.dao.CounterpartyDao
-import com.example.union_sync_impl.dao.DepartmentDao
-import com.example.union_sync_impl.dao.DocumentDao
-import com.example.union_sync_impl.dao.EmployeeDao
-import com.example.union_sync_impl.dao.EquipmentTypeDao
-import com.example.union_sync_impl.dao.InventoryDao
-import com.example.union_sync_impl.dao.InventoryRecordDao
-import com.example.union_sync_impl.dao.LocationDao
-import com.example.union_sync_impl.dao.LocationPathDao
-import com.example.union_sync_impl.dao.NetworkSyncDao
-import com.example.union_sync_impl.dao.NomenclatureDao
-import com.example.union_sync_impl.dao.NomenclatureGroupDao
-import com.example.union_sync_impl.dao.OrderDao
-import com.example.union_sync_impl.dao.OrganizationDao
-import com.example.union_sync_impl.dao.ProducerDao
-import com.example.union_sync_impl.dao.ProviderDao
-import com.example.union_sync_impl.dao.ReceptionItemCategoryDao
-import com.example.union_sync_impl.dao.RegionDao
-import com.example.union_sync_impl.dao.ReserveDao
-import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
-import com.example.union_sync_impl.dao.sqlActionRecordQuery
-import com.example.union_sync_impl.dao.sqlActionRemainsRecordQuery
-import com.example.union_sync_impl.dao.sqlDocumentsQuery
-import com.example.union_sync_impl.dao.sqlInventoryQuery
-import com.example.union_sync_impl.dao.sqlInventoryRecordQuery
-import com.example.union_sync_impl.dao.sqlReserveQuery
-import com.example.union_sync_impl.data.mapper.toAccountingObjectDb
+import com.example.union_sync_impl.dao.*
+import com.example.union_sync_impl.data.mapper.*
 import com.example.union_sync_impl.data.mapper.toActionRecordDb
 import com.example.union_sync_impl.data.mapper.toActionRemainsRecordDb
-import com.example.union_sync_impl.data.mapper.toAccountingObjectDtosV2
-import com.example.union_sync_impl.data.mapper.toActionBaseDb
-import com.example.union_sync_impl.data.mapper.toActionDtoV2
-import com.example.union_sync_impl.data.mapper.toActionRecordDtoV2
-import com.example.union_sync_impl.data.mapper.toActionRemainsRecordDtoV2
-import com.example.union_sync_impl.data.mapper.toBranchesDb
-import com.example.union_sync_impl.data.mapper.toCounterpartyDb
-import com.example.union_sync_impl.data.mapper.toDepartmentDb
-import com.example.union_sync_impl.data.mapper.toDocumentDb
-import com.example.union_sync_impl.data.mapper.toEmployeeDb
-import com.example.union_sync_impl.data.mapper.toEquipmentTypeDb
-import com.example.union_sync_impl.data.mapper.toInventoryDb
-import com.example.union_sync_impl.data.mapper.toInventoryDtoV2
-import com.example.union_sync_impl.data.mapper.toInventoryRecordDb
-import com.example.union_sync_impl.data.mapper.toInventoryRecordDtoV2
-import com.example.union_sync_impl.data.mapper.toLocationDb
-import com.example.union_sync_impl.data.mapper.toLocationPathDb
-import com.example.union_sync_impl.data.mapper.toLocationTypeDb
-import com.example.union_sync_impl.data.mapper.toNomenclatureDb
-import com.example.union_sync_impl.data.mapper.toNomenclatureGroupDb
-import com.example.union_sync_impl.data.mapper.toOrderDb
-import com.example.union_sync_impl.data.mapper.toOrganizationDb
-import com.example.union_sync_impl.data.mapper.toProducerDb
-import com.example.union_sync_impl.data.mapper.toProviderDb
-import com.example.union_sync_impl.data.mapper.toReceptionItemCategoryDb
-import com.example.union_sync_impl.data.mapper.toRegionDb
-import com.example.union_sync_impl.data.mapper.toRemainsDtoV2
 import com.example.union_sync_impl.data.mapper.toReserveDb
-import com.example.union_sync_impl.data.mapper.toStatusDb
 import com.squareup.moshi.Moshi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.filterNot
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import org.openapitools.client.custom_api.SyncControllerApi
-import org.openapitools.client.models.AccountingObjectDtoV2
-import org.openapitools.client.models.ActionBaseDtoV2
-import org.openapitools.client.models.ActionDtoV2
-import org.openapitools.client.models.ActionRecordDtoV2
-import org.openapitools.client.models.ActionRemainsRecordDtoV2
-import org.openapitools.client.models.BranchDtoV2
-import org.openapitools.client.models.CounterpartyDtoV2
-import org.openapitools.client.models.DepartmentDtoV2
-import org.openapitools.client.models.EmployeeDtoV2
-import org.openapitools.client.models.EquipmentTypeDtoV2
-import org.openapitools.client.models.InventoryDtoV2
-import org.openapitools.client.models.InventoryRecordDtoV2
-import org.openapitools.client.models.LocationDtoV2
-import org.openapitools.client.models.LocationPathDto
-import org.openapitools.client.models.LocationsTypeDtoV2
-import org.openapitools.client.models.NomenclatureDtoV2
-import org.openapitools.client.models.NomenclatureGroupDtoV2
-import org.openapitools.client.models.OrderDtoV2
-import org.openapitools.client.models.OrganizationDtoV2
-import org.openapitools.client.models.ProducerDtoV2
-import org.openapitools.client.models.ReceptionItemCategoryDtoV2
-import org.openapitools.client.models.RegionDtoV2
-import org.openapitools.client.models.RemainsDtoV2
+import org.openapitools.client.models.*
 
 class SyncRepository(
     private val syncControllerApi: SyncControllerApi,
@@ -124,6 +39,11 @@ class SyncRepository(
     private val actionBaseDao: ActionBaseDao,
     private val syncDao: NetworkSyncDao
 ) {
+    suspend fun clearDataBeforeDownload() {
+        inventoryDao.clearAll()
+        documentDao.clearAll()
+    }
+
     fun getUploadSyncEntities(): List<UploadableSyncEntity> = listOf(
         AccountingObjectSyncEntity(
             syncControllerApi,

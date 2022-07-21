@@ -1,11 +1,6 @@
 package com.example.union_sync_impl.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.RawQuery
-import androidx.room.Update
+import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.union_sync_impl.entity.FullInventory
 import com.example.union_sync_impl.entity.InventoryDb
@@ -55,4 +50,7 @@ interface InventoryDao {
 
     @Query("SELECT COUNT(*) FROM inventories")
     suspend fun getInventoriesCount(): Int
+
+    @Query("DELETE FROM inventories")
+    suspend fun clearAll()
 }

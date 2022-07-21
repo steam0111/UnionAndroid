@@ -10,8 +10,7 @@ import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.models.StarSyncRequestV2
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 class AllSyncImpl(
     private val syncControllerApi: SyncControllerApi,
@@ -76,6 +75,10 @@ class AllSyncImpl(
     private suspend fun startExportFromServerToLocal(syncId: String) {
         val exportSyncInfo = syncControllerApi.apiSyncIdStartExportPost(syncId)
         Timber.tag(SYNC_TAG).d("started export from server to local")
+
+        Timber.tag(SYNC_TAG).d("clear data before download")
+        syncRepository.clearDataBeforeDownload()
+
         val syncEntities = syncRepository.getSyncEntities()
 
         val entityModelIds = hashSetOf<String>()
@@ -95,7 +98,8 @@ class AllSyncImpl(
             }
         }
 
-        Timber.tag(SYNC_TAG).d("exportPartsInformation count ${exportSyncInfo.exportPartBufferInformation.exportPartsInformation.size}")
+        Timber.tag(SYNC_TAG)
+            .d("exportPartsInformation count ${exportSyncInfo.exportPartBufferInformation.exportPartsInformation.size}")
         Timber.tag(SYNC_TAG).d("all entityModelIds $entityModelIds in this sync")
         syncControllerApi.apiSyncIdCompleteExportPost(syncId)
 
