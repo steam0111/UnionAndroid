@@ -1,10 +1,6 @@
 package com.itrocket.union.syncAll.presentation.store
 
-import com.arkivanov.mvikotlin.core.store.Executor
-import com.arkivanov.mvikotlin.core.store.Reducer
-import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
-import com.arkivanov.mvikotlin.core.store.Store
-import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.core.store.*
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
@@ -14,7 +10,7 @@ class SyncAllStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val syncAllInteractor: SyncAllInteractor,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
 ) {
     fun create(): SyncAllStore =
         object : SyncAllStore,
@@ -52,6 +48,15 @@ class SyncAllStoreFactory(
                         publish(SyncAllStore.Label.ShowMenu)
                     }
                     dispatch(Result.Loading(false))
+                }
+                SyncAllStore.Intent.OnClearButtonClicked -> {
+                    catchException {
+                        syncAllInteractor.clearAll()
+                        publish(SyncAllStore.Label.ShowMenu)
+                    }
+                }
+                SyncAllStore.Intent.OnAuthButtonClicked -> {
+                    publish(SyncAllStore.Label.ShowAuth)
                 }
             }
         }

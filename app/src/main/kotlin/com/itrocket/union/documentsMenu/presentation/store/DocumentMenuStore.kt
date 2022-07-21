@@ -6,6 +6,7 @@ import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.R
+import com.itrocket.union.authContainer.presentation.view.AuthContainerArguments
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.presentation.store.DocumentArguments
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
@@ -36,7 +37,7 @@ interface DocumentMenuStore :
 
         object ShowAuth : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
-                get() = DocumentMenuComposeFragmentDirections.toAuth()
+                get() = DocumentMenuComposeFragmentDirections.toAuth(AuthContainerArguments(false))
         }
 
         object ShowSettings : Label(), ForwardNavigationLabel {

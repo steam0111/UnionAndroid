@@ -1,25 +1,25 @@
 package com.itrocket.union.authContainer.presentation.store
 
-import com.arkivanov.mvikotlin.core.store.Executor
-import com.arkivanov.mvikotlin.core.store.Reducer
-import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
-import com.arkivanov.mvikotlin.core.store.Store
-import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.core.store.*
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.authContainer.domain.AuthContainerInteractor
 import com.itrocket.union.authContainer.domain.entity.AuthContainerStep
+import com.itrocket.union.authContainer.presentation.view.AuthContainerArguments
 
 class AuthContainerStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val authContainerInteractor: AuthContainerInteractor
+    private val authContainerInteractor: AuthContainerInteractor,
+    private val authContainerArguments: AuthContainerArguments
 ) {
     fun create(): AuthContainerStore =
         object : AuthContainerStore,
             Store<AuthContainerStore.Intent, AuthContainerStore.State, AuthContainerStore.Label> by storeFactory.create(
                 name = "AuthStore",
-                initialState = AuthContainerStore.State(),
+                initialState = AuthContainerStore.State(
+                    isShowBackButton = authContainerArguments.isShowBackButton
+                ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
