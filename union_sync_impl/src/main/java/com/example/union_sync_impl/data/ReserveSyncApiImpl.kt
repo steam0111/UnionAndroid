@@ -39,7 +39,8 @@ class ReserveSyncApiImpl(
                 reservesIds = reservesIds,
                 textQuery = textQuery,
                 isFilterCount = false,
-                locationIds = locationIds
+                locationIds = locationIds,
+                reservesShorts = reservesShorts
             )
         ).map { it.toSyncEntity() }
     }

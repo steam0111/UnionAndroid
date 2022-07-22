@@ -11,6 +11,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.location.domain.dependencies.LocationRepository
+import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getFilterLocationLastId
 import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
@@ -32,7 +33,7 @@ class DocumentReservesManager(
         params: List<ParamDomain>
     ) {
         withContext(coreDispatchers.io) {
-            val locationId = params.getFilterLocationLastId()
+            val locationId = params.getFilterLocationLastId(ManualType.RELOCATION_LOCATION_TO)
             val newReserves = when (documentTypeDomain) {
                 DocumentTypeDomain.GIVE -> changeExtradition(reserves)
                 DocumentTypeDomain.RELOCATION -> changeMove(documentId, reserves, locationId)

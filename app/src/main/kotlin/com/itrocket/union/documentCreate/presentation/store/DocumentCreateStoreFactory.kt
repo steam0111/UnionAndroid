@@ -8,6 +8,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.documentCreate.domain.DocumentAccountingObjectManager
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import com.itrocket.union.documentCreate.domain.DocumentReservesManager
@@ -95,11 +96,6 @@ class DocumentCreateStoreFactory(
                     changeParams(getState().document.params, getState)
                     dispatch(Result.AccountingObjects(getState().document.accountingObjects))
                 }
-                DocumentCreateStore.Intent.OnNextClicked -> dispatch(
-                    Result.SelectPage(
-                        ACCOUNTING_OBJECT_PAGE
-                    )
-                )
                 is DocumentCreateStore.Intent.OnParamClicked -> {
                     if (!getState().document.isStatusCompleted) {
                         showParams(
@@ -122,7 +118,6 @@ class DocumentCreateStoreFactory(
                     )
                     changeParams(params = params, getState = getState)
                 }
-                DocumentCreateStore.Intent.OnPrevClicked -> dispatch(Result.SelectPage(PARAMS_PAGE))
                 DocumentCreateStore.Intent.OnSaveClicked -> saveDocument(getState)
                 is DocumentCreateStore.Intent.OnSelectPage -> dispatch(Result.SelectPage(intent.selectedPage))
                 DocumentCreateStore.Intent.OnSettingsClicked -> publish(DocumentCreateStore.Label.ShowReadingMode)
@@ -265,7 +260,7 @@ class DocumentCreateStoreFactory(
         private suspend fun onChooseAccountingObjectClicked(getState: () -> DocumentCreateStore.State) {
             publish(
                 DocumentCreateStore.Label.ShowAccountingObjects(
-                    listOf(),//documentCreateInteractor.getFilterParams(getState().params),
+                    listOf(ParamDomain(type = ManualType.STATUS, id = ObjectStatusType.AVAILABLE.name)),//documentCreateInteractor.getFilterParams(getState().params),
                     documentCreateInteractor.getAccountingObjectIds(getState().accountingObjects)
                 )
             )
@@ -310,5 +305,6 @@ class DocumentCreateStoreFactory(
     companion object {
         const val PARAMS_PAGE = 0
         const val ACCOUNTING_OBJECT_PAGE = 1
+        const val RESERVES_PAGE = 2
     }
 }
