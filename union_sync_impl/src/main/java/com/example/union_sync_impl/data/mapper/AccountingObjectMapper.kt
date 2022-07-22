@@ -158,7 +158,8 @@ fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObject
             departmentId = accountingObjectDb.departmentId,
             count = accountingObjectDb.count?.toLong(),
             nomenclatureId = accountingObjectDb.nomenclatureId,
-            nomenclatureGroupId = accountingObjectDb.nomenclatureGroupId
+            nomenclatureGroupId = accountingObjectDb.nomenclatureGroupId,
+            branchId = accountingObjectDb.branchId
         )
     }
 }

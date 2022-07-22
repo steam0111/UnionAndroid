@@ -34,7 +34,7 @@ class DocumentAccountingObjectManager(
             val newAccountingObjects = when (documentTypeDomain) {
                 DocumentTypeDomain.GIVE -> changeExtradition(
                     accountingObjectIds = accountingObjectIds,
-                    exploitingId = requireNotNull(exploitingId),
+                    exploitingId = exploitingId,
                     locationToId = params.getFilterLocationLastId(ManualType.LOCATION_TO),
                     departmentToId = params.getDepartmentId(ManualType.DEPARTMENT_TO)
                 )
@@ -61,7 +61,7 @@ class DocumentAccountingObjectManager(
 
     private suspend fun changeExtradition(
         accountingObjectIds: List<String>,
-        exploitingId: String,
+        exploitingId: String?,
         locationToId: String?,
         departmentToId: String?
     ): List<AccountingObjectSyncEntity> {
