@@ -23,11 +23,6 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
             currentDocument?.titleId == R.string.main_operations -> {
                 listOf(
                     DocumentMenuDomain(
-                        titleId = R.string.main_documents,
-                        iconId = R.drawable.ic_documentation,
-                        paddings = 9
-                    ),
-                    DocumentMenuDomain(
                         titleId = R.string.main_commissioning,
                         iconId = R.drawable.ic_commisioning
                     ),
