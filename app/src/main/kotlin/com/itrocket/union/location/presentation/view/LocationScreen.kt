@@ -53,6 +53,7 @@ import com.itrocket.union.location.domain.entity.LocationDomain
 import com.itrocket.union.location.presentation.store.LocationStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
+import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.Loader
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.RadioButtonField
@@ -79,9 +80,21 @@ fun LocationScreen(
     AppTheme {
         Scaffold(
             topBar = {
-                Toolbar(
-                    onCrossClickListener = onCrossClickListener,
-                    onAcceptClickListener = onAcceptClickListener
+                BaseToolbar(
+                    title = stringResource(id = R.string.manual_location),
+                    startImageId = R.drawable.ic_cross,
+                    onStartImageClickListener = onCrossClickListener,
+                    backgroundColor = white,
+                    textColor = psb1,
+                    content = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_accept),
+                                contentDescription = null,
+                                modifier = Modifier.clickableUnbounded(onClick = onAcceptClickListener)
+                            )
+                        }
+                    }
                 )
             }, bottomBar = {
                 BottomBar(onFinishClickListener = onFinishClickListener)
