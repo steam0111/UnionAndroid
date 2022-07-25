@@ -164,11 +164,6 @@ class DocumentReservesManager(
                 id = it.id,
                 count = it.count
             )
-        } + newReserves.map {
-            DocumentReserveCountSyncEntity(
-                id = it.id,
-                count = it.count
-            )
         }
         reservesRepository.insertAll(newReserves)
         val documentUpdateReserves =

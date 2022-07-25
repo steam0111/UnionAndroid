@@ -191,7 +191,7 @@
     <string name="module_settings_cursor_click">Нажмите на курок</string>
 
     <!-- Inventory -->
-    <string name="inventory_ao_title">Инвентаризация «ОС»</string>
+    <string name="inventory_ao_title">Инвентаризация «ОУ»</string>
     <string name="inventory_params">Параметры</string>
     <string name="inventory_accounting_object">Объекты учета</string>
     <string name="inventory_created">Создана</string>

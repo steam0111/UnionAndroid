@@ -74,13 +74,15 @@ fun InventoryCreateScreen(
                 )
             },
             bottomBar = {
-                BottomBar(
-                    onSaveClickListener = onSaveClickListener,
-                    onReadingClickListener = onReadingClickListener,
-                    onInWorkClickListener = onInWorkClickListener,
-                    onFinishClickListener = onFinishClickListener,
-                    inventoryStatus = state.inventoryDocument.inventoryStatus
-                )
+                if (state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED) {
+                    BottomBar(
+                        onSaveClickListener = onSaveClickListener,
+                        onReadingClickListener = onReadingClickListener,
+                        onInWorkClickListener = onInWorkClickListener,
+                        onFinishClickListener = onFinishClickListener,
+                        inventoryStatus = state.inventoryDocument.inventoryStatus
+                    )
+                }
             },
             content = {
                 Content(

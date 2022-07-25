@@ -94,7 +94,8 @@ class InventoryCreateStoreFactory(
                             accountingObjects = getState().inventoryDocument.accountingObjects,
                             newAccountingObjects = getState().newAccountingObjects.toList(),
                             barcode = intent.barcode,
-                            inventoryStatus = inventoryStatus
+                            inventoryStatus = inventoryStatus,
+                            isAddNew = getState().isAddNew
                         )
                     }
                 }
@@ -115,7 +116,8 @@ class InventoryCreateStoreFactory(
                             accountingObjects = getState().inventoryDocument.accountingObjects,
                             newAccountingObjects = getState().newAccountingObjects.toList(),
                             handledAccountingObjectIds = intent.handledAccountingObjectIds,
-                            inventoryStatus = inventoryStatus
+                            inventoryStatus = inventoryStatus,
+                            isAddNew = getState().isAddNew
                         )
                     }
                 }
@@ -159,7 +161,8 @@ class InventoryCreateStoreFactory(
             accountingObjects: List<AccountingObjectDomain>,
             handledAccountingObjectIds: List<String>,
             newAccountingObjects: List<AccountingObjectDomain>,
-            inventoryStatus: InventoryStatus
+            inventoryStatus: InventoryStatus,
+            isAddNew: Boolean
         ) {
             dispatch(Result.Loading(true))
             catchException {
@@ -168,7 +171,8 @@ class InventoryCreateStoreFactory(
                         accountingObjects = accountingObjects,
                         handledAccountingObjectIds = handledAccountingObjectIds,
                         newAccountingObjects = newAccountingObjects,
-                        inventoryStatus = inventoryStatus
+                        inventoryStatus = inventoryStatus,
+                        isAddNew = isAddNew
                     )
                 dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
                 dispatch(
@@ -182,7 +186,8 @@ class InventoryCreateStoreFactory(
             accountingObjects: List<AccountingObjectDomain>,
             barcode: String,
             newAccountingObjects: List<AccountingObjectDomain>,
-            inventoryStatus: InventoryStatus
+            inventoryStatus: InventoryStatus,
+            isAddNew: Boolean
         ) {
             dispatch(Result.Loading(true))
             catchException {
@@ -191,7 +196,8 @@ class InventoryCreateStoreFactory(
                         accountingObjects = accountingObjects,
                         barcode = barcode,
                         newAccountingObjects = newAccountingObjects,
-                        inventoryStatus = inventoryStatus
+                        inventoryStatus = inventoryStatus,
+                        isAddNew = isAddNew
                     )
                 dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
                 dispatch(

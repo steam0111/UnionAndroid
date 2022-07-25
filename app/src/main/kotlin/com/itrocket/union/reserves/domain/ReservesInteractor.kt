@@ -33,7 +33,7 @@ class ReservesInteractor(
                 params = params,
                 selectedLocationIds = filterLocationIds
             ).filter {
-                !selectedReservesIds.contains(it.id)
+                !selectedReservesIds.contains(it.id) && it.itemsCount != 0L
             }
             reserves
         }
