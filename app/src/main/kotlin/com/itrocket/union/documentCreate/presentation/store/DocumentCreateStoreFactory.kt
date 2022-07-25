@@ -232,7 +232,6 @@ class DocumentCreateStoreFactory(
                 reserves = getState().reserves,
                 status = getState().document.documentStatus
             )
-            publish(DocumentCreateStore.Label.GoBack)
         }
 
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
