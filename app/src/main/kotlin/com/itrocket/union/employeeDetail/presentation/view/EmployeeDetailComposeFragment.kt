@@ -24,12 +24,6 @@ class EmployeeDetailComposeFragment :
                 appInsets = appInsets,
                 onBackClickListener = {
                     accept(EmployeeDetailStore.Intent.OnBackClicked)
-                },
-                onSaveBtnClickListener = {
-                    accept(EmployeeDetailStore.Intent.OnSaveClicked)
-                },
-                onSearchClickListener = {
-                    accept(EmployeeDetailStore.Intent.OnSearchClicked)
                 }
             )
         }
