@@ -111,13 +111,8 @@ class DocumentAccountingObjectManager(
     ): List<AccountingObjectSyncEntity> {
         return withContext(coreDispatchers.io) {
             val accountingObjects = repository.getAccountingObjectsByIds(accountingObjectIds)
-            val newStatus =
-                accountingObjectStatusSyncApi.getStatuses(id = ObjectStatusType.TRANSIT.name)
-                    .first()
             accountingObjects.map {
                 it.copy(
-                    status = newStatus,
-                    statusId = newStatus.id,
                     locationId = locationToId ?: it.locationId,
                     molId = molId ?: it.molId,
                     branchId = branchId ?: it.branchId

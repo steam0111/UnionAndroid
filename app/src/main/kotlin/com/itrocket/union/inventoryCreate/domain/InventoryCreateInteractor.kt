@@ -43,7 +43,8 @@ class InventoryCreateInteractor(
         accountingObjects: List<AccountingObjectDomain>,
         newAccountingObjects: List<AccountingObjectDomain>,
         handledAccountingObjectIds: List<String>,
-        inventoryStatus: InventoryStatus
+        inventoryStatus: InventoryStatus,
+        isAddNew: Boolean
     ): InventoryAccountingObjectsDomain {
         return withContext(coreDispatchers.io) {
             val newAccountingObjectRfids = mutableListOf<String>()
@@ -61,7 +62,7 @@ class InventoryCreateInteractor(
                         mutableAccountingObjects,
                         accountingObjectIndex
                     )
-                    newAccountingObjectIndex == NO_INDEX && inventoryStatus == InventoryStatus.CREATED -> newAccountingObjectRfids.add(
+                    newAccountingObjectIndex == NO_INDEX && inventoryStatus == InventoryStatus.CREATED && isAddNew -> newAccountingObjectRfids.add(
                         rfid
                     )
                 }
@@ -80,7 +81,8 @@ class InventoryCreateInteractor(
         accountingObjects: List<AccountingObjectDomain>,
         barcode: String,
         newAccountingObjects: List<AccountingObjectDomain>,
-        inventoryStatus: InventoryStatus
+        inventoryStatus: InventoryStatus,
+        isAddNew: Boolean
     ): InventoryAccountingObjectsDomain {
         return withContext(coreDispatchers.io) {
             val barcodeAccountingObjects = mutableListOf<AccountingObjectDomain>()
@@ -97,7 +99,7 @@ class InventoryCreateInteractor(
                     mutableAccountingObjects,
                     accountingObjectIndex
                 )
-                newAccountingObjectIndex == NO_INDEX && inventoryStatus == InventoryStatus.CREATED -> {
+                newAccountingObjectIndex == NO_INDEX && inventoryStatus == InventoryStatus.CREATED && isAddNew -> {
                     val accountingObjectDomain = getHandleAccountingObjectByBarcode(barcode)
                     if (accountingObjectDomain != null) {
                         barcodeAccountingObjects.add(accountingObjectDomain)

@@ -126,9 +126,10 @@ fun AccountingObjectDetailScreen(
                 )
             },
             bottomBar = {
-                BottomBar(
+                //TODO: Пока не нужен
+                /*BottomBar(
                     onReadingModeClickListener = onReadingModeClickListener
-                )
+                )*/
             },
             modifier = Modifier.padding(
                 top = appInsets.topInset.dp,
