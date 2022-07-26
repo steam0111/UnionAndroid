@@ -112,6 +112,8 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
                         titleId = R.string.main_inventory,
                         iconId = R.drawable.ic_inventory
                     ),
+                    DocumentMenuDomain(titleId = R.string.main_identification, iconId = R.drawable.ic_inventory),
+
                     DocumentMenuDomain(titleId = R.string.sync, iconId = R.drawable.ic_inventory),
                 )
             }

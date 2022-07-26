@@ -8,7 +8,7 @@ import com.itrocket.union.authUser.AuthUserModule
 import com.itrocket.union.bottomActionMenu.BottomActionMenuModule
 import com.itrocket.union.branchDetail.BranchDetailModule
 import com.itrocket.union.branches.BranchesModule
-import com.itrocket.union.chooseAction.ChooseActionModule
+//import com.itrocket.union.chooseAction.ChooseActionModule
 import com.itrocket.union.container.ContainerModule
 import com.itrocket.union.conterpartyDetail.CounterpartyDetailModule
 import com.itrocket.union.core.CoreModule
@@ -109,7 +109,7 @@ object Modules {
         ScannerModule.module,
         SearchModule.module,
         ChooseActionModule.module,
-        SelectCountModule.module
+        SelectCountModule.module,
         SelectParamsModule.module,
         ServerConnectModule.module,
         SwitcherModule.module,

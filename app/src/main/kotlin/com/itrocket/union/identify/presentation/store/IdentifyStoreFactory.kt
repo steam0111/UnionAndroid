@@ -6,11 +6,16 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments
+import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStoreFactory
+import com.itrocket.union.documents.data.mapper.getParams
 import com.itrocket.union.documents.domain.entity.ObjectAction
 import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.identify.domain.IdentifyInteractor
+import com.itrocket.union.identify.domain.entity.IdentifyDomain
 import com.itrocket.union.identify.domain.entity.OSandReserves
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.reserves.domain.ReservesInteractor
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import kotlinx.coroutines.delay
 
@@ -18,8 +23,10 @@ class IdentifyStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val identifyInteractor: IdentifyInteractor,
+    private val identifyArguments: IdentifyArguments?,
     private val filterInteractor: FilterInteractor,
     private val accountingObjectInteractor: AccountingObjectInteractor,
+    private val reservesInteractor: ReservesInteractor,
 
 
 //    private val accountingObjectDetailArguments: AccountingObjectDetailArguments
@@ -53,8 +60,27 @@ class IdentifyStoreFactory(
             dispatch(Result.Loading(true))
             delay(1000)
 //            dispatch(Result.Identify(identifyInteractor.getAccountingObjects()))
+            catchException {
+                val docArgument = identifyArguments?.document
+                val document = if (docArgument?.isDocumentExists == true) {
+                    docArgument.id.let { identifyInteractor.getDocumentById(it) }
+                } else {
+                    null
+                }
+
+                document?.let { dispatch(Result.Document(it)) }
+                dispatch(
+                    Result.AccountingObjects(
+                        document?.accountingObjects ?: listOf()
+                    )
+                )
+                dispatch(Result.Reserves(document?.reserves ?: listOf()))
+            }
+
             dispatch(Result.Loading(false))
+
             observeAccountingObjects()
+            observeReserves()
         }
 
         override suspend fun executeIntent(
@@ -122,42 +148,16 @@ class IdentifyStoreFactory(
 
                         }
                     }
-//                is IdentifyStore.Intent.OnObjectActionSelected ->
-//                    initAction(listType = intent.objectAction)
-//                is IdentifyStore.Intent.OnOpenCard -> {
-//                    publish(IdentifyStore.Label.OpenCard(intent.item))
-
+                is IdentifyStore.Intent.OnNewAccountingObjectRfidsHandled -> handleRfidsAccountingObjects(
+                    intent.rfids,
+                    getState().os
+                )
+                is IdentifyStore.Intent.OnNewAccountingObjectBarcodeHandled -> handleBarcodeAccountingObjects(
+                    intent.barcode,
+                    getState().os
+                )
             }
         }
-
-
-//        private suspend fun initAction(listType: ObjectAction) {
-//            dispatch(Result.IsBottomActionMenuLoading(true))
-//            when (listType) {
-//                ObjectAction.CREATE_DOC -> {
-//                    Log.d("SukhanovTest", "Click CREATE")
-//
-//                }
-//                ObjectAction.DELETE_FROM_LIST -> {
-//                    Log.d("SukhanovTest", "Click DELETE")
-//                }
-//                ObjectAction.OPEN_CARD -> {
-//                    Log.d("SukhanovTest", "Click OPEN")
-//                    accept(IdentifyStore.Intent.OnReservesClicked(it))
-//                }
-//            }
-////            val document = identifyInteractor.createDocument(listType)
-////            showDocument(document)
-//            dispatch(Result.IsBottomActionMenuLoading(false))
-//        }
-
-//        private fun showDocument(document: IdentifyDomain) {
-//            publish(
-//                IdentifyStore.Label.ShowDocumentCreate(
-//                    document = document
-//                )
-//            )
-//        }
 
         private suspend fun observeAccountingObjects(params: List<ParamDomain> = listOf()) {
             dispatch(Result.IsAccountingObjectsLoading(true))
@@ -171,10 +171,50 @@ class IdentifyStoreFactory(
                 dispatch(Result.IsAccountingObjectsLoading(false))
             }
         }
+
+        private suspend fun observeReserves(params: List<ParamDomain> = listOf()) {
+            dispatch(Result.IsReservesLoading(true))
+            catchException {
+                dispatch(Result.IsReservesLoading(false))
+                dispatch(
+                    Result.Reserves(
+                        reservesInteractor.getReserves("", params)
+                    )
+                )
+                dispatch(Result.IsReservesLoading(false))
+            }
+        }
     }
 
+    private suspend fun handleRfidsAccountingObjects(
+        rfids: List<String>,
+        accountingObjects: List<AccountingObjectDomain>
+    ) {
+        val newAccountingObjects = identifyInteractor.handleNewAccountingObjectRfids(
+            accountingObjects = accountingObjects,
+            handledAccountingObjectRfids = rfids
+        )
+//        dispatch(Result.AccountingObjects(newAccountingObjects))
+    }
+
+    private suspend fun handleBarcodeAccountingObjects(
+        barcode: String,
+        accountingObjects: List<AccountingObjectDomain>
+    ) {
+        val newAccountingObjects = identifyInteractor.handleNewAccountingObjectBarcode(
+            accountingObjects = accountingObjects,
+            barcode = barcode
+        )
+//        dispatch(Result.AccountingObjects(newAccountingObjects))
+    }
+
+
     private sealed class Result {
+        data class Document(val document: IdentifyDomain) : Result()
         data class IsAccountingObjectsLoading(val isLoading: Boolean) :
+            IdentifyStoreFactory.Result()
+
+        data class IsReservesLoading(val isLoading: Boolean) :
             IdentifyStoreFactory.Result()
 
         data class Loading(val isLoading: Boolean) : Result()

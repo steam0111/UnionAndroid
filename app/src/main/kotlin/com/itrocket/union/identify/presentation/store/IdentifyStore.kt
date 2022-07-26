@@ -17,6 +17,7 @@ import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectCo
 import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment
 import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuTab
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments
+import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.ObjectAction
 import com.itrocket.union.documents.presentation.view.DocumentComposeFragmentDirections
@@ -48,6 +49,14 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         object OnFilterClicked : IdentifyStore.Intent()
         object OnBackClicked : IdentifyStore.Intent()
         object OnSearchClicked : IdentifyStore.Intent()
+
+        data class OnNewAccountingObjectRfidsHandled(val rfids: List<String>) :
+            Intent()
+
+        data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :
+            Intent()
+
+
     }
 
     data class State(

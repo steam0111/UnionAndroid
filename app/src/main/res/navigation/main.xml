@@ -118,7 +118,8 @@
 
     <fragment
         android:id="@+id/identify"
-        android:name="com.itrocket.union.identify.presentation.view.IdentifyComposeFragment">
+        android:name="com.itrocket.union.identify.presentation.view.IdentifyComposeFragment"
+        android:label="Identify">
         <action
             android:id="@+id/to_accountingObjectsDetails"
             app:destination="@id/accountingObjectsDetails" />
@@ -130,6 +131,10 @@
         <action
             android:id="@+id/to_Filter"
             app:destination="@id/filter" />
+        <argument
+            android:name="IdentifyArguments"
+            app:argType="com.itrocket.union.identify.presentation.store.IdentifyArguments"
+            app:nullable="true"/>
     </fragment>
 
     <fragment

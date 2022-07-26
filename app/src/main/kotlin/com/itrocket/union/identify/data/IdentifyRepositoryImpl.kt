@@ -7,27 +7,31 @@ import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjec
 
 class IdentifyRepositoryImpl: IdentifyRepository {
     override suspend fun getIdentify(): List<AccountingObjectDomain> = listOf(
-        AccountingObjectDomain(
-            id = "4",
-            title = "Name",
-            status = null,
-            inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
-            listAdditionallyInfo = listOf(),
-            listMainInfo = listOf(),
-            rfidValue = null,
-            isBarcode = true,
-            barcodeValue = null
-        ),
-        AccountingObjectDomain(
-            id = "5",
-            title = "Name2",
-            status = null,
-            inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
-            listAdditionallyInfo = listOf(),
-            listMainInfo = listOf(),
-            rfidValue = null,
-            isBarcode = true,
-            barcodeValue = null
-        ),
+//        AccountingObjectDomain(
+//            id = "4",
+//            title = "Name",
+//            status = null,
+//            inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
+//            listAdditionallyInfo = listOf(),
+//            listMainInfo = listOf(),
+//            rfidValue = null,
+//            isBarcode = true,
+//            barcodeValue = null
+//        ),
+//        AccountingObjectDomain(
+//            id = "5",
+//            title = "Name2",
+//            status = null,
+//            inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
+//            listAdditionallyInfo = listOf(),
+//            listMainInfo = listOf(),
+//            rfidValue = null,
+//            isBarcode = true,
+//            barcodeValue = null
+//        ),
     )
+
+    override suspend fun getDocumentById(id: String): IdentifyDomain {
+        TODO("Not yet implemented")
+    }
 }

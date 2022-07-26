@@ -15,6 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -125,7 +126,7 @@ private fun Content(
                         )
                     }
                     state.os.isEmpty() -> {
-                        ObjectListEmpty()
+                        ObjectListEmpty(paddingValues = PaddingValues())
                     }
                 }
             }
@@ -141,7 +142,7 @@ private fun Content(
                         )
                     }
                     state.reserves.isEmpty() -> {
-                        ObjectListEmpty()
+                        ObjectListEmpty(paddingValues = PaddingValues())
                     }
                 }
 
@@ -208,7 +209,6 @@ private fun Toolbar(
 }
 
 
-
 @Composable
 private fun ObjectList(
     items: List<OSandReserves>,
@@ -247,21 +247,23 @@ private fun ObjectList(
 
 
 @Composable
-private fun ObjectListEmpty() {
+private fun ObjectListEmpty(paddingValues: PaddingValues) {
     Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceAround,
+        modifier = Modifier.fillMaxSize().padding(paddingValues),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(painter = painterResource(id = R.drawable.ic_tsd), contentDescription = null)
-        Text( //TODO Добавить шрифт Roboto
+        Image(
+            painter = painterResource(id = R.drawable.ic_reader),
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(graphite4)
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(
             text = stringResource(R.string.text_begin_identify),
-            modifier = Modifier
-                .width(217.dp)
-                .size(16.dp)
-                .weight(400F),
-            textAlign = TextAlign.Center,
-            color = colorResource(id = R.color.main_gray)
+            style = AppTheme.typography.body1,
+            color = graphite4,
+            textAlign = TextAlign.Center
         )
     }
 }
