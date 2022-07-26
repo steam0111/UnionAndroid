@@ -20,13 +20,14 @@ class LocationStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val locationInteractor: LocationInteractor,
     private val errorInteractor: ErrorInteractor,
-    private val searchManager: SearchManager
+    private val searchManager: SearchManager,
+    private val args: LocationArguments
 ) {
     fun create(): LocationStore =
         object : LocationStore,
             Store<LocationStore.Intent, LocationStore.State, LocationStore.Label> by storeFactory.create(
                 name = "LocationStore",
-                initialState = LocationStore.State(),
+                initialState = LocationStore.State(selectPlaceScheme = args.location.locations),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
@@ -43,12 +44,14 @@ class LocationStoreFactory(
             action: Unit,
             getState: () -> LocationStore.State
         ) {
-            searchManager.listenSearch {
-                search(getState, it)
-            }
             dispatch(Result.Loading(true))
             catchException {
-                val placeList = locationInteractor.getPlaceList(listOf())
+                val placeList =
+                    locationInteractor.getPlaceList(
+                        getState().selectPlaceScheme.getOrNull(
+                            getState().selectPlaceScheme.lastIndex
+                        )
+                    )
                 dispatch(Result.PlaceValues(placeList))
                 dispatch(
                     Result.LevelHint(
@@ -57,6 +60,9 @@ class LocationStoreFactory(
                 )
             }
             dispatch(Result.Loading(false))
+            searchManager.listenSearch {
+                search(getState, it)
+            }
         }
 
         override suspend fun executeIntent(
@@ -81,16 +87,19 @@ class LocationStoreFactory(
         }
 
         private suspend fun search(getState: () -> LocationStore.State, searchText: String) {
-            val selectedPlaceScheme = getState().selectPlaceScheme
-            dispatch(Result.Loading(true))
+            val selectedPlaceScheme = getState().selectPlaceScheme.getOrNull(
+                getState().selectPlaceScheme.lastIndex
+            )
             catchException {
                 dispatch(
                     Result.PlaceValues(
-                        locationInteractor.getPlaceList(selectedPlaceScheme, searchText)
+                        locationInteractor.getPlaceList(
+                            selectedPlaceScheme,
+                            searchText
+                        )
                     )
                 )
             }
-            dispatch(Result.Loading(false))
         }
 
         private fun goBack(getState: () -> LocationStore.State) {
@@ -98,8 +107,8 @@ class LocationStoreFactory(
                 LocationStore.Label.GoBack(
                     LocationResult(
                         LocationParamDomain(
-                            ids = getState().selectPlaceScheme.map { it.id },
-                            values = getState().selectPlaceScheme.map { it.value }
+                            manualType = args.location.manualType,
+                            locations = getState().selectPlaceScheme
                         )
                     )
                 )
@@ -127,7 +136,7 @@ class LocationStoreFactory(
             dispatch(Result.Loading(true))
             catchException {
                 val newPlaceValues =
-                    locationInteractor.getPlaceList(getState().selectPlaceScheme)
+                    locationInteractor.getPlaceList(place)
                 if (locationInteractor.isNewPlaceList(
                         newList = newPlaceValues,
                         oldList = placeValues
@@ -157,9 +166,7 @@ class LocationStoreFactory(
                     )
                 )
                 val placeList = locationInteractor.getPlaceList(
-                    locationInteractor.getPrevPlaceScheme(
-                        getState().selectPlaceScheme
-                    )
+                    getState().selectPlaceScheme.lastOrNull()
                 )
                 dispatch(Result.PlaceValues(placeList))
                 dispatch(
@@ -196,4 +203,7 @@ class LocationStoreFactory(
                 is Result.SearchText -> copy(searchText = result.searchText)
             }
     }
+
+    private fun List<LocationDomain>.getSelectedLocationParent() =
+        this.getOrNull(this.lastIndex - 1)
 }

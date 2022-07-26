@@ -9,7 +9,6 @@ private const val DATE_FORMAT = "dd.MM.yyyy"
 private const val UI_DATE_FORMAT = "dd MMMM"
 private const val TIME_FORMAT = "HH:mm"
 
-
 //Sample: 12 December
 fun getTextDateFromMillis(dateMillis: Long): String {
     val date = getDateFromMillis(dateMillis)
@@ -40,13 +39,13 @@ fun getDateFromMillis(dateMillis: Long): Date? {
 }
 
 //Sample: 12.12.12
-fun getStringDateFromMillis(millis: Long): String {
-    val date = Date(millis)
-    val formatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
+fun getStringDateFromMillis(millis: Long?): String {
     return try {
+        val date = Date(requireNotNull(millis))
+        val formatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
         formatter.format(date)
     } catch (t: Throwable) {
-        ""
+        "..."
     }
 }
 
@@ -59,10 +58,10 @@ fun getTextDateFromStringDate(dateStr: String): String {
     }
 }
 
-fun getTimeFromMillis(millis: Long): String {
-    val date = Date(millis)
-    val formatter = SimpleDateFormat(TIME_FORMAT, Locale.getDefault())
+fun getTimeFromMillis(millis: Long?): String {
     return try {
+        val date = Date(requireNotNull(millis))
+        val formatter = SimpleDateFormat(TIME_FORMAT, Locale.getDefault())
         formatter.format(date)
     } catch (t: Throwable) {
         ""

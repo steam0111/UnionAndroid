@@ -26,6 +26,8 @@
     <string name="common_name">Название</string>
     <string name="common_kpp">КПП</string>
     <string name="common_inn">ИНН</string>
+    <string name="common_in_work">В работу</string>
+    <string name="common_complete">Завершить</string>
     <string name="search_hint">Введите запрос</string>
 
     <!-- Auth -->
@@ -50,9 +52,13 @@
     <string name="auth_main_password">Пароль</string>
     <string name="auth_main_user_change">Сменить пользователя</string>
     <string name="auth_main_database_settings">Настройки БД</string>
+    <string name="auth_title">Авторизация</string>
 
     <!-- MainScreen -->
     <string name="common_hint">Введите значение</string>
+    <string name="main_property">Имущество</string>
+    <string name="main_operations">Операции</string>
+    <string name="main_books">Справочники</string>
     <string name="main_inventory">Инвентариз.</string>
     <string name="main_identification">Идентификац.</string>
     <string name="main_accounting_object">Объекты уч.</string>
@@ -74,16 +80,25 @@
     <string name="regions">Регионы</string>
     <string name="branches">Филиалы</string>
     <string name="equipment_types">Типы оборуд.</string>
+    <string name="sync">Синхронизация</string>
     <string name="reception_category">Приеная категория</string>
+    <string name="count">Количество</string>
     <string name="save">Сохранение</string>
+    <string name="create_inventory">Создание инв.</string>
 
     <!-- Manual -->
     <string name="manual_organization">Организация</string>
-    <string name="manual_mol">МОЛ</string>
+    <string name="manual_mol">Ответственный</string>
     <string name="manual_location">Местоположение</string>
     <string name="manual_exploiting">Эксплуатирующий</string>
     <string name="manual_status">Статус</string>
     <string name="manual_date">Дата заявки</string>
+    <string name="location_from">Место отправления</string>
+    <string name="location_to">Место получения</string>
+    <string name="department_from">Подразделение отправителя</string>
+    <string name="department_to">Подразделение получателя</string>
+    <string name="action_base">Основание</string>
+    <string name="relocate_location_to">Место назначения</string>
 
     <!-- AccountingObjectScreen -->
     <string name="main_marking">Маркировка</string>
@@ -176,9 +191,12 @@
     <string name="module_settings_cursor_click">Нажмите на курок</string>
 
     <!-- Inventory -->
-    <string name="inventory_ao_title">Инвентаризация «ОС»</string>
+    <string name="inventory_ao_title">Инвентаризация «ОУ»</string>
     <string name="inventory_params">Параметры</string>
     <string name="inventory_accounting_object">Объекты учета</string>
+    <string name="inventory_created">Создана</string>
+    <string name="inventory_in_work">В работе</string>
+    <string name="inventory_done">Завершена</string>
     <string name="identify_title">Идентификация</string>
 
     <!-- InventoryCreate -->
@@ -211,6 +229,7 @@
     <string name="branches_title">Филиалы</string>
     <string name="branches_code">Код филиала</string>
     <string name="branch">Филиал</string>
+    <string name="balance_unit">Балансовая единица</string>
 
 
     <!-- Departments -->
@@ -257,4 +276,10 @@
     <string name="create_doc">Создать документ</string>
     <string name="open_card">Открыть карточку</string>
     <string name="delete_from_list">Удалить из списка</string>
+
+    <!-- SelectCount -->
+    <string name="select_count_title">Выберите количество</string>
+    <string name="to_sync">Синхронизировать</string>
+    <string name="to_clear_db">Полная очистка базы данных</string>
+    <string name="to_auth">Авторизация</string>
 </resources>

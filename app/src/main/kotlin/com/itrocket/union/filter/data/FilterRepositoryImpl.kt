@@ -21,8 +21,7 @@ class FilterRepositoryImpl : FilterRepository {
                 value = ""
             ),
             LocationParamDomain(
-                ids = listOf(),
-                values = listOf()
+                locations = listOf()
             ),
             ParamDomain(
                 type = ManualType.STATUS,

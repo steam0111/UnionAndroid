@@ -28,9 +28,9 @@ class AddFiltersToQueryTest {
                 "FROM accounting_objects"
 
         val expect = mainQuery +
-                " WHERE accounting_objects.organizationId = '197-197-197' " +
-                "AND accounting_objects.employeeId = '197-197-197' " +
-                "AND accounting_objects.someId = '197-197-197' " +
+                " WHERE accounting_objects.organizationId is '197-197-197' " +
+                "AND accounting_objects.employeeId is '197-197-197' " +
+                "AND accounting_objects.someId is '197-197-197' " +
                 "AND accounting_objects.castId IN ('197-197-197','197-197-197') " +
                 "AND accounting_objects.name LIKE '%azazin%'"
 
@@ -54,8 +54,9 @@ class AddFiltersToQueryTest {
     fun rightQuery_onContain() {
         val mainQuery = "SELECT * FROM accounting_objects"
 
-        val expect = mainQuery + " WHERE accounting_objects.organizationId = '396397f6-0f00-47de-8d40-29db735673f2' " +
-                "AND accounting_objects.name LIKE '%ic%'"
+        val expect =
+            mainQuery + " WHERE accounting_objects.organizationId is '396397f6-0f00-47de-8d40-29db735673f2' " +
+                    "AND accounting_objects.name LIKE '%ic%'"
 
         val result = mainQuery.addFilters(
             sqlTableFilters = SqlTableFilters(
@@ -74,7 +75,7 @@ class AddFiltersToQueryTest {
     fun rightQuery_onContainInFewFields() {
         val mainQuery = "SELECT * FROM employees"
 
-        val expect = mainQuery + " WHERE employees.organizationId = '009988098711' AND " +
+        val expect = mainQuery + " WHERE employees.organizationId is '009988098711' AND " +
                 "(employees.firstname LIKE '%sss%' OR employees.lastname LIKE '%sss%')"
 
         val result = mainQuery.addFilters(
@@ -83,6 +84,24 @@ class AddFiltersToQueryTest {
                 listOf(
                     "organizationId" isEquals "009988098711",
                     listOf("firstname", "lastname") contains "sss"
+                )
+            )
+        )
+
+        assert(expect == result)
+    }
+
+    @Test
+    fun rightQuery_onMoreThatField() {
+        val mainQuery = "SELECT * FROM accounting_objects"
+
+        val expect = "$mainQuery WHERE accounting_objects.updateDate > '1657206886505'"
+
+        val result = mainQuery.addFilters(
+            sqlTableFilters = SqlTableFilters(
+                "accounting_objects",
+                listOf(
+                    "updateDate" more 1657206886505
                 )
             )
         )

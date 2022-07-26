@@ -59,7 +59,7 @@ data class LocationDto (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int,
+    val version: kotlin.Int?=null,
 
     @Json(name = "name")
     val name: kotlin.String,

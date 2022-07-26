@@ -1,21 +1,54 @@
 package com.example.union_sync_impl.data.mapper
 
-import com.example.union_sync_api.entity.AccountingObjectSyncEntity
-import com.example.union_sync_api.entity.EmployeeSyncEntity
-import com.example.union_sync_api.entity.InventoryCreateSyncEntity
-import com.example.union_sync_api.entity.InventorySyncEntity
-import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
-import com.example.union_sync_api.entity.LocationShortSyncEntity
-import com.example.union_sync_api.entity.OrganizationSyncEntity
+import com.example.union_sync_api.entity.*
 import com.example.union_sync_impl.entity.InventoryDb
+import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
+import com.example.union_sync_impl.utils.getStringDateFromMillis
+import org.openapitools.client.models.InventoryDtoV2
 
-fun InventoryCreateSyncEntity.toInventoryDb(): InventoryDb {
+fun InventoryDtoV2.toInventoryDb(): InventoryDb {
     return InventoryDb(
+        id = id,
+        locationIds = buildList {
+            locationId?.let {
+                add(it)
+            }
+        },
+        organizationId = organizationId,
+        employeeId = molId,
+        date = getMillisDateFromServerFormat(creationDate.orEmpty()),
+        updateDate = System.currentTimeMillis(),
+        inventoryStatus = extendedInventoryState?.id.orEmpty(),
+        name = name,
+        code = code
+    )
+}
+
+fun InventoryDb.toInventoryDtoV2(): InventoryDtoV2 {
+    return InventoryDtoV2(
+        locationId = locationIds?.lastOrNull(),
+        organizationId = organizationId.orEmpty(),
+        molId = employeeId,
+        inventoryStateId = inventoryStatus,
+        inventoryTypeId = "",
+        creationDate = getStringDateFromMillis(date),
+        dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
+        id = id,
+        deleted = false
+    )
+}
+
+fun InventoryCreateSyncEntity.toInventoryDb(id: String): InventoryDb {
+    return InventoryDb(
+        id = id,
         organizationId = organizationId,
         employeeId = employeeId,
-        accountingObjectsIds = accountingObjectsIds,
         date = System.currentTimeMillis(),
-        locationIds = locationIds
+        locationIds = locationIds,
+        inventoryStatus = inventoryStatus,
+        updateDate = updateDate,
+        code = code,
+        name = name
     )
 }
 
@@ -24,24 +57,31 @@ fun InventoryUpdateSyncEntity.toInventoryDb(): InventoryDb {
         id = id,
         organizationId = organizationId,
         employeeId = employeeId,
-        accountingObjectsIds = accountingObjectsIds,
         date = date,
         locationIds = locationIds,
+        inventoryStatus = inventoryStatus,
+        updateDate = updateDate,
+        code = code,
+        name = name
     )
 }
 
 fun InventoryDb.toInventorySyncEntity(
-    organizationSyncEntity: OrganizationSyncEntity,
+    organizationSyncEntity: OrganizationSyncEntity?,
     mol: EmployeeSyncEntity?,
-    locationSyncEntities: List<LocationShortSyncEntity>?,
+    locationSyncEntities: List<LocationSyncEntity>?,
     accountingObjects: List<AccountingObjectSyncEntity>
 ): InventorySyncEntity {
     return InventorySyncEntity(
-        id = id.toString(),
+        id = id,
         date = date,
         organizationSyncEntity = organizationSyncEntity,
         mol = mol,
         locationSyncEntities = locationSyncEntities,
-        accountingObjects = accountingObjects
+        accountingObjects = accountingObjects,
+        inventoryStatus = inventoryStatus,
+        updateDate = updateDate,
+        code = code,
+        name = name
     )
 }

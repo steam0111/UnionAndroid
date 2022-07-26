@@ -1,11 +1,6 @@
 package com.example.union_sync_impl.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.RawQuery
-import androidx.room.Update
+import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.union_sync_impl.entity.FullInventory
 import com.example.union_sync_impl.entity.InventoryDb
@@ -16,6 +11,9 @@ interface InventoryDao {
 
     @RawQuery(observedEntities = [FullInventory::class])
     fun getAll(query: SupportSQLiteQuery): Flow<List<FullInventory>>
+
+    @RawQuery
+    suspend fun getCount(query: SupportSQLiteQuery): Long
 
     @Query(
         "SELECT inventories.*," +
@@ -39,11 +37,20 @@ interface InventoryDao {
                 "LEFT JOIN employees ON inventories.employeeId = employees.id " +
                 "WHERE inventories.id = :id LIMIT 1 "
     )
-    suspend fun getInventoryById(id: Long): FullInventory
+    suspend fun getInventoryById(id: String): FullInventory
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(inventoryDb: InventoryDb): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(inventories: List<InventoryDb>)
+
     @Update
     suspend fun update(inventoryDb: InventoryDb)
+
+    @Query("SELECT COUNT(*) FROM inventories")
+    suspend fun getInventoriesCount(): Int
+
+    @Query("DELETE FROM inventories")
+    suspend fun clearAll()
 }

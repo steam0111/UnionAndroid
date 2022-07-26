@@ -36,15 +36,6 @@ class DocumentComposeFragment :
                         accept(DocumentStore.Intent.OnFilterResult(it))
                     }
                 }
-            ),
-            FragmentResult(
-                resultCode = ChooseActionComposeFragment.CHOOSE_ACTION_RESULT_CODE,
-                resultLabel = ChooseActionComposeFragment.CHOOSE_ACTION_RESULT_LABEL,
-                resultAction = {
-                    (it as ChooseActionResult?)?.type?.let {
-                        accept(DocumentStore.Intent.OnObjectTypeSelected(it))
-                    }
-                }
             )
         )
 

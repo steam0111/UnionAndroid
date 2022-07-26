@@ -24,6 +24,16 @@ class BranchesSyncApiImpl(
         ).map { it.toSyncEntity() }
     }
 
+    override suspend fun getBranchesCount(organizationId: String?, textQuery: String?): Long {
+        return branchesDao.getCount(
+            sqlBranchesQuery(
+                organizationId = organizationId,
+                textQuery = textQuery,
+                isFilterCount = true
+            )
+        )
+    }
+
     override suspend fun getBranchDetail(id: String): BranchDetailSyncEntity {
         return branchesDao.getFullById(id).toDetailSyncEntity()
     }

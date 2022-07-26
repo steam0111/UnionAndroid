@@ -118,7 +118,7 @@ fun StepBottomBar(
         OutlinedImageButton(
             imageId = R.drawable.ic_arrow_back,
             onClick = onBackClickListener,
-            enabled = step > MIN_STEP,
+            enabled = true,
             modifier = Modifier,
             paddingValues = PaddingValues(12.dp)
         )
@@ -169,8 +169,8 @@ private fun StepBottomBarPreview() {
         buttonText = "Далее",
         btnLastStepText = "Войти",
         onBackClickListener = { /*TODO*/ },
-        isButtonNextEnabled = true
-    ) {
-
-    }
+        isButtonNextEnabled = true,
+        onNextClickListener = { /*TODO*/ },
+        isLoading = false
+    )
 }

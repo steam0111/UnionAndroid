@@ -15,6 +15,9 @@ interface BranchesDao {
     @RawQuery
     fun getAll(query: SupportSQLiteQuery): List<BranchesDb>
 
+    @RawQuery
+    fun getCount(query: SupportSQLiteQuery): Long
+
     @Query(
         "SELECT branches.*," +
                 "organizations.id AS organizations_id, " +

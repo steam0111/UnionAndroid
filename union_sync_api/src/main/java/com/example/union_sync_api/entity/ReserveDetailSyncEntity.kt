@@ -3,6 +3,7 @@ package com.example.union_sync_api.entity
 data class ReserveDetailSyncEntity(
     val reserveSyncEntity: ReserveSyncEntity,
     val locationSyncEntity: LocationSyncEntity?,
+    val locationTypeSyncEntity: LocationTypeSyncEntity?,
     val molSyncEntity: EmployeeSyncEntity?,
     val businessUnitSyncEntity: OrganizationSyncEntity?,
     val structuralSubdivisionSyncEntity: DepartmentSyncEntity?,

@@ -29,7 +29,7 @@ interface FilterStore : Store<FilterStore.Intent, FilterStore.State, FilterStore
 
     data class State(
         val params: Params,
-        val resultCount: Int = 0,
+        val resultCount: Long = 0,
         val from: CatalogType = CatalogType.DEFAULT
     )
 

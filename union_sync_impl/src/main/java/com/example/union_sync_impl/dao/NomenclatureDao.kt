@@ -15,6 +15,9 @@ interface NomenclatureDao {
     @RawQuery
     fun getAll(query: SupportSQLiteQuery): List<NomenclatureDb>
 
+    @RawQuery
+    fun getCount(query: SupportSQLiteQuery): Long
+
     @Query(
         "SELECT nomenclature.*," +
                 "nomenclature_group.id AS groups_id, " +

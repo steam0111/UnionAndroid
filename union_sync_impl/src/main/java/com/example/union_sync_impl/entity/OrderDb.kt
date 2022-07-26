@@ -9,5 +9,6 @@ class OrderDb(
     override var catalogItemName: String,
     val number: String?,
     val summary: String?,
-    val date: String?
-) : CatalogItemDb(id)
+    val date: String?,
+    updateDate: Long?
+) : CatalogItemDb(id, updateDate)

@@ -15,6 +15,9 @@ interface DepartmentDao {
     @RawQuery
     fun getAll(query: SupportSQLiteQuery): List<DepartmentDb>
 
+    @RawQuery
+    fun getCount(query: SupportSQLiteQuery): Long
+
     @Query(
         "SELECT departments.*," +
                 "organizations.id AS organizations_id, " +

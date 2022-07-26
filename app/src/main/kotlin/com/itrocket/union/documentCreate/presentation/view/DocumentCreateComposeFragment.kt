@@ -15,6 +15,8 @@ import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.location.presentation.view.LocationComposeFragment
 import com.itrocket.union.reserves.presentation.store.ReservesResult
 import com.itrocket.union.reserves.presentation.view.ReservesComposeFragment
+import com.itrocket.union.selectCount.presentation.store.SelectCountResult
+import com.itrocket.union.selectCount.presentation.view.SelectCountComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 import com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFragment
 import kotlinx.coroutines.Dispatchers
@@ -77,6 +79,17 @@ class DocumentCreateComposeFragment :
                         )
                     }
                 }
+            ),
+            FragmentResult(
+                resultCode = SelectCountComposeFragment.SELECT_COUNT_RESULT_CODE,
+                resultLabel = SelectCountComposeFragment.SELECT_COUNT_RESULT_LABEL,
+                resultAction = {
+                    (it as SelectCountResult?)?.let {
+                        accept(
+                            DocumentCreateStore.Intent.OnReserveCountSelected(it)
+                        )
+                    }
+                }
             )
         )
 
@@ -117,8 +130,11 @@ class DocumentCreateComposeFragment :
                 onSaveClickListener = {
                     accept(DocumentCreateStore.Intent.OnSaveClicked)
                 },
-                onChooseClickListener = {
-                    accept(DocumentCreateStore.Intent.OnChooseClicked)
+                onChooseAccountingObjectClickListener = {
+                    accept(DocumentCreateStore.Intent.OnChooseAccountingObjectClicked)
+                },
+                onChooseReserveClickListener = {
+                    accept(DocumentCreateStore.Intent.OnChooseReserveClicked)
                 },
                 onSettingsClickListener = {
                     accept(DocumentCreateStore.Intent.OnSettingsClicked)
@@ -131,6 +147,9 @@ class DocumentCreateComposeFragment :
                 },
                 onConductClickListener = {
                     accept(DocumentCreateStore.Intent.OnCompleteClicked)
+                },
+                onReserveClickListener = {
+                    accept(DocumentCreateStore.Intent.OnReserveClicked(it))
                 }
             )
         }

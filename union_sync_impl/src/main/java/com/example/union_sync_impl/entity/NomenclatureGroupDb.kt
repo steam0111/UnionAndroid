@@ -7,5 +7,6 @@ import com.example.union_sync_impl.entity.core.CatalogItemDb
 class NomenclatureGroupDb(
     id: String,
     override var catalogItemName: String,
-    val name: String
-) : CatalogItemDb(id)
+    val name: String,
+    updateDate: Long?
+) : CatalogItemDb(id, updateDate)

@@ -9,6 +9,11 @@
         android:id="@+id/auth"
         android:name="com.itrocket.union.authContainer.presentation.view.AuthContainerComposeFragment">
 
+        <argument
+            android:name="AuthContainerArguments"
+            app:argType="com.itrocket.union.authContainer.presentation.view.AuthContainerArguments"
+            app:nullable="true" />
+
         <action
             android:id="@+id/to_documentsMenu"
             app:destination="@id/documentsMenu"
@@ -80,6 +85,9 @@
         <action
             android:id="@+id/to_equipment_types"
             app:destination="@+id/equipmentTypes" />
+        <action
+            android:id="@+id/to_sync"
+            app:destination="@+id/syncAll" />
     </fragment>
 
     <fragment
@@ -186,14 +194,14 @@
             android:id="@+id/to_location"
             app:destination="@id/location" />
 
+        <action
+            android:id="@+id/to_selectParams"
+            app:destination="@id/selectParams" />
+
         <argument
             android:name="FilterArguments"
             app:argType="com.itrocket.union.filter.presentation.store.FilterArguments"
             app:nullable="false" />
-
-        <action
-            android:id="@+id/to_selectParams"
-            app:destination="@id/selectParams" />
     </fragment>
 
     <fragment
@@ -449,6 +457,9 @@
             android:id="@+id/to_documentsMenu"
             app:destination="@id/documentsMenu"
             app:popUpTo="@id/main" />
+        <action
+            android:id="@+id/to_auth"
+            app:destination="@id/auth" />
     </fragment>
 
     <fragment

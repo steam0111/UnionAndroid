@@ -6,5 +6,15 @@ interface LocationSyncApi {
     /**
      * Если locationParentId == null то возвращается корневой список
      */
-    suspend fun getLocations(locationTypeParentId: String? = null, textQuery: String? = null): List<LocationSyncEntity>
+    suspend fun getLocations(
+        locationTypeId: String? = null,
+        locationId: String? = null,
+        textQuery: String? = null
+    ): List<LocationSyncEntity>
+
+    suspend fun getAllLocationsIdsByParentId(parentId: String?): List<String?>
+
+    suspend fun getLocationById(locationId: String?): LocationSyncEntity?
+
+    suspend fun getLocationsByIds(ids: List<String?>): List<LocationSyncEntity>
 }

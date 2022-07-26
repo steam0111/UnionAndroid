@@ -9,6 +9,7 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.documents.domain.DocumentInteractor
 import com.itrocket.union.documents.domain.entity.DocumentDomain
+import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
@@ -85,7 +86,9 @@ class DocumentStoreFactory(
                 is DocumentStore.Intent.OnDocumentClicked -> {
                     showDocument(intent.documentView.toDocumentDomain())
                 }
-                DocumentStore.Intent.OnDocumentCreateClicked -> publish(DocumentStore.Label.ShowChooseAction)
+                DocumentStore.Intent.OnDocumentCreateClicked -> createDocument(
+                    documentType = getState().type
+                )
                 is DocumentStore.Intent.OnDateArrowClicked -> {
                     val newRotatedDates =
                         documentInteractor.resolveRotatedDates(getState().rotatedDates, intent.date)
@@ -95,10 +98,6 @@ class DocumentStoreFactory(
                     dispatch(Result.SearchText(intent.searchText))
                     searchManager.emit(intent.searchText)
                 }
-                is DocumentStore.Intent.OnObjectTypeSelected -> createDocument(
-                    listType = intent.objectType,
-                    documentType = getState().type
-                )
             }
 
         }
@@ -134,11 +133,19 @@ class DocumentStoreFactory(
             }
         }
 
-        private suspend fun createDocument(listType: ObjectType, documentType: DocumentTypeDomain) {
-            dispatch(Result.IsDocumentCreateLoading(true))
-            val document = documentInteractor.createDocument(documentType, listType)
-            showDocument(document)
-            dispatch(Result.IsDocumentCreateLoading(false))
+        private fun createDocument(documentType: DocumentTypeDomain) {
+            showDocument(
+                DocumentDomain(
+                    id = null,
+                    documentType = documentType,
+                    accountingObjects = listOf(),
+                    creationDate = System.currentTimeMillis(),
+                    documentStatus = DocumentStatus.CREATED,
+                    documentStatusId = DocumentStatus.CREATED.name,
+                    reserves = listOf(),
+                    number = null
+                )
+            )
         }
 
         private fun showDocument(document: DocumentDomain) {

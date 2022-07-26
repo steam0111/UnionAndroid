@@ -38,7 +38,7 @@ interface InventoryStore :
         val params: List<ParamDomain> = listOf(
             ParamDomain(id = "", value = "", type = ManualType.ORGANIZATION),
             ParamDomain(id = "", value = "", type = ManualType.MOL),
-            LocationParamDomain(ids = listOf(), values = listOf()),
+            LocationParamDomain(),
         )
     )
 

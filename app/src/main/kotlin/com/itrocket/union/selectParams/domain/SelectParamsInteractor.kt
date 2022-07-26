@@ -6,7 +6,6 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.selectParams.domain.dependencies.SelectParamsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 
 class SelectParamsInteractor(
     private val selectParamsRepository: SelectParamsRepository,
@@ -19,7 +18,13 @@ class SelectParamsInteractor(
             ManualType.MOL -> getMols(searchText)
             ManualType.EXPLOITING -> getExploiting(searchText)
             ManualType.STATUS -> getAccountingObjectStatuses(searchText)
-            ManualType.DEPARTMENT -> getDepartments(searchText)
+            ManualType.BRANCH -> getBranches(searchText)
+            ManualType.ACTION_BASE -> getActionBases(searchText)
+
+            ManualType.DEPARTMENT,
+            ManualType.DEPARTMENT_FROM,
+            ManualType.DEPARTMENT_TO -> getDepartments(searchText, type)
+
             ManualType.PROVIDER -> getProviders(searchText)
             ManualType.PRODUCER -> getProducers(searchText)
             ManualType.EQUIPMENT_TYPE -> getEquipmentTypes(searchText)
@@ -83,8 +88,19 @@ class SelectParamsInteractor(
         return selectParamsRepository.getProducers(textQuery = searchText)
     }
 
-    private suspend fun getDepartments(searchText: String): Flow<List<ParamDomain>> {
-        return selectParamsRepository.getDepartments(textQuery = searchText)
+    private suspend fun getDepartments(
+        searchText: String,
+        type: ManualType
+    ): Flow<List<ParamDomain>> {
+        return selectParamsRepository.getDepartments(textQuery = searchText, type)
+    }
+
+    private suspend fun getBranches(searchText: String): Flow<List<ParamDomain>> {
+        return selectParamsRepository.getBranches(textQuery = searchText)
+    }
+
+    private suspend fun getActionBases(searchText: String): Flow<List<ParamDomain>> {
+        return selectParamsRepository.getActionBases(textQuery = searchText)
     }
 
     private suspend fun getNomenclatureGroup(searchText: String): Flow<List<ParamDomain>> {

@@ -5,26 +5,45 @@ import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
 import com.example.union_sync_impl.utils.contains
 import com.example.union_sync_impl.utils.isEquals
+import com.example.union_sync_impl.utils.more
 
 fun sqlNomenclatureQuery(
     nomenclatureGroupId: String? = null,
     textQuery: String? = null,
+    updateDate: Long? = null,
+    isFilterCount: Boolean = false
 ): SimpleSQLiteQuery {
-    val mainQuery = "SELECT * FROM nomenclature"
-
-    val query = mainQuery.addFilters(
-        sqlTableFilters = SqlTableFilters(
-            tableName = "nomenclature",
-            filter = buildList {
-                nomenclatureGroupId?.let {
-                    add("nomenclatureGroupId" isEquals nomenclatureGroupId)
-                }
-                textQuery?.let {
-                    add("name" contains textQuery)
-                }
-            }
+    val mainQuery = if (isFilterCount) {
+        "SELECT COUNT(*) FROM nomenclature"
+    } else {
+        "SELECT * FROM nomenclature"
+    }
+    return SimpleSQLiteQuery(
+        mainQuery.getNomenclatureFilterPartQuery(
+            nomenclatureGroupId,
+            textQuery,
+            updateDate
         )
     )
-
-    return SimpleSQLiteQuery(query)
 }
+
+private fun String.getNomenclatureFilterPartQuery(
+    nomenclatureGroupId: String? = null,
+    textQuery: String? = null,
+    updateDate: Long? = null
+): String = addFilters(
+    sqlTableFilters = SqlTableFilters(
+        tableName = "nomenclature",
+        filter = buildList {
+            nomenclatureGroupId?.let {
+                add("nomenclatureGroupId" isEquals nomenclatureGroupId)
+            }
+            textQuery?.let {
+                add("name" contains textQuery)
+            }
+            updateDate?.let {
+                add("updateDate" more updateDate)
+            }
+        }
+    )
+)

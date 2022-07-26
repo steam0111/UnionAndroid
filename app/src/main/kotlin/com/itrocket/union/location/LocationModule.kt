@@ -7,7 +7,9 @@ import com.itrocket.union.location.domain.LocationInteractor
 import com.itrocket.union.location.domain.dependencies.LocationRepository
 import com.itrocket.union.location.presentation.store.LocationStore
 import com.itrocket.union.location.presentation.store.LocationStoreFactory
+import com.itrocket.union.location.presentation.view.LocationComposeFragmentArgs
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -15,8 +17,10 @@ object LocationModule {
     val LOCATION_VIEW_MODEL_QUALIFIER = named("LOCATION_VIEW_MODEL")
 
     val module = module {
-        viewModel(LOCATION_VIEW_MODEL_QUALIFIER) {
-            BaseViewModel(get<LocationStore>())
+        viewModel(LOCATION_VIEW_MODEL_QUALIFIER) { (args: LocationComposeFragmentArgs) ->
+            BaseViewModel(get<LocationStore>() {
+                parametersOf(args)
+            })
         }
 
         factory<LocationRepository> {
@@ -30,13 +34,14 @@ object LocationModule {
             LocationInteractor(get(), get())
         }
 
-        factory {
+        factory { (args: LocationComposeFragmentArgs) ->
             LocationStoreFactory(
                 DefaultStoreFactory,
                 get(),
                 get(),
                 get(),
-                get()
+                get(),
+                args.locationArguments
             ).create()
         }
     }

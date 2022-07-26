@@ -9,16 +9,16 @@ import com.itrocket.union.employees.domain.dependencies.EmployeeRepository
 import com.itrocket.union.filter.domain.dependencies.FilterRepository
 import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
+import com.itrocket.union.location.domain.dependencies.LocationRepository
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
+import com.itrocket.union.manual.getFilterLocationLastId
 import com.itrocket.union.nomenclature.domain.dependencies.NomenclatureRepository
 import com.itrocket.union.regions.domain.dependencies.RegionRepository
 import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.count
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.withContext
 
 class FilterInteractor(
     private val repository: FilterRepository,
@@ -31,13 +31,14 @@ class FilterInteractor(
     private val coreDispatchers: CoreDispatchers,
     private val documentRepository: DocumentRepository,
     private val inventoriesRepository: InventoryRepository,
-    private val reservesRepository: ReservesRepository
+    private val reservesRepository: ReservesRepository,
+    private val locationRepository: LocationRepository
 ) {
     fun getFilters() = repository.getFilters()
 
     fun dropFilterFields(filters: List<ParamDomain>): List<ParamDomain> {
         return filters.toMutableList().map {
-            it.copy(value = "", id = null)
+            it.toInitialState()
         }
     }
 
@@ -61,52 +62,65 @@ class FilterInteractor(
         return mutableFilters
     }
 
-    fun changeLocationFilter(
+    suspend fun changeLocationFilter(
         filters: List<ParamDomain>,
         location: LocationParamDomain
     ): List<ParamDomain> {
-        val mutableFilters = filters.toMutableList()
-        val locationIndex = filters.indexOfFirst { it.type == ManualType.LOCATION }
-        if (locationIndex != NO_POSITION) {
-            mutableFilters[locationIndex] =
-                (mutableFilters[locationIndex] as LocationParamDomain).copy(
-                    values = location.values
-                )
+        return withContext(coreDispatchers.io) {
+            val mutableFilters = filters.toMutableList()
+            val locationIndex = filters.indexOfFirst { it.type == ManualType.LOCATION }
+            if (locationIndex != NO_POSITION) {
+                mutableFilters[locationIndex] = location
+            }
+            mutableFilters
         }
-        return mutableFilters
     }
 
-    //TODO переделать через базу данных
-    suspend fun getResultCount(from: CatalogType?, params: List<ParamDomain>): Int {
+    suspend fun getResultCount(from: CatalogType?, params: List<ParamDomain>): Long {
         return when (from) {
             CatalogType.ACCOUNTING_OBJECTS -> {
-                accountingObjectRepository.getAccountingObjects(params = params).count()
+                accountingObjectRepository.getAccountingObjectsCount(
+                    params = params,
+                    selectedLocationIds = params.getFilterLocationIds()
+                )
             }
             CatalogType.EMPLOYEES -> {
-                employeeRepository.getEmployees(params = params).count()
+                employeeRepository.getEmployeesCount(params = params)
             }
             CatalogType.BRANCHES -> {
-                branchesRepository.getBranches(params = params).count()
+                branchesRepository.getBranchesCount(params = params)
             }
             CatalogType.DEPARTMENTS -> {
-                departmentRepository.getDepartments(params = params).count()
+                departmentRepository.getDepartmentsCount(params = params)
             }
             CatalogType.NOMENCLATURES -> {
-                nomenclatureRepository.getNomenclatures(params = params).count()
+                nomenclatureRepository.getNomenclaturesCount(params = params)
             }
             CatalogType.REGIONS -> {
-                regionRepository.getRegions().count()
+                regionRepository.getRegionsCount()
             }
             CatalogType.DOCUMENTS -> {
-                documentRepository.getAllDocuments(params = params).firstOrNull()?.count() ?: 0
+                documentRepository.getAllDocumentsCount(params = params)
             }
             CatalogType.INVENTORIES -> {
-                inventoriesRepository.getInventories(params = params).firstOrNull()?.count() ?: 0
+                inventoriesRepository.getInventoriesCount(params = params)
             }
             CatalogType.RESERVES -> {
-                reservesRepository.getReservesFilterCount(params = params)
+                reservesRepository.getReservesFilterCount(
+                    params = params,
+                    selectedLocationIds = params.getFilterLocationIds()
+                )
             }
             else -> 0
+        }
+    }
+
+    private suspend fun List<ParamDomain>.getFilterLocationIds(): List<String?>? {
+        val lastLocationId = getFilterLocationLastId()
+        return if (lastLocationId == null) {
+            null
+        } else {
+            locationRepository.getAllLocationsIdsByParent(lastLocationId)
         }
     }
 

@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
+import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventories.presentation.store.InventoriesStore
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.ManualType
@@ -88,7 +89,8 @@ private fun Content(
                     enabled = true,
                     onInventoryClickListener = {
                         onInventoryClickListener(item)
-                    }
+                    },
+                    isShowStatus = true
                 )
                 if (inventories.lastIndex != index) {
                     BottomLine()
@@ -117,6 +119,7 @@ fun InventoriesScreenPreview() {
         InventoriesStore.State(
             inventories = listOf(
                 InventoryCreateDomain(
+                    id = "bh",
                     number = "БП-00001375",
                     date = System.currentTimeMillis(),
                     documentInfo = listOf(
@@ -124,9 +127,11 @@ fun InventoriesScreenPreview() {
                         ParamDomain("2", "Систмный интегратор", ManualType.MOL),
                         ParamDomain("3", "Систмный интегратор", ManualType.MOL),
                     ),
-                    accountingObjects = listOf()
+                    accountingObjects = listOf(),
+                    inventoryStatus = InventoryStatus.CREATED
                 ),
                 InventoryCreateDomain(
+                    id = "",
                     number = "БП-00001376",
                     date = System.currentTimeMillis(),
                     documentInfo = listOf(
@@ -134,9 +139,11 @@ fun InventoriesScreenPreview() {
                         ParamDomain("2", "Систмный интегратор", ManualType.MOL),
                         ParamDomain("3", "Систмный интегратор", ManualType.MOL),
                     ),
-                    accountingObjects = listOf()
+                    accountingObjects = listOf(),
+                    inventoryStatus = InventoryStatus.CREATED
                 ),
                 InventoryCreateDomain(
+                    id = "",
                     number = "БП-00001377",
                     date = System.currentTimeMillis(),
                     documentInfo = listOf(
@@ -144,7 +151,8 @@ fun InventoriesScreenPreview() {
                         ParamDomain("2", "Систмный интегратор", ManualType.MOL),
                         ParamDomain("3", "Систмный интегратор", ManualType.MOL),
                     ),
-                    accountingObjects = listOf()
+                    accountingObjects = listOf(),
+                    inventoryStatus = InventoryStatus.CREATED
                 )
             )
         ),

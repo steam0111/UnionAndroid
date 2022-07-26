@@ -72,6 +72,10 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
     accountingObject.barcodeValue?.let {
         listMainInfo.add(ObjectInfoDomain(R.string.reading_mode_barcode, it))
     }
+    branch?.let {
+        listMainInfo.add(ObjectInfoDomain(R.string.balance_unit, it.name))
+    }
+
 
     return AccountingObjectDomain(
         id = accountingObject.id,

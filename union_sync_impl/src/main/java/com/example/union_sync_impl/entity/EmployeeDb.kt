@@ -23,8 +23,9 @@ class EmployeeDb(
     val number: String,
     val nfc: String?,
     val statusId: String?,
-    val post: String?
-) : CatalogItemDb(id) {
+    val post: String?,
+    updateDate: Long?
+) : CatalogItemDb(id, updateDate) {
 
     val fullName: String
         get() = "$lastname $firstname $patronymic"

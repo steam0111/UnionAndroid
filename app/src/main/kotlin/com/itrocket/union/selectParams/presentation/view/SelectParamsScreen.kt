@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,6 +43,7 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor.Companion.MIN_CURRENT_STEP
 import com.itrocket.union.selectParams.presentation.store.SelectParamsStore
 import com.itrocket.union.ui.AppTheme
+import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ButtonWithContent
 import com.itrocket.union.ui.IndicatorWithText
 import com.itrocket.union.ui.LoadingContent
@@ -70,9 +72,21 @@ fun SelectParamsScreen(
     AppTheme {
         Scaffold(
             topBar = {
-                TopBar(
-                    onAcceptClickListener = onAcceptClickListener,
-                    onCrossClickListener = onCrossClickListener
+                BaseToolbar(
+                    title = stringResource(id = R.string.filter_title),
+                    startImageId = R.drawable.ic_cross,
+                    onStartImageClickListener = onCrossClickListener,
+                    backgroundColor = psb1,
+                    textColor = white,
+                    content = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_accept),
+                                contentDescription = null,
+                                modifier = Modifier.clickableUnbounded(onClick = onAcceptClickListener)
+                            )
+                        }
+                    }
                 )
             },
             bottomBar = {
@@ -98,31 +112,6 @@ fun SelectParamsScreen(
                 top = appInsets.topInset.dp,
                 bottom = appInsets.bottomInset.dp
             )
-        )
-    }
-}
-
-@Composable
-private fun TopBar(
-    onCrossClickListener: () -> Unit,
-    onAcceptClickListener: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .background(psb1)
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_cross),
-            contentDescription = null,
-            modifier = Modifier.clickableUnbounded(onClick = onCrossClickListener)
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        Image(
-            painter = painterResource(id = R.drawable.ic_accept),
-            contentDescription = null,
-            modifier = Modifier.clickableUnbounded(onClick = onAcceptClickListener)
         )
     }
 }

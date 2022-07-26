@@ -32,7 +32,6 @@ interface DocumentStore : Store<DocumentStore.Intent, DocumentStore.State, Docum
         data class OnDocumentClicked(val documentView: DocumentView.DocumentItemView) : Intent()
         data class OnDateArrowClicked(val date: String) : Intent()
         data class OnSearchTextChanged(val searchText: String) : Intent()
-        data class OnObjectTypeSelected(val objectType: ObjectType) : Intent()
     }
 
     data class State(
@@ -57,16 +56,6 @@ interface DocumentStore : Store<DocumentStore.Intent, DocumentStore.State, Docum
                         document = document
                     )
                 )
-
-        }
-
-        object ShowChooseAction : Label(), ShowBottomSheetNavigationLabel {
-            override val arguments: Bundle
-                get() = bundleOf()
-            override val containerId: Int
-                get() = R.id.mainActivityNavHostFragment
-            override val fragment: Fragment
-                get() = ChooseActionComposeFragment()
 
         }
 

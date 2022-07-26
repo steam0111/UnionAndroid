@@ -4,6 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.RawQuery
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
 
@@ -28,7 +30,10 @@ interface LocationDao {
     suspend fun getLocationTypeById(id: String): LocationTypeDb?
 
     @Query("SELECT * FROM location WHERE id IN (:ids)")
-    suspend fun getLocationsByIds(ids: List<String>): List<LocationDb>
+    suspend fun getLocationsByIds(ids: List<String?>): List<LocationDb>
+
+    @Query("SELECT * FROM location WHERE id is :id LIMIT 1")
+    suspend fun getLocationById(id: String?): LocationDb?
 
     @Query("SELECT * FROM location WHERE locationTypeId is :locationTypeId")
     suspend fun getLocationsByType(locationTypeId: String): List<LocationDb>
@@ -42,8 +47,11 @@ interface LocationDao {
             SELECT * FROM `location` `location` 
                 JOIN locationPath `closure`
                 ON `location`.`id` = `closure`.`descendantLocationId` 
-            WHERE `closure`.`ancestorLocationId` = :parentId
+            WHERE `closure`.`ancestorLocationId` is :parentId
             """
     )
-    suspend fun getAllLocationByParentId(parentId: Long): List<LocationDb>
+    suspend fun getAllLocationsByParentId(parentId: String?): List<LocationDb>
+
+    @RawQuery
+    fun getLocationsByParentId(query: SupportSQLiteQuery): List<LocationDb>
 }

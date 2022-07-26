@@ -52,6 +52,7 @@ import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
 import com.itrocket.union.employees.domain.entity.EmployeeStatus
+import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
@@ -91,14 +92,15 @@ fun AccountingObjectItem(
     onAccountingObjectListener: (AccountingObjectDomain) -> Unit,
     status: Status?,
     isShowBottomLine: Boolean,
-    statusText: String? = null
+    statusText: String? = null,
+    isEnabled: Boolean = true
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = {
                 onAccountingObjectListener(accountingObject)
-            })
+            }, enabled = isEnabled)
             .padding(vertical = 12.dp, horizontal = 16.dp)
     ) {
         Column(
@@ -341,7 +343,8 @@ fun ReservesItem(
 fun InventoryDocumentItem(
     item: InventoryCreateDomain,
     onInventoryClickListener: () -> Unit = {},
-    enabled: Boolean = false
+    enabled: Boolean = false,
+    isShowStatus: Boolean
 ) {
     val annotatedTitle = getInventoryAnnotatedTitle(item)
     val annotatedInfo = buildAnnotatedString {
@@ -377,8 +380,15 @@ fun InventoryDocumentItem(
                 style = AppTheme.typography.body1,
                 fontWeight = FontWeight.Medium,
                 lineHeight = 20.sp,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .padding(end = 40.dp)
+                    .fillMaxWidth(0.7f)
             )
+            if (isShowStatus) {
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
+                    SmallStatusLabel(status = item.inventoryStatus, null)
+                }
+            }
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(text = annotatedInfo, style = AppTheme.typography.caption, color = graphite6)
@@ -446,7 +456,6 @@ fun DocumentInfoItem(
     val numberId = "number"
     val timeId = "time"
     val statusId = "status"
-    val objectTypeId = "objectType"
     val annotatedTitle = buildAnnotatedString {
         appendInlineContent(numberId, "[icon1]")
         append(item.number)
@@ -458,10 +467,6 @@ fun DocumentInfoItem(
 
         appendInlineContent(statusId, "[icon3]")
         append(stringResource(item.documentType.titleId))
-        append("  ")
-
-        appendInlineContent(objectTypeId, "[icon4]")
-        append(stringResource(item.objectType.textId))
     }
     val numberContent = mapOf(
         numberId to InlineTextContent(
@@ -490,15 +495,6 @@ fun DocumentInfoItem(
             )
         ) {
             Image(painter = painterResource(R.drawable.ic_document), contentDescription = null)
-        },
-        objectTypeId to InlineTextContent(
-            Placeholder(
-                width = 20.sp,
-                height = 16.sp,
-                placeholderVerticalAlign = PlaceholderVerticalAlign.Center
-            )
-        ) {
-            Image(painter = painterResource(R.drawable.ic_category), contentDescription = null)
         },
     )
     val annotatedInfo = buildAnnotatedString {
@@ -669,9 +665,9 @@ fun DocumentDateItemPreview() {
 fun DocumentInfoItemPreview() {
     DocumentInfoItem(
         item = DocumentView.DocumentItemView(
+            id = "dd",
             number = "БП-00001374",
             documentStatus = DocumentStatus.CREATED,
-            objectType = ObjectType.MAIN_ASSETS,
             date = 123123,
             params = listOf(
                 ParamDomain(
@@ -772,6 +768,7 @@ fun DefaultListItemPreview() {
 fun InventoryDocumentItemPreview() {
     InventoryDocumentItem(
         item = InventoryCreateDomain(
+            id = "",
             number = "БП-00001374",
             date = System.currentTimeMillis(),
             documentInfo = listOf(
@@ -780,7 +777,9 @@ fun InventoryDocumentItemPreview() {
                 ParamDomain("3", "Систмный интегратор", ManualType.MOL),
             ),
             accountingObjects = listOf(),
-        )
+            inventoryStatus = InventoryStatus.CREATED,
+        ),
+        isShowStatus = true
     )
 }
 

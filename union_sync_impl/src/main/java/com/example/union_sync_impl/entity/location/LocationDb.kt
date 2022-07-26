@@ -19,5 +19,6 @@ class LocationDb(
     override var catalogItemName: String,
     var parentId: String? = null,
     val name: String,
-    val locationTypeId: String? = null
-) : CatalogItemDb(id)
+    val locationTypeId: String? = null,
+    updateDate: Long?
+) : CatalogItemDb(id, updateDate)

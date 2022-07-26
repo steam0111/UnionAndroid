@@ -3,8 +3,9 @@ package com.example.union_sync_impl.data.mapper
 import com.example.union_sync_api.entity.CounterpartySyncEntity
 import com.example.union_sync_impl.entity.CounterpartyDb
 import org.openapitools.client.models.Counterparty
+import org.openapitools.client.models.CounterpartyDtoV2
 
-fun Counterparty.toCounterpartyDb(): CounterpartyDb {
+fun CounterpartyDtoV2.toCounterpartyDb(): CounterpartyDb {
     return CounterpartyDb(
         catalogItemName = catalogItemName.orEmpty(),
         name = name.orEmpty(),
@@ -12,7 +13,8 @@ fun Counterparty.toCounterpartyDb(): CounterpartyDb {
         actualAddress = actualAddress,
         legalAddress = legalAddress,
         kpp = kpp,
-        inn = inn
+        inn = inn,
+        updateDate = System.currentTimeMillis()
     )
 }
 

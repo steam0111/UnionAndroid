@@ -18,4 +18,5 @@ class DepartmentDb(
     val organizationId: String?,
     val name: String?,
     val code: String?,
-) : CatalogItemDb(id)
+    updateDate: Long?
+) : CatalogItemDb(id, updateDate)

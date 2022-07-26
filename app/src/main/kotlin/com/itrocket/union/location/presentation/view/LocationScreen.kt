@@ -53,6 +53,7 @@ import com.itrocket.union.location.domain.entity.LocationDomain
 import com.itrocket.union.location.presentation.store.LocationStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
+import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.Loader
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.RadioButtonField
@@ -79,9 +80,21 @@ fun LocationScreen(
     AppTheme {
         Scaffold(
             topBar = {
-                Toolbar(
-                    onCrossClickListener = onCrossClickListener,
-                    onAcceptClickListener = onAcceptClickListener
+                BaseToolbar(
+                    title = stringResource(id = R.string.manual_location),
+                    startImageId = R.drawable.ic_cross,
+                    onStartImageClickListener = onCrossClickListener,
+                    backgroundColor = white,
+                    textColor = psb1,
+                    content = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_accept),
+                                contentDescription = null,
+                                modifier = Modifier.clickableUnbounded(onClick = onAcceptClickListener)
+                            )
+                        }
+                    }
                 )
             }, bottomBar = {
                 BottomBar(onFinishClickListener = onFinishClickListener)
@@ -143,19 +156,15 @@ private fun Content(
             underlineColor = underlineColor
         )
         MediumSpacer()
-        if (state.isLoading) {
-            Loader(contentPadding = PaddingValues())
-        } else {
-            LazyColumn {
-                items(state.placeValues) {
-                    RadioButtonField(
-                        label = it.value,
-                        onFieldClickListener = {
-                            onPlaceSelected(it)
-                        },
-                        isSelected = state.selectPlaceScheme.contains(it),
-                    )
-                }
+        LazyColumn {
+            items(state.placeValues) {
+                RadioButtonField(
+                    label = it.value,
+                    onFieldClickListener = {
+                        onPlaceSelected(it)
+                    },
+                    isSelected = state.selectPlaceScheme.contains(it),
+                )
             }
         }
     }
@@ -326,17 +335,17 @@ private fun ArrowBackButton(enabled: Boolean, onClick: () -> Unit) {
 fun LocationScreenPreview() {
     LocationScreen(LocationStore.State(
         placeValues = listOf(
-            LocationDomain("1","1", "Стелаж", "A"),
-            LocationDomain("1","1", "Стелаж", "Б"),
-            LocationDomain("1","1", "Стелаж", "С"),
-            LocationDomain("1","1", "Стелаж", "D")
+            LocationDomain("1", "1", "Стелаж", "A"),
+            LocationDomain("1", "1", "Стелаж", "Б"),
+            LocationDomain("1", "1", "Стелаж", "С"),
+            LocationDomain("1", "1", "Стелаж", "D")
         ),
         levelHint = "Стелаж",
         selectPlaceScheme = listOf(
-            LocationDomain("1","1", "Склад", "ГО"),
-            LocationDomain("1","1", "Суп", "авыаывавыаывавыа"),
-            LocationDomain("1","1", "Склад", "ГО"),
-            LocationDomain("1","1", "Склад", "ГО")
+            LocationDomain("1", "1", "Склад", "ГО"),
+            LocationDomain("1", "1", "Суп", "авыаывавыаывавыа"),
+            LocationDomain("1", "1", "Склад", "ГО"),
+            LocationDomain("1", "1", "Склад", "ГО")
         )
     ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {})
 }

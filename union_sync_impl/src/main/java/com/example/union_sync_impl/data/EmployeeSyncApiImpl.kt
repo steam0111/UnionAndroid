@@ -19,6 +19,16 @@ class EmployeeSyncApiImpl(
         return employeeDb.map { it.toSyncEntity() }
     }
 
+    override suspend fun getEmployeesCount(textQuery: String?, organizationId: String?): Long {
+        return employeeDao.getCount(
+            sqlEmployeeQuery(
+                organizationId,
+                textQuery,
+                isFilterCount = true
+            )
+        )
+    }
+
     override suspend fun getEmployeeDetail(id: String): EmployeeDetailSyncEntity {
         return employeeDao.getFullById(id).toDetailSyncEntity()
     }

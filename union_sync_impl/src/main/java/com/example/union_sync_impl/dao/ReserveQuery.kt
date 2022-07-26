@@ -1,10 +1,13 @@
 package com.example.union_sync_impl.dao
 
 import androidx.sqlite.db.SimpleSQLiteQuery
+import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
+import com.example.union_sync_impl.utils.addPagination
 import com.example.union_sync_impl.utils.contains
 import com.example.union_sync_impl.utils.isEquals
+import com.example.union_sync_impl.utils.more
 
 fun sqlReserveQuery(
     organizationId: String? = null,
@@ -15,7 +18,12 @@ fun sqlReserveQuery(
     receptionItemCategoryId: String? = null,
     textQuery: String? = null,
     reservesIds: List<String>? = null,
-    isFilterCount: Boolean = false
+    reservesShorts: List<ReserveShortSyncEntity>? = null,
+    isFilterCount: Boolean = false,
+    updateDate: Long? = null,
+    locationIds: List<String?>? = null,
+    limit: Long? = null,
+    offset: Long? = null
 ): SimpleSQLiteQuery {
 
     val mainQuery = if (isFilterCount) {
@@ -59,11 +67,31 @@ fun sqlReserveQuery(
                 reservesIds?.let {
                     add("id" isEquals reservesIds)
                 }
+                locationIds?.let {
+                    add("locationId" isEquals locationIds)
+                }
                 textQuery?.let {
                     add("name" contains textQuery)
                 }
+                updateDate?.let {
+                    add("updateDate" more updateDate)
+                }
+                reservesShorts?.let {
+                    val names = it.map { it.name }
+                    val nomenclatureIds = it.mapNotNull { it.nomenclatureId }
+                    val shortLocationIds = it.mapNotNull { it.locationId }
+                    val orderIds = it.mapNotNull { it.orderId }
+
+                    add("name" isEquals names)
+                    add("nomenclatureId" isEquals nomenclatureIds)
+                    add("locationId" isEquals shortLocationIds)
+                    add("orderId" isEquals orderIds)
+                }
             }
         )
+    ).addPagination(
+        limit,
+        offset
     )
 
     return SimpleSQLiteQuery(query)

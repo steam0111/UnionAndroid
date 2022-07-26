@@ -191,10 +191,10 @@ fun DocumentScreenPreview() {
                     dayType = DocumentDateType.OTHER
                 ),
                 DocumentView.DocumentItemView(
+                    id = "dd",
                     date = 123123,
                     number = "123213",
                     documentStatus = DocumentStatus.CREATED,
-                    objectType = ObjectType.MAIN_ASSETS,
                     documentType = DocumentTypeDomain.WRITE_OFF,
                     params = listOf(
                         ParamDomain(
@@ -213,10 +213,10 @@ fun DocumentScreenPreview() {
                     dateUi = "12.12.12"
                 ),
                 DocumentView.DocumentItemView(
+                    id = "dd",
                     date = 123123,
                     number = "1232132",
                     documentStatus = DocumentStatus.CREATED,
-                    objectType = ObjectType.MAIN_ASSETS,
                     documentType = DocumentTypeDomain.WRITE_OFF,
                     params = listOf(
                         ParamDomain(
@@ -234,10 +234,10 @@ fun DocumentScreenPreview() {
                     ),
                     dateUi = "12.12.12"
                 ), DocumentView.DocumentItemView(
+                    id = "dd",
                     date = 123123,
                     number = "1232133",
                     documentStatus = DocumentStatus.CREATED,
-                    objectType = ObjectType.MAIN_ASSETS,
                     documentType = DocumentTypeDomain.WRITE_OFF,
                     params = listOf(
                         ParamDomain(
@@ -256,10 +256,10 @@ fun DocumentScreenPreview() {
                     dateUi = "12.12.12"
                 ),
                 DocumentView.DocumentItemView(
+                    id = "dd",
                     date = 123123,
                     number = "1232134",
                     documentStatus = DocumentStatus.CREATED,
-                    objectType = ObjectType.MAIN_ASSETS,
                     documentType = DocumentTypeDomain.WRITE_OFF,
                     params = listOf(
                         ParamDomain(

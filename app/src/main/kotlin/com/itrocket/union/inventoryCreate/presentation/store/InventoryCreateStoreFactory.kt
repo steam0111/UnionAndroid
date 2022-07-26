@@ -10,6 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
@@ -52,7 +53,7 @@ class InventoryCreateStoreFactory(
                 dispatch(
                     Result.Inventory(
                         inventoryCreateInteractor.getInventoryById(
-                            inventoryCreateArguments.inventoryDocument.number
+                            inventoryCreateArguments.inventoryDocument.id.orEmpty()
                         )
                     )
                 )
@@ -86,11 +87,18 @@ class InventoryCreateStoreFactory(
                     inventoryDocument = getState().inventoryDocument,
                     accountingObjects = getState().inventoryDocument.accountingObjects + getState().newAccountingObjects
                 )
-                is InventoryCreateStore.Intent.OnNewAccountingObjectBarcodeHandled -> handleNewAccountingObjectBarcode(
-                    accountingObjects = getState().inventoryDocument.accountingObjects,
-                    newAccountingObjects = getState().newAccountingObjects.toList(),
-                    barcode = intent.barcode,
-                )
+                is InventoryCreateStore.Intent.OnNewAccountingObjectBarcodeHandled -> {
+                    val inventoryStatus = getState().inventoryDocument.inventoryStatus
+                    if (inventoryStatus != InventoryStatus.COMPLETED) {
+                        handleNewAccountingObjectBarcode(
+                            accountingObjects = getState().inventoryDocument.accountingObjects,
+                            newAccountingObjects = getState().newAccountingObjects.toList(),
+                            barcode = intent.barcode,
+                            inventoryStatus = inventoryStatus,
+                            isAddNew = getState().isAddNew
+                        )
+                    }
+                }
                 is InventoryCreateStore.Intent.OnAccountingObjectStatusChanged -> {
                     dispatch(
                         Result.AccountingObjects(
@@ -101,18 +109,60 @@ class InventoryCreateStoreFactory(
                         )
                     )
                 }
-                is InventoryCreateStore.Intent.OnNewAccountingObjectRfidsHandled -> handleNewAccountingObjectRfids(
-                    accountingObjects = getState().inventoryDocument.accountingObjects,
-                    newAccountingObjects = getState().newAccountingObjects.toList(),
-                    handledAccountingObjectIds = intent.handledAccountingObjectIds,
+                is InventoryCreateStore.Intent.OnNewAccountingObjectRfidsHandled -> {
+                    val inventoryStatus = getState().inventoryDocument.inventoryStatus
+                    if (inventoryStatus != InventoryStatus.COMPLETED) {
+                        handleNewAccountingObjectRfids(
+                            accountingObjects = getState().inventoryDocument.accountingObjects,
+                            newAccountingObjects = getState().newAccountingObjects.toList(),
+                            handledAccountingObjectIds = intent.handledAccountingObjectIds,
+                            inventoryStatus = inventoryStatus,
+                            isAddNew = getState().isAddNew
+                        )
+                    }
+                }
+                InventoryCreateStore.Intent.OnCompleteClicked -> completeInventory(inventoryDomain = getState().inventoryDocument)
+                InventoryCreateStore.Intent.OnInWorkClicked -> inWorkInventory(
+                    inventoryDomain = getState().inventoryDocument,
+                    newAccountingObjects = getState().newAccountingObjects.toList()
                 )
             }
+        }
+
+        private suspend fun completeInventory(
+            inventoryDomain: InventoryCreateDomain
+        ) {
+            val inventory = inventoryDomain.copy(inventoryStatus = InventoryStatus.COMPLETED)
+            dispatch(Result.Inventory(inventory))
+            inventoryCreateInteractor.saveInventoryDocument(inventory, inventory.accountingObjects)
+        }
+
+        private suspend fun inWorkInventory(
+            inventoryDomain: InventoryCreateDomain,
+            newAccountingObjects: List<AccountingObjectDomain>
+        ) {
+            val accountingObjects = inventoryCreateInteractor.makeInInventoryAccountingObjects(
+                accountingObjects = inventoryDomain.accountingObjects,
+                newAccountingObjects = newAccountingObjects
+            )
+            val inventory = inventoryDomain.copy(
+                inventoryStatus = InventoryStatus.IN_PROGRESS,
+                accountingObjects = accountingObjects
+            )
+            inventoryCreateInteractor.saveInventoryDocument(
+                inventoryCreate = inventory,
+                accountingObjects = accountingObjects
+            )
+            dispatch(Result.NewAccountingObjects(setOf()))
+            dispatch(Result.Inventory(inventory))
         }
 
         private suspend fun handleNewAccountingObjectRfids(
             accountingObjects: List<AccountingObjectDomain>,
             handledAccountingObjectIds: List<String>,
-            newAccountingObjects: List<AccountingObjectDomain>
+            newAccountingObjects: List<AccountingObjectDomain>,
+            inventoryStatus: InventoryStatus,
+            isAddNew: Boolean
         ) {
             dispatch(Result.Loading(true))
             catchException {
@@ -120,7 +170,9 @@ class InventoryCreateStoreFactory(
                     inventoryCreateInteractor.handleNewAccountingObjectRfids(
                         accountingObjects = accountingObjects,
                         handledAccountingObjectIds = handledAccountingObjectIds,
-                        newAccountingObjects = newAccountingObjects
+                        newAccountingObjects = newAccountingObjects,
+                        inventoryStatus = inventoryStatus,
+                        isAddNew = isAddNew
                     )
                 dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
                 dispatch(
@@ -133,7 +185,9 @@ class InventoryCreateStoreFactory(
         private suspend fun handleNewAccountingObjectBarcode(
             accountingObjects: List<AccountingObjectDomain>,
             barcode: String,
-            newAccountingObjects: List<AccountingObjectDomain>
+            newAccountingObjects: List<AccountingObjectDomain>,
+            inventoryStatus: InventoryStatus,
+            isAddNew: Boolean
         ) {
             dispatch(Result.Loading(true))
             catchException {
@@ -141,7 +195,9 @@ class InventoryCreateStoreFactory(
                     inventoryCreateInteractor.handleNewAccountingObjectBarcode(
                         accountingObjects = accountingObjects,
                         barcode = barcode,
-                        newAccountingObjects = newAccountingObjects
+                        newAccountingObjects = newAccountingObjects,
+                        inventoryStatus = inventoryStatus,
+                        isAddNew = isAddNew
                     )
                 dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
                 dispatch(

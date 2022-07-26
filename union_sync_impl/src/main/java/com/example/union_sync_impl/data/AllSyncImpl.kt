@@ -1,302 +1,112 @@
 package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.AllSyncApi
-import com.example.union_sync_impl.dao.AccountingObjectDao
-import com.example.union_sync_impl.dao.AccountingObjectStatusDao
-import com.example.union_sync_impl.dao.BranchesDao
-import com.example.union_sync_impl.dao.CounterpartyDao
-import com.example.union_sync_impl.dao.DepartmentDao
-import com.example.union_sync_impl.dao.EmployeeDao
-import com.example.union_sync_impl.dao.EquipmentTypeDao
-import com.example.union_sync_impl.dao.LocationDao
-import com.example.union_sync_impl.dao.LocationPathDao
 import com.example.union_sync_impl.dao.NetworkSyncDao
-import com.example.union_sync_impl.dao.NomenclatureDao
-import com.example.union_sync_impl.dao.NomenclatureGroupDao
-import com.example.union_sync_impl.dao.OrderDao
-import com.example.union_sync_impl.dao.OrganizationDao
-import com.example.union_sync_impl.dao.ProducerDao
-import com.example.union_sync_impl.dao.ProviderDao
-import com.example.union_sync_impl.dao.ReceptionItemCategoryDao
-import com.example.union_sync_impl.dao.RegionDao
-import com.example.union_sync_impl.dao.ReserveDao
-import com.example.union_sync_impl.data.mapper.toAccountingObjectDb
-import com.example.union_sync_impl.data.mapper.toBranchesDb
-import com.example.union_sync_impl.data.mapper.toCounterpartyDb
-import com.example.union_sync_impl.data.mapper.toDepartmentDb
-import com.example.union_sync_impl.data.mapper.toEmployeeDb
-import com.example.union_sync_impl.data.mapper.toEquipmentTypeDb
-import com.example.union_sync_impl.data.mapper.toLocationDb
-import com.example.union_sync_impl.data.mapper.toLocationTypeDb
-import com.example.union_sync_impl.data.mapper.toNomenclatureDb
-import com.example.union_sync_impl.data.mapper.toNomenclatureGroupDb
-import com.example.union_sync_impl.data.mapper.toOrderDb
-import com.example.union_sync_impl.data.mapper.toOrganizationDb
-import com.example.union_sync_impl.data.mapper.toProducerDb
-import com.example.union_sync_impl.data.mapper.toProviderDb
-import com.example.union_sync_impl.data.mapper.toReceptionItemCategoryDb
-import com.example.union_sync_impl.data.mapper.toRegionDb
-import com.example.union_sync_impl.data.mapper.toReserveDb
-import com.example.union_sync_impl.data.mapper.toStatusDb
 import com.example.union_sync_impl.entity.NetworkSyncDb
-import org.openapitools.client.custom_api.AccountingObjectApi
-import org.openapitools.client.custom_api.BranchesApi
-import org.openapitools.client.custom_api.CounterpartyApi
-import org.openapitools.client.custom_api.DepartmentApi
-import org.openapitools.client.custom_api.EmployeeApi
-import org.openapitools.client.custom_api.EquipmentTypeApi
-import org.openapitools.client.custom_api.LocationApi
-import org.openapitools.client.custom_api.NomenclaturesApi
-import org.openapitools.client.custom_api.OrderApi
-import org.openapitools.client.custom_api.OrganizationApi
-import org.openapitools.client.custom_api.ProducerApi
-import org.openapitools.client.custom_api.ReceptionItemCategoryApi
-import org.openapitools.client.custom_api.RegionApi
-import org.openapitools.client.custom_api.ReserveApi
-import org.openapitools.client.models.CustomLocationDto
-import org.openapitools.client.models.CustomLocationsTypeDto
+import com.example.union_sync_impl.sync.SyncRepository
+import com.itrocket.core.base.CoreDispatchers
+import kotlinx.coroutines.withContext
+import org.openapitools.client.custom_api.SyncControllerApi
+import org.openapitools.client.models.StarSyncRequestV2
+import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AllSyncImpl(
-    private val api: AccountingObjectApi,
-    private val accountingObjectsDao: AccountingObjectDao,
-    private val organizationsDao: OrganizationDao,
-    private val employeeDao: EmployeeDao,
-    private val nomenclatureDao: NomenclatureDao,
-    private val nomenclatureGroupDao: NomenclatureGroupDao,
-    private val locationPathDao: LocationPathDao,
-    private val locationDao: LocationDao,
-    private val departmentDao: DepartmentDao,
-    private val providerDao: ProviderDao,
-    private val nomenclatureGroupApi: NomenclaturesApi,
-    private val branchesApi: BranchesApi,
-    private val branchesDao: BranchesDao,
-    private val organizationDao: OrganizationDao,
-    private val counterpartyApi: CounterpartyApi,
-    private val counterpartyDao: CounterpartyDao,
-    private val departmentApi: DepartmentApi,
-    private val employeeApi: EmployeeApi,
-    private val equipmentTypeDao: EquipmentTypeDao,
-    private val equipmentTypeApi: EquipmentTypeApi,
-    private val locationApi: LocationApi,
-    private val organizationApi: OrganizationApi,
-    private val producerApi: ProducerApi,
-    private val producerDao: ProducerDao,
-    private val regionApi: RegionApi,
-    private val regionDao: RegionDao,
-    private val statusesDao: AccountingObjectStatusDao,
-    private val networkSyncDao: NetworkSyncDao,
-    private val orderDao: OrderDao,
-    private val reserveDao: ReserveDao,
-    private val receptionItemCategoryDao: ReceptionItemCategoryDao,
-    private val orderApi: OrderApi,
-    private val reserveApi: ReserveApi,
-    private val receptionItemCategoryApi: ReceptionItemCategoryApi
+    private val syncControllerApi: SyncControllerApi,
+    private val syncRepository: SyncRepository,
+    private val coreDispatchers: CoreDispatchers,
+    private val syncDao: NetworkSyncDao
 ) : AllSyncApi {
 
-    override suspend fun syncAll() {
-        syncProducers()
-        syncCounterparty()
-        syncNomenclatureGroup()
+    override suspend fun syncAll() = withContext(coreDispatchers.io) {
+        startNewSync()
+    }
 
-        syncNomenclature()
+    private suspend fun startNewSync() {
+        val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        val dateTime: String = dateFormatter.format(Date(getLastSyncTime()))
 
-        syncOrganization()
-        syncEmployee()
-        syncDepartment()
-        syncBranches()
-        syncRegions()
+        Timber.tag(SYNC_TAG).d("startNewSync date = $dateTime")
+        val syncInfo = syncControllerApi.apiSyncPost(StarSyncRequestV2(dateTime))
+        Timber.tag(SYNC_TAG).d("sync started ${syncInfo.id}")
 
-        syncEquipment()
-        syncLocations()
+        startExportFromLocalToServer(syncInfo.id)
 
-        syncAccountingObjects()
+        startExportFromServerToLocal(syncInfo.id)
 
-        syncOrder()
-        syncReceptionCategoryItem()
-        syncReserves()
+        val syncCompletedInfo = syncControllerApi.apiSyncIdCompleteSyncPost(syncInfo.id)
 
-        networkSyncDao.insert(
+        Timber.tag(SYNC_TAG).d(
+            "sync completed\n" +
+                    "isUploadComplete : ${syncCompletedInfo.importComplete}, uploaded parts count: ${syncCompletedInfo.importPartBufferInformation.importRequestsInformation?.size}\n" +
+                    "isDownloadComplete : ${syncCompletedInfo.exportComplete}, all parts count from server: ${syncCompletedInfo.exportPartBufferInformation.exportPartsInformation?.size}"
+        )
+        updateLastSyncTime()
+    }
+
+    private suspend fun getLastSyncTime(): Long {
+        return syncDao.getNetworkSync()?.lastSyncTime ?: 0
+    }
+
+    private suspend fun updateLastSyncTime() {
+        syncDao.insert(
             NetworkSyncDb(
-                isAllSynced = true
+                lastSyncTime = System.currentTimeMillis(),
+                isSynced = true
             )
         )
     }
 
-    private suspend fun syncRegions() {
-        val regionNetwork = regionApi.apiCatalogRegionGet().list.orEmpty()
-        regionNetwork.mapNotNull { it?.extendedOrganization?.toOrganizationDb() }
-            .let { dbOrganization -> organizationDao.insertAll(dbOrganization) }
+    private suspend fun startExportFromLocalToServer(syncId: String) {
+        syncControllerApi.apiSyncIdStartImportPost(syncId)
+        Timber.tag(SYNC_TAG).d("started export from local to server")
 
-        regionNetwork.mapNotNull { it?.toRegionDb() }.let { dbRegion ->
-            regionDao.insertAll(dbRegion)
+        val syncEntities = syncRepository.getUploadSyncEntities()
+
+        syncEntities.forEach { syncEntity ->
+            syncEntity.upload(syncId)
         }
+        syncControllerApi.apiSyncIdCompleteImportPost(syncId)
+
+        Timber.tag(SYNC_TAG).d("completed export from local to server")
     }
 
-    private suspend fun syncProducers() {
-        val producerNetwork = producerApi.apiCatalogsProducerGet().list.orEmpty()
-        producerNetwork.map { it.toProducerDb() }.let { dbProducer ->
-            producerDao.insertAll(dbProducer)
-        }
-    }
+    private suspend fun startExportFromServerToLocal(syncId: String) {
+        val exportSyncInfo = syncControllerApi.apiSyncIdStartExportPost(syncId)
+        Timber.tag(SYNC_TAG).d("started export from server to local")
 
-    private suspend fun syncOrganization() {
-        val organizationNetwork = organizationApi.apiCatalogsOrganizationGet().list
-        organizationNetwork?.map { it.toOrganizationDb() }?.let { dbOrganizations ->
-            organizationDao.insertAll(dbOrganizations)
-        }
-    }
+        Timber.tag(SYNC_TAG).d("clear data before download")
+        syncRepository.clearDataBeforeDownload()
 
-    private suspend fun syncLocations() {
-        kotlin.runCatching { //TODO посже необходимо убрат, сейчас без этого в прилу не попасть
-            val networkLocationTypes: List<CustomLocationsTypeDto> =
-                requireNotNull(locationApi.apiLocationsTypesGet().list)
-            locationDao.insertAllLocationTypes(networkLocationTypes.map { it.toLocationTypeDb() })
-        }
+        val syncEntities = syncRepository.getSyncEntities()
 
-        kotlin.runCatching { //TODO посже необходимо убрат, сейчас без этого в прилу не попасть
-            val networkLocations: List<CustomLocationDto> =
-                requireNotNull(locationApi.apiLocationsGet().list)
-            locationDao.insertAll(networkLocations.map { it.toLocationDb() })
-        }
-    }
+        val entityModelIds = hashSetOf<String>()
 
-    private suspend fun syncEquipment() {
-        val networkData = equipmentTypeApi.apiCatalogEquipmentTypesGet().list.orEmpty()
-        networkData.map { it.toEquipmentTypeDb() }.let { dbEquipmentType ->
-            equipmentTypeDao.insertAll(dbEquipmentType)
-        }
-    }
+        exportSyncInfo.exportPartBufferInformation.exportPartsInformation.forEach { exportPartInformationV2 ->
+            val exportPartId = exportPartInformationV2.id
+            val entityId = exportPartInformationV2.entityModel.id
+            val tableId = exportPartInformationV2.table
 
-    private suspend fun syncEmployee() {
-        val employeeNetwork = employeeApi.apiCatalogsEmployeesGet().list ?: emptyList()
-        organizationDao.insertAll(employeeNetwork.mapNotNull { it.extendedOrganization?.toOrganizationDb() })
-        employeeDao.insertAll(employeeNetwork.map { it.toEmployeeDb() })
-    }
+            entityModelIds.add(entityId)
 
-    private suspend fun syncDepartment() {
-        val departmentNetwork =
-            departmentApi.apiCatalogsDepartmentGet().list ?: emptyList()
-        organizationDao.insertAll(departmentNetwork.mapNotNull { it.extendedOrganization?.toOrganizationDb() })
-        departmentDao.insertAll(departmentNetwork.map { it.toDepartmentDb() })
-    }
-
-    private suspend fun syncCounterparty() {
-        val counterpartyNetwork = counterpartyApi.apiCatalogsCounterpartyGet().list.orEmpty()
-        counterpartyNetwork.map { it.toCounterpartyDb() }.let { dbCounterparty ->
-            counterpartyDao.insertAll(dbCounterparty)
-        }
-    }
-
-    private suspend fun syncBranches() {
-        val branchesNetwork = branchesApi.apiCatalogsBranchesGet().list.orEmpty()
-        organizationDao.insertAll(branchesNetwork.mapNotNull { it.extendedOrganization?.toOrganizationDb() })
-        branchesNetwork.map { it.toBranchesDb() }.let { dbBranches ->
-            branchesDao.insertAll(dbBranches)
-        }
-    }
-
-    private suspend fun syncNomenclatureGroup() {
-        kotlin.runCatching { //TODO посже необходимо убрат, сейчас без этого в прилу не попасть
-            val nomenclaturesGroupNetwork =
-                nomenclatureGroupApi.apiCatalogsNomenclatureGroupGet().list ?: emptyList()
-
-            nomenclatureGroupDao.insertAll(nomenclaturesGroupNetwork.map { it.toNomenclatureGroupDb() })
-        }
-    }
-
-    private suspend fun syncNomenclature() {
-        kotlin.runCatching { //TODO посже необходимо убрат, сейчас без этого в прилу не попасть
-            val nomenclatureNetwork =
-                nomenclatureGroupApi.apiCatalogsNomenclatureGet().list ?: emptyList()
-
-            nomenclatureGroupDao.insertAll(
-                nomenclatureNetwork.mapNotNull {
-                    it.extendedNomenclatureGroup?.toNomenclatureGroupDb()
+            if (syncEntities.contains(entityId to tableId)) {
+                val syncEntity = syncEntities.getOrElse(entityId to tableId) {
+                    throw IllegalStateException()
                 }
-            )
-            nomenclatureDao.insertAll(
-                nomenclatureNetwork.map {
-                    it.toNomenclatureDb()
-                }
-            )
-        }
-    }
-
-    private suspend fun syncAccountingObjects() {
-        api.apiAccountingObjectsGet().list?.let { objects ->
-            organizationsDao.insertAll(
-                (
-                        objects.mapNotNull { it.extendedOrganization?.toOrganizationDb() } +
-                                objects.mapNotNull { it.extendedDepartment?.extendedOrganization?.toOrganizationDb() } +
-                                objects.mapNotNull { it.extendedMol?.extendedOrganization?.toOrganizationDb() } +
-                                objects.mapNotNull { it.extendedExploiting?.extendedOrganization?.toOrganizationDb() }
-                        ).distinctBy { it.id }
-            )
-
-            employeeDao.insertAll(
-                (objects.mapNotNull { it.extendedMol?.toEmployeeDb() } +
-                        objects.mapNotNull { it.extendedExploiting?.toEmployeeDb() }).distinctBy { it.id }
-            )
-
-            nomenclatureGroupDao.insertAll(
-                (
-                        objects.mapNotNull { it.extendedNomenclatureGroup?.toNomenclatureGroupDb() } +
-                                objects.mapNotNull { it.extendedNomenclature?.extendedNomenclatureGroup?.toNomenclatureGroupDb() }
-                        ).distinctBy { it.id }
-            )
-
-            nomenclatureDao.insertAll(objects.mapNotNull { it.extendedNomenclature?.toNomenclatureDb() })
-            locationDao.insertAll(objects.mapNotNull { it.extendedLocation?.toLocationDb() })
-            departmentDao.insertAll(objects.mapNotNull { it.extendedDepartment?.toDepartmentDb() })
-            providerDao.insertAll(objects.mapNotNull { it.extendedProvider?.toProviderDb() })
-            statusesDao.insertAll(objects.mapNotNull { it.extendedAccountingObjectStatus?.toStatusDb() })
-            accountingObjectsDao.insertAll(objects.map { it.toAccountingObjectDb() })
-        }
-    }
-
-    private suspend fun syncReserves() {
-        reserveApi.apiRemainsGet().list?.let { reserves ->
-            organizationDao.insertAll(
-                reserves.mapNotNull { it.extendedBusinessUnit?.toOrganizationDb() } +
-                        reserves.mapNotNull { it.extendedMol?.extendedOrganization?.toOrganizationDb() } +
-                        reserves.mapNotNull { it.extendedStructuralSubdivision?.extendedOrganization?.toOrganizationDb() }
-                            .distinctBy { it.id }
-            )
-
-            employeeDao.insertAll(
-                reserves.mapNotNull { it.extendedMol?.toEmployeeDb() }.distinctBy { it.id }
-            )
-
-            nomenclatureGroupDao.insertAll(
-                (
-                        reserves.mapNotNull { it.extendedNomenclatureGroup?.toNomenclatureGroupDb() } +
-                                reserves.mapNotNull { it.extendedNomenclature?.extendedNomenclatureGroup?.toNomenclatureGroupDb() }
-                        ).distinctBy { it.id }
-            )
-
-            nomenclatureDao.insertAll(reserves.mapNotNull { it.extendedNomenclature?.toNomenclatureDb() })
-            locationDao.insertAll(reserves.mapNotNull { it.extendedLocation?.toLocationDb() })
-            departmentDao.insertAll(reserves.mapNotNull { it.extendedStructuralSubdivision?.toDepartmentDb() })
-            receptionItemCategoryDao.insertAll(reserves.mapNotNull { it.extendedReceptionItemCategory?.toReceptionItemCategoryDb() })
-            orderDao.insertAll(reserves.mapNotNull { it.extendedOrder?.toOrderDb() })
-            reserveDao.insertAll(reserves.map { it.toReserveDb() })
-
-        }
-    }
-
-    private suspend fun syncOrder() {
-        kotlin.runCatching { // TODO: убрать когда понадобятся
-            orderApi.apiCatalogsOrderGet().list?.let { orders ->
-                orderDao.insertAll(orders.mapNotNull { it?.toOrderDb() })
+                syncEntity.exportFromServer(syncId, exportPartId)
             }
         }
+
+        Timber.tag(SYNC_TAG)
+            .d("exportPartsInformation count ${exportSyncInfo.exportPartBufferInformation.exportPartsInformation.size}")
+        Timber.tag(SYNC_TAG).d("all entityModelIds $entityModelIds in this sync")
+        syncControllerApi.apiSyncIdCompleteExportPost(syncId)
+
+        Timber.tag(SYNC_TAG).d("completed export from server to local")
     }
 
-    private suspend fun syncReceptionCategoryItem() {
-        kotlin.runCatching {
-            receptionItemCategoryApi.apiCatalogsReceptionItemCategoryGet().list?.let { receptionCategoryItems ->
-                receptionItemCategoryDao.insertAll(receptionCategoryItems.mapNotNull { it?.toReceptionItemCategoryDb() })
-            }
-        }
+    companion object {
+        const val SYNC_TAG = "SYNC_TAG"
     }
 }

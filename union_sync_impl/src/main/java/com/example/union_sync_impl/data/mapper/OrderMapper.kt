@@ -3,14 +3,16 @@ package com.example.union_sync_impl.data.mapper
 import com.example.union_sync_api.entity.OrderSyncEntity
 import com.example.union_sync_impl.entity.OrderDb
 import org.openapitools.client.models.CustomOrderDto
+import org.openapitools.client.models.OrderDtoV2
 
-fun CustomOrderDto.toOrderDb(): OrderDb {
+fun OrderDtoV2.toOrderDb(): OrderDb {
     return OrderDb(
         id = id,
         catalogItemName = catalogItemName.orEmpty(),
         number = number,
         summary = summary,
-        date = date
+        date = date,
+        updateDate = System.currentTimeMillis()
     )
 }
 

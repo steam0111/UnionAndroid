@@ -20,7 +20,7 @@ class InventoryRepositoryImpl(
     private val inventorySyncApi: InventorySyncApi,
 ) : InventoryRepository {
 
-    override suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): Long =
+    override suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): String =
         withContext(coreDispatchers.io) {
             inventorySyncApi.createInventory(inventoryCreateSyncEntity)
         }
@@ -30,7 +30,7 @@ class InventoryRepositoryImpl(
             inventorySyncApi.updateInventory(inventoryUpdateSyncEntity)
         }
 
-    override suspend fun getInventoryById(id: Long): InventoryCreateDomain =
+    override suspend fun getInventoryById(id: String): InventoryCreateDomain =
         withContext(coreDispatchers.io) {
             inventorySyncApi.getInventoryById(id).map()
         }
@@ -47,6 +47,15 @@ class InventoryRepositoryImpl(
             ).map {
                 it.map()
             }.flowOn(coreDispatchers.io)
+        }
+
+    override suspend fun getInventoriesCount(textQuery: String?, params: List<ParamDomain>?): Long =
+        withContext(coreDispatchers.io) {
+            inventorySyncApi.getInventoriesCount(
+                textQuery = textQuery,
+                organizationId = params?.getOrganizationId(),
+                molId = params?.getMolId()
+            )
         }
 
 }

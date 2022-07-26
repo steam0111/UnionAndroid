@@ -11,4 +11,8 @@ class SyncAllInteractor(
     suspend fun syncAll() = withContext(coreDispatchers.io) {
         repository.syncAll()
     }
+    suspend fun clearAll() =
+        withContext(coreDispatchers.io) {
+            repository.clearAll()
+        }
 }

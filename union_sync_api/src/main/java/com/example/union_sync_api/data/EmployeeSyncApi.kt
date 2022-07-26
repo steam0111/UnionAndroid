@@ -9,5 +9,10 @@ interface EmployeeSyncApi {
         organizationId: String? = null
     ): List<EmployeeSyncEntity>
 
+    suspend fun getEmployeesCount(
+        textQuery: String? = null,
+        organizationId: String? = null
+    ): Long
+
     suspend fun getEmployeeDetail(id: String): EmployeeDetailSyncEntity
 }

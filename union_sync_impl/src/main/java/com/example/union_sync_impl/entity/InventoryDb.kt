@@ -1,16 +1,18 @@
 package com.example.union_sync_impl.entity
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.example.union_sync_api.entity.AccountingObjectInfoSyncEntity
+import com.example.union_sync_impl.entity.core.SyncItemDb
+import com.squareup.moshi.Json
 
 @Entity(tableName = "inventories")
 class InventoryDb(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = 0L,
-    val organizationId: String,
+    id: String = "",
+    updateDate: Long?,
+    val organizationId: String?,
     val employeeId: String?,
-    val accountingObjectsIds: List<AccountingObjectInfoSyncEntity>,
-    val locationIds: List<String>? = listOf(),
-    val date: Long
-)
+    val locationIds: List<String>?,
+    val date: Long?,
+    val inventoryStatus: String,
+    val code: String?,
+    val name: String?
+) : SyncItemDb(id, updateDate)

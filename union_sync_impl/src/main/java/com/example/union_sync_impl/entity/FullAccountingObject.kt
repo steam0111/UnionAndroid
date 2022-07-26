@@ -2,6 +2,7 @@ package com.example.union_sync_impl.entity
 
 import androidx.room.Embedded
 import com.example.union_sync_impl.entity.location.LocationDb
+import com.example.union_sync_impl.entity.location.LocationTypeDb
 
 class FullAccountingObject(
     @Embedded
@@ -21,5 +22,7 @@ class FullAccountingObject(
     @Embedded(prefix = "equipment_type_")
     val equipmentType: EquipmentTypesDb?,
     @Embedded(prefix = "provider_")
-    val provider: ProviderDb?
+    val provider: ProviderDb?,
+    @Embedded(prefix = "branches_")
+    val branch: BranchesDb?
 )

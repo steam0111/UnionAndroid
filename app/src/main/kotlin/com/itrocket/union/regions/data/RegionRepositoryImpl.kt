@@ -17,4 +17,10 @@ class RegionRepositoryImpl(
             regionSyncApi.getRegions(textQuery = textQuery).map()
         }
     }
+
+    override suspend fun getRegionsCount(textQuery: String?): Long {
+        return withContext(coreDispatchers.io) {
+            regionSyncApi.getRegionsCount(textQuery = textQuery)
+        }
+    }
 }

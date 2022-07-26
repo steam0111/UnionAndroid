@@ -4,8 +4,9 @@ import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
+import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.R
-import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectArguments
+import com.itrocket.union.authContainer.presentation.view.AuthContainerArguments
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.presentation.store.DocumentArguments
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
@@ -21,18 +22,22 @@ interface DocumentMenuStore :
         object OnProfileClicked : Intent()
         object OnLogoutClicked : Intent()
         object OnSettingsClicked : Intent()
+        object OnBackClicked : Intent()
     }
 
     data class State(
         val documents: List<DocumentMenuDomain> = listOf(),
+        val menuDeepLevel: Int = 0,
         val userName: String = "",
-        val loading: Boolean = false
+        val loading: Boolean = false,
     )
 
     sealed class Label {
+        object GoBack : Label(), GoBackNavigationLabel
+
         object ShowAuth : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
-                get() = DocumentMenuComposeFragmentDirections.toAuth()
+                get() = DocumentMenuComposeFragmentDirections.toAuth(AuthContainerArguments(false))
         }
 
         object ShowSettings : Label(), ForwardNavigationLabel {
@@ -54,13 +59,13 @@ interface DocumentMenuStore :
                         DocumentArguments(DocumentTypeDomain.COMMISSIONING)
                     )
                     R.string.main_issue -> DocumentMenuComposeFragmentDirections.toDocuments(
-                        DocumentArguments(DocumentTypeDomain.EXTRADITION)
+                        DocumentArguments(DocumentTypeDomain.GIVE)
                     )
                     R.string.main_return -> DocumentMenuComposeFragmentDirections.toDocuments(
                         DocumentArguments(DocumentTypeDomain.RETURN)
                     )
                     R.string.main_moved -> DocumentMenuComposeFragmentDirections.toDocuments(
-                        DocumentArguments(DocumentTypeDomain.MOVING)
+                        DocumentArguments(DocumentTypeDomain.RELOCATION)
                     )
                     R.string.main_write_off -> DocumentMenuComposeFragmentDirections.toDocuments(
                         DocumentArguments(DocumentTypeDomain.WRITE_OFF)
@@ -71,7 +76,7 @@ interface DocumentMenuStore :
                     R.string.nomenclature -> DocumentMenuComposeFragmentDirections.toNomenclature(
                         NomenclatureArguments(0)
                     )
-                    R.string.main_inventory -> DocumentMenuComposeFragmentDirections.toInventoryContainer(
+                    R.string.create_inventory -> DocumentMenuComposeFragmentDirections.toInventoryContainer(
                         null
                     )
                     R.string.organizations -> DocumentMenuComposeFragmentDirections.toOrganizations()
@@ -83,6 +88,7 @@ interface DocumentMenuStore :
                     R.string.branches -> DocumentMenuComposeFragmentDirections.toBranches()
                     R.string.producer -> DocumentMenuComposeFragmentDirections.toProducer()
                     R.string.equipment_types -> DocumentMenuComposeFragmentDirections.toEquipmentTypes()
+                    R.string.sync -> DocumentMenuComposeFragmentDirections.toSync()
                     else -> DocumentMenuComposeFragmentDirections.toAccountingObjects(null)
                 }
         }

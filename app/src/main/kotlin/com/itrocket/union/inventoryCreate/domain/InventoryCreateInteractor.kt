@@ -3,6 +3,7 @@ package com.itrocket.union.inventoryCreate.domain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectsDomain
@@ -19,7 +20,7 @@ class InventoryCreateInteractor(
 
     suspend fun getInventoryById(id: String) =
         withContext(coreDispatchers.io) {
-            inventoryRepository.getInventoryById(id.toLong())
+            inventoryRepository.getInventoryById(id)
         }
 
     suspend fun saveInventoryDocument(
@@ -41,7 +42,9 @@ class InventoryCreateInteractor(
     suspend fun handleNewAccountingObjectRfids(
         accountingObjects: List<AccountingObjectDomain>,
         newAccountingObjects: List<AccountingObjectDomain>,
-        handledAccountingObjectIds: List<String>
+        handledAccountingObjectIds: List<String>,
+        inventoryStatus: InventoryStatus,
+        isAddNew: Boolean
     ): InventoryAccountingObjectsDomain {
         return withContext(coreDispatchers.io) {
             val newAccountingObjectRfids = mutableListOf<String>()
@@ -59,7 +62,9 @@ class InventoryCreateInteractor(
                         mutableAccountingObjects,
                         accountingObjectIndex
                     )
-                    newAccountingObjectIndex == NO_INDEX -> newAccountingObjectRfids.add(rfid)
+                    newAccountingObjectIndex == NO_INDEX && inventoryStatus == InventoryStatus.CREATED && isAddNew -> newAccountingObjectRfids.add(
+                        rfid
+                    )
                 }
             }
 
@@ -75,7 +80,9 @@ class InventoryCreateInteractor(
     suspend fun handleNewAccountingObjectBarcode(
         accountingObjects: List<AccountingObjectDomain>,
         barcode: String,
-        newAccountingObjects: List<AccountingObjectDomain>
+        newAccountingObjects: List<AccountingObjectDomain>,
+        inventoryStatus: InventoryStatus,
+        isAddNew: Boolean
     ): InventoryAccountingObjectsDomain {
         return withContext(coreDispatchers.io) {
             val barcodeAccountingObjects = mutableListOf<AccountingObjectDomain>()
@@ -92,7 +99,7 @@ class InventoryCreateInteractor(
                     mutableAccountingObjects,
                     accountingObjectIndex
                 )
-                newAccountingObjectIndex == NO_INDEX -> {
+                newAccountingObjectIndex == NO_INDEX && inventoryStatus == InventoryStatus.CREATED && isAddNew -> {
                     val accountingObjectDomain = getHandleAccountingObjectByBarcode(barcode)
                     if (accountingObjectDomain != null) {
                         barcodeAccountingObjects.add(accountingObjectDomain)
@@ -128,6 +135,15 @@ class InventoryCreateInteractor(
         newAccountingObject: AccountingObjectDomain
     ): Boolean {
         return !accountingObjects.contains(newAccountingObject)
+    }
+
+    fun makeInInventoryAccountingObjects(
+        accountingObjects: List<AccountingObjectDomain>,
+        newAccountingObjects: List<AccountingObjectDomain>
+    ): List<AccountingObjectDomain> {
+        return accountingObjects + newAccountingObjects.map {
+            it.copy(inventoryStatus = InventoryAccountingObjectStatus.FOUND)
+        }
     }
 
     private suspend fun getHandlesAccountingObjectByRfid(rfids: List<String>): List<AccountingObjectDomain> {

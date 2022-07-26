@@ -54,6 +54,8 @@ import com.itrocket.union.switcher.SwitcherModule
 import com.itrocket.union.syncAll.SyncAllModule
 import com.itrocket.union.token.TokenModule
 import com.union.sdk.SyncModule
+import com.itrocket.union.chooseAction.ChooseActionModule
+import com.itrocket.union.selectCount.SelectCountModule
 
 object Modules {
 
@@ -106,6 +108,8 @@ object Modules {
         ReservesModule.module,
         ScannerModule.module,
         SearchModule.module,
+        ChooseActionModule.module,
+        SelectCountModule.module
         SelectParamsModule.module,
         ServerConnectModule.module,
         SwitcherModule.module,

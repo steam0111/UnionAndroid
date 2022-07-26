@@ -7,11 +7,16 @@ import com.itrocket.union.manual.ParamDomain
 import kotlinx.coroutines.flow.Flow
 
 interface InventoryRepository {
-    suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): Long
+    suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): String
     suspend fun updateInventory(inventoryUpdateSyncEntity: InventoryUpdateSyncEntity)
-    suspend fun getInventoryById(id: Long): InventoryCreateDomain
+    suspend fun getInventoryById(id: String): InventoryCreateDomain
     suspend fun getInventories(
         textQuery: String? = null,
         params: List<ParamDomain>?
     ): Flow<List<InventoryCreateDomain>>
+
+    suspend fun getInventoriesCount(
+        textQuery: String? = null,
+        params: List<ParamDomain>?
+    ): Long
 }

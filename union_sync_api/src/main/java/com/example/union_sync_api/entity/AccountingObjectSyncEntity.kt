@@ -26,7 +26,8 @@ data class AccountingObjectSyncEntity(
     val exploitingEmployeeId: String?,
     val organizationId: String?,
     val model: String?,
-    val locationSyncEntity: LocationSyncEntity?
+    val locationSyncEntity: LocationSyncEntity?,
+    val branchId: String?
 )
 
 fun AccountingObjectSyncEntity.toAccountingObjectUpdateSyncEntity(): AccountingObjectUpdateSyncEntity {
@@ -36,5 +37,9 @@ fun AccountingObjectSyncEntity.toAccountingObjectUpdateSyncEntity(): AccountingO
         exploitingId = exploitingEmployeeId,
         status = status,
         statusId = statusId,
+        updateDate = System.currentTimeMillis(),
+        departmentId = departmentId,
+        branchId = branchId,
+        molId = molId
     )
 }

@@ -82,7 +82,7 @@ class ReservesStoreFactory(
         }
 
         private fun onItemClicked(item: ReservesDomain) {
-            if (reservesArguments?.params.isNullOrEmpty()) {
+            if (reservesArguments?.isFromDocument != true) {
                 publish(
                     ReservesStore.Label.ShowDetail(item)
                 )
