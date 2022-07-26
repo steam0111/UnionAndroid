@@ -72,11 +72,41 @@ class ModuleSettingsStoreFactory(
                     )
                     publish(ModuleSettingsStore.Label.GoBack)
                 }
-                is ModuleSettingsStore.Intent.OnDefaultServiceChanged -> dispatch(
+                is ModuleSettingsStore.Intent.OnServicesHandled -> onServicesHandled(
+                    services = intent.services,
+                    defaultService = getState().defaultService
+                )
+                ModuleSettingsStore.Intent.OnDropdownDismiss -> dispatch(
+                    Result.DropdownExpanded(
+                        false
+                    )
+                )
+                is ModuleSettingsStore.Intent.OnDropdownItemClicked -> {
+                    dispatch(Result.DropdownExpanded(false))
+                    dispatch(Result.Service(intent.service))
+                }
+                ModuleSettingsStore.Intent.OnDropdownOpenClicked -> dispatch(
+                    Result.DropdownExpanded(
+                        true
+                    )
+                )
+                is ModuleSettingsStore.Intent.OnDefaultServiceHandled -> dispatch(
                     Result.Service(
                         intent.service
                     )
                 )
+            }
+        }
+
+        private fun onServicesHandled(services: List<String>, defaultService: String) {
+            dispatch(
+                Result.Services(
+                    services
+                )
+            )
+            if (defaultService.isEmpty()) {
+                val selectedService = services.firstOrNull() ?: DEFAULT_SERVICE
+                dispatch(Result.Service(selectedService))
             }
         }
 
@@ -90,6 +120,8 @@ class ModuleSettingsStoreFactory(
         data class KeyCode(val keyCode: Int) : Result()
         data class WaitDefine(val waitDefine: Boolean) : Result()
         data class Service(val service: String) : Result()
+        data class Services(val services: List<String>) : Result()
+        data class DropdownExpanded(val dropdownExpanded: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<ModuleSettingsStore.State, Result> {
@@ -99,6 +131,12 @@ class ModuleSettingsStoreFactory(
                 is Result.KeyCode -> copy(keyCode = result.keyCode)
                 is Result.WaitDefine -> copy(isDefineWait = result.waitDefine)
                 is Result.Service -> copy(defaultService = result.service)
+                is Result.Services -> copy(services = result.services)
+                is Result.DropdownExpanded -> copy(dropdownExpanded = result.dropdownExpanded)
             }
+    }
+
+    companion object {
+        private const val DEFAULT_SERVICE = "ru.interid.chainwayservice"
     }
 }

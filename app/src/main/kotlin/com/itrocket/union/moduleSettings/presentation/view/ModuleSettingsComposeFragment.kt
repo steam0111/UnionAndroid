@@ -45,6 +45,15 @@ class ModuleSettingsComposeFragment :
                 },
                 onSaveClickListener = {
                     accept(ModuleSettingsStore.Intent.OnSaveClicked)
+                },
+                onDropdownItemClickListener = {
+                    accept(ModuleSettingsStore.Intent.OnDropdownItemClicked(it))
+                },
+                onDropdownDismiss = {
+                    accept(ModuleSettingsStore.Intent.OnDropdownDismiss)
+                },
+                onDropdownOpenClickListener = {
+                    accept(ModuleSettingsStore.Intent.OnDropdownOpenClicked)
                 }
             )
         }
@@ -60,12 +69,19 @@ class ModuleSettingsComposeFragment :
                 }
             }
             launch {
+                serviceEntryManager.defaultService.collect {
+                    withContext(Dispatchers.Main) {
+                        accept(
+                            ModuleSettingsStore.Intent.OnDefaultServiceHandled(it.orEmpty())
+                        )
+                    }
+                }
+            }
+            launch {
                 serviceEntryManager.installedServices.collect {
                     withContext(Dispatchers.Main) {
                         accept(
-                            ModuleSettingsStore.Intent.OnDefaultServiceChanged(
-                                it.firstOrNull() ?: DEFAULT_SERVICE
-                            )
+                            ModuleSettingsStore.Intent.OnServicesHandled(it)
                         )
                     }
                 }
@@ -73,7 +89,4 @@ class ModuleSettingsComposeFragment :
         }
     }
 
-    companion object {
-        private const val DEFAULT_SERVICE = "ru.interid.chainwayservice"
-    }
 }

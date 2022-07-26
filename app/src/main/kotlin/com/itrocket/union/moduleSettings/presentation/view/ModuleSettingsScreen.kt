@@ -36,7 +36,11 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.moduleSettings.presentation.store.ModuleSettingsStore
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Scaffold
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -56,7 +60,10 @@ fun ModuleSettingsScreen(
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
     onDefineCursorClickListener: () -> Unit,
-    onSaveClickListener: () -> Unit
+    onSaveClickListener: () -> Unit,
+    onDropdownDismiss: () -> Unit,
+    onDropdownItemClickListener: (String) -> Unit,
+    onDropdownOpenClickListener: () -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -76,7 +83,10 @@ fun ModuleSettingsScreen(
                 Content(
                     state = state,
                     onDefineCursorClickListener = onDefineCursorClickListener,
-                    paddingValues = it
+                    paddingValues = it,
+                    onDropdownDismiss = onDropdownDismiss,
+                    onDropdownItemClickListener = onDropdownItemClickListener,
+                    onDropdownOpenClickListener = onDropdownOpenClickListener
                 )
             }
         )
@@ -96,7 +106,10 @@ private fun Toolbar(onBackClickListener: () -> Unit) {
 private fun Content(
     state: ModuleSettingsStore.State,
     onDefineCursorClickListener: () -> Unit,
-    paddingValues: PaddingValues
+    onDropdownDismiss: () -> Unit,
+    onDropdownItemClickListener: (String) -> Unit,
+    onDropdownOpenClickListener: () -> Unit,
+    paddingValues: PaddingValues,
 ) {
     Column(modifier = Modifier.padding(paddingValues)) {
         Spacer(modifier = Modifier.height(24.dp))
@@ -104,6 +117,13 @@ private fun Content(
             onDefineCursorClickListener = onDefineCursorClickListener,
             keyCode = state.keyCode,
             waitDefine = state.isDefineWait
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        SelectServiceComponent(
+            state = state,
+            onDropdownOpenClickListener = onDropdownOpenClickListener,
+            onDropdownDismiss = onDropdownDismiss,
+            onDropdownItemClickListener = onDropdownItemClickListener
         )
     }
 }
@@ -168,6 +188,36 @@ private fun DefineCursorComponent(
     }
 }
 
+@Composable
+private fun SelectServiceComponent(
+    state: ModuleSettingsStore.State,
+    onDropdownDismiss: () -> Unit,
+    onDropdownItemClickListener: (String) -> Unit,
+    onDropdownOpenClickListener: () -> Unit
+) {
+    Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+        DropdownMenuItem(onClick = onDropdownOpenClickListener) {
+            Text(text = state.defaultService, style = AppTheme.typography.body2)
+        }
+        DropdownMenu(
+            expanded = state.dropdownExpanded,
+            onDismissRequest = onDropdownDismiss,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            state.services.forEach {
+                DropdownMenuItem(
+                    onClick = { onDropdownItemClickListener(it) },
+                    modifier = Modifier.padding(horizontal = 24.dp)
+                ) {
+                    Text(text = it, style = AppTheme.typography.body2)
+                }
+            }
+        }
+    }
+}
+
+
 @Preview(
     name = "светлая тема экран - 6.3 (3040x1440)",
     showSystemUi = true,
@@ -188,5 +238,9 @@ fun ModuleSettingsScreenPreview() {
         AppInsets(topInset = previewTopInsetDp),
         {},
         {},
-        {})
+        {},
+        {},
+        {},
+        {}
+    )
 }

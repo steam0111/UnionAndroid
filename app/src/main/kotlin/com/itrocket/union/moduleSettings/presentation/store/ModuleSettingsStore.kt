@@ -11,7 +11,11 @@ interface ModuleSettingsStore :
         object OnBackClicked : Intent()
         object OnDefineCursorClicked : Intent()
         object OnSaveClicked : Intent()
-        data class OnDefaultServiceChanged(val service: String) : Intent()
+        object OnDropdownDismiss : Intent()
+        object OnDropdownOpenClicked : Intent()
+        data class OnDropdownItemClicked(val service: String) : Intent()
+        data class OnServicesHandled(val services: List<String>) : Intent()
+        data class OnDefaultServiceHandled(val service: String) : Intent()
         data class OnCursorDefined(val keyCode: Int) : Intent()
     }
 
@@ -19,7 +23,9 @@ interface ModuleSettingsStore :
         val isLoading: Boolean = false,
         val isDefineWait: Boolean = false,
         val defaultService: String = "",
-        val keyCode: Int = 0
+        val services: List<String> = listOf(),
+        val keyCode: Int = 0,
+        val dropdownExpanded: Boolean = false
     )
 
     sealed class Label {
