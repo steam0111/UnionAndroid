@@ -39,21 +39,13 @@ import com.itrocket.utils.clickableUnbounded
 fun EmployeeDetailScreen(
     state: EmployeeDetailStore.State,
     appInsets: AppInsets,
-    onBackClickListener: () -> Unit,
-    onSaveBtnClickListener: () -> Unit,
-    onSearchClickListener: () -> Unit
+    onBackClickListener: () -> Unit
 ) {
     AppTheme {
         Scaffold(
             topBar = {
                 Toolbar(
-                    onBackClickListener = onBackClickListener,
-                    onSearchClickListener = onSearchClickListener
-                )
-            },
-            bottomBar = {
-                BottomBar(
-                    onBtnClickListener = onSaveBtnClickListener
+                    onBackClickListener = onBackClickListener
                 )
             },
             modifier = Modifier.padding(
@@ -71,43 +63,15 @@ fun EmployeeDetailScreen(
 
 @Composable
 private fun Toolbar(
-    onBackClickListener: () -> Unit,
-    onSearchClickListener: () -> Unit
+    onBackClickListener: () -> Unit
 ) {
     BaseToolbar(
         title = stringResource(id = R.string.employees_title),
         startImageId = R.drawable.ic_cross,
         onStartImageClickListener = onBackClickListener,
         backgroundColor = psb1,
-        textColor = white,
-        content = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_document_search),
-                    contentDescription = null,
-                    modifier = Modifier.clickableUnbounded(onClick = onSearchClickListener)
-                )
-            }
-        }
+        textColor = white
     )
-}
-
-@Composable
-private fun BottomBar(
-    onBtnClickListener: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(graphite2)
-            .padding(16.dp)
-    ) {
-        BaseButton(
-            text = stringResource(R.string.save),
-            onClick = onBtnClickListener,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
 }
 
 @Composable
@@ -153,5 +117,5 @@ fun EmployeeDetailScreenPreview() {
                     )
                 )
             )
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {})
 }

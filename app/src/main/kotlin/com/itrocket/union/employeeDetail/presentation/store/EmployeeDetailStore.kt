@@ -10,8 +10,6 @@ interface EmployeeDetailStore :
 
     sealed class Intent {
         object OnBackClicked : Intent()
-        object OnSearchClicked : Intent()
-        object OnSaveClicked : Intent()
     }
 
     data class State(
