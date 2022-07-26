@@ -10,6 +10,7 @@ import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.toCreateSyncEntity
 import com.itrocket.union.documents.domain.entity.toUpdateSyncEntity
 import com.itrocket.union.manual.LocationParamDomain
+import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import kotlinx.coroutines.withContext
@@ -97,6 +98,45 @@ class DocumentCreateInteractor(
 
     fun getAccountingObjectIds(accountingObjects: List<AccountingObjectDomain>): List<String> =
         accountingObjects.map { it.id }
+
+    suspend fun getAccountingObjectsFilterParams(): List<ParamDomain> {
+        return withContext(coreDispatchers.io) {
+            listOfNotNull(
+                ParamDomain(
+                    type = ManualType.ORGANIZATION,
+                    value = ""
+                ),
+                ParamDomain(
+                    type = ManualType.MOL,
+                    value = ""
+                ),
+                ParamDomain(
+                    type = ManualType.EXPLOITING,
+                    value = ""
+                ),
+                LocationParamDomain(
+                    locations = listOf()
+                ),
+                ParamDomain(
+                    type = ManualType.DEPARTMENT,
+                    value = ""
+                ),
+                ParamDomain(
+                    type = ManualType.PROVIDER,
+                    value = ""
+                ),
+                ParamDomain(
+                    type = ManualType.PRODUCER,
+                    value = ""
+                ),
+                ParamDomain(
+                    type = ManualType.EQUIPMENT_TYPE,
+                    value = ""
+                ),
+                documentRepository.getAvailableStatus()
+            )
+        }
+    }
 
     fun getReservesIds(reserves: List<ReservesDomain>): List<String> =
         reserves.map { it.id }

@@ -259,7 +259,7 @@ class DocumentCreateStoreFactory(
         private suspend fun onChooseAccountingObjectClicked(getState: () -> DocumentCreateStore.State) {
             publish(
                 DocumentCreateStore.Label.ShowAccountingObjects(
-                    listOf(ParamDomain(type = ManualType.STATUS, id = ObjectStatusType.AVAILABLE.name)),//documentCreateInteractor.getFilterParams(getState().params),
+                    documentCreateInteractor.getAccountingObjectsFilterParams(),
                     documentCreateInteractor.getAccountingObjectIds(getState().accountingObjects)
                 )
             )
