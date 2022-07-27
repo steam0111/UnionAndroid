@@ -78,6 +78,15 @@ class IdentifyInteractor(
         }
     }
 
+    fun addAccountingObject(
+        accountingObjects: List<AccountingObjectDomain>,
+        accountingObjectDomain: AccountingObjectDomain
+    ): List<AccountingObjectDomain> {
+        val mutableList = accountingObjects.toMutableList()
+        mutableList.add(accountingObjectDomain)
+        return mutableList
+    }
+
     companion object {
         private const val NO_POSITION = -1
     }

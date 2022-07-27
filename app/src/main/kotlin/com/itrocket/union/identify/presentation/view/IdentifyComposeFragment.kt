@@ -9,9 +9,12 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
+import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectResult
+import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
 import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuResult
 import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment.Companion.BOTTOM_ACTION_RESULT_CODE
 import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment.Companion.BOTTOM_ACTION_RESULT_LABEL
+import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragmentArgs
 import com.itrocket.union.identify.IdentifyModule.IDENTIFY_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.identify.presentation.store.IdentifyStore
@@ -33,13 +36,24 @@ class IdentifyComposeFragment :
 
     override val fragmentResultList: List<FragmentResult>
         get() = listOf(
+//            FragmentResult(
+//                resultCode = BOTTOM_ACTION_RESULT_CODE,
+//                resultLabel = BOTTOM_ACTION_RESULT_LABEL,
+//                resultAction =
+//                { objectAction ->
+//                    (objectAction as BottomActionMenuResult?)?.type?.let {
+//                        accept(IdentifyStore.Intent.OnObjectActionSelected(it))
+//                    }
+//                }
+//            ),
             FragmentResult(
-                resultCode = BOTTOM_ACTION_RESULT_CODE,
-                resultLabel = BOTTOM_ACTION_RESULT_LABEL,
-                resultAction =
-                { objectAction ->
-                    (objectAction as BottomActionMenuResult?)?.type?.let {
-                        accept(IdentifyStore.Intent.OnObjectActionSelected(it))
+                resultCode = AccountingObjectComposeFragment.ACCOUNTING_OBJECT_RESULT_CODE,
+                resultLabel = AccountingObjectComposeFragment.ACCOUNTING_OBJECT_RESULT,
+                resultAction = {
+                    (it as AccountingObjectResult?)?.accountingObject?.let {
+                        accept(
+                            IdentifyStore.Intent.OnAccountingObjectSelected(it)
+                        )
                     }
                 }
             )

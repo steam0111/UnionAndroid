@@ -43,7 +43,6 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         object OnDropClicked : IdentifyStore.Intent()
         object OnSaveClicked : IdentifyStore.Intent()
         object OnReadingModeClicked : Intent()
-        data class OnItemClicked(val item: AccountingObjectDomain) : Intent()
         data class OnOpenCard(val item: ReservesDomain) : Intent()
 
         object OnFilterClicked : IdentifyStore.Intent()
@@ -56,41 +55,18 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :
             Intent()
 
+        data class OnAccountingObjectSelected(val accountingObjectDomain: AccountingObjectDomain) :
+            Intent()
 
     }
 
     data class State(
-//        val accountingObjectDomain: AccountingObjectDomain,
         val isBottomActionMenuLoading: Boolean = false,
 
         val isIdentifyLoading: Boolean = false,
-        val readingMode: ReadingModeTab = ReadingModeTab.RFID,
+        val readingMode: ReadingModeTab = ReadingModeTab.BARCODE,
         val bottomActionMenuTab: BottomActionMenuTab = BottomActionMenuTab.CREATE,
-        val os: List<AccountingObjectDomain>
-        = listOf(
-            AccountingObjectDomain(
-                id = "4",
-                title = "Name",
-                status = null,
-                inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
-                listAdditionallyInfo = listOf(),
-                listMainInfo = listOf(),
-                rfidValue = null,
-                isBarcode = true,
-                barcodeValue = null
-            ),
-            AccountingObjectDomain(
-                id = "5",
-                title = "Name2",
-                status = null,
-                inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
-                listAdditionallyInfo = listOf(),
-                listMainInfo = listOf(),
-                rfidValue = null,
-                isBarcode = true,
-                barcodeValue = null
-            )
-        ),
+        val os: List<AccountingObjectDomain> = listOf(),
         val reserves: List<ReservesDomain>
         = listOf(
             ReservesDomain(
@@ -150,7 +126,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         object GoBack : Label(), GoBackNavigationLabel
         object ShowSave : Label()
 
-        data class ShowReadingMode(val readingMode: ReadingModeTab) : Label(),
+        object ShowReadingMode : Label(),
             ShowBottomSheetNavigationLabel {
             override val arguments: Bundle
                 get() = bundleOf()

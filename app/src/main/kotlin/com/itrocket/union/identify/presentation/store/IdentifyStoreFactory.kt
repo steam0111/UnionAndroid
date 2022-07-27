@@ -7,6 +7,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments
+import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStoreFactory
 import com.itrocket.union.documents.data.mapper.getParams
 import com.itrocket.union.documents.domain.entity.ObjectAction
@@ -79,8 +80,8 @@ class IdentifyStoreFactory(
 
             dispatch(Result.Loading(false))
 
-            observeAccountingObjects()
-            observeReserves()
+//            observeAccountingObjects()
+//            observeReserves()
         }
 
         override suspend fun executeIntent(
@@ -97,7 +98,7 @@ class IdentifyStoreFactory(
                     IdentifyStore.Label.ShowFilter(filterInteractor.getFilters())
                 )
                 is IdentifyStore.Intent.OnOSClicked -> {
-                    publish(IdentifyStore.Label.ShowReadingMode(getState().readingMode))
+                    publish(IdentifyStore.Label.ShowReadingMode)
 //                    publish(IdentifyStore.Label.ShowIdentifyItem(getState().bottomActionMenuTab))
 
 
@@ -111,7 +112,7 @@ class IdentifyStoreFactory(
 
                 IdentifyStore.Intent.OnReadingModeClicked -> {
                     Log.d("SukhanovTest", "Click ShowReadingMode Button")
-                    publish(IdentifyStore.Label.ShowReadingMode(getState().readingMode))
+                    publish(IdentifyStore.Label.ShowReadingMode)
                 }
 //                is IdentifyStore.Intent.OnItemClicked -> publish(
 //                    IdentifyStore.Label.ShowDetail(intent.item)
@@ -156,6 +157,16 @@ class IdentifyStoreFactory(
                     intent.barcode,
                     getState().os
                 )
+                is IdentifyStore.Intent.OnAccountingObjectSelected -> {
+                    dispatch(
+                        Result.AccountingObjects(
+                            identifyInteractor.addAccountingObject(
+                                accountingObjects = getState().os,
+                                accountingObjectDomain = intent.accountingObjectDomain
+                            )
+                        )
+                    )
+                }
             }
         }
 

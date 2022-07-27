@@ -17,7 +17,7 @@ object IdentifyModule {
     val IDENTIFY_VIEW_MODEL_QUALIFIER = named("IDENTIFY_VIEW_MODEL")
 
     val module = module {
-        viewModel(IDENTIFY_VIEW_MODEL_QUALIFIER) {(args: IdentifyComposeFragmentArgs) ->
+        viewModel(IDENTIFY_VIEW_MODEL_QUALIFIER) { (args: IdentifyComposeFragmentArgs) ->
             BaseViewModel(get<IdentifyStore>() {
                 parametersOf(args)
             })
@@ -31,7 +31,7 @@ object IdentifyModule {
             IdentifyInteractor(get(), get(), get())
         }
 
-        factory {(args: IdentifyComposeFragmentArgs) ->
+        factory { (args: IdentifyComposeFragmentArgs) ->
             IdentifyStoreFactory(
                 DefaultStoreFactory,
                 get(),
