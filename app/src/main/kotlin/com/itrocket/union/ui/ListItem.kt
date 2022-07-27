@@ -83,11 +83,7 @@ fun AccountingObjectItem(
             modifier = Modifier
                 .fillMaxWidth(0.7f)
         ) {
-            Text(
-                text = accountingObject.title,
-                style = AppTheme.typography.body1,
-                fontWeight = FontWeight.Medium
-            )
+            HeaderText(accountingObject.title)
             Spacer(modifier = Modifier.height(4.dp))
             accountingObject.listMainInfo.take(MAX_LIST_INFO).forEach {
                 Text(
@@ -96,7 +92,7 @@ fun AccountingObjectItem(
                         stringResource(id = it.title),
                         it.value.orEmpty()
                     ),
-                    style = AppTheme.typography.caption,
+                    style = AppTheme.typography.subtitle1,
                     color = psb3
                 )
             }
@@ -113,7 +109,7 @@ fun AccountingObjectItem(
                     Text(
                         text = stringResource(R.string.common_barcode),
                         style = AppTheme.typography.caption,
-                        color = graphite5,
+                        color = psb3,
                         modifier = Modifier.padding(end = 4.dp)
                     )
                     RadioButton(
@@ -135,7 +131,7 @@ fun AccountingObjectItem(
                         Text(
                             text = stringResource(R.string.common_rfid),
                             style = AppTheme.typography.caption,
-                            color = graphite5,
+                            color = psb3,
                             modifier = Modifier.padding(end = 4.dp)
                         )
                         RadioButton(
@@ -174,11 +170,7 @@ fun ReservesItem(
             modifier = Modifier
                 .fillMaxWidth(0.7f)
         ) {
-            Text(
-                text = reserves.title,
-                style = AppTheme.typography.body1,
-                fontWeight = FontWeight.Medium
-            )
+            HeaderText(reserves.title)
             Spacer(modifier = Modifier.height(4.dp))
             reserves.listInfo.take(MAX_LIST_INFO).forEach {
                 Text(
@@ -187,7 +179,7 @@ fun ReservesItem(
                         stringResource(id = it.title),
                         it.value.orEmpty()
                     ),
-                    style = AppTheme.typography.caption,
+                    style = AppTheme.typography.subtitle1,
                     color = psb3
                 )
             }
@@ -207,7 +199,7 @@ fun ReservesItem(
                 Text(
                     text = stringResource(R.string.common_barcode),
                     style = AppTheme.typography.caption,
-                    color = graphite5,
+                    color = psb3,
                     modifier = Modifier.padding(end = 4.dp)
                 )
                 RadioButton(
@@ -237,7 +229,17 @@ fun InventoryDocumentItem(
     val annotatedInfo = buildAnnotatedString {
         val filteredDocumentInfo = item.documentInfo.filter { it.value.isNotBlank() }
         filteredDocumentInfo.forEachIndexed { index, info ->
-            append(info.value)
+            withStyle(
+                SpanStyle(
+                    fontWeight = FontWeight.Medium,
+                    letterSpacing = 0.15.sp,
+                    fontSize = 19.sp,
+                    color = psb1
+                )
+            ) {
+                append(info.value)
+            }
+
             if (index < filteredDocumentInfo.lastIndex) {
                 append(" ")
                 withStyle(SpanStyle(color = psb6, fontWeight = FontWeight.ExtraBold)) {
@@ -468,8 +470,9 @@ fun DocumentDateItem(
                 DocumentDateType.YESTERDAY -> stringResource(id = R.string.documents_yesterday)
                 DocumentDateType.OTHER -> item.dateUi
             },
-            style = AppTheme.typography.subtitle2,
-            color = psb1
+            style = AppTheme.typography.subtitle1,
+            color = psb1,
+            fontWeight = FontWeight.Medium
         )
         Spacer(modifier = Modifier.width(6.dp))
         Text(
@@ -509,11 +512,7 @@ fun DefaultListItem(
             .padding(vertical = 12.dp, horizontal = 16.dp)
     ) {
         Column {
-            Text(
-                text = item.title,
-                style = AppTheme.typography.body1,
-                fontWeight = FontWeight.Medium
-            )
+            HeaderText(item.title)
             Spacer(modifier = Modifier.height(4.dp))
             item.subtitles.forEach {
                 if (!it.value.isNullOrBlank()) {
@@ -523,7 +522,7 @@ fun DefaultListItem(
                             stringResource(it.key),
                             it.value.orEmpty()
                         ),
-                        style = AppTheme.typography.caption,
+                        style = AppTheme.typography.subtitle1,
                         color = psb3
                     )
                 }
@@ -685,18 +684,14 @@ fun EmployeeItem(
         Column(
             modifier = Modifier.fillMaxWidth(0.7f)
         ) {
-            Text(
-                text = item.fullName,
-                style = AppTheme.typography.body1,
-                fontWeight = FontWeight.Medium
-            )
+            HeaderText(item.fullName)
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = stringResource(
                     R.string.employees_service_number,
                     item.number
                 ),
-                style = AppTheme.typography.caption,
+                style = AppTheme.typography.subtitle1,
                 color = psb3
             )
         }
@@ -743,5 +738,15 @@ fun EmployeeItemPreview() {
             post = "bb",
             employeeStatus = EmployeeStatus.MOL
         ), onEmployeeClickListener = {}, isShowBottomLine = true
+    )
+}
+
+@Composable
+private fun HeaderText(text: String) {
+    Text(
+        text = text,
+        style = AppTheme.typography.h6,
+        fontSize = 19.sp,
+        color = psb1
     )
 }
