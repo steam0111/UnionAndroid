@@ -40,8 +40,8 @@ class DocumentMenuComposeFragment :
             DocumentMenuScreen(
                 state = state,
                 appInsets = appInsets,
-                onProfileIconClick = {
-                    accept(DocumentMenuStore.Intent.OnProfileClicked)
+                onBackClickListener = {
+                    accept(DocumentMenuStore.Intent.OnBackClicked)
                 },
                 onDocumentItemClick = {
                     accept(DocumentMenuStore.Intent.OnDocumentClicked(it))
