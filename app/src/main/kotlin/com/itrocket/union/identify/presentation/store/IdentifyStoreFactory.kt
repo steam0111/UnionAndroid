@@ -6,10 +6,6 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments
-import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
-import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStoreFactory
-import com.itrocket.union.documents.data.mapper.getParams
 import com.itrocket.union.documents.domain.entity.ObjectAction
 import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.identify.domain.IdentifyInteractor
@@ -28,19 +24,15 @@ class IdentifyStoreFactory(
     private val filterInteractor: FilterInteractor,
     private val accountingObjectInteractor: AccountingObjectInteractor,
     private val reservesInteractor: ReservesInteractor,
-
-
-//    private val accountingObjectDetailArguments: AccountingObjectDetailArguments
-
 ) {
     lateinit var itemDomain: OSandReserves
     fun create(): IdentifyStore =
         object : IdentifyStore,
             Store<IdentifyStore.Intent, IdentifyStore.State, IdentifyStore.Label> by storeFactory.create(
                 name = "IdentifyStore",
-                initialState = IdentifyStore.State(),
-//                    accountingObjectDomain = accountingObjectDetailArguments.argument
+                initialState = IdentifyStore.State(
 
+                ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
@@ -71,17 +63,12 @@ class IdentifyStoreFactory(
 
                 document?.let { dispatch(Result.Document(it)) }
                 dispatch(
-                    Result.AccountingObjects(
-                        document?.accountingObjects ?: listOf()
-                    )
+                    Result.AccountingObjects(document?.accountingObjects ?: listOf())
                 )
                 dispatch(Result.Reserves(document?.reserves ?: listOf()))
             }
 
             dispatch(Result.Loading(false))
-
-//            observeAccountingObjects()
-//            observeReserves()
         }
 
         override suspend fun executeIntent(
@@ -195,30 +182,30 @@ class IdentifyStoreFactory(
                 dispatch(Result.IsReservesLoading(false))
             }
         }
-    }
 
-    private suspend fun handleRfidsAccountingObjects(
-        rfids: List<String>,
-        accountingObjects: List<AccountingObjectDomain>
-    ) {
-        val newAccountingObjects = identifyInteractor.handleNewAccountingObjectRfids(
-            accountingObjects = accountingObjects,
-            handledAccountingObjectRfids = rfids
-        )
-//        dispatch(Result.AccountingObjects(newAccountingObjects))
-    }
 
-    private suspend fun handleBarcodeAccountingObjects(
-        barcode: String,
-        accountingObjects: List<AccountingObjectDomain>
-    ) {
-        val newAccountingObjects = identifyInteractor.handleNewAccountingObjectBarcode(
-            accountingObjects = accountingObjects,
-            barcode = barcode
-        )
-//        dispatch(Result.AccountingObjects(newAccountingObjects))
-    }
+        private suspend fun handleRfidsAccountingObjects(
+            rfids: List<String>,
+            accountingObjects: List<AccountingObjectDomain>
+        ) {
+            val newAccountingObjects = identifyInteractor.handleNewAccountingObjectRfids(
+                accountingObjects = accountingObjects,
+                handledAccountingObjectRfids = rfids
+            )
+            dispatch(Result.AccountingObjects(newAccountingObjects))
+        }
 
+        private suspend fun handleBarcodeAccountingObjects(
+            barcode: String,
+            accountingObjects: List<AccountingObjectDomain>
+        ) {
+            val newAccountingObjects = identifyInteractor.handleNewAccountingObjectBarcode(
+                accountingObjects = accountingObjects,
+                barcode = barcode
+            )
+            dispatch(Result.AccountingObjects(newAccountingObjects))
+        }
+    }
 
     private sealed class Result {
         data class Document(val document: IdentifyDomain) : Result()
