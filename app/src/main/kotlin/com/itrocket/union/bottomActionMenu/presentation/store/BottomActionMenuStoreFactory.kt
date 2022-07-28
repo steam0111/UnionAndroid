@@ -3,23 +3,22 @@ package com.itrocket.union.bottomActionMenu.presentation.store
 import com.arkivanov.mvikotlin.core.store.*
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
-import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectResult
-import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectStore
+import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documents.domain.entity.ObjectAction
 
 class BottomActionMenuStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val bottomActionMenuArguments: BottomActionMenuArguments
+    private val bottomActionMenuArguments: AccountingObjectDomain
 ) {
     fun create(): BottomActionMenuStore =
         object : BottomActionMenuStore,
             Store<BottomActionMenuStore.Intent, BottomActionMenuStore.State, BottomActionMenuStore.Label> by storeFactory.create(
                 name = "BottomActionMenuStore",
                 initialState = BottomActionMenuStore.State(
-//                    bottomActionMenuDocument = bottomActionMenuArguments.bottomActionMenuDocument,
                     types = ObjectAction.values().toList(),
-                item = bottomActionMenuArguments.bottomActionMenuDocument),
+                    item = bottomActionMenuArguments
+                ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl

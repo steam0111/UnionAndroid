@@ -131,7 +131,6 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
             override val arguments: Bundle
                 get() = bundleOf(
                     BottomActionMenuFragment.BOTTOMACTIONMENU_ARGS to item
-//                    BottomActionMenuFragment.BOTTOMACTIONMENU_ARGS to BottomActionMenuArguments()
                 )
 
             override val containerId: Int = R.id.mainActivityNavHostFragment
@@ -143,7 +142,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         data class OpenCardOS(val item: AccountingObjectDomain) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = AccountingObjectComposeFragmentDirections.toAccountingObjectsDetails(
-                    AccountingObjectDetailArguments(argument = item as AccountingObjectDomain)
+                    AccountingObjectDetailArguments(argument = item)
                 )
         }
 

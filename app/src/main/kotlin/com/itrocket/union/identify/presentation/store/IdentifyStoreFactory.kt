@@ -20,7 +20,6 @@ class IdentifyStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val identifyInteractor: IdentifyInteractor,
     private val identifyArguments: IdentifyArguments?,
-    private val filterInteractor: FilterInteractor,
     private val accountingObjectInteractor: AccountingObjectInteractor,
     private val reservesInteractor: ReservesInteractor,
 ) {

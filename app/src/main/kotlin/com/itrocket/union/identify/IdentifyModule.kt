@@ -39,7 +39,6 @@ object IdentifyModule {
                 args.identifyArguments,
                 get(),
                 get(),
-                get()
             ).create()
         }
     }
