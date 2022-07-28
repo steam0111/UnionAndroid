@@ -9,19 +9,23 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
+import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.documentCreate.domain.DocumentAccountingObjectManager
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import com.itrocket.union.documentCreate.domain.DocumentReservesManager
 import com.itrocket.union.documents.data.mapper.getParams
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
+import com.itrocket.union.employeeDetail.domain.EmployeeDetailInteractor
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
+import com.itrocket.union.organizationDetail.domain.OrganizationDetailInteractor
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.utils.ifBlankOrNull
 
 class DocumentCreateStoreFactory(
@@ -32,7 +36,8 @@ class DocumentCreateStoreFactory(
     private val documentAccountingObjectManager: DocumentAccountingObjectManager,
     private val documentReservesManager: DocumentReservesManager,
     private val errorInteractor: ErrorInteractor,
-    private val filterInteractor: FilterInteractor
+    private val filterInteractor: FilterInteractor,
+    private val selectParamsInteractor: SelectParamsInteractor
 ) {
     fun create(): DocumentCreateStore =
         object : DocumentCreateStore,
@@ -72,12 +77,11 @@ class DocumentCreateStoreFactory(
                 document?.let { dispatch(Result.Document(it)) }
                 dispatch(Result.AccountingObjects(document?.accountingObjects ?: listOf()))
                 dispatch(Result.Reserves(document?.reserves ?: listOf()))
-                dispatch(
-                    Result.Params(
-                        document?.params
-                            ?: getParams(documentType = documentCreateArguments.document.documentType.name)
+                val params = document?.params
+                    ?: selectParamsInteractor.getInitialDocumentParams(
+                        getParams(documentType = documentCreateArguments.document.documentType.name)
                     )
-                )
+                dispatch(Result.Params(params))
             }
             dispatch(Result.Loading(false))
         }

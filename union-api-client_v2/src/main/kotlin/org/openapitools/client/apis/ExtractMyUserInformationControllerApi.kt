@@ -9,16 +9,16 @@ import retrofit2.http.Query
 
 interface ExtractMyUserInformationControllerApi {
     /**
-     * 
-     * 
+     *
+     *
      * Responses:
      *  - 200: OK
      *
-     * @param requestsParameters  
-     * @param pageable  
+     * @param requestsParameters
+     * @param pageable
      * @return [GetMyPermissionsResponseV2]
      */
     @GET("api/security/permissions/my")
-    suspend fun apiSecurityPermissionsMyGet(@Query("requestsParameters") requestsParameters: kotlin.collections.Map<kotlin.String, kotlin.collections.List<kotlin.String>>, @Query("pageable") pageable: PageableV2): Response<GetMyPermissionsResponseV2>
+    suspend fun apiSecurityPermissionsMyGet(): GetMyPermissionsResponseV2
 
 }

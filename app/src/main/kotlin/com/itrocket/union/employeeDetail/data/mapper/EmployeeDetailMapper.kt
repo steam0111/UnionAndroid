@@ -24,7 +24,7 @@ fun EmployeeDetailSyncEntity.toEmployeeDetailDomain(): EmployeeDetailDomain {
     organizationSyncEntity?.name?.let {
         listInfo.add(ObjectInfoDomain(R.string.organization, it))
     }
-    return EmployeeDetailDomain(listInfo)
+    return EmployeeDetailDomain(id = employee.id, name = employee.fullName, listInfo = listInfo)
 }
 
 fun String?.toEmployeeStatus() = EmployeeStatus.values().firstOrNull { it.slug == this }

@@ -12,7 +12,6 @@ import com.itrocket.union.authUser.domain.AuthUserInteractor
 import com.itrocket.union.container.domain.IsDbSyncedUseCase
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.utils.ifBlankOrNull
-import kotlin.math.log
 
 class AuthUserStoreFactory(
     private val storeFactory: StoreFactory,
@@ -21,7 +20,7 @@ class AuthUserStoreFactory(
     private val authMainInteractor: AuthMainInteractor,
     private val initialState: AuthUserStore.State?,
     private val errorInteractor: ErrorInteractor,
-    private val isDbSyncedUseCase: IsDbSyncedUseCase
+    private val isDbSyncedUseCase: IsDbSyncedUseCase,
 ) {
     fun create(): AuthUserStore =
         object : AuthUserStore,

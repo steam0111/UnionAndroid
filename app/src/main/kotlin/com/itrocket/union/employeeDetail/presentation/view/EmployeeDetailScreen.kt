@@ -105,6 +105,8 @@ fun EmployeeDetailScreenPreview() {
     EmployeeDetailScreen(
         EmployeeDetailStore.State(
             item = EmployeeDetailDomain(
+                id = "",
+                name = "",
                 listInfo =
                 listOf(
                     ObjectInfoDomain(

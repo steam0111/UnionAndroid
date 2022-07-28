@@ -44,6 +44,7 @@ object DocumentCreateModule {
                 get(),
                 get(),
                 get(),
+                get(),
                 get()
             ).create()
         }

@@ -1,14 +1,20 @@
 package com.itrocket.union.selectParams.domain
 
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.authMain.domain.AuthMainInteractor
+import com.itrocket.union.employeeDetail.domain.EmployeeDetailInteractor
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.organizationDetail.domain.OrganizationDetailInteractor
 import com.itrocket.union.selectParams.domain.dependencies.SelectParamsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class SelectParamsInteractor(
     private val selectParamsRepository: SelectParamsRepository,
+    private val authMainInteractor: AuthMainInteractor,
+    private val employeeDetailInteractor: EmployeeDetailInteractor,
+    private val organizationDetailInteractor: OrganizationDetailInteractor,
     private val coreDispatchers: CoreDispatchers
 ) {
 
@@ -109,6 +115,44 @@ class SelectParamsInteractor(
 
     private suspend fun getReceptionCategory(searchText: String): Flow<List<ParamDomain>> {
         return selectParamsRepository.getReceptionCategory(textQuery = searchText)
+    }
+
+    suspend fun getInitialDocumentParams(params: List<ParamDomain>): List<ParamDomain> {
+        val mutableParams = params.toMutableList()
+        val config = authMainInteractor.getMyConfig()
+        val organizationId = config.organizationId
+        val employeeId = config.employeeId
+
+        val organization = if (organizationId != null) {
+            organizationDetailInteractor.getOrganizationDetail(organizationId)
+        } else {
+            null
+        }
+
+        val employee = if (employeeId != null) {
+            employeeDetailInteractor.getEmployeeDetail(employeeId)
+        } else {
+            null
+        }
+
+        organization?.let {
+            val index = params.indexOfFirst {
+                it.type == ManualType.ORGANIZATION
+            }
+            if (index >= 0 && mutableParams[index].value.isEmpty()) {
+                mutableParams[index] = mutableParams[index].copy(value = it.name, id = it.id)
+            }
+        }
+
+        employee?.let {
+            val index = params.indexOfFirst {
+                it.type == ManualType.MOL
+            }
+            if (index >= 0 && mutableParams[index].value.isEmpty()) {
+                mutableParams[index] = mutableParams[index].copy(value = it.name, id = it.id)
+            }
+        }
+        return mutableParams
     }
 
     companion object {
