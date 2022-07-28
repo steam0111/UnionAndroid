@@ -1,7 +1,6 @@
 package com.itrocket.union.identify.presentation.store
 
 import android.os.Bundle
-import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
@@ -16,16 +15,10 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragmentDirections
 import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment
 import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuTab
-import com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments
-import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
-import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.ObjectAction
-import com.itrocket.union.documents.presentation.view.DocumentComposeFragmentDirections
 import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.filter.presentation.store.FilterArguments
-import com.itrocket.union.identify.domain.entity.OSandReserves
 import com.itrocket.union.identify.presentation.view.IdentifyComposeFragmentDirections
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -45,14 +38,14 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         object OnBackClicked : IdentifyStore.Intent()
         object OnSearchClicked : IdentifyStore.Intent()
 
-        data class OnOSClicked(val item: AccountingObjectDomain) : Intent()
-        data class OnItemClicked(val item: OSandReserves) : Intent()
+        data class OnItemClicked(val item: AccountingObjectDomain) : Intent()
         data class OnObjectActionSelected(val objectAction: ObjectAction) : Intent()
-        data class OnOpenCard(val item: ReservesDomain) : Intent()
         data class OnNewAccountingObjectRfidsHandled(val rfids: List<String>) :
             Intent()
+
         data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :
             Intent()
+
         data class OnAccountingObjectSelected(val accountingObjectDomain: AccountingObjectDomain) :
             Intent()
     }
@@ -133,7 +126,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
                 get() = ReadingModeComposeFragment()
         }
 
-        data class ShowDetail(val item: OSandReserves) : Label(),
+        data class ShowDetail(val item: AccountingObjectDomain) : Label(),
             ShowBottomSheetNavigationLabel {
             override val arguments: Bundle
                 get() = bundleOf(
@@ -147,14 +140,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
                 get() = BottomActionMenuFragment()
         }
 
-        data class OpenCardReserves(val item: OSandReserves) : Label(), ForwardNavigationLabel {
-            override val directions: NavDirections
-                get() = ReservesComposeFragmentDirections.toReserveDetail(
-                    ReserveDetailArguments(id = item.id)
-                )
-        }
-
-        data class OpenCardOS(val item: OSandReserves) : Label(), ForwardNavigationLabel {
+        data class OpenCardOS(val item: AccountingObjectDomain) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = AccountingObjectComposeFragmentDirections.toAccountingObjectsDetails(
                     AccountingObjectDetailArguments(argument = item as AccountingObjectDomain)

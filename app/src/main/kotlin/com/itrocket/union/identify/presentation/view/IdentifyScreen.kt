@@ -29,9 +29,7 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.ui.BaseTab
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.identify.domain.entity.OSandReserves
 import com.itrocket.union.identify.presentation.store.IdentifyStore
-import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.ui.*
 import com.itrocket.utils.clickableUnbounded
 import com.itrocket.utils.getTargetPage
@@ -39,7 +37,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-@ExperimentalPagerApi
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun IdentifyScreen(
     state: IdentifyStore.State,
@@ -47,13 +45,25 @@ fun IdentifyScreen(
     onReadingModeClickListener: () -> Unit,
     onBackClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
-    onObjectClickListener: (OSandReserves) -> Unit,
+    onObjectClickListener: (AccountingObjectDomain) -> Unit,
 //    onReservesClickListener: (ReservesDomain) -> Unit,
     onDropClickListener: () -> Unit,
     onPageChanged: (Int) -> Unit
 ) {
     val pagerState = rememberPagerState(state.selectedPage)
     val coroutineScope = rememberCoroutineScope()
+    val tabs = listOf(
+        BaseTab(
+            title = (stringResource(R.string.documents_main_assets) + " (" + state.os.size + ")"),
+            screen = {
+                OsScreen(
+                    onReadingModeClickListener = onReadingModeClickListener,
+                    onObjectClickListener = onObjectClickListener,
+                    state = state
+                )
+            }
+        ),
+    )
 
     AppTheme {
         Scaffold(
@@ -69,28 +79,20 @@ fun IdentifyScreen(
                     onReadingModeClickListener = onReadingModeClickListener
                 )
             },
-            content = { it ->
+            content = {
                 Content(
                     onTabClickListener = onPageChanged,
                     pagerState = pagerState,
                     selectedPage = state.selectedPage,
                     coroutineScope = coroutineScope,
-                    paddingValues = it,
-                    state = state,
-                    onObjectClickListener = {
-                        onObjectClickListener(it)
-                    },
-                    isLoading = state.isBottomActionMenuLoading
+                    tabs = tabs
                 )
             },
-
-
             modifier = Modifier.padding(
                 top = appInsets.topInset.dp,
                 bottom = appInsets.bottomInset.dp
             )
         )
-
     }
 
     LaunchedEffect(pagerState) {
@@ -100,55 +102,40 @@ fun IdentifyScreen(
     }
 }
 
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun OsScreen(
+    state: IdentifyStore.State,
+    onObjectClickListener: (AccountingObjectDomain) -> Unit,
+    onReadingModeClickListener: () -> Unit,
+) {
+    Scaffold(
+        content = {
+            when {
+                state.os.isNotEmpty() -> {
+                    AccountingObjectScreen(
+                        accountingObjects = state.os,
+                        onObjectClickListener = onObjectClickListener
+                    )
+                }
+                state.os.isEmpty() -> {
+                    ObjectListEmpty(paddingValues = PaddingValues())
+                }
+            }
+        }
+    )
+}
+
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun Content(
-    state: IdentifyStore.State,
     onTabClickListener: (Int) -> Unit,
     coroutineScope: CoroutineScope,
-    onObjectClickListener: (OSandReserves) -> Unit,
-//    onReservesClickListener: (ReservesDomain) -> Unit,
     selectedPage: Int,
     pagerState: PagerState,
-    paddingValues: PaddingValues,
-    isLoading: Boolean
+    tabs: List<BaseTab>
 ) {
-    val tabs = listOf(
-        BaseTab(
-            title = (stringResource(R.string.documents_main_assets) + "(" + state.os.size + ")"),
-            screen = {
-                when {
-                    state.os.isNotEmpty() -> {
-                        ObjectList(
-                            items = state.os,
-                            onObjectClickListener = onObjectClickListener
-                        )
-                    }
-                    state.os.isEmpty() -> {
-                        ObjectListEmpty(paddingValues = PaddingValues())
-                    }
-                }
-            }
-        ),
-/*        BaseTab(
-            title = stringResource(R.string.documents_reserves) + "(" + state.reserves.size + ")",
-            screen = {
-                when {
-                    state.reserves.isNotEmpty() -> {
-                        ObjectList(
-                            items = state.reserves,
-                            onObjectClickListener = onObjectClickListener
-                        )
-                    }
-                    state.reserves.isEmpty() -> {
-                        ObjectListEmpty(paddingValues = PaddingValues())
-                    }
-                }
-
-            }
-        )*/
-    )
     Column {
         DoubleTabRow(
             modifier = Modifier
@@ -172,7 +159,7 @@ private fun Content(
             }
         )
         MediumSpacer()
-        HorizontalPager(count = tabs.size, state = pagerState) { page ->
+        HorizontalPager(count = tabs.size, state = pagerState, modifier = Modifier) { page ->
             tabs[page].screen()
         }
     }
@@ -193,12 +180,6 @@ private fun Toolbar(
         content = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_save),
-                    contentDescription = null,
-                    modifier = Modifier.clickableUnbounded(onClick = onSaveClickListener)
-                )
-                Spacer(modifier = Modifier.width(24.dp))
-                Image(
                     painter = painterResource(id = android.R.drawable.ic_menu_delete),
                     contentDescription = null,
                     modifier = Modifier.clickableUnbounded(onClick = onDropClickListener)
@@ -210,39 +191,27 @@ private fun Toolbar(
 
 
 @Composable
-private fun ObjectList(
-    items: List<OSandReserves>,
-    onObjectClickListener: (OSandReserves) -> Unit
+private fun AccountingObjectScreen(
+    accountingObjects: List<AccountingObjectDomain>,
+    onObjectClickListener: (AccountingObjectDomain) -> Unit
 ) {
-
-    LazyColumn(Modifier.fillMaxSize()) {
-        itemsIndexed(items, key = { index, item ->
+    LazyColumn(
+        Modifier.fillMaxSize()
+    ) {
+        itemsIndexed(accountingObjects, key = { index, item ->
             item.id
         }) { index, item ->
-            val isShowBottomLine = items.lastIndex != index
-            when (item) {
-                is AccountingObjectDomain -> {
-                    AccountingObjectItem(
-                        accountingObject = item,
-                        onAccountingObjectListener = onObjectClickListener,
-                        status = null,
-                        isShowBottomLine = isShowBottomLine
-                    )
-                }
-                is ReservesDomain -> {
-                    ReservesItem(
-                        reserves = item,
-                        onReservesListener = onObjectClickListener,
-                        isShowBottomLine = isShowBottomLine
-                    )
-                }
-            }
-
-        }
-        item {
-            Spacer(modifier = Modifier.height(10.dp))
+            val isShowBottomLine = accountingObjects.lastIndex != index
+            AccountingObjectItem(
+                accountingObject = item,
+                onAccountingObjectListener = onObjectClickListener,
+                status = item.status?.type,
+                isShowBottomLine = isShowBottomLine,
+                statusText = item.status?.text
+            )
         }
     }
+    Spacer(modifier = Modifier.height(10.dp))
 }
 
 
@@ -270,6 +239,7 @@ private fun ObjectListEmpty(paddingValues: PaddingValues) {
     }
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun BottomBar(
     onReadingModeClickListener: () -> Unit
@@ -278,7 +248,8 @@ private fun BottomBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(graphite2)
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         BaseButton(
             text = stringResource(R.string.accounting_object_detail_reading_mode),

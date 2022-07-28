@@ -10,7 +10,6 @@ import com.itrocket.union.documents.domain.entity.ObjectAction
 import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.identify.domain.IdentifyInteractor
 import com.itrocket.union.identify.domain.entity.IdentifyDomain
-import com.itrocket.union.identify.domain.entity.OSandReserves
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.reserves.domain.ReservesInteractor
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
@@ -25,14 +24,12 @@ class IdentifyStoreFactory(
     private val accountingObjectInteractor: AccountingObjectInteractor,
     private val reservesInteractor: ReservesInteractor,
 ) {
-    lateinit var itemDomain: OSandReserves
+    lateinit var itemDomain: AccountingObjectDomain
     fun create(): IdentifyStore =
         object : IdentifyStore,
             Store<IdentifyStore.Intent, IdentifyStore.State, IdentifyStore.Label> by storeFactory.create(
                 name = "IdentifyStore",
-                initialState = IdentifyStore.State(
-
-                ),
+                initialState = IdentifyStore.State(),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
@@ -80,17 +77,11 @@ class IdentifyStoreFactory(
 //Toolbar
                 IdentifyStore.Intent.OnBackClicked -> publish(IdentifyStore.Label.GoBack)
 
-                IdentifyStore.Intent.OnSaveClicked -> {
-                    publish(IdentifyStore.Label.ShowSave)
-                    Log.d("SukhanovTest", "Click Identify Save Button")
-                }
-
                 IdentifyStore.Intent.OnDropClicked -> {
                     dispatch(Result.AccountingObjects(listOf()))
                 }
 
                 IdentifyStore.Intent.OnReadingModeClicked -> {
-                    Log.d("SukhanovTest", "Click ShowReadingMode Button")
                     publish(IdentifyStore.Label.ShowReadingMode)
                 }
 
@@ -122,16 +113,7 @@ class IdentifyStoreFactory(
                         }
                         ObjectAction.OPEN_CARD -> {
                             Log.d("SukhanovTest", "Click OPEN $itemDomain")
-                            when (itemDomain) {
-                                is AccountingObjectDomain -> {
-                                    publish(IdentifyStore.Label.OpenCardOS(itemDomain))
-
-                                }
-                                is ReservesDomain -> {
-                                    publish(IdentifyStore.Label.OpenCardReserves(itemDomain))
-                                }
-                            }
-
+                            publish(IdentifyStore.Label.OpenCardOS(itemDomain))
                         }
                     }
                 is IdentifyStore.Intent.OnNewAccountingObjectRfidsHandled -> handleRfidsAccountingObjects(
