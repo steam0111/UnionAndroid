@@ -46,31 +46,17 @@ fun IdentifyScreen(
     onBackClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
     onObjectClickListener: (AccountingObjectDomain) -> Unit,
-//    onReservesClickListener: (ReservesDomain) -> Unit,
     onDropClickListener: () -> Unit,
     onPageChanged: (Int) -> Unit
 ) {
     val pagerState = rememberPagerState(state.selectedPage)
     val coroutineScope = rememberCoroutineScope()
-    val tabs = listOf(
-        BaseTab(
-            title = (stringResource(R.string.documents_main_assets) + " (" + state.os.size + ")"),
-            screen = {
-                OsScreen(
-                    onReadingModeClickListener = onReadingModeClickListener,
-                    onObjectClickListener = onObjectClickListener,
-                    state = state
-                )
-            }
-        ),
-    )
 
     AppTheme {
         Scaffold(
             topBar = {
                 Toolbar(
                     onBackClickListener = onBackClickListener,
-                    onSaveClickListener = onSaveClickListener,
                     onDropClickListener = onDropClickListener
                 )
             },
@@ -85,7 +71,10 @@ fun IdentifyScreen(
                     pagerState = pagerState,
                     selectedPage = state.selectedPage,
                     coroutineScope = coroutineScope,
-                    tabs = tabs
+                    state = state,
+                    onObjectClickListener = onObjectClickListener,
+                    onReadingModeClickListener = onReadingModeClickListener,
+                    paddingValues = it
                 )
             },
             modifier = Modifier.padding(
@@ -108,6 +97,7 @@ fun OsScreen(
     state: IdentifyStore.State,
     onObjectClickListener: (AccountingObjectDomain) -> Unit,
     onReadingModeClickListener: () -> Unit,
+    paddingValues: PaddingValues
 ) {
     Scaffold(
         content = {
@@ -115,7 +105,8 @@ fun OsScreen(
                 state.os.isNotEmpty() -> {
                     AccountingObjectScreen(
                         accountingObjects = state.os,
-                        onObjectClickListener = onObjectClickListener
+                        onObjectClickListener = onObjectClickListener,
+                        paddingValues = paddingValues
                     )
                 }
                 state.os.isEmpty() -> {
@@ -134,8 +125,24 @@ private fun Content(
     coroutineScope: CoroutineScope,
     selectedPage: Int,
     pagerState: PagerState,
-    tabs: List<BaseTab>
+    state: IdentifyStore.State,
+    onReadingModeClickListener: () -> Unit,
+    onObjectClickListener: (AccountingObjectDomain) -> Unit,
+    paddingValues: PaddingValues
 ) {
+    val tabs = listOf(
+        BaseTab(
+            title = (stringResource(R.string.documents_main_assets) + " (" + state.os.size + ")"),
+            screen = {
+                OsScreen(
+                    onReadingModeClickListener = onReadingModeClickListener,
+                    onObjectClickListener = onObjectClickListener,
+                    state = state,
+                    paddingValues = paddingValues
+                )
+            }
+        )
+    )
     Column {
         DoubleTabRow(
             modifier = Modifier
@@ -168,7 +175,6 @@ private fun Content(
 @Composable
 private fun Toolbar(
     onBackClickListener: () -> Unit,
-    onSaveClickListener: () -> Unit,
     onDropClickListener: () -> Unit,
 ) {
     BaseToolbar(
@@ -189,16 +195,18 @@ private fun Toolbar(
     )
 }
 
-
 @Composable
 private fun AccountingObjectScreen(
     accountingObjects: List<AccountingObjectDomain>,
-    onObjectClickListener: (AccountingObjectDomain) -> Unit
+    onObjectClickListener: (AccountingObjectDomain) -> Unit,
+    paddingValues: PaddingValues
 ) {
     LazyColumn(
-        Modifier.fillMaxSize()
+        Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
     ) {
-        itemsIndexed(accountingObjects, key = { index, item ->
+        itemsIndexed(accountingObjects, key = { _, item ->
             item.id
         }) { index, item ->
             val isShowBottomLine = accountingObjects.lastIndex != index
@@ -213,7 +221,6 @@ private fun AccountingObjectScreen(
     }
     Spacer(modifier = Modifier.height(10.dp))
 }
-
 
 @Composable
 private fun ObjectListEmpty(paddingValues: PaddingValues) {
