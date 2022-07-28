@@ -7,15 +7,21 @@ import com.itrocket.token_auth.AuthCredentials
 import com.itrocket.union.authMain.data.mapper.toAuthCredentials
 import com.itrocket.union.authMain.data.mapper.toAuthDomain
 import com.itrocket.union.authMain.data.mapper.toAuthJwtRequest
+import com.itrocket.union.authMain.data.mapper.toMyConfigDomain
 import com.itrocket.union.authMain.domain.dependencies.AuthMainRepository
 import com.itrocket.union.authMain.domain.entity.AuthCredsDomain
 import com.itrocket.union.authMain.domain.entity.AuthDomain
+import com.itrocket.union.authMain.domain.entity.MyConfigDomain
 import com.itrocket.union.network.InvalidNetworkDataException
 import kotlin.math.log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.openapitools.client.apis.ExtractMyUserInformationControllerApi
 import org.openapitools.client.custom_api.AuthApi
+import org.openapitools.client.models.GetMyPermissionsResponseV2
 import org.openapitools.client.models.RefreshJwtRequest
 
 class AuthMainRepositoryImpl(
@@ -24,7 +30,12 @@ class AuthMainRepositoryImpl(
     private val accessTokenPreferencesKey: Preferences.Key<String>,
     private val refreshTokenPreferencesKey: Preferences.Key<String>,
     private val loginPreferencesKey: Preferences.Key<String>,
-) : AuthMainRepository {
+    private val myOrganizationPreferencesKey: Preferences.Key<String>,
+    private val myEmployeePreferencesKey: Preferences.Key<String>,
+) : AuthMainRepository, KoinComponent {
+
+    private val myUserInformationControllerApi: ExtractMyUserInformationControllerApi by inject()
+
     override suspend fun signIn(authCreds: AuthCredsDomain): AuthDomain {
         return (api.apiAuthSignInPost(authCreds.toAuthJwtRequest()).body()
             ?: throw InvalidNetworkDataException()).toAuthDomain()
@@ -78,6 +89,27 @@ class AuthMainRepositoryImpl(
         return dataStore.data.map {
             it[refreshTokenPreferencesKey].orEmpty()
         }.firstOrNull().orEmpty()
+    }
+
+    override suspend fun getMyConfig(): MyConfigDomain {
+        return myUserInformationControllerApi.apiSecurityPermissionsMyGet()
+            .toMyConfigDomain()
+    }
+
+    override suspend fun saveMyConfig(config: MyConfigDomain?) {
+        dataStore.edit { preferences ->
+            preferences[myOrganizationPreferencesKey] = config?.organizationId.orEmpty()
+            preferences[myEmployeePreferencesKey] = config?.employeeId.orEmpty()
+        }
+    }
+
+    override suspend fun getMyPreferencesConfig(): MyConfigDomain {
+        val organizationId = dataStore.data.map { it[myOrganizationPreferencesKey] }.firstOrNull()
+        val employeeId = dataStore.data.map { it[myEmployeePreferencesKey] }.firstOrNull()
+        return MyConfigDomain(
+            organizationId = organizationId,
+            employeeId = employeeId
+        )
     }
 
     companion object {

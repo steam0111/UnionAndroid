@@ -3,15 +3,18 @@ package com.itrocket.union.documentCreate.domain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.toCreateSyncEntity
 import com.itrocket.union.documents.domain.entity.toUpdateSyncEntity
+import com.itrocket.union.employeeDetail.domain.EmployeeDetailInteractor
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.organizationDetail.domain.OrganizationDetailInteractor
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import kotlinx.coroutines.withContext
 

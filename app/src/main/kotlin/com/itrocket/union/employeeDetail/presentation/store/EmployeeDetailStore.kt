@@ -13,7 +13,7 @@ interface EmployeeDetailStore :
     }
 
     data class State(
-        val item: EmployeeDetailDomain = EmployeeDetailDomain(),
+        val item: EmployeeDetailDomain = EmployeeDetailDomain(id = "", name = ""),
         val isLoading: Boolean = false
     )
 

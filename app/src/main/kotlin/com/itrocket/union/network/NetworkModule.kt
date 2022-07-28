@@ -31,6 +31,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
+import org.openapitools.client.apis.ExtractMyUserInformationControllerApi
 
 @JvmInline
 value class Seconds(val value: Long)
@@ -169,6 +170,10 @@ object NetworkModule {
         single<ReceptionItemCategoryApi> {
             get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
                 .create(ReceptionItemCategoryApi::class.java)
+        }
+        single<ExtractMyUserInformationControllerApi> {
+            get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
+                .create(ExtractMyUserInformationControllerApi::class.java)
         }
     }
 }

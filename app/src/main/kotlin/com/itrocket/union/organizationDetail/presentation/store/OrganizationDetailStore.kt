@@ -13,7 +13,7 @@ interface OrganizationDetailStore :
     }
 
     data class State(
-        val item: OrganizationDetailDomain = OrganizationDetailDomain(),
+        val item: OrganizationDetailDomain = OrganizationDetailDomain(id = "", name = ""),
         val isLoading: Boolean = false
     )
 

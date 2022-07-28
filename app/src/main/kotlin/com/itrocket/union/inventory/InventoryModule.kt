@@ -33,6 +33,7 @@ object InventoryModule {
                 get(),
                 get(),
                 get(),
+                get(),
                 get()
             ).create()
         }
