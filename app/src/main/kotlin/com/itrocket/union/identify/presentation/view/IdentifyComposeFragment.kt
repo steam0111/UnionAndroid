@@ -11,14 +11,8 @@ import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectResult
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
-import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuResult
-import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment.Companion.BOTTOM_ACTION_RESULT_CODE
-import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment.Companion.BOTTOM_ACTION_RESULT_LABEL
-import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
-import com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragmentArgs
 import com.itrocket.union.identify.IdentifyModule.IDENTIFY_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.identify.presentation.store.IdentifyStore
-import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -145,8 +139,7 @@ class IdentifyComposeFragment :
                     accept(IdentifyStore.Intent.OnSaveClicked)
                 },
                 onObjectClickListener = {
-                    accept(IdentifyStore.Intent.OnReservesClicked(it))
-                    Log.d("SukhanovTest", "Reserves item click in Identify " + it.title)
+                    accept(IdentifyStore.Intent.OnItemClicked(it))
                 },
 //                onOSClickListener = { accept(IdentifyStore.Intent.OnOSClicked(it)) },
                 onDropClickListener = {

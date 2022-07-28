@@ -36,28 +36,25 @@ import com.itrocket.union.reserves.presentation.view.ReservesComposeFragmentDire
 interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, IdentifyStore.Label> {
 
     sealed class Intent {
-        data class OnOSClicked(val item: AccountingObjectDomain) : Intent()
-        data class OnReservesClicked(val item: OSandReserves) : Intent()
-        data class OnObjectActionSelected(val objectAction: ObjectAction) : Intent()
-        data class OnSelectPage(val selectedPage: Int) : IdentifyStore.Intent()
+        //Toolbar
+        object OnReadingModeClicked : Intent()
         object OnDropClicked : IdentifyStore.Intent()
         object OnSaveClicked : IdentifyStore.Intent()
-        object OnReadingModeClicked : Intent()
-        data class OnOpenCard(val item: ReservesDomain) : Intent()
-
+        data class OnSelectPage(val selectedPage: Int) : IdentifyStore.Intent()
         object OnFilterClicked : IdentifyStore.Intent()
         object OnBackClicked : IdentifyStore.Intent()
         object OnSearchClicked : IdentifyStore.Intent()
 
+        data class OnOSClicked(val item: AccountingObjectDomain) : Intent()
+        data class OnItemClicked(val item: OSandReserves) : Intent()
+        data class OnObjectActionSelected(val objectAction: ObjectAction) : Intent()
+        data class OnOpenCard(val item: ReservesDomain) : Intent()
         data class OnNewAccountingObjectRfidsHandled(val rfids: List<String>) :
             Intent()
-
         data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :
             Intent()
-
         data class OnAccountingObjectSelected(val accountingObjectDomain: AccountingObjectDomain) :
             Intent()
-
     }
 
     data class State(
@@ -125,7 +122,6 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
         object ShowSave : Label()
-
         object ShowReadingMode : Label(),
             ShowBottomSheetNavigationLabel {
             override val arguments: Bundle

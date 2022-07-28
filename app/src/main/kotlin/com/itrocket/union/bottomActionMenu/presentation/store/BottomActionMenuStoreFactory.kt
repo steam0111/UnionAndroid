@@ -3,12 +3,14 @@ package com.itrocket.union.bottomActionMenu.presentation.store
 import com.arkivanov.mvikotlin.core.store.*
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectResult
+import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectStore
 import com.itrocket.union.documents.domain.entity.ObjectAction
 
 class BottomActionMenuStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-//    private val bottomActionMenuArguments: BottomActionMenuArguments
+    private val bottomActionMenuArguments: BottomActionMenuArguments
 ) {
     fun create(): BottomActionMenuStore =
         object : BottomActionMenuStore,
@@ -16,8 +18,8 @@ class BottomActionMenuStoreFactory(
                 name = "BottomActionMenuStore",
                 initialState = BottomActionMenuStore.State(
 //                    bottomActionMenuDocument = bottomActionMenuArguments.bottomActionMenuDocument,
-                    types = ObjectAction.values().toList()
-                ),
+                    types = ObjectAction.values().toList(),
+                item = bottomActionMenuArguments.bottomActionMenuDocument),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
@@ -41,11 +43,20 @@ class BottomActionMenuStoreFactory(
             getState: () -> BottomActionMenuStore.State
         ) {
             when (intent) {
-                is BottomActionMenuStore.Intent.OnTypeClicked -> publish(
-                    BottomActionMenuStore.Label.GoBack(
-                        BottomActionMenuResult(intent.type)
+                is BottomActionMenuStore.Intent.OnTypeClicked -> {
+                    when (intent.type) {
+                        ObjectAction.OPEN_CARD -> {
+                            publish(BottomActionMenuStore.Label.ShowDetail(intent.item))
+                        }
+                        ObjectAction.DELETE_FROM_LIST -> {}
+                        ObjectAction.CREATE_DOC -> {}
+                    }
+                    publish(
+                        BottomActionMenuStore.Label.GoBack(
+                            BottomActionMenuResult(intent.type)
+                        )
                     )
-                )
+                }
             }
 
 //                BottomActionMenuStore.Intent.OnCreateDocClicked -> {

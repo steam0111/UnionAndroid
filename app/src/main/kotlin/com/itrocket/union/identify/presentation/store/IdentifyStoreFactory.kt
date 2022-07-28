@@ -52,6 +52,7 @@ class IdentifyStoreFactory(
         ) {
             dispatch(Result.Loading(true))
             delay(1000)
+            observeAccountingObjects()
 //            dispatch(Result.Identify(identifyInteractor.getAccountingObjects()))
             catchException {
                 val docArgument = identifyArguments?.document
@@ -76,42 +77,39 @@ class IdentifyStoreFactory(
             getState: () -> IdentifyStore.State
         ) {
             when (intent) {
+//Toolbar
                 IdentifyStore.Intent.OnBackClicked -> publish(IdentifyStore.Label.GoBack)
+
                 IdentifyStore.Intent.OnSaveClicked -> {
                     publish(IdentifyStore.Label.ShowSave)
                     Log.d("SukhanovTest", "Click Identify Save Button")
                 }
-                IdentifyStore.Intent.OnFilterClicked -> publish(
-                    IdentifyStore.Label.ShowFilter(filterInteractor.getFilters())
-                )
-                is IdentifyStore.Intent.OnOSClicked -> {
-                    publish(IdentifyStore.Label.ShowReadingMode)
-//                    publish(IdentifyStore.Label.ShowIdentifyItem(getState().bottomActionMenuTab))
-
-
-                    Log.d("SukhanovTest", "Click Identify Item Button" + intent.item.title)
-                }
 
                 IdentifyStore.Intent.OnDropClicked -> {
-                    Log.d("SukhanovTest", "Click Identify Drop Button")
+                    dispatch(Result.AccountingObjects(listOf()))
                 }
-                is IdentifyStore.Intent.OnSelectPage -> dispatch((Result.SelectPage(intent.selectedPage)))
 
                 IdentifyStore.Intent.OnReadingModeClicked -> {
                     Log.d("SukhanovTest", "Click ShowReadingMode Button")
                     publish(IdentifyStore.Label.ShowReadingMode)
                 }
-//                is IdentifyStore.Intent.OnItemClicked -> publish(
-//                    IdentifyStore.Label.ShowDetail(intent.item)
-//                )
-                is IdentifyStore.Intent.OnReservesClicked -> {
+
+//Главное окно
+//                is IdentifyStore.Intent.OnOSClicked -> {
+//                    itemDomain = intent.item
+//                    publish(IdentifyStore.Label.ShowDetail(intent.item))
+////                    publish(IdentifyStore.Label.ShowIdentifyItem(getState().bottomActionMenuTab))
+//                    Log.d("SukhanovTest", "Click Identify Item Button" + intent.item.title)
+//
+//                }
+
+                is IdentifyStore.Intent.OnItemClicked -> {
                     itemDomain = intent.item
                     publish(
                         IdentifyStore.Label.ShowDetail(intent.item)
                     )
+                    Log.d("SukhanovTest", "Click Item " + intent.item.title)
                 }
-
-//                    publish(                    IdentifyStore.Label.ShowDetail(intent.item)
 
                 is IdentifyStore.Intent.OnObjectActionSelected ->
                     when (intent.objectAction) {
@@ -140,10 +138,12 @@ class IdentifyStoreFactory(
                     intent.rfids,
                     getState().os
                 )
-                is IdentifyStore.Intent.OnNewAccountingObjectBarcodeHandled -> handleBarcodeAccountingObjects(
-                    intent.barcode,
-                    getState().os
-                )
+                is IdentifyStore.Intent.OnNewAccountingObjectBarcodeHandled -> {
+                    handleBarcodeAccountingObjects(
+                        intent.barcode,
+                        getState().os
+                    )
+                }
                 is IdentifyStore.Intent.OnAccountingObjectSelected -> {
                     dispatch(
                         Result.AccountingObjects(
@@ -220,7 +220,6 @@ class IdentifyStoreFactory(
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) :
             Result()
 
-        data class SelectPage(val page: Int) : IdentifyStoreFactory.Result()
         data class IsBottomActionMenuLoading(val isLoading: Boolean) : IdentifyStoreFactory.Result()
 
     }

@@ -24,11 +24,11 @@ object BottomActionMenuModule {
         }
 
         factory {
-//                (args: BottomActionMenuArguments) ->
+                (args: BottomActionMenuArguments) ->
             BottomActionMenuStoreFactory(
                 DefaultStoreFactory,
                 get(),
-//                args,
+                args,
             ).create()
         }
     }
