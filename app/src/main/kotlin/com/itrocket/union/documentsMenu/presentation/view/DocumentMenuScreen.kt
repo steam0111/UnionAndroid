@@ -37,16 +37,16 @@ fun DocumentMenuScreen(
     state: DocumentMenuStore.State,
     appInsets: AppInsets,
     onDocumentItemClick: (DocumentMenuDomain) -> Unit,
-    onProfileIconClick: () -> Unit,
+    onBackClickListener: () -> Unit,
     onLogoutClickListener: () -> Unit,
     onSettingsClickListener: () -> Unit
 ) {
     AppTheme {
         Scaffold(topBar = {
             BaseToolbar(
+                onStartImageClickListener = onBackClickListener,
+                startImageId = if (state.isBackButtonVisible) R.drawable.ic_arrow_back else null,
                 title = state.userName,
-                startImageId = null,
-                onStartImageClickListener = onProfileIconClick
             ) {
                 Spacer(modifier = Modifier.width(16.dp))
                 Image(

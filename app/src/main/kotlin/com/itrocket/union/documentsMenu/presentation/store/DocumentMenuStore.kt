@@ -19,7 +19,6 @@ interface DocumentMenuStore :
 
     sealed class Intent {
         data class OnDocumentClicked(val item: DocumentMenuDomain) : Intent()
-        object OnProfileClicked : Intent()
         object OnLogoutClicked : Intent()
         object OnSettingsClicked : Intent()
         object OnBackClicked : Intent()
@@ -30,7 +29,10 @@ interface DocumentMenuStore :
         val menuDeepLevel: Int = 0,
         val userName: String = "",
         val loading: Boolean = false,
-    )
+    ) {
+        val isBackButtonVisible: Boolean
+            get() = menuDeepLevel > 0
+    }
 
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
