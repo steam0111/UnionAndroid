@@ -30,11 +30,11 @@ class DocumentInteractor(
     ): Flow<List<DocumentView>> {
         return withContext(coreDispatchers.io) {
             groupDocuments(
-                if (type == DocumentTypeDomain.ALL) {
-                    repository.getAllDocuments(searchQuery, params)
-                } else {
-                    repository.getDocumentsByType(type, searchQuery)
-                }
+                repository.getDocumentsByType(
+                    type = type,
+                    textQuery = searchQuery,
+                    params = params
+                )
             )
         }
     }

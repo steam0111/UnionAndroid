@@ -229,13 +229,14 @@ class DocumentCreateStoreFactory(
         }
 
         private suspend fun saveDocument(getState: () -> DocumentCreateStore.State) {
-            documentCreateInteractor.createOrUpdateDocument(
+            val documentId = documentCreateInteractor.createOrUpdateDocument(
                 accountingObjects = getState().accountingObjects,
                 document = getState().document,
                 params = getState().params,
                 reserves = getState().reserves,
                 status = getState().document.documentStatus
             )
+            dispatch(Result.Document(getState().document.copy(id = documentId)))
         }
 
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {

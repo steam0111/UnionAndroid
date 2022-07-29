@@ -53,38 +53,8 @@ class DocumentSyncApiImpl(
         return documentId
     }
 
-    override suspend fun getAllDocuments(
-        textQuery: String?,
-        molId: String?,
-        exploitingId: String?,
-        organizationId: String?
-    ): Flow<List<DocumentSyncEntity>> {
-        return documentDao.getAll(
-            sqlDocumentsQuery(
-                textQuery = textQuery,
-                molId = molId,
-                exploitingId = exploitingId,
-                organizationId = organizationId
-            )
-        ).map { documents ->
-            documents.map { document ->
-                document.documentDb.toDocumentSyncEntity(
-                    organizationSyncEntity = document.organizationDb?.toSyncEntity(),
-                    mol = document.molDb?.toSyncEntity(),
-                    exploiting = document.exploitingDb?.toSyncEntity(),
-                    locationFrom = locationSyncApi.getLocationById(document.documentDb.locationFromId),
-                    locationTo = locationSyncApi.getLocationById(document.documentDb.locationToId),
-                    departmentFrom = document.departmentFromDb?.toSyncEntity(),
-                    departmentTo = document.departmentToDb?.toSyncEntity(),
-                    branch = document.branchDb?.toSyncEntity(),
-                    actionBase = document.actionBaseDb?.toSyncEntity(),
-                    accountingObjects = listOf()
-                )
-            }
-        }
-    }
-
-    override suspend fun getAllDocumentsCount(
+    override suspend fun getDocumentsCount(
+        type: String,
         textQuery: String?,
         molId: String?,
         exploitingId: String?,
@@ -96,16 +66,28 @@ class DocumentSyncApiImpl(
                 molId = molId,
                 exploitingId = exploitingId,
                 organizationId = organizationId,
-                isFilterCount = true
+                isFilterCount = true,
+                type = type
             )
         )
     }
 
     override suspend fun getDocumentsByType(
         type: String,
-        textQuery: String?
+        textQuery: String?,
+        molId: String?,
+        exploitingId: String?,
+        organizationId: String?
     ): Flow<List<DocumentSyncEntity>> {
-        return documentDao.getDocumentsByType(type).map { documents ->
+        return documentDao.getAll(
+            sqlDocumentsQuery(
+                textQuery = textQuery,
+                molId = molId,
+                exploitingId = exploitingId,
+                organizationId = organizationId,
+                type = type
+            )
+        ).map { documents ->
             documents.map { document ->
                 document.documentDb.toDocumentSyncEntity(
                     organizationSyncEntity = document.organizationDb?.toSyncEntity(),

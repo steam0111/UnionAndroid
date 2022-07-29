@@ -45,7 +45,7 @@ interface BranchesStore : Store<BranchesStore.Intent, BranchesStore.State, Branc
                 get() = BranchesComposeFragmentDirections.toFilter(
                     FilterArguments(
                         filters,
-                        CatalogType.BRANCHES
+                        CatalogType.Branches
                     )
                 )
         }

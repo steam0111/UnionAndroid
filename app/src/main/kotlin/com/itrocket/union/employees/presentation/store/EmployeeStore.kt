@@ -47,7 +47,7 @@ interface EmployeeStore : Store<EmployeeStore.Intent, EmployeeStore.State, Emplo
                 get() = EmployeeComposeFragmentDirections.toFilter(
                     FilterArguments(
                         filters,
-                        CatalogType.EMPLOYEES
+                        CatalogType.Employees
                     )
                 )
         }

@@ -30,7 +30,7 @@ interface FilterStore : Store<FilterStore.Intent, FilterStore.State, FilterStore
     data class State(
         val params: Params,
         val resultCount: Long = 0,
-        val from: CatalogType = CatalogType.DEFAULT
+        val from: CatalogType = CatalogType.Default
     )
 
     sealed class Label {

@@ -69,7 +69,7 @@ fun AccountingObjectItem(
     status: Status?,
     isShowBottomLine: Boolean,
     statusText: String? = null,
-    isEnabled: Boolean = true
+    isEnabled: Boolean = true,
 ) {
     Row(
         modifier = Modifier
@@ -156,14 +156,15 @@ fun AccountingObjectItem(
 fun ReservesItem(
     reserves: ReservesDomain,
     onReservesListener: (ReservesDomain) -> Unit,
-    isShowBottomLine: Boolean
+    isShowBottomLine: Boolean,
+    clickable: Boolean = true
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = {
                 onReservesListener(reserves)
-            })
+            }, enabled = clickable)
             .padding(vertical = 12.dp, horizontal = 16.dp)
     ) {
         Column(
@@ -286,14 +287,9 @@ fun InventoryDocumentItem(
 }
 
 private fun getInventoryAnnotatedTitle(item: InventoryCreateDomain): Pair<AnnotatedString, Map<String, InlineTextContent>> {
-    val numberId = "number"
     val dateId = "date"
     val timeId = "time"
     val annotatedTitle = buildAnnotatedString {
-        appendInlineContent(numberId, "[icon1]")
-        append(item.number)
-        append("  ")
-
         appendInlineContent(timeId, "[icon3]")
         append(item.getTextDate())
         append("  ")
@@ -304,15 +300,6 @@ private fun getInventoryAnnotatedTitle(item: InventoryCreateDomain): Pair<Annota
 
     }
     val numberContent = mapOf(
-        numberId to InlineTextContent(
-            Placeholder(
-                width = 20.sp,
-                height = 16.sp,
-                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
-            )
-        ) {
-            Image(painter = painterResource(R.drawable.ic_number), contentDescription = null)
-        },
         dateId to InlineTextContent(
             Placeholder(
                 width = 20.sp,
@@ -342,14 +329,9 @@ fun DocumentInfoItem(
     isShowBottomLine: Boolean,
     isShowStatus: Boolean = true
 ) {
-    val numberId = "number"
     val timeId = "time"
     val statusId = "status"
     val annotatedTitle = buildAnnotatedString {
-        appendInlineContent(numberId, "[icon1]")
-        append(item.number)
-        append("  ")
-
         appendInlineContent(timeId, "[icon2]")
         append(item.getTextTime())
         append("  ")
@@ -358,15 +340,6 @@ fun DocumentInfoItem(
         append(stringResource(item.documentType.titleId))
     }
     val numberContent = mapOf(
-        numberId to InlineTextContent(
-            Placeholder(
-                width = 20.sp,
-                height = 16.sp,
-                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
-            )
-        ) {
-            Image(painter = painterResource(R.drawable.ic_number), contentDescription = null)
-        },
         timeId to InlineTextContent(
             Placeholder(
                 width = 20.sp,
