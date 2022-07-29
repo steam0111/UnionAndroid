@@ -46,7 +46,7 @@ interface DepartmentStore :
                 get() = DepartmentComposeFragmentDirections.toFilter(
                     FilterArguments(
                         filters,
-                        CatalogType.DEPARTMENTS
+                        CatalogType.Departments
                     )
                 )
         }

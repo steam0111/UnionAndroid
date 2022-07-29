@@ -50,7 +50,7 @@ class InventoryStoreFactory(
             getState: () -> InventoryStore.State
         ) {
             dispatch(Result.Params(selectParamsInteractor.getInitialDocumentParams(getState().params)))
-            observeAccountingObjects()
+            observeAccountingObjects(getState().params)
         }
 
         override suspend fun executeIntent(

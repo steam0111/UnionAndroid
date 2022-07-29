@@ -7,14 +7,8 @@ import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import kotlinx.coroutines.flow.Flow
 
 interface DocumentSyncApi {
-    suspend fun getAllDocuments(
-        textQuery: String? = null,
-        molId: String? = null,
-        exploitingId: String?,
-        organizationId: String? = null
-    ): Flow<List<DocumentSyncEntity>>
-
-    suspend fun getAllDocumentsCount(
+    suspend fun getDocumentsCount(
+        type: String,
         textQuery: String? = null,
         molId: String? = null,
         exploitingId: String?,
@@ -24,7 +18,10 @@ interface DocumentSyncApi {
     suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): String
     suspend fun getDocumentsByType(
         type: String,
-        textQuery: String? = null
+        textQuery: String? = null,
+        molId: String? = null,
+        exploitingId: String?,
+        organizationId: String? = null
     ): Flow<List<DocumentSyncEntity>>
 
     suspend fun getDocumentById(id: String): DocumentSyncEntity

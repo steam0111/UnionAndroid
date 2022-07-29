@@ -123,15 +123,15 @@ class SelectParamsInteractor(
         val organizationId = config.organizationId
         val employeeId = config.employeeId
 
-        val organization = if (organizationId != null) {
-            organizationDetailInteractor.getOrganizationDetail(organizationId)
-        } else {
+        val organization = try {
+            organizationDetailInteractor.getOrganizationDetail(requireNotNull(organizationId))
+        } catch (t: Throwable) {
             null
         }
 
-        val employee = if (employeeId != null) {
-            employeeDetailInteractor.getEmployeeDetail(employeeId)
-        } else {
+        val employee = try {
+            employeeDetailInteractor.getEmployeeDetail(requireNotNull(employeeId))
+        } catch (t: Throwable) {
             null
         }
 

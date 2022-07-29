@@ -78,34 +78,37 @@ class FilterInteractor(
 
     suspend fun getResultCount(from: CatalogType?, params: List<ParamDomain>): Long {
         return when (from) {
-            CatalogType.ACCOUNTING_OBJECTS -> {
+            CatalogType.AccountingObjects -> {
                 accountingObjectRepository.getAccountingObjectsCount(
                     params = params,
                     selectedLocationIds = params.getFilterLocationIds()
                 )
             }
-            CatalogType.EMPLOYEES -> {
+            CatalogType.Employees -> {
                 employeeRepository.getEmployeesCount(params = params)
             }
-            CatalogType.BRANCHES -> {
+            CatalogType.Branches -> {
                 branchesRepository.getBranchesCount(params = params)
             }
-            CatalogType.DEPARTMENTS -> {
+            CatalogType.Departments -> {
                 departmentRepository.getDepartmentsCount(params = params)
             }
-            CatalogType.NOMENCLATURES -> {
+            CatalogType.Nomenclatures -> {
                 nomenclatureRepository.getNomenclaturesCount(params = params)
             }
-            CatalogType.REGIONS -> {
+            CatalogType.Regions -> {
                 regionRepository.getRegionsCount()
             }
-            CatalogType.DOCUMENTS -> {
-                documentRepository.getAllDocumentsCount(params = params)
+            is CatalogType.Documents -> {
+                documentRepository.getDocumentsCount(
+                    type = from.documentTypeDomain,
+                    params = params
+                )
             }
-            CatalogType.INVENTORIES -> {
+            CatalogType.Inventories -> {
                 inventoriesRepository.getInventoriesCount(params = params)
             }
-            CatalogType.RESERVES -> {
+            CatalogType.Reserves -> {
                 reservesRepository.getReservesFilterCount(
                     params = params,
                     selectedLocationIds = params.getFilterLocationIds()

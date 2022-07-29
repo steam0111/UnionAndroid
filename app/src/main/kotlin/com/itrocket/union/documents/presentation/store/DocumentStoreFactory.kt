@@ -70,7 +70,8 @@ class DocumentStoreFactory(
                 DocumentStore.Intent.OnFilterClicked -> {
                     publish(
                         DocumentStore.Label.ShowFilter(
-                            getState().params ?: documentInteractor.getFilters()
+                            filters = getState().params ?: documentInteractor.getFilters(),
+                            documentTypeDomain = getState().type
                         )
                     )
                 }

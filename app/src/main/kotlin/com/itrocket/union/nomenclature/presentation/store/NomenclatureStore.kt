@@ -47,7 +47,7 @@ interface NomenclatureStore :
                 get() = NomenclatureComposeFragmentDirections.toFilter(
                     FilterArguments(
                         filters,
-                        CatalogType.NOMENCLATURES
+                        CatalogType.Nomenclatures
                     )
                 )
         }

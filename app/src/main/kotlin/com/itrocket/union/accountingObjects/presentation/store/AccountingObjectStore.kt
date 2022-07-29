@@ -52,7 +52,7 @@ interface AccountingObjectStore :
                 get() = AccountingObjectComposeFragmentDirections.toFilter(
                     FilterArguments(
                         filters,
-                        CatalogType.ACCOUNTING_OBJECTS
+                        CatalogType.AccountingObjects
                     )
                 )
         }
