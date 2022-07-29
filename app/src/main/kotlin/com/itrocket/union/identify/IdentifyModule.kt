@@ -2,9 +2,7 @@ package com.itrocket.union.identify
 
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.itrocket.core.base.BaseViewModel
-import com.itrocket.union.identify.data.IdentifyRepositoryImpl
-import com.itrocket.union.identify.domain.IdentifyInteractor
-import com.itrocket.union.identify.domain.dependencies.IdentifyRepository
+
 import com.itrocket.union.identify.presentation.store.IdentifyStore
 import com.itrocket.union.identify.presentation.store.IdentifyStoreFactory
 import com.itrocket.union.identify.presentation.view.IdentifyComposeFragmentArgs
@@ -21,14 +19,6 @@ object IdentifyModule {
             BaseViewModel(get<IdentifyStore>() {
                 parametersOf(args)
             })
-        }
-
-        factory<IdentifyRepository> {
-            IdentifyRepositoryImpl()
-        }
-
-        factory {
-            IdentifyInteractor(get(), get(), get())
         }
 
         factory {

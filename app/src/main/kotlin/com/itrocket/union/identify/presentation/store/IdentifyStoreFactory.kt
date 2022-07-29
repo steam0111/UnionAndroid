@@ -5,7 +5,6 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
-import com.itrocket.union.identify.domain.IdentifyInteractor
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 
 class IdentifyStoreFactory(
