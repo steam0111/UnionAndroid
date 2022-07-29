@@ -14,9 +14,7 @@ import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFra
 import com.itrocket.union.documents.domain.entity.ObjectAction
 
 interface BottomActionMenuStore :
-    Store<BottomActionMenuStore.Intent,
-            BottomActionMenuStore.State,
-            BottomActionMenuStore.Label> {
+    Store<BottomActionMenuStore.Intent, BottomActionMenuStore.State, BottomActionMenuStore.Label> {
     sealed class Intent {
         data class OnTypeClicked(
             val type: ObjectAction,

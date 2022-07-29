@@ -44,7 +44,6 @@ fun IdentifyScreen(
     appInsets: AppInsets,
     onReadingModeClickListener: () -> Unit,
     onBackClickListener: () -> Unit,
-    onSaveClickListener: () -> Unit,
     onObjectClickListener: (AccountingObjectDomain) -> Unit,
     onDropClickListener: () -> Unit,
     onPageChanged: (Int) -> Unit
@@ -91,7 +90,6 @@ fun IdentifyScreen(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun OsScreen(
     state: IdentifyStore.State,
@@ -246,7 +244,6 @@ private fun ObjectListEmpty(paddingValues: PaddingValues) {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun BottomBar(
     onReadingModeClickListener: () -> Unit

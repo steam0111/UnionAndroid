@@ -126,8 +126,6 @@ class AccountingObjectStoreFactory(
                         item
                     )
                 )
-                Log.d("SukhanovTest", "Click OS Item Button" + item.title )
-
             }
         }
     }

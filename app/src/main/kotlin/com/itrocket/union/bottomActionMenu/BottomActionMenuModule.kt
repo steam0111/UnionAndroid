@@ -30,7 +30,7 @@ object BottomActionMenuModule {
             BottomActionMenuStoreFactory(
                 DefaultStoreFactory,
                 get(),
-                args.bottomActionMenuDocument,
+                args.accountingObjectDomain,
                 args.listAO
             ).create()
         }
