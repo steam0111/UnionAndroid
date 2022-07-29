@@ -16,17 +16,13 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
 import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuStore
 import com.itrocket.union.documents.domain.entity.ObjectAction
-import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.ui.*
 
 @Composable
 fun BottomActionMenuScreen(
     state: BottomActionMenuStore.State,
     appInsets: AppInsets,
-    onTypeClickListener: (ObjectAction) -> Unit,
-    onCreateDocClickListener: (ReservesDomain) -> Unit,
-    onOpenItemClickListener: (ReservesDomain) -> Unit,
-    onDeleteItemClickListener: (ReservesDomain) -> Unit
+    onTypeClickListener: (ObjectAction) -> Unit
 ) {
     AppTheme {
         Box(
@@ -67,63 +63,8 @@ fun BottomActionMenuScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-
-//                BottomMenuButtons(
-//                    onCreateDocClickListener = {
-//                        onCreateDocClickListener
-//                    },
-//                    onOpenItemClickListener = { onOpenItemClickListener },
-//                    onDeleteItemClickListener = { onDeleteItemClickListener }
-//                )
-//                Spacer(modifier = Modifier.height(16.dp))
-//                BottomBar {
-//
-//                }
             }
         }
-    }
-}
-
-@Composable
-private fun BottomBar(
-    onReadingModeClickListener: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(graphite2)
-            .padding(16.dp)
-    ) {
-        BaseButton(
-            text = stringResource(R.string.accounting_object_detail_reading_mode),
-            onClick = onReadingModeClickListener,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-}
-
-@Composable
-fun BottomMenuButtons(
-    onCreateDocClickListener: () -> Unit,
-    onOpenItemClickListener: () -> Unit,
-    onDeleteItemClickListener: () -> Unit
-) {
-    Column {
-        BottomBarIdentifyItem(
-            isEnabled = true,
-            text = "Создать документ",
-            onClick = onCreateDocClickListener
-        )
-        BottomBarIdentifyItem(
-            onClick = onOpenItemClickListener,
-            isEnabled = true,
-            text = "Открыть карточку"
-        )
-        BottomBarIdentifyItem(
-            onClick = onDeleteItemClickListener,
-            isEnabled = true,
-            text = "Удалить из списка"
-        )
     }
 }
 
@@ -154,7 +95,6 @@ fun BottomBarIdentifyItem(
         }
     }
 }
-
 
 @Composable
 @Preview

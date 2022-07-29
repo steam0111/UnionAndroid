@@ -19,18 +19,14 @@ class BottomActionMenuFragment :
             BottomActionMenuScreen(
                 state = state,
                 appInsets = appInsets,
-                onTypeClickListener = { accept(BottomActionMenuStore.Intent.OnTypeClicked(it, item =state.item )) },
-                onCreateDocClickListener = {
-                    accept(BottomActionMenuStore.Intent.OnCreateDocClicked)
-                },
-                onDeleteItemClickListener = {
+                onTypeClickListener = {
                     accept(
-                        BottomActionMenuStore.Intent.OnDeleteItemClicked(
-                            it
+                        BottomActionMenuStore.Intent.OnTypeClicked(
+                            it,
+                            item = state.item
                         )
                     )
-                },
-                onOpenItemClickListener = { accept(BottomActionMenuStore.Intent.OnOpenItemClicked(it)) }
+                }
             )
         }
     }

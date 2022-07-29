@@ -57,16 +57,6 @@ class BottomActionMenuStoreFactory(
                     )
                 }
             }
-
-//                BottomActionMenuStore.Intent.OnCreateDocClicked -> {
-//                    Log.d("SukhanovTest", "Click CREATE ${bottomActionMenuArguments.bottomActionMenuDocument.title}")
-//                }
-//                is BottomActionMenuStore.Intent.OnOpenItemClicked -> {
-//
-//                }
-//                is BottomActionMenuStore.Intent.OnDeleteItemClicked -> {
-//
-//                }
         }
 
         override fun handleError(throwable: Throwable) {

@@ -114,7 +114,6 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
 
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
-        object ShowSave : Label()
         object ShowReadingMode : Label(),
             ShowBottomSheetNavigationLabel {
             override val arguments: Bundle
