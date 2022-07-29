@@ -1,7 +1,7 @@
 package com.itrocket.union.identify.presentation.view
 
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -11,6 +11,9 @@ import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectResult
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
+import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuResult
+import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment.Companion.BOTTOM_ACTION_RESULT_CODE
+import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment.Companion.BOTTOM_ACTION_RESULT_LABEL
 import com.itrocket.union.identify.IdentifyModule.IDENTIFY_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.identify.presentation.store.IdentifyStore
 import kotlinx.coroutines.Dispatchers
@@ -30,16 +33,16 @@ class IdentifyComposeFragment :
 
     override val fragmentResultList: List<FragmentResult>
         get() = listOf(
-//            FragmentResult(
-//                resultCode = BOTTOM_ACTION_RESULT_CODE,
-//                resultLabel = BOTTOM_ACTION_RESULT_LABEL,
-//                resultAction =
-//                { objectAction ->
-//                    (objectAction as BottomActionMenuResult?)?.type?.let {
-//                        accept(IdentifyStore.Intent.OnObjectActionSelected(it))
-//                    }
-//                }
-//            ),
+            FragmentResult(
+                resultCode = BOTTOM_ACTION_RESULT_CODE,
+                resultLabel = BOTTOM_ACTION_RESULT_LABEL,
+                resultAction = {
+                    (it as BottomActionMenuResult?)?.type?.let {
+//                    (it as BottomActionMenuResult?)?.type?.let {
+                        accept(IdentifyStore.Intent.OnDeleteFromBottomAction(it))
+                    }
+                }
+            ),
             FragmentResult(
                 resultCode = AccountingObjectComposeFragment.ACCOUNTING_OBJECT_RESULT_CODE,
                 resultLabel = AccountingObjectComposeFragment.ACCOUNTING_OBJECT_RESULT,

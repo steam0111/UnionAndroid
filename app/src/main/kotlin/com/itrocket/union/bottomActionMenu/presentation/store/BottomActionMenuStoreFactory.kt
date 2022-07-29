@@ -9,7 +9,8 @@ import com.itrocket.union.documents.domain.entity.ObjectAction
 class BottomActionMenuStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val bottomActionMenuArguments: AccountingObjectDomain
+    private val bottomActionMenuArguments: AccountingObjectDomain,
+    private val bottomActionMenuArgumentsList: List<AccountingObjectDomain>
 ) {
     fun create(): BottomActionMenuStore =
         object : BottomActionMenuStore,
@@ -17,7 +18,8 @@ class BottomActionMenuStoreFactory(
                 name = "BottomActionMenuStore",
                 initialState = BottomActionMenuStore.State(
                     types = ObjectAction.values().toList(),
-                    item = bottomActionMenuArguments
+                    item = bottomActionMenuArguments,
+                    listAO = bottomActionMenuArgumentsList
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
@@ -47,14 +49,25 @@ class BottomActionMenuStoreFactory(
                         ObjectAction.OPEN_CARD -> {
                             publish(BottomActionMenuStore.Label.ShowDetail(intent.item))
                         }
-                        ObjectAction.DELETE_FROM_LIST -> {}
+                        ObjectAction.DELETE_FROM_LIST -> {
+                            val newList = intent.listAO.toMutableList()
+                            newList.removeAt(newList.indexOf(intent.item))
+
+                            publish(
+                                BottomActionMenuStore.Label.DeleteCard(
+                                    BottomActionMenuResult(
+                                        newList
+                                    )
+                                )
+                            )
+                        }
                         ObjectAction.CREATE_DOC -> {}
                     }
-                    publish(
-                        BottomActionMenuStore.Label.GoBack(
-                            BottomActionMenuResult(intent.type)
-                        )
-                    )
+//                    publish(
+//                        BottomActionMenuStore.Label.GoBack(
+//                            BottomActionMenuResult(intent.type)
+//                        )
+//                    )
                 }
             }
         }

@@ -23,7 +23,8 @@ class BottomActionMenuFragment :
                     accept(
                         BottomActionMenuStore.Intent.OnTypeClicked(
                             it,
-                            item = state.item
+                            item = state.item,
+                            listAO = state.listAO
                         )
                     )
                 }

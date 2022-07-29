@@ -7,7 +7,6 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documents.domain.entity.ObjectAction
-import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.identify.domain.IdentifyInteractor
 import com.itrocket.union.identify.domain.entity.IdentifyDomain
 import com.itrocket.union.manual.ParamDomain
@@ -28,11 +27,17 @@ class IdentifyStoreFactory(
         object : IdentifyStore,
             Store<IdentifyStore.Intent, IdentifyStore.State, IdentifyStore.Label> by storeFactory.create(
                 name = "IdentifyStore",
-                initialState = IdentifyStore.State(),
+                initialState = IdentifyStore.State(
+                    os = initOs()
+                ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
             ) {}
+
+    private fun initOs(): List<AccountingObjectDomain> {
+        return identifyArguments?.accountingObjectDomain ?: listOf()
+    }
 
     private fun createExecutor(): Executor<IdentifyStore.Intent, Unit, IdentifyStore.State, Result, IdentifyStore.Label> =
         IdentifyExecutor()
@@ -52,6 +57,7 @@ class IdentifyStoreFactory(
 //            dispatch(Result.Identify(identifyInteractor.getAccountingObjects()))
             catchException {
                 val docArgument = identifyArguments?.document
+                val listAfterDel = identifyArguments?.accountingObjectDomain
                 val document = if (docArgument?.isDocumentExists == true) {
                     docArgument.id.let { identifyInteractor.getDocumentById(it) }
                 } else {
@@ -60,7 +66,8 @@ class IdentifyStoreFactory(
 
                 document?.let { dispatch(Result.Document(it)) }
                 dispatch(
-                    Result.AccountingObjects(document?.accountingObjects ?: listOf())
+                    Result.AccountingObjects(listAfterDel ?: listOf())
+//                    Result.AccountingObjects(document?.accountingObjects ?: listOf())
                 )
                 dispatch(Result.Reserves(document?.reserves ?: listOf()))
             }
@@ -85,18 +92,13 @@ class IdentifyStoreFactory(
                 }
 
 //Главное окно
-//                is IdentifyStore.Intent.OnOSClicked -> {
-//                    itemDomain = intent.item
-//                    publish(IdentifyStore.Label.ShowDetail(intent.item))
-////                    publish(IdentifyStore.Label.ShowIdentifyItem(getState().bottomActionMenuTab))
-//                    Log.d("SukhanovTest", "Click Identify Item Button" + intent.item.title)
-//
-//                }
-
                 is IdentifyStore.Intent.OnItemClicked -> {
                     itemDomain = intent.item
                     publish(
-                        IdentifyStore.Label.ShowDetail(intent.item)
+                        IdentifyStore.Label.ShowDetail(
+                            intent.item,
+                            getState().os
+                        )
                     )
                     Log.d("SukhanovTest", "Click Item " + intent.item.title)
                 }
@@ -134,6 +136,9 @@ class IdentifyStoreFactory(
                             )
                         )
                     )
+                }
+                is IdentifyStore.Intent.OnDeleteFromBottomAction -> {
+                    dispatch(Result.AccountingObjects(listOf()))
                 }
             }
         }

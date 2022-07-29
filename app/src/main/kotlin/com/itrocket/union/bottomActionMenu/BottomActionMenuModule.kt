@@ -3,7 +3,7 @@ package com.itrocket.union.bottomActionMenu
 import android.os.Bundle
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.itrocket.core.base.BaseViewModel
-import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuArguments
 import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuStore
 import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuStoreFactory
 import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment.Companion.BOTTOMACTIONMENU_ARGS
@@ -18,15 +18,20 @@ object BottomActionMenuModule {
     val module = module {
         viewModel(BOTTOMACTIONMENU_VIEW_MODEL_QUALIFIER) { (args: Bundle) ->
             BaseViewModel(get<BottomActionMenuStore>() {
-                parametersOf(args.getParcelable(BOTTOMACTIONMENU_ARGS))
+                parametersOf(
+                    args.getParcelable(
+                        BOTTOMACTIONMENU_ARGS
+                    )
+                )
             })
         }
 
-        factory { (args: AccountingObjectDomain) ->
+        factory { (args: BottomActionMenuArguments) ->
             BottomActionMenuStoreFactory(
                 DefaultStoreFactory,
                 get(),
-                args,
+                args.bottomActionMenuDocument,
+                args.listAO
             ).create()
         }
     }

@@ -5,6 +5,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackDialogNavigationLabel
+import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailArguments
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragmentDirections
@@ -17,13 +18,18 @@ interface BottomActionMenuStore :
             BottomActionMenuStore.State,
             BottomActionMenuStore.Label> {
     sealed class Intent {
-        data class OnTypeClicked(val type: ObjectAction, val item: AccountingObjectDomain) :
+        data class OnTypeClicked(
+            val type: ObjectAction,
+            val item: AccountingObjectDomain,
+            val listAO: List<AccountingObjectDomain>
+        ) :
             Intent()
     }
 
     data class State(
         val types: List<ObjectAction>,
-        val item: AccountingObjectDomain
+        val item: AccountingObjectDomain,
+        val listAO: List<AccountingObjectDomain>
     )
 
     sealed class Label {
@@ -46,6 +52,15 @@ interface BottomActionMenuStore :
                 get() = AccountingObjectComposeFragmentDirections.toAccountingObjectsDetails(
                     AccountingObjectDetailArguments(argument = item)
                 )
+        }
+
+        data class DeleteCard(override val result: BottomActionMenuResult) : Label(),
+            GoBackNavigationLabel {
+            override val resultCode: String
+                get() = BOTTOM_ACTION_RESULT_CODE
+
+            override val resultLabel: String
+                get() = BOTTOM_ACTION_RESULT_LABEL
         }
     }
 }
