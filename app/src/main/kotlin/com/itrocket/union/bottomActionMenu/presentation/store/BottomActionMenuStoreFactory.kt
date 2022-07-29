@@ -63,11 +63,11 @@ class BottomActionMenuStoreFactory(
                         }
                         ObjectAction.CREATE_DOC -> {}
                     }
-//                    publish(
-//                        BottomActionMenuStore.Label.GoBack(
-//                            BottomActionMenuResult(intent.type)
-//                        )
-//                    )
+                    publish(
+                        BottomActionMenuStore.Label.GoBack(
+                            BottomActionMenuResult()
+                        )
+                    )
                 }
             }
         }

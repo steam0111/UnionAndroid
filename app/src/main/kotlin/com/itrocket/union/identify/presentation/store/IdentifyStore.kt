@@ -15,7 +15,6 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragmentDirections
 import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuArguments
 import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment
-import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuTab
 import com.itrocket.union.documents.domain.entity.ObjectAction
 import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.filter.presentation.store.FilterArguments
@@ -57,7 +56,6 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
 
         val isIdentifyLoading: Boolean = false,
         val readingMode: ReadingModeTab = ReadingModeTab.BARCODE,
-        val bottomActionMenuTab: BottomActionMenuTab = BottomActionMenuTab.CREATE,
         val os: List<AccountingObjectDomain> = listOf(),
         val reserves: List<ReservesDomain>
         = listOf(
