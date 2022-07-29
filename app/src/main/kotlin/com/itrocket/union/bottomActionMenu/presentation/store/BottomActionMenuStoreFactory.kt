@@ -61,7 +61,7 @@ class BottomActionMenuStoreFactory(
                                 )
                             )
                         }
-                        ObjectAction.CREATE_DOC -> {}
+//                        ObjectAction.CREATE_DOC -> {}
                     }
                     publish(
                         BottomActionMenuStore.Label.GoBack(

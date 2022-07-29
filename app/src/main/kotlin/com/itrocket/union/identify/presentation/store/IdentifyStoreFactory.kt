@@ -6,7 +6,6 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.documents.domain.entity.ObjectAction
 import com.itrocket.union.identify.domain.IdentifyInteractor
 import com.itrocket.union.identify.domain.entity.IdentifyDomain
 import com.itrocket.union.manual.ParamDomain
@@ -103,20 +102,6 @@ class IdentifyStoreFactory(
                     Log.d("SukhanovTest", "Click Item " + intent.item.title)
                 }
 
-                is IdentifyStore.Intent.OnObjectActionSelected ->
-                    when (intent.objectAction) {
-                        ObjectAction.CREATE_DOC -> {
-                            Log.d("SukhanovTest", "Click CREATE")
-
-                        }
-                        ObjectAction.DELETE_FROM_LIST -> {
-                            Log.d("SukhanovTest", "Click DELETE")
-                        }
-                        ObjectAction.OPEN_CARD -> {
-                            Log.d("SukhanovTest", "Click OPEN $itemDomain")
-                            publish(IdentifyStore.Label.OpenCardOS(itemDomain))
-                        }
-                    }
                 is IdentifyStore.Intent.OnNewAccountingObjectRfidsHandled -> handleRfidsAccountingObjects(
                     intent.rfids,
                     getState().os
