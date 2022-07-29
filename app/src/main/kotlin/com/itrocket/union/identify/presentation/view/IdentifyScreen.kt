@@ -44,7 +44,6 @@ fun IdentifyScreen(
     appInsets: AppInsets,
     onReadingModeClickListener: () -> Unit,
     onBackClickListener: () -> Unit,
-    onSaveClickListener: () -> Unit,
     onObjectClickListener: (AccountingObjectDomain) -> Unit,
     onDropClickListener: () -> Unit,
     onPageChanged: (Int) -> Unit
@@ -91,7 +90,6 @@ fun IdentifyScreen(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun OsScreen(
     state: IdentifyStore.State,
@@ -102,14 +100,14 @@ fun OsScreen(
     Scaffold(
         content = {
             when {
-                state.os.isNotEmpty() -> {
+                state.accountingObjects.isNotEmpty() -> {
                     AccountingObjectScreen(
-                        accountingObjects = state.os,
+                        accountingObjects = state.accountingObjects,
                         onObjectClickListener = onObjectClickListener,
                         paddingValues = paddingValues
                     )
                 }
-                state.os.isEmpty() -> {
+                state.accountingObjects.isEmpty() -> {
                     ObjectListEmpty(paddingValues = PaddingValues())
                 }
             }
@@ -132,7 +130,7 @@ private fun Content(
 ) {
     val tabs = listOf(
         BaseTab(
-            title = (stringResource(R.string.documents_main_assets) + " (" + state.os.size + ")"),
+            title = (stringResource(R.string.documents_main_assets) + " (" + state.accountingObjects.size + ")"),
             screen = {
                 OsScreen(
                     onReadingModeClickListener = onReadingModeClickListener,
@@ -246,7 +244,6 @@ private fun ObjectListEmpty(paddingValues: PaddingValues) {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun BottomBar(
     onReadingModeClickListener: () -> Unit

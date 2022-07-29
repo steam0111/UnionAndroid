@@ -5,4 +5,4 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class BottomActionMenuResult(val type: List<AccountingObjectDomain> = listOf()) : Parcelable
+data class BottomActionMenuResult(val listAO: List<AccountingObjectDomain> = listOf()) : Parcelable

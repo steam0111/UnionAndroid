@@ -31,14 +31,11 @@ object IdentifyModule {
             IdentifyInteractor(get(), get(), get())
         }
 
-        factory { (args: IdentifyComposeFragmentArgs) ->
+        factory {
             IdentifyStoreFactory(
                 DefaultStoreFactory,
                 get(),
-                get(),
-                args.identifyArguments,
-                get(),
-                get(),
+                get()
             ).create()
         }
     }

@@ -1,11 +1,9 @@
 package com.itrocket.union.identify.presentation.view
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
@@ -37,8 +35,7 @@ class IdentifyComposeFragment :
                 resultCode = BOTTOM_ACTION_RESULT_CODE,
                 resultLabel = BOTTOM_ACTION_RESULT_LABEL,
                 resultAction = {
-                    (it as BottomActionMenuResult?)?.type?.let {
-//                    (it as BottomActionMenuResult?)?.type?.let {
+                    (it as BottomActionMenuResult?)?.listAO?.let {
                         accept(IdentifyStore.Intent.OnDeleteFromBottomAction(it))
                     }
                 }
@@ -57,7 +54,6 @@ class IdentifyComposeFragment :
         )
 
     private val serviceEntryManager: ServiceEntryManager by inject()
-
     private val scanningDataRfid: MutableSet<String> = mutableSetOf()
     private var scanningDataBarcode: String = ""
 
@@ -122,7 +118,6 @@ class IdentifyComposeFragment :
         }
     }
 
-    @OptIn(ExperimentalPagerApi::class)
     override fun renderState(
         state: IdentifyStore.State,
         composeView: ComposeView,
@@ -138,13 +133,9 @@ class IdentifyComposeFragment :
                 onBackClickListener = {
                     accept(IdentifyStore.Intent.OnBackClicked)
                 },
-                onSaveClickListener = {
-                    accept(IdentifyStore.Intent.OnSaveClicked)
-                },
                 onObjectClickListener = {
                     accept(IdentifyStore.Intent.OnItemClicked(it))
                 },
-//                onOSClickListener = { accept(IdentifyStore.Intent.OnOSClicked(it)) },
                 onDropClickListener = {
                     accept(IdentifyStore.Intent.OnDropClicked)
                 },
