@@ -138,7 +138,7 @@ class IdentifyStoreFactory(
                     )
                 }
                 is IdentifyStore.Intent.OnDeleteFromBottomAction -> {
-                    dispatch(Result.AccountingObjects(listOf()))
+                    dispatch(Result.AccountingObjects(intent.bottomActionResult))
                 }
             }
         }
