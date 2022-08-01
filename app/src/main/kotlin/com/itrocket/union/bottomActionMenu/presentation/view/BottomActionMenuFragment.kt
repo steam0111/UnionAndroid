@@ -23,8 +23,8 @@ class BottomActionMenuFragment :
                     accept(
                         BottomActionMenuStore.Intent.OnTypeClicked(
                             it,
-                            item = state.item,
-                            listAO = state.listAO
+                            accountingObjectDomain = state.accountingObjectDomain,
+                            accountingObjects = state.accountingObjects
                         )
                     )
                 }
@@ -33,7 +33,7 @@ class BottomActionMenuFragment :
     }
 
     companion object {
-        const val BOTTOMACTIONMENU_ARGS = "bottom action menu args"
+        const val BOTTOM_ACTION_MENU_ARGS = "bottom action menu args"
         const val BOTTOM_ACTION_RESULT_CODE = "bottom action result code"
         const val BOTTOM_ACTION_RESULT_LABEL = "bottom action result label"
     }

@@ -1,11 +1,6 @@
 package com.itrocket.union.accountingObjects.presentation.store
 
-import android.util.Log
-import com.arkivanov.mvikotlin.core.store.Executor
-import com.arkivanov.mvikotlin.core.store.Reducer
-import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
-import com.arkivanov.mvikotlin.core.store.Store
-import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.core.store.*
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
@@ -118,7 +113,7 @@ class AccountingObjectStoreFactory(
         }
 
         private fun onItemClick(item: AccountingObjectDomain) {
-            if(accountingObjectArguments?.isFromDocument == true){
+            if (accountingObjectArguments?.isFromDocument == true) {
                 publish(AccountingObjectStore.Label.GoBack(AccountingObjectResult(item)))
             } else {
                 publish(

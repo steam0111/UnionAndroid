@@ -35,7 +35,7 @@ class IdentifyComposeFragment :
                 resultCode = BOTTOM_ACTION_RESULT_CODE,
                 resultLabel = BOTTOM_ACTION_RESULT_LABEL,
                 resultAction = {
-                    (it as BottomActionMenuResult?)?.listAO?.let {
+                    (it as BottomActionMenuResult?)?.accountingObjects?.let {
                         accept(IdentifyStore.Intent.OnDeleteFromBottomAction(it))
                     }
                 }

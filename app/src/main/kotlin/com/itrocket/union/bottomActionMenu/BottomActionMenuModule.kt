@@ -6,7 +6,7 @@ import com.itrocket.core.base.BaseViewModel
 import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuArguments
 import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuStore
 import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuStoreFactory
-import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment.Companion.BOTTOMACTIONMENU_ARGS
+import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment.Companion.BOTTOM_ACTION_MENU_ARGS
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
@@ -20,7 +20,7 @@ object BottomActionMenuModule {
             BaseViewModel(get<BottomActionMenuStore>() {
                 parametersOf(
                     args.getParcelable(
-                        BOTTOMACTIONMENU_ARGS
+                        BOTTOM_ACTION_MENU_ARGS
                     )
                 )
             })
@@ -30,8 +30,7 @@ object BottomActionMenuModule {
             BottomActionMenuStoreFactory(
                 DefaultStoreFactory,
                 get(),
-                args.accountingObjectDomain,
-                args.listAO
+                args
             ).create()
         }
     }

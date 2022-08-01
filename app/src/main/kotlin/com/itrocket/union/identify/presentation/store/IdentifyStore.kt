@@ -12,16 +12,15 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuArguments
 import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
-import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 
 interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, IdentifyStore.Label> {
 
     sealed class Intent {
         object OnReadingModeClicked : Intent()
-        object OnDropClicked : IdentifyStore.Intent()
-        data class OnSelectPage(val selectedPage: Int) : IdentifyStore.Intent()
-        object OnBackClicked : IdentifyStore.Intent()
+        object OnDropClicked : Intent()
+        data class OnSelectPage(val selectedPage: Int) : Intent()
+        object OnBackClicked : Intent()
 
         data class OnItemClicked(val item: AccountingObjectDomain) : Intent()
         data class OnDeleteFromBottomAction(val bottomActionResult: List<AccountingObjectDomain>) :
@@ -64,9 +63,9 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
             ShowBottomSheetNavigationLabel {
             override val arguments: Bundle
                 get() = bundleOf(
-                    BottomActionMenuFragment.BOTTOMACTIONMENU_ARGS to BottomActionMenuArguments(
+                    BottomActionMenuFragment.BOTTOM_ACTION_MENU_ARGS to BottomActionMenuArguments(
                         accountingObjectDomain = item,
-                        listAO = listAO
+                        accountingObjects = listAO
                     ),
                 )
 

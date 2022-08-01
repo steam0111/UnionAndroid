@@ -17,17 +17,16 @@ interface BottomActionMenuStore :
     Store<BottomActionMenuStore.Intent, BottomActionMenuStore.State, BottomActionMenuStore.Label> {
     sealed class Intent {
         data class OnTypeClicked(
-            val type: ObjectAction,
-            val item: AccountingObjectDomain,
-            val listAO: List<AccountingObjectDomain>
-        ) :
-            Intent()
+            val objectAction: ObjectAction,
+            val accountingObjectDomain: AccountingObjectDomain,
+            val accountingObjects: List<AccountingObjectDomain>
+        ) : Intent()
     }
 
     data class State(
-        val types: List<ObjectAction>,
-        val item: AccountingObjectDomain,
-        val listAO: List<AccountingObjectDomain>
+        val objectActions: List<ObjectAction>,
+        val accountingObjectDomain: AccountingObjectDomain,
+        val accountingObjects: List<AccountingObjectDomain>
     )
 
     sealed class Label {

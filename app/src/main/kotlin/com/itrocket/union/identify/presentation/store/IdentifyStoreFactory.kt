@@ -12,7 +12,6 @@ class IdentifyStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val identifyInteractor: DocumentCreateInteractor
 ) {
-    lateinit var itemDomain: AccountingObjectDomain
     fun create(): IdentifyStore =
         object : IdentifyStore,
             Store<IdentifyStore.Intent, IdentifyStore.State, IdentifyStore.Label> by storeFactory.create(
@@ -42,7 +41,6 @@ class IdentifyStoreFactory(
             getState: () -> IdentifyStore.State
         ) {
             when (intent) {
-//Toolbar
                 IdentifyStore.Intent.OnBackClicked -> publish(IdentifyStore.Label.GoBack)
 
                 IdentifyStore.Intent.OnDropClicked -> {
@@ -53,9 +51,7 @@ class IdentifyStoreFactory(
                     publish(IdentifyStore.Label.ShowReadingMode)
                 }
 
-//Главное окно
                 is IdentifyStore.Intent.OnItemClicked -> {
-                    itemDomain = intent.item
                     publish(
                         IdentifyStore.Label.ShowDetail(
                             intent.item,

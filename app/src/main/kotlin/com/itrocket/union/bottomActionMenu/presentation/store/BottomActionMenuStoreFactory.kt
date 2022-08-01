@@ -3,23 +3,21 @@ package com.itrocket.union.bottomActionMenu.presentation.store
 import com.arkivanov.mvikotlin.core.store.*
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
-import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documents.domain.entity.ObjectAction
 
 class BottomActionMenuStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val bottomActionMenuArguments: AccountingObjectDomain,
-    private val bottomActionMenuArgumentsList: List<AccountingObjectDomain>
+    private val bottomActionMenuArguments: BottomActionMenuArguments
 ) {
     fun create(): BottomActionMenuStore =
         object : BottomActionMenuStore,
             Store<BottomActionMenuStore.Intent, BottomActionMenuStore.State, BottomActionMenuStore.Label> by storeFactory.create(
                 name = "BottomActionMenuStore",
                 initialState = BottomActionMenuStore.State(
-                    types = ObjectAction.values().toList(),
-                    item = bottomActionMenuArguments,
-                    listAO = bottomActionMenuArgumentsList
+                    objectActions = ObjectAction.values().toList(),
+                    accountingObjectDomain = bottomActionMenuArguments.accountingObjectDomain,
+                    accountingObjects = bottomActionMenuArguments.accountingObjects
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
@@ -45,13 +43,13 @@ class BottomActionMenuStoreFactory(
         ) {
             when (intent) {
                 is BottomActionMenuStore.Intent.OnTypeClicked -> {
-                    when (intent.type) {
+                    when (intent.objectAction) {
                         ObjectAction.OPEN_CARD -> {
-                            publish(BottomActionMenuStore.Label.ShowDetail(intent.item))
+                            publish(BottomActionMenuStore.Label.ShowDetail(intent.accountingObjectDomain))
                         }
                         ObjectAction.DELETE_FROM_LIST -> {
-                            val newList = intent.listAO.toMutableList()
-                            newList.removeAt(newList.indexOf(intent.item))
+                            val newList = intent.accountingObjects.toMutableList()
+                            newList.removeAt(newList.indexOf(intent.accountingObjectDomain))
 
                             publish(
                                 BottomActionMenuStore.Label.DeleteCard(

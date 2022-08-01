@@ -53,7 +53,7 @@ fun BottomActionMenuScreen(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start
                 )
-                state.types.forEach {
+                state.objectActions.forEach {
                     Spacer(modifier = Modifier.height(16.dp))
                     BaseButton(
                         text = stringResource(id = it.textId),
@@ -101,17 +101,17 @@ fun BottomBarIdentifyItem(
 private fun BottomBarIdentifyPreview() {
     Column {
         BottomBarIdentifyItem(
-            onClick = {/*TODO*/ },
+            onClick = {},
             isEnabled = true,
             text = "Создать документ"
         )
         BottomBarIdentifyItem(
-            onClick = {/*TODO*/ },
+            onClick = { },
             isEnabled = true,
             text = "Открыть карточку"
         )
         BottomBarIdentifyItem(
-            onClick = {/*TODO*/ },
+            onClick = { },
             isEnabled = true,
             text = "Удалить из списка"
         )
