@@ -101,18 +101,7 @@ class DocumentReservesManager(
                 existingInNewLocationReserves
             )
 
-            val mappedNewReserves = newReserves.map { newReserve ->
-                newReserve.copy(
-                    id = UUID.randomUUID().toString(),
-                    count = newReserve.count,
-                    locationSyncEntity = locationSyncEntity
-                )
-            }
-            updateDocumentReserveIds(
-                documentId = documentId,
-                existingReserves = existingInNewLocationReserves,
-                newReserves = mappedNewReserves
-            )
+            reservesRepository.insertAll(newReserves)
             existingInNewLocationReserves
         }
     }
@@ -155,20 +144,9 @@ class DocumentReservesManager(
     }
 
     private suspend fun updateDocumentReserveIds(
-        documentId: String,
-        existingReserves: List<ReserveSyncEntity>,
         newReserves: List<ReserveSyncEntity>
     ) {
-        val reservesIds = existingReserves.map {
-            DocumentReserveCountSyncEntity(
-                id = it.id,
-                count = it.count
-            )
-        }
         reservesRepository.insertAll(newReserves)
-        val documentUpdateReserves =
-            DocumentUpdateReservesSyncEntity(id = documentId, reservesIds = reservesIds)
-        documentRepository.updateDocumentReserves(documentUpdateReserves)
     }
 
     private fun isSameReserves(
