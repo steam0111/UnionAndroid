@@ -99,6 +99,7 @@ class DocumentCreateStoreFactory(
                 DocumentCreateStore.Intent.OnDropClicked -> {
                     changeParams(getState().document.params, getState)
                     dispatch(Result.AccountingObjects(getState().document.accountingObjects))
+                    dispatch(Result.Reserves(getState().document.reserves))
                 }
                 is DocumentCreateStore.Intent.OnParamClicked -> {
                     if (!getState().document.isStatusCompleted) {
@@ -264,7 +265,7 @@ class DocumentCreateStoreFactory(
         private suspend fun onChooseAccountingObjectClicked(getState: () -> DocumentCreateStore.State) {
             publish(
                 DocumentCreateStore.Label.ShowAccountingObjects(
-                    documentCreateInteractor.getAccountingObjectsFilterParams(),
+                    listOf(),
                     documentCreateInteractor.getAccountingObjectIds(getState().accountingObjects)
                 )
             )
@@ -273,7 +274,7 @@ class DocumentCreateStoreFactory(
         private suspend fun onChooseReserveClicked(getState: () -> DocumentCreateStore.State) {
             publish(
                 DocumentCreateStore.Label.ShowReserves(
-                    listOf(),//documentCreateInteractor.getFilterParams(getState().params),
+                    listOf(),
                     documentCreateInteractor.getReservesIds(getState().reserves)
                 )
             )
