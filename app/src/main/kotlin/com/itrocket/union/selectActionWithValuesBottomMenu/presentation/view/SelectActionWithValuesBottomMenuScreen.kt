@@ -1,7 +1,13 @@
-package com.itrocket.union.bottomActionMenu.presentation.view
+package com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -14,13 +20,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
-import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuStore
 import com.itrocket.union.documents.domain.entity.ObjectAction
-import com.itrocket.union.ui.*
+import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuStore
+import com.itrocket.union.ui.AppTheme
+import com.itrocket.union.ui.BaseButton
+import com.itrocket.union.ui.BottomSheetDivider
+import com.itrocket.union.ui.ButtonWithLoaderPsb1
+import com.itrocket.union.ui.graphite2
+import com.itrocket.union.ui.psb1
+import com.itrocket.union.ui.white
 
 @Composable
 fun BottomActionMenuScreen(
-    state: BottomActionMenuStore.State,
+    state: SelectActionWithValuesBottomMenuStore.State,
     appInsets: AppInsets,
     onTypeClickListener: (ObjectAction) -> Unit
 ) {

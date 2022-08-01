@@ -1,4 +1,4 @@
-package com.itrocket.union.bottomActionMenu.presentation.store
+package com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store
 
 import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
@@ -9,12 +9,12 @@ import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailArguments
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragmentDirections
-import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment.Companion.BOTTOM_ACTION_RESULT_CODE
-import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment.Companion.BOTTOM_ACTION_RESULT_LABEL
 import com.itrocket.union.documents.domain.entity.ObjectAction
+import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment.Companion.BOTTOM_ACTION_RESULT_CODE
+import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment.Companion.BOTTOM_ACTION_RESULT_LABEL
 
-interface BottomActionMenuStore :
-    Store<BottomActionMenuStore.Intent, BottomActionMenuStore.State, BottomActionMenuStore.Label> {
+interface SelectActionWithValuesBottomMenuStore :
+    Store<SelectActionWithValuesBottomMenuStore.Intent, SelectActionWithValuesBottomMenuStore.State, SelectActionWithValuesBottomMenuStore.Label> {
     sealed class Intent {
         data class OnTypeClicked(
             val objectAction: ObjectAction,
@@ -30,8 +30,8 @@ interface BottomActionMenuStore :
     )
 
     sealed class Label {
-        data class GoBack(override val result: BottomActionMenuResult?) :
-            BottomActionMenuStore.Label(),
+        data class GoBack(override val result: SelectActionWithValuesBottomMenuResult?) :
+            SelectActionWithValuesBottomMenuStore.Label(),
             GoBackDialogNavigationLabel {
             override val resultCode: String
                 get() = BOTTOM_ACTION_RESULT_CODE
@@ -40,7 +40,8 @@ interface BottomActionMenuStore :
                 get() = BOTTOM_ACTION_RESULT_LABEL
         }
 
-        data class Error(override val message: String) : BottomActionMenuStore.Label(),
+        data class Error(override val message: String) :
+            SelectActionWithValuesBottomMenuStore.Label(),
             DefaultNavigationErrorLabel
 
         data class ShowDetail(val item: AccountingObjectDomain) :
@@ -51,7 +52,8 @@ interface BottomActionMenuStore :
                 )
         }
 
-        data class DeleteCard(override val result: BottomActionMenuResult) : Label(),
+        data class DeleteCard(override val result: SelectActionWithValuesBottomMenuResult) :
+            Label(),
             GoBackNavigationLabel {
             override val resultCode: String
                 get() = BOTTOM_ACTION_RESULT_CODE

@@ -9,11 +9,11 @@ import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectResult
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
-import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuResult
-import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment.Companion.BOTTOM_ACTION_RESULT_CODE
-import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment.Companion.BOTTOM_ACTION_RESULT_LABEL
 import com.itrocket.union.identify.IdentifyModule.IDENTIFY_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.identify.presentation.store.IdentifyStore
+import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuResult
+import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment.Companion.BOTTOM_ACTION_RESULT_CODE
+import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment.Companion.BOTTOM_ACTION_RESULT_LABEL
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -35,7 +35,7 @@ class IdentifyComposeFragment :
                 resultCode = BOTTOM_ACTION_RESULT_CODE,
                 resultLabel = BOTTOM_ACTION_RESULT_LABEL,
                 resultAction = {
-                    (it as BottomActionMenuResult?)?.accountingObjects?.let {
+                    (it as SelectActionWithValuesBottomMenuResult?)?.accountingObjects?.let {
                         accept(IdentifyStore.Intent.OnDeleteFromBottomAction(it))
                     }
                 }

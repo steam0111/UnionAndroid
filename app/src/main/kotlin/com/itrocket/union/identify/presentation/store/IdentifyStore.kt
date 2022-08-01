@@ -9,10 +9,10 @@ import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuArguments
-import com.itrocket.union.bottomActionMenu.presentation.view.BottomActionMenuFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuArguments
+import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment
 
 interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, IdentifyStore.Label> {
 
@@ -63,7 +63,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
             ShowBottomSheetNavigationLabel {
             override val arguments: Bundle
                 get() = bundleOf(
-                    BottomActionMenuFragment.BOTTOM_ACTION_MENU_ARGS to BottomActionMenuArguments(
+                    SelectActionWithValuesBottomMenuFragment.BOTTOM_ACTION_MENU_ARGS to SelectActionWithValuesBottomMenuArguments(
                         accountingObjectDomain = item,
                         accountingObjects = listAO
                     ),
@@ -72,7 +72,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
             override val containerId: Int = R.id.mainActivityNavHostFragment
 
             override val fragment: Fragment
-                get() = BottomActionMenuFragment()
+                get() = SelectActionWithValuesBottomMenuFragment()
         }
 
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel

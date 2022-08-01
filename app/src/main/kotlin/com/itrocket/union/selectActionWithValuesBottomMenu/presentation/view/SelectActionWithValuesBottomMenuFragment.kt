@@ -1,17 +1,17 @@
-package com.itrocket.union.bottomActionMenu.presentation.view
+package com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view
 
 import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeBottomSheet
-import com.itrocket.union.bottomActionMenu.BottomActionMenuModule.BOTTOMACTIONMENU_VIEW_MODEL_QUALIFIER
-import com.itrocket.union.bottomActionMenu.presentation.store.BottomActionMenuStore
+import com.itrocket.union.selectActionWithValuesBottomMenu.SelectActionWithValuesBottomMenuModule.BOTTOMACTIONMENU_VIEW_MODEL_QUALIFIER
+import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuStore
 
-class BottomActionMenuFragment :
-    BaseComposeBottomSheet<BottomActionMenuStore.Intent, BottomActionMenuStore.State, BottomActionMenuStore.Label>(
+class SelectActionWithValuesBottomMenuFragment :
+    BaseComposeBottomSheet<SelectActionWithValuesBottomMenuStore.Intent, SelectActionWithValuesBottomMenuStore.State, SelectActionWithValuesBottomMenuStore.Label>(
         BOTTOMACTIONMENU_VIEW_MODEL_QUALIFIER
     ) {
     override fun renderState(
-        state: BottomActionMenuStore.State,
+        state: SelectActionWithValuesBottomMenuStore.State,
         composeView: ComposeView,
         appInsets: AppInsets
     ) {
@@ -21,7 +21,7 @@ class BottomActionMenuFragment :
                 appInsets = appInsets,
                 onTypeClickListener = {
                     accept(
-                        BottomActionMenuStore.Intent.OnTypeClicked(
+                        SelectActionWithValuesBottomMenuStore.Intent.OnTypeClicked(
                             it,
                             accountingObjectDomain = state.accountingObjectDomain,
                             accountingObjects = state.accountingObjects
