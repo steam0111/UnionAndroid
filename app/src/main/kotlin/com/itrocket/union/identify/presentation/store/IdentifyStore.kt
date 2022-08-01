@@ -23,7 +23,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         object OnBackClicked : Intent()
 
         data class OnItemClicked(val item: AccountingObjectDomain) : Intent()
-        data class OnDeleteFromBottomAction(val bottomActionResult: List<AccountingObjectDomain>) :
+        data class OnDeleteFromSelectActionWithValuesBottomMenu(val accountingObjects: List<AccountingObjectDomain>) :
             Intent()
 
         data class OnNewAccountingObjectRfidsHandled(val rfids: List<String>) :
@@ -63,7 +63,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
             ShowBottomSheetNavigationLabel {
             override val arguments: Bundle
                 get() = bundleOf(
-                    SelectActionWithValuesBottomMenuFragment.BOTTOM_ACTION_MENU_ARGS to SelectActionWithValuesBottomMenuArguments(
+                    SelectActionWithValuesBottomMenuFragment.SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_ARGS to SelectActionWithValuesBottomMenuArguments(
                         accountingObjectDomain = item,
                         accountingObjects = listAO
                     ),

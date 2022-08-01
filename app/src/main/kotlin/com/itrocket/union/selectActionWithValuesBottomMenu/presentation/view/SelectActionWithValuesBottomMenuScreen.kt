@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
@@ -31,7 +30,7 @@ import com.itrocket.union.ui.psb1
 import com.itrocket.union.ui.white
 
 @Composable
-fun BottomActionMenuScreen(
+fun SelectActionWithValuesBottomMenuScreen(
     state: SelectActionWithValuesBottomMenuStore.State,
     appInsets: AppInsets,
     onTypeClickListener: (ObjectAction) -> Unit
@@ -105,27 +104,5 @@ fun BottomBarIdentifyItem(
                 fontWeight = FontWeight.Medium
             )
         }
-    }
-}
-
-@Composable
-@Preview
-private fun BottomBarIdentifyPreview() {
-    Column {
-        BottomBarIdentifyItem(
-            onClick = {},
-            isEnabled = true,
-            text = "Создать документ"
-        )
-        BottomBarIdentifyItem(
-            onClick = { },
-            isEnabled = true,
-            text = "Открыть карточку"
-        )
-        BottomBarIdentifyItem(
-            onClick = { },
-            isEnabled = true,
-            text = "Удалить из списка"
-        )
     }
 }

@@ -17,7 +17,7 @@ class SelectActionWithValuesBottomMenuStoreFactory(
     fun create(): SelectActionWithValuesBottomMenuStore =
         object : SelectActionWithValuesBottomMenuStore,
             Store<SelectActionWithValuesBottomMenuStore.Intent, SelectActionWithValuesBottomMenuStore.State, SelectActionWithValuesBottomMenuStore.Label> by storeFactory.create(
-                name = "BottomActionMenuStore",
+                name = "SelectActionWithValuesBottomMenuStore",
                 initialState = SelectActionWithValuesBottomMenuStore.State(
                     objectActions = ObjectAction.values().toList(),
                     accountingObjectDomain = selectActionWithValuesBottomMenuArguments.accountingObjectDomain,
@@ -29,9 +29,9 @@ class SelectActionWithValuesBottomMenuStoreFactory(
             ) {}
 
     private fun createExecutor(): Executor<SelectActionWithValuesBottomMenuStore.Intent, Unit, SelectActionWithValuesBottomMenuStore.State, Unit, SelectActionWithValuesBottomMenuStore.Label> =
-        BottomActionMenuExecutor()
+        SelectActionWithValuesBottomMenuExecutor()
 
-    private inner class BottomActionMenuExecutor :
+    private inner class SelectActionWithValuesBottomMenuExecutor :
         BaseExecutor<SelectActionWithValuesBottomMenuStore.Intent, Unit, SelectActionWithValuesBottomMenuStore.State, Unit, SelectActionWithValuesBottomMenuStore.Label>(
             context = coreDispatchers.ui
         ) {

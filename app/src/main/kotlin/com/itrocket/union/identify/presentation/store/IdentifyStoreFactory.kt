@@ -1,6 +1,10 @@
 package com.itrocket.union.identify.presentation.store
 
-import com.arkivanov.mvikotlin.core.store.*
+import com.arkivanov.mvikotlin.core.store.Executor
+import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
+import com.arkivanov.mvikotlin.core.store.Store
+import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
@@ -80,8 +84,8 @@ class IdentifyStoreFactory(
                         )
                     )
                 }
-                is IdentifyStore.Intent.OnDeleteFromBottomAction -> {
-                    dispatch(Result.AccountingObjects(intent.bottomActionResult))
+                is IdentifyStore.Intent.OnDeleteFromSelectActionWithValuesBottomMenu -> {
+                    dispatch(Result.AccountingObjects(intent.accountingObjects))
                 }
             }
         }

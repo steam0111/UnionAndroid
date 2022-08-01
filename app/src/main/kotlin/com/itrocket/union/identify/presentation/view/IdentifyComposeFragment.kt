@@ -12,8 +12,8 @@ import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectCo
 import com.itrocket.union.identify.IdentifyModule.IDENTIFY_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.identify.presentation.store.IdentifyStore
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuResult
-import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment.Companion.BOTTOM_ACTION_RESULT_CODE
-import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment.Companion.BOTTOM_ACTION_RESULT_LABEL
+import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment.Companion.SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_RESULT_CODE
+import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment.Companion.SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_RESULT_LABEL
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -32,11 +32,11 @@ class IdentifyComposeFragment :
     override val fragmentResultList: List<FragmentResult>
         get() = listOf(
             FragmentResult(
-                resultCode = BOTTOM_ACTION_RESULT_CODE,
-                resultLabel = BOTTOM_ACTION_RESULT_LABEL,
+                resultCode = SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_RESULT_CODE,
+                resultLabel = SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_RESULT_LABEL,
                 resultAction = {
                     (it as SelectActionWithValuesBottomMenuResult?)?.accountingObjects?.let {
-                        accept(IdentifyStore.Intent.OnDeleteFromBottomAction(it))
+                        accept(IdentifyStore.Intent.OnDeleteFromSelectActionWithValuesBottomMenu(it))
                     }
                 }
             ),
