@@ -282,4 +282,7 @@
     <string name="to_sync">Синхронизировать</string>
     <string name="to_clear_db">Полная очистка базы данных</string>
     <string name="to_auth">Авторизация</string>
+
+    <!-- Identify -->
+    <string name="os_tab_title">ОС (%s)</string>
 </resources>

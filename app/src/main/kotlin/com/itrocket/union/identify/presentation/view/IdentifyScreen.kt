@@ -4,7 +4,15 @@ package com.itrocket.union.identify.presentation.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,7 +38,17 @@ import com.itrocket.ui.BaseTab
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.identify.presentation.store.IdentifyStore
-import com.itrocket.union.ui.*
+import com.itrocket.union.ui.AccountingObjectItem
+import com.itrocket.union.ui.AppTheme
+import com.itrocket.union.ui.BaseButton
+import com.itrocket.union.ui.BaseToolbar
+import com.itrocket.union.ui.DoubleTabRow
+import com.itrocket.union.ui.MediumSpacer
+import com.itrocket.union.ui.TabIndicatorBlack
+import com.itrocket.union.ui.graphite2
+import com.itrocket.union.ui.graphite4
+import com.itrocket.union.ui.psb1
+import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
 import com.itrocket.utils.getTargetPage
 import kotlinx.coroutines.CoroutineScope
@@ -91,7 +109,7 @@ fun IdentifyScreen(
 }
 
 @Composable
-fun OsScreen(
+fun AccountingObjectScreen(
     state: IdentifyStore.State,
     onObjectClickListener: (AccountingObjectDomain) -> Unit,
     onReadingModeClickListener: () -> Unit,
@@ -99,18 +117,13 @@ fun OsScreen(
 ) {
     Scaffold(
         content = {
-            when {
-                state.accountingObjects.isNotEmpty() -> {
-                    AccountingObjectScreen(
-                        accountingObjects = state.accountingObjects,
-                        onObjectClickListener = onObjectClickListener,
-                        paddingValues = paddingValues
-                    )
-                }
-                state.accountingObjects.isEmpty() -> {
-                    ObjectListEmpty(paddingValues = PaddingValues())
-                }
-            }
+            if (state.accountingObjects.isNotEmpty()) {
+                AccountingObjectIsNotEmptyScreen(
+                    accountingObjects = state.accountingObjects,
+                    onObjectClickListener = onObjectClickListener,
+                    paddingValues = paddingValues
+                )
+            } else ObjectListEmpty(paddingValues = PaddingValues())
         }
     )
 }
@@ -130,9 +143,9 @@ private fun Content(
 ) {
     val tabs = listOf(
         BaseTab(
-            title = (stringResource(R.string.documents_main_assets) + " (" + state.accountingObjects.size + ")"),
+            title = (stringResource(R.string.os_tab_title, state.accountingObjects.size)),
             screen = {
-                OsScreen(
+                AccountingObjectScreen(
                     onReadingModeClickListener = onReadingModeClickListener,
                     onObjectClickListener = onObjectClickListener,
                     state = state,
@@ -194,7 +207,7 @@ private fun Toolbar(
 }
 
 @Composable
-private fun AccountingObjectScreen(
+private fun AccountingObjectIsNotEmptyScreen(
     accountingObjects: List<AccountingObjectDomain>,
     onObjectClickListener: (AccountingObjectDomain) -> Unit,
     paddingValues: PaddingValues
