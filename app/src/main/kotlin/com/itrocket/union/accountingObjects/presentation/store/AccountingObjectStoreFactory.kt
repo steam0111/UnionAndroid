@@ -23,13 +23,11 @@ class AccountingObjectStoreFactory(
     private val errorInteractor: ErrorInteractor
 ) {
 
-    private var params: List<ParamDomain>? = accountingObjectArguments?.params
-
     fun create(): AccountingObjectStore =
         object : AccountingObjectStore,
             Store<AccountingObjectStore.Intent, AccountingObjectStore.State, AccountingObjectStore.Label> by storeFactory.create(
                 name = "AccountingObjectStore",
-                initialState = AccountingObjectStore.State(),
+                initialState = AccountingObjectStore.State(params = accountingObjectArguments?.params.orEmpty()),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
@@ -47,9 +45,14 @@ class AccountingObjectStoreFactory(
             action: Unit,
             getState: () -> AccountingObjectStore.State
         ) {
+            val filters = getState().params.ifEmpty {
+                accountingObjectInteractor.getFilters(accountingObjectArguments?.isFromDocument == true)
+            }
+            dispatch(Result.Params(filters))
+
             searchManager.listenSearch {
                 getAccountingObjects(
-                    params = params.orEmpty(),
+                    params = getState().params,
                     searchText = it
                 )
             }
@@ -69,14 +72,12 @@ class AccountingObjectStoreFactory(
                     getState().isShowSearch
                 )
                 AccountingObjectStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
-                AccountingObjectStore.Intent.OnFilterClicked -> publish(
-                    AccountingObjectStore.Label.ShowFilter(
-                        params ?: accountingObjectInteractor.getFilters()
-                    )
-                )
+                AccountingObjectStore.Intent.OnFilterClicked -> {
+                    publish(AccountingObjectStore.Label.ShowFilter(getState().params))
+                }
                 is AccountingObjectStore.Intent.OnFilterResult -> {
-                    params = intent.params
-                    getAccountingObjects(params.orEmpty(), getState().searchText)
+                    dispatch(Result.Params(intent.params))
+                    getAccountingObjects(getState().params, getState().searchText)
                 }
                 is AccountingObjectStore.Intent.OnItemClicked -> onItemClick(intent.item)
                 is AccountingObjectStore.Intent.OnSearchTextChanged -> {
@@ -117,7 +118,7 @@ class AccountingObjectStoreFactory(
         }
 
         private fun onItemClick(item: AccountingObjectDomain) {
-            if(accountingObjectArguments?.isFromDocument == true){
+            if (accountingObjectArguments?.isFromDocument == true) {
                 publish(AccountingObjectStore.Label.GoBack(AccountingObjectResult(item)))
             } else {
                 publish(
@@ -130,6 +131,7 @@ class AccountingObjectStoreFactory(
     }
 
     private sealed class Result {
+        data class Params(val params: List<ParamDomain>) : Result()
         data class Loading(val isLoading: Boolean) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
         data class SearchText(val searchText: String) : Result()
@@ -139,6 +141,7 @@ class AccountingObjectStoreFactory(
     private object ReducerImpl : Reducer<AccountingObjectStore.State, Result> {
         override fun AccountingObjectStore.State.reduce(result: Result) =
             when (result) {
+                is Result.Params -> copy(params = result.params)
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.AccountingObjects -> copy(accountingObjects = result.accountingObjects)
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)

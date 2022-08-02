@@ -1,6 +1,5 @@
 package com.itrocket.union.documents.data
 
-import com.example.union_sync_api.data.AccountingObjectStatusSyncApi
 import com.example.union_sync_api.data.ActionRemainsRecordSyncApi
 import com.example.union_sync_api.data.DocumentSyncApi
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
@@ -8,7 +7,6 @@ import com.example.union_sync_api.entity.DocumentReserveCountSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateReservesSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.itrocket.core.base.CoreDispatchers
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.documents.data.mapper.map
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentDomain
@@ -17,7 +15,6 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getExploitingId
 import com.itrocket.union.manual.getMolId
 import com.itrocket.union.manual.getOrganizationId
-import com.itrocket.union.manual.toParam
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -25,7 +22,6 @@ import kotlinx.coroutines.withContext
 class DocumentRepositoryImpl(
     private val documentSyncApi: DocumentSyncApi,
     private val coreDispatchers: CoreDispatchers,
-    private val statusesSyncApi: AccountingObjectStatusSyncApi,
     private val documentRemainsRecordSyncApi: ActionRemainsRecordSyncApi
 ) : DocumentRepository {
 
@@ -77,10 +73,5 @@ class DocumentRepositoryImpl(
 
     override suspend fun insertDocumentReserveCount(documentReserveCounts: List<DocumentReserveCountSyncEntity>) {
         return documentRemainsRecordSyncApi.updateCounts(documentReserveCounts)
-    }
-
-    override suspend fun getAvailableStatus(): ParamDomain? {
-        return statusesSyncApi.getStatuses(ObjectStatusType.AVAILABLE.name).map { it.toParam() }
-            .firstOrNull()
     }
 }
