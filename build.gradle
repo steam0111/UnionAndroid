@@ -3,15 +3,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        ext {
-            GITHUB_TOKEN = System.getenv("GITHUB_TOKEN")
-        }
-        maven { url = uri('https://maven.pkg.github.com/steam0111/ScannerImpl/ru/itrocket/core/1.1.5/core-1.1.5.pom')
-            credentials {
-                username GITHUB_USER
-                password GITHUB_TOKEN
-            }
-        }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:${libs.versions.agp.get()}"

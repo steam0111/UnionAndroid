@@ -108,27 +108,6 @@ fun IdentifyScreen(
     }
 }
 
-@Composable
-fun AccountingObjectScreen(
-    state: IdentifyStore.State,
-    onObjectClickListener: (AccountingObjectDomain) -> Unit,
-    onReadingModeClickListener: () -> Unit,
-    paddingValues: PaddingValues
-) {
-    Scaffold(
-        content = {
-            if (state.accountingObjects.isNotEmpty()) {
-                AccountingObjectIsNotEmptyScreen(
-                    accountingObjects = state.accountingObjects,
-                    onObjectClickListener = onObjectClickListener,
-                    paddingValues = paddingValues
-                )
-            } else ObjectListEmpty(paddingValues = PaddingValues())
-        }
-    )
-}
-
-
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun Content(
@@ -145,12 +124,13 @@ private fun Content(
         BaseTab(
             title = (stringResource(R.string.os_tab_title, state.accountingObjects.size)),
             screen = {
-                AccountingObjectScreen(
-                    onReadingModeClickListener = onReadingModeClickListener,
-                    onObjectClickListener = onObjectClickListener,
-                    state = state,
-                    paddingValues = paddingValues
-                )
+                if (state.accountingObjects.isNotEmpty()) {
+                    AccountingObjectIsNotEmptyScreen(
+                        accountingObjects = state.accountingObjects,
+                        onObjectClickListener = onObjectClickListener,
+                        paddingValues = paddingValues
+                    )
+                } else ObjectListEmpty(paddingValues = PaddingValues())
             }
         )
     )

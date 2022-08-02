@@ -6,5 +6,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class IdentifyArguments(
-    val accountingObjectDomain: List<AccountingObjectDomain>
+    val accountingObjects: List<AccountingObjectDomain>
 ) : Parcelable

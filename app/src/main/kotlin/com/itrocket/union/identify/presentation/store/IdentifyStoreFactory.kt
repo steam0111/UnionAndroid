@@ -58,7 +58,7 @@ class IdentifyStoreFactory(
                 is IdentifyStore.Intent.OnItemClicked -> {
                     publish(
                         IdentifyStore.Label.ShowDetail(
-                            intent.item,
+                            intent.accountingObjectDomain,
                             getState().accountingObjects
                         )
                     )

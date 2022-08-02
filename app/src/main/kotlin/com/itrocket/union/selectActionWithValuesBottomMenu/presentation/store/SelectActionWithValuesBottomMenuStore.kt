@@ -10,8 +10,8 @@ import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingOb
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragmentDirections
 import com.itrocket.union.documents.domain.entity.ObjectAction
-import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment.Companion.BOTTOM_ACTION_RESULT_CODE
-import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment.Companion.BOTTOM_ACTION_RESULT_LABEL
+import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment.Companion.SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_RESULT_CODE
+import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment.Companion.SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_RESULT_LABEL
 
 interface SelectActionWithValuesBottomMenuStore :
     Store<SelectActionWithValuesBottomMenuStore.Intent, SelectActionWithValuesBottomMenuStore.State, SelectActionWithValuesBottomMenuStore.Label> {
@@ -34,10 +34,10 @@ interface SelectActionWithValuesBottomMenuStore :
             SelectActionWithValuesBottomMenuStore.Label(),
             GoBackDialogNavigationLabel {
             override val resultCode: String
-                get() = BOTTOM_ACTION_RESULT_CODE
+                get() = SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_RESULT_CODE
 
             override val resultLabel: String
-                get() = BOTTOM_ACTION_RESULT_LABEL
+                get() = SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_RESULT_LABEL
         }
 
         data class Error(override val message: String) :
@@ -56,10 +56,10 @@ interface SelectActionWithValuesBottomMenuStore :
             Label(),
             GoBackNavigationLabel {
             override val resultCode: String
-                get() = BOTTOM_ACTION_RESULT_CODE
+                get() = SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_RESULT_CODE
 
             override val resultLabel: String
-                get() = BOTTOM_ACTION_RESULT_LABEL
+                get() = SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_RESULT_LABEL
         }
     }
 }
