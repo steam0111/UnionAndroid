@@ -43,6 +43,13 @@ android {
     packagingOptions {
         resources.excludes.add("META-INF/*")
     }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            def formattedDate = new Date().format('HH_mm_dd_MM_yyyy')
+            outputFileName = "union_${variant.versionName}_" + "${formattedDate}.apk"
+        }
+    }
 }
 
 dependencies {
