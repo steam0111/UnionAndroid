@@ -32,6 +32,4 @@ interface DocumentRepository {
     suspend fun updateDocumentReserves(documentUpdateReservesSyncEntity: DocumentUpdateReservesSyncEntity)
 
     suspend fun insertDocumentReserveCount(documentReserveCounts: List<DocumentReserveCountSyncEntity>)
-
-    suspend fun getAvailableStatus(): ParamDomain?
 }

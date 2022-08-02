@@ -25,7 +25,7 @@ object AccountingObjectModule {
         }
 
         factory<AccountingObjectRepository> {
-            AccountingObjectRepositoryImpl(get(), get())
+            AccountingObjectRepositoryImpl(get(), get(), get())
         }
 
         factory {

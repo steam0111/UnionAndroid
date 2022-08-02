@@ -8,22 +8,18 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
-import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.documentCreate.domain.DocumentAccountingObjectManager
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import com.itrocket.union.documentCreate.domain.DocumentReservesManager
 import com.itrocket.union.documents.data.mapper.getParams
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
-import com.itrocket.union.employeeDetail.domain.EmployeeDetailInteractor
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
-import com.itrocket.union.organizationDetail.domain.OrganizationDetailInteractor
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.utils.ifBlankOrNull
@@ -75,13 +71,11 @@ class DocumentCreateStoreFactory(
                 }
 
                 document?.let { dispatch(Result.Document(it)) }
+                changeParams(getState().document.params)
+
                 dispatch(Result.AccountingObjects(document?.accountingObjects ?: listOf()))
                 dispatch(Result.Reserves(document?.reserves ?: listOf()))
-                val params = document?.params
-                    ?: selectParamsInteractor.getInitialDocumentParams(
-                        getParams(documentType = documentCreateArguments.document.documentType.name)
-                    )
-                dispatch(Result.Params(params))
+
             }
             dispatch(Result.Loading(false))
         }
@@ -97,7 +91,7 @@ class DocumentCreateStoreFactory(
                 )
                 DocumentCreateStore.Intent.OnChooseReserveClicked -> onChooseReserveClicked(getState)
                 DocumentCreateStore.Intent.OnDropClicked -> {
-                    changeParams(getState().document.params, getState)
+                    changeParams(getState().document.params)
                     dispatch(Result.AccountingObjects(getState().document.accountingObjects))
                     dispatch(Result.Reserves(getState().document.reserves))
                 }
@@ -114,14 +108,14 @@ class DocumentCreateStoreFactory(
                         getState().params,
                         intent.param
                     )
-                    changeParams(params = params, getState = getState)
+                    changeParams(params = params)
                 }
                 is DocumentCreateStore.Intent.OnParamsChanged -> {
                     val params = documentCreateInteractor.changeParams(
                         getState().params,
                         intent.params
                     )
-                    changeParams(params = params, getState = getState)
+                    changeParams(params = params)
                 }
                 DocumentCreateStore.Intent.OnSaveClicked -> saveDocument(getState)
                 is DocumentCreateStore.Intent.OnSelectPage -> dispatch(Result.SelectPage(intent.selectedPage))
@@ -131,7 +125,7 @@ class DocumentCreateStoreFactory(
                         getState().params,
                         intent.location.location
                     )
-                    changeParams(params = params, getState = getState)
+                    changeParams(params = params)
                 }
                 is DocumentCreateStore.Intent.OnAccountingObjectSelected -> {
                     dispatch(
@@ -222,11 +216,14 @@ class DocumentCreateStoreFactory(
             dispatch(Result.AccountingObjects(newAccountingObjects))
         }
 
-        private fun changeParams(
-            params: List<ParamDomain>,
-            getState: () -> DocumentCreateStore.State
-        ) {
-            dispatch(Result.Params(params))
+        private suspend fun changeParams(params: List<ParamDomain>) {
+            val filters = params.ifEmpty {
+                selectParamsInteractor.getInitialDocumentParams(
+                    getParams(documentType = documentCreateArguments.document.documentType.name)
+                )
+            }
+
+            dispatch(Result.Params(filters))
         }
 
         private suspend fun saveDocument(getState: () -> DocumentCreateStore.State) {

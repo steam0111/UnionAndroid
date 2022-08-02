@@ -38,8 +38,9 @@ class AccountingObjectInteractor(
             }
         }
 
-    fun getFilters(): List<ParamDomain> {
+    suspend fun getFilters(isFromDocument: Boolean): List<ParamDomain> {
         return listOf(
+            getStatusFilter(isFromDocument),
             ParamDomain(
                 type = ManualType.ORGANIZATION,
                 value = ""
@@ -54,10 +55,6 @@ class AccountingObjectInteractor(
             ),
             LocationParamDomain(
                 locations = listOf()
-            ),
-            ParamDomain(
-                type = ManualType.STATUS,
-                value = ""
             ),
             ParamDomain(
                 type = ManualType.DEPARTMENT,
@@ -76,5 +73,16 @@ class AccountingObjectInteractor(
                 value = ""
             )
         )
+    }
+
+    private suspend fun getStatusFilter(isFromDocument: Boolean): ParamDomain {
+        return if (isFromDocument) {
+            repository.getAvailableStatus()
+        } else {
+            ParamDomain(
+                type = ManualType.STATUS,
+                value = ""
+            )
+        }
     }
 }
