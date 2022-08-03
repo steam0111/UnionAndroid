@@ -195,9 +195,17 @@ private fun SelectServiceComponent(
     onDropdownItemClickListener: (String) -> Unit,
     onDropdownOpenClickListener: () -> Unit
 ) {
-    Column(modifier = Modifier.padding(horizontal = 24.dp)) {
-        DropdownMenuItem(onClick = onDropdownOpenClickListener) {
-            Text(text = state.defaultService, style = AppTheme.typography.body2)
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        DropdownMenuItem(
+            onClick = onDropdownOpenClickListener,
+            modifier = Modifier.background(graphite2)
+        ) {
+            val defaultService = if (!state.defaultService.isNullOrBlank()) {
+                state.defaultService
+            } else {
+                stringResource(R.string.select_service_hint)
+            }
+            Text(text = defaultService, style = AppTheme.typography.body2)
         }
         DropdownMenu(
             expanded = state.dropdownExpanded,
