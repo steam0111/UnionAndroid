@@ -68,7 +68,8 @@ class AuthMainStoreFactory(
                     catchException {
                         authMainInteractor.signIn(
                             login = getState().login,
-                            password = getState().password
+                            password = getState().password,
+                            isActiveDirectory = false
                         )
                         publish(AuthMainStore.Label.ShowDocumentMenu)
                     }

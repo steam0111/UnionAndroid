@@ -40,6 +40,9 @@ class AuthUserComposeFragment :
                 },
                 onPasswordVisibilityClickListener = {
                     accept(AuthUserStore.Intent.OnPasswordVisibilityClicked)
+                },
+                onActiveDirectoryChanged = {
+                    accept(AuthUserStore.Intent.OnActiveDirectoryChanged)
                 }
             )
         }

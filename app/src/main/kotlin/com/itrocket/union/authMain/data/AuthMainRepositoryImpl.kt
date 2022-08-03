@@ -7,6 +7,7 @@ import com.itrocket.token_auth.AuthCredentials
 import com.itrocket.union.authMain.data.mapper.toAuthCredentials
 import com.itrocket.union.authMain.data.mapper.toAuthDomain
 import com.itrocket.union.authMain.data.mapper.toAuthJwtRequest
+import com.itrocket.union.authMain.data.mapper.toAuthJwtRequestV2
 import com.itrocket.union.authMain.data.mapper.toMyConfigDomain
 import com.itrocket.union.authMain.domain.dependencies.AuthMainRepository
 import com.itrocket.union.authMain.domain.entity.AuthCredsDomain
@@ -20,12 +21,14 @@ import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.openapitools.client.apis.ExtractMyUserInformationControllerApi
+import org.openapitools.client.apis.JwtAuthControllerApi
 import org.openapitools.client.custom_api.AuthApi
 import org.openapitools.client.models.GetMyPermissionsResponseV2
 import org.openapitools.client.models.RefreshJwtRequest
 
 class AuthMainRepositoryImpl(
     private val api: AuthApi,
+    private val jwtAuthControllerApi: JwtAuthControllerApi,
     private val dataStore: DataStore<Preferences>,
     private val accessTokenPreferencesKey: Preferences.Key<String>,
     private val refreshTokenPreferencesKey: Preferences.Key<String>,
@@ -36,9 +39,16 @@ class AuthMainRepositoryImpl(
 
     private val myUserInformationControllerApi: ExtractMyUserInformationControllerApi by inject()
 
-    override suspend fun signIn(authCreds: AuthCredsDomain): AuthDomain {
-        return (api.apiAuthSignInPost(authCreds.toAuthJwtRequest()).body()
-            ?: throw InvalidNetworkDataException()).toAuthDomain()
+    override suspend fun signIn(
+        authCreds: AuthCredsDomain,
+        isActiveDirectory: Boolean
+    ): AuthDomain {
+        return if (isActiveDirectory) {
+            jwtAuthControllerApi.apiAuthSignInFromActiveDirectoryPost(authCreds.toAuthJwtRequestV2())
+                .body()
+        } else {
+            jwtAuthControllerApi.apiAuthSignInPost(authCreds.toAuthJwtRequestV2()).body()
+        }?.toAuthDomain() ?: throw InvalidNetworkDataException()
     }
 
     override suspend fun refreshToken(refreshToken: String, accessToken: String): AuthCredentials {

@@ -32,6 +32,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 import org.openapitools.client.apis.ExtractMyUserInformationControllerApi
+import org.openapitools.client.apis.JwtAuthControllerApi
 
 @JvmInline
 value class Seconds(val value: Long)
@@ -110,6 +111,10 @@ object NetworkModule {
         single<AuthApi> {
             get<Retrofit>(UNAUTHORIZED_RETROFIT_QUALIFIER)
                 .create(AuthApi::class.java)
+        }
+        single<JwtAuthControllerApi> {
+            get<Retrofit>(UNAUTHORIZED_RETROFIT_QUALIFIER)
+                .create(JwtAuthControllerApi::class.java)
         }
         single<NomenclaturesApi> {
             get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)

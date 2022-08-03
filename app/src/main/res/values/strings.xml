@@ -54,6 +54,7 @@
     <string name="auth_main_user_change">Сменить пользователя</string>
     <string name="auth_main_database_settings">Настройки БД</string>
     <string name="auth_title">Авторизация</string>
+    <string name="auth_active_directory">Пользователь Active Directory</string>
 
     <!-- MainScreen -->
     <string name="common_hint">Введите значение</string>

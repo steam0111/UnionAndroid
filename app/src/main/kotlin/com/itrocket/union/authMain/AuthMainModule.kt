@@ -32,6 +32,7 @@ object AuthMainModule {
         factory<AuthMainRepository> {
             AuthMainRepositoryImpl(
                 api = get(),
+                jwtAuthControllerApi = get(),
                 dataStore = get(),
                 accessTokenPreferencesKey = get(ACCESS_TOKEN_PREFERENCE_KEY),
                 refreshTokenPreferencesKey = get(REFRESH_TOKEN_PREFERENCE_KEY),
