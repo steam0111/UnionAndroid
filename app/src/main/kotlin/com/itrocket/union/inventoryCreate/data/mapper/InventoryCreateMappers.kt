@@ -37,5 +37,7 @@ fun InventorySyncEntity.map(): InventoryCreateDomain =
                 )
             }
         },
-        inventoryStatus = InventoryStatus.valueOf(inventoryStatus)
+        inventoryStatus = InventoryStatus.valueOf(inventoryStatus),
+        userInserted =  userInserted ,
+        userUpdated = userUpdated
     )

@@ -15,22 +15,27 @@ data class ReserveSyncEntity(
     val structuralSubdivisionId: String?,
     val receptionDocumentNumber: String?,
     val unitPrice: String?,
+    val userInserted: String?,
+    val userUpdated: String?,
 )
 
-fun ReserveSyncEntity.toReserveUpdateSyncEntity() = ReserveUpdateSyncEntity(
+fun ReserveSyncEntity.toReserveUpdateSyncEntity(userUpdated: String?) = ReserveUpdateSyncEntity(
     id = id,
     count = count ?: 0,
-    locationId = locationSyncEntity?.id
+    locationId = locationSyncEntity?.id,
+    userUpdated = userUpdated
 )
 
-fun ReserveSyncEntity.toReserveShortSyncEntity(locationId: String? = null) = ReserveShortSyncEntity(
+fun ReserveSyncEntity.toReserveShortSyncEntity(locationId: String? = null, userUpdated: String?) = ReserveShortSyncEntity(
     locationId = locationId ?: locationSyncEntity?.id,
     nomenclatureId = nomenclatureId,
     orderId = orderId,
-    name = name
+    name = name,
+    userUpdated = userUpdated
 )
 
 fun ReserveSyncEntity.toDocumentReserveCountSyncEntity() = DocumentReserveCountSyncEntity(
     id = id,
-    count = count
+    count = count,
+    userUpdated = userUpdated
 )

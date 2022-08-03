@@ -21,6 +21,8 @@ data class InventoryCreateDomain(
     val inventoryStatus: InventoryStatus,
     val documentInfo: List<ParamDomain>,
     val accountingObjects: List<AccountingObjectDomain>,
+    val userInserted: String?,
+    val userUpdated: String?
 ) : Parcelable {
 
     fun getTextDate() = getStringDateFromMillis(date)
@@ -42,6 +44,8 @@ fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
         locationIds = locationIds,
         inventoryStatus = this.inventoryStatus.name,
         updateDate = System.currentTimeMillis(),
-        code = number
+        code = number,
+        userInserted = userInserted,
+        userUpdated = userUpdated
     )
 }

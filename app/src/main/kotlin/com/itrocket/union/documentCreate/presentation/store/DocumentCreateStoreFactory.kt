@@ -14,6 +14,7 @@ import com.itrocket.union.documentCreate.domain.DocumentReservesManager
 import com.itrocket.union.documents.data.mapper.getParams
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
+import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.manual.LocationParamDomain
@@ -71,7 +72,7 @@ class DocumentCreateStoreFactory(
                 }
 
                 document?.let { dispatch(Result.Document(it)) }
-                changeParams(getState().document.params)
+                changeParams(getState().document.params, documentTypeDomain = getState().document.documentType)
 
                 dispatch(Result.AccountingObjects(document?.accountingObjects ?: listOf()))
                 dispatch(Result.Reserves(document?.reserves ?: listOf()))
@@ -91,7 +92,7 @@ class DocumentCreateStoreFactory(
                 )
                 DocumentCreateStore.Intent.OnChooseReserveClicked -> onChooseReserveClicked(getState)
                 DocumentCreateStore.Intent.OnDropClicked -> {
-                    changeParams(getState().document.params)
+                    changeParams(getState().document.params, documentTypeDomain = getState().document.documentType)
                     dispatch(Result.AccountingObjects(getState().document.accountingObjects))
                     dispatch(Result.Reserves(getState().document.reserves))
                 }
@@ -108,14 +109,14 @@ class DocumentCreateStoreFactory(
                         getState().params,
                         intent.param
                     )
-                    changeParams(params = params)
+                    changeParams(params = params, documentTypeDomain = getState().document.documentType)
                 }
                 is DocumentCreateStore.Intent.OnParamsChanged -> {
                     val params = documentCreateInteractor.changeParams(
                         getState().params,
                         intent.params
                     )
-                    changeParams(params = params)
+                    changeParams(params = params, documentTypeDomain = getState().document.documentType)
                 }
                 DocumentCreateStore.Intent.OnSaveClicked -> saveDocument(getState)
                 is DocumentCreateStore.Intent.OnSelectPage -> dispatch(Result.SelectPage(intent.selectedPage))
@@ -125,7 +126,7 @@ class DocumentCreateStoreFactory(
                         getState().params,
                         intent.location.location
                     )
-                    changeParams(params = params)
+                    changeParams(params = params, documentTypeDomain = getState().document.documentType)
                 }
                 is DocumentCreateStore.Intent.OnAccountingObjectSelected -> {
                     dispatch(
@@ -216,7 +217,10 @@ class DocumentCreateStoreFactory(
             dispatch(Result.AccountingObjects(newAccountingObjects))
         }
 
-        private suspend fun changeParams(params: List<ParamDomain>) {
+        private suspend fun changeParams(
+            params: List<ParamDomain>,
+            documentTypeDomain: DocumentTypeDomain
+        ) {
             val filters = params.ifEmpty {
                 selectParamsInteractor.getInitialDocumentParams(
                     getParams(documentType = documentCreateArguments.document.documentType.name)
@@ -224,6 +228,14 @@ class DocumentCreateStoreFactory(
             }
 
             dispatch(Result.Params(filters))
+            dispatch(
+                Result.ParamsValid(
+                    documentCreateInteractor.isParamsValid(
+                        filters,
+                        documentTypeDomain
+                    )
+                )
+            )
         }
 
         private suspend fun saveDocument(getState: () -> DocumentCreateStore.State) {
@@ -287,6 +299,7 @@ class DocumentCreateStoreFactory(
         data class Loading(val isLoading: Boolean) : Result()
         data class Document(val document: DocumentDomain) : Result()
         data class Params(val params: List<ParamDomain>) : Result()
+        data class ParamsValid(val isParamsValid: Boolean) : Result()
         data class SelectPage(val page: Int) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
         data class Reserves(val reserves: List<ReservesDomain>) : Result()
@@ -301,6 +314,7 @@ class DocumentCreateStoreFactory(
                 is Result.Reserves -> copy(reserves = result.reserves)
                 is Result.SelectPage -> copy(selectedPage = result.page)
                 is Result.Document -> copy(document = result.document)
+                is Result.ParamsValid -> copy(isParamsValid = result.isParamsValid)
             }
     }
 

@@ -7,6 +7,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.documents.domain.DocumentInteractor
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
@@ -27,7 +28,8 @@ class DocumentStoreFactory(
     private val documentInteractor: DocumentInteractor,
     private val arguments: DocumentArguments,
     private val errorInteractor: ErrorInteractor,
-    private val searchManager: SearchManager
+    private val searchManager: SearchManager,
+    private val authMainInteractor: AuthMainInteractor
 ) {
     fun create(): DocumentStore =
         object : DocumentStore,
@@ -134,7 +136,7 @@ class DocumentStoreFactory(
             }
         }
 
-        private fun createDocument(documentType: DocumentTypeDomain) {
+        private suspend fun createDocument(documentType: DocumentTypeDomain) {
             showDocument(
                 DocumentDomain(
                     id = null,
@@ -144,7 +146,9 @@ class DocumentStoreFactory(
                     documentStatus = DocumentStatus.CREATED,
                     documentStatusId = DocumentStatus.CREATED.name,
                     reserves = listOf(),
-                    number = null
+                    number = null,
+                    userInserted = authMainInteractor.getLogin(),
+                    userUpdated = authMainInteractor.getLogin()
                 )
             )
         }
