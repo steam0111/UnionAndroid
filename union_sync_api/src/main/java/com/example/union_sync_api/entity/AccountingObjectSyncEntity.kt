@@ -27,10 +27,11 @@ data class AccountingObjectSyncEntity(
     val organizationId: String?,
     val model: String?,
     val locationSyncEntity: LocationSyncEntity?,
-    val branchId: String?
+    val branchId: String?,
+    val userUpdated: String?
 )
 
-fun AccountingObjectSyncEntity.toAccountingObjectUpdateSyncEntity(): AccountingObjectUpdateSyncEntity {
+fun AccountingObjectSyncEntity.toAccountingObjectUpdateSyncEntity(userUpdated: String?): AccountingObjectUpdateSyncEntity {
     return AccountingObjectUpdateSyncEntity(
         id = id,
         locationId = locationId,
@@ -40,6 +41,7 @@ fun AccountingObjectSyncEntity.toAccountingObjectUpdateSyncEntity(): AccountingO
         updateDate = System.currentTimeMillis(),
         departmentId = departmentId,
         branchId = branchId,
-        molId = molId
+        molId = molId,
+        userUpdated = userUpdated
     )
 }

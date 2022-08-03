@@ -601,7 +601,9 @@ fun DocumentCreateScreenPreview() {
                         type = ManualType.LOCATION
                     ),
                 ),
-                documentStatusId = "d1"
+                documentStatusId = "d1",
+                userInserted = "",
+                userUpdated = ""
             ),
             accountingObjects = listOf(),
             params = listOf(

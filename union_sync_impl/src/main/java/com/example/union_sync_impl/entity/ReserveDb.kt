@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import com.example.union_sync_impl.entity.core.CatalogItemDb
 import com.example.union_sync_impl.entity.location.LocationDb
+import com.squareup.moshi.Json
 import java.math.BigDecimal
 
 @Entity(
@@ -57,6 +58,8 @@ class ReserveDb(
     val locationTypeId: String?,
     val molId: String?,
     val orderId: String?,
+    userInserted: String?,
+    userUpdated: String?,
     val nomenclatureId: String?,
     val nomenclatureGroupId: String?,
     val businessUnitId: String?,
@@ -67,4 +70,4 @@ class ReserveDb(
     val receptionDocumentNumber: String?,
     val unitPrice: String?,
     updateDate: Long?
-) : CatalogItemDb(id, updateDate)
+) : CatalogItemDb(id, updateDate, userUpdated, userInserted)

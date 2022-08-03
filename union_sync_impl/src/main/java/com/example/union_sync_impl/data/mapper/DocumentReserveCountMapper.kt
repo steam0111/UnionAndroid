@@ -5,5 +5,6 @@ import com.example.union_sync_impl.entity.DocumentReserveCount
 
 fun DocumentReserveCountSyncEntity.toDocumentReserveCount() = DocumentReserveCount(
     id = id,
-    count = count
+    count = count,
+    userUpdated = userUpdated
 )

@@ -128,7 +128,9 @@ fun InventoriesScreenPreview() {
                         ParamDomain("3", "Систмный интегратор", ManualType.MOL),
                     ),
                     accountingObjects = listOf(),
-                    inventoryStatus = InventoryStatus.CREATED
+                    inventoryStatus = InventoryStatus.CREATED,
+                    userInserted = "",
+                    userUpdated = ""
                 ),
                 InventoryCreateDomain(
                     id = "",
@@ -140,7 +142,9 @@ fun InventoriesScreenPreview() {
                         ParamDomain("3", "Систмный интегратор", ManualType.MOL),
                     ),
                     accountingObjects = listOf(),
-                    inventoryStatus = InventoryStatus.CREATED
+                    inventoryStatus = InventoryStatus.CREATED,
+                    userInserted = "",
+                    userUpdated = ""
                 ),
                 InventoryCreateDomain(
                     id = "",
@@ -152,7 +156,9 @@ fun InventoriesScreenPreview() {
                         ParamDomain("3", "Систмный интегратор", ManualType.MOL),
                     ),
                     accountingObjects = listOf(),
-                    inventoryStatus = InventoryStatus.CREATED
+                    inventoryStatus = InventoryStatus.CREATED,
+                    userInserted = "",
+                    userUpdated = ""
                 )
             )
         ),

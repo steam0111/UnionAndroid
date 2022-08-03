@@ -3,6 +3,7 @@ package com.itrocket.union.inventoryCreate.domain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
@@ -15,7 +16,8 @@ import kotlinx.coroutines.withContext
 class InventoryCreateInteractor(
     private val accountingObjectRepository: AccountingObjectRepository,
     private val inventoryRepository: InventoryRepository,
-    private val coreDispatchers: CoreDispatchers
+    private val coreDispatchers: CoreDispatchers,
+    private val authMainInteractor: AuthMainInteractor
 ) {
 
     suspend fun getInventoryById(id: String) =
@@ -35,7 +37,10 @@ class InventoryCreateInteractor(
             }
         }
         inventoryRepository.updateInventory(
-            inventoryCreate.copy(accountingObjects = newAccountingObjects).toUpdateSyncEntity()
+            inventoryCreate.copy(
+                accountingObjects = newAccountingObjects,
+                userUpdated = authMainInteractor.getLogin()
+            ).toUpdateSyncEntity()
         )
     }
 

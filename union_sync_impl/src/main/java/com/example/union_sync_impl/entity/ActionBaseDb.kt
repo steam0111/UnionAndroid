@@ -8,4 +8,4 @@ class ActionBaseDb(
     id: String,
     updateDate: Long,
     val name: String
-) : SyncItemDb(id, updateDate)
+) : SyncItemDb(id, updateDate, null, null)

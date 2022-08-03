@@ -70,6 +70,12 @@ data class RemainsDtoV2 (
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
 
+    @Json(name = "UserInserted")
+    val userInserted: String? = null,
+
+    @Json(name = "UserUpdated")
+    val userUpdated: String? = null,
+
     @Json(name = "dateUpdate")
     val dateUpdate: kotlin.String? = null,
 

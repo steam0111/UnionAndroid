@@ -44,11 +44,13 @@ class DocumentSyncApiImpl(
         documentDao.insert(documentCreateSyncEntity.toDocumentDb(documentId))
         updateActionRecords(
             accountingObjectIds = documentCreateSyncEntity.accountingObjectsIds.orEmpty(),
-            actionId = documentId
+            actionId = documentId,
+            userUpdated = documentCreateSyncEntity.userUpdated
         )
         updateRemainsActionRecords(
             remainIds = documentCreateSyncEntity.reservesIds.orEmpty(),
-            actionId = documentId
+            actionId = documentId,
+            userUpdated = documentCreateSyncEntity.userUpdated
         )
         return documentId
     }
@@ -155,24 +157,28 @@ class DocumentSyncApiImpl(
         documentDao.update(documentUpdateSyncEntity.toDocumentDb())
         updateActionRecords(
             accountingObjectIds = documentUpdateSyncEntity.accountingObjectsIds.orEmpty(),
-            actionId = documentUpdateSyncEntity.id
+            actionId = documentUpdateSyncEntity.id,
+            userUpdated = documentUpdateSyncEntity.userUpdated
         )
         updateRemainsActionRecords(
             remainIds = documentUpdateSyncEntity.reservesIds.orEmpty(),
-            actionId = documentUpdateSyncEntity.id
+            actionId = documentUpdateSyncEntity.id,
+            userUpdated = documentUpdateSyncEntity.userUpdated
         )
     }
 
     override suspend fun updateDocumentReserves(documentUpdateReservesSyncEntity: DocumentUpdateReservesSyncEntity) {
         updateRemainsActionRecords(
             remainIds = documentUpdateReservesSyncEntity.reservesIds,
-            actionId = documentUpdateReservesSyncEntity.id
+            actionId = documentUpdateReservesSyncEntity.id,
+            userUpdated = documentUpdateReservesSyncEntity.userUpdated
         )
     }
 
     private suspend fun updateActionRecords(
         accountingObjectIds: List<String>,
-        actionId: String
+        actionId: String,
+        userUpdated: String?
     ) {
         val existRecords = actionRecordDao.getAll(
             sqlActionRecordQuery(
@@ -186,7 +192,9 @@ class DocumentSyncApiImpl(
                 id = existRecord?.id ?: UUID.randomUUID().toString(),
                 accountingObjectId = accountingObjectId,
                 actionId = actionId,
-                updateDate = System.currentTimeMillis()
+                updateDate = System.currentTimeMillis(),
+                userInserted = existRecord?.userInserted ?: userUpdated,
+                userUpdated = userUpdated
             )
         }
         actionRecordDao.insertAll(newRecords)
@@ -194,7 +202,8 @@ class DocumentSyncApiImpl(
 
     private suspend fun updateRemainsActionRecords(
         remainIds: List<DocumentReserveCountSyncEntity>,
-        actionId: String
+        actionId: String,
+        userUpdated: String?
     ) {
         val existRecords = actionRemainsRecordDao.getAll(
             sqlActionRemainsRecordQuery(
@@ -209,7 +218,9 @@ class DocumentSyncApiImpl(
                 remainId = remain.id,
                 actionId = actionId,
                 updateDate = System.currentTimeMillis(),
-                count = remain.count
+                count = remain.count,
+                userUpdated = userUpdated,
+                userInserted = existRecord?.userInserted ?: userUpdated
             )
         }
         actionRemainsRecordDao.insertAll(newRecords)

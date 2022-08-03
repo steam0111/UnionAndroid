@@ -543,7 +543,8 @@ fun DocumentInfoItemPreview() {
                 )
             ),
             documentType = DocumentTypeDomain.WRITE_OFF,
-            dateUi = "12.12.12"
+            dateUi = "12.12.12",
+            userInserted = "",
         ), onDocumentClickListener = {}, isShowBottomLine = true
     )
 }
@@ -637,6 +638,8 @@ fun InventoryDocumentItemPreview() {
             ),
             accountingObjects = listOf(),
             inventoryStatus = InventoryStatus.CREATED,
+            userInserted = "",
+            userUpdated = ""
         ),
         isShowStatus = true
     )

@@ -4,7 +4,12 @@ import androidx.room.Entity
 import androidx.room.Ignore
 
 @Entity
-open class SyncItemDb(id: String, var updateDate: Long?) : DatabaseItemDb(id) {
+open class SyncItemDb(
+    id: String,
+    var updateDate: Long?,
+    var userUpdated: String?,
+    var userInserted: String?
+) : DatabaseItemDb(id) {
 
     @Ignore
     var version: Long = 0

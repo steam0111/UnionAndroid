@@ -18,7 +18,9 @@ fun ActionRecordDtoV2.toActionRecordDb() = ActionRecordDb(
     id = id,
     accountingObjectId = accountingObjectId.orEmpty(),
     actionId = actionId.orEmpty(),
-    updateDate = System.currentTimeMillis()
+    updateDate = System.currentTimeMillis(),
+    userUpdated = userUpdated,
+    userInserted = userInserted
 )
 
 fun ActionRecordDb.toActionRecordDtoV2() = ActionRecordDtoV2(
@@ -27,6 +29,8 @@ fun ActionRecordDb.toActionRecordDtoV2() = ActionRecordDtoV2(
     actionId = actionId,
     deleted = false,
     dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
+    userInserted = userInserted,
+    userUpdated = userUpdated
 )
 
 fun ActionRemainsRecordDtoV2.toActionRemainsRecordDb() = ActionRemainsRecordDb(
@@ -34,7 +38,9 @@ fun ActionRemainsRecordDtoV2.toActionRemainsRecordDb() = ActionRemainsRecordDb(
     remainId = remainsId.orEmpty(),
     actionId = actionId.orEmpty(),
     updateDate = System.currentTimeMillis(),
-    count = count
+    count = count,
+    userUpdated = userUpdated,
+    userInserted = userInserted
 )
 
 fun ActionRemainsRecordDb.toActionRemainsRecordDtoV2() = ActionRemainsRecordDtoV2(
@@ -44,6 +50,8 @@ fun ActionRemainsRecordDb.toActionRemainsRecordDtoV2() = ActionRemainsRecordDtoV
     deleted = false,
     count = count,
     dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
+    userInserted = userInserted,
+    userUpdated = userUpdated
 )
 
 fun InventoryRecordDtoV2.toInventoryRecordDb() = InventoryRecordDb(
@@ -51,7 +59,9 @@ fun InventoryRecordDtoV2.toInventoryRecordDb() = InventoryRecordDb(
     accountingObjectId = accountingObjectId.orEmpty(),
     inventoryId = inventoryId.orEmpty(),
     updateDate = System.currentTimeMillis(),
-    inventoryStatus = inventoryRecordStatusId.orEmpty()
+    inventoryStatus = inventoryRecordStatusId.orEmpty(),
+    userUpdated = userUpdated,
+    userInserted = userInserted
 )
 
 fun ActionRecordDb.toSyncEntity() = ActionRecordSyncEntity(
@@ -82,6 +92,8 @@ fun InventoryRecordDb.toInventoryRecordDtoV2() = InventoryRecordDtoV2(
     deleted = false,
     inventoryRecordStatusId = inventoryStatus,
     dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
+    userInserted = userInserted,
+    userUpdated = userUpdated
 )
 
 fun ActionBaseDtoV2.toActionBaseDb() = ActionBaseDb(
