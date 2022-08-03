@@ -63,30 +63,6 @@ private const val MAX_LIST_INFO = 3
 private const val DATE_ITEM_ROTATION_DURATION = 200
 
 @Composable
-fun DefaultListItem(
-    title: String,
-    isShowBottomLine: Boolean
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp, horizontal = 16.dp)
-    ) {
-        Column {
-            Text(
-                text = title,
-                style = AppTheme.typography.body1,
-                fontWeight = FontWeight.Medium
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-        }
-    }
-    if (isShowBottomLine) {
-        BottomLine()
-    }
-}
-
-@Composable
 fun AccountingObjectItem(
     accountingObject: AccountingObjectDomain,
     onAccountingObjectListener: (AccountingObjectDomain) -> Unit,

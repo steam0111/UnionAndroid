@@ -140,51 +140,6 @@ fun ButtonWithContent(
 }
 
 @Composable
-fun ButtonPsb1(
-    onClick: () -> Unit,
-    modifier: Modifier,
-    isEnabled: Boolean,
-    content: @Composable () -> Unit
-) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = psb1,
-            disabledBackgroundColor = graphite3
-        ),
-        shape = RoundedCornerShape(8.dp),
-        enabled = isEnabled,
-        modifier = modifier
-    ) {
-        content()
-    }
-}
-
-@Composable
-fun ButtonWithLoaderPsb1(
-    onClick: () -> Unit,
-    modifier: Modifier,
-    isEnabled: Boolean,
-    content: @Composable () -> Unit
-) {
-    ButtonPsb1(
-        onClick = onClick,
-        modifier = modifier.height(48.dp),
-        isEnabled = isEnabled,
-        content = {
-            Column(
-                modifier = Modifier.fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                content()
-
-            }
-        },
-    )
-}
-
-@Composable
 fun ButtonWithLoader(
     onClick: () -> Unit,
     modifier: Modifier,

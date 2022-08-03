@@ -22,7 +22,11 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
 import com.itrocket.union.chooseAction.presentation.store.ChooseActionStore
 import com.itrocket.union.documents.domain.entity.ObjectType
-import com.itrocket.union.ui.*
+import com.itrocket.union.ui.AppTheme
+import com.itrocket.union.ui.BaseButton
+import com.itrocket.union.ui.BottomSheetDivider
+import com.itrocket.union.ui.psb1
+import com.itrocket.union.ui.white
 
 @Composable
 fun ChooseActionScreen(

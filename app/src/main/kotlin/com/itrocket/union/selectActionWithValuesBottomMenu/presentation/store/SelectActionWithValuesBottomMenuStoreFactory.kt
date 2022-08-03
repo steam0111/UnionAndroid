@@ -7,7 +7,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
-import com.itrocket.union.documents.domain.entity.ObjectAction
+import com.itrocket.union.documents.domain.entity.ActionsWithIdentifyObjects
 
 class SelectActionWithValuesBottomMenuStoreFactory(
     private val storeFactory: StoreFactory,
@@ -19,7 +19,7 @@ class SelectActionWithValuesBottomMenuStoreFactory(
             Store<SelectActionWithValuesBottomMenuStore.Intent, SelectActionWithValuesBottomMenuStore.State, SelectActionWithValuesBottomMenuStore.Label> by storeFactory.create(
                 name = "SelectActionWithValuesBottomMenuStore",
                 initialState = SelectActionWithValuesBottomMenuStore.State(
-                    objectActions = ObjectAction.values().toList(),
+                    actionsWithIdentifyObjects = ActionsWithIdentifyObjects.values().toList(),
                     accountingObjectDomain = selectActionWithValuesBottomMenuArguments.accountingObjectDomain,
                     accountingObjects = selectActionWithValuesBottomMenuArguments.accountingObjects
                 ),
@@ -47,11 +47,11 @@ class SelectActionWithValuesBottomMenuStoreFactory(
         ) {
             when (intent) {
                 is SelectActionWithValuesBottomMenuStore.Intent.OnTypeClicked -> {
-                    when (intent.objectAction) {
-                        ObjectAction.OPEN_CARD -> {
+                    when (intent.actionsWithIdentifyObjects) {
+                        ActionsWithIdentifyObjects.OPEN_CARD -> {
                             publish(SelectActionWithValuesBottomMenuStore.Label.ShowDetail(intent.accountingObjectDomain))
                         }
-                        ObjectAction.DELETE_FROM_LIST -> {
+                        ActionsWithIdentifyObjects.DELETE_FROM_LIST -> {
                             val newList = intent.accountingObjects.toMutableList()
                             newList.removeAt(newList.indexOf(intent.accountingObjectDomain))
 
@@ -63,7 +63,6 @@ class SelectActionWithValuesBottomMenuStoreFactory(
                                 )
                             )
                         }
-//                        ObjectAction.CREATE_DOC -> {}
                     }
                     publish(
                         SelectActionWithValuesBottomMenuStore.Label.GoBack(

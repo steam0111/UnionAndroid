@@ -19,12 +19,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
-import com.itrocket.union.documents.domain.entity.ObjectAction
+import com.itrocket.union.documents.domain.entity.ActionsWithIdentifyObjects
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BottomSheetDivider
-import com.itrocket.union.ui.ButtonWithLoaderPsb1
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.psb1
 import com.itrocket.union.ui.white
@@ -33,7 +32,7 @@ import com.itrocket.union.ui.white
 fun SelectActionWithValuesBottomMenuScreen(
     state: SelectActionWithValuesBottomMenuStore.State,
     appInsets: AppInsets,
-    onTypeClickListener: (ObjectAction) -> Unit
+    onTypeClickListener: (ActionsWithIdentifyObjects) -> Unit
 ) {
     AppTheme {
         Box(
@@ -64,7 +63,7 @@ fun SelectActionWithValuesBottomMenuScreen(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start
                 )
-                state.objectActions.forEach {
+                state.actionsWithIdentifyObjects.forEach {
                     Spacer(modifier = Modifier.height(16.dp))
                     BaseButton(
                         text = stringResource(id = it.textId),
@@ -75,34 +74,6 @@ fun SelectActionWithValuesBottomMenuScreen(
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
-        }
-    }
-}
-
-@Composable
-fun BottomBarIdentifyItem(
-    text: String,
-    onClick: () -> Unit,
-    isEnabled: Boolean = true,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(graphite2)
-            .padding(8.dp)
-    ) {
-        ButtonWithLoaderPsb1(
-            onClick = onClick,
-            modifier = Modifier.fillMaxWidth(),
-            isEnabled = isEnabled,
-
-            ) {
-            Text(
-                text = text,
-                style = AppTheme.typography.body2,
-                color = white,
-                fontWeight = FontWeight.Medium
-            )
         }
     }
 }

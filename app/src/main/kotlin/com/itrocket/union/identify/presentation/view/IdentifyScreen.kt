@@ -125,12 +125,12 @@ private fun Content(
             title = (stringResource(R.string.os_tab_title, state.accountingObjects.size)),
             screen = {
                 if (state.accountingObjects.isNotEmpty()) {
-                    AccountingObjectIsNotEmptyScreen(
+                    ScanningObjectsScreen(
                         accountingObjects = state.accountingObjects,
                         onObjectClickListener = onObjectClickListener,
                         paddingValues = paddingValues
                     )
-                } else ObjectListEmpty(paddingValues = PaddingValues())
+                } else ScanningObjectsListEmpty(paddingValues = PaddingValues())
             }
         )
     )
@@ -187,7 +187,7 @@ private fun Toolbar(
 }
 
 @Composable
-private fun AccountingObjectIsNotEmptyScreen(
+private fun ScanningObjectsScreen(
     accountingObjects: List<AccountingObjectDomain>,
     onObjectClickListener: (AccountingObjectDomain) -> Unit,
     paddingValues: PaddingValues
@@ -214,7 +214,7 @@ private fun AccountingObjectIsNotEmptyScreen(
 }
 
 @Composable
-private fun ObjectListEmpty(paddingValues: PaddingValues) {
+private fun ScanningObjectsListEmpty(paddingValues: PaddingValues) {
     Column(
         modifier = Modifier
             .fillMaxSize()
