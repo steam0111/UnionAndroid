@@ -222,6 +222,8 @@ private fun SelectServiceComponent(
                 }
             }
         }
+        Text(text = "Выберите мощность считывателя")
+
     }
 }
 
