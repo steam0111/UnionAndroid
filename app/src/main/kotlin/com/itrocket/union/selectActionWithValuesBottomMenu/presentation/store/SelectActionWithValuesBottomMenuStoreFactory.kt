@@ -8,11 +8,13 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.documents.domain.entity.ActionsWithIdentifyObjects
+import com.itrocket.union.selectActionWithValuesBottomMenu.domain.SelectActionWithValuesBottomMenuInteractor
 
 class SelectActionWithValuesBottomMenuStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val selectActionWithValuesBottomMenuArguments: SelectActionWithValuesBottomMenuArguments
+    private val selectActionWithValuesBottomMenuArguments: SelectActionWithValuesBottomMenuArguments,
+    private val selectActionWithValuesBottomMenuInteractor: SelectActionWithValuesBottomMenuInteractor
 ) {
     fun create(): SelectActionWithValuesBottomMenuStore =
         object : SelectActionWithValuesBottomMenuStore,
@@ -52,9 +54,11 @@ class SelectActionWithValuesBottomMenuStoreFactory(
                             publish(SelectActionWithValuesBottomMenuStore.Label.ShowDetail(intent.accountingObject))
                         }
                         ActionsWithIdentifyObjects.DELETE_FROM_LIST -> {
-                            val newList = intent.accountingObjects.toMutableList()
-                            newList.remove(intent.accountingObject)
-
+                            val newList =
+                                selectActionWithValuesBottomMenuInteractor.deleteChooseObjectFromList(
+                                    intent.accountingObjects,
+                                    intent.accountingObject
+                                )
                             publish(
                                 SelectActionWithValuesBottomMenuStore.Label.DeleteCard(
                                     SelectActionWithValuesBottomMenuResult(
