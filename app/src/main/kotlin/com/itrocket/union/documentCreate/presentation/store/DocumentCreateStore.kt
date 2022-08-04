@@ -35,8 +35,6 @@ interface DocumentCreateStore :
         object OnBackClicked : Intent()
         object OnDropClicked : Intent()
         object OnSaveClicked : Intent()
-        object OnNextClicked : Intent()
-        object OnPrevClicked : Intent()
         object OnSettingsClicked : Intent()
         object OnChooseAccountingObjectClicked : Intent()
         object OnChooseReserveClicked : Intent()

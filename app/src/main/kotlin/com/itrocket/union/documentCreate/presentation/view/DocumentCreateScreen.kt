@@ -84,13 +84,11 @@ fun DocumentCreateScreen(
     onDropClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
     onPageChanged: (Int) -> Unit,
-    onNextClickListener: () -> Unit,
     onParamClickListener: (ParamDomain) -> Unit,
     onParamCrossClickListener: (ParamDomain) -> Unit,
     onSettingsClickListener: () -> Unit,
     onChooseAccountingObjectClickListener: () -> Unit,
     onChooseReserveClickListener: () -> Unit,
-    onPrevClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
     onReserveClickListener: (ReservesDomain) -> Unit
 ) {
@@ -105,9 +103,6 @@ fun DocumentCreateScreen(
                     params = state.params,
                     onCrossClickListener = onParamCrossClickListener,
                     onSaveClickListener = onSaveClickListener,
-                    onNextClickListener = onNextClickListener,
-                    coroutineScope = coroutineScope,
-                    pagerState = pagerState,
                     documentStatus = state.document.documentStatus,
                     onConductClickListener = onConductClickListener
                 )
@@ -121,12 +116,8 @@ fun DocumentCreateScreen(
                     accountingObjectList = state.accountingObjects,
                     onAccountingObjectClickListener = {},
                     onSaveClickListener = onSaveClickListener,
-                    onNextClickListener = onNextClickListener,
-                    onPrevClickListener = onPrevClickListener,
                     onSettingsClickListener = onSettingsClickListener,
                     onChooseClickListener = onChooseAccountingObjectClickListener,
-                    coroutineScope = coroutineScope,
-                    pagerState = pagerState,
                     documentStatus = state.document.documentStatus,
                     onConductClickListener = onConductClickListener
                 )
@@ -140,11 +131,8 @@ fun DocumentCreateScreen(
                     reserves = state.reserves,
                     onReservesClickListener = onReserveClickListener,
                     onSaveClickListener = onSaveClickListener,
-                    onPrevClickListener = onPrevClickListener,
                     onSettingsClickListener = onSettingsClickListener,
                     onChooseClickListener = onChooseReserveClickListener,
-                    coroutineScope = coroutineScope,
-                    pagerState = pagerState,
                     documentStatus = state.document.documentStatus,
                     onConductClickListener = onConductClickListener
                 )
@@ -228,17 +216,11 @@ private fun ParamContent(
     documentStatus: DocumentStatus,
     onParamClickListener: (ParamDomain) -> Unit,
     onCrossClickListener: (ParamDomain) -> Unit,
-    onSaveClickListener: () -> Unit,
-    onNextClickListener: () -> Unit,
-    coroutineScope: CoroutineScope,
-    pagerState: PagerState
+    onSaveClickListener: () -> Unit
 ) {
     Scaffold(bottomBar = {
         ParamBottomBar(
             onSaveClickListener = onSaveClickListener,
-            onNextClickListener = onNextClickListener,
-            coroutineScope = coroutineScope,
-            pagerState = pagerState,
             onConductClickListener = onConductClickListener,
             documentStatus = documentStatus
         )
@@ -287,12 +269,8 @@ private fun AccountingObjectScreen(
     onSettingsClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
     onChooseClickListener: () -> Unit,
-    onNextClickListener: () -> Unit,
-    onPrevClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
-    documentStatus: DocumentStatus,
-    coroutineScope: CoroutineScope,
-    pagerState: PagerState
+    documentStatus: DocumentStatus
 ) {
     Scaffold(
         bottomBar = {
@@ -301,18 +279,6 @@ private fun AccountingObjectScreen(
                 onSettingsClickListener = onSettingsClickListener,
                 onSaveClickListener = onSaveClickListener,
                 onChooseClickListener = onChooseClickListener,
-                onNextClickListener = {
-                    onNextClickListener()
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(DocumentCreateStoreFactory.RESERVES_PAGE)
-                    }
-                },
-                onPrevClickListener = {
-                    onPrevClickListener()
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(DocumentCreateStoreFactory.PARAMS_PAGE)
-                    }
-                },
                 onConductClickListener = onConductClickListener,
                 documentStatus = documentStatus
             )
@@ -357,11 +323,8 @@ private fun ReservesScreen(
     onSettingsClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
     onChooseClickListener: () -> Unit,
-    onPrevClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
-    documentStatus: DocumentStatus,
-    coroutineScope: CoroutineScope,
-    pagerState: PagerState
+    documentStatus: DocumentStatus
 ) {
     Scaffold(
         bottomBar = {
@@ -370,13 +333,6 @@ private fun ReservesScreen(
                 onSettingsClickListener = onSettingsClickListener,
                 onSaveClickListener = onSaveClickListener,
                 onChooseClickListener = onChooseClickListener,
-                onPrevClickListener = {
-                    onPrevClickListener()
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(DocumentCreateStoreFactory.ACCOUNTING_OBJECT_PAGE)
-                    }
-                },
-                onNextClickListener = {},
                 onConductClickListener = onConductClickListener,
                 documentStatus = documentStatus
             )
@@ -463,11 +419,8 @@ private fun Empty(paddingValues: PaddingValues) {
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun ParamBottomBar(
-    onNextClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
-    pagerState: PagerState,
-    coroutineScope: CoroutineScope,
     documentStatus: DocumentStatus
 ) {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -484,20 +437,6 @@ private fun ParamBottomBar(
             modifier = Modifier.weight(1f),
             enabled = documentStatus != DocumentStatus.COMPLETED
         )
-        Spacer(modifier = Modifier.width(16.dp))
-
-        OutlinedImageButton(
-            imageId = R.drawable.ic_arrow_right,
-            paddingValues = PaddingValues(12.dp),
-            onClick = {
-                onNextClickListener()
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(DocumentCreateStoreFactory.ACCOUNTING_OBJECT_PAGE)
-                }
-            },
-            enabled = true,
-            modifier = Modifier
-        )
     }
 }
 
@@ -509,8 +448,6 @@ private fun ListBottomBar(
     onSaveClickListener: () -> Unit,
     onChooseClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
-    onNextClickListener: () -> Unit,
-    onPrevClickListener: () -> Unit,
     documentStatus: DocumentStatus
 ) {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -543,24 +480,6 @@ private fun ListBottomBar(
             onClick = onSaveClickListener,
             isEnabled = documentStatus != DocumentStatus.COMPLETED
         )
-        Spacer(modifier = Modifier.width(8.dp))
-        OutlinedImageButton(
-            imageId = R.drawable.ic_arrow_back,
-            onClick = { onPrevClickListener() },
-            modifier = Modifier,
-            paddingValues = PaddingValues(12.dp),
-            enabled = true
-        )
-        if (isAccountingObject) {
-            Spacer(modifier = Modifier.width(4.dp))
-            OutlinedImageButton(
-                imageId = R.drawable.ic_arrow_right,
-                onClick = { onNextClickListener() },
-                modifier = Modifier,
-                paddingValues = PaddingValues(12.dp),
-                enabled = true
-            )
-        }
     }
 }
 
@@ -632,7 +551,6 @@ fun DocumentCreateScreenPreview() {
         {},
         {},
         {},
-        {},
-        {},
-        {})
+        {}
+    )
 }
