@@ -42,6 +42,7 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseCheckbox
 import com.itrocket.union.ui.BaseToolbar
+import com.itrocket.union.ui.ImageButton
 import com.itrocket.union.ui.InventoryDocumentItem
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.graphite2
@@ -216,12 +217,11 @@ private fun BottomBar(
             disabledBackgroundColor = psb3
         )
         Spacer(modifier = Modifier.width(16.dp))
-        BaseButton(
-            enabled = inventoryStatus != InventoryStatus.COMPLETED,
-            text = stringResource(R.string.common_save),
+        ImageButton(
+            imageId = R.drawable.ic_save,
+            paddings = PaddingValues(12.dp),
             onClick = onSaveClickListener,
-            modifier = Modifier.weight(1f),
-            disabledBackgroundColor = psb3
+            isEnabled = inventoryStatus != InventoryStatus.COMPLETED
         )
         when (inventoryStatus) {
             InventoryStatus.CREATED -> {

@@ -181,7 +181,7 @@
 
     <!-- Document create -->
     <string name="document_create_title">%s &quot;%s&quot;</string>
-    <string name="document_create_accounting_object">Объекты учета</string>
+    <string name="document_create_accounting_object">Об. учета</string>
     <string name="document_create_reserves">Запасы</string>
     <string name="document_create_empty">Для начала считывания нажмите курок или выберите из списка</string>
 
@@ -193,8 +193,8 @@
 
     <!-- Inventory -->
     <string name="inventory_ao_title">Инвентаризация «ОУ»</string>
-    <string name="inventory_params">Параметры</string>
-    <string name="inventory_accounting_object">Объекты учета</string>
+    <string name="inventory_params">Парам.</string>
+    <string name="inventory_accounting_object">Инвент. «ОУ»</string>
     <string name="inventory_created">Создана</string>
     <string name="inventory_in_work">В работе</string>
     <string name="inventory_done">Завершена</string>

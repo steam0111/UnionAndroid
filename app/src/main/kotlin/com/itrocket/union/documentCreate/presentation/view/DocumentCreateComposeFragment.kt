@@ -139,12 +139,6 @@ class DocumentCreateComposeFragment :
                 onSettingsClickListener = {
                     accept(DocumentCreateStore.Intent.OnSettingsClicked)
                 },
-                onPrevClickListener = {
-                    accept(DocumentCreateStore.Intent.OnPrevClicked)
-                },
-                onNextClickListener = {
-                    accept(DocumentCreateStore.Intent.OnNextClicked)
-                },
                 onConductClickListener = {
                     accept(DocumentCreateStore.Intent.OnCompleteClicked)
                 },

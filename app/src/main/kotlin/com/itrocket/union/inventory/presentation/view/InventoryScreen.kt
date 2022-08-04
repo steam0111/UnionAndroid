@@ -139,7 +139,7 @@ private fun Content(
             }
         ),
         BaseTab(
-            title = stringResource(R.string.inventory_ao_title),
+            title = stringResource(R.string.inventory_accounting_object),
             screen = {
                 AccountingObjectScreen(
                     isLoading = state.isAccountingObjectsLoading,
