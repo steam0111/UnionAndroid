@@ -10,7 +10,6 @@ import com.itrocket.union.moduleSettings.ModuleSettingsModule.MODULESETTINGS_VIE
 import com.itrocket.union.moduleSettings.presentation.store.ModuleSettingsStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -56,8 +55,14 @@ class ModuleSettingsComposeFragment :
                     accept(ModuleSettingsStore.Intent.OnDropdownOpenClicked)
                 },
                 onDropDownItemPowerClickListener = {
-                    accept(ModuleSettingsStore.Intent.OnDropDownItemPowerClickListener(it))
+                    accept(ModuleSettingsStore.Intent.OnDropDownItemPowerClicked(it))
                 },
+                onDropDownOpenPowerClickListener = {
+                    accept(ModuleSettingsStore.Intent.OnDropDownOpenPowerClicked)
+                },
+                onDropDownPowerDismiss = {
+                    accept(ModuleSettingsStore.Intent.OnDropDownPowerDismiss)
+                }
             )
         }
     }

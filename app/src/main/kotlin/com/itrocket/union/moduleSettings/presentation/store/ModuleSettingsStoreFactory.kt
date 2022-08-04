@@ -1,10 +1,7 @@
 package com.itrocket.union.moduleSettings.presentation.store
 
-import com.arkivanov.mvikotlin.core.store.Executor
-import com.arkivanov.mvikotlin.core.store.Reducer
-import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
-import com.arkivanov.mvikotlin.core.store.Store
-import com.arkivanov.mvikotlin.core.store.StoreFactory
+import android.util.Log
+import com.arkivanov.mvikotlin.core.store.*
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
@@ -81,6 +78,9 @@ class ModuleSettingsStoreFactory(
                         false
                     )
                 )
+                ModuleSettingsStore.Intent.OnDropDownPowerDismiss -> dispatch(
+                    Result.DropDownPowerExpanded(false)
+                )
                 is ModuleSettingsStore.Intent.OnDropdownItemClicked -> {
                     dispatch(Result.DropdownExpanded(false))
                     dispatch(Result.Service(intent.service))
@@ -95,6 +95,23 @@ class ModuleSettingsStoreFactory(
                         intent.service
                     )
                 )
+                is ModuleSettingsStore.Intent.OnPowerOfReaderHandled -> dispatch(
+                    Result.ListPowerOfReader(
+                        intent.listPowerOfReader
+                    )
+                )
+
+                is ModuleSettingsStore.Intent.OnDefaultPowerOfReaderHandled -> dispatch(
+                    Result.PowerOfReader(intent.powerOfReader)
+                )
+                ModuleSettingsStore.Intent.OnDropDownOpenPowerClicked -> dispatch(
+                    Result.DropDownPowerExpanded(true)
+                )
+                is ModuleSettingsStore.Intent.OnDropDownItemPowerClicked -> {
+                    Log.d("SukhanovTest", "Power = " + intent.powerOfReader)
+                    dispatch(Result.DropDownPowerExpanded(false))
+                    dispatch(Result.PowerOfReader(intent.powerOfReader))
+                }
             }
         }
 
@@ -122,6 +139,9 @@ class ModuleSettingsStoreFactory(
         data class Service(val service: String) : Result()
         data class Services(val services: List<String>) : Result()
         data class DropdownExpanded(val dropdownExpanded: Boolean) : Result()
+        data class DropDownPowerExpanded(val dropDownPowerExpanded: Boolean) : Result()
+        data class PowerOfReader(val powerOfReader: Int) : Result()
+        data class ListPowerOfReader(val listPowerOfReader: List<Int>) : Result()
     }
 
     private object ReducerImpl : Reducer<ModuleSettingsStore.State, Result> {
@@ -133,6 +153,9 @@ class ModuleSettingsStoreFactory(
                 is Result.Service -> copy(defaultService = result.service)
                 is Result.Services -> copy(services = result.services)
                 is Result.DropdownExpanded -> copy(dropdownExpanded = result.dropdownExpanded)
+                is Result.DropDownPowerExpanded -> copy(dropDownPowerExpanded = result.dropDownPowerExpanded)
+                is Result.PowerOfReader -> copy(defaultPowerOfReader = result.powerOfReader)
+                is Result.ListPowerOfReader -> copy(listPowerOfReader = result.listPowerOfReader)
             }
     }
 

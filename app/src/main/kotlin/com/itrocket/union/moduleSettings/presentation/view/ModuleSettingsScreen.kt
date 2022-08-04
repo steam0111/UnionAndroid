@@ -38,7 +38,9 @@ fun ModuleSettingsScreen(
     onDropdownDismiss: () -> Unit,
     onDropdownItemClickListener: (String) -> Unit,
     onDropdownOpenClickListener: () -> Unit,
-    onDropDownItemPowerClickListener: (Int) -> Unit
+    onDropDownItemPowerClickListener: (Int) -> Unit,
+    onDropDownOpenPowerClickListener: () -> Unit,
+    onDropDownPowerDismiss: () -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -62,7 +64,9 @@ fun ModuleSettingsScreen(
                     onDropdownDismiss = onDropdownDismiss,
                     onDropdownItemClickListener = onDropdownItemClickListener,
                     onDropdownOpenClickListener = onDropdownOpenClickListener,
-                    onDropDownItemPowerClickListener = onDropDownItemPowerClickListener
+                    onDropDownItemPowerClickListener = onDropDownItemPowerClickListener,
+                    onDropDownOpenPowerClickListener = onDropDownOpenPowerClickListener,
+                    onDropDownPowerDismiss = onDropDownPowerDismiss
                 )
             }
         )
@@ -83,10 +87,12 @@ private fun Content(
     state: ModuleSettingsStore.State,
     onDefineCursorClickListener: () -> Unit,
     onDropdownDismiss: () -> Unit,
+    onDropDownPowerDismiss: () -> Unit,
     onDropdownItemClickListener: (String) -> Unit,
     onDropdownOpenClickListener: () -> Unit,
     paddingValues: PaddingValues,
-    onDropDownItemPowerClickListener: (Int) -> Unit
+    onDropDownItemPowerClickListener: (Int) -> Unit,
+    onDropDownOpenPowerClickListener: () -> Unit
 ) {
     Column(modifier = Modifier.padding(paddingValues)) {
         Spacer(modifier = Modifier.height(24.dp))
@@ -105,8 +111,8 @@ private fun Content(
         Spacer(modifier = Modifier.height(24.dp))
         SelectPowerOfReader(
             state = state,
-            onDropdownOpenClickListener = onDropdownOpenClickListener,
-            onDropdownDismiss = onDropdownDismiss,
+            onDropDownOpenPowerClickListener = onDropDownOpenPowerClickListener,
+            onDropDownPowerDismiss = onDropDownPowerDismiss,
             onDropDownItemPowerClickListener = onDropDownItemPowerClickListener
         )
     }
@@ -213,26 +219,26 @@ private fun SelectServiceComponent(
 @Composable
 fun SelectPowerOfReader(
     state: ModuleSettingsStore.State,
-    onDropdownDismiss: () -> Unit,
+    onDropDownPowerDismiss: () -> Unit,
     onDropDownItemPowerClickListener: (Int) -> Unit,
-    onDropdownOpenClickListener: () -> Unit
+    onDropDownOpenPowerClickListener: () -> Unit
 ) {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Text(text = stringResource(R.string.choose_power_of_reader))
 
         DropdownMenuItem(
-            onClick = onDropdownOpenClickListener,
+            onClick = onDropDownOpenPowerClickListener,
             modifier = Modifier.background(graphite2)
         ) {
             Text(text = state.defaultPowerOfReader.toString())
         }
         DropdownMenu(
-            expanded = state.dropdownExpanded,
-            onDismissRequest = onDropdownDismiss,
+            expanded = state.dropDownPowerExpanded,
+            onDismissRequest = onDropDownPowerDismiss,
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            state.powerOfReader.forEach {
+            state.listPowerOfReader.forEach {
                 DropdownMenuItem(
                     onClick = { onDropDownItemPowerClickListener(it) },
                     modifier = Modifier.padding(horizontal = 24.dp)
@@ -263,6 +269,8 @@ fun ModuleSettingsScreenPreview() {
     ModuleSettingsScreen(
         ModuleSettingsStore.State(),
         AppInsets(topInset = previewTopInsetDp),
+        {},
+        {},
         {},
         {},
         {},
