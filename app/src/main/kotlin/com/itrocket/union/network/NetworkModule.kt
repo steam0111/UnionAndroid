@@ -67,6 +67,7 @@ object NetworkModule {
                 .addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BODY
                 })
+                .getUnsafeClient()
                 .build()
         }
         single<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER) {
@@ -90,6 +91,7 @@ object NetworkModule {
                 .addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BODY
                 })
+                .getUnsafeClient()
                 .build()
         }
         single {
