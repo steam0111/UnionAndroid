@@ -8,6 +8,7 @@ import com.example.union_sync_api.entity.toDocumentReserveCountSyncEntity
 import com.example.union_sync_api.entity.toReserveShortSyncEntity
 import com.example.union_sync_api.entity.toReserveUpdateSyncEntity
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.location.domain.dependencies.LocationRepository
@@ -23,7 +24,8 @@ class DocumentReservesManager(
     private val coreDispatchers: CoreDispatchers,
     private val reservesRepository: ReservesRepository,
     private val locationRepository: LocationRepository,
-    private val documentRepository: DocumentRepository
+    private val documentRepository: DocumentRepository,
+    private val authMainInteractor: AuthMainInteractor
 ) {
 
     suspend fun changeReservesAfterConduct(
@@ -41,7 +43,11 @@ class DocumentReservesManager(
                     listOf()
                 }
             }
-            reservesRepository.updateReserves(newReserves.map { it.toReserveUpdateSyncEntity() })
+            reservesRepository.updateReserves(newReserves.map {
+                it.toReserveUpdateSyncEntity(
+                    authMainInteractor.getLogin()
+                )
+            })
         }
     }
 
@@ -52,7 +58,8 @@ class DocumentReservesManager(
                 reservesRepository.getReservesByIds(reservesIds = reserveIds).toMutableList()
             changeReserveCount(
                 oldReserves = oldReserves,
-                reservesDomain = reserves
+                reservesDomain = reserves,
+                login = authMainInteractor.getLogin()
             )
         }
     }
@@ -63,6 +70,7 @@ class DocumentReservesManager(
         locationId: String?
     ): List<ReserveSyncEntity> {
         return withContext(coreDispatchers.io) {
+            val login = authMainInteractor.getLogin()
             val locationSyncEntity = if (locationId != null) {
                 locationRepository.getLocationById(locationId)
             } else {
@@ -72,9 +80,14 @@ class DocumentReservesManager(
 
             val oldReserves = changeReserveCount(
                 oldReserves = reservesRepository.getReservesByIds(reservesIds = reserveIds),
-                reservesDomain = reserves
+                reservesDomain = reserves,
+                login = authMainInteractor.getLogin()
             )
-            reservesRepository.updateReserves(oldReserves.map { it.toReserveUpdateSyncEntity() })
+            reservesRepository.updateReserves(oldReserves.map {
+                it.toReserveUpdateSyncEntity(
+                    authMainInteractor.getLogin()
+                )
+            })
             val changedOldReserves = oldReserves.map { changedReserve ->
                 val reserve = reserves.find { it.id == changedReserve.id }
                 changedReserve.copy(
@@ -83,36 +96,26 @@ class DocumentReservesManager(
                 )
             }
             val existingInNewLocationReservesInfo =
-                changedOldReserves.map { it.toReserveShortSyncEntity(locationSyncEntity?.id) }
+                changedOldReserves.map { it.toReserveShortSyncEntity(locationSyncEntity?.id, authMainInteractor.getLogin()) }
 
             val existingInNewLocationReserves = getExistingReserves(
                 existingInNewLocationReservesInfo = existingInNewLocationReservesInfo,
                 changedOldReserves = changedOldReserves
             )
-
             val newReserves = getNewReserves(
                 oldReserves = oldReserves.map { oldReserve ->
                     val reserve = reserves.find { it.id == oldReserve.id }
                     oldReserve.copy(
                         locationSyncEntity = locationSyncEntity,
-                        count = reserve?.itemsCount ?: 0
+                        count = reserve?.itemsCount ?: 0,
+                        userUpdated = login,
+                        userInserted = login,
                     )
                 },
                 existingInNewLocationReserves
             )
 
-            val mappedNewReserves = newReserves.map { newReserve ->
-                newReserve.copy(
-                    id = UUID.randomUUID().toString(),
-                    count = newReserve.count,
-                    locationSyncEntity = locationSyncEntity
-                )
-            }
-            updateDocumentReserveIds(
-                documentId = documentId,
-                existingReserves = existingInNewLocationReserves,
-                newReserves = mappedNewReserves
-            )
+            reservesRepository.insertAll(newReserves)
             existingInNewLocationReserves
         }
     }
@@ -155,20 +158,9 @@ class DocumentReservesManager(
     }
 
     private suspend fun updateDocumentReserveIds(
-        documentId: String,
-        existingReserves: List<ReserveSyncEntity>,
         newReserves: List<ReserveSyncEntity>
     ) {
-        val reservesIds = existingReserves.map {
-            DocumentReserveCountSyncEntity(
-                id = it.id,
-                count = it.count
-            )
-        }
         reservesRepository.insertAll(newReserves)
-        val documentUpdateReserves =
-            DocumentUpdateReservesSyncEntity(id = documentId, reservesIds = reservesIds)
-        documentRepository.updateDocumentReserves(documentUpdateReserves)
     }
 
     private fun isSameReserves(
@@ -183,7 +175,8 @@ class DocumentReservesManager(
 
     private suspend fun changeReserveCount(
         oldReserves: List<ReserveSyncEntity>,
-        reservesDomain: List<ReservesDomain>
+        reservesDomain: List<ReservesDomain>,
+        login: String?
     ): List<ReserveSyncEntity> {
         val newReserves = oldReserves.map { oldReserve ->
             val reserve = reservesDomain.first { it.id == oldReserve.id }
@@ -192,11 +185,11 @@ class DocumentReservesManager(
             } else {
                 requireNotNull(oldReserve.count) - reserve.itemsCount
             }
-            oldReserve.copy(count = newCount)
+            oldReserve.copy(count = newCount, userUpdated = login)
         }
         val documentReserves = oldReserves.map { oldReserve ->
             val reserve = reservesDomain.first { it.id == oldReserve.id }
-            oldReserve.copy(count = reserve.itemsCount)
+            oldReserve.copy(count = reserve.itemsCount, userUpdated = login)
         }
         documentRepository.insertDocumentReserveCount(documentReserves.map { it.toDocumentReserveCountSyncEntity() })
         return newReserves

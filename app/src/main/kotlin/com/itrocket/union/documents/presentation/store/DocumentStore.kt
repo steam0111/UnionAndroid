@@ -61,12 +61,15 @@ interface DocumentStore : Store<DocumentStore.Intent, DocumentStore.State, Docum
 
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
         object GoBack : Label(), GoBackNavigationLabel
-        data class ShowFilter(val filters: List<ParamDomain>) : Label(), ForwardNavigationLabel {
+        data class ShowFilter(
+            val filters: List<ParamDomain>,
+            val documentTypeDomain: DocumentTypeDomain
+        ) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = DocumentComposeFragmentDirections.toFilter(
                     FilterArguments(
                         filters,
-                        CatalogType.DOCUMENTS
+                        CatalogType.Documents(documentTypeDomain)
                     )
                 )
         }

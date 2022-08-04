@@ -255,10 +255,11 @@ private fun ParamContent(
                     SelectedBaseField(
                         label = stringResource(it.type.titleId),
                         value = it.value,
+                        clickable = documentStatus != DocumentStatus.COMPLETED,
                         onFieldClickListener = {
                             onParamClickListener(it)
                         },
-                        isCrossVisible = true,
+                        isCrossVisible = documentStatus != DocumentStatus.COMPLETED,
                         onCrossClickListener = {
                             onCrossClickListener(it)
                         }
@@ -268,7 +269,9 @@ private fun ParamContent(
                         label = stringResource(it.type.titleId),
                         onFieldClickListener = {
                             onParamClickListener(it)
-                        })
+                        },
+                        clickable = documentStatus != DocumentStatus.COMPLETED
+                    )
                 }
             }
         }
@@ -335,7 +338,8 @@ private fun AccountingObjectScreen(
                                 accountingObject = item,
                                 onAccountingObjectListener = onAccountingObjectClickListener,
                                 isShowBottomLine = isShowBottomLine,
-                                status = item.status?.type
+                                status = item.status?.type,
+                                isEnabled = documentStatus != DocumentStatus.COMPLETED
                             )
                         }
                     }
@@ -397,7 +401,8 @@ private fun ReservesScreen(
                             ReservesItem(
                                 reserves = item,
                                 onReservesListener = onReservesClickListener,
-                                isShowBottomLine = isShowBottomLine
+                                isShowBottomLine = isShowBottomLine,
+                                clickable = documentStatus != DocumentStatus.COMPLETED
                             )
                         }
                     }
@@ -596,7 +601,9 @@ fun DocumentCreateScreenPreview() {
                         type = ManualType.LOCATION
                     ),
                 ),
-                documentStatusId = "d1"
+                documentStatusId = "d1",
+                userInserted = "",
+                userUpdated = ""
             ),
             accountingObjects = listOf(),
             params = listOf(
@@ -613,5 +620,19 @@ fun DocumentCreateScreenPreview() {
                     type = ManualType.LOCATION
                 ),
             ),
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
+        ),
+        AppInsets(topInset = previewTopInsetDp),
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {})
 }

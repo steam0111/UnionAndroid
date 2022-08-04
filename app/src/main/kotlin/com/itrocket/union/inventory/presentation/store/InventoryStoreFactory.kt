@@ -15,6 +15,7 @@ import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.filterNotEmpty
+import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -24,7 +25,8 @@ class InventoryStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val inventoryInteractor: InventoryInteractor,
     private val accountingObjectInteractor: AccountingObjectInteractor,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val selectParamsInteractor: SelectParamsInteractor
 ) {
     fun create(): InventoryStore =
         object : InventoryStore,
@@ -47,7 +49,8 @@ class InventoryStoreFactory(
             action: Unit,
             getState: () -> InventoryStore.State
         ) {
-            observeAccountingObjects()
+            dispatch(Result.Params(selectParamsInteractor.getInitialDocumentParams(getState().params)))
+            observeAccountingObjects(getState().params)
         }
 
         override suspend fun executeIntent(

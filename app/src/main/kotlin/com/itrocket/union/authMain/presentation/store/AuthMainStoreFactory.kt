@@ -16,7 +16,7 @@ class AuthMainStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val authMainInteractor: AuthMainInteractor,
     private val authMainArguments: AuthMainArguments,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
 ) {
     fun create(): AuthMainStore =
         object : AuthMainStore,

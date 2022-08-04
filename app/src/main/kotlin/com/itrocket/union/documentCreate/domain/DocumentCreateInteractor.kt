@@ -3,6 +3,7 @@ package com.itrocket.union.documentCreate.domain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
@@ -10,14 +11,17 @@ import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.toCreateSyncEntity
 import com.itrocket.union.documents.domain.entity.toUpdateSyncEntity
 import com.itrocket.union.manual.LocationParamDomain
+import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.getFilterLocationLastId
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import kotlinx.coroutines.withContext
 
 class DocumentCreateInteractor(
     private val documentRepository: DocumentRepository,
     private val accountingObjectRepository: AccountingObjectRepository,
-    private val coreDispatchers: CoreDispatchers
+    private val coreDispatchers: CoreDispatchers,
+    private val authMainInteractor: AuthMainInteractor
 ) {
 
     suspend fun getDocumentById(
@@ -43,8 +47,10 @@ class DocumentCreateInteractor(
                         params = params,
                         documentStatus = status,
                         documentStatusId = status.name,
-                        reserves = reserves
-                    ).toCreateSyncEntity()
+                        reserves = reserves,
+                        userInserted = authMainInteractor.getLogin(),
+                        userUpdated = authMainInteractor.getLogin()
+                ).toCreateSyncEntity()
                 )
             } else {
                 documentRepository.updateDocument(
@@ -53,7 +59,8 @@ class DocumentCreateInteractor(
                         params = params,
                         documentStatus = status,
                         documentStatusId = status.name,
-                        reserves = reserves
+                        reserves = reserves,
+                        userUpdated = authMainInteractor.getLogin()
                     ).toUpdateSyncEntity()
                 )
                 document.id.orEmpty()
@@ -105,12 +112,12 @@ class DocumentCreateInteractor(
         params: List<ParamDomain>,
         documentTypeDomain: DocumentTypeDomain,
     ): Boolean {
-        val validateParams = params.filter {
-            documentTypeDomain.manualTypes.contains(it.type)
+        return when (documentTypeDomain) {
+            DocumentTypeDomain.RELOCATION -> !params.getFilterLocationLastId(ManualType.LOCATION_TO)
+                .isNullOrBlank()
+            else -> true
         }
-        return validateParams.all { it.value.isNotBlank() }
     }
-
 
     fun addAccountingObject(
         accountingObjects: List<AccountingObjectDomain>,

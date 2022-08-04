@@ -31,7 +31,8 @@ interface AccountingObjectStore :
         val isLoading: Boolean = false,
         val accountingObjects: List<AccountingObjectDomain> = listOf(),
         val isShowSearch: Boolean = false,
-        val searchText: String = ""
+        val searchText: String = "",
+        val params: List<ParamDomain>
     )
 
     sealed class Label {
@@ -46,13 +47,12 @@ interface AccountingObjectStore :
                 get() = AccountingObjectComposeFragment.ACCOUNTING_OBJECT_RESULT
         }
 
-        object ShowSearch : Label()
         data class ShowFilter(val filters: List<ParamDomain>) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = AccountingObjectComposeFragmentDirections.toFilter(
                     FilterArguments(
                         filters,
-                        CatalogType.ACCOUNTING_OBJECTS
+                        CatalogType.AccountingObjects
                     )
                 )
         }

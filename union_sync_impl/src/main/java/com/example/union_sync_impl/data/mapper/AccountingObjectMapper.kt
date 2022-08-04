@@ -41,7 +41,9 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
         model = model,
         providerId = providerId,
         updateDate = System.currentTimeMillis(),
-        branchId = branchId
+        branchId = branchId,
+        userUpdated = userUpdated,
+        userInserted = userInserted
     )
 }
 
@@ -95,7 +97,8 @@ fun AccountingObjectDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?) =
         locationSyncEntity = locationSyncEntity,
         nomenclatureId = nomenclatureId,
         nomenclatureGroupId = nomenclatureGroupId,
-        branchId = branchId
+        branchId = branchId,
+        userUpdated = userUpdated
     )
 
 fun FullAccountingObject.toSyncEntity(
@@ -128,7 +131,8 @@ fun FullAccountingObject.toSyncEntity(
     statusId = accountingObjectDb.statusId,
     nomenclatureGroupId = accountingObjectDb.nomenclatureGroupId,
     nomenclatureId = accountingObjectDb.nomenclatureId,
-    branchId = accountingObjectDb.branchId
+    branchId = accountingObjectDb.branchId,
+    userUpdated = accountingObjectDb.userUpdated
 )
 
 fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObjectDtoV2> {
@@ -159,7 +163,9 @@ fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObject
             count = accountingObjectDb.count?.toLong(),
             nomenclatureId = accountingObjectDb.nomenclatureId,
             nomenclatureGroupId = accountingObjectDb.nomenclatureGroupId,
-            branchId = accountingObjectDb.branchId
+            branchId = accountingObjectDb.branchId,
+            userInserted = accountingObjectDb.userInserted,
+            userUpdated = accountingObjectDb.userUpdated
         )
     }
 }
@@ -176,6 +182,7 @@ fun AccountingObjectUpdateSyncEntity.toAccountingObjectUpdate(): AccountingObjec
         updateDate = updateDate,
         molId = molId,
         departmentId = departmentId,
-        branchId = branchId
+        branchId = branchId,
+        userUpdated = userUpdated
     )
 }

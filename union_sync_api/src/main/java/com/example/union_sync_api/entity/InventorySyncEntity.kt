@@ -10,5 +10,7 @@ data class InventorySyncEntity(
     val inventoryStatus: String,
     val updateDate: Long?,
     val code: String?,
-    val name: String?
+    val name: String?,
+    val userInserted: String?,
+    val userUpdated: String?
 )

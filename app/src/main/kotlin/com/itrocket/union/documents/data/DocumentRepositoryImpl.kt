@@ -24,25 +24,16 @@ class DocumentRepositoryImpl(
     private val coreDispatchers: CoreDispatchers,
     private val documentRemainsRecordSyncApi: ActionRemainsRecordSyncApi
 ) : DocumentRepository {
-    override suspend fun getAllDocuments(
-        textQuery: String?,
-        params: List<ParamDomain>?
-    ): Flow<List<DocumentDomain>> {
-        return documentSyncApi.getAllDocuments(
-            textQuery = textQuery,
-            molId = params?.getMolId(),
-            exploitingId = params?.getExploitingId(),
-            organizationId = params?.getOrganizationId()
-        ).map { it.map() }
-    }
 
-    override suspend fun getAllDocumentsCount(
+    override suspend fun getDocumentsCount(
+        type: DocumentTypeDomain,
         textQuery: String?,
         params: List<ParamDomain>?
     ): Long {
         return withContext(coreDispatchers.io) {
-            documentSyncApi.getAllDocumentsCount(
+            documentSyncApi.getDocumentsCount(
                 textQuery = textQuery,
+                type = type.name,
                 molId = params?.getMolId(),
                 exploitingId = params?.getExploitingId(),
                 organizationId = params?.getOrganizationId()
@@ -52,9 +43,16 @@ class DocumentRepositoryImpl(
 
     override suspend fun getDocumentsByType(
         type: DocumentTypeDomain,
-        textQuery: String?
+        textQuery: String?,
+        params: List<ParamDomain>?
     ): Flow<List<DocumentDomain>> {
-        return documentSyncApi.getDocumentsByType(type.name, textQuery).map { it.map() }
+        return documentSyncApi.getDocumentsByType(
+            type = type.name,
+            textQuery = textQuery,
+            molId = params?.getMolId(),
+            exploitingId = params?.getExploitingId(),
+            organizationId = params?.getOrganizationId()
+        ).map { it.map() }
     }
 
     override suspend fun getDocumentById(id: String): DocumentDomain {

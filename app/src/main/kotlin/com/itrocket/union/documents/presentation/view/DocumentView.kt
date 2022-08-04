@@ -18,6 +18,7 @@ sealed class DocumentView {
         val params: List<ParamDomain>,
         val date: Long,
         val dateUi: String,
+        val userInserted: String?
     ) : DocumentView() {
         fun getTextTime() = getTimeFromMillis(date)
     }
@@ -36,7 +37,9 @@ fun DocumentView.DocumentItemView.toDocumentDomain() = DocumentDomain(
     creationDate = date,
     documentType = documentType,
     params = params,
-    documentStatusId = documentStatus.name
+    documentStatusId = documentStatus.name,
+    userInserted = userInserted,
+    userUpdated = ""
 )
 
 fun DocumentDomain.toDocumentItemView(dateUi: String) = DocumentView.DocumentItemView(
@@ -46,5 +49,6 @@ fun DocumentDomain.toDocumentItemView(dateUi: String) = DocumentView.DocumentIte
     date = creationDate,
     documentType = documentType,
     params = params,
-    dateUi = dateUi
+    dateUi = dateUi,
+    userInserted = userInserted
 )

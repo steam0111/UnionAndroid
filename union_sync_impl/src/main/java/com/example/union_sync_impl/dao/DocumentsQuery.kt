@@ -16,7 +16,8 @@ fun sqlDocumentsQuery(
     updateDate: Long? = null,
     limit: Long? = null,
     offset: Long? = null,
-    isFilterCount: Boolean = false
+    isFilterCount: Boolean = false,
+    type: String? = null
 ): SimpleSQLiteQuery {
     val mainQuery = if (isFilterCount) {
         "SELECT COUNT(*) FROM documents"
@@ -100,6 +101,9 @@ fun sqlDocumentsQuery(
                 }
                 updateDate?.let {
                     add("updateDate" more updateDate)
+                }
+                type?.let {
+                    add("documentType" isEquals type)
                 }
             }
         )

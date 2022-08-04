@@ -26,6 +26,6 @@ fun OrganizationDetailSyncEntity.toOrganizationDetailDomain(): OrganizationDetai
     employee?.fullName?.let {
         listInfo.add(ObjectInfoDomain(R.string.employees_name, it))
     }
-    return OrganizationDetailDomain(listInfo)
+    return OrganizationDetailDomain(listInfo = listInfo, name = organization.name, id = organization.id)
 }
 

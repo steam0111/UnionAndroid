@@ -338,7 +338,9 @@ fun InventoryCreateScreenPreview() {
                     rfidValue = ""
                 ),
             ),
-            inventoryStatus = InventoryStatus.CREATED
+            inventoryStatus = InventoryStatus.CREATED,
+            userInserted = "",
+            userUpdated = ""
         ),
     ), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {})
 }

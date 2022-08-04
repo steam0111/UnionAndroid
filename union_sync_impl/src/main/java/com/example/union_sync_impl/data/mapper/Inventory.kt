@@ -20,7 +20,9 @@ fun InventoryDtoV2.toInventoryDb(): InventoryDb {
         updateDate = System.currentTimeMillis(),
         inventoryStatus = extendedInventoryState?.id.orEmpty(),
         name = name,
-        code = code
+        code = code,
+        userUpdated = userUpdated,
+        userInserted = userInserted
     )
 }
 
@@ -34,7 +36,9 @@ fun InventoryDb.toInventoryDtoV2(): InventoryDtoV2 {
         creationDate = getStringDateFromMillis(date),
         dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
         id = id,
-        deleted = false
+        deleted = false,
+        userInserted = userInserted,
+        userUpdated = userUpdated
     )
 }
 
@@ -48,7 +52,9 @@ fun InventoryCreateSyncEntity.toInventoryDb(id: String): InventoryDb {
         inventoryStatus = inventoryStatus,
         updateDate = updateDate,
         code = code,
-        name = name
+        name = name,
+        userUpdated = userUpdated,
+        userInserted = userInserted
     )
 }
 
@@ -62,7 +68,9 @@ fun InventoryUpdateSyncEntity.toInventoryDb(): InventoryDb {
         inventoryStatus = inventoryStatus,
         updateDate = updateDate,
         code = code,
-        name = name
+        name = name,
+        userUpdated = userUpdated,
+        userInserted = userInserted
     )
 }
 
@@ -82,6 +90,8 @@ fun InventoryDb.toInventorySyncEntity(
         inventoryStatus = inventoryStatus,
         updateDate = updateDate,
         code = code,
-        name = name
+        name = name,
+        userInserted = userInserted,
+        userUpdated = userUpdated
     )
 }

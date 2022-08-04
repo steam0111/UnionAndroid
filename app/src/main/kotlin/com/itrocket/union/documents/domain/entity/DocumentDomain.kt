@@ -29,6 +29,8 @@ data class DocumentDomain(
     val accountingObjects: List<AccountingObjectDomain> = listOf(),
     val reserves: List<ReservesDomain> = listOf(),
     val documentStatusId: String,
+    val userInserted: String?,
+    val userUpdated: String?
 ) : Parcelable {
     val isDocumentExists: Boolean
         get() = id != null
@@ -54,7 +56,8 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
         reservesIds = reserves.map {
             DocumentReserveCountSyncEntity(
                 id = it.id,
-                count = it.itemsCount
+                count = it.itemsCount,
+                userUpdated = userUpdated
             )
         },
         documentStatusId = documentStatusId,
@@ -70,7 +73,9 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
         departmentToId = params.getDepartmentId(type = ManualType.DEPARTMENT_TO),
         branchId = params.getBranchId(),
         actionBaseId = params.getActionBaseId(),
-        code = number
+        code = number,
+        userUpdated = userUpdated,
+        userInserted = userInserted
     )
 }
 
@@ -95,7 +100,8 @@ fun DocumentDomain.toCreateSyncEntity(): DocumentCreateSyncEntity {
         reservesIds = reserves.map {
             DocumentReserveCountSyncEntity(
                 id = it.id,
-                count = it.itemsCount
+                count = it.itemsCount,
+                userUpdated = userUpdated
             )
         },
         documentStatusId = documentStatusId,
@@ -110,6 +116,8 @@ fun DocumentDomain.toCreateSyncEntity(): DocumentCreateSyncEntity {
         departmentToId = params.getDepartmentId(type = ManualType.DEPARTMENT_TO),
         branchId = params.getBranchId(),
         actionBaseId = params.getActionBaseId(),
-        code = number
+        code = number,
+        userInserted = userInserted,
+        userUpdated = userUpdated
     )
 }

@@ -26,4 +26,6 @@ interface AccountingObjectRepository {
     suspend fun getAccountingObjectsByBarcode(barcode: String): AccountingObjectDomain?
 
     suspend fun updateAccountingObjects(accountingObjects: List<AccountingObjectUpdateSyncEntity>)
+
+    suspend fun getAvailableStatus(): ParamDomain
 }

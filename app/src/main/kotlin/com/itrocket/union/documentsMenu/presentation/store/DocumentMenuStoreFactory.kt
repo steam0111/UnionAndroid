@@ -50,9 +50,6 @@ class DocumentMenuStoreFactory(
                         dispatch(Result.Documents(newDocuments, getState().menuDeepLevel + 1))
                     }
                 }
-                DocumentMenuStore.Intent.OnProfileClicked -> {
-                    // no-op
-                }
                 DocumentMenuStore.Intent.OnLogoutClicked -> {
                     dispatch(Result.Loading(true))
                     catchException {

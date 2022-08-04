@@ -18,6 +18,8 @@ class AuthMainInteractor(
             val auth = repository.signIn(AuthCredsDomain(login = login, password = password))
             repository.saveAuthCredentials(auth)
             repository.saveLogin(login)
+            val config = repository.getMyConfig()
+            repository.saveMyConfig(config)
         }
     }
 
@@ -30,10 +32,14 @@ class AuthMainInteractor(
     }
 
     suspend fun logout() {
-        withContext(Dispatchers.IO) {
+        withContext(coreDispatchers.io) {
             val accessToken = repository.getAccessTokenOrEmpty()
             repository.clearAuthCredentials()
             repository.invalidateToken(accessToken)
         }
+    }
+
+    suspend fun getMyConfig() = withContext(coreDispatchers.io) {
+        repository.getMyPreferencesConfig()
     }
 }

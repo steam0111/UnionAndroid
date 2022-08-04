@@ -22,5 +22,7 @@ class DocumentDb(
     val departmentToId: String? = null,
     val actionBaseId: String? = null,
     val branchId: String? = null,
-    val code: String?
-) : SyncItemDb(id, updateDate)
+    val code: String?,
+    userInserted: String?,
+    userUpdated: String?,
+) : SyncItemDb(id, updateDate, userUpdated, userInserted)

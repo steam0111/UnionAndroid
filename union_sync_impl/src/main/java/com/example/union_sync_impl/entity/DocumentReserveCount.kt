@@ -5,5 +5,6 @@ import androidx.room.Entity
 @Entity
 data class DocumentReserveCount(
     val id: String,
-    val count: Long?
+    val count: Long?,
+    val userUpdated: String?
 )

@@ -24,12 +24,13 @@ object InventoryModule {
         }
 
         factory {
-            InventoryInteractor(get(), get())
+            InventoryInteractor(get(), get(), get())
         }
 
         factory {
             InventoryStoreFactory(
                 DefaultStoreFactory,
+                get(),
                 get(),
                 get(),
                 get(),
