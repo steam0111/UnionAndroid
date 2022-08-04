@@ -22,7 +22,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         data class OnSelectPage(val selectedPage: Int) : Intent()
         object OnBackClicked : Intent()
 
-        data class OnItemClicked(val accountingObjectDomain: AccountingObjectDomain) : Intent()
+        data class OnItemClicked(val accountingObject: AccountingObjectDomain) : Intent()
         data class OnDeleteFromSelectActionWithValuesBottomMenu(val accountingObjects: List<AccountingObjectDomain>) :
             Intent()
 
@@ -32,7 +32,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :
             Intent()
 
-        data class OnAccountingObjectSelected(val accountingObjectDomain: AccountingObjectDomain) :
+        data class OnAccountingObjectSelected(val accountingObject: AccountingObjectDomain) :
             Intent()
     }
 
@@ -57,14 +57,14 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         }
 
         data class ShowDetail(
-            val accountingObjectDomain: AccountingObjectDomain,
+            val accountingObject: AccountingObjectDomain,
             val accountingObjects: List<AccountingObjectDomain>
         ) : Label(),
             ShowBottomSheetNavigationLabel {
             override val arguments: Bundle
                 get() = bundleOf(
                     SelectActionWithValuesBottomMenuFragment.SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_ARGS to SelectActionWithValuesBottomMenuArguments(
-                        accountingObjectDomain = accountingObjectDomain,
+                        accountingObject = accountingObject,
                         accountingObjects = accountingObjects
                     ),
                 )

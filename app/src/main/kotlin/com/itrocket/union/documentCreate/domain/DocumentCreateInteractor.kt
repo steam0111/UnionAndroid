@@ -114,10 +114,10 @@ class DocumentCreateInteractor(
 
     fun addAccountingObject(
         accountingObjects: List<AccountingObjectDomain>,
-        accountingObjectDomain: AccountingObjectDomain
+        accountingObject: AccountingObjectDomain
     ): List<AccountingObjectDomain> {
         val mutableList = accountingObjects.toMutableList()
-        mutableList.add(accountingObjectDomain)
+        mutableList.add(accountingObject)
         return mutableList
     }
 

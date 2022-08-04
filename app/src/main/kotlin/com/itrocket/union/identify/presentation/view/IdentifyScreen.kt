@@ -130,7 +130,7 @@ private fun Content(
                         onObjectClickListener = onObjectClickListener,
                         paddingValues = paddingValues
                     )
-                } else ScanningObjectsListEmpty(paddingValues = PaddingValues())
+                } else EmptyListStub(paddingValues = PaddingValues())
             }
         )
     )
@@ -214,7 +214,7 @@ private fun ScanningObjectsScreen(
 }
 
 @Composable
-private fun ScanningObjectsListEmpty(paddingValues: PaddingValues) {
+private fun EmptyListStub(paddingValues: PaddingValues) {
     Column(
         modifier = Modifier
             .fillMaxSize()

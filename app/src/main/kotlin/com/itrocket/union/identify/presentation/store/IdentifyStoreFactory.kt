@@ -1,10 +1,6 @@
 package com.itrocket.union.identify.presentation.store
 
-import com.arkivanov.mvikotlin.core.store.Executor
-import com.arkivanov.mvikotlin.core.store.Reducer
-import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
-import com.arkivanov.mvikotlin.core.store.Store
-import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.core.store.*
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
@@ -46,24 +42,20 @@ class IdentifyStoreFactory(
         ) {
             when (intent) {
                 IdentifyStore.Intent.OnBackClicked -> publish(IdentifyStore.Label.GoBack)
-
                 IdentifyStore.Intent.OnDropClicked -> {
                     dispatch(Result.AccountingObjects(listOf()))
                 }
-
                 IdentifyStore.Intent.OnReadingModeClicked -> {
                     publish(IdentifyStore.Label.ShowReadingMode)
                 }
-
                 is IdentifyStore.Intent.OnItemClicked -> {
                     publish(
                         IdentifyStore.Label.ShowDetail(
-                            intent.accountingObjectDomain,
+                            intent.accountingObject,
                             getState().accountingObjects
                         )
                     )
                 }
-
                 is IdentifyStore.Intent.OnNewAccountingObjectRfidsHandled -> handleRfidsAccountingObjects(
                     intent.rfids,
                     getState().accountingObjects
@@ -79,7 +71,7 @@ class IdentifyStoreFactory(
                         Result.AccountingObjects(
                             identifyInteractor.addAccountingObject(
                                 accountingObjects = getState().accountingObjects,
-                                accountingObjectDomain = intent.accountingObjectDomain
+                                accountingObject = intent.accountingObject
                             )
                         )
                     )

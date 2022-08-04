@@ -20,7 +20,7 @@ class SelectActionWithValuesBottomMenuStoreFactory(
                 name = "SelectActionWithValuesBottomMenuStore",
                 initialState = SelectActionWithValuesBottomMenuStore.State(
                     actionsWithIdentifyObjects = ActionsWithIdentifyObjects.values().toList(),
-                    accountingObjectDomain = selectActionWithValuesBottomMenuArguments.accountingObjectDomain,
+                    accountingObjectDomain = selectActionWithValuesBottomMenuArguments.accountingObject,
                     accountingObjects = selectActionWithValuesBottomMenuArguments.accountingObjects
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
