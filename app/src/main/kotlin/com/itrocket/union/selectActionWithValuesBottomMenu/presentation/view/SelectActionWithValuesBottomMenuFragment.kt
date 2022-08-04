@@ -23,7 +23,7 @@ class SelectActionWithValuesBottomMenuFragment :
                     accept(
                         SelectActionWithValuesBottomMenuStore.Intent.OnTypeClicked(
                             it,
-                            accountingObjectDomain = state.accountingObjectDomain,
+                            accountingObject = state.accountingObject,
                             accountingObjects = state.accountingObjects
                         )
                     )

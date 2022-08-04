@@ -20,7 +20,7 @@ class SelectActionWithValuesBottomMenuStoreFactory(
                 name = "SelectActionWithValuesBottomMenuStore",
                 initialState = SelectActionWithValuesBottomMenuStore.State(
                     actionsWithIdentifyObjects = ActionsWithIdentifyObjects.values().toList(),
-                    accountingObjectDomain = selectActionWithValuesBottomMenuArguments.accountingObject,
+                    accountingObject = selectActionWithValuesBottomMenuArguments.accountingObject,
                     accountingObjects = selectActionWithValuesBottomMenuArguments.accountingObjects
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
@@ -49,11 +49,11 @@ class SelectActionWithValuesBottomMenuStoreFactory(
                 is SelectActionWithValuesBottomMenuStore.Intent.OnTypeClicked -> {
                     when (intent.actionsWithIdentifyObjects) {
                         ActionsWithIdentifyObjects.OPEN_CARD -> {
-                            publish(SelectActionWithValuesBottomMenuStore.Label.ShowDetail(intent.accountingObjectDomain))
+                            publish(SelectActionWithValuesBottomMenuStore.Label.ShowDetail(intent.accountingObject))
                         }
                         ActionsWithIdentifyObjects.DELETE_FROM_LIST -> {
                             val newList = intent.accountingObjects.toMutableList()
-                            newList.removeAt(newList.indexOf(intent.accountingObjectDomain))
+                            newList.remove(intent.accountingObject)
 
                             publish(
                                 SelectActionWithValuesBottomMenuStore.Label.DeleteCard(

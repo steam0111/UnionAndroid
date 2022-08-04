@@ -18,14 +18,14 @@ interface SelectActionWithValuesBottomMenuStore :
     sealed class Intent {
         data class OnTypeClicked(
             val actionsWithIdentifyObjects: ActionsWithIdentifyObjects,
-            val accountingObjectDomain: AccountingObjectDomain,
+            val accountingObject: AccountingObjectDomain,
             val accountingObjects: List<AccountingObjectDomain>
         ) : Intent()
     }
 
     data class State(
         val actionsWithIdentifyObjects: List<ActionsWithIdentifyObjects>,
-        val accountingObjectDomain: AccountingObjectDomain,
+        val accountingObject: AccountingObjectDomain,
         val accountingObjects: List<AccountingObjectDomain>
     )
 
@@ -44,11 +44,11 @@ interface SelectActionWithValuesBottomMenuStore :
             SelectActionWithValuesBottomMenuStore.Label(),
             DefaultNavigationErrorLabel
 
-        data class ShowDetail(val item: AccountingObjectDomain) :
+        data class ShowDetail(val accountingObject: AccountingObjectDomain) :
             Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = AccountingObjectComposeFragmentDirections.toAccountingObjectsDetails(
-                    AccountingObjectDetailArguments(argument = item)
+                    AccountingObjectDetailArguments(argument = accountingObject)
                 )
         }
 
