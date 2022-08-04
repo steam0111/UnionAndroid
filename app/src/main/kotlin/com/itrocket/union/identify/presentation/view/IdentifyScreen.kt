@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -37,6 +38,9 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.ui.BaseTab
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.identify.presentation.store.IdentifyStore
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
@@ -254,4 +258,95 @@ private fun BottomBar(
             modifier = Modifier.fillMaxWidth()
         )
     }
+}
+
+@Preview
+@Composable
+fun IdentifyScreenPreview() {
+    IdentifyScreen(
+        state = IdentifyStore.State(
+            accountingObjects = listOf(
+                AccountingObjectDomain(
+                    id = "1",
+                    isBarcode = true,
+                    title = "Ширикоформатный жидкокристалический монитор Samsung",
+                    status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
+                    listMainInfo = listOf(
+                        ObjectInfoDomain(
+                            R.string.auth_main_title,
+                            "таылватвлыавыалвыоалвыа"
+                        ),
+                        ObjectInfoDomain(
+                            R.string.auth_main_title,
+                            "таылватвлыавыалвыоалвыа"
+                        ),
+                        ObjectInfoDomain(
+                            R.string.auth_main_title,
+                            "таылватвлыавыалвыоалвыа"
+                        ),
+                        ObjectInfoDomain(
+                            R.string.auth_main_title,
+                            "таылватвлыавыалвыоалвыа"
+                        ),
+                    ),
+                    listAdditionallyInfo = listOf(
+                        ObjectInfoDomain(
+                            R.string.auth_main_title,
+                            "таылватвлыавыалвыоалвыа"
+                        ),
+                        ObjectInfoDomain(
+                            R.string.auth_main_title,
+                            "таылватвлыавыалвыоалвыа"
+                        ),
+                    ),
+                    barcodeValue = "",
+                    rfidValue = ""
+                ),
+                AccountingObjectDomain(
+                    id = "2",
+                    isBarcode = true,
+                    title = "Ширикоформатный жидкокристалический монитор Samsung",
+                    status = ObjectStatus("AVAILABLE", ObjectStatusType.DECOMMISSIONED),
+                    listMainInfo = listOf(
+                        ObjectInfoDomain(
+                            R.string.auth_main_title,
+                            "таылватвлыавыалвыоалвыа"
+                        ),
+                        ObjectInfoDomain(
+                            R.string.auth_main_title,
+                            "таылватвлыавыалвыоалвыа"
+                        ),
+                    ),
+                    listAdditionallyInfo = listOf(),
+                    barcodeValue = "",
+                    rfidValue = ""
+                ), AccountingObjectDomain(
+                    id = "3",
+                    isBarcode = true,
+                    title = "Ширикоформатный жидкокристалический монитор Samsung",
+                    status = ObjectStatus("AVAILABLE", ObjectStatusType.REPAIR),
+                    listMainInfo = listOf(
+                        ObjectInfoDomain(
+                            R.string.auth_main_title,
+                            "таылватвлыавыалвыоалвыа"
+                        ),
+                        ObjectInfoDomain(
+                            R.string.auth_main_title,
+                            "таылватвлыавыалвыоалвыа"
+                        ),
+                    ),
+                    listAdditionallyInfo = listOf(),
+                    barcodeValue = "",
+                    rfidValue = ""
+                )
+            ),
+            selectedPage = 1,
+        ),
+        appInsets = AppInsets(),
+        onReadingModeClickListener = {},
+        onBackClickListener = {},
+        onObjectClickListener = {},
+        onDropClickListener = {},
+        onPageChanged = {}
+    )
 }

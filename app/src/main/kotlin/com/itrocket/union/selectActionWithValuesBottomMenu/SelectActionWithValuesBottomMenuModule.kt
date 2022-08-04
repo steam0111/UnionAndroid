@@ -31,7 +31,8 @@ object SelectActionWithValuesBottomMenuModule {
             SelectActionWithValuesBottomMenuStoreFactory(
                 DefaultStoreFactory,
                 get(),
-                args
+                args,
+                get()
             ).create()
         }
     }

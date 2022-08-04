@@ -1,32 +1,24 @@
 package com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
+import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.documents.domain.entity.ActionsWithIdentifyObjects
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuStore
-import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.ui.BaseButton
-import com.itrocket.union.ui.BottomSheetDivider
-import com.itrocket.union.ui.graphite2
-import com.itrocket.union.ui.psb1
-import com.itrocket.union.ui.white
+import com.itrocket.union.ui.*
 
 @Composable
 fun SelectActionWithValuesBottomMenuScreen(
@@ -76,4 +68,28 @@ fun SelectActionWithValuesBottomMenuScreen(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun SelectActionWithValuesBottomMenuScreenPreview() {
+    SelectActionWithValuesBottomMenuScreen(
+        state = SelectActionWithValuesBottomMenuStore.State(
+            actionsWithIdentifyObjects = listOf(
+                ActionsWithIdentifyObjects.OPEN_CARD,
+                ActionsWithIdentifyObjects.DELETE_FROM_LIST
+            ),
+            accountingObject = AccountingObjectDomain(
+                id = "1",
+                isBarcode = true,
+                title = "Ширикоформатный жидкокристалический монитор Samsung",
+                status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
+                listMainInfo = listOf(),
+                listAdditionallyInfo = listOf(),
+                barcodeValue = "",
+                rfidValue = ""
+            ),
+            accountingObjects = listOf()
+        ), AppInsets()
+    ) {}
 }
