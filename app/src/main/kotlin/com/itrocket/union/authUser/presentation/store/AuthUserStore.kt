@@ -11,6 +11,7 @@ interface AuthUserStore : Store<AuthUserStore.Intent, AuthUserStore.State, AuthU
     sealed class Intent {
         data class OnLoginChanged(val login: String) : Intent()
         data class OnPasswordChanged(val password: String) : Intent()
+        object OnActiveDirectoryChanged : Intent()
         object OnPasswordVisibilityClicked : Intent()
         object OnNextClicked : Intent()
     }
@@ -19,7 +20,8 @@ interface AuthUserStore : Store<AuthUserStore.Intent, AuthUserStore.State, AuthU
         val login: String = "",
         val password: String = "",
         val isPasswordVisible: Boolean = false,
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        val isActiveDirectory: Boolean = false
     )
 
     sealed class Label {

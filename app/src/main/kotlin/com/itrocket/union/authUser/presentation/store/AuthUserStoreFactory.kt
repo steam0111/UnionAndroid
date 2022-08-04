@@ -91,7 +91,8 @@ class AuthUserStoreFactory(
                     catchException {
                         authMainInteractor.signIn(
                             login = getState().login,
-                            password = getState().password
+                            password = getState().password,
+                            isActiveDirectory = getState().isActiveDirectory
                         )
                         if (isDbSyncedUseCase.execute()) {
                             publish(AuthUserStore.Label.ShowDocumentMenu)
@@ -104,6 +105,7 @@ class AuthUserStoreFactory(
                 is AuthUserStore.Intent.OnPasswordVisibilityClicked -> dispatch(
                     Result.PasswordVisible(!getState().isPasswordVisible)
                 )
+                AuthUserStore.Intent.OnActiveDirectoryChanged -> dispatch(Result.ActiveDirectory(!getState().isActiveDirectory))
             }
         }
 
@@ -119,6 +121,7 @@ class AuthUserStoreFactory(
         data class Login(val login: String) : Result()
         data class Password(val password: String) : Result()
         data class PasswordVisible(val isPasswordVisible: Boolean) : Result()
+        data class ActiveDirectory(val isActiveDirectory: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<AuthUserStore.State, Result> {
@@ -127,6 +130,7 @@ class AuthUserStoreFactory(
                 is Result.Login -> copy(login = result.login)
                 is Result.Password -> copy(password = result.password)
                 is Result.PasswordVisible -> copy(isPasswordVisible = result.isPasswordVisible)
+                is Result.ActiveDirectory -> copy(isActiveDirectory = result.isActiveDirectory)
             }
     }
 }
