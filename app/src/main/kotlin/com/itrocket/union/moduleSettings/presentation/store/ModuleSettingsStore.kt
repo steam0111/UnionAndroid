@@ -17,6 +17,7 @@ interface ModuleSettingsStore :
         data class OnServicesHandled(val services: List<String>) : Intent()
         data class OnDefaultServiceHandled(val service: String) : Intent()
         data class OnCursorDefined(val keyCode: Int) : Intent()
+        data class OnDropDownItemPowerClickListener(val powerOfReader: Int) : Intent()
     }
 
     data class State(
@@ -25,7 +26,9 @@ interface ModuleSettingsStore :
         val defaultService: String = "",
         val services: List<String> = listOf(),
         val keyCode: Int = 0,
-        val dropdownExpanded: Boolean = false
+        val dropdownExpanded: Boolean = false,
+        val defaultPowerOfReader: Int = 6,
+        val powerOfReader: List<Int> = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
     )
 
     sealed class Label {

@@ -54,7 +54,10 @@ class ModuleSettingsComposeFragment :
                 },
                 onDropdownOpenClickListener = {
                     accept(ModuleSettingsStore.Intent.OnDropdownOpenClicked)
-                }
+                },
+                onDropDownItemPowerClickListener = {
+                    accept(ModuleSettingsStore.Intent.OnDropDownItemPowerClickListener(it))
+                },
             )
         }
     }

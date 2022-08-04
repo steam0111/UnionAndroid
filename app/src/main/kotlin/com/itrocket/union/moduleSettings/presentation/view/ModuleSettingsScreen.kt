@@ -6,53 +6,27 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.itrocket.union.R
-import com.itrocket.union.ui.AppTheme
-import com.itrocket.core.base.AppInsets
-import com.itrocket.union.moduleSettings.presentation.store.ModuleSettingsStore
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
-import com.itrocket.union.ui.BaseToolbar
-import com.itrocket.union.ui.ButtonBottomBar
-import com.itrocket.union.ui.graphite2
-import com.itrocket.union.ui.graphite4
-import com.itrocket.union.ui.graphite6
-import com.itrocket.union.ui.psb6
-import com.itrocket.union.ui.white
+import com.itrocket.union.R
+import com.itrocket.union.moduleSettings.presentation.store.ModuleSettingsStore
+import com.itrocket.union.ui.*
 
 @Composable
 fun ModuleSettingsScreen(
@@ -63,7 +37,8 @@ fun ModuleSettingsScreen(
     onSaveClickListener: () -> Unit,
     onDropdownDismiss: () -> Unit,
     onDropdownItemClickListener: (String) -> Unit,
-    onDropdownOpenClickListener: () -> Unit
+    onDropdownOpenClickListener: () -> Unit,
+    onDropDownItemPowerClickListener: (Int) -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -86,7 +61,8 @@ fun ModuleSettingsScreen(
                     paddingValues = it,
                     onDropdownDismiss = onDropdownDismiss,
                     onDropdownItemClickListener = onDropdownItemClickListener,
-                    onDropdownOpenClickListener = onDropdownOpenClickListener
+                    onDropdownOpenClickListener = onDropdownOpenClickListener,
+                    onDropDownItemPowerClickListener = onDropDownItemPowerClickListener
                 )
             }
         )
@@ -110,6 +86,7 @@ private fun Content(
     onDropdownItemClickListener: (String) -> Unit,
     onDropdownOpenClickListener: () -> Unit,
     paddingValues: PaddingValues,
+    onDropDownItemPowerClickListener: (Int) -> Unit
 ) {
     Column(modifier = Modifier.padding(paddingValues)) {
         Spacer(modifier = Modifier.height(24.dp))
@@ -125,8 +102,16 @@ private fun Content(
             onDropdownDismiss = onDropdownDismiss,
             onDropdownItemClickListener = onDropdownItemClickListener
         )
+        Spacer(modifier = Modifier.height(24.dp))
+        SelectPowerOfReader(
+            state = state,
+            onDropdownOpenClickListener = onDropdownOpenClickListener,
+            onDropdownDismiss = onDropdownDismiss,
+            onDropDownItemPowerClickListener = onDropDownItemPowerClickListener
+        )
     }
 }
+
 
 @Composable
 private fun DefineCursorComponent(
@@ -222,11 +207,43 @@ private fun SelectServiceComponent(
                 }
             }
         }
-        Text(text = "Выберите мощность считывателя")
-
     }
 }
 
+@Composable
+fun SelectPowerOfReader(
+    state: ModuleSettingsStore.State,
+    onDropdownDismiss: () -> Unit,
+    onDropDownItemPowerClickListener: (Int) -> Unit,
+    onDropdownOpenClickListener: () -> Unit
+) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        Text(text = stringResource(R.string.choose_power_of_reader))
+
+        DropdownMenuItem(
+            onClick = onDropdownOpenClickListener,
+            modifier = Modifier.background(graphite2)
+        ) {
+            Text(text = state.defaultPowerOfReader.toString())
+        }
+        DropdownMenu(
+            expanded = state.dropdownExpanded,
+            onDismissRequest = onDropdownDismiss,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            state.powerOfReader.forEach {
+                DropdownMenuItem(
+                    onClick = { onDropDownItemPowerClickListener(it) },
+                    modifier = Modifier.padding(horizontal = 24.dp)
+                ) {
+                    Text(text = it.toString(), style = AppTheme.typography.body2)
+
+                }
+            }
+        }
+    }
+}
 
 @Preview(
     name = "светлая тема экран - 6.3 (3040x1440)",
@@ -246,6 +263,7 @@ fun ModuleSettingsScreenPreview() {
     ModuleSettingsScreen(
         ModuleSettingsStore.State(),
         AppInsets(topInset = previewTopInsetDp),
+        {},
         {},
         {},
         {},
