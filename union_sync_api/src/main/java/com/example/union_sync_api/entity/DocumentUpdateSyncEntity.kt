@@ -18,5 +18,7 @@ data class DocumentUpdateSyncEntity(
     val documentStatus: String,
     val documentStatusId: String,
     val reservesIds: List<DocumentReserveCountSyncEntity>? = null,
-    val code: String?
+    val code: String?,
+    val userInserted: String?,
+    val userUpdated: String?,
 )

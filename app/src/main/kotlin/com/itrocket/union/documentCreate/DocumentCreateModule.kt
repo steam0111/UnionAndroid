@@ -24,15 +24,15 @@ object DocumentCreateModule {
         }
 
         factory {
-            DocumentCreateInteractor(get(), get(), get())
+            DocumentCreateInteractor(get(), get(), get(), get())
         }
 
         factory {
-            DocumentAccountingObjectManager(get(), get(), get())
+            DocumentAccountingObjectManager(get(), get(), get(), get())
         }
 
         factory {
-            DocumentReservesManager(get(), get(), get(), get())
+            DocumentReservesManager(get(), get(), get(), get(), get())
         }
 
         factory { (args: DocumentCreateComposeFragmentArgs) ->
@@ -41,6 +41,7 @@ object DocumentCreateModule {
                 get(),
                 get(),
                 args.documentCreateArguments,
+                get(),
                 get(),
                 get(),
                 get(),

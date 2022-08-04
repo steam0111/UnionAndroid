@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import java.util.*
+import kotlin.math.log
 
 class InventorySyncApiImpl(
     private val inventoryDao: InventoryDao,
@@ -164,14 +165,16 @@ class InventorySyncApiImpl(
         if (inventoryUpdateSyncEntity.inventoryStatus != INVENTORY_STATUS_CREATED) {
             updateRecords(
                 inventoryId = inventoryUpdateSyncEntity.id,
-                accountingObjectIds = inventoryUpdateSyncEntity.accountingObjectsIds
+                accountingObjectIds = inventoryUpdateSyncEntity.accountingObjectsIds,
+                userUpdated = inventoryUpdateSyncEntity.userUpdated
             )
         }
     }
 
     private suspend fun updateRecords(
         accountingObjectIds: List<AccountingObjectInfoSyncEntity>,
-        inventoryId: String
+        inventoryId: String,
+        userUpdated: String?
     ) {
         val existRecords = inventoryRecordDao.getAll(
             sqlInventoryRecordQuery(
@@ -186,7 +189,9 @@ class InventorySyncApiImpl(
                 accountingObjectId = info.id,
                 inventoryStatus = info.status,
                 inventoryId = inventoryId,
-                updateDate = System.currentTimeMillis()
+                updateDate = System.currentTimeMillis(),
+                userUpdated = userUpdated,
+                userInserted = userUpdated
             )
         }
 

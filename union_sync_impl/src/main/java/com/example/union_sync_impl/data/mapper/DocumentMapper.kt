@@ -33,7 +33,9 @@ fun ActionDtoV2.toDocumentDb(): DocumentDb {
         departmentFromId = departmentFromId,
         departmentToId = departmentToId,
         actionBaseId = actionBaseId,
-        code = code
+        code = code,
+        userUpdated = userUpdated,
+        userInserted = userInserted
     )
 }
 
@@ -52,7 +54,9 @@ fun DocumentDb.toActionDtoV2(): ActionDtoV2 {
         creationDate = getStringDateFromMillis(creationDate),
         dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
         id = id,
-        deleted = false
+        deleted = false,
+        userInserted = userInserted,
+        userUpdated = userUpdated
     )
 }
 
@@ -73,7 +77,9 @@ fun DocumentCreateSyncEntity.toDocumentDb(id: String): DocumentDb {
         documentStatus = documentStatus,
         documentStatusId = documentStatusId,
         updateDate = System.currentTimeMillis(),
-        code = code
+        code = code,
+        userUpdated = userUpdated,
+        userInserted = userInserted
     )
 }
 
@@ -95,7 +101,9 @@ fun DocumentUpdateSyncEntity.toDocumentDb(): DocumentDb {
         creationDate = creationDate,
         completionDate = completionDate,
         updateDate = System.currentTimeMillis(),
-        code = code
+        code = code,
+        userUpdated = userUpdated,
+        userInserted = userInserted
     )
 }
 
@@ -131,6 +139,7 @@ fun DocumentDb.toDocumentSyncEntity(
         departmentTo = departmentTo,
         branch = branch,
         actionBase = actionBase,
-        code = code
+        code = code,
+        userInserted = userInserted
     )
 }

@@ -46,7 +46,7 @@ object AuthUserModule {
                     AUTHUSER_STATE_SAVER
                 ),
                 get(),
-                get()
+                get(),
             ).create()
         }
     }

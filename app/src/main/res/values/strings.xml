@@ -29,6 +29,7 @@
     <string name="common_in_work">В работу</string>
     <string name="common_complete">Завершить</string>
     <string name="search_hint">Введите запрос</string>
+    <string name="select_service_hint">Выберите сервис</string>
 
     <!-- Auth -->
     <string name="auth_suggest">Это нужно сделать один раз</string>

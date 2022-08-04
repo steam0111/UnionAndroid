@@ -44,6 +44,8 @@ fun DocumentSyncEntity.map(): DocumentDomain =
             actionBase = actionBase
         ),
         documentStatusId = documentStatusId,
+        userInserted = userInserted,
+        userUpdated = ""
     )
 
 fun getParams(

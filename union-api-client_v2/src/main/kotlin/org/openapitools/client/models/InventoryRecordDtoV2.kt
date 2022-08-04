@@ -57,6 +57,12 @@ data class InventoryRecordDtoV2 (
     @Json(name = "dateUpdate")
     val dateUpdate: kotlin.String? = null,
 
+    @Json(name = "UserInserted")
+    val userInserted: String? = null,
+
+    @Json(name = "UserUpdated")
+    val userUpdated: String? = null,
+
     @Json(name = "catalogItemName")
     val catalogItemName: kotlin.String? = null,
 

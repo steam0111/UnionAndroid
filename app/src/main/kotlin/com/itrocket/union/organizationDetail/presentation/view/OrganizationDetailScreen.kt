@@ -89,6 +89,8 @@ fun OrganizationDetailScreenPreview() {
     OrganizationDetailScreen(
         OrganizationDetailStore.State(
             item = OrganizationDetailDomain(
+                id = "",
+                name = "",
                 listInfo =
                 listOf(
                     ObjectInfoDomain(

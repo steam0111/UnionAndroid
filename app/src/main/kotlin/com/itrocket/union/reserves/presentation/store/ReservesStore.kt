@@ -49,7 +49,7 @@ interface ReservesStore : Store<ReservesStore.Intent, ReservesStore.State, Reser
                 get() = ReservesComposeFragmentDirections.toFilter(
                     FilterArguments(
                         filters,
-                        CatalogType.RESERVES
+                        CatalogType.Reserves
                     )
                 )
         }

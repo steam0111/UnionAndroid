@@ -49,7 +49,7 @@ interface InventoriesStore :
                 get() = InventoriesComposeFragmentDirections.toFilter(
                     FilterArguments(
                         filters,
-                        CatalogType.INVENTORIES
+                        CatalogType.Inventories
                     )
                 )
         }

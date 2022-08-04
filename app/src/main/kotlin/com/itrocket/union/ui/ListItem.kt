@@ -69,7 +69,7 @@ fun AccountingObjectItem(
     status: Status?,
     isShowBottomLine: Boolean,
     statusText: String? = null,
-    isEnabled: Boolean = true
+    isEnabled: Boolean = true,
 ) {
     Row(
         modifier = Modifier
@@ -83,11 +83,7 @@ fun AccountingObjectItem(
             modifier = Modifier
                 .fillMaxWidth(0.7f)
         ) {
-            Text(
-                text = accountingObject.title,
-                style = AppTheme.typography.body1,
-                fontWeight = FontWeight.Medium
-            )
+            HeaderText(accountingObject.title)
             Spacer(modifier = Modifier.height(4.dp))
             accountingObject.listMainInfo.take(MAX_LIST_INFO).forEach {
                 Text(
@@ -96,7 +92,7 @@ fun AccountingObjectItem(
                         stringResource(id = it.title),
                         it.value.orEmpty()
                     ),
-                    style = AppTheme.typography.caption,
+                    style = AppTheme.typography.subtitle1,
                     color = psb3
                 )
             }
@@ -113,7 +109,7 @@ fun AccountingObjectItem(
                     Text(
                         text = stringResource(R.string.common_barcode),
                         style = AppTheme.typography.caption,
-                        color = graphite5,
+                        color = psb3,
                         modifier = Modifier.padding(end = 4.dp)
                     )
                     RadioButton(
@@ -135,7 +131,7 @@ fun AccountingObjectItem(
                         Text(
                             text = stringResource(R.string.common_rfid),
                             style = AppTheme.typography.caption,
-                            color = graphite5,
+                            color = psb3,
                             modifier = Modifier.padding(end = 4.dp)
                         )
                         RadioButton(
@@ -160,25 +156,22 @@ fun AccountingObjectItem(
 fun ReservesItem(
     reserves: ReservesDomain,
     onReservesListener: (ReservesDomain) -> Unit,
-    isShowBottomLine: Boolean
+    isShowBottomLine: Boolean,
+    clickable: Boolean = true
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = {
                 onReservesListener(reserves)
-            })
+            }, enabled = clickable)
             .padding(vertical = 12.dp, horizontal = 16.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth(0.7f)
         ) {
-            Text(
-                text = reserves.title,
-                style = AppTheme.typography.body1,
-                fontWeight = FontWeight.Medium
-            )
+            HeaderText(reserves.title)
             Spacer(modifier = Modifier.height(4.dp))
             reserves.listInfo.take(MAX_LIST_INFO).forEach {
                 Text(
@@ -187,7 +180,7 @@ fun ReservesItem(
                         stringResource(id = it.title),
                         it.value.orEmpty()
                     ),
-                    style = AppTheme.typography.caption,
+                    style = AppTheme.typography.subtitle1,
                     color = psb3
                 )
             }
@@ -207,7 +200,7 @@ fun ReservesItem(
                 Text(
                     text = stringResource(R.string.common_barcode),
                     style = AppTheme.typography.caption,
-                    color = graphite5,
+                    color = psb3,
                     modifier = Modifier.padding(end = 4.dp)
                 )
                 RadioButton(
@@ -237,7 +230,17 @@ fun InventoryDocumentItem(
     val annotatedInfo = buildAnnotatedString {
         val filteredDocumentInfo = item.documentInfo.filter { it.value.isNotBlank() }
         filteredDocumentInfo.forEachIndexed { index, info ->
-            append(info.value)
+            withStyle(
+                SpanStyle(
+                    fontWeight = FontWeight.Medium,
+                    letterSpacing = 0.15.sp,
+                    fontSize = 19.sp,
+                    color = psb1
+                )
+            ) {
+                append(info.value)
+            }
+
             if (index < filteredDocumentInfo.lastIndex) {
                 append(" ")
                 withStyle(SpanStyle(color = psb6, fontWeight = FontWeight.ExtraBold)) {
@@ -284,14 +287,9 @@ fun InventoryDocumentItem(
 }
 
 private fun getInventoryAnnotatedTitle(item: InventoryCreateDomain): Pair<AnnotatedString, Map<String, InlineTextContent>> {
-    val numberId = "number"
     val dateId = "date"
     val timeId = "time"
     val annotatedTitle = buildAnnotatedString {
-        appendInlineContent(numberId, "[icon1]")
-        append(item.number)
-        append("  ")
-
         appendInlineContent(timeId, "[icon3]")
         append(item.getTextDate())
         append("  ")
@@ -302,15 +300,6 @@ private fun getInventoryAnnotatedTitle(item: InventoryCreateDomain): Pair<Annota
 
     }
     val numberContent = mapOf(
-        numberId to InlineTextContent(
-            Placeholder(
-                width = 20.sp,
-                height = 16.sp,
-                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
-            )
-        ) {
-            Image(painter = painterResource(R.drawable.ic_number), contentDescription = null)
-        },
         dateId to InlineTextContent(
             Placeholder(
                 width = 20.sp,
@@ -340,14 +329,9 @@ fun DocumentInfoItem(
     isShowBottomLine: Boolean,
     isShowStatus: Boolean = true
 ) {
-    val numberId = "number"
     val timeId = "time"
     val statusId = "status"
     val annotatedTitle = buildAnnotatedString {
-        appendInlineContent(numberId, "[icon1]")
-        append(item.number)
-        append("  ")
-
         appendInlineContent(timeId, "[icon2]")
         append(item.getTextTime())
         append("  ")
@@ -356,15 +340,6 @@ fun DocumentInfoItem(
         append(stringResource(item.documentType.titleId))
     }
     val numberContent = mapOf(
-        numberId to InlineTextContent(
-            Placeholder(
-                width = 20.sp,
-                height = 16.sp,
-                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
-            )
-        ) {
-            Image(painter = painterResource(R.drawable.ic_number), contentDescription = null)
-        },
         timeId to InlineTextContent(
             Placeholder(
                 width = 20.sp,
@@ -468,8 +443,9 @@ fun DocumentDateItem(
                 DocumentDateType.YESTERDAY -> stringResource(id = R.string.documents_yesterday)
                 DocumentDateType.OTHER -> item.dateUi
             },
-            style = AppTheme.typography.subtitle2,
-            color = psb1
+            style = AppTheme.typography.subtitle1,
+            color = psb1,
+            fontWeight = FontWeight.Medium
         )
         Spacer(modifier = Modifier.width(6.dp))
         Text(
@@ -509,11 +485,7 @@ fun DefaultListItem(
             .padding(vertical = 12.dp, horizontal = 16.dp)
     ) {
         Column {
-            Text(
-                text = item.title,
-                style = AppTheme.typography.body1,
-                fontWeight = FontWeight.Medium
-            )
+            HeaderText(item.title)
             Spacer(modifier = Modifier.height(4.dp))
             item.subtitles.forEach {
                 if (!it.value.isNullOrBlank()) {
@@ -523,7 +495,7 @@ fun DefaultListItem(
                             stringResource(it.key),
                             it.value.orEmpty()
                         ),
-                        style = AppTheme.typography.caption,
+                        style = AppTheme.typography.subtitle1,
                         color = psb3
                     )
                 }
@@ -571,7 +543,8 @@ fun DocumentInfoItemPreview() {
                 )
             ),
             documentType = DocumentTypeDomain.WRITE_OFF,
-            dateUi = "12.12.12"
+            dateUi = "12.12.12",
+            userInserted = "",
         ), onDocumentClickListener = {}, isShowBottomLine = true
     )
 }
@@ -665,6 +638,8 @@ fun InventoryDocumentItemPreview() {
             ),
             accountingObjects = listOf(),
             inventoryStatus = InventoryStatus.CREATED,
+            userInserted = "",
+            userUpdated = ""
         ),
         isShowStatus = true
     )
@@ -685,18 +660,14 @@ fun EmployeeItem(
         Column(
             modifier = Modifier.fillMaxWidth(0.7f)
         ) {
-            Text(
-                text = item.fullName,
-                style = AppTheme.typography.body1,
-                fontWeight = FontWeight.Medium
-            )
+            HeaderText(item.fullName)
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = stringResource(
                     R.string.employees_service_number,
                     item.number
                 ),
-                style = AppTheme.typography.caption,
+                style = AppTheme.typography.subtitle1,
                 color = psb3
             )
         }
@@ -743,5 +714,15 @@ fun EmployeeItemPreview() {
             post = "bb",
             employeeStatus = EmployeeStatus.MOL
         ), onEmployeeClickListener = {}, isShowBottomLine = true
+    )
+}
+
+@Composable
+private fun HeaderText(text: String) {
+    Text(
+        text = text,
+        style = AppTheme.typography.h6,
+        fontSize = 19.sp,
+        color = psb1
     )
 }

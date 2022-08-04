@@ -44,47 +44,19 @@ class DocumentSyncApiImpl(
         documentDao.insert(documentCreateSyncEntity.toDocumentDb(documentId))
         updateActionRecords(
             accountingObjectIds = documentCreateSyncEntity.accountingObjectsIds.orEmpty(),
-            actionId = documentId
+            actionId = documentId,
+            userUpdated = documentCreateSyncEntity.userUpdated
         )
         updateRemainsActionRecords(
             remainIds = documentCreateSyncEntity.reservesIds.orEmpty(),
-            actionId = documentId
+            actionId = documentId,
+            userUpdated = documentCreateSyncEntity.userUpdated
         )
         return documentId
     }
 
-    override suspend fun getAllDocuments(
-        textQuery: String?,
-        molId: String?,
-        exploitingId: String?,
-        organizationId: String?
-    ): Flow<List<DocumentSyncEntity>> {
-        return documentDao.getAll(
-            sqlDocumentsQuery(
-                textQuery = textQuery,
-                molId = molId,
-                exploitingId = exploitingId,
-                organizationId = organizationId
-            )
-        ).map { documents ->
-            documents.map { document ->
-                document.documentDb.toDocumentSyncEntity(
-                    organizationSyncEntity = document.organizationDb?.toSyncEntity(),
-                    mol = document.molDb?.toSyncEntity(),
-                    exploiting = document.exploitingDb?.toSyncEntity(),
-                    locationFrom = locationSyncApi.getLocationById(document.documentDb.locationFromId),
-                    locationTo = locationSyncApi.getLocationById(document.documentDb.locationToId),
-                    departmentFrom = document.departmentFromDb?.toSyncEntity(),
-                    departmentTo = document.departmentToDb?.toSyncEntity(),
-                    branch = document.branchDb?.toSyncEntity(),
-                    actionBase = document.actionBaseDb?.toSyncEntity(),
-                    accountingObjects = listOf()
-                )
-            }
-        }
-    }
-
-    override suspend fun getAllDocumentsCount(
+    override suspend fun getDocumentsCount(
+        type: String,
         textQuery: String?,
         molId: String?,
         exploitingId: String?,
@@ -96,16 +68,28 @@ class DocumentSyncApiImpl(
                 molId = molId,
                 exploitingId = exploitingId,
                 organizationId = organizationId,
-                isFilterCount = true
+                isFilterCount = true,
+                type = type
             )
         )
     }
 
     override suspend fun getDocumentsByType(
         type: String,
-        textQuery: String?
+        textQuery: String?,
+        molId: String?,
+        exploitingId: String?,
+        organizationId: String?
     ): Flow<List<DocumentSyncEntity>> {
-        return documentDao.getDocumentsByType(type).map { documents ->
+        return documentDao.getAll(
+            sqlDocumentsQuery(
+                textQuery = textQuery,
+                molId = molId,
+                exploitingId = exploitingId,
+                organizationId = organizationId,
+                type = type
+            )
+        ).map { documents ->
             documents.map { document ->
                 document.documentDb.toDocumentSyncEntity(
                     organizationSyncEntity = document.organizationDb?.toSyncEntity(),
@@ -173,24 +157,28 @@ class DocumentSyncApiImpl(
         documentDao.update(documentUpdateSyncEntity.toDocumentDb())
         updateActionRecords(
             accountingObjectIds = documentUpdateSyncEntity.accountingObjectsIds.orEmpty(),
-            actionId = documentUpdateSyncEntity.id
+            actionId = documentUpdateSyncEntity.id,
+            userUpdated = documentUpdateSyncEntity.userUpdated
         )
         updateRemainsActionRecords(
             remainIds = documentUpdateSyncEntity.reservesIds.orEmpty(),
-            actionId = documentUpdateSyncEntity.id
+            actionId = documentUpdateSyncEntity.id,
+            userUpdated = documentUpdateSyncEntity.userUpdated
         )
     }
 
     override suspend fun updateDocumentReserves(documentUpdateReservesSyncEntity: DocumentUpdateReservesSyncEntity) {
         updateRemainsActionRecords(
             remainIds = documentUpdateReservesSyncEntity.reservesIds,
-            actionId = documentUpdateReservesSyncEntity.id
+            actionId = documentUpdateReservesSyncEntity.id,
+            userUpdated = documentUpdateReservesSyncEntity.userUpdated
         )
     }
 
     private suspend fun updateActionRecords(
         accountingObjectIds: List<String>,
-        actionId: String
+        actionId: String,
+        userUpdated: String?
     ) {
         val existRecords = actionRecordDao.getAll(
             sqlActionRecordQuery(
@@ -204,7 +192,9 @@ class DocumentSyncApiImpl(
                 id = existRecord?.id ?: UUID.randomUUID().toString(),
                 accountingObjectId = accountingObjectId,
                 actionId = actionId,
-                updateDate = System.currentTimeMillis()
+                updateDate = System.currentTimeMillis(),
+                userInserted = existRecord?.userInserted ?: userUpdated,
+                userUpdated = userUpdated
             )
         }
         actionRecordDao.insertAll(newRecords)
@@ -212,7 +202,8 @@ class DocumentSyncApiImpl(
 
     private suspend fun updateRemainsActionRecords(
         remainIds: List<DocumentReserveCountSyncEntity>,
-        actionId: String
+        actionId: String,
+        userUpdated: String?
     ) {
         val existRecords = actionRemainsRecordDao.getAll(
             sqlActionRemainsRecordQuery(
@@ -227,7 +218,9 @@ class DocumentSyncApiImpl(
                 remainId = remain.id,
                 actionId = actionId,
                 updateDate = System.currentTimeMillis(),
-                count = remain.count
+                count = remain.count,
+                userUpdated = userUpdated,
+                userInserted = existRecord?.userInserted ?: userUpdated
             )
         }
         actionRemainsRecordDao.insertAll(newRecords)

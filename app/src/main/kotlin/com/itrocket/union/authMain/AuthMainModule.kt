@@ -19,6 +19,8 @@ object AuthMainModule {
     val ACCESS_TOKEN_PREFERENCE_KEY = named("ACCESS_TOKEN_PREFERENCE_KEY")
     val REFRESH_TOKEN_PREFERENCE_KEY = named("REFRESH_TOKEN_PREFERENCE_KEY")
     val LOGIN_PREFERENCE_KEY = named("LOGIN_PREFERENCE_KEY")
+    val MY_EMPLOYEE_PREFERENCES_KEY = named("MY_EMPLOYEE_PREFERENCES_KEY")
+    val MY_ORGANIZATION_PREFERENCES_KEY = named("MY_ORGANIZATION_PREFERENCES_KEY")
 
     val module = module {
         viewModel(AUTHMAIN_VIEW_MODEL_QUALIFIER) { (args: AuthMainComposeFragmentArgs) ->
@@ -33,7 +35,9 @@ object AuthMainModule {
                 dataStore = get(),
                 accessTokenPreferencesKey = get(ACCESS_TOKEN_PREFERENCE_KEY),
                 refreshTokenPreferencesKey = get(REFRESH_TOKEN_PREFERENCE_KEY),
-                loginPreferencesKey = get(LOGIN_PREFERENCE_KEY)
+                loginPreferencesKey = get(LOGIN_PREFERENCE_KEY),
+                myEmployeePreferencesKey = get(MY_EMPLOYEE_PREFERENCES_KEY),
+                myOrganizationPreferencesKey = get(MY_ORGANIZATION_PREFERENCES_KEY),
             )
         }
 
@@ -47,10 +51,9 @@ object AuthMainModule {
                 get(),
                 get(),
                 args.authMainComposeFragmentArgs,
-                get()
+                get(),
             ).create()
         }
-
         single(qualifier = ACCESS_TOKEN_PREFERENCE_KEY) {
             stringPreferencesKey(ACCESS_TOKEN_PREFERENCE_KEY.value)
         }
@@ -61,6 +64,13 @@ object AuthMainModule {
 
         single(qualifier = LOGIN_PREFERENCE_KEY) {
             stringPreferencesKey(LOGIN_PREFERENCE_KEY.value)
+        }
+        single(qualifier = MY_EMPLOYEE_PREFERENCES_KEY) {
+            stringPreferencesKey(MY_EMPLOYEE_PREFERENCES_KEY.value)
+        }
+
+        single(qualifier = MY_ORGANIZATION_PREFERENCES_KEY) {
+            stringPreferencesKey(MY_ORGANIZATION_PREFERENCES_KEY.value)
         }
     }
 }

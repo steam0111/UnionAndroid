@@ -9,5 +9,7 @@ class ActionRecordDb(
     id: String,
     val actionId: String,
     val accountingObjectId: String,
-    updateDate: Long
-): SyncItemDb(id, updateDate)
+    updateDate: Long,
+    userInserted: String?,
+    userUpdated: String?,
+): SyncItemDb(id, updateDate, userUpdated, userInserted)

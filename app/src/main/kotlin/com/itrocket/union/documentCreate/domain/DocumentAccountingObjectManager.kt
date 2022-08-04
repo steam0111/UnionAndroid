@@ -7,6 +7,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
+import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
@@ -20,7 +21,8 @@ import kotlinx.coroutines.withContext
 class DocumentAccountingObjectManager(
     private val coreDispatchers: CoreDispatchers,
     private val accountingObjectStatusSyncApi: AccountingObjectStatusSyncApi,
-    private val repository: AccountingObjectRepository
+    private val repository: AccountingObjectRepository,
+    private val authMainInteractor: AuthMainInteractor
 ) {
 
     suspend fun changeAccountingObjectsAfterConduct(
@@ -54,7 +56,7 @@ class DocumentAccountingObjectManager(
                 }
             }
             repository.updateAccountingObjects(newAccountingObjects.map {
-                it.toAccountingObjectUpdateSyncEntity()
+                it.toAccountingObjectUpdateSyncEntity(authMainInteractor.getLogin())
             })
         }
     }

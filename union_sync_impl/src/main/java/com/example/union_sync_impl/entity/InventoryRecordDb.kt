@@ -12,5 +12,7 @@ class InventoryRecordDb(
     val inventoryId: String,
     val accountingObjectId: String,
     val inventoryStatus: String,
-    updateDate: Long
-) : SyncItemDb(id, updateDate)
+    updateDate: Long,
+    userInserted: String?,
+    userUpdated: String?,
+) : SyncItemDb(id, updateDate, userUpdated, userInserted)

@@ -1,5 +1,6 @@
 package com.itrocket.union.accountingObjects.data
 
+import com.example.union_sync_api.data.AccountingObjectStatusSyncApi
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
@@ -7,6 +8,8 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.data.mapper.map
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
+import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getDepartmentId
 import com.itrocket.union.manual.getEquipmentTypeId
@@ -16,11 +19,13 @@ import com.itrocket.union.manual.getOrganizationId
 import com.itrocket.union.manual.getProducerId
 import com.itrocket.union.manual.getProviderId
 import com.itrocket.union.manual.getStatusId
+import com.itrocket.union.manual.toParam
 import kotlinx.coroutines.withContext
 
 class AccountingObjectRepositoryImpl(
     private val coreDispatchers: CoreDispatchers,
     private val syncApi: AccountingObjectSyncApi,
+    private val statusesSyncApi: AccountingObjectStatusSyncApi
 ) : AccountingObjectRepository {
 
     override suspend fun getAccountingObjects(
@@ -84,6 +89,14 @@ class AccountingObjectRepositoryImpl(
     override suspend fun updateAccountingObjects(accountingObjects: List<AccountingObjectUpdateSyncEntity>) {
         withContext(coreDispatchers.io) {
             syncApi.updateAccountingObjects(accountingObjects = accountingObjects)
+        }
+    }
+
+    override suspend fun getAvailableStatus(): ParamDomain {
+        return withContext(coreDispatchers.io) {
+            statusesSyncApi.getStatuses(id = ObjectStatusType.AVAILABLE.name)
+                .map { it.toParam() }
+                .firstOrNull() ?: ParamDomain(type = ManualType.STATUS, value = "")
         }
     }
 }

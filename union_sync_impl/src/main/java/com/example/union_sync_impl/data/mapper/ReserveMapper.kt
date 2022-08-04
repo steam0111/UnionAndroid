@@ -27,7 +27,9 @@ fun RemainsDtoV2.toReserveDb(): ReserveDb {
         structuralSubdivisionId = structuralSubdivisionId,
         receptionDocumentNumber = receptionDocumentNumber,
         unitPrice = unitPrice,
-        updateDate = System.currentTimeMillis()
+        updateDate = System.currentTimeMillis(),
+        userUpdated = userUpdated,
+        userInserted = userInserted
     )
 }
 
@@ -48,7 +50,9 @@ fun ReserveDb.toRemainsDtoV2(): RemainsDtoV2 {
         structuralSubdivisionId = structuralSubdivisionId,
         receptionDocumentNumber = receptionDocumentNumber,
         unitPrice = unitPrice,
-        deleted = false
+        deleted = false,
+        userUpdated = userUpdated,
+        userInserted = userInserted
     )
 }
 
@@ -69,7 +73,9 @@ fun ReserveSyncEntity.toReserveDb(): ReserveDb {
         structuralSubdivisionId = structuralSubdivisionId,
         receptionDocumentNumber = receptionDocumentNumber,
         unitPrice = unitPrice,
-        updateDate = System.currentTimeMillis()
+        updateDate = System.currentTimeMillis(),
+        userUpdated = userUpdated,
+        userInserted = userInserted
     )
 }
 
@@ -89,6 +95,8 @@ fun ReserveDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?): ReserveSync
         receptionDocumentNumber = receptionDocumentNumber,
         unitPrice = unitPrice,
         locationSyncEntity = locationSyncEntity,
+        userUpdated = userUpdated,
+        userInserted = userInserted
     )
 }
 
@@ -108,6 +116,8 @@ fun FullReserve.toSyncEntity(): ReserveSyncEntity {
         receptionDocumentNumber = reserveDb.receptionDocumentNumber,
         unitPrice = reserveDb.unitPrice,
         locationSyncEntity = locationDb?.toLocationSyncEntity(locationTypeDb),
+        userUpdated = reserveDb.userUpdated,
+        userInserted = reserveDb.userInserted
     )
 }
 
@@ -131,5 +141,6 @@ fun ReserveUpdateSyncEntity.toReserveUpdate() = ReserveUpdate(
     id = id,
     count = count,
     locationId = locationId,
-    updateDate = System.currentTimeMillis()
+    updateDate = System.currentTimeMillis(),
+    userUpdated = userUpdated
 )

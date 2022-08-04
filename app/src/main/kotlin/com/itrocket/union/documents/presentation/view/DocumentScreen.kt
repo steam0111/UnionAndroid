@@ -210,7 +210,8 @@ fun DocumentScreenPreview() {
                             type = ManualType.ORGANIZATION
                         )
                     ),
-                    dateUi = "12.12.12"
+                    dateUi = "12.12.12",
+                    userInserted = ""
                 ),
                 DocumentView.DocumentItemView(
                     id = "dd",
@@ -232,7 +233,8 @@ fun DocumentScreenPreview() {
                             type = ManualType.ORGANIZATION
                         )
                     ),
-                    dateUi = "12.12.12"
+                    dateUi = "12.12.12",
+                    userInserted = ""
                 ), DocumentView.DocumentItemView(
                     id = "dd",
                     date = 123123,
@@ -253,7 +255,8 @@ fun DocumentScreenPreview() {
                             type = ManualType.ORGANIZATION
                         )
                     ),
-                    dateUi = "12.12.12"
+                    dateUi = "12.12.12",
+                    userInserted = ""
                 ),
                 DocumentView.DocumentItemView(
                     id = "dd",
@@ -275,7 +278,8 @@ fun DocumentScreenPreview() {
                             type = ManualType.ORGANIZATION
                         )
                     ),
-                    dateUi = "12.12.12"
+                    dateUi = "12.12.12",
+                    userInserted = ""
                 )
             )
         ),

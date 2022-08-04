@@ -164,6 +164,7 @@ fun AccountingObjectScreenPreview() {
                     barcodeValue = "",
                     rfidValue = ""
                 )
-            )
+            ),
+            params = emptyList()
         ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {})
 }

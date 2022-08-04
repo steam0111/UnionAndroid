@@ -62,8 +62,6 @@ class EmployeeDetailStoreFactory(
                 EmployeeDetailStore.Intent.OnBackClicked -> publish(
                     EmployeeDetailStore.Label.GoBack
                 )
-                EmployeeDetailStore.Intent.OnSaveClicked -> {}
-                EmployeeDetailStore.Intent.OnSearchClicked -> {}
             }
         }
     }

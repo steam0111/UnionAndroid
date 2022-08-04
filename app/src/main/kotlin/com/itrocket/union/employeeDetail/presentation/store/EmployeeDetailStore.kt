@@ -10,12 +10,10 @@ interface EmployeeDetailStore :
 
     sealed class Intent {
         object OnBackClicked : Intent()
-        object OnSearchClicked : Intent()
-        object OnSaveClicked : Intent()
     }
 
     data class State(
-        val item: EmployeeDetailDomain = EmployeeDetailDomain(),
+        val item: EmployeeDetailDomain = EmployeeDetailDomain(id = "", name = ""),
         val isLoading: Boolean = false
     )
 
