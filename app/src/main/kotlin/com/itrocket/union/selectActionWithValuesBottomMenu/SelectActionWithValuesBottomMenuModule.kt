@@ -3,6 +3,7 @@ package com.itrocket.union.selectActionWithValuesBottomMenu
 import android.os.Bundle
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.itrocket.core.base.BaseViewModel
+import com.itrocket.union.selectActionWithValuesBottomMenu.domain.SelectActionWithValuesBottomMenuInteractor
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuArguments
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuStore
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuStoreFactory
@@ -26,7 +27,7 @@ object SelectActionWithValuesBottomMenuModule {
                 )
             })
         }
-
+        factory { SelectActionWithValuesBottomMenuInteractor() }
         factory { (args: SelectActionWithValuesBottomMenuArguments) ->
             SelectActionWithValuesBottomMenuStoreFactory(
                 DefaultStoreFactory,
