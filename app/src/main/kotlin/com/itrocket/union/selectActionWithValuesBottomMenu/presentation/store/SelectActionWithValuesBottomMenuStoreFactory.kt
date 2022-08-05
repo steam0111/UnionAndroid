@@ -55,7 +55,7 @@ class SelectActionWithValuesBottomMenuStoreFactory(
                         }
                         ActionsWithIdentifyObjects.DELETE_FROM_LIST -> {
                             val newList =
-                                selectActionWithValuesBottomMenuInteractor.deleteChooseObjectFromList(
+                                selectActionWithValuesBottomMenuInteractor.removeAccountingObject(
                                     intent.accountingObjects,
                                     intent.accountingObject
                                 )

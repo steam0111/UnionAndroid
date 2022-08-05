@@ -10,7 +10,7 @@ import com.itrocket.union.reserves.domain.entity.ReservesDomain
 class IdentifyStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val identifyInteractor: DocumentCreateInteractor
+    private val documentCreateInteractor: DocumentCreateInteractor
 ) {
     fun create(): IdentifyStore =
         object : IdentifyStore,
@@ -69,7 +69,7 @@ class IdentifyStoreFactory(
                 is IdentifyStore.Intent.OnAccountingObjectSelected -> {
                     dispatch(
                         Result.AccountingObjects(
-                            identifyInteractor.addAccountingObject(
+                            documentCreateInteractor.addAccountingObject(
                                 accountingObjects = getState().accountingObjects,
                                 accountingObject = intent.accountingObject
                             )
@@ -86,7 +86,7 @@ class IdentifyStoreFactory(
             rfids: List<String>,
             accountingObjects: List<AccountingObjectDomain>
         ) {
-            val newAccountingObjects = identifyInteractor.handleNewAccountingObjectRfids(
+            val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectRfids(
                 accountingObjects = accountingObjects,
                 handledAccountingObjectRfids = rfids
             )
@@ -97,7 +97,7 @@ class IdentifyStoreFactory(
             barcode: String,
             accountingObjects: List<AccountingObjectDomain>
         ) {
-            val newAccountingObjects = identifyInteractor.handleNewAccountingObjectBarcode(
+            val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectBarcode(
                 accountingObjects = accountingObjects,
                 barcode = barcode
             )

@@ -3,7 +3,7 @@ package com.itrocket.union.selectActionWithValuesBottomMenu.domain
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 
 class SelectActionWithValuesBottomMenuInteractor {
-    fun deleteChooseObjectFromList(
+    fun removeAccountingObject(
         accountingObjects: List<AccountingObjectDomain>,
         accountingObject: AccountingObjectDomain
     ): List<AccountingObjectDomain> {
