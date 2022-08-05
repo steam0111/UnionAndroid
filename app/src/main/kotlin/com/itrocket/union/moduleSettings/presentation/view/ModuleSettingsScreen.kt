@@ -230,10 +230,10 @@ fun SelectPowerOfReader(
             onClick = onDropDownOpenPowerClickListener,
             modifier = Modifier.background(graphite2)
         ) {
-            Text(text = state.defaultPowerOfReader.toString())
+            Text(text = state.defaultReadPower.toString())
         }
         DropdownMenu(
-            expanded = state.dropDownPowerExpanded,
+            expanded = state.dropDownReadPowerExpanded,
             onDismissRequest = onDropDownPowerDismiss,
             modifier = Modifier
                 .fillMaxWidth()
