@@ -109,7 +109,8 @@ private fun Content(
             onDropdownItemClickListener = onDropdownItemClickListener
         )
         Spacer(modifier = Modifier.height(24.dp))
-        SelectPowerOfReader(
+        Text(text = "Выберите мощность", modifier = Modifier.padding(horizontal = 16.dp))
+        SelectReadPower(
             state = state,
             onDropDownOpenPowerClickListener = onDropDownOpenPowerClickListener,
             onDropDownPowerDismiss = onDropDownPowerDismiss,
@@ -217,20 +218,81 @@ private fun SelectServiceComponent(
 }
 
 @Composable
-fun SelectPowerOfReader(
+fun SelectReadPower(
+    state: ModuleSettingsStore.State,
+    onDropDownPowerDismiss: () -> Unit,
+    onDropDownItemPowerClickListener: (Int) -> Unit,
+    onDropDownOpenPowerClickListener: () -> Unit
+) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+
+
+        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+            Text(text = "Чтения")
+            DropdownMenuItem(
+                onClick = onDropDownOpenPowerClickListener,
+                modifier = Modifier.background(graphite2)
+            ) {
+                Text(text = state.defaultReadPower)
+            }
+            DropdownMenu(
+                expanded = state.dropDownReadPowerExpanded,
+                onDismissRequest = onDropDownPowerDismiss,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                state.listPowerOfReader.forEach {
+                    DropdownMenuItem(
+                        onClick = { onDropDownItemPowerClickListener(it) },
+                        modifier = Modifier.padding(horizontal = 24.dp)
+                    ) {
+                        Text(text = it.toString(), style = AppTheme.typography.body2)
+
+                    }
+                }
+            }
+        }
+        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+            Text(text = "Записи")
+            DropdownMenuItem(
+                onClick = onDropDownOpenPowerClickListener,
+                modifier = Modifier.background(graphite2)
+            ) {
+                Text(text = state.defaultReadPower)
+            }
+            DropdownMenu(
+                expanded = state.dropDownReadPowerExpanded,
+                onDismissRequest = onDropDownPowerDismiss,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                state.listPowerOfReader.forEach {
+                    DropdownMenuItem(
+                        onClick = { onDropDownItemPowerClickListener(it) },
+                        modifier = Modifier.padding(horizontal = 24.dp)
+                    ) {
+                        Text(text = it.toString(), style = AppTheme.typography.body2)
+
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SelectWritePower(
     state: ModuleSettingsStore.State,
     onDropDownPowerDismiss: () -> Unit,
     onDropDownItemPowerClickListener: (Int) -> Unit,
     onDropDownOpenPowerClickListener: () -> Unit
 ) {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-        Text(text = stringResource(R.string.choose_power_of_reader))
-
         DropdownMenuItem(
             onClick = onDropDownOpenPowerClickListener,
             modifier = Modifier.background(graphite2)
         ) {
-            Text(text = state.defaultReadPower.toString())
+            Text(text = state.defaultReadPower)
         }
         DropdownMenu(
             expanded = state.dropDownReadPowerExpanded,
@@ -250,6 +312,7 @@ fun SelectPowerOfReader(
         }
     }
 }
+
 
 @Preview(
     name = "светлая тема экран - 6.3 (3040x1440)",
