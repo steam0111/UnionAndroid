@@ -99,9 +99,7 @@ class ModuleSettingsStoreFactory(
                     Result.DropDownReadPowerExpanded(false)
                 )
                 is ModuleSettingsStore.Intent.OnPowerOfReaderHandled -> dispatch(
-                    Result.ListPowerOfReader(
-                        intent.listPowerOfReader
-                    )
+                    Result.ListPowerOfReader(intent.listPowerOfReader)
                 )
                 is ModuleSettingsStore.Intent.OnDefaultReadPowerHandled -> dispatch(
                     Result.ReadPower(intent.readPower)
@@ -173,7 +171,7 @@ class ModuleSettingsStoreFactory(
                 is Result.DropDownReadPowerExpanded -> copy(dropDownReadPowerExpanded = result.dropDownReadPowerExpanded)
                 is Result.DropDownWritePowerExpanded -> copy(dropDownWritePowerExpanded = result.dropDownWritePowerExpanded)
                 is Result.ReadPower -> copy(defaultReadPower = result.readPower.toString())
-                is Result.WritePower -> copy(defaultReadPower = result.writePower.toString())
+                is Result.WritePower -> copy(defaultWritePower = result.writePower.toString())
                 is Result.ListPowerOfReader -> copy(listPowerOfReader = result.listPowerOfReader)
             }
     }

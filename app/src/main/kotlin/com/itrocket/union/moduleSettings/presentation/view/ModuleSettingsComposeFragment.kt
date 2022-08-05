@@ -54,14 +54,23 @@ class ModuleSettingsComposeFragment :
                 onDropdownOpenClickListener = {
                     accept(ModuleSettingsStore.Intent.OnDropdownOpenClicked)
                 },
-                onDropDownItemPowerClickListener = {
+                onDropDownItemReadPowerClickListener = {
                     accept(ModuleSettingsStore.Intent.OnDropDownItemReadPowerClicked(it))
                 },
-                onDropDownOpenPowerClickListener = {
+                onDropDownOpenReadPowerClickListener = {
                     accept(ModuleSettingsStore.Intent.OnDropDownOpenReadPowerClicked)
                 },
-                onDropDownPowerDismiss = {
+                onDropDownReadPowerDismiss = {
                     accept(ModuleSettingsStore.Intent.OnDropDownReadPowerDismiss)
+                },
+                onDropDownItemWritePowerClickListener = {
+                    accept(ModuleSettingsStore.Intent.OnDropDownItemWritePowerClicked(it))
+                },
+                onDropDownOpenWritePowerClickListener = {
+                    accept(ModuleSettingsStore.Intent.OnDropDownOpenWritePowerClicked)
+                },
+                onDropDownWritePowerDismiss = {
+                    accept(ModuleSettingsStore.Intent.OnDropDownWritePowerDismiss)
                 }
             )
         }

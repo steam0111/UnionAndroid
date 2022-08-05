@@ -1,6 +1,7 @@
 package com.itrocket.union.documentCreate.presentation.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
