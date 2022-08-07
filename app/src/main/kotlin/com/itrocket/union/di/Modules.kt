@@ -7,6 +7,7 @@ import com.itrocket.union.authMain.AuthMainModule
 import com.itrocket.union.authUser.AuthUserModule
 import com.itrocket.union.branchDetail.BranchDetailModule
 import com.itrocket.union.branches.BranchesModule
+import com.itrocket.union.chooseAction.ChooseActionModule
 import com.itrocket.union.container.ContainerModule
 import com.itrocket.union.conterpartyDetail.CounterpartyDetailModule
 import com.itrocket.union.core.CoreModule
@@ -45,15 +46,15 @@ import com.itrocket.union.reserveDetail.ReserveDetailModule
 import com.itrocket.union.reserves.ReservesModule
 import com.itrocket.union.scanner.ScannerModule
 import com.itrocket.union.search.SearchModule
+import com.itrocket.union.selectCount.SelectCountModule
 import com.itrocket.union.selectParams.SelectParamsModule
 import com.itrocket.union.serverConnect.ServerConnectModule
+import com.itrocket.union.structural.StructuralModule
 import com.itrocket.union.switcher.SwitcherModule
 import com.itrocket.union.syncAll.SyncAllModule
 import com.itrocket.union.token.TokenModule
+import com.itrocket.union.unionPermissions.UnionPermissionsModule
 import com.union.sdk.SyncModule
-import com.itrocket.union.chooseAction.ChooseActionModule
-import com.itrocket.union.selectCount.SelectCountModule
-import com.itrocket.union.structural.StructuralModule
 
 object Modules {
 
@@ -115,6 +116,7 @@ object Modules {
         SearchModule.module,
         ChooseActionModule.module,
         SelectCountModule.module,
+        UnionPermissionsModule.module,
         StructuralModule.module
     )
 }

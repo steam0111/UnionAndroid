@@ -17,10 +17,11 @@ import org.koin.dsl.module
 object AuthMainModule {
     val AUTHMAIN_VIEW_MODEL_QUALIFIER = named("AUTHMAIN_VIEW_MODEL")
     val ACCESS_TOKEN_PREFERENCE_KEY = named("ACCESS_TOKEN_PREFERENCE_KEY")
-    val REFRESH_TOKEN_PREFERENCE_KEY = named("REFRESH_TOKEN_PREFERENCE_KEY")
-    val LOGIN_PREFERENCE_KEY = named("LOGIN_PREFERENCE_KEY")
-    val MY_EMPLOYEE_PREFERENCES_KEY = named("MY_EMPLOYEE_PREFERENCES_KEY")
-    val MY_ORGANIZATION_PREFERENCES_KEY = named("MY_ORGANIZATION_PREFERENCES_KEY")
+    private val REFRESH_TOKEN_PREFERENCE_KEY = named("REFRESH_TOKEN_PREFERENCE_KEY")
+    private val LOGIN_PREFERENCE_KEY = named("LOGIN_PREFERENCE_KEY")
+    private val MY_EMPLOYEE_PREFERENCES_KEY = named("MY_EMPLOYEE_PREFERENCES_KEY")
+    private val MY_ORGANIZATION_PREFERENCES_KEY = named("MY_ORGANIZATION_PREFERENCES_KEY")
+    private val MY_PERMISSIONS_PREFERENCES_KEY = named("MY_ORGANIZATION_PREFERENCES_KEY")
 
     val module = module {
         viewModel(AUTHMAIN_VIEW_MODEL_QUALIFIER) { (args: AuthMainComposeFragmentArgs) ->
@@ -39,6 +40,8 @@ object AuthMainModule {
                 loginPreferencesKey = get(LOGIN_PREFERENCE_KEY),
                 myEmployeePreferencesKey = get(MY_EMPLOYEE_PREFERENCES_KEY),
                 myOrganizationPreferencesKey = get(MY_ORGANIZATION_PREFERENCES_KEY),
+                myPermissionsPreferencesKey = get(MY_PERMISSIONS_PREFERENCES_KEY),
+                moshi = get()
             )
         }
 

@@ -6,15 +6,17 @@ import androidx.datastore.preferences.core.edit
 import com.itrocket.token_auth.AuthCredentials
 import com.itrocket.union.authMain.data.mapper.toAuthCredentials
 import com.itrocket.union.authMain.data.mapper.toAuthDomain
-import com.itrocket.union.authMain.data.mapper.toAuthJwtRequest
 import com.itrocket.union.authMain.data.mapper.toAuthJwtRequestV2
 import com.itrocket.union.authMain.data.mapper.toMyConfigDomain
 import com.itrocket.union.authMain.domain.dependencies.AuthMainRepository
 import com.itrocket.union.authMain.domain.entity.AuthCredsDomain
 import com.itrocket.union.authMain.domain.entity.AuthDomain
 import com.itrocket.union.authMain.domain.entity.MyConfigDomain
+import com.itrocket.union.authMain.domain.entity.MyConfigPermission
 import com.itrocket.union.network.InvalidNetworkDataException
-import kotlin.math.log
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
@@ -23,8 +25,8 @@ import org.koin.core.component.inject
 import org.openapitools.client.apis.ExtractMyUserInformationControllerApi
 import org.openapitools.client.apis.JwtAuthControllerApi
 import org.openapitools.client.custom_api.AuthApi
-import org.openapitools.client.models.GetMyPermissionsResponseV2
 import org.openapitools.client.models.RefreshJwtRequest
+import java.lang.reflect.Type
 
 class AuthMainRepositoryImpl(
     private val api: AuthApi,
@@ -35,6 +37,8 @@ class AuthMainRepositoryImpl(
     private val loginPreferencesKey: Preferences.Key<String>,
     private val myOrganizationPreferencesKey: Preferences.Key<String>,
     private val myEmployeePreferencesKey: Preferences.Key<String>,
+    private val myPermissionsPreferencesKey: Preferences.Key<String>,
+    private val moshi: Moshi
 ) : AuthMainRepository, KoinComponent {
 
     private val myUserInformationControllerApi: ExtractMyUserInformationControllerApi by inject()
@@ -108,17 +112,42 @@ class AuthMainRepositoryImpl(
 
     override suspend fun saveMyConfig(config: MyConfigDomain?) {
         dataStore.edit { preferences ->
-            preferences[myOrganizationPreferencesKey] = config?.organizationId.orEmpty()
-            preferences[myEmployeePreferencesKey] = config?.employeeId.orEmpty()
+            config?.organizationId?.let {
+                preferences[myOrganizationPreferencesKey] = it
+            }
+            config?.employeeId?.let {
+                preferences[myEmployeePreferencesKey] = it
+            }
+            config?.permissions?.let {
+                val type: Type =
+                    Types.newParameterizedType(List::class.java, MyConfigPermission::class.java)
+                val jsonAdapter: JsonAdapter<List<MyConfigPermission>> = moshi.adapter(type)
+
+                val permissionsString = jsonAdapter.toJson(it)
+                preferences[myPermissionsPreferencesKey] = permissionsString
+            }
         }
     }
 
     override suspend fun getMyPreferencesConfig(): MyConfigDomain {
         val organizationId = dataStore.data.map { it[myOrganizationPreferencesKey] }.firstOrNull()
         val employeeId = dataStore.data.map { it[myEmployeePreferencesKey] }.firstOrNull()
+        val permissionsString = dataStore.data.map { it[myPermissionsPreferencesKey] }.firstOrNull()
+
+        val type: Type =
+            Types.newParameterizedType(List::class.java, MyConfigPermission::class.java)
+        val jsonAdapter: JsonAdapter<List<MyConfigPermission>> = moshi.adapter(type)
+
+        val permissions = if (permissionsString != null) {
+            jsonAdapter.fromJson(permissionsString)
+        } else {
+            null
+        }
+
         return MyConfigDomain(
             organizationId = organizationId,
-            employeeId = employeeId
+            employeeId = employeeId,
+            permissions = permissions
         )
     }
 
