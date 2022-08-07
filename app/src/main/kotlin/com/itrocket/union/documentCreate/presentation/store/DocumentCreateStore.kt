@@ -20,6 +20,7 @@ import com.itrocket.union.location.presentation.store.LocationArguments
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.reserves.presentation.store.ReservesArguments
@@ -27,6 +28,8 @@ import com.itrocket.union.selectCount.presentation.store.SelectCountArguments
 import com.itrocket.union.selectCount.presentation.store.SelectCountResult
 import com.itrocket.union.selectCount.presentation.view.SelectCountComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsArguments
+import com.itrocket.union.structural.presentation.store.StructuralArguments
+import com.itrocket.union.structural.presentation.store.StructuralResult
 
 interface DocumentCreateStore :
     Store<DocumentCreateStore.Intent, DocumentCreateStore.State, DocumentCreateStore.Label> {
@@ -57,6 +60,7 @@ interface DocumentCreateStore :
             Intent()
 
         data class OnLocationChanged(val location: LocationResult) : Intent()
+        data class OnStructuralChanged(val structural: StructuralResult) : Intent()
         data class OnReserveClicked(val reserve: ReservesDomain) : Intent()
     }
 
@@ -81,6 +85,14 @@ interface DocumentCreateStore :
             override val directions: NavDirections
                 get() = DocumentCreateComposeFragmentDirections.toLocation(
                     LocationArguments(location = location)
+                )
+        }
+
+        data class ShowStructural(val structural: StructuralParamDomain) : Label(),
+            ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = DocumentCreateComposeFragmentDirections.toStructural(
+                    StructuralArguments(structural = structural)
                 )
         }
 

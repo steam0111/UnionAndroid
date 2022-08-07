@@ -13,6 +13,7 @@ import com.itrocket.union.documents.domain.entity.toUpdateSyncEntity
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.manual.getFilterLocationLastId
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import kotlinx.coroutines.withContext
@@ -86,6 +87,16 @@ class DocumentCreateInteractor(
         val mutableParams = params.toMutableList()
         val locationIndex = params.indexOfFirst { it.type == location.manualType }
         mutableParams[locationIndex] = location.copy(filtered = false)
+        return mutableParams
+    }
+
+    fun changeStructural(
+        params: List<ParamDomain>,
+        structural: StructuralParamDomain
+    ): List<ParamDomain> {
+        val mutableParams = params.toMutableList()
+        val structuralIndex = params.indexOfFirst { it.type == structural.manualType }
+        mutableParams[structuralIndex] = structural.copy(filtered = false)
         return mutableParams
     }
 

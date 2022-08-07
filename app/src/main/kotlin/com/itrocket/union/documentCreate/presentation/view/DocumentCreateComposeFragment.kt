@@ -19,6 +19,8 @@ import com.itrocket.union.selectCount.presentation.store.SelectCountResult
 import com.itrocket.union.selectCount.presentation.view.SelectCountComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 import com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFragment
+import com.itrocket.union.structural.presentation.store.StructuralResult
+import com.itrocket.union.structural.presentation.view.StructuralComposeFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -76,6 +78,17 @@ class DocumentCreateComposeFragment :
                     (it as LocationResult?)?.let {
                         accept(
                             DocumentCreateStore.Intent.OnLocationChanged(it)
+                        )
+                    }
+                }
+            ),
+            FragmentResult(
+                resultCode = StructuralComposeFragment.STRUCTURAL_RESULT_CODE,
+                resultLabel = StructuralComposeFragment.STRUCTURAL_RESULT,
+                resultAction = {
+                    (it as StructuralResult?)?.let {
+                        accept(
+                            DocumentCreateStore.Intent.OnStructuralChanged(it)
                         )
                     }
                 }

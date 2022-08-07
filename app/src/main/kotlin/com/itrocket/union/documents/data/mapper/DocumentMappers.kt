@@ -15,6 +15,7 @@ import com.itrocket.union.location.data.mapper.toLocationDomain
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.reserves.data.mapper.map
 
 fun List<DocumentSyncEntity>.map(): List<DocumentDomain> = map {
@@ -139,7 +140,7 @@ private fun getAccountingObjectParams(
         types = type.manualTypes,
         manualType = ManualType.ACTION_BASE
     )
-
+    params.add(StructuralParamDomain(structurals = listOf()))
     return params
 }
 

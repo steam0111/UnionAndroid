@@ -294,6 +294,9 @@
         <action
             android:id="@+id/to_reserves"
             app:destination="@id/reserves" />
+        <action
+            android:id="@+id/to_structural"
+            app:destination="@id/structural" />
         <argument
             android:name="DocumentCreateArguments"
             app:argType="com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments" />
@@ -491,4 +494,14 @@
         android:id="@+id/chooseAction"
         android:name="com.itrocket.union.chooseAction.presentation.view.ChooseActionComposeFragment"
         android:label="ChooseAction" />
+
+    <fragment
+        android:id="@+id/structural"
+        android:name="com.itrocket.union.structural.presentation.view.StructuralComposeFragment"
+        android:label="Structural">
+
+        <argument
+            android:name="StructuralArguments"
+            app:argType="com.itrocket.union.structural.presentation.store.StructuralArguments" />
+    </fragment>
 </navigation>

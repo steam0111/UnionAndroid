@@ -37,7 +37,9 @@ class SyncRepository(
     private val actionRemainsRecordDao: ActionRemainsRecordDao,
     private val inventoryRecordDao: InventoryRecordDao,
     private val actionBaseDao: ActionBaseDao,
-    private val syncDao: NetworkSyncDao
+    private val syncDao: NetworkSyncDao,
+    private val structuralDao: StructuralDao,
+    private val structuralPathDao: StructuralPathDao
 ) {
     suspend fun clearDataBeforeDownload() {
         inventoryDao.clearAll()
@@ -211,6 +213,16 @@ class SyncRepository(
             syncControllerApi,
             moshi,
             ::actionBasesDbSaver
+        ),
+        StructuralSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::structuralsDbSaver
+        ),
+        StructuralPathSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::structuralPathDbSaver
         )
     ).associateBy {
         it.id to it.table
@@ -401,6 +413,10 @@ class SyncRepository(
         locationDao.insertAll(objects.map { it.toLocationDb() })
     }
 
+    private suspend fun structuralsDbSaver(objects: List<StructuralUnitDtoV2>) {
+        structuralDao.insertAll(objects.map { it.toStructuralDb() })
+    }
+
     private suspend fun locationTypesDbSaver(objects: List<LocationsTypeDtoV2>) {
         locationDao.insertAllLocationTypes(objects.map { it.toLocationTypeDb() })
     }
@@ -544,6 +560,12 @@ class SyncRepository(
     private suspend fun locationPathDbSaver(objects: List<LocationPathDto>) {
         locationPathDao.insertAll(
             objects.map { it.toLocationPathDb() }
+        )
+    }
+
+    private suspend fun structuralPathDbSaver(objects: List<StructuralUnitPathDtoV2>) {
+        structuralPathDao.insertAll(
+            objects.map { it.toStructuralPathDb() }
         )
     }
 
