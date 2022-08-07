@@ -105,7 +105,7 @@ fun StepBottomBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(white)
-            .padding(vertical = 16.dp, horizontal = 48.dp),
+            .padding(vertical = 16.dp, horizontal = AppTheme.dimens.auth_container_horizontal),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IndicatorWithText(
