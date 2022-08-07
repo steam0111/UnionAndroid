@@ -23,6 +23,7 @@ import com.itrocket.union.employeeDetail.presentation.view.EmployeeDetailScreenP
 import com.itrocket.union.employees.presentation.view.EmployeeScreenPreview
 import com.itrocket.union.equipmentTypeDetail.presentation.view.EquipmentTypeDetailScreenPreview
 import com.itrocket.union.equipmentTypes.presentation.view.EquipmentTypesScreenPreview
+import com.itrocket.union.filter.presentation.view.FilterScreenPreview
 import com.itrocket.union.identify.presentation.view.IdentifyScreenPreview
 import com.itrocket.union.inventories.presentation.view.InventoriesScreenPreview
 import com.itrocket.union.inventory.presentation.view.InventoryScreenPreview
