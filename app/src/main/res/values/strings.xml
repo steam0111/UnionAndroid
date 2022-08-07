@@ -92,6 +92,7 @@
     <string name="manual_organization">Организация</string>
     <string name="manual_mol">Ответственный</string>
     <string name="manual_location">Местоположение</string>
+    <string name="manual_structural">Подразделение</string>
     <string name="manual_exploiting">Эксплуатирующий</string>
     <string name="manual_status">Статус</string>
     <string name="manual_date">Дата заявки</string>
@@ -157,6 +158,11 @@
     <string name="location_level">Уровень местоположения</string>
     <string name="location_select_place">Выберите %s</string>
     <string name="location_hint">Введите запрос</string>
+
+    <!-- Structural -->
+    <string name="structural_level">Уровень подразделения</string>
+    <string name="structural_select_structural">Выберите %s</string>
+    <string name="structural_hint">Введите запрос</string>
 
     <!-- Reserves -->
     <string name="reserves_title">Запасы</string>

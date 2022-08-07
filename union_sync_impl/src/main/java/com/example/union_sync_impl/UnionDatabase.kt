@@ -28,6 +28,8 @@ import com.example.union_sync_impl.dao.ProviderDao
 import com.example.union_sync_impl.dao.ReceptionItemCategoryDao
 import com.example.union_sync_impl.dao.RegionDao
 import com.example.union_sync_impl.dao.ReserveDao
+import com.example.union_sync_impl.dao.StructuralDao
+import com.example.union_sync_impl.dao.StructuralPathDao
 import com.example.union_sync_impl.entity.AccountingObjectDb
 import com.example.union_sync_impl.entity.AccountingObjectStatusDb
 import com.example.union_sync_impl.entity.ActionBaseDb
@@ -54,6 +56,8 @@ import com.example.union_sync_impl.entity.ReserveDb
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationPathDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
+import com.example.union_sync_impl.entity.structural.StructuralDb
+import com.example.union_sync_impl.entity.structural.StructuralPathDb
 import com.example.union_sync_impl.utils.Converters
 
 @Database(
@@ -83,8 +87,10 @@ import com.example.union_sync_impl.utils.Converters
         ActionRecordDb::class,
         ActionRemainsRecordDb::class,
         InventoryRecordDb::class,
-        ActionBaseDb::class
-    ], version = 86
+        ActionBaseDb::class,
+        StructuralPathDb::class,
+        StructuralDb::class
+    ], version = 87
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {
@@ -113,4 +119,6 @@ abstract class UnionDatabase : RoomDatabase() {
     abstract fun actionRemainsRecordDao(): ActionRemainsRecordDao
     abstract fun inventoryRecordDao(): InventoryRecordDao
     abstract fun actionBaseDao(): ActionBaseDao
+    abstract fun structuralDao(): StructuralDao
+    abstract fun structuralPathDao(): StructuralPathDao
 }

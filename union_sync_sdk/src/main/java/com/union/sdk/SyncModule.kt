@@ -25,6 +25,7 @@ import com.example.union_sync_api.data.ProducerSyncApi
 import com.example.union_sync_api.data.ReceptionItemCategorySyncApi
 import com.example.union_sync_api.data.RegionSyncApi
 import com.example.union_sync_api.data.ReserveSyncApi
+import com.example.union_sync_api.data.StructuralSyncApi
 import com.example.union_sync_impl.UnionDatabase
 import com.example.union_sync_impl.data.AccountingObjectStatusSyncApiImpl
 import com.example.union_sync_impl.data.AccountingObjectSyncApiImpl
@@ -50,6 +51,7 @@ import com.example.union_sync_impl.data.ProducerSyncApiImpl
 import com.example.union_sync_impl.data.ReceptionCategoryItemSyncApiImpl
 import com.example.union_sync_impl.data.RegionSyncApiImpl
 import com.example.union_sync_impl.data.ReserveSyncApiImpl
+import com.example.union_sync_impl.data.StructuralSyncApiImpl
 import com.example.union_sync_impl.sync.SyncRepository
 import org.koin.dsl.module
 
@@ -121,6 +123,11 @@ object SyncModule {
                 locationSyncApi = get()
             )
         }
+        factory<StructuralSyncApi> {
+            StructuralSyncApiImpl(
+                structuralDao = get()
+            )
+        }
         factory<LocationSyncApi> {
             LocationSyncApiImpl(
                 locationDao = get(),
@@ -182,6 +189,8 @@ object SyncModule {
         }
         factory {
             SyncRepository(
+                get(),
+                get(),
                 get(),
                 get(),
                 get(),
@@ -285,6 +294,12 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().actionBaseDao()
+        }
+        factory {
+            get<UnionDatabase>().structuralDao()
+        }
+        factory {
+            get<UnionDatabase>().structuralPathDao()
         }
         factory<ManageSyncDataApi> {
             ManageSyncDataImpl(

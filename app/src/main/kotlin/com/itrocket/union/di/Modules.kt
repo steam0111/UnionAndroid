@@ -53,6 +53,7 @@ import com.itrocket.union.token.TokenModule
 import com.union.sdk.SyncModule
 import com.itrocket.union.chooseAction.ChooseActionModule
 import com.itrocket.union.selectCount.SelectCountModule
+import com.itrocket.union.structural.StructuralModule
 
 object Modules {
 
@@ -113,6 +114,7 @@ object Modules {
         EquipmentTypeDetailModule.module,
         SearchModule.module,
         ChooseActionModule.module,
-        SelectCountModule.module
+        SelectCountModule.module,
+        StructuralModule.module
     )
 }

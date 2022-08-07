@@ -16,12 +16,6 @@ class LocationInteractor(
             repository.getPlaceList(selectedPlace, searchText)
         }
 
-    fun getPrevPlaceScheme(selectedPlaceScheme: List<LocationDomain>): List<LocationDomain> {
-        val prevSelectedPlaceScheme = selectedPlaceScheme.toMutableList()
-        prevSelectedPlaceScheme.removeLastOrNull()
-        return prevSelectedPlaceScheme
-    }
-
     fun isNewPlaceList(newList: List<LocationDomain>, oldList: List<LocationDomain>): Boolean {
         return newList.isNotEmpty() && !newList.containsAll(oldList)
     }
@@ -37,18 +31,6 @@ class LocationInteractor(
         }
         places.resolveItem(selectedPlace)
         return places
-    }
-
-    fun placeSchemaToString(schema: List<LocationDomain>): String {
-        val location = StringBuilder()
-        schema.forEachIndexed { index, locationDomain ->
-            if (index < schema.lastIndex) {
-                location.append("${locationDomain.value}, ")
-            } else {
-                location.append(locationDomain.value)
-            }
-        }
-        return location.trim().toString()
     }
 
     fun removeLastPlace(

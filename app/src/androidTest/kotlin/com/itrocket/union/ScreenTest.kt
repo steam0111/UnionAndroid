@@ -23,6 +23,7 @@ import com.itrocket.union.employeeDetail.presentation.view.EmployeeDetailScreenP
 import com.itrocket.union.employees.presentation.view.EmployeeScreenPreview
 import com.itrocket.union.equipmentTypeDetail.presentation.view.EquipmentTypeDetailScreenPreview
 import com.itrocket.union.equipmentTypes.presentation.view.EquipmentTypesScreenPreview
+import com.itrocket.union.filter.presentation.view.FilterScreenPreview
 import com.itrocket.union.inventories.presentation.view.InventoriesScreenPreview
 import com.itrocket.union.inventory.presentation.view.InventoryScreenPreview
 import com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateScreenPreview
@@ -40,6 +41,7 @@ import com.itrocket.union.regions.presentation.view.RegionScreenPreview
 import com.itrocket.union.reserveDetail.presentation.view.ReserveDetailScreenPreview
 import com.itrocket.union.reserves.presentation.view.ReservesScreenPreview
 import com.itrocket.union.serverConnect.presentation.view.ServerConnectScreenPreview
+import com.itrocket.union.structural.presentation.view.StructuralScreenPreview
 import com.itrocket.union.switcher.presentation.view.SwitcherScreenPreview
 import com.karumi.shot.ScreenshotTest
 import org.junit.Rule
@@ -302,6 +304,13 @@ class ScreensTest : ScreenshotTest {
     fun `EquipmentTypeDetail`() {
         takeScreenShot {
             EquipmentTypeDetailScreenPreview()
+        }
+    }
+
+    @Test
+    fun `Structural`() {
+        takeScreenShot {
+            StructuralScreenPreview()
         }
     }
 }

@@ -2,6 +2,7 @@ package com.itrocket.union.manual
 
 import android.os.Parcelable
 import com.itrocket.union.location.domain.entity.LocationDomain
+import com.itrocket.union.structural.domain.entity.StructuralDomain
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -102,5 +103,23 @@ data class LocationParamDomain(
 
     override fun toInitialState(): LocationParamDomain {
         return LocationParamDomain()
+    }
+}
+
+@Parcelize
+data class StructuralParamDomain(
+    val filtered: Boolean = true,
+    val structurals: List<StructuralDomain> = emptyList(),
+    val manualType: ManualType = ManualType.STRUCTURAL
+) : Parcelable,
+    ParamDomain(
+        id = structurals.lastOrNull()?.id.toString(),
+        value = structurals.joinToString(", ") { it.value },
+        type = manualType,
+        isFilter = filtered
+    ) {
+
+    override fun toInitialState(): StructuralParamDomain {
+        return StructuralParamDomain()
     }
 }
