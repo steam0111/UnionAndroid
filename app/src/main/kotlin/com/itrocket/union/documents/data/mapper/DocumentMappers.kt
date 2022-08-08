@@ -1,12 +1,10 @@
 package com.itrocket.union.documents.data.mapper
 
 import com.example.union_sync_api.entity.ActionBaseSyncEntity
-import com.example.union_sync_api.entity.BranchSyncEntity
-import com.example.union_sync_api.entity.DepartmentSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
-import com.example.union_sync_api.entity.OrganizationSyncEntity
+import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.itrocket.union.accountingObjects.data.mapper.map
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
@@ -17,6 +15,7 @@ import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.reserves.data.mapper.map
+import com.itrocket.union.structural.data.mapper.toStructuralDomain
 
 fun List<DocumentSyncEntity>.map(): List<DocumentDomain> = map {
     it.map()
@@ -35,14 +34,11 @@ fun DocumentSyncEntity.map(): DocumentDomain =
         params = getParams(
             mol = mol,
             exploiting = exploiting,
-            organization = organizationSyncEntity,
             documentType = documentType,
             locationFrom = locationFrom,
             locationTo = locationTo,
-            departmentTo = departmentTo,
-            departmentFrom = departmentFrom,
-            branch = branch,
-            actionBase = actionBase
+            actionBase = actionBase,
+            structural = structuralSyncEntity
         ),
         documentStatusId = documentStatusId,
         userInserted = userInserted,
@@ -52,25 +48,19 @@ fun DocumentSyncEntity.map(): DocumentDomain =
 fun getParams(
     mol: EmployeeSyncEntity? = null,
     exploiting: EmployeeSyncEntity? = null,
-    organization: OrganizationSyncEntity? = null,
+    structural: StructuralSyncEntity? = null,
     documentType: String,
     locationFrom: LocationSyncEntity? = null,
     locationTo: LocationSyncEntity? = null,
-    departmentFrom: DepartmentSyncEntity? = null,
-    departmentTo: DepartmentSyncEntity? = null,
-    branch: BranchSyncEntity? = null,
     actionBase: ActionBaseSyncEntity? = null
 ): List<ParamDomain> {
     return getAccountingObjectParams(
         mol = mol,
         exploiting = exploiting,
-        organization = organization,
+        structural = structural,
         documentType = documentType,
         locationFrom = locationFrom,
         locationTo = locationTo,
-        departmentFrom = departmentFrom,
-        departmentTo = departmentTo,
-        branch = branch,
         actionBase = actionBase
     )
 }
@@ -78,32 +68,22 @@ fun getParams(
 private fun getAccountingObjectParams(
     mol: EmployeeSyncEntity?,
     exploiting: EmployeeSyncEntity?,
-    organization: OrganizationSyncEntity?,
+    structural: StructuralSyncEntity?,
     documentType: String,
     locationFrom: LocationSyncEntity? = null,
     locationTo: LocationSyncEntity? = null,
-    departmentFrom: DepartmentSyncEntity? = null,
-    departmentTo: DepartmentSyncEntity? = null,
-    branch: BranchSyncEntity? = null,
     actionBase: ActionBaseSyncEntity? = null
 ): List<ParamDomain> {
     val params = mutableListOf<ParamDomain>()
     val type = DocumentTypeDomain.valueOf(documentType)
 
-    addOrganizationParam(params = params, organization = organization)
+    addStructuralParam(
+        params = params,
+        types = type.manualTypes,
+        manualType = ManualType.STRUCTURAL,
+        destinations = listOfNotNull(structural)
+    )
     addMolParam(params = params, mol = mol)
-    addDepartmentParam(
-        params = params,
-        department = departmentFrom,
-        types = type.manualTypes,
-        manualType = ManualType.DEPARTMENT_FROM
-    )
-    addDepartmentParam(
-        params = params,
-        department = departmentTo,
-        types = type.manualTypes,
-        manualType = ManualType.DEPARTMENT_TO
-    )
     addExploitingParam(
         params = params,
         exploiting = exploiting,
@@ -128,33 +108,29 @@ private fun getAccountingObjectParams(
         manualType = ManualType.LOCATION_FROM,
         destinations = listOfNotNull(locationFrom)
     )
-    addBranchParam(
-        params = params,
-        branch = branch,
-        types = type.manualTypes,
-        manualType = ManualType.BRANCH
-    )
     addActionBaseParam(
         params = params,
         actionBase = actionBase,
         types = type.manualTypes,
         manualType = ManualType.ACTION_BASE
     )
-    params.add(StructuralParamDomain(structurals = listOf()))
     return params
 }
 
-private fun addOrganizationParam(
+private fun addStructuralParam(
     params: MutableList<ParamDomain>,
-    organization: OrganizationSyncEntity?
+    types: List<ManualType>,
+    manualType: ManualType,
+    destinations: List<StructuralSyncEntity>?,
 ) {
-    params.add(
-        ParamDomain(
-            organization?.id.orEmpty(),
-            organization?.name.orEmpty(),
-            ManualType.ORGANIZATION
+    if (types.contains(manualType)) {
+        val structuralParam = StructuralParamDomain(
+            manualType = manualType,
+            structurals = destinations?.map { it.toStructuralDomain() }.orEmpty(),
+            filtered = false
         )
-    )
+        params.add(structuralParam)
+    }
 }
 
 private fun addMolParam(params: MutableList<ParamDomain>, mol: EmployeeSyncEntity?) {
@@ -164,28 +140,6 @@ private fun addMolParam(params: MutableList<ParamDomain>, mol: EmployeeSyncEntit
         ""
     }
     params.add(ParamDomain(mol?.id.orEmpty(), molValue, ManualType.MOL))
-}
-
-private fun addDepartmentParam(
-    params: MutableList<ParamDomain>,
-    department: DepartmentSyncEntity?,
-    types: List<ManualType>,
-    manualType: ManualType
-) {
-    if (!types.contains(manualType)) return
-    val departmentValue = department?.name.orEmpty()
-    params.add(ParamDomain(department?.id.orEmpty(), departmentValue, manualType))
-}
-
-private fun addBranchParam(
-    params: MutableList<ParamDomain>,
-    branch: BranchSyncEntity?,
-    types: List<ManualType>,
-    manualType: ManualType
-) {
-    if (!types.contains(manualType)) return
-    val departmentValue = branch?.name.orEmpty()
-    params.add(ParamDomain(branch?.id.orEmpty(), departmentValue, manualType))
 }
 
 private fun addActionBaseParam(

@@ -9,13 +9,13 @@ interface InventorySyncApi {
     suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): String
     suspend fun getInventories(
         textQuery: String? = null,
-        organizationId: String? = null,
+        structuralId: String? = null,
         molId: String? = null
     ): Flow<List<InventorySyncEntity>>
 
     suspend fun getInventoriesCount(
         textQuery: String? = null,
-        organizationId: String? = null,
+        structuralId: String? = null,
         molId: String? = null
     ): Long
 

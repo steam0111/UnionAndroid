@@ -20,16 +20,15 @@ fun RemainsDtoV2.toReserveDb(): ReserveDb {
         orderId = orderId,
         nomenclatureId = nomenclatureId,
         nomenclatureGroupId = nomenclatureGroupId,
-        businessUnitId = businessUnitId,
         name = name.orEmpty(),
-        count = count?.toLong(),
+        count = count,
         receptionItemCategoryId = receptionItemCategoryId,
-        structuralSubdivisionId = structuralSubdivisionId,
         receptionDocumentNumber = receptionDocumentNumber,
         unitPrice = unitPrice,
         updateDate = System.currentTimeMillis(),
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        structuralId = structuralUnitId
     )
 }
 
@@ -42,12 +41,10 @@ fun ReserveDb.toRemainsDtoV2(): RemainsDtoV2 {
         orderId = orderId,
         nomenclatureId = nomenclatureId,
         nomenclatureGroupId = nomenclatureGroupId,
-        businessUnitId = businessUnitId,
         name = name.orEmpty(),
         count = count,
         dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
         receptionItemCategoryId = receptionItemCategoryId,
-        structuralSubdivisionId = structuralSubdivisionId,
         receptionDocumentNumber = receptionDocumentNumber,
         unitPrice = unitPrice,
         deleted = false,
@@ -66,11 +63,10 @@ fun ReserveSyncEntity.toReserveDb(): ReserveDb {
         orderId = orderId,
         nomenclatureId = nomenclatureId,
         nomenclatureGroupId = nomenclatureGroupId,
-        businessUnitId = businessUnitId,
+        structuralId = structuralId,
         name = name,
         count = count,
         receptionItemCategoryId = receptionItemCategoryId,
-        structuralSubdivisionId = structuralSubdivisionId,
         receptionDocumentNumber = receptionDocumentNumber,
         unitPrice = unitPrice,
         updateDate = System.currentTimeMillis(),
@@ -87,11 +83,10 @@ fun ReserveDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?): ReserveSync
         orderId = orderId,
         nomenclatureId = nomenclatureId,
         nomenclatureGroupId = nomenclatureGroupId,
-        businessUnitId = businessUnitId,
+        structuralId = structuralId,
         name = name.orEmpty(),
         count = count,
         receptionItemCategoryId = receptionItemCategoryId,
-        structuralSubdivisionId = structuralSubdivisionId,
         receptionDocumentNumber = receptionDocumentNumber,
         unitPrice = unitPrice,
         locationSyncEntity = locationSyncEntity,
@@ -108,11 +103,10 @@ fun FullReserve.toSyncEntity(): ReserveSyncEntity {
         orderId = reserveDb.orderId,
         nomenclatureId = reserveDb.nomenclatureId,
         nomenclatureGroupId = reserveDb.nomenclatureGroupId,
-        businessUnitId = reserveDb.businessUnitId,
         name = reserveDb.name.orEmpty(),
         count = reserveDb.count,
         receptionItemCategoryId = reserveDb.receptionItemCategoryId,
-        structuralSubdivisionId = reserveDb.structuralSubdivisionId,
+        structuralId = structuralDb?.id,
         receptionDocumentNumber = reserveDb.receptionDocumentNumber,
         unitPrice = reserveDb.unitPrice,
         locationSyncEntity = locationDb?.toLocationSyncEntity(locationTypeDb),
@@ -125,7 +119,6 @@ fun FullReserve.toDetailSyncEntity(): ReserveDetailSyncEntity {
     val locationEntity = locationDb?.toLocationSyncEntity(locationTypeDb)
     return ReserveDetailSyncEntity(
         reserveSyncEntity = reserveDb.toSyncEntity(locationEntity),
-        businessUnitSyncEntity = businessUnitDb?.toSyncEntity(),
         locationSyncEntity = locationEntity,
         locationTypeSyncEntity = locationTypeDb?.toSyncEntity(),
         molSyncEntity = molDb?.toSyncEntity(),
@@ -133,7 +126,7 @@ fun FullReserve.toDetailSyncEntity(): ReserveDetailSyncEntity {
         nomenclatureGroupSyncEntity = nomenclatureGroupDb?.toSyncEntity(),
         orderSyncEntity = orderDb?.toSyncEntity(),
         receptionItemCategorySyncEntity = receptionItemCategoryDb?.toSyncEntity(),
-        structuralSubdivisionSyncEntity = structuralSubdivisionDb?.toSyncEntity(),
+        structuralSyncEntity = structuralDb?.toStructuralSyncEntity(),
     )
 }
 

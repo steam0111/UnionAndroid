@@ -1,9 +1,11 @@
 package org.openapitools.client.apis
 
 
-import org.openapitools.client.models.GetAllResponseV2
+import retrofit2.http.*
 import retrofit2.Response
-import retrofit2.http.GET
+import okhttp3.RequestBody
+
+import org.openapitools.client.models.GetAllResponseV2
 
 interface EntityModelControllerApi {
     /**

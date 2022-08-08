@@ -9,12 +9,10 @@ import com.example.union_sync_impl.utils.isEquals
 import com.example.union_sync_impl.utils.more
 
 fun sqlAccountingObjectQuery(
-    organizationId: String? = null,
     exploitingId: String? = null,
     rfids: List<String>? = null,
     barcode: String? = null,
     molId: String? = null,
-    departmentId: String? = null,
     producerId: String? = null,
     equipmentTypeId: String? = null,
     providerId: String? = null,
@@ -25,12 +23,18 @@ fun sqlAccountingObjectQuery(
     isFilterCount: Boolean = false,
     limit: Long? = null,
     offset: Long? = null,
-    locationIds: List<String?>? = null
+    locationIds: List<String?>? = null,
+    structuralIds: List<String?>? = null
 ): SimpleSQLiteQuery {
     val mainQuery = if (isFilterCount) {
         "SELECT COUNT(*) FROM accounting_objects"
     } else {
         "SELECT accounting_objects.*," +
+                "" +
+                "structural.id AS structural_id, " +
+                "structural.catalogItemName AS structural_catalogItemName, " +
+                "structural.name AS structural_name, " +
+                "structural.parentId AS structural_parentId, " +
                 "" +
                 "location.id AS locations_id, " +
                 "location.catalogItemName AS locations_catalogItemName, " +
@@ -39,16 +43,16 @@ fun sqlAccountingObjectQuery(
                 "location.locationTypeId AS locations_locationTypeId " +
                 "" +
                 "FROM accounting_objects " +
-                "LEFT JOIN location ON accounting_objects.locationId = location.id"
+                "LEFT JOIN location ON accounting_objects.locationId = location.id " +
+                "LEFT JOIN structural ON accounting_objects.structuralId = structural.id "
     }
 
     val query = mainQuery.getAccountingObjectsFilterPartQuery(
-        organizationId = organizationId,
         exploitingId = exploitingId,
         producerId = producerId,
         providerId = providerId,
         equipmentTypeId = equipmentTypeId,
-        departmentId = departmentId,
+        structuralIds = structuralIds,
         molId = molId,
         rfids = rfids,
         barcode = barcode,
@@ -66,12 +70,10 @@ fun sqlAccountingObjectQuery(
 }
 
 private fun String.getAccountingObjectsFilterPartQuery(
-    organizationId: String? = null,
     exploitingId: String? = null,
     rfids: List<String>? = null,
     barcode: String? = null,
     molId: String? = null,
-    departmentId: String? = null,
     producerId: String? = null,
     equipmentTypeId: String? = null,
     providerId: String? = null,
@@ -79,14 +81,12 @@ private fun String.getAccountingObjectsFilterPartQuery(
     textQuery: String? = null,
     accountingObjectsIds: List<String>? = null,
     updateDate: Long? = null,
-    locationIds: List<String?>? = null
+    locationIds: List<String?>? = null,
+    structuralIds: List<String?>? = null
 ): String = addFilters(
     sqlTableFilters = SqlTableFilters(
         tableName = "accounting_objects",
         filter = buildList {
-            organizationId?.let {
-                add("organizationId" isEquals organizationId)
-            }
             exploitingId?.let {
                 add("exploitingId" isEquals exploitingId)
             }
@@ -101,9 +101,6 @@ private fun String.getAccountingObjectsFilterPartQuery(
             }
             molId?.let {
                 add("molId" isEquals molId)
-            }
-            departmentId?.let {
-                add("departmentId" isEquals departmentId)
             }
             producerId?.let {
                 add("producerId" isEquals producerId)
@@ -125,6 +122,9 @@ private fun String.getAccountingObjectsFilterPartQuery(
             }
             locationIds?.let {
                 add("locationId" isEquals locationIds)
+            }
+            structuralIds?.let {
+                add("structuralId" isEquals structuralIds)
             }
         }
     )

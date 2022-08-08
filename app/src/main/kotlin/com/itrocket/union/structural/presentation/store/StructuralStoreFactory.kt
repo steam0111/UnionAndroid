@@ -9,6 +9,7 @@ import com.itrocket.union.structural.domain.StructuralInteractor
 import com.itrocket.union.structural.domain.entity.StructuralDomain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.core.base.BaseExecutor
+import com.itrocket.union.R
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.search.SearchManager
@@ -27,7 +28,7 @@ class StructuralStoreFactory(
         object : StructuralStore,
             Store<StructuralStore.Intent, StructuralStore.State, StructuralStore.Label> by storeFactory.create(
                 name = "StructuralStore",
-                initialState = StructuralStore.State(),
+                initialState = StructuralStore.State(isCanEdit = structuralArguments.isCanEdit),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
@@ -53,6 +54,7 @@ class StructuralStoreFactory(
                         )
                     )
                 dispatch(Result.StructuralValues(structuralList))
+                changeHint(structuralList)
             }
             dispatch(Result.Loading(false))
             searchManager.listenSearch {
@@ -125,8 +127,8 @@ class StructuralStoreFactory(
                     )
                 )
             )
+            changeHint(listOf())
             delay(300) //Задержка для того чтобы успела отработать анимация радио баттона выбора местоположения
-
             dispatch(Result.Loading(true))
             catchException {
                 val newStructuralValues =
@@ -137,6 +139,7 @@ class StructuralStoreFactory(
                     )
                 ) {
                     dispatch(Result.StructuralValues(newStructuralValues))
+                    changeHint(newStructuralValues)
                 }
             }
             dispatch(Result.SearchText(""))
@@ -158,9 +161,18 @@ class StructuralStoreFactory(
                     getState().selectStructuralScheme.lastOrNull()
                 )
                 dispatch(Result.StructuralValues(structuralList))
+                changeHint(structuralList)
             }
             dispatch(Result.SearchText(""))
             dispatch(Result.Loading(false))
+        }
+
+        private fun changeHint(structuralList: List<StructuralDomain>) {
+            dispatch(
+                Result.IsLevelHintShow(
+                    structuralList.isNotEmpty()
+                )
+            )
         }
 
         override fun handleError(throwable: Throwable) {
@@ -171,9 +183,12 @@ class StructuralStoreFactory(
 
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
-        data class SelectStructuralScheme(val selectStructuralScheme: List<StructuralDomain>) : Result()
+        data class SelectStructuralScheme(val selectStructuralScheme: List<StructuralDomain>) :
+            Result()
+
         data class StructuralValues(val structuralValues: List<StructuralDomain>) : Result()
         data class SearchText(val searchText: String) : Result()
+        data class IsLevelHintShow(val isLevelHintShow: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<StructuralStore.State, Result> {
@@ -183,6 +198,7 @@ class StructuralStoreFactory(
                 is Result.SelectStructuralScheme -> copy(selectStructuralScheme = result.selectStructuralScheme)
                 is Result.StructuralValues -> copy(structuralValues = result.structuralValues)
                 is Result.SearchText -> copy(searchText = result.searchText)
+                is Result.IsLevelHintShow -> copy(isLevelHintShow = result.isLevelHintShow)
             }
     }
 }

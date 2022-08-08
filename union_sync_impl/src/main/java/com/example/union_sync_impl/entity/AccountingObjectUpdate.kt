@@ -10,8 +10,7 @@ data class AccountingObjectUpdate(
     val exploitingId: String?,
     val locationId: String?,
     val updateDate: Long,
-    val departmentId: String?,
     val molId: String?,
-    val branchId: String?,
-    val userUpdated: String?
+    val userUpdated: String?,
+    val structuralId: String?
 )

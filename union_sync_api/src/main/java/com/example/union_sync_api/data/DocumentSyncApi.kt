@@ -12,7 +12,7 @@ interface DocumentSyncApi {
         textQuery: String? = null,
         molId: String? = null,
         exploitingId: String?,
-        organizationId: String? = null
+        structuralId: String? = null
     ): Long
 
     suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): String
@@ -21,7 +21,7 @@ interface DocumentSyncApi {
         textQuery: String? = null,
         molId: String? = null,
         exploitingId: String?,
-        organizationId: String? = null
+        structuralId: String? = null
     ): Flow<List<DocumentSyncEntity>>
 
     suspend fun getDocumentById(id: String): DocumentSyncEntity

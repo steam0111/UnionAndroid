@@ -74,13 +74,9 @@
     <string name="main_write_off">Списание</string>
     <string name="nomenclature_group">Ном. группа</string>
     <string name="nomenclature">Номенклатура</string>
-    <string name="organizations">Организации</string>
-    <string name="departments">Подразделения</string>
     <string name="inventories">Инв. ведомости</string>
     <string name="producer">Производители</string>
     <string name="counterparties">Контрагенты</string>
-    <string name="regions">Регионы</string>
-    <string name="branches">Филиалы</string>
     <string name="equipment_types">Типы оборуд.</string>
     <string name="sync">Синхронизация</string>
     <string name="reception_category">Приеная категория</string>
@@ -161,7 +157,7 @@
 
     <!-- Structural -->
     <string name="structural_level">Уровень подразделения</string>
-    <string name="structural_select_structural">Выберите %s</string>
+    <string name="structural_select_structural">Выберите уровень вложенности</string>
     <string name="structural_hint">Введите запрос</string>
 
     <!-- Reserves -->

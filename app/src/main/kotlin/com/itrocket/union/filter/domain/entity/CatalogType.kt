@@ -13,16 +13,7 @@ sealed class CatalogType : Parcelable {
     object Employees : CatalogType()
 
     @Parcelize
-    object Branches : CatalogType()
-
-    @Parcelize
-    object Departments : CatalogType()
-
-    @Parcelize
     object Nomenclatures : CatalogType()
-
-    @Parcelize
-    object Regions : CatalogType()
 
     @Parcelize
     object Reserves : CatalogType()

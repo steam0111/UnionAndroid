@@ -8,9 +8,8 @@ import com.example.union_sync_api.entity.ReserveUpdateSyncEntity
 interface ReserveSyncApi {
 
     suspend fun getAll(
-        organizationId: String? = null,
+        structuralIds: List<String?>? = null,
         molId: String? = null,
-        structuralSubdivisionId: String? = null,
         nomenclatureGroupId: String? = null,
         orderId: String? = null,
         receptionItemCategoryId: String? = null,
@@ -23,9 +22,8 @@ interface ReserveSyncApi {
     suspend fun getById(id: String): ReserveDetailSyncEntity
 
     suspend fun getReservesFilterCount(
-        organizationId: String? = null,
+        structuralIds: List<String?>? = null,
         molId: String? = null,
-        structuralSubdivisionId: String? = null,
         nomenclatureGroupId: String? = null,
         orderId: String? = null,
         receptionItemCategoryId: String? = null,

@@ -20,6 +20,9 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.EmployeeDtoV2
+import org.openapitools.client.models.PersonV2
+
 import com.squareup.moshi.Json
 
 /**

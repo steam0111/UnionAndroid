@@ -20,6 +20,8 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.CreateCommissioningRequestItemV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -27,7 +29,8 @@ import com.squareup.moshi.Json
  *
  * @param responsibleId 
  * @param inventoryNumberTemplateId 
- * @param organizationId 
+ * @param structuralUnitId 
+ * @param code 
  * @param records 
  */
 
@@ -39,8 +42,11 @@ data class CreateCommissioningRequestV2 (
     @Json(name = "inventoryNumberTemplateId")
     val inventoryNumberTemplateId: kotlin.String? = null,
 
-    @Json(name = "organizationId")
-    val organizationId: kotlin.String? = null,
+    @Json(name = "structuralUnitId")
+    val structuralUnitId: kotlin.String? = null,
+
+    @Json(name = "code")
+    val code: kotlin.String? = null,
 
     @Json(name = "records")
     val records: kotlin.collections.List<CreateCommissioningRequestItemV2>? = null

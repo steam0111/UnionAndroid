@@ -29,6 +29,7 @@ import com.squareup.moshi.Json
  * @param findRecordsCount 
  * @param notFindRecordsCount 
  * @param newRecordsCount 
+ * @param byPlanCount 
  */
 
 data class InventoryRecordStatusesV2 (
@@ -40,7 +41,10 @@ data class InventoryRecordStatusesV2 (
     val notFindRecordsCount: kotlin.Long? = null,
 
     @Json(name = "newRecordsCount")
-    val newRecordsCount: kotlin.Long? = null
+    val newRecordsCount: kotlin.Long? = null,
+
+    @Json(name = "byPlanCount")
+    val byPlanCount: kotlin.Long? = null
 
 )
 

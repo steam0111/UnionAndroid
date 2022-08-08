@@ -7,22 +7,6 @@ import com.example.union_sync_impl.entity.FullEmployeeDb
 import org.openapitools.client.models.CustomEmployeeDto
 import org.openapitools.client.models.EmployeeDtoV2
 
-fun CustomEmployeeDto.toEmployeeDb(): EmployeeDb {
-    return EmployeeDb(
-        id = id.orEmpty(),
-        catalogItemName = catalogItemName.orEmpty(),
-        firstname = firstname.orEmpty(),
-        lastname = lastname.orEmpty(),
-        patronymic = patronymic.orEmpty(),
-        number = number.orEmpty(),
-        nfc = nfc,
-        organizationId = organizationId,
-        post = post,
-        statusId = employeeStatusId,
-        updateDate = System.currentTimeMillis()
-    )
-}
-
 fun EmployeeDtoV2.toEmployeeDb(): EmployeeDb {
     return EmployeeDb(
         id = id,
@@ -32,7 +16,7 @@ fun EmployeeDtoV2.toEmployeeDb(): EmployeeDb {
         patronymic = patronymic.orEmpty(),
         number = number.orEmpty(),
         nfc = nfc,
-        organizationId = organizationId,
+        structuralId = structuralUnitId,
         post = post,
         statusId = employeeStatusId,
         updateDate = System.currentTimeMillis()
@@ -43,7 +27,7 @@ fun EmployeeDb.toSyncEntity(): EmployeeSyncEntity {
     return EmployeeSyncEntity(
         id = id,
         catalogItemName = catalogItemName,
-        organizationId = organizationId,
+        structuralId = structuralId,
         firstname = firstname,
         lastname = lastname,
         patronymic = patronymic,
@@ -56,5 +40,5 @@ fun EmployeeDb.toSyncEntity(): EmployeeSyncEntity {
 
 fun FullEmployeeDb.toDetailSyncEntity() = EmployeeDetailSyncEntity(
     employeeDb.toSyncEntity(),
-    organizationDb?.toSyncEntity()
+    structural?.toStructuralSyncEntity()
 )

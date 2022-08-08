@@ -12,7 +12,6 @@ import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectArguments
-import com.itrocket.union.departments.domain.entity.DepartmentDomain
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragmentDirections
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.location.domain.entity.LocationDomain
@@ -73,7 +72,6 @@ interface DocumentCreateStore :
         val selectedPage: Int = 0,
         val isParamsValid: Boolean = false,
         val departureLocation: List<LocationDomain> = emptyList(),
-        val senderDepartment: DepartmentDomain? = null
     )
 
     sealed class Label {
@@ -92,7 +90,7 @@ interface DocumentCreateStore :
             ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = DocumentCreateComposeFragmentDirections.toStructural(
-                    StructuralArguments(structural = structural)
+                    StructuralArguments(structural = structural, isCanEdit = true)
                 )
         }
 

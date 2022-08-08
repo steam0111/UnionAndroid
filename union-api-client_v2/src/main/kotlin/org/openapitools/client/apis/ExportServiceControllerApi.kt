@@ -1,8 +1,9 @@
 package org.openapitools.client.apis
 
 
+import retrofit2.http.*
 import retrofit2.Response
-import retrofit2.http.GET
+import okhttp3.RequestBody
 
 
 interface ExportServiceControllerApi {

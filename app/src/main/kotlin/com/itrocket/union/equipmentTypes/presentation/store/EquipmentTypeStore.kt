@@ -5,9 +5,6 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
-import com.itrocket.union.departmentDetail.presentation.store.DepartmentDetailArguments
-import com.itrocket.union.departments.presentation.store.DepartmentStore
-import com.itrocket.union.departments.presentation.view.DepartmentComposeFragmentDirections
 import com.itrocket.union.equipmentTypeDetail.presentation.store.EquipmentTypeDetailArguments
 import com.itrocket.union.equipmentTypes.domain.entity.EquipmentTypesDomain
 import com.itrocket.union.equipmentTypes.presentation.view.EquipmentTypeComposeFragmentDirections

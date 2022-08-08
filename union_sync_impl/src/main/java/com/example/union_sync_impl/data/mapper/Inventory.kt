@@ -14,7 +14,6 @@ fun InventoryDtoV2.toInventoryDb(): InventoryDb {
                 add(it)
             }
         },
-        organizationId = organizationId,
         employeeId = molId,
         date = getMillisDateFromServerFormat(creationDate.orEmpty()),
         updateDate = System.currentTimeMillis(),
@@ -22,14 +21,15 @@ fun InventoryDtoV2.toInventoryDb(): InventoryDb {
         name = name,
         code = code,
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        structuralId = structuralUnitId
     )
 }
 
 fun InventoryDb.toInventoryDtoV2(): InventoryDtoV2 {
     return InventoryDtoV2(
         locationId = locationIds?.lastOrNull(),
-        organizationId = organizationId.orEmpty(),
+        structuralUnitId = structuralId.orEmpty(),
         molId = employeeId,
         inventoryStateId = inventoryStatus,
         inventoryTypeId = "",
@@ -45,7 +45,6 @@ fun InventoryDb.toInventoryDtoV2(): InventoryDtoV2 {
 fun InventoryCreateSyncEntity.toInventoryDb(id: String): InventoryDb {
     return InventoryDb(
         id = id,
-        organizationId = organizationId,
         employeeId = employeeId,
         date = System.currentTimeMillis(),
         locationIds = locationIds,
@@ -54,14 +53,14 @@ fun InventoryCreateSyncEntity.toInventoryDb(id: String): InventoryDb {
         code = code,
         name = name,
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        structuralId = structuralId
     )
 }
 
 fun InventoryUpdateSyncEntity.toInventoryDb(): InventoryDb {
     return InventoryDb(
         id = id,
-        organizationId = organizationId,
         employeeId = employeeId,
         date = date,
         locationIds = locationIds,
@@ -70,12 +69,13 @@ fun InventoryUpdateSyncEntity.toInventoryDb(): InventoryDb {
         code = code,
         name = name,
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        structuralId = structuralId
     )
 }
 
 fun InventoryDb.toInventorySyncEntity(
-    organizationSyncEntity: OrganizationSyncEntity?,
+    structuralSyncEntity: StructuralSyncEntity?,
     mol: EmployeeSyncEntity?,
     locationSyncEntities: List<LocationSyncEntity>?,
     accountingObjects: List<AccountingObjectSyncEntity>
@@ -83,7 +83,7 @@ fun InventoryDb.toInventorySyncEntity(
     return InventorySyncEntity(
         id = id,
         date = date,
-        organizationSyncEntity = organizationSyncEntity,
+        structuralSyncEntity = structuralSyncEntity,
         mol = mol,
         locationSyncEntities = locationSyncEntities,
         accountingObjects = accountingObjects,

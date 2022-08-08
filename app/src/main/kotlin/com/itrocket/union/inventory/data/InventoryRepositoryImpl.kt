@@ -8,8 +8,8 @@ import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.inventoryCreate.data.mapper.map
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.manual.getMolId
-import com.itrocket.union.manual.getOrganizationId
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -42,7 +42,7 @@ class InventoryRepositoryImpl(
         withContext(coreDispatchers.io) {
             inventorySyncApi.getInventories(
                 textQuery = textQuery,
-                organizationId = params?.getOrganizationId(),
+                structuralId = params?.getFilterStructuralLastId(),
                 molId = params?.getMolId()
             ).map {
                 it.map()
@@ -53,7 +53,7 @@ class InventoryRepositoryImpl(
         withContext(coreDispatchers.io) {
             inventorySyncApi.getInventoriesCount(
                 textQuery = textQuery,
-                organizationId = params?.getOrganizationId(),
+                structuralId = params?.getFilterStructuralLastId(),
                 molId = params?.getMolId()
             )
         }

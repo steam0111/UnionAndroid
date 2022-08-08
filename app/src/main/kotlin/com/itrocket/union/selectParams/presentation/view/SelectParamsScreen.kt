@@ -265,7 +265,6 @@ fun SelectParamsScreenPreview() {
         SelectParamsStore.State(
             currentStep = 1,
             params = listOf(
-                ParamDomain("1", "param", ManualType.ORGANIZATION),
                 ParamDomain("2", "param", ManualType.MOL),
                 ParamDomain("3", "param", ManualType.LOCATION)
             )

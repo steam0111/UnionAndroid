@@ -74,6 +74,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
+import com.itrocket.union.manual.StructuralParamDomain
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -507,10 +508,7 @@ fun DocumentCreateScreenPreview() {
                 creationDate = 123213213,
                 accountingObjects = listOf(),
                 params = listOf(
-                    ParamDomain(
-                        "1", "fsdsfsdf",
-                        type = ManualType.ORGANIZATION
-                    ),
+                    StructuralParamDomain(),
                     ParamDomain(
                         "1", "fsdsfsdf",
                         type = ManualType.MOL
@@ -526,10 +524,7 @@ fun DocumentCreateScreenPreview() {
             ),
             accountingObjects = listOf(),
             params = listOf(
-                ParamDomain(
-                    "1", "fsdsfsdf",
-                    type = ManualType.ORGANIZATION
-                ),
+                StructuralParamDomain(),
                 ParamDomain(
                     "1", "fsdsfsdf",
                     type = ManualType.MOL

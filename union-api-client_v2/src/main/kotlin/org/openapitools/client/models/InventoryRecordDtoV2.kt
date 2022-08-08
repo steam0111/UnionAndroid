@@ -20,6 +20,10 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.AccountingObjectDtoV2
+import org.openapitools.client.models.EnumDtoV2
+import org.openapitools.client.models.InventoryDtoV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -32,6 +36,8 @@ import com.squareup.moshi.Json
  * @param dateUpdate 
  * @param catalogItemName 
  * @param code 
+ * @param userInserted 
+ * @param userUpdated 
  * @param inventoryId 
  * @param accountingObjectId 
  * @param inventoryRecordStatusId 
@@ -49,7 +55,7 @@ data class InventoryRecordDtoV2 (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int?=null,
+    val version: kotlin.Int? = null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -57,17 +63,17 @@ data class InventoryRecordDtoV2 (
     @Json(name = "dateUpdate")
     val dateUpdate: kotlin.String? = null,
 
-    @Json(name = "UserInserted")
-    val userInserted: String? = null,
-
-    @Json(name = "UserUpdated")
-    val userUpdated: String? = null,
-
     @Json(name = "catalogItemName")
     val catalogItemName: kotlin.String? = null,
 
     @Json(name = "code")
     val code: kotlin.String? = null,
+
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
 
     @Json(name = "inventoryId")
     val inventoryId: kotlin.String? = null,
@@ -85,7 +91,7 @@ data class InventoryRecordDtoV2 (
     val extendedAccountingObject: AccountingObjectDtoV2? = null,
 
     @Json(name = "extendedInventoryRecordStatus")
-    val extendedInventoryRecordStatus: InventoryRecordStatusDtoV2? = null
+    val extendedInventoryRecordStatus: EnumDtoV2? = null
 
 )
 

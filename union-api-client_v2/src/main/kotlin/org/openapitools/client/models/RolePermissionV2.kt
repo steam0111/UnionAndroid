@@ -20,6 +20,10 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.PermissionV2
+import org.openapitools.client.models.SyncItemV2
+import org.openapitools.client.models.UnionRoleV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -29,6 +33,8 @@ import com.squareup.moshi.Json
  * @param deleted 
  * @param dateInsert 
  * @param dateUpdate 
+ * @param userInserted 
+ * @param userUpdated 
  * @param version 
  * @param catalogItemName 
  * @param code 
@@ -50,6 +56,12 @@ data class RolePermissionV2 (
 
     @Json(name = "dateUpdate")
     val dateUpdate: kotlin.String? = null,
+
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
 
     @Json(name = "version")
     val version: kotlin.Int? = null,

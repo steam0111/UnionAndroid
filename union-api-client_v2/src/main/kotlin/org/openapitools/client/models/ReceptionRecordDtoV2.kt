@@ -20,6 +20,14 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.EmployeeDtoV2
+import org.openapitools.client.models.EnumDtoV2
+import org.openapitools.client.models.LocationDtoV2
+import org.openapitools.client.models.NomenclatureDtoV2
+import org.openapitools.client.models.NomenclatureGroupDtoV2
+import org.openapitools.client.models.ReceptionDtoV2
+import org.openapitools.client.models.StructuralUnitDtoV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -32,14 +40,14 @@ import com.squareup.moshi.Json
  * @param dateUpdate 
  * @param catalogItemName 
  * @param code 
+ * @param userInserted 
+ * @param userUpdated 
  * @param receptionId 
  * @param extendedReception 
  * @param itemsName 
  * @param itemsSubName 
  * @param nomenclatureId 
  * @param extendedNomenclature 
- * @param businessUnitId 
- * @param extendedBusinessUnit 
  * @param molId 
  * @param extendedMol 
  * @param count 
@@ -47,8 +55,8 @@ import com.squareup.moshi.Json
  * @param extendedReceptionItemCategory 
  * @param nomenclatureGroupId 
  * @param extendedNomenclatureGroup 
- * @param structuralSubdivisionId 
- * @param extendedStructuralSubdivision 
+ * @param structuralUnitId 
+ * @param extendedStructuralUnit 
  * @param locationToId 
  * @param extendedLocation 
  * @param receptionDocumentNumber 
@@ -65,7 +73,7 @@ data class ReceptionRecordDtoV2 (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int?=null,
+    val version: kotlin.Int? = null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -78,6 +86,12 @@ data class ReceptionRecordDtoV2 (
 
     @Json(name = "code")
     val code: kotlin.String? = null,
+
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
 
     @Json(name = "receptionId")
     val receptionId: kotlin.String? = null,
@@ -97,12 +111,6 @@ data class ReceptionRecordDtoV2 (
     @Json(name = "extendedNomenclature")
     val extendedNomenclature: NomenclatureDtoV2? = null,
 
-    @Json(name = "businessUnitId")
-    val businessUnitId: kotlin.String? = null,
-
-    @Json(name = "extendedBusinessUnit")
-    val extendedBusinessUnit: OrganizationDtoV2? = null,
-
     @Json(name = "molId")
     val molId: kotlin.String? = null,
 
@@ -110,13 +118,13 @@ data class ReceptionRecordDtoV2 (
     val extendedMol: EmployeeDtoV2? = null,
 
     @Json(name = "count")
-    val count: Long? = null,
+    val count: java.math.BigDecimal? = null,
 
     @Json(name = "receptionItemCategoryId")
     val receptionItemCategoryId: kotlin.String? = null,
 
     @Json(name = "extendedReceptionItemCategory")
-    val extendedReceptionItemCategory: ReceptionItemCategoryDtoV2? = null,
+    val extendedReceptionItemCategory: EnumDtoV2? = null,
 
     @Json(name = "nomenclatureGroupId")
     val nomenclatureGroupId: kotlin.String? = null,
@@ -124,11 +132,11 @@ data class ReceptionRecordDtoV2 (
     @Json(name = "extendedNomenclatureGroup")
     val extendedNomenclatureGroup: NomenclatureGroupDtoV2? = null,
 
-    @Json(name = "structuralSubdivisionId")
-    val structuralSubdivisionId: kotlin.String? = null,
+    @Json(name = "structuralUnitId")
+    val structuralUnitId: kotlin.String? = null,
 
-    @Json(name = "extendedStructuralSubdivision")
-    val extendedStructuralSubdivision: DepartmentDtoV2? = null,
+    @Json(name = "extendedStructuralUnit")
+    val extendedStructuralUnit: StructuralUnitDtoV2? = null,
 
     @Json(name = "locationToId")
     val locationToId: kotlin.String? = null,

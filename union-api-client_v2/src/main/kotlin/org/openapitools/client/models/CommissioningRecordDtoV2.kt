@@ -20,6 +20,16 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.AccountingObjectDtoV2
+import org.openapitools.client.models.CommissioningDtoV2
+import org.openapitools.client.models.EmployeeDtoV2
+import org.openapitools.client.models.EnumDtoV2
+import org.openapitools.client.models.LocationDtoV2
+import org.openapitools.client.models.NomenclatureDtoV2
+import org.openapitools.client.models.NomenclatureGroupDtoV2
+import org.openapitools.client.models.RemainsDtoV2
+import org.openapitools.client.models.StructuralUnitDtoV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -32,6 +42,8 @@ import com.squareup.moshi.Json
  * @param dateUpdate 
  * @param catalogItemName 
  * @param code 
+ * @param userInserted 
+ * @param userUpdated 
  * @param commissioningId 
  * @param extendedCommissioning 
  * @param name 
@@ -43,8 +55,6 @@ import com.squareup.moshi.Json
  * @param serialNumber 
  * @param receptionDocumentNumber 
  * @param unitPrice 
- * @param structuralSubdivisionId 
- * @param extendedStructuralSubdivision 
  * @param locationId 
  * @param extendedLocation 
  * @param categoryId 
@@ -53,8 +63,14 @@ import com.squareup.moshi.Json
  * @param molId 
  * @param extendedMol 
  * @param inventoryNumber 
- * @param organizationId 
- * @param extendedOrganization 
+ * @param structuralUnitId 
+ * @param extendedStructuralUnit 
+ * @param accountingObjectId 
+ * @param extendedAccountingObject 
+ * @param resultAccountingObjectId 
+ * @param extendedResultAccountingObject 
+ * @param remainsId 
+ * @param extendedRemains 
  */
 
 data class CommissioningRecordDtoV2 (
@@ -66,7 +82,7 @@ data class CommissioningRecordDtoV2 (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int?=null,
+    val version: kotlin.Int? = null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -79,6 +95,12 @@ data class CommissioningRecordDtoV2 (
 
     @Json(name = "code")
     val code: kotlin.String? = null,
+
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
 
     @Json(name = "commissioningId")
     val commissioningId: kotlin.String? = null,
@@ -113,12 +135,6 @@ data class CommissioningRecordDtoV2 (
     @Json(name = "unitPrice")
     val unitPrice: kotlin.String? = null,
 
-    @Json(name = "structuralSubdivisionId")
-    val structuralSubdivisionId: kotlin.String? = null,
-
-    @Json(name = "extendedStructuralSubdivision")
-    val extendedStructuralSubdivision: DepartmentDtoV2? = null,
-
     @Json(name = "locationId")
     val locationId: kotlin.String? = null,
 
@@ -129,7 +145,7 @@ data class CommissioningRecordDtoV2 (
     val categoryId: kotlin.String? = null,
 
     @Json(name = "extendedCategory")
-    val extendedCategory: AccountingObjectCategoryDtoV2? = null,
+    val extendedCategory: EnumDtoV2? = null,
 
     @Json(name = "traceable")
     val traceable: kotlin.Boolean? = null,
@@ -143,11 +159,29 @@ data class CommissioningRecordDtoV2 (
     @Json(name = "inventoryNumber")
     val inventoryNumber: kotlin.String? = null,
 
-    @Json(name = "organizationId")
-    val organizationId: kotlin.String? = null,
+    @Json(name = "structuralUnitId")
+    val structuralUnitId: kotlin.String? = null,
 
-    @Json(name = "extendedOrganization")
-    val extendedOrganization: OrganizationDtoV2? = null
+    @Json(name = "extendedStructuralUnit")
+    val extendedStructuralUnit: StructuralUnitDtoV2? = null,
+
+    @Json(name = "accountingObjectId")
+    val accountingObjectId: kotlin.String? = null,
+
+    @Json(name = "extendedAccountingObject")
+    val extendedAccountingObject: AccountingObjectDtoV2? = null,
+
+    @Json(name = "resultAccountingObjectId")
+    val resultAccountingObjectId: kotlin.String? = null,
+
+    @Json(name = "extendedResultAccountingObject")
+    val extendedResultAccountingObject: AccountingObjectDtoV2? = null,
+
+    @Json(name = "remainsId")
+    val remainsId: kotlin.String? = null,
+
+    @Json(name = "extendedRemains")
+    val extendedRemains: RemainsDtoV2? = null
 
 )
 

@@ -8,9 +8,9 @@ import com.squareup.moshi.Json
 class InventoryDb(
     id: String = "",
     updateDate: Long?,
-    val organizationId: String?,
     val employeeId: String?,
     val locationIds: List<String>?,
+    val structuralId: String?,
     val date: Long?,
     val inventoryStatus: String,
     val code: String?,

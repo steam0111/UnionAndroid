@@ -5,10 +5,8 @@ import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_api.entity.ReserveUpdateSyncEntity
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.getDepartmentId
 import com.itrocket.union.manual.getMolId
 import com.itrocket.union.manual.getNomenclatureGroupId
-import com.itrocket.union.manual.getOrganizationId
 import com.itrocket.union.manual.getReceptionCategoryId
 import com.itrocket.union.reserveDetail.data.mapper.map
 import com.itrocket.union.reserves.data.mapper.map
@@ -23,12 +21,12 @@ class ReservesRepositoryImpl(
         reservesIds: List<String>?,
         textQuery: String?,
         reservesShorts: List<ReserveShortSyncEntity>?,
-        selectedLocationIds: List<String?>?
+        selectedLocationIds: List<String?>?,
+        structuralIds: List<String?>?
     ): List<ReservesDomain> {
         return syncApi.getAll(
-            organizationId = params?.getOrganizationId(),
+            structuralIds = structuralIds,
             molId = params?.getMolId(),
-            structuralSubdivisionId = params?.getDepartmentId(),
             nomenclatureGroupId = params?.getNomenclatureGroupId(),
             receptionItemCategoryId = params?.getReceptionCategoryId(),
             reservesIds = reservesIds,
@@ -39,12 +37,12 @@ class ReservesRepositoryImpl(
 
     override suspend fun getReservesFilterCount(
         params: List<ParamDomain>?,
-        selectedLocationIds: List<String?>?
+        selectedLocationIds: List<String?>?,
+        structuralIds: List<String?>?,
     ): Long {
         return syncApi.getReservesFilterCount(
-            organizationId = params?.getOrganizationId(),
+            structuralIds = structuralIds,
             molId = params?.getMolId(),
-            structuralSubdivisionId = params?.getDepartmentId(),
             nomenclatureGroupId = params?.getNomenclatureGroupId(),
             receptionItemCategoryId = params?.getReceptionCategoryId(),
             locationIds = selectedLocationIds

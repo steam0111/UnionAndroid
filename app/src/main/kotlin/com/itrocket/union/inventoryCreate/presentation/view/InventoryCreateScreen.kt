@@ -37,6 +37,7 @@ import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
@@ -294,9 +295,8 @@ fun InventoryCreateScreenPreview() {
             number = "БП-00001374",
             date = System.currentTimeMillis(),
             documentInfo = listOf(
-                ParamDomain("1", "Систмный интегратор", ManualType.ORGANIZATION),
+                StructuralParamDomain(),
                 ParamDomain("2", "Систмный интегратор", ManualType.MOL),
-                ParamDomain("3", "Систмный интегратор", ManualType.ORGANIZATION),
             ),
             accountingObjects = listOf(
                 AccountingObjectDomain(

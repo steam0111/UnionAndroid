@@ -29,6 +29,9 @@ import com.squareup.moshi.Json
  * @param newCount 
  * @param orderItemId 
  * @param receptionItemCategoryId 
+ * @param molId 
+ * @param locationId 
+ * @param structuralUnitId 
  */
 
 data class CreateReceptionRequestItemsV2 (
@@ -40,7 +43,16 @@ data class CreateReceptionRequestItemsV2 (
     val orderItemId: kotlin.String? = null,
 
     @Json(name = "receptionItemCategoryId")
-    val receptionItemCategoryId: kotlin.String? = null
+    val receptionItemCategoryId: kotlin.String? = null,
+
+    @Json(name = "molId")
+    val molId: kotlin.String? = null,
+
+    @Json(name = "locationId")
+    val locationId: kotlin.String? = null,
+
+    @Json(name = "structuralUnitId")
+    val structuralUnitId: kotlin.String? = null
 
 )
 

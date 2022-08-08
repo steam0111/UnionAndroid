@@ -7,8 +7,7 @@ data class AccountingObjectUpdateSyncEntity(
     val exploitingId: String?,
     val locationId: String?,
     val updateDate: Long,
-    val departmentId: String?,
     val molId: String?,
-    val branchId: String?,
+    val structuralId: String?,
     val userUpdated: String?
 )

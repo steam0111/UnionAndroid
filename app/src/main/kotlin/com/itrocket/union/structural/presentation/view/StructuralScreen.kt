@@ -85,17 +85,21 @@ fun StructuralScreen(
                     backgroundColor = white,
                     textColor = psb1,
                     content = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_accept),
-                                contentDescription = null,
-                                modifier = Modifier.clickableUnbounded(onClick = onAcceptClickListener)
-                            )
+                        if (state.isCanEdit) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_accept),
+                                    contentDescription = null,
+                                    modifier = Modifier.clickableUnbounded(onClick = onAcceptClickListener)
+                                )
+                            }
                         }
                     }
                 )
             }, bottomBar = {
-                BottomBar(onFinishClickListener = onFinishClickListener)
+                if (state.isCanEdit) {
+                    BottomBar(onFinishClickListener = onFinishClickListener)
+                }
             }, content = {
                 Content(
                     state = state,
@@ -131,7 +135,7 @@ private fun Content(
         StructuralComponent(
             selectedStructuralScheme = state.selectStructuralScheme,
             onBackClickListener = onBackClickListener,
-            levelHint = state.levelHint
+            isLevelHintShow = state.isLevelHintShow
         )
         EditText(
             modifier = Modifier
@@ -187,7 +191,7 @@ private fun BottomBar(onFinishClickListener: () -> Unit) {
 @Composable
 private fun StructuralComponent(
     selectedStructuralScheme: List<StructuralDomain>,
-    levelHint: String,
+    isLevelHintShow: Boolean,
     onBackClickListener: () -> Unit
 ) {
     Row(
@@ -209,25 +213,28 @@ private fun StructuralComponent(
                 color = psb4
             )
             Spacer(modifier = Modifier.height(4.dp))
-            StructuralLevelComponent(selectedStructuralScheme, levelHint)
+            StructuralLevelComponent(selectedStructuralScheme, isLevelHintShow)
         }
     }
 }
 
 @Composable
-private fun StructuralLevelComponent(selectedStructuralScheme: List<StructuralDomain>, levelHint: String) {
+private fun StructuralLevelComponent(
+    selectedStructuralScheme: List<StructuralDomain>,
+    isLevelHintShow: Boolean
+) {
     val annotatedString = buildAnnotatedString {
         selectedStructuralScheme.forEachIndexed { index, locationDomain ->
             val itemId = "item$index"
             val placeholderId = "[icon$index]"
             append(locationDomain.value)
-            if (levelHint.isNotBlank() || index < selectedStructuralScheme.lastIndex) {
+            if (isLevelHintShow || index < selectedStructuralScheme.lastIndex) {
                 appendInlineContent(itemId, placeholderId)
             }
         }
-        if (levelHint.isNotBlank()) {
+        if (isLevelHintShow) {
             withStyle(SpanStyle(color = psb6, fontSize = 14.sp, fontWeight = FontWeight.Normal)) {
-                append(stringResource(id = R.string.structural_select_structural, levelHint.lowercase()))
+                append(stringResource(id = R.string.structural_select_structural))
             }
         }
     }
@@ -305,5 +312,5 @@ private fun ArrowBackButton(enabled: Boolean, onClick: () -> Unit) {
 @Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
 @Composable
 fun StructuralScreenPreview() {
-    StructuralScreen(StructuralStore.State(), AppInsets(), {}, {}, {}, {}, {}, {})
+    StructuralScreen(StructuralStore.State(isCanEdit = true), AppInsets(), {}, {}, {}, {}, {}, {})
 }

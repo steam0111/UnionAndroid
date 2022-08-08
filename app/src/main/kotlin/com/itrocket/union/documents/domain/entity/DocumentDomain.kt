@@ -8,12 +8,10 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getActionBaseId
-import com.itrocket.union.manual.getBranchId
-import com.itrocket.union.manual.getDepartmentId
 import com.itrocket.union.manual.getExploitingId
 import com.itrocket.union.manual.getFilterLocationLastId
+import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.manual.getMolId
-import com.itrocket.union.manual.getOrganizationId
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import kotlinx.parcelize.Parcelize
 
@@ -30,7 +28,7 @@ data class DocumentDomain(
     val reserves: List<ReservesDomain> = listOf(),
     val documentStatusId: String,
     val userInserted: String?,
-    val userUpdated: String?
+    val userUpdated: String?,
 ) : Parcelable {
     val isDocumentExists: Boolean
         get() = id != null
@@ -40,14 +38,12 @@ data class DocumentDomain(
 }
 
 fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
-    val organizationId = params.getOrganizationId()
     val molId = params.getMolId()
     val exploitingId = params.getExploitingId()
     val trueCompletionDate =
         if (documentStatus == DocumentStatus.COMPLETED) System.currentTimeMillis() else completionDate
     return DocumentUpdateSyncEntity(
         id = id.orEmpty(),
-        organizationId = organizationId,
         molId = molId,
         exploitingId = exploitingId,
         documentType = documentType.name,
@@ -69,18 +65,15 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
         } else {
             params.getFilterLocationLastId(ManualType.LOCATION_TO)
         },
-        departmentFromId = params.getDepartmentId(type = ManualType.DEPARTMENT_FROM),
-        departmentToId = params.getDepartmentId(type = ManualType.DEPARTMENT_TO),
-        branchId = params.getBranchId(),
         actionBaseId = params.getActionBaseId(),
         code = number,
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        structuralId = params.getFilterStructuralLastId()
     )
 }
 
 fun DocumentDomain.toCreateSyncEntity(): DocumentCreateSyncEntity {
-    val organizationId = params.getOrganizationId()
     val molId = params.getMolId()
     val exploitingId = params.getExploitingId()
     val trueCompletionDate = if (documentStatus == DocumentStatus.COMPLETED) {
@@ -90,7 +83,6 @@ fun DocumentDomain.toCreateSyncEntity(): DocumentCreateSyncEntity {
     }
 
     return DocumentCreateSyncEntity(
-        organizationId = organizationId.orEmpty(),
         molId = molId.orEmpty(),
         exploitingId = exploitingId,
         documentType = documentType.name,
@@ -104,6 +96,7 @@ fun DocumentDomain.toCreateSyncEntity(): DocumentCreateSyncEntity {
                 userUpdated = userUpdated
             )
         },
+        structuralId = params.getFilterStructuralLastId(),
         documentStatusId = documentStatusId,
         documentStatus = documentStatus.name,
         locationFromId = params.getFilterLocationLastId(ManualType.LOCATION_FROM),
@@ -112,9 +105,6 @@ fun DocumentDomain.toCreateSyncEntity(): DocumentCreateSyncEntity {
         } else {
             params.getFilterLocationLastId(ManualType.LOCATION_TO)
         },
-        departmentFromId = params.getDepartmentId(type = ManualType.DEPARTMENT_FROM),
-        departmentToId = params.getDepartmentId(type = ManualType.DEPARTMENT_TO),
-        branchId = params.getBranchId(),
         actionBaseId = params.getActionBaseId(),
         code = number,
         userInserted = userInserted,

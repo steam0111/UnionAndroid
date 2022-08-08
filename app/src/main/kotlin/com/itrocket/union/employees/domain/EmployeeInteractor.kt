@@ -5,6 +5,7 @@ import com.itrocket.union.employees.domain.dependencies.EmployeeRepository
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import kotlinx.coroutines.withContext
 
 class EmployeeInteractor(
@@ -21,10 +22,7 @@ class EmployeeInteractor(
 
     fun getFilters(): List<ParamDomain> {
         return listOf(
-            ParamDomain(
-                type = ManualType.ORGANIZATION,
-                value = ""
-            )
+            StructuralParamDomain()
         )
     }
 }

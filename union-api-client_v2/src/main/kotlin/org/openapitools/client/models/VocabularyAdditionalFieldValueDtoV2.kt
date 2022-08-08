@@ -20,6 +20,8 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.VocabularyAdditionalFieldDtoV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -32,6 +34,8 @@ import com.squareup.moshi.Json
  * @param dateUpdate 
  * @param catalogItemName 
  * @param code 
+ * @param userInserted 
+ * @param userUpdated 
  * @param `value` 
  * @param vocabularyAdditionalFieldId 
  * @param extendedVocabularyAdditionalField 
@@ -46,7 +50,7 @@ data class VocabularyAdditionalFieldValueDtoV2 (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int?=null,
+    val version: kotlin.Int? = null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -59,6 +63,12 @@ data class VocabularyAdditionalFieldValueDtoV2 (
 
     @Json(name = "code")
     val code: kotlin.String? = null,
+
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
 
     @Json(name = "value")
     val `value`: kotlin.String? = null,

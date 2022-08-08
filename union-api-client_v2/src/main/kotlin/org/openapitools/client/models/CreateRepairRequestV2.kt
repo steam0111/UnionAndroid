@@ -20,12 +20,14 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.CreateRepairRecordRequestV2
+
 import com.squareup.moshi.Json
 
 /**
  * 
  *
- * @param organizationId 
+ * @param structuralUnitId 
  * @param locationId 
  * @param estimatedEndDate 
  * @param responsibleEmployeeId 
@@ -35,8 +37,8 @@ import com.squareup.moshi.Json
 
 data class CreateRepairRequestV2 (
 
-    @Json(name = "organizationId")
-    val organizationId: kotlin.String? = null,
+    @Json(name = "structuralUnitId")
+    val structuralUnitId: kotlin.String? = null,
 
     @Json(name = "locationId")
     val locationId: kotlin.String? = null,

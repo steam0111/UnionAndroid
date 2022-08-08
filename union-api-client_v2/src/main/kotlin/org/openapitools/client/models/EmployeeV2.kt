@@ -20,6 +20,9 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.StructuralUnitV2
+import org.openapitools.client.models.SyncItemV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -29,6 +32,8 @@ import com.squareup.moshi.Json
  * @param deleted 
  * @param dateInsert 
  * @param dateUpdate 
+ * @param userInserted 
+ * @param userUpdated 
  * @param version 
  * @param catalogItemName 
  * @param code 
@@ -36,13 +41,15 @@ import com.squareup.moshi.Json
  * @param lastname 
  * @param patronymic 
  * @param birthdate 
- * @param organization 
+ * @param structuralUnit 
  * @param subdivision 
  * @param post 
  * @param number 
  * @param card 
+ * @param balanceUnit 
  * @param nfc 
  * @param employeeStatus 
+ * @param serviceNumber 
  * @param oldSystemId 
  * @param cascadeItems 
  */
@@ -60,6 +67,12 @@ data class EmployeeV2 (
 
     @Json(name = "dateUpdate")
     val dateUpdate: kotlin.String? = null,
+
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
 
     @Json(name = "version")
     val version: kotlin.Int? = null,
@@ -82,8 +95,8 @@ data class EmployeeV2 (
     @Json(name = "birthdate")
     val birthdate: kotlin.String? = null,
 
-    @Json(name = "organization")
-    val organization: OrganizationV2? = null,
+    @Json(name = "structuralUnit")
+    val structuralUnit: StructuralUnitV2? = null,
 
     @Json(name = "subdivision")
     val subdivision: kotlin.String? = null,
@@ -97,11 +110,17 @@ data class EmployeeV2 (
     @Json(name = "card")
     val card: kotlin.String? = null,
 
+    @Json(name = "balanceUnit")
+    val balanceUnit: StructuralUnitV2? = null,
+
     @Json(name = "nfc")
     val nfc: kotlin.String? = null,
 
     @Json(name = "employeeStatus")
     val employeeStatus: kotlin.String? = null,
+
+    @Json(name = "serviceNumber")
+    val serviceNumber: kotlin.String? = null,
 
     @Json(name = "oldSystemId")
     val oldSystemId: kotlin.String? = null,
