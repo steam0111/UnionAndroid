@@ -2,17 +2,13 @@ package com.example.union_sync_api.entity
 
 data class DocumentUpdateSyncEntity(
     val id: String,
-    val organizationId: String?,
     val molId: String?,
     val exploitingId: String? = null,
     val documentType: String,
     val accountingObjectsIds: List<String>? = null,
     val locationFromId: String? = null,
     val locationToId: String? = null,
-    val departmentFromId: String? = null,
-    val departmentToId: String? = null,
     val actionBaseId: String? = null,
-    val branchId: String? = null,
     val creationDate: Long,
     val completionDate: Long?,
     val documentStatus: String,
@@ -21,4 +17,5 @@ data class DocumentUpdateSyncEntity(
     val code: String?,
     val userInserted: String?,
     val userUpdated: String?,
+    val structuralId: String?
 )

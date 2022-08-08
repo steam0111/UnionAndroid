@@ -38,7 +38,6 @@ fun RefreshJwtResponse.toAuthCredentials() = AuthCredentials(
 )
 
 fun GetMyPermissionsResponseV2?.toMyConfigDomain() = MyConfigDomain(
-    organizationId = this?.employee?.organizationId,
     employeeId = this?.employee?.id,
     permissions = this?.list?.map {
         MyConfigPermission(it.model, it.action)

@@ -22,18 +22,21 @@ interface StructuralStore :
         val isLoading: Boolean = false,
         val selectStructuralScheme: List<StructuralDomain> = listOf(),
         val searchText: String = "",
-        val levelHint: String = "",
-        val structuralValues: List<StructuralDomain> = listOf()
+        val isLevelHintShow: Boolean = false,
+        val structuralValues: List<StructuralDomain> = listOf(),
+        val isCanEdit: Boolean
     )
 
     sealed class Label {
-        data class GoBack(override val result: StructuralResult? = null) : Label(), GoBackNavigationLabel {
+        data class GoBack(override val result: StructuralResult? = null) : Label(),
+            GoBackNavigationLabel {
             override val resultCode: String
                 get() = StructuralComposeFragment.STRUCTURAL_RESULT_CODE
 
             override val resultLabel: String
                 get() = StructuralComposeFragment.STRUCTURAL_RESULT
         }
+
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
     }
 }

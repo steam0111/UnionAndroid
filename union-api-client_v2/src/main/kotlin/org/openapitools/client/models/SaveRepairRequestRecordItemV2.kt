@@ -20,6 +20,8 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.SaveRepairRequestRemainsItemV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -31,6 +33,7 @@ import com.squareup.moshi.Json
  * @param accountingObjectId 
  * @param repairId 
  * @param changed 
+ * @param comment 
  * @param extendedRepairRecordRemains 
  */
 
@@ -53,6 +56,9 @@ data class SaveRepairRequestRecordItemV2 (
 
     @Json(name = "changed")
     val changed: kotlin.Boolean? = null,
+
+    @Json(name = "comment")
+    val comment: kotlin.String? = null,
 
     @Json(name = "extendedRepairRecordRemains")
     val extendedRepairRecordRemains: kotlin.collections.List<SaveRepairRequestRemainsItemV2>? = null

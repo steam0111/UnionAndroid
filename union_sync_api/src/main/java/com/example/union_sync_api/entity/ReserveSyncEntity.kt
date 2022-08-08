@@ -8,15 +8,14 @@ data class ReserveSyncEntity(
     val orderId: String?,
     val nomenclatureId: String?,
     val nomenclatureGroupId: String?,
-    val businessUnitId: String?,
     val name: String,
     val count: Long?,
     val receptionItemCategoryId: String?,
-    val structuralSubdivisionId: String?,
     val receptionDocumentNumber: String?,
     val unitPrice: String?,
     val userInserted: String?,
     val userUpdated: String?,
+    val structuralId: String?,
 )
 
 fun ReserveSyncEntity.toReserveUpdateSyncEntity(userUpdated: String?) = ReserveUpdateSyncEntity(

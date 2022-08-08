@@ -60,6 +60,12 @@ data class PermissionDtoV2(
     @Json(name = "code")
     val code: kotlin.String? = null,
 
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
+
     @Json(name = "model")
     val model: kotlin.String,
 

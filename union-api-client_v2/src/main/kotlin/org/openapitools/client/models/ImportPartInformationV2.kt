@@ -20,6 +20,8 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.EntityModelV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -29,6 +31,7 @@ import com.squareup.moshi.Json
  * @param itemsCount 
  * @param localDateTime 
  * @param entityModel 
+ * @param table 
  */
 
 data class ImportPartInformationV2 (
@@ -43,7 +46,10 @@ data class ImportPartInformationV2 (
     val localDateTime: kotlin.String? = null,
 
     @Json(name = "entityModel")
-    val entityModel: EntityModelV2? = null
+    val entityModel: EntityModelV2? = null,
+
+    @Json(name = "table")
+    val table: kotlin.String? = null
 
 )
 

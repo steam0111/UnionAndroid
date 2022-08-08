@@ -2,15 +2,13 @@ package com.example.union_sync_impl.data.mapper
 
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.ActionBaseSyncEntity
-import com.example.union_sync_api.entity.BranchSyncEntity
-import com.example.union_sync_api.entity.DepartmentSyncEntity
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
-import com.example.union_sync_api.entity.OrganizationSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
+import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.entity.DocumentDb
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import com.example.union_sync_impl.utils.getStringDateFromMillis
@@ -19,7 +17,7 @@ import org.openapitools.client.models.ActionDtoV2
 fun ActionDtoV2.toDocumentDb(): DocumentDb {
     return DocumentDb(
         id = id,
-        organizationId = organizationId.orEmpty(),
+        structuralId = structuralUnitId,
         molId = molId.orEmpty(),
         exploitingId = exploitingId,
         documentType = actionTypeId ?: "GIVE",
@@ -30,26 +28,22 @@ fun ActionDtoV2.toDocumentDb(): DocumentDb {
         updateDate = System.currentTimeMillis(),
         locationFromId = locationFromId,
         locationToId = locationToId,
-        departmentFromId = departmentFromId,
-        departmentToId = departmentToId,
         actionBaseId = actionBaseId,
         code = code,
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
     )
 }
 
 fun DocumentDb.toActionDtoV2(): ActionDtoV2 {
     return ActionDtoV2(
-        organizationId = organizationId.orEmpty(),
+        structuralUnitId = structuralId.orEmpty(),
         molId = molId.orEmpty(),
         exploitingId = exploitingId,
         actionTypeId = documentType,
         actionBaseId = actionBaseId,
         locationToId = locationToId,
         locationFromId = locationFromId,
-        departmentFromId = departmentFromId,
-        departmentToId = departmentToId,
         actionStatusId = documentStatus,
         creationDate = getStringDateFromMillis(creationDate),
         dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
@@ -63,15 +57,11 @@ fun DocumentDb.toActionDtoV2(): ActionDtoV2 {
 fun DocumentCreateSyncEntity.toDocumentDb(id: String): DocumentDb {
     return DocumentDb(
         id = id,
-        organizationId = organizationId,
         molId = molId,
         exploitingId = exploitingId,
         documentType = documentType,
         locationToId = locationToId,
         locationFromId = locationFromId,
-        departmentFromId = departmentFromId,
-        departmentToId = departmentToId,
-        branchId = branchId,
         actionBaseId = actionBaseId,
         creationDate = System.currentTimeMillis(),
         documentStatus = documentStatus,
@@ -79,22 +69,19 @@ fun DocumentCreateSyncEntity.toDocumentDb(id: String): DocumentDb {
         updateDate = System.currentTimeMillis(),
         code = code,
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        structuralId = structuralId
     )
 }
 
 fun DocumentUpdateSyncEntity.toDocumentDb(): DocumentDb {
     return DocumentDb(
         id = id,
-        organizationId = organizationId,
         molId = molId,
         exploitingId = exploitingId,
         documentType = documentType,
         locationToId = locationToId,
         locationFromId = locationFromId,
-        departmentFromId = departmentFromId,
-        departmentToId = departmentToId,
-        branchId = branchId,
         actionBaseId = actionBaseId,
         documentStatusId = documentStatusId,
         documentStatus = documentStatus,
@@ -103,41 +90,35 @@ fun DocumentUpdateSyncEntity.toDocumentDb(): DocumentDb {
         updateDate = System.currentTimeMillis(),
         code = code,
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        structuralId = structuralId
     )
 }
 
 fun DocumentDb.toDocumentSyncEntity(
-    organizationSyncEntity: OrganizationSyncEntity?,
+    structuralSyncEntity: StructuralSyncEntity?,
     mol: EmployeeSyncEntity?,
     exploiting: EmployeeSyncEntity?,
     accountingObjects: List<AccountingObjectSyncEntity>? = null,
     reserves: List<ReserveSyncEntity>? = null,
     locationFrom: LocationSyncEntity?,
     locationTo: LocationSyncEntity?,
-    departmentFrom: DepartmentSyncEntity? = null,
-    departmentTo: DepartmentSyncEntity? = null,
-    branch: BranchSyncEntity? = null,
     actionBase: ActionBaseSyncEntity? = null
 ): DocumentSyncEntity {
     return DocumentSyncEntity(
         id = id,
-        organizationSyncEntity = organizationSyncEntity,
+        structuralSyncEntity = structuralSyncEntity,
         mol = mol,
         exploiting = exploiting,
         documentType = documentType,
         accountingObjects = accountingObjects.orEmpty(),
         reserves = reserves.orEmpty(),
-        organizationId = organizationId,
         documentStatus = documentStatus,
         documentStatusId = documentStatusId,
         completionDate = completionDate,
         creationDate = creationDate,
         locationFrom = locationFrom,
         locationTo = locationTo,
-        departmentFrom = departmentFrom,
-        departmentTo = departmentTo,
-        branch = branch,
         actionBase = actionBase,
         code = code,
         userInserted = userInserted

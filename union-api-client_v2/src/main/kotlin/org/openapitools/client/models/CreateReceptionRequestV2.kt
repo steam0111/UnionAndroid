@@ -20,11 +20,14 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.CreateReceptionRequestItemsV2
+
 import com.squareup.moshi.Json
 
 /**
  * 
  *
+ * @param structuralUnitId 
  * @param orderId 
  * @param itemsForCreate 
  * @param takenFrom 
@@ -34,6 +37,9 @@ import com.squareup.moshi.Json
  */
 
 data class CreateReceptionRequestV2 (
+
+    @Json(name = "structuralUnitId")
+    val structuralUnitId: kotlin.String? = null,
 
     @Json(name = "orderId")
     val orderId: kotlin.String? = null,

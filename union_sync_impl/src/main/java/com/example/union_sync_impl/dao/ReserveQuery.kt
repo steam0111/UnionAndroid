@@ -10,9 +10,8 @@ import com.example.union_sync_impl.utils.isEquals
 import com.example.union_sync_impl.utils.more
 
 fun sqlReserveQuery(
-    organizationId: String? = null,
+    structuralIds: List<String?>? = null,
     molId: String? = null,
-    structuralSubdivisionId: String? = null,
     nomenclatureGroupId: String? = null,
     orderId: String? = null,
     receptionItemCategoryId: String? = null,
@@ -31,6 +30,11 @@ fun sqlReserveQuery(
     } else {
         "SELECT reserves.*," +
                 "" +
+                "structural.id AS structural_id, " +
+                "structural.catalogItemName AS structural_catalogItemName, " +
+                "structural.name AS structural_name, " +
+                "structural.parentId AS structural_parentId, " +
+                "" +
                 "location.id AS locations_id, " +
                 "location.catalogItemName AS locations_catalogItemName, " +
                 "location.name AS locations_name, " +
@@ -38,22 +42,19 @@ fun sqlReserveQuery(
                 "location.locationTypeId AS locations_locationTypeId " +
                 "" +
                 "FROM reserves " +
-                "LEFT JOIN location ON reserves.locationId = location.id"
+                "LEFT JOIN location ON reserves.locationId = location.id " +
+                "LEFT JOIN structural ON reserves.structuralId = structural.id "
     }
 
     val query = mainQuery.addFilters(
         sqlTableFilters = SqlTableFilters(
             tableName = "reserves",
             filter = buildList {
-                organizationId?.let {
-                    add("businessUnitId" isEquals organizationId)
+                structuralIds?.let {
+                    add("structuralId" isEquals structuralIds)
                 }
-
                 molId?.let {
                     add("molId" isEquals molId)
-                }
-                structuralSubdivisionId?.let {
-                    add("structuralSubdivisionId" isEquals structuralSubdivisionId)
                 }
                 nomenclatureGroupId?.let {
                     add("nomenclatureGroupId" isEquals nomenclatureGroupId)

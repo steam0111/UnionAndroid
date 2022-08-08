@@ -20,8 +20,7 @@ object AuthMainModule {
     private val REFRESH_TOKEN_PREFERENCE_KEY = named("REFRESH_TOKEN_PREFERENCE_KEY")
     private val LOGIN_PREFERENCE_KEY = named("LOGIN_PREFERENCE_KEY")
     private val MY_EMPLOYEE_PREFERENCES_KEY = named("MY_EMPLOYEE_PREFERENCES_KEY")
-    private val MY_ORGANIZATION_PREFERENCES_KEY = named("MY_ORGANIZATION_PREFERENCES_KEY")
-    private val MY_PERMISSIONS_PREFERENCES_KEY = named("MY_ORGANIZATION_PREFERENCES_KEY")
+    private val MY_PERMISSIONS_PREFERENCES_KEY = named("MY_PERMISSIONS_PREFERENCES_KEY")
 
     val module = module {
         viewModel(AUTHMAIN_VIEW_MODEL_QUALIFIER) { (args: AuthMainComposeFragmentArgs) ->
@@ -39,7 +38,6 @@ object AuthMainModule {
                 refreshTokenPreferencesKey = get(REFRESH_TOKEN_PREFERENCE_KEY),
                 loginPreferencesKey = get(LOGIN_PREFERENCE_KEY),
                 myEmployeePreferencesKey = get(MY_EMPLOYEE_PREFERENCES_KEY),
-                myOrganizationPreferencesKey = get(MY_ORGANIZATION_PREFERENCES_KEY),
                 myPermissionsPreferencesKey = get(MY_PERMISSIONS_PREFERENCES_KEY),
                 moshi = get()
             )
@@ -72,9 +70,8 @@ object AuthMainModule {
         single(qualifier = MY_EMPLOYEE_PREFERENCES_KEY) {
             stringPreferencesKey(MY_EMPLOYEE_PREFERENCES_KEY.value)
         }
-
-        single(qualifier = MY_ORGANIZATION_PREFERENCES_KEY) {
-            stringPreferencesKey(MY_ORGANIZATION_PREFERENCES_KEY.value)
+        single(qualifier = MY_PERMISSIONS_PREFERENCES_KEY) {
+            stringPreferencesKey(MY_PERMISSIONS_PREFERENCES_KEY.value)
         }
     }
 }

@@ -1,10 +1,11 @@
 package org.openapitools.client.apis
 
 
-import org.openapitools.client.models.InventoryReportRecordCommitResultV2
+import retrofit2.http.*
 import retrofit2.Response
-import retrofit2.http.POST
-import retrofit2.http.Path
+import okhttp3.RequestBody
+
+import org.openapitools.client.models.InventoryReportRecordCommitResultV2
 
 interface InventoryReportRecordCommitControllerApi {
     /**
@@ -13,7 +14,7 @@ interface InventoryReportRecordCommitControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
+     * @param id 
      * @return [InventoryReportRecordCommitResultV2]
      */
     @POST("api/reports/inventory-report-records/{id}/commit")

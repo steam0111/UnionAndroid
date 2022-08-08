@@ -27,7 +27,7 @@ import com.squareup.moshi.Json
  * 
  *
  * @param responsibleId 
- * @param organizationId 
+ * @param structuralUnitId 
  * @param locationId 
  * @param accountingObjectIds 
  */
@@ -37,8 +37,8 @@ data class CreateWriteOffRequestDtoV2 (
     @Json(name = "responsibleId")
     val responsibleId: kotlin.String? = null,
 
-    @Json(name = "organizationId")
-    val organizationId: kotlin.String? = null,
+    @Json(name = "structuralUnitId")
+    val structuralUnitId: kotlin.String? = null,
 
     @Json(name = "locationId")
     val locationId: kotlin.String? = null,

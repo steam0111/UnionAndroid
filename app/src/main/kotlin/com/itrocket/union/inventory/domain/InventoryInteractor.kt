@@ -11,9 +11,10 @@ import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.manual.getFilterLocationIds
+import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.manual.getMolId
-import com.itrocket.union.manual.getOrganizationId
 import kotlinx.coroutines.withContext
 
 class InventoryInteractor(
@@ -25,8 +26,8 @@ class InventoryInteractor(
         accountingObjects: List<AccountingObjectDomain>,
         params: List<ParamDomain>
     ): InventoryCreateDomain = withContext(coreDispatchers.io) {
-        val organizationId =
-            requireNotNull(value = params.getOrganizationId(),
+        val structuralId =
+            requireNotNull(value = params.getFilterStructuralLastId(),
                 lazyMessage = {
                     "organizationId must not be null"
                 })
@@ -36,7 +37,7 @@ class InventoryInteractor(
 
         val id = repository.createInventory(
             InventoryCreateSyncEntity(
-                organizationId = organizationId,
+                structuralId = structuralId,
                 employeeId = molId,
                 accountingObjectsIds = accountingObjects.map {
                     it.toAccountingObjectIdSyncEntity()
@@ -45,7 +46,7 @@ class InventoryInteractor(
                 inventoryStatus = InventoryStatus.CREATED.name,
                 updateDate = System.currentTimeMillis(),
                 userInserted = authMainInteractor.getLogin(),
-                userUpdated = null
+                userUpdated = null,
             )
         )
         repository.getInventoryById(id)
@@ -72,6 +73,16 @@ class InventoryInteractor(
         return mutableParams
     }
 
+    fun changeStructural(
+        params: List<ParamDomain>,
+        structural: StructuralParamDomain
+    ): List<ParamDomain> {
+        val mutableParams = params.toMutableList()
+        val structuralIndex = params.indexOfFirst { it.type == structural.manualType }
+        mutableParams[structuralIndex] = structural.copy(filtered = false)
+        return mutableParams
+    }
+
     fun clearParam(list: List<ParamDomain>, param: ParamDomain): List<ParamDomain> {
         val mutableList = list.toMutableList()
         val currentIndex = mutableList.indexOfFirst { it.type == param.type }
@@ -86,6 +97,6 @@ class InventoryInteractor(
     }
 
     fun isParamsValid(params: List<ParamDomain>): Boolean {
-        return !params.getOrganizationId().isNullOrEmpty()
+        return !params.getFilterStructuralLastId().isNullOrEmpty()
     }
 }

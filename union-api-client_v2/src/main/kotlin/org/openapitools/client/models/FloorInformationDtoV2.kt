@@ -20,6 +20,10 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.LocationDtoV2
+import org.openapitools.client.models.PremisesInformationDtoV2
+import org.openapitools.client.models.WorkPlaceSvgElementWIthStatusDtoV2
+
 import com.squareup.moshi.Json
 
 /**

@@ -55,6 +55,7 @@ import com.itrocket.union.employees.domain.entity.EmployeeStatus
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.utils.clickableUnbounded
 import java.math.BigDecimal
@@ -531,10 +532,7 @@ fun DocumentInfoItemPreview() {
                     "1", "blbbb",
                     type = ManualType.LOCATION
                 ),
-                ParamDomain(
-                    "1", "blbbb",
-                    type = ManualType.ORGANIZATION
-                )
+                StructuralParamDomain()
             ),
             documentType = DocumentTypeDomain.WRITE_OFF,
             dateUi = "12.12.12",

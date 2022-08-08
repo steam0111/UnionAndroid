@@ -6,7 +6,7 @@ data class EmployeeSyncEntity(
     val firstname: String,
     val lastname: String,
     val patronymic: String,
-    val organizationId: String?,
+    val structuralId: String?,
     val number: String,
     val nfc: String?,
     val statusId: String?,

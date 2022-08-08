@@ -13,16 +13,16 @@ class EmployeeSyncApiImpl(
 ) : EmployeeSyncApi {
     override suspend fun getEmployees(
         textQuery: String?,
-        organizationId: String?
+        structuralId: String?
     ): List<EmployeeSyncEntity> {
-        val employeeDb = employeeDao.getAll(sqlEmployeeQuery(organizationId, textQuery))
+        val employeeDb = employeeDao.getAll(sqlEmployeeQuery(structuralId, textQuery))
         return employeeDb.map { it.toSyncEntity() }
     }
 
-    override suspend fun getEmployeesCount(textQuery: String?, organizationId: String?): Long {
+    override suspend fun getEmployeesCount(textQuery: String?, structuralId: String?): Long {
         return employeeDao.getCount(
             sqlEmployeeQuery(
-                organizationId,
+                structuralId,
                 textQuery,
                 isFilterCount = true
             )

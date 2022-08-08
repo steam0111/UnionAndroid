@@ -6,12 +6,7 @@ import com.example.union_sync_impl.entity.core.CatalogItemDb
 import com.example.union_sync_impl.entity.location.LocationDb
 
 @Entity(
-    foreignKeys = [ForeignKey(
-        entity = OrganizationDb::class,
-        parentColumns = arrayOf("id"),
-        childColumns = arrayOf("organizationId"),
-        //onDelete = ForeignKey.CASCADE TODO выставить посже когда появиться больше требования к бд
-    ),
+    foreignKeys = [
         ForeignKey(
             entity = LocationDb::class,
             parentColumns = arrayOf("id"),
@@ -37,12 +32,6 @@ import com.example.union_sync_impl.entity.location.LocationDb
             //onDelete = ForeignKey.CASCADE TODO выставить посже когда появиться больше требования к бд
         ),
         ForeignKey(
-            entity = BranchesDb::class,
-            parentColumns = arrayOf("id"),
-            childColumns = arrayOf("branchId"),
-            //onDelete = ForeignKey.CASCADE TODO выставить посже когда появиться больше требования к бд
-        ),
-        ForeignKey(
             entity = NomenclatureGroupDb::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("nomenclatureGroupId"),
@@ -52,12 +41,9 @@ import com.example.union_sync_impl.entity.location.LocationDb
 class AccountingObjectDb(
     id: String,
     override var catalogItemName: String,
-    val organizationId: String?,
-    val departmentId: String?,
     val locationId: String?,
     val providerId: String?,
     val molId: String?,
-    val branchId: String?,
     val producerId: String?,
     val exploitingId: String?,
     val nomenclatureId: String?,
@@ -75,6 +61,7 @@ class AccountingObjectDb(
     val commissioningDate: String?,
     val internalNumber: String?,
     val model: String?,
+    val structuralId: String?,
     userInserted: String?,
     userUpdated: String?,
     updateDate: Long?,

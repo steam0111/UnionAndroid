@@ -3,6 +3,7 @@ package com.example.union_sync_impl.entity
 import androidx.room.Embedded
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
+import com.example.union_sync_impl.entity.structural.StructuralDb
 
 class FullReserve(
     @Embedded
@@ -13,10 +14,6 @@ class FullReserve(
     val locationTypeDb: LocationTypeDb?,
     @Embedded(prefix = "mol_")
     val molDb: EmployeeDb?,
-    @Embedded(prefix = "businessUnit_")
-    val businessUnitDb: OrganizationDb?,
-    @Embedded(prefix = "structuralSubdivision_")
-    val structuralSubdivisionDb: DepartmentDb?,
     @Embedded(prefix = "nomenclature_")
     val nomenclatureDb: NomenclatureDb?,
     @Embedded(prefix = "nomenclatureGroup_")
@@ -24,5 +21,7 @@ class FullReserve(
     @Embedded(prefix = "order_")
     val orderDb: OrderDb?,
     @Embedded(prefix = "receptionItemCategory_")
-    val receptionItemCategoryDb: ReceptionItemCategoryDb?
+    val receptionItemCategoryDb: ReceptionItemCategoryDb?,
+    @Embedded(prefix = "structural_")
+    val structuralDb: StructuralDb?,
 )

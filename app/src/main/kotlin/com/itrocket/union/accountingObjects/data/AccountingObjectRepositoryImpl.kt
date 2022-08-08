@@ -11,11 +11,9 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.getDepartmentId
 import com.itrocket.union.manual.getEquipmentTypeId
 import com.itrocket.union.manual.getExploitingId
 import com.itrocket.union.manual.getMolId
-import com.itrocket.union.manual.getOrganizationId
 import com.itrocket.union.manual.getProducerId
 import com.itrocket.union.manual.getProviderId
 import com.itrocket.union.manual.getStatusId
@@ -31,40 +29,40 @@ class AccountingObjectRepositoryImpl(
     override suspend fun getAccountingObjects(
         textQuery: String?,
         params: List<ParamDomain>,
-        selectedLocationIds: List<String?>?
+        selectedLocationIds: List<String?>?,
+        structuralIds: List<String?>?
     ): List<AccountingObjectDomain> =
         withContext(coreDispatchers.io) {
             syncApi.getAccountingObjects(
                 textQuery = textQuery,
-                organizationId = params.getOrganizationId(),
                 exploitingId = params.getExploitingId(),
                 molId = params.getMolId(),
-                departmentId = params.getDepartmentId(),
                 producerId = params.getProducerId(),
                 equipmentTypeId = params.getEquipmentTypeId(),
                 providerId = params.getProviderId(),
                 statusId = params.getStatusId(),
-                locationIds = selectedLocationIds
+                locationIds = selectedLocationIds,
+                structuralId = structuralIds
             ).map { it.map() }
         }
 
     override suspend fun getAccountingObjectsCount(
         textQuery: String?,
         params: List<ParamDomain>,
-        selectedLocationIds: List<String?>?
+        selectedLocationIds: List<String?>?,
+        structuralIds: List<String?>?
     ): Long =
         withContext(coreDispatchers.io) {
             syncApi.getAccountingObjectsCount(
                 textQuery = textQuery,
-                organizationId = params.getOrganizationId(),
                 exploitingId = params.getExploitingId(),
                 molId = params.getMolId(),
-                departmentId = params.getDepartmentId(),
                 producerId = params.getProducerId(),
                 equipmentTypeId = params.getEquipmentTypeId(),
                 providerId = params.getProviderId(),
                 statusId = params.getStatusId(),
-                locationIds = selectedLocationIds
+                locationIds = selectedLocationIds,
+                structuralIds = structuralIds
             )
         }
 

@@ -13,12 +13,13 @@ import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.AccountingObjectDtoV2
 import org.openapitools.client.models.AccountingObjectStatusDto
 import org.openapitools.client.models.AccountingObjectStatusDtoV2
+import org.openapitools.client.models.EnumDtoV2
 
 fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
     return AccountingObjectDb(
         id = id,
         catalogItemName = catalogItemName.orEmpty(),
-        organizationId = organizationId,
+        structuralId = structuralUnitId,
         locationId = locationId,
         molId = molId,
         exploitingId = exploitingId,
@@ -37,13 +38,11 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
         count = count?.toInt(),
         commissioningDate = commissioningDate,
         internalNumber = internalNumber,
-        departmentId = departmentId,
         model = model,
         providerId = providerId,
         updateDate = System.currentTimeMillis(),
-        branchId = branchId,
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
     )
 }
 
@@ -58,15 +57,13 @@ fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
         equipmentType = equipmentType?.toSyncEntity(),
         provider = provider?.toSyncEntity(),
         mol = mol?.toSyncEntity(),
-        organization = organization?.toSyncEntity(),
-        department = department?.toSyncEntity(),
-        branch = branch?.toSyncEntity()
+        structuralSyncEntity = structuralDb?.toStructuralSyncEntity()
     )
 }
 
 fun AccountingObjectStatusDto.toStatusDb() = AccountingObjectStatusDb(id.orEmpty(), name)
 
-fun AccountingObjectStatusDtoV2.toStatusDb() = AccountingObjectStatusDb(id.orEmpty(), name)
+fun EnumDtoV2.toStatusDb() = AccountingObjectStatusDb(id.orEmpty(), name)
 
 fun AccountingObjectStatusSyncEntity.toStatusDb() = AccountingObjectStatusDb(id, name)
 
@@ -85,20 +82,18 @@ fun AccountingObjectDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?) =
         status = status?.toSyncEntity(),
         statusId = statusId,
         providerId = providerId,
-        departmentId = departmentId,
         producerId = producerId,
         equipmentTypeId = equipmentTypeId,
         locationId = locationId,
         molId = molId,
         exploitingEmployeeId = exploitingId,
-        organizationId = organizationId,
         internalNumber = internalNumber,
         model = model,
         locationSyncEntity = locationSyncEntity,
         nomenclatureId = nomenclatureId,
         nomenclatureGroupId = nomenclatureGroupId,
-        branchId = branchId,
-        userUpdated = userUpdated
+        userUpdated = userUpdated,
+        structuralId = structuralId
     )
 
 fun FullAccountingObject.toSyncEntity(
@@ -118,21 +113,19 @@ fun FullAccountingObject.toSyncEntity(
     commissioningDate = accountingObjectDb.commissioningDate,
     status = accountingObjectDb.status?.toSyncEntity(),
     providerId = accountingObjectDb.providerId,
-    departmentId = accountingObjectDb.departmentId,
     producerId = accountingObjectDb.producerId,
     equipmentTypeId = accountingObjectDb.equipmentTypeId,
     locationId = accountingObjectDb.locationId,
     molId = accountingObjectDb.molId,
     exploitingEmployeeId = accountingObjectDb.exploitingId,
-    organizationId = accountingObjectDb.organizationId,
     internalNumber = accountingObjectDb.internalNumber,
     model = accountingObjectDb.model,
     locationSyncEntity = locationSyncEntity,
     statusId = accountingObjectDb.statusId,
     nomenclatureGroupId = accountingObjectDb.nomenclatureGroupId,
     nomenclatureId = accountingObjectDb.nomenclatureId,
-    branchId = accountingObjectDb.branchId,
-    userUpdated = accountingObjectDb.userUpdated
+    userUpdated = accountingObjectDb.userUpdated,
+    structuralId = structuralDb?.id
 )
 
 fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObjectDtoV2> {
@@ -150,7 +143,7 @@ fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObject
             startingPrice = accountingObjectDb.actualPrice,
             name = accountingObjectDb.name,
             model = accountingObjectDb.model,
-            organizationId = accountingObjectDb.organizationId,
+            structuralUnitId = accountingObjectDb.structuralId,
             molId = accountingObjectDb.molId,
             producerId = accountingObjectDb.producerId,
             typeId = accountingObjectDb.equipmentTypeId,
@@ -159,13 +152,12 @@ fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObject
             internalNumber = accountingObjectDb.internalNumber,
             inventoryNumber = accountingObjectDb.inventoryNumber,
             rfidValue = accountingObjectDb.rfidValue,
-            departmentId = accountingObjectDb.departmentId,
             count = accountingObjectDb.count?.toLong(),
             nomenclatureId = accountingObjectDb.nomenclatureId,
             nomenclatureGroupId = accountingObjectDb.nomenclatureGroupId,
-            branchId = accountingObjectDb.branchId,
             userInserted = accountingObjectDb.userInserted,
-            userUpdated = accountingObjectDb.userUpdated
+            userUpdated = accountingObjectDb.userUpdated,
+            deleted = false,
         )
     }
 }
@@ -181,8 +173,7 @@ fun AccountingObjectUpdateSyncEntity.toAccountingObjectUpdate(): AccountingObjec
         statusId = statusId,
         updateDate = updateDate,
         molId = molId,
-        departmentId = departmentId,
-        branchId = branchId,
+        structuralId = structuralId,
         userUpdated = userUpdated
     )
 }

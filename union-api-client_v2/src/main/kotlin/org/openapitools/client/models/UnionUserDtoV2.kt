@@ -20,6 +20,10 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.EmployeeDtoV2
+import org.openapitools.client.models.PermissionDtoV2
+import org.openapitools.client.models.UnionRoleDtoV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -32,6 +36,8 @@ import com.squareup.moshi.Json
  * @param dateUpdate 
  * @param catalogItemName 
  * @param code 
+ * @param userInserted 
+ * @param userUpdated 
  * @param login 
  * @param password 
  * @param superuser 
@@ -40,7 +46,6 @@ import com.squareup.moshi.Json
  * @param extendedEmployee 
  * @param extendedPermissions 
  * @param extendedRole 
- * @param extendedRoles 
  */
 
 data class UnionUserDtoV2 (
@@ -52,7 +57,7 @@ data class UnionUserDtoV2 (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int?=null,
+    val version: kotlin.Int? = null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -65,6 +70,12 @@ data class UnionUserDtoV2 (
 
     @Json(name = "code")
     val code: kotlin.String? = null,
+
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
 
     @Json(name = "login")
     val login: kotlin.String? = null,
@@ -88,10 +99,7 @@ data class UnionUserDtoV2 (
     val extendedPermissions: kotlin.collections.List<PermissionDtoV2>? = null,
 
     @Json(name = "extendedRole")
-    val extendedRole: UnionRoleDtoV2? = null,
-
-    @Json(name = "extendedRoles")
-    val extendedRoles: kotlin.collections.List<UnionRoleDtoV2>? = null
+    val extendedRole: UnionRoleDtoV2? = null
 
 )
 

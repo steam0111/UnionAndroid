@@ -14,6 +14,7 @@ import com.itrocket.union.inventory.domain.InventoryInteractor
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.manual.filterNotEmpty
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.utils.ifBlankOrNull
@@ -90,6 +91,15 @@ class InventoryStoreFactory(
                     )
                     changeParams(params)
                 }
+                is InventoryStore.Intent.OnStructuralChanged -> {
+                    val params = inventoryInteractor.changeStructural(
+                        getState().params,
+                        intent.structural.structural
+                    )
+                    changeParams(
+                        params = params
+                    )
+                }
             }
         }
 
@@ -108,17 +118,25 @@ class InventoryStoreFactory(
         }
 
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
-            if (param.type == ManualType.LOCATION) {
-                publish(
-                    InventoryStore.Label.ShowLocation(param as LocationParamDomain)
-                )
-            } else {
-                publish(
-                    InventoryStore.Label.ShowParamSteps(
-                        currentStep = params.indexOf(param) + 1,
-                        params = params.filter { it.type != ManualType.LOCATION }
+            when (param.type) {
+                ManualType.LOCATION -> {
+                    publish(
+                        InventoryStore.Label.ShowLocation(param as LocationParamDomain)
                     )
-                )
+                }
+                ManualType.STRUCTURAL -> {
+                    publish(
+                        InventoryStore.Label.ShowStructural(param as StructuralParamDomain)
+                    )
+                }
+                else -> {
+                    publish(
+                        InventoryStore.Label.ShowParamSteps(
+                            currentStep = params.indexOf(param) + 1,
+                            params = params.filter { it.type != ManualType.LOCATION }
+                        )
+                    )
+                }
             }
         }
 

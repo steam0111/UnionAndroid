@@ -17,10 +17,8 @@ class AccountingObjectSyncApiImpl(
 ) : AccountingObjectSyncApi {
 
     override suspend fun getAccountingObjects(
-        organizationId: String?,
         exploitingId: String?,
         molId: String?,
-        departmentId: String?,
         producerId: String?,
         equipmentTypeId: String?,
         providerId: String?,
@@ -29,16 +27,15 @@ class AccountingObjectSyncApiImpl(
         statusId: String?,
         textQuery: String?,
         accountingObjectsIds: List<String>?,
-        locationIds: List<String?>?
+        locationIds: List<String?>?,
+        structuralId: List<String?>?
     ): List<AccountingObjectSyncEntity> {
         return accountingObjectsDao.getAll(
             sqlAccountingObjectQuery(
-                organizationId = organizationId,
                 exploitingId = exploitingId,
                 producerId = producerId,
                 providerId = providerId,
                 equipmentTypeId = equipmentTypeId,
-                departmentId = departmentId,
                 molId = molId,
                 rfids = rfids,
                 barcode = barcode,
@@ -54,10 +51,8 @@ class AccountingObjectSyncApiImpl(
     }
 
     override suspend fun getAccountingObjectsCount(
-        organizationId: String?,
         exploitingId: String?,
         molId: String?,
-        departmentId: String?,
         producerId: String?,
         equipmentTypeId: String?,
         providerId: String?,
@@ -66,16 +61,15 @@ class AccountingObjectSyncApiImpl(
         statusId: String?,
         textQuery: String?,
         accountingObjectsIds: List<String>?,
-        locationIds: List<String?>?
+        locationIds: List<String?>?,
+        structuralIds: List<String?>?
     ): Long {
         return accountingObjectsDao.getCount(
             sqlAccountingObjectQuery(
-                organizationId = organizationId,
                 exploitingId = exploitingId,
                 producerId = producerId,
                 providerId = providerId,
                 equipmentTypeId = equipmentTypeId,
-                departmentId = departmentId,
                 molId = molId,
                 rfids = rfids,
                 barcode = barcode,

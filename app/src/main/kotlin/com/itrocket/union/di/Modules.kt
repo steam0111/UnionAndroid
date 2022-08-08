@@ -5,15 +5,11 @@ import com.itrocket.union.accountingObjects.AccountingObjectModule
 import com.itrocket.union.authContainer.AuthContainerModule
 import com.itrocket.union.authMain.AuthMainModule
 import com.itrocket.union.authUser.AuthUserModule
-import com.itrocket.union.branchDetail.BranchDetailModule
-import com.itrocket.union.branches.BranchesModule
 import com.itrocket.union.chooseAction.ChooseActionModule
 import com.itrocket.union.container.ContainerModule
 import com.itrocket.union.conterpartyDetail.CounterpartyDetailModule
 import com.itrocket.union.core.CoreModule
 import com.itrocket.union.counterparties.CounterpartyModule
-import com.itrocket.union.departmentDetail.DepartmentDetailModule
-import com.itrocket.union.departments.DepartmentModule
 import com.itrocket.union.documentCreate.DocumentCreateModule
 import com.itrocket.union.documents.DocumentModule
 import com.itrocket.union.documentsMenu.DocumentMenuModule
@@ -35,13 +31,9 @@ import com.itrocket.union.nomenclature.NomenclatureModule
 import com.itrocket.union.nomenclatureDetail.NomenclatureDetailModule
 import com.itrocket.union.nomenclatureGroup.NomenclatureGroupModule
 import com.itrocket.union.nomenclatureGroupDetail.NomenclatureGroupDetailModule
-import com.itrocket.union.organizationDetail.OrganizationDetailModule
-import com.itrocket.union.organizations.OrganizationModule
 import com.itrocket.union.producer.ProducerModule
 import com.itrocket.union.producerDetail.ProducerDetailModule
 import com.itrocket.union.readingMode.ReadingModeModule
-import com.itrocket.union.regionDetail.RegionDetailModule
-import com.itrocket.union.regions.RegionModule
 import com.itrocket.union.reserveDetail.ReserveDetailModule
 import com.itrocket.union.reserves.ReservesModule
 import com.itrocket.union.scanner.ScannerModule
@@ -86,15 +78,11 @@ object Modules {
         TokenModule.module,
         SyncModule.module,
         InventoryCreateModule.module,
-        OrganizationModule.module,
-        DepartmentModule.module,
         EmployeeModule.module,
         NewAccountingObjectModule.module,
         SwitcherModule.module,
         InventoriesModule.module,
-        RegionModule.module,
         DocumentCreateModule.module,
-        BranchesModule.module,
         CounterpartyModule.module,
         ProducerModule.module,
         EquipmentTypeModule.module,
@@ -103,13 +91,8 @@ object Modules {
         ErrorModule.module,
         EmployeeDetailModule.module,
         NomenclatureDetailModule.module,
-        DepartmentDetailModule.module,
         NomenclatureGroupDetailModule.module,
-        OrganizationDetailModule.module,
         SyncAllModule.module,
-        OrganizationDetailModule.module,
-        BranchDetailModule.module,
-        RegionDetailModule.module,
         CounterpartyDetailModule.module,
         ProducerDetailModule.module,
         EquipmentTypeDetailModule.module,

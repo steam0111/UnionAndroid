@@ -20,6 +20,11 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.AccountingObjectDtoV2
+import org.openapitools.client.models.EnumDtoV2
+import org.openapitools.client.models.LocationDtoV2
+import org.openapitools.client.models.RepairDtoV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -32,6 +37,8 @@ import com.squareup.moshi.Json
  * @param dateUpdate 
  * @param catalogItemName 
  * @param code 
+ * @param userInserted 
+ * @param userUpdated 
  * @param repairId 
  * @param extendedRepair 
  * @param locationId 
@@ -42,6 +49,7 @@ import com.squareup.moshi.Json
  * @param extendedRepairRecordStatus 
  * @param accountingObjectId 
  * @param extendedAccountingObject 
+ * @param comment 
  */
 
 data class RepairRecordDtoV2 (
@@ -53,7 +61,7 @@ data class RepairRecordDtoV2 (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int?=null,
+    val version: kotlin.Int? = null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -66,6 +74,12 @@ data class RepairRecordDtoV2 (
 
     @Json(name = "code")
     val code: kotlin.String? = null,
+
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
 
     @Json(name = "repairId")
     val repairId: kotlin.String? = null,
@@ -83,19 +97,22 @@ data class RepairRecordDtoV2 (
     val previousAccountingObjectStatusId: kotlin.String? = null,
 
     @Json(name = "extendedPreviousAccountingObjectStatusId")
-    val extendedPreviousAccountingObjectStatusId: AccountingObjectStatusDtoV2? = null,
+    val extendedPreviousAccountingObjectStatusId: EnumDtoV2? = null,
 
     @Json(name = "repairRecordStatusId")
     val repairRecordStatusId: kotlin.String? = null,
 
     @Json(name = "extendedRepairRecordStatus")
-    val extendedRepairRecordStatus: RepairRecordStatusDtoV2? = null,
+    val extendedRepairRecordStatus: EnumDtoV2? = null,
 
     @Json(name = "accountingObjectId")
     val accountingObjectId: kotlin.String? = null,
 
     @Json(name = "extendedAccountingObject")
-    val extendedAccountingObject: AccountingObjectDtoV2? = null
+    val extendedAccountingObject: AccountingObjectDtoV2? = null,
+
+    @Json(name = "comment")
+    val comment: kotlin.String? = null
 
 )
 

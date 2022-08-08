@@ -65,16 +65,6 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
                         unionPermission = UnionPermission.NOMENCLATURE
                     ),
                     DocumentMenuDomain(
-                        titleId = R.string.organizations,
-                        iconId = R.drawable.ic_inventory,
-                        unionPermission = UnionPermission.NO_NEED //TODO добавить пермишен
-                    ),
-                    DocumentMenuDomain(
-                        titleId = R.string.departments,
-                        iconId = R.drawable.ic_inventory,
-                        unionPermission = UnionPermission.NO_NEED //TODO добавить пермишен
-                    ),
-                    DocumentMenuDomain(
                         titleId = R.string.producer,
                         iconId = R.drawable.ic_inventory,
                         unionPermission = UnionPermission.PRODUCER
@@ -85,19 +75,14 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
                         unionPermission = UnionPermission.COUNTERPARTY
                     ),
                     DocumentMenuDomain(
-                        titleId = R.string.regions,
-                        iconId = R.drawable.ic_inventory,
-                        unionPermission = UnionPermission.NO_NEED //TODO добавить пермишен
-                    ),
-                    DocumentMenuDomain(
-                        titleId = R.string.branches,
-                        iconId = R.drawable.ic_inventory,
-                        unionPermission = UnionPermission.NO_NEED //TODO добавить пермишен
-                    ),
-                    DocumentMenuDomain(
                         titleId = R.string.equipment_types,
                         iconId = R.drawable.ic_inventory,
                         unionPermission = UnionPermission.EQUIPMENT_TYPE
+                    ),
+                    DocumentMenuDomain(
+                        titleId = R.string.manual_structural,
+                        iconId = R.drawable.ic_inventory,
+                        unionPermission = UnionPermission.NO_NEED // TODO: добавить свои пермишены
                     ),
                 )
             }

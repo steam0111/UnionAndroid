@@ -7,8 +7,8 @@ import com.itrocket.union.accountingObjects.domain.entity.toAccountingObjectIdSy
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getFilterLocationIds
+import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.manual.getMolId
-import com.itrocket.union.manual.getOrganizationId
 import com.itrocket.union.utils.getStringDateFromMillis
 import com.itrocket.union.utils.getTimeFromMillis
 import kotlinx.parcelize.Parcelize
@@ -31,13 +31,13 @@ data class InventoryCreateDomain(
 }
 
 fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
-    val organizationId = documentInfo.getOrganizationId()
+    val structuralId = documentInfo.getFilterStructuralLastId()
     val molId = documentInfo.getMolId()
     val locationIds = documentInfo.getFilterLocationIds()
 
     return InventoryUpdateSyncEntity(
         id = id.orEmpty(),
-        organizationId = organizationId,
+        structuralId = structuralId,
         employeeId = molId,
         accountingObjectsIds = accountingObjects.map { it.toAccountingObjectIdSyncEntity() },
         date = date,

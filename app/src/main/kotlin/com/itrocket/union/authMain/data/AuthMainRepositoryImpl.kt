@@ -35,7 +35,6 @@ class AuthMainRepositoryImpl(
     private val accessTokenPreferencesKey: Preferences.Key<String>,
     private val refreshTokenPreferencesKey: Preferences.Key<String>,
     private val loginPreferencesKey: Preferences.Key<String>,
-    private val myOrganizationPreferencesKey: Preferences.Key<String>,
     private val myEmployeePreferencesKey: Preferences.Key<String>,
     private val myPermissionsPreferencesKey: Preferences.Key<String>,
     private val moshi: Moshi
@@ -106,15 +105,12 @@ class AuthMainRepositoryImpl(
     }
 
     override suspend fun getMyConfig(): MyConfigDomain {
-        return myUserInformationControllerApi.apiSecurityPermissionsMyGet()
+        return myUserInformationControllerApi.apiSecurityPermissionsMyGet().body()
             .toMyConfigDomain()
     }
 
     override suspend fun saveMyConfig(config: MyConfigDomain?) {
         dataStore.edit { preferences ->
-            config?.organizationId?.let {
-                preferences[myOrganizationPreferencesKey] = it
-            }
             config?.employeeId?.let {
                 preferences[myEmployeePreferencesKey] = it
             }
@@ -130,7 +126,6 @@ class AuthMainRepositoryImpl(
     }
 
     override suspend fun getMyPreferencesConfig(): MyConfigDomain {
-        val organizationId = dataStore.data.map { it[myOrganizationPreferencesKey] }.firstOrNull()
         val employeeId = dataStore.data.map { it[myEmployeePreferencesKey] }.firstOrNull()
         val permissionsString = dataStore.data.map { it[myPermissionsPreferencesKey] }.firstOrNull()
 
@@ -145,7 +140,6 @@ class AuthMainRepositoryImpl(
         }
 
         return MyConfigDomain(
-            organizationId = organizationId,
             employeeId = employeeId,
             permissions = permissions
         )

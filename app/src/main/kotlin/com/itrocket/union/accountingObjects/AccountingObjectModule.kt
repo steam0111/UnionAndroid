@@ -29,7 +29,7 @@ object AccountingObjectModule {
         }
 
         factory {
-            AccountingObjectInteractor(get(), get(), get())
+            AccountingObjectInteractor(get(), get(), get(), get())
         }
 
         factory { (arg: AccountingObjectComposeFragmentArgs) ->

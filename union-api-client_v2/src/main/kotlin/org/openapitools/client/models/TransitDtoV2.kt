@@ -20,6 +20,11 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.EmployeeDtoV2
+import org.openapitools.client.models.EnumDtoV2
+import org.openapitools.client.models.LocationDtoV2
+import org.openapitools.client.models.StructuralUnitDtoV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -32,6 +37,8 @@ import com.squareup.moshi.Json
  * @param dateUpdate 
  * @param catalogItemName 
  * @param code 
+ * @param userInserted 
+ * @param userUpdated 
  * @param creationDate 
  * @param responsibleId 
  * @param extendedResponsible 
@@ -41,6 +48,10 @@ import com.squareup.moshi.Json
  * @param extendedLocationTo 
  * @param locationFromId 
  * @param extendedLocationFrom 
+ * @param structuralUnitFromId 
+ * @param structuralUnitToId 
+ * @param molReceivingId 
+ * @param extendedMolReceiving 
  * @param vehicleId 
  * @param extendedVehicleId 
  * @param typeId 
@@ -49,6 +60,8 @@ import com.squareup.moshi.Json
  * @param extendedStatus 
  * @param organizationId 
  * @param extendedOrganization 
+ * @param extendedStructuralUnitFrom 
+ * @param extendedStructuralUnitTo 
  */
 
 data class TransitDtoV2 (
@@ -60,7 +73,7 @@ data class TransitDtoV2 (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int?=null,
+    val version: kotlin.Int? = null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -73,6 +86,12 @@ data class TransitDtoV2 (
 
     @Json(name = "code")
     val code: kotlin.String? = null,
+
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
 
     @Json(name = "creationDate")
     val creationDate: kotlin.String? = null,
@@ -101,6 +120,18 @@ data class TransitDtoV2 (
     @Json(name = "extendedLocationFrom")
     val extendedLocationFrom: LocationDtoV2? = null,
 
+    @Json(name = "structuralUnitFromId")
+    val structuralUnitFromId: kotlin.String? = null,
+
+    @Json(name = "structuralUnitToId")
+    val structuralUnitToId: kotlin.String? = null,
+
+    @Json(name = "molReceivingId")
+    val molReceivingId: kotlin.String? = null,
+
+    @Json(name = "extendedMolReceiving")
+    val extendedMolReceiving: EmployeeDtoV2? = null,
+
     @Json(name = "vehicleId")
     val vehicleId: kotlin.String? = null,
 
@@ -111,19 +142,25 @@ data class TransitDtoV2 (
     val typeId: kotlin.String? = null,
 
     @Json(name = "extendedType")
-    val extendedType: TransitTypeDtoV2? = null,
+    val extendedType: EnumDtoV2? = null,
 
     @Json(name = "statusId")
     val statusId: kotlin.String? = null,
 
     @Json(name = "extendedStatus")
-    val extendedStatus: ActionStatusDtoV2? = null,
+    val extendedStatus: EnumDtoV2? = null,
 
     @Json(name = "organizationId")
     val organizationId: kotlin.String? = null,
 
     @Json(name = "extendedOrganization")
-    val extendedOrganization: OrganizationDtoV2? = null
+    val extendedOrganization: StructuralUnitDtoV2? = null,
+
+    @Json(name = "extendedStructuralUnitFrom")
+    val extendedStructuralUnitFrom: StructuralUnitDtoV2? = null,
+
+    @Json(name = "extendedStructuralUnitTo")
+    val extendedStructuralUnitTo: StructuralUnitDtoV2? = null
 
 )
 

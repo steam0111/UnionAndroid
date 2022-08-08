@@ -1,11 +1,10 @@
 package com.example.union_sync_api.entity
 
 data class DocumentSyncEntity(
-    val organizationId: String?,
     val documentType: String,
     val accountingObjects: List<AccountingObjectSyncEntity>,
     val id: String,
-    val organizationSyncEntity: OrganizationSyncEntity?,
+    val structuralSyncEntity: StructuralSyncEntity?,
     val mol: EmployeeSyncEntity?,
     val exploiting: EmployeeSyncEntity? = null,
     val creationDate: Long,
@@ -15,9 +14,6 @@ data class DocumentSyncEntity(
     val reserves: List<ReserveSyncEntity>,
     val locationFrom: LocationSyncEntity? = null,
     val locationTo: LocationSyncEntity? = null,
-    val departmentFrom: DepartmentSyncEntity? = null,
-    val departmentTo: DepartmentSyncEntity? = null,
-    val branch: BranchSyncEntity? = null,
     val actionBase: ActionBaseSyncEntity? = null,
     val code: String?,
     val userInserted: String?

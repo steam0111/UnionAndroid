@@ -5,4 +5,8 @@ import com.itrocket.union.manual.StructuralParamDomain
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class StructuralArguments(val structural: StructuralParamDomain) : Parcelable
+data class StructuralArguments(
+    val structural: StructuralParamDomain = StructuralParamDomain(),
+    val isCanEdit: Boolean
+) :
+    Parcelable

@@ -19,8 +19,7 @@ enum class DocumentTypeDomain(
             ManualType.EXPLOITING,
             ManualType.LOCATION_FROM,
             ManualType.LOCATION_TO,
-            ManualType.DEPARTMENT_FROM,
-            ManualType.DEPARTMENT_TO,
+            ManualType.STRUCTURAL,
             ManualType.ACTION_BASE
         ),
     ),
@@ -31,8 +30,7 @@ enum class DocumentTypeDomain(
             ManualType.EXPLOITING,
             ManualType.LOCATION_FROM,
             ManualType.LOCATION_TO,
-            ManualType.DEPARTMENT_FROM,
-            ManualType.DEPARTMENT_TO,
+            ManualType.STRUCTURAL,
             ManualType.ACTION_BASE
         ),
     ),
@@ -42,9 +40,7 @@ enum class DocumentTypeDomain(
             ManualType.MOL,
             ManualType.LOCATION_FROM,
             ManualType.RELOCATION_LOCATION_TO,
-            ManualType.DEPARTMENT_FROM,
-            ManualType.DEPARTMENT_TO,
-            ManualType.BRANCH,
+            ManualType.STRUCTURAL,
             ManualType.ACTION_BASE
         ),
     ),

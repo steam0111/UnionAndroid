@@ -7,13 +7,17 @@ import com.itrocket.union.location.domain.dependencies.LocationRepository
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.manual.getFilterLocationLastId
+import com.itrocket.union.manual.getFilterStructuralLastId
+import com.itrocket.union.structural.domain.dependencies.StructuralRepository
 import kotlinx.coroutines.withContext
 
 class AccountingObjectInteractor(
     private val repository: AccountingObjectRepository,
     private val coreDispatchers: CoreDispatchers,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val structuralRepository: StructuralRepository
 ) {
 
     suspend fun getAccountingObjects(
@@ -29,10 +33,18 @@ class AccountingObjectInteractor(
                 locationRepository.getAllLocationsIdsByParent(lastLocationId)
             }
 
+            val lastStructuralId = params.getFilterStructuralLastId()
+            val filterStructuralIds = if (lastStructuralId == null) {
+                null
+            } else {
+                structuralRepository.getAllStructuralsIdsByParent(lastStructuralId)
+            }
+
             repository.getAccountingObjects(
                 searchQuery,
                 params,
-                filterLocationIds
+                filterLocationIds,
+                filterStructuralIds
             ).filter {
                 !selectedAccountingObjectIds.contains(it.id)
             }
@@ -41,9 +53,8 @@ class AccountingObjectInteractor(
     suspend fun getFilters(isFromDocument: Boolean): List<ParamDomain> {
         return listOf(
             getStatusFilter(isFromDocument),
-            ParamDomain(
-                type = ManualType.ORGANIZATION,
-                value = ""
+            StructuralParamDomain(
+                structurals = listOf()
             ),
             ParamDomain(
                 type = ManualType.MOL,
@@ -55,10 +66,6 @@ class AccountingObjectInteractor(
             ),
             LocationParamDomain(
                 locations = listOf()
-            ),
-            ParamDomain(
-                type = ManualType.DEPARTMENT,
-                value = ""
             ),
             ParamDomain(
                 type = ManualType.PROVIDER,
