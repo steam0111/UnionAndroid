@@ -70,7 +70,7 @@ class SelectActionWithValuesBottomMenuStoreFactory(
                     }
                     publish(
                         SelectActionWithValuesBottomMenuStore.Label.GoBack(
-                            SelectActionWithValuesBottomMenuResult()
+                            null
                         )
                     )
                 }

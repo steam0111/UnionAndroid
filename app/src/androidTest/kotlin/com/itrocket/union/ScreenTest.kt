@@ -8,17 +8,10 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailScreenPreview
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectScreenPreview
 import com.itrocket.union.authUser.presentation.view.AuthUserScreenPreview
-import com.itrocket.union.branchDetail.presentation.view.BranchDetailScreenPreview
-import com.itrocket.union.counterparties.presentation.view.CounterpartyScreenPreview
-import com.itrocket.union.branches.presentation.view.BranchesScreenPreview
 import com.itrocket.union.conterpartyDetail.presentation.view.CounterpartyDetailScreenPreview
-import com.itrocket.union.departmentDetail.presentation.view.DepartmentDetailScreenPreview
-import com.itrocket.union.departments.presentation.view.DepartmentScreenPreview
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateScreenPreview
 import com.itrocket.union.documents.presentation.view.DocumentScreenPreview
 import com.itrocket.union.documentsMenu.presentation.view.DocumentMenuScreenPreview
-import com.itrocket.union.employeeDetail.presentation.view.EmployeeDetailScreen
-import com.itrocket.union.filter.presentation.view.FilterScreen
 import com.itrocket.union.employeeDetail.presentation.view.EmployeeDetailScreenPreview
 import com.itrocket.union.employees.presentation.view.EmployeeScreenPreview
 import com.itrocket.union.equipmentTypeDetail.presentation.view.EquipmentTypeDetailScreenPreview
@@ -32,13 +25,9 @@ import com.itrocket.union.location.presentation.view.LocationScreenPreview
 import com.itrocket.union.newAccountingObject.presentation.view.NewAccountingObjectScreenPreview
 import com.itrocket.union.nomenclatureDetail.presentation.view.NomenclatureDetailScreenPreview
 import com.itrocket.union.nomenclatureGroupDetail.presentation.view.NomenclatureGroupDetailScreenPreview
-import com.itrocket.union.organizationDetail.presentation.view.OrganizationDetailScreenPreview
-import com.itrocket.union.organizations.presentation.view.OrganizationsScreenPreview
 import com.itrocket.union.producer.presentation.view.ProducerScreenPreview
 import com.itrocket.union.producerDetail.presentation.view.ProducerDetailScreenPreview
 import com.itrocket.union.readingMode.presentation.view.ReadingModeScreenPreview
-import com.itrocket.union.regionDetail.presentation.view.RegionDetailScreenPreview
-import com.itrocket.union.regions.presentation.view.RegionScreenPreview
 import com.itrocket.union.reserveDetail.presentation.view.ReserveDetailScreenPreview
 import com.itrocket.union.reserves.presentation.view.ReservesScreenPreview
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuScreenPreview
@@ -142,20 +131,6 @@ class ScreensTest : ScreenshotTest {
     }
 
     @Test
-    fun `OrganizationsScreen`() {
-        takeScreenShot {
-            OrganizationsScreenPreview()
-        }
-    }
-
-    @Test
-    fun `DepartmentsScreen`() {
-        takeScreenShot {
-            DepartmentScreenPreview()
-        }
-    }
-
-    @Test
     fun `EmployeesScreen`() {
         takeScreenShot {
             EmployeeScreenPreview()
@@ -198,27 +173,6 @@ class ScreensTest : ScreenshotTest {
     }
 
     @Test
-    fun `Counterparty`() {
-        takeScreenShot {
-            CounterpartyScreenPreview()
-        }
-    }
-
-    @Test
-    fun `Region`() {
-        takeScreenShot {
-            RegionScreenPreview()
-        }
-    }
-
-    @Test
-    fun `Branches`() {
-        takeScreenShot {
-            BranchesScreenPreview()
-        }
-    }
-
-    @Test
     fun `Producers`() {
         takeScreenShot {
             ProducerScreenPreview()
@@ -254,37 +208,9 @@ class ScreensTest : ScreenshotTest {
     }
 
     @Test
-    fun `DepartmentDetail`() {
-        takeScreenShot {
-            DepartmentDetailScreenPreview()
-        }
-    }
-
-    @Test
     fun `NomenclatureGroupDetail`() {
         takeScreenShot {
             NomenclatureGroupDetailScreenPreview()
-        }
-    }
-
-    @Test
-    fun `OrganizationDetail`() {
-        takeScreenShot {
-            OrganizationDetailScreenPreview()
-        }
-    }
-
-    @Test
-    fun `BranchDetail`() {
-        takeScreenShot {
-            BranchDetailScreenPreview()
-        }
-    }
-
-    @Test
-    fun `RegionDetail`() {
-        takeScreenShot {
-            RegionDetailScreenPreview()
         }
     }
 

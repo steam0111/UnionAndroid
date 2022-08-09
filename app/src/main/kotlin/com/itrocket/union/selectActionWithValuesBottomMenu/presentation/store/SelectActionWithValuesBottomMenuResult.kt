@@ -6,5 +6,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class SelectActionWithValuesBottomMenuResult(
-    val accountingObjects: List<AccountingObjectDomain> = listOf()
+    val accountingObjects: List<AccountingObjectDomain>
 ) : Parcelable
