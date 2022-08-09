@@ -33,6 +33,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.ColorFilter
@@ -68,13 +71,13 @@ import com.itrocket.union.ui.graphite4
 import com.itrocket.union.ui.psb1
 import com.itrocket.union.ui.psb6
 import com.itrocket.union.ui.white
-import com.itrocket.utils.disabledHorizontalPointerInputScroll
 import com.itrocket.utils.getTargetPage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.manual.StructuralParamDomain
+import com.itrocket.union.ui.ConfirmAlertDialog
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -91,7 +94,9 @@ fun DocumentCreateScreen(
     onChooseAccountingObjectClickListener: () -> Unit,
     onChooseReserveClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
-    onReserveClickListener: (ReservesDomain) -> Unit
+    onReserveClickListener: (ReservesDomain) -> Unit,
+    onConfirmActionClick: () -> Unit,
+    onDismissConfirmDialog: () -> Unit
 ) {
     val pagerState = rememberPagerState(state.selectedPage)
     val coroutineScope = rememberCoroutineScope()
@@ -168,6 +173,21 @@ fun DocumentCreateScreen(
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { onPageChanged(it) }
+    }
+
+    // todo сделать через side effect
+    if (state.confirmDialogType == DocumentConfirmAlertType.SAVE) {
+        ConfirmAlertDialog(
+            onDismiss = onDismissConfirmDialog,
+            onConfirmClick = onConfirmActionClick,
+            textRes = R.string.common_confirm_save_text
+        )
+    } else if (state.confirmDialogType == DocumentConfirmAlertType.CONDUCT) {
+        ConfirmAlertDialog(
+            onDismiss = onDismissConfirmDialog,
+            onConfirmClick = onConfirmActionClick,
+            textRes = R.string.confirm_conduct_text
+        )
     }
 }
 
@@ -546,6 +566,13 @@ fun DocumentCreateScreenPreview() {
         {},
         {},
         {},
-        {}
-    )
+        {},
+        {},
+        {})
+}
+
+enum class DocumentConfirmAlertType {
+    CONDUCT,
+    SAVE,
+    NONE
 }

@@ -88,6 +88,12 @@ class InventoryCreateComposeFragment :
                 },
                 onInWorkClickListener = {
                     accept(InventoryCreateStore.Intent.OnInWorkClicked)
+                },
+                onDismissConfirmDialog = {
+                    accept(InventoryCreateStore.Intent.OnDismissConfirmDialog)
+                },
+                onConfirmActionClick = {
+                    accept(InventoryCreateStore.Intent.OnConfirmActionClick)
                 }
             )
         }

@@ -44,6 +44,7 @@ import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseCheckbox
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ImageButton
+import com.itrocket.union.ui.ConfirmAlertDialog
 import com.itrocket.union.ui.InventoryDocumentItem
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.graphite2
@@ -65,6 +66,8 @@ fun InventoryCreateScreen(
     onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit,
     onInWorkClickListener: () -> Unit,
     onFinishClickListener: () -> Unit,
+    onConfirmActionClick: () -> Unit,
+    onDismissConfirmDialog: () -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -100,6 +103,14 @@ fun InventoryCreateScreen(
                 bottom = appInsets.bottomInset.dp
             )
         )
+
+        if (state.isConfirmDialogVisible) {
+            ConfirmAlertDialog(
+                onDismiss = onDismissConfirmDialog,
+                onConfirmClick = onConfirmActionClick,
+                textRes = R.string.common_confirm_save_text
+            )
+        }
     }
 }
 
@@ -342,5 +353,6 @@ fun InventoryCreateScreenPreview() {
             userInserted = "",
             userUpdated = ""
         ),
-    ), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {})
+        isConfirmDialogVisible = false
+    ), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 }
