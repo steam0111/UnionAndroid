@@ -19,6 +19,7 @@ import com.itrocket.union.equipmentTypeDetail.EquipmentTypeDetailModule
 import com.itrocket.union.equipmentTypes.EquipmentTypeModule
 import com.itrocket.union.error.ErrorModule
 import com.itrocket.union.filter.FilterModule
+import com.itrocket.union.identify.IdentifyModule
 import com.itrocket.union.inventories.InventoriesModule
 import com.itrocket.union.inventory.InventoryModule
 import com.itrocket.union.inventoryContainer.InventoryContainerModule
@@ -38,6 +39,7 @@ import com.itrocket.union.reserveDetail.ReserveDetailModule
 import com.itrocket.union.reserves.ReservesModule
 import com.itrocket.union.scanner.ScannerModule
 import com.itrocket.union.search.SearchModule
+import com.itrocket.union.selectActionWithValuesBottomMenu.SelectActionWithValuesBottomMenuModule
 import com.itrocket.union.selectCount.SelectCountModule
 import com.itrocket.union.selectParams.SelectParamsModule
 import com.itrocket.union.serverConnect.ServerConnectModule
@@ -51,24 +53,18 @@ import com.union.sdk.SyncModule
 object Modules {
 
     val modules = listOf(
-        NetworkModule.module,
-        CoreModule.module,
         ContainerModule.module,
-        DocumentMenuModule.module,
-        AccountingObjectModule.module,
-        AccountingObjectDetailModule.module,
-        FilterModule.module,
-        AccountingObjectDetailModule.module,
+        CoreModule.module,
+        ProducerModule.module,
         ReadingModeModule.module,
+        ReserveDetailModule.module,
         ReservesModule.module,
-        ReserveDetailModule.module,
-        LocationModule.module,
-        ReserveDetailModule.module,
-        DocumentModule.module,
-        AuthContainerModule.module,
         ServerConnectModule.module,
-        AuthUserModule.module,
+        AccountingObjectDetailModule.module,
+        AccountingObjectModule.module,
+        AuthContainerModule.module,
         AuthMainModule.module,
+        AuthUserModule.module,
         NomenclatureGroupModule.module,
         NomenclatureModule.module,
         ModuleSettingsModule.module,
@@ -84,12 +80,23 @@ object Modules {
         InventoriesModule.module,
         DocumentCreateModule.module,
         CounterpartyModule.module,
-        ProducerModule.module,
+        DocumentCreateModule.module,
+        DocumentMenuModule.module,
+        DocumentModule.module,
+        EmployeeDetailModule.module,
+        EmployeeModule.module,
+        EquipmentTypeDetailModule.module,
         EquipmentTypeModule.module,
         ErrorModule.module,
+        FilterModule.module,
+        InventoriesModule.module,
         InventoryContainerModule.module,
-        ErrorModule.module,
-        EmployeeDetailModule.module,
+        InventoryCreateModule.module,
+        InventoryModule.module,
+        LocationModule.module,
+        ModuleSettingsModule.module,
+        NetworkModule.module,
+        NewAccountingObjectModule.module,
         NomenclatureDetailModule.module,
         NomenclatureGroupDetailModule.module,
         SyncAllModule.module,
@@ -100,6 +107,8 @@ object Modules {
         ChooseActionModule.module,
         SelectCountModule.module,
         UnionPermissionsModule.module,
-        StructuralModule.module
+        StructuralModule.module,
+        SelectActionWithValuesBottomMenuModule.module,
+        IdentifyModule.module,
     )
 }

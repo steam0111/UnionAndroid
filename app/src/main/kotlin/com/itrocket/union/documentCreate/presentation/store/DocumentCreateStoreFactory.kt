@@ -162,7 +162,7 @@ class DocumentCreateStoreFactory(
                         Result.AccountingObjects(
                             documentCreateInteractor.addAccountingObject(
                                 accountingObjects = getState().accountingObjects,
-                                accountingObjectDomain = intent.accountingObjectDomain
+                                accountingObject = intent.accountingObjectDomain
                             )
                         )
                     )
