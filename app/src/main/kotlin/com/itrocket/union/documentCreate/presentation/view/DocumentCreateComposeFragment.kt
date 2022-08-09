@@ -154,6 +154,12 @@ class DocumentCreateComposeFragment :
                 },
                 onReserveClickListener = {
                     accept(DocumentCreateStore.Intent.OnReserveClicked(it))
+                },
+                onDismissConfirmDialog = {
+                    accept(DocumentCreateStore.Intent.OnDismissConfirmDialog)
+                },
+                onConfirmActionClick = {
+                    accept(DocumentCreateStore.Intent.OnConfirmActionClick)
                 }
             )
         }
