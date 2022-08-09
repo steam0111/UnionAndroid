@@ -13,8 +13,8 @@ import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getExploitingId
+import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.manual.getMolId
-import com.itrocket.union.manual.getOrganizationId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -36,7 +36,7 @@ class DocumentRepositoryImpl(
                 type = type.name,
                 molId = params?.getMolId(),
                 exploitingId = params?.getExploitingId(),
-                organizationId = params?.getOrganizationId()
+                structuralId = params?.getFilterStructuralLastId()
             )
         }
     }
@@ -51,7 +51,7 @@ class DocumentRepositoryImpl(
             textQuery = textQuery,
             molId = params?.getMolId(),
             exploitingId = params?.getExploitingId(),
-            organizationId = params?.getOrganizationId()
+            structuralId = params?.getFilterStructuralLastId()
         ).map { it.map() }
     }
 

@@ -8,6 +8,8 @@ import com.itrocket.union.location.data.mapper.toLocationDomain
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
+import com.itrocket.union.structural.data.mapper.toStructuralDomain
 
 fun List<InventorySyncEntity>.map(): List<InventoryCreateDomain> = map {
     it.map()
@@ -21,11 +23,11 @@ fun InventorySyncEntity.map(): InventoryCreateDomain =
         accountingObjects = accountingObjects.map(),
         documentInfo = buildList {
             add(
-                ParamDomain(
-                    organizationSyncEntity?.id,
-                    organizationSyncEntity?.name.orEmpty(),
-                    ManualType.ORGANIZATION
-                )
+                StructuralParamDomain(structurals = buildList {
+                    structuralSyncEntity?.let {
+                        add(it.toStructuralDomain())
+                    }
+                })
             )
             mol?.let { mol ->
                 add(ParamDomain(mol.id, "${mol.firstname} ${mol.lastname}", ManualType.MOL))
@@ -38,6 +40,6 @@ fun InventorySyncEntity.map(): InventoryCreateDomain =
             }
         },
         inventoryStatus = InventoryStatus.valueOf(inventoryStatus),
-        userInserted =  userInserted ,
+        userInserted = userInserted,
         userUpdated = userUpdated
     )

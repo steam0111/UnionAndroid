@@ -19,6 +19,8 @@ import com.itrocket.union.selectCount.presentation.store.SelectCountResult
 import com.itrocket.union.selectCount.presentation.view.SelectCountComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 import com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFragment
+import com.itrocket.union.structural.presentation.store.StructuralResult
+import com.itrocket.union.structural.presentation.view.StructuralComposeFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -81,6 +83,17 @@ class DocumentCreateComposeFragment :
                 }
             ),
             FragmentResult(
+                resultCode = StructuralComposeFragment.STRUCTURAL_RESULT_CODE,
+                resultLabel = StructuralComposeFragment.STRUCTURAL_RESULT,
+                resultAction = {
+                    (it as StructuralResult?)?.let {
+                        accept(
+                            DocumentCreateStore.Intent.OnStructuralChanged(it)
+                        )
+                    }
+                }
+            ),
+            FragmentResult(
                 resultCode = SelectCountComposeFragment.SELECT_COUNT_RESULT_CODE,
                 resultLabel = SelectCountComposeFragment.SELECT_COUNT_RESULT_LABEL,
                 resultAction = {
@@ -94,9 +107,6 @@ class DocumentCreateComposeFragment :
         )
 
     private val serviceEntryManager: ServiceEntryManager by inject()
-
-    private val scanningDataRfid: MutableSet<String> = mutableSetOf()
-    private var scanningDataBarcode: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -139,12 +149,6 @@ class DocumentCreateComposeFragment :
                 onSettingsClickListener = {
                     accept(DocumentCreateStore.Intent.OnSettingsClicked)
                 },
-                onPrevClickListener = {
-                    accept(DocumentCreateStore.Intent.OnPrevClicked)
-                },
-                onNextClickListener = {
-                    accept(DocumentCreateStore.Intent.OnNextClicked)
-                },
                 onConductClickListener = {
                     accept(DocumentCreateStore.Intent.OnCompleteClicked)
                 },
@@ -162,12 +166,24 @@ class DocumentCreateComposeFragment :
             }
             launch {
                 serviceEntryManager.barcodeScanDataFlow.collect {
-                    scanningDataBarcode = it.data
+                    withContext(Dispatchers.Main) {
+                        accept(
+                            DocumentCreateStore.Intent.OnNewAccountingObjectBarcodeHandled(
+                                it.data
+                            )
+                        )
+                    }
                 }
             }
             launch {
                 serviceEntryManager.epcInventoryDataFlow.collect {
-                    scanningDataRfid.add(it)
+                    withContext(Dispatchers.Main) {
+                        accept(
+                            DocumentCreateStore.Intent.OnNewAccountingObjectRfidHandled(
+                                it
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -188,23 +204,6 @@ class DocumentCreateComposeFragment :
                         serviceEntryManager.stopRfidOperation()
                     } else {
                         serviceEntryManager.stopBarcodeScan()
-                    }
-                    withContext(Dispatchers.Main) {
-                        if (scanningDataRfid.isNotEmpty()) {
-                            accept(
-                                DocumentCreateStore.Intent.OnNewAccountingObjectRfidsHandled(
-                                    scanningDataRfid.toList()
-                                )
-                            )
-                        } else {
-                            accept(
-                                DocumentCreateStore.Intent.OnNewAccountingObjectBarcodeHandled(
-                                    scanningDataBarcode
-                                )
-                            )
-                        }
-                        scanningDataRfid.clear()
-                        scanningDataBarcode = ""
                     }
                 }
             }

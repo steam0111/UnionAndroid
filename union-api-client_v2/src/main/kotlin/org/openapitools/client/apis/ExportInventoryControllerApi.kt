@@ -1,9 +1,9 @@
 package org.openapitools.client.apis
 
 
+import retrofit2.http.*
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Path
+import okhttp3.RequestBody
 
 
 interface ExportInventoryControllerApi {
@@ -13,7 +13,7 @@ interface ExportInventoryControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
+     * @param id 
      * @return [Unit]
      */
     @GET("api/documents/inventories/{id}/export/collation-statement")
@@ -25,7 +25,7 @@ interface ExportInventoryControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
+     * @param id 
      * @return [Unit]
      */
     @GET("api/documents/inventories/{id}/export/excel")
@@ -37,7 +37,7 @@ interface ExportInventoryControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
+     * @param id 
      * @return [Unit]
      */
     @GET("api/documents/inventories/{id}/export/inventory-list")

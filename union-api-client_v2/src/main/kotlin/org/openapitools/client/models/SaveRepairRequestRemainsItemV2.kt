@@ -44,7 +44,7 @@ data class SaveRepairRequestRemainsItemV2 (
     val remainsId: kotlin.String? = null,
 
     @Json(name = "count")
-    val count: Long? = null
+    val count: java.math.BigDecimal? = null
 
 )
 

@@ -1,11 +1,12 @@
 package org.openapitools.client.apis
 
 
+import retrofit2.http.*
+import retrofit2.Response
+import okhttp3.RequestBody
+
 import org.openapitools.client.models.EnumGetResponseV2
 import org.openapitools.client.models.GetAllResponseV2
-import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Path
 
 interface ActionBaseControllerApi {
     /**
@@ -25,7 +26,7 @@ interface ActionBaseControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
+     * @param id 
      * @return [EnumGetResponseV2]
      */
     @GET("api/enums/action-bases/{id}")

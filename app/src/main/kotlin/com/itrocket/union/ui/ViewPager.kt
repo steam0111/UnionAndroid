@@ -39,7 +39,7 @@ fun DoubleTabRow(
     tabIndicator: @Composable (List<TabPosition>) -> Unit,
     backgroundColor: Color = white,
     selectedTextColor: Color = white,
-    unselectedTextColor: Color = graphite6,
+    unselectedTextColor: Color = psb3,
     enabled: Boolean = true
 ) {
     TabRow(
@@ -54,7 +54,7 @@ fun DoubleTabRow(
         tabs.forEachIndexed { index, item ->
             Text(
                 text = item.title,
-                style = AppTheme.typography.body2,
+                style = AppTheme.typography.subtitle2,
                 textAlign = TextAlign.Center,
                 color = if (targetPage == index) {
                     selectedTextColor

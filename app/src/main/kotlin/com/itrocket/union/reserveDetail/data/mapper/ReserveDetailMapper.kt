@@ -28,17 +28,8 @@ fun ReserveDetailSyncEntity.map(): ReservesDomain {
         listInfo.add(ObjectInfoDomain(R.string.manual_mol, it.fullName))
     }
 
-    businessUnitSyncEntity?.let {
-        listInfo.add(ObjectInfoDomain(R.string.manual_organization, it.name))
-    }
-
-    structuralSubdivisionSyncEntity?.let {
-        listInfo.add(
-            ObjectInfoDomain(
-                R.string.accounting_objects_department,
-                it.name.orEmpty()
-            )
-        )
+    structuralSyncEntity?.let {
+        listInfo.add(ObjectInfoDomain(R.string.manual_structural, it.name))
     }
 
     nomenclatureSyncEntity?.let {

@@ -33,6 +33,8 @@ import com.squareup.moshi.Json
  * @param dateUpdate 
  * @param catalogItemName 
  * @param code 
+ * @param userInserted 
+ * @param userUpdated 
  */
 
 data class UnionItemDtoV2 (
@@ -44,7 +46,7 @@ data class UnionItemDtoV2 (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int?=null,
+    val version: kotlin.Int? = null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -56,7 +58,13 @@ data class UnionItemDtoV2 (
     val catalogItemName: kotlin.String? = null,
 
     @Json(name = "code")
-    val code: kotlin.String? = null
+    val code: kotlin.String? = null,
+
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null
 
 )
 

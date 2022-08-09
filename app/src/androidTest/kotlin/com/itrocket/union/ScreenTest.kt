@@ -43,6 +43,7 @@ import com.itrocket.union.reserveDetail.presentation.view.ReserveDetailScreenPre
 import com.itrocket.union.reserves.presentation.view.ReservesScreenPreview
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuScreenPreview
 import com.itrocket.union.serverConnect.presentation.view.ServerConnectScreenPreview
+import com.itrocket.union.structural.presentation.view.StructuralScreenPreview
 import com.itrocket.union.switcher.presentation.view.SwitcherScreenPreview
 import com.karumi.shot.ScreenshotTest
 import org.junit.Rule
@@ -319,6 +320,13 @@ class ScreensTest : ScreenshotTest {
     fun `SelectActionWithValuesBottomMenu`() {
         takeScreenShot {
             SelectActionWithValuesBottomMenuScreenPreview()
+        }
+    }
+
+    @Test
+    fun `Structural`() {
+        takeScreenShot {
+            StructuralScreenPreview()
         }
     }
 }

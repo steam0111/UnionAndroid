@@ -1,10 +1,11 @@
 package org.openapitools.client.apis
 
 
-import org.openapitools.client.models.InventoryRecordStatusesV2
+import retrofit2.http.*
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Path
+import okhttp3.RequestBody
+
+import org.openapitools.client.models.InventoryRecordStatusesV2
 
 interface InventoryRecordGetStatusesControllerApi {
     /**
@@ -13,7 +14,7 @@ interface InventoryRecordGetStatusesControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
+     * @param id 
      * @return [InventoryRecordStatusesV2]
      */
     @GET("api/documents/inventories/{id}/record-statuses")

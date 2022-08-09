@@ -20,6 +20,10 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.EmployeeDtoV2
+import org.openapitools.client.models.EnumDtoV2
+import org.openapitools.client.models.NomenclatureApplicationDtoV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -32,6 +36,8 @@ import com.squareup.moshi.Json
  * @param dateUpdate 
  * @param catalogItemName 
  * @param code 
+ * @param userInserted 
+ * @param userUpdated 
  * @param nomenclatureApplicationId 
  * @param extendedNomenclatureApplication 
  * @param date 
@@ -51,7 +57,7 @@ data class NomenclatureApplicationHistoryDtoV2 (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int?=null,
+    val version: kotlin.Int? = null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -64,6 +70,12 @@ data class NomenclatureApplicationHistoryDtoV2 (
 
     @Json(name = "code")
     val code: kotlin.String? = null,
+
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
 
     @Json(name = "nomenclatureApplicationId")
     val nomenclatureApplicationId: kotlin.String? = null,
@@ -84,7 +96,7 @@ data class NomenclatureApplicationHistoryDtoV2 (
     val statusId: kotlin.String? = null,
 
     @Json(name = "extendedStatus")
-    val extendedStatus: NomenclatureApplicationStatusDtoV2? = null,
+    val extendedStatus: EnumDtoV2? = null,
 
     @Json(name = "comment")
     val comment: kotlin.String? = null

@@ -17,9 +17,8 @@ class ReserveSyncApiImpl(
     private val reserveDao: ReserveDao
 ) : ReserveSyncApi {
     override suspend fun getAll(
-        organizationId: String?,
+        structuralIds: List<String?>?,
         molId: String?,
-        structuralSubdivisionId: String?,
         nomenclatureGroupId: String?,
         orderId: String?,
         receptionItemCategoryId: String?,
@@ -30,9 +29,8 @@ class ReserveSyncApiImpl(
     ): List<ReserveSyncEntity> {
         return reserveDao.getAll(
             sqlReserveQuery(
-                organizationId = organizationId,
+                structuralIds = structuralIds,
                 molId = molId,
-                structuralSubdivisionId = structuralSubdivisionId,
                 nomenclatureGroupId = nomenclatureGroupId,
                 orderId = orderId,
                 receptionItemCategoryId = receptionItemCategoryId,
@@ -51,9 +49,8 @@ class ReserveSyncApiImpl(
     }
 
     override suspend fun getReservesFilterCount(
-        organizationId: String?,
+        structuralIds: List<String?>?,
         molId: String?,
-        structuralSubdivisionId: String?,
         nomenclatureGroupId: String?,
         orderId: String?,
         receptionItemCategoryId: String?,
@@ -61,9 +58,8 @@ class ReserveSyncApiImpl(
     ): Long {
         return reserveDao.getFilterCount(
             sqlReserveQuery(
-                organizationId = organizationId,
+                structuralIds = structuralIds,
                 molId = molId,
-                structuralSubdivisionId = structuralSubdivisionId,
                 nomenclatureGroupId = nomenclatureGroupId,
                 orderId = orderId,
                 receptionItemCategoryId = receptionItemCategoryId,

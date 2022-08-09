@@ -4,14 +4,14 @@ import com.example.union_sync_impl.data.AllSyncImpl
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import java.lang.reflect.Type
+import java.util.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import org.json.JSONObject
 import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.models.ImportPartDtoV2
 import timber.log.Timber
-import java.lang.reflect.Type
-import java.util.*
 
 @Suppress("BlockingMethodInNonBlockingContext")
 abstract class SyncEntity<SyncType>(

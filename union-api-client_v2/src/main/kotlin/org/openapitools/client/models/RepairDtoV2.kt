@@ -20,6 +20,12 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.CounterpartyDtoV2
+import org.openapitools.client.models.EmployeeDtoV2
+import org.openapitools.client.models.EnumDtoV2
+import org.openapitools.client.models.LocationDtoV2
+import org.openapitools.client.models.StructuralUnitDtoV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -32,8 +38,10 @@ import com.squareup.moshi.Json
  * @param dateUpdate 
  * @param catalogItemName 
  * @param code 
- * @param organizationId 
- * @param extendedOrganization 
+ * @param userInserted 
+ * @param userUpdated 
+ * @param structuralUnitId 
+ * @param extendedStructuralUnit 
  * @param locationId 
  * @param extendedLocation 
  * @param creationDate 
@@ -55,7 +63,7 @@ data class RepairDtoV2 (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int?=null,
+    val version: kotlin.Int? = null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -69,11 +77,17 @@ data class RepairDtoV2 (
     @Json(name = "code")
     val code: kotlin.String? = null,
 
-    @Json(name = "organizationId")
-    val organizationId: kotlin.String? = null,
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
 
-    @Json(name = "extendedOrganization")
-    val extendedOrganization: OrganizationDtoV2? = null,
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
+
+    @Json(name = "structuralUnitId")
+    val structuralUnitId: kotlin.String? = null,
+
+    @Json(name = "extendedStructuralUnit")
+    val extendedStructuralUnit: StructuralUnitDtoV2? = null,
 
     @Json(name = "locationId")
     val locationId: kotlin.String? = null,
@@ -103,7 +117,7 @@ data class RepairDtoV2 (
     val repairStatusId: kotlin.String? = null,
 
     @Json(name = "extendedRepairStatus")
-    val extendedRepairStatus: RepairStatusDtoV2? = null
+    val extendedRepairStatus: EnumDtoV2? = null
 
 )
 

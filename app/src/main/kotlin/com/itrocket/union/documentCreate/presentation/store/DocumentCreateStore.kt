@@ -12,7 +12,6 @@ import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectArguments
-import com.itrocket.union.departments.domain.entity.DepartmentDomain
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragmentDirections
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.location.domain.entity.LocationDomain
@@ -20,6 +19,7 @@ import com.itrocket.union.location.presentation.store.LocationArguments
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.reserves.presentation.store.ReservesArguments
@@ -27,6 +27,8 @@ import com.itrocket.union.selectCount.presentation.store.SelectCountArguments
 import com.itrocket.union.selectCount.presentation.store.SelectCountResult
 import com.itrocket.union.selectCount.presentation.view.SelectCountComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsArguments
+import com.itrocket.union.structural.presentation.store.StructuralArguments
+import com.itrocket.union.structural.presentation.store.StructuralResult
 
 interface DocumentCreateStore :
     Store<DocumentCreateStore.Intent, DocumentCreateStore.State, DocumentCreateStore.Label> {
@@ -35,8 +37,6 @@ interface DocumentCreateStore :
         object OnBackClicked : Intent()
         object OnDropClicked : Intent()
         object OnSaveClicked : Intent()
-        object OnNextClicked : Intent()
-        object OnPrevClicked : Intent()
         object OnSettingsClicked : Intent()
         object OnChooseAccountingObjectClicked : Intent()
         object OnChooseReserveClicked : Intent()
@@ -52,13 +52,14 @@ interface DocumentCreateStore :
         data class OnAccountingObjectSelected(val accountingObjectDomain: AccountingObjectDomain) :
             Intent()
 
-        data class OnNewAccountingObjectRfidsHandled(val rfids: List<String>) :
+        data class OnNewAccountingObjectRfidHandled(val rfid: String) :
             Intent()
 
         data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :
             Intent()
 
         data class OnLocationChanged(val location: LocationResult) : Intent()
+        data class OnStructuralChanged(val structural: StructuralResult) : Intent()
         data class OnReserveClicked(val reserve: ReservesDomain) : Intent()
     }
 
@@ -71,7 +72,6 @@ interface DocumentCreateStore :
         val selectedPage: Int = 0,
         val isParamsValid: Boolean = false,
         val departureLocation: List<LocationDomain> = emptyList(),
-        val senderDepartment: DepartmentDomain? = null
     )
 
     sealed class Label {
@@ -83,6 +83,14 @@ interface DocumentCreateStore :
             override val directions: NavDirections
                 get() = DocumentCreateComposeFragmentDirections.toLocation(
                     LocationArguments(location = location)
+                )
+        }
+
+        data class ShowStructural(val structural: StructuralParamDomain) : Label(),
+            ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = DocumentCreateComposeFragmentDirections.toStructural(
+                    StructuralArguments(structural = structural, isCanEdit = true)
                 )
         }
 

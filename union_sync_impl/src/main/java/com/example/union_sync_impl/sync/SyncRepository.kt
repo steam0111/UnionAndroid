@@ -14,20 +14,16 @@ class SyncRepository(
     private val syncControllerApi: SyncControllerApi,
     private val moshi: Moshi,
     private val accountingObjectsDao: AccountingObjectDao,
-    private val organizationsDao: OrganizationDao,
     private val employeeDao: EmployeeDao,
     private val nomenclatureDao: NomenclatureDao,
     private val nomenclatureGroupDao: NomenclatureGroupDao,
     private val locationDao: LocationDao,
     private val locationPathDao: LocationPathDao,
-    private val departmentDao: DepartmentDao,
     private val providerDao: ProviderDao,
     private val statusesDao: AccountingObjectStatusDao,
-    private val regionDao: RegionDao,
     private val producerDao: ProducerDao,
     private val equipmentTypeDao: EquipmentTypeDao,
     private val counterpartyDao: CounterpartyDao,
-    private val branchesDao: BranchesDao,
     private val orderDao: OrderDao,
     private val receptionItemCategoryDao: ReceptionItemCategoryDao,
     private val reserveDao: ReserveDao,
@@ -37,7 +33,9 @@ class SyncRepository(
     private val actionRemainsRecordDao: ActionRemainsRecordDao,
     private val inventoryRecordDao: InventoryRecordDao,
     private val actionBaseDao: ActionBaseDao,
-    private val syncDao: NetworkSyncDao
+    private val syncDao: NetworkSyncDao,
+    private val structuralDao: StructuralDao,
+    private val structuralPathDao: StructuralPathDao
 ) {
     suspend fun clearDataBeforeDownload() {
         inventoryDao.clearAll()
@@ -106,20 +104,10 @@ class SyncRepository(
             moshi,
             ::locationTypesDbSaver
         ),
-        BranchesSyncEntity(
-            syncControllerApi,
-            moshi,
-            ::branchesDbSaver
-        ),
         CounterpartySyncEntity(
             syncControllerApi,
             moshi,
             ::counterpartiesDbSaver
-        ),
-        DepartmentSyncEntity(
-            syncControllerApi,
-            moshi,
-            ::departmentsDbSaver
         ),
         EmployeeSyncEntity(
             syncControllerApi,
@@ -146,11 +134,6 @@ class SyncRepository(
             moshi,
             ::ordersDbSaver
         ),
-        OrganizationSyncEntity(
-            syncControllerApi,
-            moshi,
-            ::organizationsDbSaver
-        ),
         ProducerSyncEntity(
             syncControllerApi,
             moshi,
@@ -160,11 +143,6 @@ class SyncRepository(
             syncControllerApi,
             moshi,
             ::receptionItemCategoryDbSaver
-        ),
-        RegionSyncEntity(
-            syncControllerApi,
-            moshi,
-            ::regionsDbSaver
         ),
         ReserveSyncEntity(
             syncControllerApi,
@@ -211,6 +189,16 @@ class SyncRepository(
             syncControllerApi,
             moshi,
             ::actionBasesDbSaver
+        ),
+        StructuralSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::structuralsDbSaver
+        ),
+        StructuralPathSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::structuralPathDbSaver
         )
     ).associateBy {
         it.id to it.table
@@ -367,15 +355,6 @@ class SyncRepository(
     }
 
     private suspend fun accountingObjectDbSaver(objects: List<AccountingObjectDtoV2>) {
-        organizationsDao.insertAll(
-            (
-                    objects.mapNotNull { it.extendedOrganization?.toOrganizationDb() } +
-                            objects.mapNotNull { it.extendedDepartment?.extendedOrganization?.toOrganizationDb() } +
-                            objects.mapNotNull { it.extendedMol?.extendedOrganization?.toOrganizationDb() } +
-                            objects.mapNotNull { it.extendedExploiting?.extendedOrganization?.toOrganizationDb() }
-                    ).distinctBy { it.id }
-        )
-
         employeeDao.insertAll(
             (objects.mapNotNull { it.extendedMol?.toEmployeeDb() } +
                     objects.mapNotNull { it.extendedExploiting?.toEmployeeDb() }).distinctBy { it.id }
@@ -390,10 +369,9 @@ class SyncRepository(
 
         nomenclatureDao.insertAll(objects.mapNotNull { it.extendedNomenclature?.toNomenclatureDb() })
         locationDao.insertAll(objects.mapNotNull { it.extendedLocation?.toLocationDb() })
-        departmentDao.insertAll(objects.mapNotNull { it.extendedDepartment?.toDepartmentDb() })
         providerDao.insertAll(objects.mapNotNull { it.extendedProvider?.toProviderDb() })
         statusesDao.insertAll(objects.mapNotNull { it.extendedAccountingObjectStatus?.toStatusDb() })
-        branchesDao.insertAll(objects.mapNotNull { it.extendedBranch?.toBranchesDb() })
+        structuralDao.insertAll(objects.mapNotNull { it.extendedStructuralUnit?.toStructuralDb() })
         accountingObjectsDao.insertAll(objects.map { it.toAccountingObjectDb() })
     }
 
@@ -401,21 +379,16 @@ class SyncRepository(
         locationDao.insertAll(objects.map { it.toLocationDb() })
     }
 
+    private suspend fun structuralsDbSaver(objects: List<StructuralUnitDtoV2>) {
+        structuralDao.insertAll(objects.map { it.toStructuralDb() })
+    }
+
     private suspend fun locationTypesDbSaver(objects: List<LocationsTypeDtoV2>) {
         locationDao.insertAllLocationTypes(objects.map { it.toLocationTypeDb() })
     }
 
-    private suspend fun regionsDbSaver(objects: List<RegionDtoV2>) {
-        organizationsDao.insertAll(objects.mapNotNull { it.extendedOrganization?.toOrganizationDb() })
-        regionDao.insertAll(objects.map { it.toRegionDb() })
-    }
-
     private suspend fun producersDbSaver(objects: List<ProducerDtoV2>) {
         producerDao.insertAll(objects.map { it.toProducerDb() })
-    }
-
-    private suspend fun organizationsDbSaver(objects: List<OrganizationDtoV2>) {
-        organizationsDao.insertAll(objects.map { it.toOrganizationDb() })
     }
 
     private suspend fun equipmentsDbSaver(objects: List<EquipmentTypeDtoV2>) {
@@ -423,24 +396,12 @@ class SyncRepository(
     }
 
     private suspend fun employeesDbSaver(objects: List<EmployeeDtoV2>) {
-        organizationsDao.insertAll(objects.mapNotNull { it.extendedOrganization?.toOrganizationDb() })
+        structuralDao.insertAll(objects.mapNotNull { it.extendedStructuralUnit?.toStructuralDb() })
         employeeDao.insertAll(objects.map { it.toEmployeeDb() })
-    }
-
-    private suspend fun departmentsDbSaver(objects: List<DepartmentDtoV2>) {
-        organizationsDao.insertAll(objects.mapNotNull { it.extendedOrganization?.toOrganizationDb() })
-        departmentDao.insertAll(objects.map { it.toDepartmentDb() })
     }
 
     private suspend fun counterpartiesDbSaver(objects: List<CounterpartyDtoV2>) {
         counterpartyDao.insertAll(objects.map { it.toCounterpartyDb() })
-    }
-
-    private suspend fun branchesDbSaver(objects: List<BranchDtoV2>) {
-        organizationsDao.insertAll(objects.mapNotNull { it.extendedOrganization?.toOrganizationDb() })
-        objects.map { it.toBranchesDb() }.let { dbBranches ->
-            branchesDao.insertAll(dbBranches)
-        }
     }
 
     private suspend fun nomenclatureGroupsDbSaver(objects: List<NomenclatureGroupDtoV2>) {
@@ -461,13 +422,6 @@ class SyncRepository(
     }
 
     private suspend fun reservesDbSaver(objects: List<RemainsDtoV2>) {
-        organizationsDao.insertAll(
-            objects.mapNotNull { it.extendedBusinessUnit?.toOrganizationDb() } +
-                    objects.mapNotNull { it.extendedMol?.extendedOrganization?.toOrganizationDb() } +
-                    objects.mapNotNull { it.extendedStructuralSubdivision?.extendedOrganization?.toOrganizationDb() }
-                        .distinctBy { it.id }
-        )
-
         employeeDao.insertAll(
             objects.mapNotNull { it.extendedMol?.toEmployeeDb() }.distinctBy { it.id }
         )
@@ -481,7 +435,7 @@ class SyncRepository(
 
         nomenclatureDao.insertAll(objects.mapNotNull { it.extendedNomenclature?.toNomenclatureDb() })
         locationDao.insertAll(objects.mapNotNull { it.extendedLocation?.toLocationDb() })
-        departmentDao.insertAll(objects.mapNotNull { it.extendedStructuralSubdivision?.toDepartmentDb() })
+        structuralDao.insertAll(objects.mapNotNull { it.extendedStructuralUnit?.toStructuralDb() })
         receptionItemCategoryDao.insertAll(objects.mapNotNull { it.extendedReceptionItemCategory?.toReceptionItemCategoryDb() })
         orderDao.insertAll(objects.mapNotNull { it.extendedOrder?.toOrderDb() })
         reserveDao.insertAll(objects.map { it.toReserveDb() })
@@ -491,16 +445,12 @@ class SyncRepository(
         orderDao.insertAll(objects.map { it.toOrderDb() })
     }
 
-    private suspend fun receptionItemCategoryDbSaver(objects: List<ReceptionItemCategoryDtoV2>) {
+    private suspend fun receptionItemCategoryDbSaver(objects: List<EnumDtoV2>) {
         receptionItemCategoryDao.insertAll(objects.map { it.toReceptionItemCategoryDb() })
     }
 
     private suspend fun inventoryDbSaver(objects: List<InventoryDtoV2>) {
-        organizationsDao.insertAll(
-            objects.mapNotNull { it.extendedMol?.extendedOrganization?.toOrganizationDb() }
-                .distinctBy { it.id }
-        )
-
+        structuralDao.insertAll(objects.mapNotNull { it.extendedStructuralUnit?.toStructuralDb() })
         employeeDao.insertAll(
             objects.mapNotNull { it.extendedMol?.toEmployeeDb() }.distinctBy { it.id }
         )
@@ -510,11 +460,7 @@ class SyncRepository(
     }
 
     private suspend fun documentDbSaver(objects: List<ActionDtoV2>) {
-        organizationsDao.insertAll(
-            objects.mapNotNull { it.extendedMol?.extendedOrganization?.toOrganizationDb() }
-                .distinctBy { it.id }
-        )
-
+        structuralDao.insertAll(objects.mapNotNull { it.extendedStructuralUnit?.toStructuralDb() })
         employeeDao.insertAll(
             objects.mapNotNull { it.extendedMol?.toEmployeeDb() }.distinctBy { it.id }
         )
@@ -537,13 +483,19 @@ class SyncRepository(
         inventoryRecordDao.insertAll(objects.map { it.toInventoryRecordDb() })
     }
 
-    private suspend fun actionBasesDbSaver(objects: List<ActionBaseDtoV2>) {
+    private suspend fun actionBasesDbSaver(objects: List<EnumDtoV2>) {
         actionBaseDao.insertAll(objects.map { it.toActionBaseDb() })
     }
 
     private suspend fun locationPathDbSaver(objects: List<LocationPathDto>) {
         locationPathDao.insertAll(
             objects.map { it.toLocationPathDb() }
+        )
+    }
+
+    private suspend fun structuralPathDbSaver(objects: List<StructuralUnitPathDtoV2>) {
+        structuralPathDao.insertAll(
+            objects.map { it.toStructuralPathDb() }
         )
     }
 

@@ -12,6 +12,7 @@ import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.ActionBaseDtoV2
 import org.openapitools.client.models.ActionRecordDtoV2
 import org.openapitools.client.models.ActionRemainsRecordDtoV2
+import org.openapitools.client.models.EnumDtoV2
 import org.openapitools.client.models.InventoryRecordDtoV2
 
 fun ActionRecordDtoV2.toActionRecordDb() = ActionRecordDb(
@@ -96,7 +97,7 @@ fun InventoryRecordDb.toInventoryRecordDtoV2() = InventoryRecordDtoV2(
     userUpdated = userUpdated
 )
 
-fun ActionBaseDtoV2.toActionBaseDb() = ActionBaseDb(
+fun EnumDtoV2.toActionBaseDb() = ActionBaseDb(
     id = id.orEmpty(),
     name = name.orEmpty(),
     updateDate = System.currentTimeMillis()

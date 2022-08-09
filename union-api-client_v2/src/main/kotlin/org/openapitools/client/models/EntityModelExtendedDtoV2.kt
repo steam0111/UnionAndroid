@@ -20,6 +20,9 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.EnumDtoV2
+import org.openapitools.client.models.ScopeV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -45,10 +48,10 @@ data class EntityModelExtendedDtoV2 (
     val extendedScopes: kotlin.collections.List<ScopeV2>? = null,
 
     @Json(name = "extendedRestActions")
-    val extendedRestActions: kotlin.collections.List<RestActionDtoV2>? = null,
+    val extendedRestActions: kotlin.collections.List<EnumDtoV2>? = null,
 
     @Json(name = "extendedEntityModelType")
-    val extendedEntityModelType: EntityModelTypeDtoV2? = null,
+    val extendedEntityModelType: EnumDtoV2? = null,
 
     @Json(name = "endpoint")
     val endpoint: kotlin.String? = null

@@ -22,25 +22,15 @@ interface ReserveDao {
 
     @Query(
         "SELECT reserves.*," +
-                "organizations.id AS businessUnit_id, " +
-                "organizations.catalogItemName AS businessUnit_catalogItemName, " +
-                "organizations.name AS businessUnit_name, " +
-                "organizations.actualAddress AS businessUnit_actualAddress, " +
-                "organizations.legalAddress AS businessUnit_legalAddress, " +
                 "" +
                 "molEmployees.id AS mol_id, " +
                 "molEmployees.catalogItemName AS mol_catalogItemName, " +
                 "molEmployees.firstname AS mol_firstname, " +
                 "molEmployees.lastname AS mol_lastname, " +
                 "molEmployees.patronymic AS mol_patronymic, " +
-                "molEmployees.organizationId AS mol_organizationId, " +
+                "molEmployees.structuralId AS mol_structuralId, " +
                 "molEmployees.number AS mol_number, " +
                 "molEmployees.nfc AS mol_nfc, " +
-                "" +
-                "departments.id AS structuralSubdivision_id, " +
-                "departments.catalogItemName AS structuralSubdivision_catalogItemName, " +
-                "departments.name AS structuralSubdivision_name, " +
-                "departments.code AS structuralSubdivision_code, " +
                 "" +
                 "nomenclature.id AS nomenclature_id, " +
                 "nomenclature.catalogItemName AS nomenclature_catalogItemName, " +
@@ -66,8 +56,6 @@ interface ReserveDao {
                 "locationTypes.parentId AS location_type_parentId " +
                 "" +
                 "FROM reserves " +
-                "LEFT JOIN departments ON reserves.structuralSubdivisionId = departments.id " +
-                "LEFT JOIN organizations ON reserves.businessUnitId = organizations.id " +
                 "LEFT JOIN location ON reserves.locationId = location.id " +
                 "LEFT JOIN employees molEmployees ON reserves.molId = molEmployees.id " +
                 "LEFT JOIN nomenclature ON reserves.nomenclatureId = nomenclature.id " +

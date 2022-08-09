@@ -39,6 +39,7 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.inventory.presentation.store.InventoryStore
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseToolbar
@@ -139,7 +140,7 @@ private fun Content(
             }
         ),
         BaseTab(
-            title = stringResource(R.string.inventory_ao_title),
+            title = stringResource(R.string.inventory_accounting_object),
             screen = {
                 AccountingObjectScreen(
                     isLoading = state.isAccountingObjectsLoading,
@@ -283,10 +284,7 @@ fun InventoryScreenPreview() {
     InventoryScreen(
         InventoryStore.State(
             params = listOf(
-                ParamDomain(
-                    "1", "ООО «Грандмастер — Юниор»",
-                    type = ManualType.ORGANIZATION
-                ),
+                StructuralParamDomain(),
                 ParamDomain(
                     "2",
                     "Колесников Виталий Константинович ",

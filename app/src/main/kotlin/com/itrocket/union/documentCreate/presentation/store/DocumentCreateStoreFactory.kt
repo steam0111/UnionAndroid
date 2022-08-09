@@ -21,6 +21,7 @@ import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.utils.ifBlankOrNull
@@ -72,7 +73,10 @@ class DocumentCreateStoreFactory(
                 }
 
                 document?.let { dispatch(Result.Document(it)) }
-                changeParams(getState().document.params, documentTypeDomain = getState().document.documentType)
+                changeParams(
+                    getState().document.params,
+                    documentTypeDomain = getState().document.documentType
+                )
 
                 dispatch(Result.AccountingObjects(document?.accountingObjects ?: listOf()))
                 dispatch(Result.Reserves(document?.reserves ?: listOf()))
@@ -92,7 +96,10 @@ class DocumentCreateStoreFactory(
                 )
                 DocumentCreateStore.Intent.OnChooseReserveClicked -> onChooseReserveClicked(getState)
                 DocumentCreateStore.Intent.OnDropClicked -> {
-                    changeParams(getState().document.params, documentTypeDomain = getState().document.documentType)
+                    changeParams(
+                        getState().document.params,
+                        documentTypeDomain = getState().document.documentType
+                    )
                     dispatch(Result.AccountingObjects(getState().document.accountingObjects))
                     dispatch(Result.Reserves(getState().document.reserves))
                 }
@@ -109,14 +116,20 @@ class DocumentCreateStoreFactory(
                         getState().params,
                         intent.param
                     )
-                    changeParams(params = params, documentTypeDomain = getState().document.documentType)
+                    changeParams(
+                        params = params,
+                        documentTypeDomain = getState().document.documentType
+                    )
                 }
                 is DocumentCreateStore.Intent.OnParamsChanged -> {
                     val params = documentCreateInteractor.changeParams(
                         getState().params,
                         intent.params
                     )
-                    changeParams(params = params, documentTypeDomain = getState().document.documentType)
+                    changeParams(
+                        params = params,
+                        documentTypeDomain = getState().document.documentType
+                    )
                 }
                 DocumentCreateStore.Intent.OnSaveClicked -> saveDocument(getState)
                 is DocumentCreateStore.Intent.OnSelectPage -> dispatch(Result.SelectPage(intent.selectedPage))
@@ -126,7 +139,20 @@ class DocumentCreateStoreFactory(
                         getState().params,
                         intent.location.location
                     )
-                    changeParams(params = params, documentTypeDomain = getState().document.documentType)
+                    changeParams(
+                        params = params,
+                        documentTypeDomain = getState().document.documentType
+                    )
+                }
+                is DocumentCreateStore.Intent.OnStructuralChanged -> {
+                    val params = documentCreateInteractor.changeStructural(
+                        getState().params,
+                        intent.structural.structural
+                    )
+                    changeParams(
+                        params = params,
+                        documentTypeDomain = getState().document.documentType
+                    )
                 }
                 is DocumentCreateStore.Intent.OnAccountingObjectSelected -> {
                     dispatch(
@@ -142,8 +168,8 @@ class DocumentCreateStoreFactory(
                     intent.barcode,
                     getState().accountingObjects
                 )
-                is DocumentCreateStore.Intent.OnNewAccountingObjectRfidsHandled -> handleRfidsAccountingObjects(
-                    intent.rfids,
+                is DocumentCreateStore.Intent.OnNewAccountingObjectRfidHandled -> handleRfidsAccountingObjects(
+                    intent.rfid,
                     getState().accountingObjects
                 )
                 is DocumentCreateStore.Intent.OnReserveSelected -> dispatch(
@@ -207,12 +233,12 @@ class DocumentCreateStoreFactory(
         }
 
         private suspend fun handleRfidsAccountingObjects(
-            rfids: List<String>,
+            rfid: String,
             accountingObjects: List<AccountingObjectDomain>
         ) {
             val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectRfids(
                 accountingObjects = accountingObjects,
-                handledAccountingObjectRfids = rfids
+                handledAccountingObjectRfid = rfid
             )
             dispatch(Result.AccountingObjects(newAccountingObjects))
         }
@@ -250,24 +276,23 @@ class DocumentCreateStoreFactory(
         }
 
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
-            if (param.type == ManualType.LOCATION
-                || param.type == ManualType.LOCATION_FROM
-                || param.type == ManualType.RELOCATION_LOCATION_TO
-                || param.type == ManualType.LOCATION_TO
-            ) {
-                publish(
+            when (param.type) {
+                ManualType.LOCATION, ManualType.LOCATION_FROM,
+                ManualType.RELOCATION_LOCATION_TO, ManualType.LOCATION_TO -> publish(
                     DocumentCreateStore.Label.ShowLocation(param as LocationParamDomain)
                 )
-            } else {
-                val defaultTypeParams =
-                    filterInteractor.getDefaultTypeParams(Params(params))
-                val currentStep = defaultTypeParams.indexOf(param) + 1
-                publish(
-                    DocumentCreateStore.Label.ShowParamSteps(
-                        currentStep = currentStep,
-                        params = defaultTypeParams
+                ManualType.STRUCTURAL -> publish(DocumentCreateStore.Label.ShowStructural(param as StructuralParamDomain))
+                else -> {
+                    val defaultTypeParams =
+                        filterInteractor.getDefaultTypeParams(Params(params))
+                    val currentStep = defaultTypeParams.indexOf(param) + 1
+                    publish(
+                        DocumentCreateStore.Label.ShowParamSteps(
+                            currentStep = currentStep,
+                            params = defaultTypeParams
+                        )
                     )
-                )
+                }
             }
         }
 

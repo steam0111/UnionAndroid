@@ -20,6 +20,9 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.EntityModelV2
+import org.openapitools.client.models.UnionUserDtoV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -32,6 +35,8 @@ import com.squareup.moshi.Json
  * @param dateUpdate 
  * @param catalogItemName 
  * @param code 
+ * @param userInserted 
+ * @param userUpdated 
  * @param unionUserId 
  * @param extendedUnionUser 
  * @param eventsTime 
@@ -50,7 +55,7 @@ data class EventDtoV2 (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int?=null,
+    val version: kotlin.Int? = null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -63,6 +68,12 @@ data class EventDtoV2 (
 
     @Json(name = "code")
     val code: kotlin.String? = null,
+
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
 
     @Json(name = "unionUserId")
     val unionUserId: kotlin.String? = null,

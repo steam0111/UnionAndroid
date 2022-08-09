@@ -1,22 +1,19 @@
 package org.openapitools.client.apis
 
 
+import retrofit2.http.*
+import retrofit2.Response
+import okhttp3.RequestBody
+
+import org.openapitools.client.models.ApiDocumentsReceptionsGet200ResponseV2
+import org.openapitools.client.models.ApiSecurityUserRolesGetRequestsParametersParameterV2
 import org.openapitools.client.models.CommissioningDtoV2
 import org.openapitools.client.models.CreateCommissioningRequestV2
 import org.openapitools.client.models.DeleteResponseV2
 import org.openapitools.client.models.GetAllResponseV2
 import org.openapitools.client.models.GetResponseV2
-import org.openapitools.client.models.OneOfLessThanPutResponseCommaPostResponseGreaterThanV2
 import org.openapitools.client.models.PageableV2
 import org.openapitools.client.models.PutResponseV2
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface CommissioningControllerApi {
     /**
@@ -25,12 +22,12 @@ interface CommissioningControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param requestsParameters  
-     * @param pageable  
+     * @param requestsParameters 
+     * @param pageable 
      * @return [GetAllResponseV2]
      */
     @GET("api/documents/commissioning")
-    suspend fun apiDocumentsCommissioningGet(@Query("requestsParameters") requestsParameters: kotlin.collections.Map<kotlin.String, kotlin.collections.List<kotlin.String>>, @Query("pageable") pageable: PageableV2): Response<GetAllResponseV2>
+    suspend fun apiDocumentsCommissioningGet(@Query("requestsParameters") requestsParameters: ApiSecurityUserRolesGetRequestsParametersParameterV2, @Query("pageable") pageable: PageableV2): Response<GetAllResponseV2>
 
     /**
      * 
@@ -38,7 +35,7 @@ interface CommissioningControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
+     * @param id 
      * @return [DeleteResponseV2]
      */
     @DELETE("api/documents/commissioning/{id}")
@@ -50,7 +47,7 @@ interface CommissioningControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
+     * @param id 
      * @return [GetResponseV2]
      */
     @GET("api/documents/commissioning/{id}")
@@ -62,8 +59,8 @@ interface CommissioningControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
-     * @param commissioningDtoV2  
+     * @param id 
+     * @param commissioningDtoV2 
      * @return [PutResponseV2]
      */
     @PUT("api/documents/commissioning/{id}")
@@ -75,10 +72,10 @@ interface CommissioningControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param createCommissioningRequestV2  
-     * @return [OneOfLessThanPutResponseCommaPostResponseGreaterThanV2]
+     * @param createCommissioningRequestV2 
+     * @return [ApiDocumentsReceptionsGet200ResponseV2]
      */
     @POST("api/documents/commissioning")
-    suspend fun apiDocumentsCommissioningPost(@Body createCommissioningRequestV2: CreateCommissioningRequestV2): Response<OneOfLessThanPutResponseCommaPostResponseGreaterThanV2>
+    suspend fun apiDocumentsCommissioningPost(@Body createCommissioningRequestV2: CreateCommissioningRequestV2): Response<ApiDocumentsReceptionsGet200ResponseV2>
 
 }

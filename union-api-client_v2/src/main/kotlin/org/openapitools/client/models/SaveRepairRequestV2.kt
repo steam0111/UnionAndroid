@@ -20,6 +20,9 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.RepairDtoV2
+import org.openapitools.client.models.SaveRepairRequestRecordItemV2
+
 import com.squareup.moshi.Json
 
 /**

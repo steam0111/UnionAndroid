@@ -20,6 +20,8 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.ImportPartInformationV2
+
 import com.squareup.moshi.Json
 
 /**

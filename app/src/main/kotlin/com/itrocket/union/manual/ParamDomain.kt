@@ -2,6 +2,7 @@ package com.itrocket.union.manual
 
 import android.os.Parcelable
 import com.itrocket.union.location.domain.entity.LocationDomain
+import com.itrocket.union.structural.domain.entity.StructuralDomain
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -23,8 +24,9 @@ open class ParamDomain(
     open fun toInitialState() = ParamDomain(type = type)
 }
 
-fun List<ParamDomain>.getOrganizationId(): String? {
-    return filterNotEmpty().find { it.type == ManualType.ORGANIZATION }?.id
+
+fun List<ParamDomain>.getFilterStructuralLastId(type: ManualType = ManualType.STRUCTURAL): String? {
+    return getStructuralParamDomain(type)?.structurals?.lastOrNull()?.id
 }
 
 fun List<ParamDomain>.getFilterLocationLastId(type: ManualType = ManualType.LOCATION): String? {
@@ -33,6 +35,10 @@ fun List<ParamDomain>.getFilterLocationLastId(type: ManualType = ManualType.LOCA
 
 fun List<ParamDomain>.getFilterLocationIds(type: ManualType = ManualType.LOCATION): List<String>? {
     return getLocationParamDomain(type)?.locations?.map { it.id }
+}
+
+fun List<ParamDomain>.getStructuralParamDomain(type: ManualType): StructuralParamDomain? {
+    return (filterNotEmpty().find { it.type == type } as? StructuralParamDomain)
 }
 
 fun List<ParamDomain>.getLocationParamDomain(type: ManualType): LocationParamDomain? {
@@ -45,14 +51,6 @@ fun List<ParamDomain>.getExploitingId(): String? {
 
 fun List<ParamDomain>.getMolId(): String? {
     return filterNotEmpty().find { it.type == ManualType.MOL }?.id
-}
-
-fun List<ParamDomain>.getDepartmentId(type: ManualType = ManualType.DEPARTMENT): String? {
-    return filterNotEmpty().find { it.type == type }?.id
-}
-
-fun List<ParamDomain>.getBranchId(): String? {
-    return filterNotEmpty().find { it.type == ManualType.BRANCH }?.id
 }
 
 fun List<ParamDomain>.getActionBaseId(): String? {
@@ -102,5 +100,23 @@ data class LocationParamDomain(
 
     override fun toInitialState(): LocationParamDomain {
         return LocationParamDomain()
+    }
+}
+
+@Parcelize
+data class StructuralParamDomain(
+    val filtered: Boolean = true,
+    val structurals: List<StructuralDomain> = emptyList(),
+    val manualType: ManualType = ManualType.STRUCTURAL
+) : Parcelable,
+    ParamDomain(
+        id = structurals.lastOrNull()?.id.toString(),
+        value = structurals.joinToString(", ") { it.value },
+        type = manualType,
+        isFilter = filtered
+    ) {
+
+    override fun toInitialState(): StructuralParamDomain {
+        return StructuralParamDomain()
     }
 }

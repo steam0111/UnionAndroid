@@ -55,6 +55,7 @@ import com.itrocket.union.employees.domain.entity.EmployeeStatus
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.utils.clickableUnbounded
 import java.math.BigDecimal
@@ -116,7 +117,7 @@ fun AccountingObjectItem(
                         selected = accountingObject.isBarcode,
                         onClick = null,
                         colors = RadioButtonDefaults.colors(
-                            selectedColor = psb6,
+                            selectedColor = psb3,
                             unselectedColor = graphite3
                         )
                     )
@@ -138,7 +139,7 @@ fun AccountingObjectItem(
                             selected = accountingObject.isBarcode,
                             onClick = null,
                             colors = RadioButtonDefaults.colors(
-                                selectedColor = psb6,
+                                selectedColor = psb3,
                                 unselectedColor = graphite3
                             )
                         )
@@ -188,6 +189,7 @@ fun ReservesItem(
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             Text(
                 text = reserves.itemsCount.toString(),
+                color = psb1,
                 style = AppTheme.typography.body2,
                 fontWeight = FontWeight.Medium
             )
@@ -207,7 +209,7 @@ fun ReservesItem(
                     selected = reserves.isBarcode,
                     onClick = null,
                     colors = RadioButtonDefaults.colors(
-                        selectedColor = psb6,
+                        selectedColor = psb3,
                         unselectedColor = graphite3
                     )
                 )
@@ -230,16 +232,7 @@ fun InventoryDocumentItem(
     val annotatedInfo = buildAnnotatedString {
         val filteredDocumentInfo = item.documentInfo.filter { it.value.isNotBlank() }
         filteredDocumentInfo.forEachIndexed { index, info ->
-            withStyle(
-                SpanStyle(
-                    fontWeight = FontWeight.Medium,
-                    letterSpacing = 0.15.sp,
-                    fontSize = 19.sp,
-                    color = psb1
-                )
-            ) {
-                append(info.value)
-            }
+            append(info.value)
 
             if (index < filteredDocumentInfo.lastIndex) {
                 append(" ")
@@ -265,10 +258,11 @@ fun InventoryDocumentItem(
             verticalAlignment = Alignment.Top
         ) {
             Text(
+                color = psb1,
                 text = annotatedTitle.first,
                 inlineContent = annotatedTitle.second,
                 style = AppTheme.typography.body1,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.Bold,
                 lineHeight = 20.sp,
                 modifier = Modifier
                     .padding(end = 40.dp)
@@ -281,7 +275,7 @@ fun InventoryDocumentItem(
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = annotatedInfo, style = AppTheme.typography.caption, color = graphite6)
+        Text(text = annotatedInfo, style = AppTheme.typography.body2, color = psb3)
         Spacer(modifier = Modifier.height(12.dp))
     }
 }
@@ -391,7 +385,8 @@ fun DocumentInfoItem(
                 text = annotatedTitle,
                 inlineContent = numberContent,
                 style = AppTheme.typography.body1,
-                fontWeight = FontWeight.Medium,
+                color = psb1,
+                fontWeight = FontWeight.Bold,
                 lineHeight = 20.sp,
                 modifier = Modifier
                     .padding(end = 40.dp)
@@ -404,7 +399,7 @@ fun DocumentInfoItem(
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = annotatedInfo, style = AppTheme.typography.caption, color = graphite6)
+        Text(text = annotatedInfo, style = AppTheme.typography.body2, color = psb3)
         Spacer(modifier = Modifier.height(12.dp))
         if (isShowBottomLine) {
             Spacer(
@@ -495,7 +490,7 @@ fun DefaultListItem(
                             stringResource(it.key),
                             it.value.orEmpty()
                         ),
-                        style = AppTheme.typography.subtitle1,
+                        style = AppTheme.typography.body2,
                         color = psb3
                     )
                 }
@@ -537,10 +532,7 @@ fun DocumentInfoItemPreview() {
                     "1", "blbbb",
                     type = ManualType.LOCATION
                 ),
-                ParamDomain(
-                    "1", "blbbb",
-                    type = ManualType.ORGANIZATION
-                )
+                StructuralParamDomain()
             ),
             documentType = DocumentTypeDomain.WRITE_OFF,
             dateUi = "12.12.12",
@@ -721,6 +713,7 @@ fun EmployeeItemPreview() {
 private fun HeaderText(text: String) {
     Text(
         text = text,
+        fontWeight = FontWeight.Bold,
         style = AppTheme.typography.h6,
         fontSize = 19.sp,
         color = psb1

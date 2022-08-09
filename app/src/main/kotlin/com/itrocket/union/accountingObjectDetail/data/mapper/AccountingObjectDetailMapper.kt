@@ -27,16 +27,8 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
     exploitingEmployee?.let {
         listMainInfo.add(ObjectInfoDomain(R.string.manual_exploiting, it.fullName))
     }
-    organization?.let {
-        listMainInfo.add(ObjectInfoDomain(R.string.manual_organization, it.name))
-    }
-    department?.let {
-        listMainInfo.add(
-            ObjectInfoDomain(
-                R.string.accounting_objects_department,
-                it.name.orEmpty()
-            )
-        )
+    structuralSyncEntity?.let {
+        listMainInfo.add(ObjectInfoDomain(R.string.manual_structural, it.name))
     }
     accountingObject.model?.let {
         listMainInfo.add(ObjectInfoDomain(R.string.accounting_objects_model, it))
@@ -72,10 +64,6 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
     accountingObject.barcodeValue?.let {
         listMainInfo.add(ObjectInfoDomain(R.string.reading_mode_barcode, it))
     }
-    branch?.let {
-        listMainInfo.add(ObjectInfoDomain(R.string.balance_unit, it.name))
-    }
-
 
     return AccountingObjectDomain(
         id = accountingObject.id,

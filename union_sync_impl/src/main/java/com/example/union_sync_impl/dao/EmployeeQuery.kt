@@ -8,7 +8,7 @@ import com.example.union_sync_impl.utils.isEquals
 import com.example.union_sync_impl.utils.more
 
 fun sqlEmployeeQuery(
-    organizationId: String? = null,
+    structuralId: String? = null,
     textQuery: String? = null,
     updateDate: Long? = null,
     isFilterCount: Boolean = false
@@ -20,21 +20,21 @@ fun sqlEmployeeQuery(
     }
 
     val query = mainQuery.getEmployeesFilterPartQuery(
-        organizationId, textQuery, updateDate
+        structuralId, textQuery, updateDate
     )
     return SimpleSQLiteQuery(query)
 }
 
 private fun String.getEmployeesFilterPartQuery(
-    organizationId: String? = null,
+    structuralId: String? = null,
     textQuery: String? = null,
     updateDate: Long? = null
 ): String = addFilters(
     sqlTableFilters = SqlTableFilters(
         tableName = "employees",
         filter = buildList {
-            organizationId?.let {
-                add("organizationId" isEquals organizationId)
+            structuralId?.let {
+                add("structuralId" isEquals structuralId)
             }
             textQuery?.let {
                 add(

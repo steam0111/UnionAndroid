@@ -54,6 +54,7 @@
     <string name="auth_main_user_change">Сменить пользователя</string>
     <string name="auth_main_database_settings">Настройки БД</string>
     <string name="auth_title">Авторизация</string>
+    <string name="auth_active_directory">Пользователь Active Directory</string>
 
     <!-- MainScreen -->
     <string name="common_hint">Введите значение</string>
@@ -73,13 +74,9 @@
     <string name="main_write_off">Списание</string>
     <string name="nomenclature_group">Ном. группа</string>
     <string name="nomenclature">Номенклатура</string>
-    <string name="organizations">Организации</string>
-    <string name="departments">Подразделения</string>
     <string name="inventories">Инв. ведомости</string>
     <string name="producer">Производители</string>
     <string name="counterparties">Контрагенты</string>
-    <string name="regions">Регионы</string>
-    <string name="branches">Филиалы</string>
     <string name="equipment_types">Типы оборуд.</string>
     <string name="sync">Синхронизация</string>
     <string name="reception_category">Приеная категория</string>
@@ -91,6 +88,7 @@
     <string name="manual_organization">Организация</string>
     <string name="manual_mol">Ответственный</string>
     <string name="manual_location">Местоположение</string>
+    <string name="manual_structural">Подразделение</string>
     <string name="manual_exploiting">Эксплуатирующий</string>
     <string name="manual_status">Статус</string>
     <string name="manual_date">Дата заявки</string>
@@ -157,6 +155,11 @@
     <string name="location_select_place">Выберите %s</string>
     <string name="location_hint">Введите запрос</string>
 
+    <!-- Structural -->
+    <string name="structural_level">Уровень подразделения</string>
+    <string name="structural_select_structural">Выберите уровень вложенности</string>
+    <string name="structural_hint">Введите запрос</string>
+
     <!-- Reserves -->
     <string name="reserves_title">Запасы</string>
     <string name="reserves_unit_price">Цена за ед.</string>
@@ -181,7 +184,7 @@
 
     <!-- Document create -->
     <string name="document_create_title">%s &quot;%s&quot;</string>
-    <string name="document_create_accounting_object">Объекты учета</string>
+    <string name="document_create_accounting_object">Об. учета</string>
     <string name="document_create_reserves">Запасы</string>
     <string name="document_create_empty">Для начала считывания нажмите курок или выберите из списка</string>
 
@@ -193,8 +196,8 @@
 
     <!-- Inventory -->
     <string name="inventory_ao_title">Инвентаризация «ОУ»</string>
-    <string name="inventory_params">Параметры</string>
-    <string name="inventory_accounting_object">Объекты учета</string>
+    <string name="inventory_params">Парам.</string>
+    <string name="inventory_accounting_object">Инвент. «ОУ»</string>
     <string name="inventory_created">Создана</string>
     <string name="inventory_in_work">В работе</string>
     <string name="inventory_done">Завершена</string>

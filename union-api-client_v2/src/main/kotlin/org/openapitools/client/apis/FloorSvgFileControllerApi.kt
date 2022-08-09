@@ -1,14 +1,12 @@
 package org.openapitools.client.apis
 
 
-import org.openapitools.client.models.InlineObjectV2
-import org.openapitools.client.models.SpringResponseV2
+import retrofit2.http.*
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import okhttp3.RequestBody
+
+import org.openapitools.client.models.ApiReportsWorkPlaceSchemasIdSvgFileDeleteRequestV2
+import org.openapitools.client.models.SpringResponseV2
 
 interface FloorSvgFileControllerApi {
     /**
@@ -17,7 +15,7 @@ interface FloorSvgFileControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
+     * @param id 
      * @return [SpringResponseV2]
      */
     @DELETE("api/reports/work-place-schemas/{id}/svg-file")
@@ -29,7 +27,7 @@ interface FloorSvgFileControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
+     * @param id 
      * @return [Unit]
      */
     @GET("api/reports/work-place-schemas/{id}/svg-file")
@@ -41,11 +39,11 @@ interface FloorSvgFileControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
-     * @param inlineObjectV2  (optional)
+     * @param id 
+     * @param apiReportsWorkPlaceSchemasIdSvgFileDeleteRequestV2  (optional)
      * @return [SpringResponseV2]
      */
     @POST("api/reports/work-place-schemas/{id}/svg-file")
-    suspend fun apiReportsWorkPlaceSchemasIdSvgFilePost(@Path("id") id: kotlin.String, @Body inlineObjectV2: InlineObjectV2? = null): Response<SpringResponseV2>
+    suspend fun apiReportsWorkPlaceSchemasIdSvgFilePost(@Path("id") id: kotlin.String, @Body apiReportsWorkPlaceSchemasIdSvgFileDeleteRequestV2: ApiReportsWorkPlaceSchemasIdSvgFileDeleteRequestV2? = null): Response<SpringResponseV2>
 
 }

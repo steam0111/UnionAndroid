@@ -1,12 +1,12 @@
 package org.openapitools.client.apis
 
 
+import retrofit2.http.*
+import retrofit2.Response
+import okhttp3.RequestBody
+
 import org.openapitools.client.models.InventoryRecordChangeStatusRequestV2
 import org.openapitools.client.models.InventoryRecordChangeStatusResponseV2
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.POST
-import retrofit2.http.Path
 
 interface ChangeInventoryRecordStatusControllerApi {
     /**
@@ -15,8 +15,8 @@ interface ChangeInventoryRecordStatusControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
-     * @param inventoryRecordChangeStatusRequestV2  
+     * @param id 
+     * @param inventoryRecordChangeStatusRequestV2 
      * @return [InventoryRecordChangeStatusResponseV2]
      */
     @POST("api/documents/inventory-records/{id}/change-status")

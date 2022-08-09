@@ -1,12 +1,12 @@
 package org.openapitools.client.apis
 
 
+import retrofit2.http.*
+import retrofit2.Response
+import okhttp3.RequestBody
+
 import org.openapitools.client.models.GenerateInventoryNumberRequestV2
 import org.openapitools.client.models.GenerateNewInventoryNumberResponseV2
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.POST
-import retrofit2.http.Path
 
 interface AccountingObjectInventoryNumberControllerApi {
     /**
@@ -15,8 +15,8 @@ interface AccountingObjectInventoryNumberControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
-     * @param generateInventoryNumberRequestV2  
+     * @param id 
+     * @param generateInventoryNumberRequestV2 
      * @return [GenerateNewInventoryNumberResponseV2]
      */
     @POST("api/catalogs/accounting-objects/{id}/generate-inventory-number")

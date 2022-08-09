@@ -20,13 +20,17 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.PermissionV2
+import org.openapitools.client.models.StructuralUnitV2
+import org.openapitools.client.models.UnionUserV2
+
 import com.squareup.moshi.Json
 
 /**
  * 
  *
  * @param unionUser 
- * @param organization 
+ * @param structuralUnit 
  * @param permissions 
  */
 
@@ -35,8 +39,8 @@ data class PersonV2 (
     @Json(name = "unionUser")
     val unionUser: UnionUserV2? = null,
 
-    @Json(name = "organization")
-    val organization: OrganizationV2? = null,
+    @Json(name = "structuralUnit")
+    val structuralUnit: StructuralUnitV2? = null,
 
     @Json(name = "permissions")
     val permissions: kotlin.collections.Set<PermissionV2>? = null
