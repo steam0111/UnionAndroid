@@ -69,12 +69,13 @@ class DocumentAccountingObjectManager(
         return withContext(coreDispatchers.io) {
             val accountingObjects = repository.getAccountingObjectsByIds(accountingObjectIds)
             val newStatus =
-                accountingObjectStatusSyncApi.getStatuses(id = ObjectStatusType.GIVEN.name).first()
+                accountingObjectStatusSyncApi.getStatuses(id = ObjectStatusType.GIVEN.name)
+                    .firstOrNull()
             accountingObjects.map {
                 it.copy(
                     exploitingEmployeeId = exploitingId,
                     status = newStatus,
-                    statusId = newStatus.id,
+                    statusId = newStatus?.id,
                     locationId = locationToId ?: it.locationId,
                     structuralId = structuralId ?: it.structuralId
                 )

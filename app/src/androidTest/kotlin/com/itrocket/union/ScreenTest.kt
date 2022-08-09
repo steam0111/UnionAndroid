@@ -34,6 +34,7 @@ import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.Sel
 import com.itrocket.union.serverConnect.presentation.view.ServerConnectScreenPreview
 import com.itrocket.union.structural.presentation.view.StructuralScreenPreview
 import com.itrocket.union.switcher.presentation.view.SwitcherScreenPreview
+import com.itrocket.union.ui.ConfirmAlertDialogPreview
 import com.karumi.shot.ScreenshotTest
 import org.junit.Rule
 import org.junit.Test
@@ -253,6 +254,13 @@ class ScreensTest : ScreenshotTest {
     fun `Structural`() {
         takeScreenShot {
             StructuralScreenPreview()
+        }
+    }
+
+    @Test
+    fun `ConfirmAlertDialog`() {
+        takeScreenShot {
+            ConfirmAlertDialogPreview()
         }
     }
 }

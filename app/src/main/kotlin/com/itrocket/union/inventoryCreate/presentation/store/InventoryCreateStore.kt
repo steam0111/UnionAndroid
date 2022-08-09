@@ -42,6 +42,8 @@ interface InventoryCreateStore :
         object OnReadingClicked : Intent()
         object OnInWorkClicked : Intent()
         object OnCompleteClicked : Intent()
+        object OnDismissConfirmDialog : Intent()
+        object OnConfirmActionClick : Intent()
     }
 
     data class State(
@@ -49,7 +51,8 @@ interface InventoryCreateStore :
         val isHideFoundAccountingObjects: Boolean = false,
         val newAccountingObjects: Set<AccountingObjectDomain> = setOf(),
         val isAddNew: Boolean = false,
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        val isConfirmDialogVisible: Boolean = false
     )
 
     sealed class Label {

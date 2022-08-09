@@ -11,6 +11,7 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documentCreate.domain.DocumentAccountingObjectManager
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import com.itrocket.union.documentCreate.domain.DocumentReservesManager
+import com.itrocket.union.documentCreate.presentation.view.DocumentConfirmAlertType
 import com.itrocket.union.documents.data.mapper.getParams
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
@@ -131,7 +132,9 @@ class DocumentCreateStoreFactory(
                         documentTypeDomain = getState().document.documentType
                     )
                 }
-                DocumentCreateStore.Intent.OnSaveClicked -> saveDocument(getState)
+                DocumentCreateStore.Intent.OnSaveClicked -> {
+                    dispatch(Result.ConfirmDialogType(DocumentConfirmAlertType.SAVE))
+                }
                 is DocumentCreateStore.Intent.OnSelectPage -> dispatch(Result.SelectPage(intent.selectedPage))
                 DocumentCreateStore.Intent.OnSettingsClicked -> publish(DocumentCreateStore.Label.ShowReadingMode)
                 is DocumentCreateStore.Intent.OnLocationChanged -> {
@@ -180,7 +183,9 @@ class DocumentCreateStoreFactory(
                         )
                     )
                 )
-                DocumentCreateStore.Intent.OnCompleteClicked -> conductDocument(getState())
+                DocumentCreateStore.Intent.OnCompleteClicked -> {
+                    dispatch(Result.ConfirmDialogType(DocumentConfirmAlertType.CONDUCT))
+                }
                 is DocumentCreateStore.Intent.OnReserveCountSelected -> dispatch(
                     Result.Reserves(
                         documentCreateInteractor.updateReserveCount(
@@ -196,7 +201,22 @@ class DocumentCreateStoreFactory(
                         count = intent.reserve.itemsCount
                     )
                 )
+                is DocumentCreateStore.Intent.OnDismissConfirmDialog -> {
+                    dispatch(Result.ConfirmDialogType(DocumentConfirmAlertType.NONE))
+                }
+                is DocumentCreateStore.Intent.OnConfirmActionClick -> {
+                    handleOnConfirmActionClick(getState())
+                }
             }
+        }
+
+        private suspend fun handleOnConfirmActionClick(state: DocumentCreateStore.State) {
+            if (state.confirmDialogType == DocumentConfirmAlertType.SAVE) {
+                saveDocument(state)
+            } else if (state.confirmDialogType == DocumentConfirmAlertType.CONDUCT) {
+                conductDocument(state)
+            }
+            dispatch(Result.ConfirmDialogType(DocumentConfirmAlertType.NONE))
         }
 
         private suspend fun conductDocument(state: DocumentCreateStore.State) {
@@ -264,15 +284,15 @@ class DocumentCreateStoreFactory(
             )
         }
 
-        private suspend fun saveDocument(getState: () -> DocumentCreateStore.State) {
+        private suspend fun saveDocument(state: DocumentCreateStore.State) {
             val documentId = documentCreateInteractor.createOrUpdateDocument(
-                accountingObjects = getState().accountingObjects,
-                document = getState().document,
-                params = getState().params,
-                reserves = getState().reserves,
-                status = getState().document.documentStatus
+                accountingObjects = state.accountingObjects,
+                document = state.document,
+                params = state.params,
+                reserves = state.reserves,
+                status = state.document.documentStatus
             )
-            dispatch(Result.Document(getState().document.copy(id = documentId)))
+            dispatch(Result.Document(state.document.copy(id = documentId)))
         }
 
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
@@ -328,6 +348,7 @@ class DocumentCreateStoreFactory(
         data class SelectPage(val page: Int) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
         data class Reserves(val reserves: List<ReservesDomain>) : Result()
+        data class ConfirmDialogType(val type: DocumentConfirmAlertType) : Result()
     }
 
     private object ReducerImpl : Reducer<DocumentCreateStore.State, Result> {
@@ -340,6 +361,7 @@ class DocumentCreateStoreFactory(
                 is Result.SelectPage -> copy(selectedPage = result.page)
                 is Result.Document -> copy(document = result.document)
                 is Result.ParamsValid -> copy(isParamsValid = result.isParamsValid)
+                is Result.ConfirmDialogType -> copy(confirmDialogType = result.type)
             }
     }
 

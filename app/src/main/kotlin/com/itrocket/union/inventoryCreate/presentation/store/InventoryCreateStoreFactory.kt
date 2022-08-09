@@ -83,10 +83,9 @@ class InventoryCreateStoreFactory(
                 InventoryCreateStore.Intent.OnReadingClicked -> {
                     publish(InventoryCreateStore.Label.ShowReadingMode)
                 }
-                InventoryCreateStore.Intent.OnSaveClicked -> saveInventory(
-                    inventoryDocument = getState().inventoryDocument,
-                    accountingObjects = getState().inventoryDocument.accountingObjects + getState().newAccountingObjects
-                )
+                InventoryCreateStore.Intent.OnSaveClicked -> {
+                    dispatch(Result.ConfirmDialogVisibility(true))
+                }
                 is InventoryCreateStore.Intent.OnNewAccountingObjectBarcodeHandled -> {
                     val inventoryStatus = getState().inventoryDocument.inventoryStatus
                     if (inventoryStatus != InventoryStatus.COMPLETED) {
@@ -126,6 +125,16 @@ class InventoryCreateStoreFactory(
                     inventoryDomain = getState().inventoryDocument,
                     newAccountingObjects = getState().newAccountingObjects.toList()
                 )
+                is InventoryCreateStore.Intent.OnDismissConfirmDialog -> {
+                    dispatch(Result.ConfirmDialogVisibility(false))
+                }
+                is InventoryCreateStore.Intent.OnConfirmActionClick -> {
+                    dispatch(Result.ConfirmDialogVisibility(false))
+                    saveInventory(
+                        inventoryDocument = getState().inventoryDocument,
+                        accountingObjects = getState().inventoryDocument.accountingObjects + getState().newAccountingObjects
+                    )
+                }
             }
         }
 
@@ -283,6 +292,8 @@ class InventoryCreateStoreFactory(
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
         data class NewAccountingObjects(val newAccountingObjects: Set<AccountingObjectDomain>) :
             Result()
+
+        data class ConfirmDialogVisibility(val isVisible: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryCreateStore.State, Result> {
@@ -298,6 +309,7 @@ class InventoryCreateStoreFactory(
                 )
                 is Result.NewAccountingObjects -> copy(newAccountingObjects = result.newAccountingObjects)
                 is Result.Inventory -> copy(inventoryDocument = result.inventory)
+                is Result.ConfirmDialogVisibility -> copy(isConfirmDialogVisible = result.isVisible)
             }
     }
 }

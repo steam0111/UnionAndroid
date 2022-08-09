@@ -12,6 +12,7 @@ import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectArguments
+import com.itrocket.union.documentCreate.presentation.view.DocumentConfirmAlertType
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragmentDirections
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.location.domain.entity.LocationDomain
@@ -61,6 +62,8 @@ interface DocumentCreateStore :
         data class OnLocationChanged(val location: LocationResult) : Intent()
         data class OnStructuralChanged(val structural: StructuralResult) : Intent()
         data class OnReserveClicked(val reserve: ReservesDomain) : Intent()
+        object OnDismissConfirmDialog : Intent()
+        object OnConfirmActionClick : Intent()
     }
 
     data class State(
@@ -72,6 +75,7 @@ interface DocumentCreateStore :
         val selectedPage: Int = 0,
         val isParamsValid: Boolean = false,
         val departureLocation: List<LocationDomain> = emptyList(),
+        val confirmDialogType: DocumentConfirmAlertType = DocumentConfirmAlertType.NONE
     )
 
     sealed class Label {

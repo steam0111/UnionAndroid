@@ -10,6 +10,8 @@
     <string name="common_drop">Сбросить</string>
     <string name="common_apply">Применить</string>
     <string name="common_cancel">Отмена</string>
+    <string name="common_ok">Ок</string>
+    <string name="common_confirm_save_text">Вы уверены, что хотите сохранить?</string>
     <string name="common_continue">Продолжить</string>
     <string name="common_finish">Готово</string>
     <string name="common_step">Шаг %s</string>
@@ -22,6 +24,7 @@
     <string name="common_add">Добавить</string>
     <string name="common_choose">Выбор</string>
     <string name="common_conduct">Провести</string>
+    <string name="confirm_conduct_text">Вы уверены, что хотите провести документ?</string>
     <string name="common_error">Что-то пошло не так…</string>
     <string name="common_name">Название</string>
     <string name="common_kpp">КПП</string>
