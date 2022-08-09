@@ -37,6 +37,7 @@ class AuthMainRepositoryImpl(
     private val loginPreferencesKey: Preferences.Key<String>,
     private val myEmployeePreferencesKey: Preferences.Key<String>,
     private val myPermissionsPreferencesKey: Preferences.Key<String>,
+    private val mySuperUserPreferencesKey: Preferences.Key<Boolean>,
     private val moshi: Moshi
 ) : AuthMainRepository, KoinComponent {
 
@@ -122,12 +123,16 @@ class AuthMainRepositoryImpl(
                 val permissionsString = jsonAdapter.toJson(it)
                 preferences[myPermissionsPreferencesKey] = permissionsString
             }
+            config?.isSuperUser?.let {
+                preferences[mySuperUserPreferencesKey] = it
+            }
         }
     }
 
     override suspend fun getMyPreferencesConfig(): MyConfigDomain {
         val employeeId = dataStore.data.map { it[myEmployeePreferencesKey] }.firstOrNull()
         val permissionsString = dataStore.data.map { it[myPermissionsPreferencesKey] }.firstOrNull()
+        val isSuperUser = dataStore.data.map { it[mySuperUserPreferencesKey] }.firstOrNull()
 
         val type: Type =
             Types.newParameterizedType(List::class.java, MyConfigPermission::class.java)
@@ -141,7 +146,8 @@ class AuthMainRepositoryImpl(
 
         return MyConfigDomain(
             employeeId = employeeId,
-            permissions = permissions
+            permissions = permissions,
+            isSuperUser = isSuperUser ?: false
         )
     }
 

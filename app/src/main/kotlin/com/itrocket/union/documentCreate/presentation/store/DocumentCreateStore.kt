@@ -52,7 +52,7 @@ interface DocumentCreateStore :
         data class OnAccountingObjectSelected(val accountingObjectDomain: AccountingObjectDomain) :
             Intent()
 
-        data class OnNewAccountingObjectRfidsHandled(val rfids: List<String>) :
+        data class OnNewAccountingObjectRfidHandled(val rfid: String) :
             Intent()
 
         data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :

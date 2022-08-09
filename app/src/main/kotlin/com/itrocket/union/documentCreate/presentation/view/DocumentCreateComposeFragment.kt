@@ -108,9 +108,6 @@ class DocumentCreateComposeFragment :
 
     private val serviceEntryManager: ServiceEntryManager by inject()
 
-    private val scanningDataRfid: MutableSet<String> = mutableSetOf()
-    private var scanningDataBarcode: String = ""
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         observeScanning()
@@ -169,12 +166,24 @@ class DocumentCreateComposeFragment :
             }
             launch {
                 serviceEntryManager.barcodeScanDataFlow.collect {
-                    scanningDataBarcode = it.data
+                    withContext(Dispatchers.Main) {
+                        accept(
+                            DocumentCreateStore.Intent.OnNewAccountingObjectBarcodeHandled(
+                                it.data
+                            )
+                        )
+                    }
                 }
             }
             launch {
                 serviceEntryManager.epcInventoryDataFlow.collect {
-                    scanningDataRfid.add(it)
+                    withContext(Dispatchers.Main) {
+                        accept(
+                            DocumentCreateStore.Intent.OnNewAccountingObjectRfidHandled(
+                                it
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -195,23 +204,6 @@ class DocumentCreateComposeFragment :
                         serviceEntryManager.stopRfidOperation()
                     } else {
                         serviceEntryManager.stopBarcodeScan()
-                    }
-                    withContext(Dispatchers.Main) {
-                        if (scanningDataRfid.isNotEmpty()) {
-                            accept(
-                                DocumentCreateStore.Intent.OnNewAccountingObjectRfidsHandled(
-                                    scanningDataRfid.toList()
-                                )
-                            )
-                        } else {
-                            accept(
-                                DocumentCreateStore.Intent.OnNewAccountingObjectBarcodeHandled(
-                                    scanningDataBarcode
-                                )
-                            )
-                        }
-                        scanningDataRfid.clear()
-                        scanningDataBarcode = ""
                     }
                 }
             }

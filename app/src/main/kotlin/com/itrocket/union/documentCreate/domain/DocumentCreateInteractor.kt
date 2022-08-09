@@ -51,7 +51,7 @@ class DocumentCreateInteractor(
                         reserves = reserves,
                         userInserted = authMainInteractor.getLogin(),
                         userUpdated = authMainInteractor.getLogin()
-                ).toCreateSyncEntity()
+                    ).toCreateSyncEntity()
                 )
             } else {
                 documentRepository.updateDocument(
@@ -162,16 +162,14 @@ class DocumentCreateInteractor(
 
     suspend fun handleNewAccountingObjectRfids(
         accountingObjects: List<AccountingObjectDomain>,
-        handledAccountingObjectRfids: List<String>
+        handledAccountingObjectRfid: String
     ): List<AccountingObjectDomain> {
         return withContext(coreDispatchers.io) {
             val newAccountingObjectRfids = mutableListOf<String>()
 
-            handledAccountingObjectRfids.forEach { rfid ->
-                val index = accountingObjects.indexOfFirst { it.rfidValue == rfid }
-                if (index == NO_POSITION) {
-                    newAccountingObjectRfids.add(rfid)
-                }
+            val index = accountingObjects.indexOfFirst { it.rfidValue == handledAccountingObjectRfid }
+            if (index == NO_POSITION) {
+                newAccountingObjectRfids.add(handledAccountingObjectRfid)
             }
             val newAccountingObjects =
                 accountingObjectRepository.getAccountingObjectsByRfids(newAccountingObjectRfids)

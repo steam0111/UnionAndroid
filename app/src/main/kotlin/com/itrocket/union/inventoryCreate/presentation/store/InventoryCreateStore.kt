@@ -28,7 +28,7 @@ interface InventoryCreateStore :
         data class OnAccountingObjectStatusChanged(val switcherResult: SwitcherResult) :
             Intent()
 
-        data class OnNewAccountingObjectRfidsHandled(val handledAccountingObjectIds: List<String>) :
+        data class OnNewAccountingObjectRfidHandled(val handledAccountingObjectId: String) :
             Intent()
 
         data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :
