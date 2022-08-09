@@ -5,12 +5,13 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
+import com.itrocket.union.identify.domain.IdentifyInteractor
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 
 class IdentifyStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val documentCreateInteractor: DocumentCreateInteractor
+    private val identifyInteractor: IdentifyInteractor
 ) {
     fun create(): IdentifyStore =
         object : IdentifyStore,
@@ -56,8 +57,8 @@ class IdentifyStoreFactory(
                         )
                     )
                 }
-                is IdentifyStore.Intent.OnNewAccountingObjectRfidsHandled -> handleRfidsAccountingObjects(
-                    intent.rfids,
+                is IdentifyStore.Intent.OnNewAccountingObjectRfidHandled -> handleRfidAccountingObjects(
+                    intent.rfid,
                     getState().accountingObjects
                 )
                 is IdentifyStore.Intent.OnNewAccountingObjectBarcodeHandled -> {
@@ -69,7 +70,7 @@ class IdentifyStoreFactory(
                 is IdentifyStore.Intent.OnAccountingObjectSelected -> {
                     dispatch(
                         Result.AccountingObjects(
-                            documentCreateInteractor.addAccountingObject(
+                            identifyInteractor.addAccountingObject(
                                 accountingObjects = getState().accountingObjects,
                                 accountingObject = intent.accountingObject
                             )
@@ -82,13 +83,13 @@ class IdentifyStoreFactory(
             }
         }
 
-        private suspend fun handleRfidsAccountingObjects(
-            rfids: List<String>,
+        private suspend fun handleRfidAccountingObjects(
+            rfid: String,
             accountingObjects: List<AccountingObjectDomain>
         ) {
-            val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectRfids(
+            val newAccountingObjects = identifyInteractor.handleNewAccountingObjectRfids(
                 accountingObjects = accountingObjects,
-                handledAccountingObjectRfids = rfids
+                handledAccountingObjectRfid = rfid
             )
             dispatch(Result.AccountingObjects(newAccountingObjects))
         }
@@ -97,7 +98,7 @@ class IdentifyStoreFactory(
             barcode: String,
             accountingObjects: List<AccountingObjectDomain>
         ) {
-            val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectBarcode(
+            val newAccountingObjects = identifyInteractor.handleNewAccountingObjectBarcode(
                 accountingObjects = accountingObjects,
                 barcode = barcode
             )

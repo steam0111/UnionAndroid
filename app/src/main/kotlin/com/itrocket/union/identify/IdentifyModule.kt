@@ -2,6 +2,8 @@ package com.itrocket.union.identify
 
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.itrocket.core.base.BaseViewModel
+import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
+import com.itrocket.union.identify.domain.IdentifyInteractor
 
 import com.itrocket.union.identify.presentation.store.IdentifyStore
 import com.itrocket.union.identify.presentation.store.IdentifyStoreFactory
@@ -19,6 +21,9 @@ object IdentifyModule {
             BaseViewModel(get<IdentifyStore>() {
                 parametersOf(args)
             })
+        }
+        factory {
+            IdentifyInteractor(get(), get())
         }
 
         factory {

@@ -26,7 +26,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         data class OnDeleteFromSelectActionWithValuesBottomMenu(val accountingObjects: List<AccountingObjectDomain>) :
             Intent()
 
-        data class OnNewAccountingObjectRfidsHandled(val rfids: List<String>) :
+        data class OnNewAccountingObjectRfidHandled(val rfid: String) :
             Intent()
 
         data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :

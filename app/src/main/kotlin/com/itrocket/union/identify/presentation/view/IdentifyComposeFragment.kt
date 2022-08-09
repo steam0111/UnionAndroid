@@ -9,6 +9,7 @@ import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectResult
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
+import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
 import com.itrocket.union.identify.IdentifyModule.IDENTIFY_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.identify.presentation.store.IdentifyStore
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuResult
@@ -54,8 +55,6 @@ class IdentifyComposeFragment :
         )
 
     private val serviceEntryManager: ServiceEntryManager by inject()
-    private val scanningDataRfid: MutableSet<String> = mutableSetOf()
-    private var scanningDataBarcode: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,12 +68,24 @@ class IdentifyComposeFragment :
             }
             launch {
                 serviceEntryManager.barcodeScanDataFlow.collect {
-                    scanningDataBarcode = it.data
+                    withContext(Dispatchers.Main) {
+                        accept(
+                            IdentifyStore.Intent.OnNewAccountingObjectBarcodeHandled(
+                                it.data
+                            )
+                        )
+                    }
                 }
             }
             launch {
                 serviceEntryManager.epcInventoryDataFlow.collect {
-                    scanningDataRfid.add(it)
+                    withContext(Dispatchers.Main) {
+                        accept(
+                            IdentifyStore.Intent.OnNewAccountingObjectRfidHandled(
+                                it
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -96,27 +107,11 @@ class IdentifyComposeFragment :
                     } else {
                         serviceEntryManager.stopBarcodeScan()
                     }
-                    withContext(Dispatchers.Main) {
-                        if (scanningDataRfid.isNotEmpty()) {
-                            accept(
-                                IdentifyStore.Intent.OnNewAccountingObjectRfidsHandled(
-                                    scanningDataRfid.toList()
-                                )
-                            )
-                        } else {
-                            accept(
-                                IdentifyStore.Intent.OnNewAccountingObjectBarcodeHandled(
-                                    scanningDataBarcode
-                                )
-                            )
-                        }
-                        scanningDataRfid.clear()
-                        scanningDataBarcode = ""
-                    }
                 }
             }
         }
     }
+
 
     override fun renderState(
         state: IdentifyStore.State,
