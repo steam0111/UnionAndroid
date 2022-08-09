@@ -1,5 +1,6 @@
 package com.itrocket.union.authMain
 
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.itrocket.core.base.BaseViewModel
@@ -21,6 +22,7 @@ object AuthMainModule {
     private val LOGIN_PREFERENCE_KEY = named("LOGIN_PREFERENCE_KEY")
     private val MY_EMPLOYEE_PREFERENCES_KEY = named("MY_EMPLOYEE_PREFERENCES_KEY")
     private val MY_PERMISSIONS_PREFERENCES_KEY = named("MY_PERMISSIONS_PREFERENCES_KEY")
+    private val MY_SUPER_USER_PREFERENCES_KEY = named("MY_SUPER_USER_PREFERENCES_KEY")
 
     val module = module {
         viewModel(AUTHMAIN_VIEW_MODEL_QUALIFIER) { (args: AuthMainComposeFragmentArgs) ->
@@ -39,6 +41,7 @@ object AuthMainModule {
                 loginPreferencesKey = get(LOGIN_PREFERENCE_KEY),
                 myEmployeePreferencesKey = get(MY_EMPLOYEE_PREFERENCES_KEY),
                 myPermissionsPreferencesKey = get(MY_PERMISSIONS_PREFERENCES_KEY),
+                mySuperUserPreferencesKey = get(MY_SUPER_USER_PREFERENCES_KEY),
                 moshi = get()
             )
         }
@@ -72,6 +75,9 @@ object AuthMainModule {
         }
         single(qualifier = MY_PERMISSIONS_PREFERENCES_KEY) {
             stringPreferencesKey(MY_PERMISSIONS_PREFERENCES_KEY.value)
+        }
+        single(qualifier = MY_SUPER_USER_PREFERENCES_KEY) {
+            booleanPreferencesKey(MY_SUPER_USER_PREFERENCES_KEY.value)
         }
     }
 }

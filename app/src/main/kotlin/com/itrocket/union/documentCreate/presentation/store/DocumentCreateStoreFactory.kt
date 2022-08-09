@@ -168,8 +168,8 @@ class DocumentCreateStoreFactory(
                     intent.barcode,
                     getState().accountingObjects
                 )
-                is DocumentCreateStore.Intent.OnNewAccountingObjectRfidsHandled -> handleRfidsAccountingObjects(
-                    intent.rfids,
+                is DocumentCreateStore.Intent.OnNewAccountingObjectRfidHandled -> handleRfidsAccountingObjects(
+                    intent.rfid,
                     getState().accountingObjects
                 )
                 is DocumentCreateStore.Intent.OnReserveSelected -> dispatch(
@@ -233,12 +233,12 @@ class DocumentCreateStoreFactory(
         }
 
         private suspend fun handleRfidsAccountingObjects(
-            rfids: List<String>,
+            rfid: String,
             accountingObjects: List<AccountingObjectDomain>
         ) {
             val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectRfids(
                 accountingObjects = accountingObjects,
-                handledAccountingObjectRfids = rfids
+                handledAccountingObjectRfid = rfid
             )
             dispatch(Result.AccountingObjects(newAccountingObjects))
         }

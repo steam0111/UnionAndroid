@@ -47,7 +47,7 @@ class InventoryCreateInteractor(
     suspend fun handleNewAccountingObjectRfids(
         accountingObjects: List<AccountingObjectDomain>,
         newAccountingObjects: List<AccountingObjectDomain>,
-        handledAccountingObjectIds: List<String>,
+        handledAccountingObjectId: String,
         inventoryStatus: InventoryStatus,
         isAddNew: Boolean
     ): InventoryAccountingObjectsDomain {
@@ -55,22 +55,20 @@ class InventoryCreateInteractor(
             val newAccountingObjectRfids = mutableListOf<String>()
             val mutableAccountingObjects = accountingObjects.toMutableList()
 
-            handledAccountingObjectIds.forEach { rfid ->
-                val accountingObjectIndex = mutableAccountingObjects.indexOfFirst {
-                    it.rfidValue == rfid
-                }
-                val newAccountingObjectIndex =
-                    newAccountingObjects.indexOfFirst { it.rfidValue == rfid }
+            val accountingObjectIndex = mutableAccountingObjects.indexOfFirst {
+                it.rfidValue == handledAccountingObjectId
+            }
+            val newAccountingObjectIndex =
+                newAccountingObjects.indexOfFirst { it.rfidValue == handledAccountingObjectId }
 
-                when {
-                    accountingObjectIndex != NO_INDEX -> changeStatusByIndex(
-                        mutableAccountingObjects,
-                        accountingObjectIndex
-                    )
-                    newAccountingObjectIndex == NO_INDEX && inventoryStatus == InventoryStatus.CREATED && isAddNew -> newAccountingObjectRfids.add(
-                        rfid
-                    )
-                }
+            when {
+                accountingObjectIndex != NO_INDEX -> changeStatusByIndex(
+                    mutableAccountingObjects,
+                    accountingObjectIndex
+                )
+                newAccountingObjectIndex == NO_INDEX && inventoryStatus == InventoryStatus.CREATED && isAddNew -> newAccountingObjectRfids.add(
+                    handledAccountingObjectId
+                )
             }
 
             val handledAccountingObjects =

@@ -109,13 +109,13 @@ class InventoryCreateStoreFactory(
                         )
                     )
                 }
-                is InventoryCreateStore.Intent.OnNewAccountingObjectRfidsHandled -> {
+                is InventoryCreateStore.Intent.OnNewAccountingObjectRfidHandled -> {
                     val inventoryStatus = getState().inventoryDocument.inventoryStatus
                     if (inventoryStatus != InventoryStatus.COMPLETED) {
                         handleNewAccountingObjectRfids(
                             accountingObjects = getState().inventoryDocument.accountingObjects,
                             newAccountingObjects = getState().newAccountingObjects.toList(),
-                            handledAccountingObjectIds = intent.handledAccountingObjectIds,
+                            handledAccountingObjectId = intent.handledAccountingObjectId,
                             inventoryStatus = inventoryStatus,
                             isAddNew = getState().isAddNew
                         )
@@ -159,7 +159,7 @@ class InventoryCreateStoreFactory(
 
         private suspend fun handleNewAccountingObjectRfids(
             accountingObjects: List<AccountingObjectDomain>,
-            handledAccountingObjectIds: List<String>,
+            handledAccountingObjectId: String,
             newAccountingObjects: List<AccountingObjectDomain>,
             inventoryStatus: InventoryStatus,
             isAddNew: Boolean
@@ -169,7 +169,7 @@ class InventoryCreateStoreFactory(
                 val inventoryAccountingObjects =
                     inventoryCreateInteractor.handleNewAccountingObjectRfids(
                         accountingObjects = accountingObjects,
-                        handledAccountingObjectIds = handledAccountingObjectIds,
+                        handledAccountingObjectId = handledAccountingObjectId,
                         newAccountingObjects = newAccountingObjects,
                         inventoryStatus = inventoryStatus,
                         isAddNew = isAddNew
