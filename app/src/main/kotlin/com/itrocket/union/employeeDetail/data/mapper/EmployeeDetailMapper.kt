@@ -8,22 +8,23 @@ import com.itrocket.union.employees.domain.entity.EmployeeStatus
 
 fun EmployeeDetailSyncEntity.toEmployeeDetailDomain(): EmployeeDetailDomain {
     val listInfo = mutableListOf<ObjectInfoDomain>()
-    listInfo.add(ObjectInfoDomain(R.string.employees_firstname, employee.firstname))
     listInfo.add(ObjectInfoDomain(R.string.employees_lastname, employee.lastname))
+    listInfo.add(ObjectInfoDomain(R.string.employees_firstname, employee.firstname))
     listInfo.add(ObjectInfoDomain(R.string.employees_patronymic, employee.patronymic))
     listInfo.add(ObjectInfoDomain(R.string.employees_number, employee.number))
-    employee.post?.let {
-        listInfo.add(ObjectInfoDomain(R.string.employees_post, it))
-    }
     employee.statusId?.toEmployeeStatus()?.let {
         listInfo.add(ObjectInfoDomain(R.string.employees_status, valueRes = it.titleId))
-    }
-    employee.nfc?.let {
-        listInfo.add(ObjectInfoDomain(R.string.employees_nfc, it))
     }
     structuralSyncEntity?.name?.let {
         listInfo.add(ObjectInfoDomain(R.string.manual_structural, it))
     }
+    balanceUnit?.let {
+        listInfo.add(ObjectInfoDomain(R.string.balance_unit, it.name))
+    }
+    employee.post?.let {
+        listInfo.add(ObjectInfoDomain(R.string.employees_post, it))
+    }
+
     return EmployeeDetailDomain(id = employee.id, name = employee.fullName, listInfo = listInfo)
 }
 

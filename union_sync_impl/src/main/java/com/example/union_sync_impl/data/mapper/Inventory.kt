@@ -22,7 +22,8 @@ fun InventoryDtoV2.toInventoryDb(): InventoryDb {
         code = code,
         userUpdated = userUpdated,
         userInserted = userInserted,
-        structuralId = structuralUnitId
+        structuralId = structuralUnitId,
+        inventoryBaseId = inventoryBaseId
     )
 }
 
@@ -54,7 +55,8 @@ fun InventoryCreateSyncEntity.toInventoryDb(id: String): InventoryDb {
         name = name,
         userUpdated = userUpdated,
         userInserted = userInserted,
-        structuralId = structuralId
+        structuralId = structuralId,
+        inventoryBaseId = inventoryBaseId
     )
 }
 
@@ -70,7 +72,8 @@ fun InventoryUpdateSyncEntity.toInventoryDb(): InventoryDb {
         name = name,
         userUpdated = userUpdated,
         userInserted = userInserted,
-        structuralId = structuralId
+        structuralId = structuralId,
+        inventoryBaseId = inventoryBaseId
     )
 }
 
@@ -78,7 +81,8 @@ fun InventoryDb.toInventorySyncEntity(
     structuralSyncEntity: StructuralSyncEntity?,
     mol: EmployeeSyncEntity?,
     locationSyncEntities: List<LocationSyncEntity>?,
-    accountingObjects: List<AccountingObjectSyncEntity>
+    accountingObjects: List<AccountingObjectSyncEntity>,
+    inventoryBaseSyncEntity: InventoryBaseSyncEntity?
 ): InventorySyncEntity {
     return InventorySyncEntity(
         id = id,
@@ -92,6 +96,7 @@ fun InventoryDb.toInventorySyncEntity(
         code = code,
         name = name,
         userInserted = userInserted,
-        userUpdated = userUpdated
+        userUpdated = userUpdated,
+        inventoryBaseSyncEntity = inventoryBaseSyncEntity
     )
 }

@@ -4,6 +4,7 @@ import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.ReserveDetailSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_api.entity.ReserveUpdateSyncEntity
+import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.entity.FullReserve
 import com.example.union_sync_impl.entity.ReserveDb
 import com.example.union_sync_impl.entity.ReserveUpdate
@@ -28,7 +29,10 @@ fun RemainsDtoV2.toReserveDb(): ReserveDb {
         updateDate = System.currentTimeMillis(),
         userUpdated = userUpdated,
         userInserted = userInserted,
-        structuralId = structuralUnitId
+        structuralId = structuralUnitId,
+        invoiceNumber = invoiceNumber,
+        subName = subName,
+        traceable = traceable ?: false
     )
 }
 
@@ -71,7 +75,10 @@ fun ReserveSyncEntity.toReserveDb(): ReserveDb {
         unitPrice = unitPrice,
         updateDate = System.currentTimeMillis(),
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        invoiceNumber = invoiceNumber,
+        subName = subName,
+        traceable = traceable
     )
 }
 
@@ -91,7 +98,10 @@ fun ReserveDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?): ReserveSync
         unitPrice = unitPrice,
         locationSyncEntity = locationSyncEntity,
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        invoiceNumber = invoiceNumber,
+        subName = subName,
+        traceable = traceable
     )
 }
 
@@ -111,11 +121,14 @@ fun FullReserve.toSyncEntity(): ReserveSyncEntity {
         unitPrice = reserveDb.unitPrice,
         locationSyncEntity = locationDb?.toLocationSyncEntity(locationTypeDb),
         userUpdated = reserveDb.userUpdated,
-        userInserted = reserveDb.userInserted
+        userInserted = reserveDb.userInserted,
+        invoiceNumber = reserveDb.invoiceNumber,
+        subName = reserveDb.subName,
+        traceable = reserveDb.traceable
     )
 }
 
-fun FullReserve.toDetailSyncEntity(): ReserveDetailSyncEntity {
+fun FullReserve.toDetailSyncEntity(balanceUnitSyncEntity: StructuralSyncEntity?): ReserveDetailSyncEntity {
     val locationEntity = locationDb?.toLocationSyncEntity(locationTypeDb)
     return ReserveDetailSyncEntity(
         reserveSyncEntity = reserveDb.toSyncEntity(locationEntity),
@@ -127,6 +140,7 @@ fun FullReserve.toDetailSyncEntity(): ReserveDetailSyncEntity {
         orderSyncEntity = orderDb?.toSyncEntity(),
         receptionItemCategorySyncEntity = receptionItemCategoryDb?.toSyncEntity(),
         structuralSyncEntity = structuralDb?.toStructuralSyncEntity(),
+        balanceUnitSyncEntity = balanceUnitSyncEntity
     )
 }
 

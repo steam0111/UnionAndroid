@@ -152,7 +152,7 @@ fun FilterScreenPreview() {
         FilterStore.State(
             params = Params(
                 listOf(
-                    StructuralParamDomain(),
+                    StructuralParamDomain(manualType = ManualType.STRUCTURAL),
                     ParamDomain(
                         type = ManualType.LOCATION,
                         id = "3",

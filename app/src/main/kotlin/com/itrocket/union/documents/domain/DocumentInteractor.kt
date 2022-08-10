@@ -78,7 +78,8 @@ class DocumentInteractor(
 
     fun getFilters(): List<ParamDomain> {
         return listOf(
-            StructuralParamDomain(),
+            StructuralParamDomain(manualType = ManualType.STRUCTURAL_FROM),
+            StructuralParamDomain(manualType = ManualType.STRUCTURAL_TO),
             ParamDomain(
                 type = ManualType.MOL,
                 value = ""

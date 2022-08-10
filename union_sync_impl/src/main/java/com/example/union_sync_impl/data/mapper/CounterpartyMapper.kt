@@ -14,6 +14,7 @@ fun CounterpartyDtoV2.toCounterpartyDb(): CounterpartyDb {
         legalAddress = legalAddress,
         kpp = kpp,
         inn = inn,
+        code = code,
         updateDate = System.currentTimeMillis()
     )
 }
@@ -26,6 +27,7 @@ fun CounterpartyDb.toSyncEntity(): CounterpartySyncEntity {
         actualAddress = actualAddress,
         legalAddress = legalAddress,
         kpp = kpp,
-        inn = inn
+        inn = inn,
+        code = code
     )
 }

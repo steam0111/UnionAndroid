@@ -16,5 +16,6 @@ data class DocumentCreateSyncEntity(
     val code: String?,
     val userInserted: String?,
     val userUpdated: String?,
-    val structuralId: String?
+    val structuralToId: String?,
+    val structuralFromId: String?
 )

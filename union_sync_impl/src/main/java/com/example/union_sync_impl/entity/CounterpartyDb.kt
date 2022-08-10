@@ -12,5 +12,6 @@ class CounterpartyDb(
     val legalAddress: String?,
     val inn: String?,
     val kpp: String?,
+    val code: String?,
     updateDate: Long?,
 ) : CatalogItemDb(id, updateDate)

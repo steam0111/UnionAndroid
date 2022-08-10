@@ -32,7 +32,7 @@ class ReservesInteractor(
             } else {
                 locationRepository.getAllLocationsIdsByParent(lastLocationId)
             }
-            val lastStructuralId = params.getFilterStructuralLastId()
+            val lastStructuralId = params.getFilterStructuralLastId(ManualType.STRUCTURAL)
             val filterStructuralIds = if (lastStructuralId == null) {
                 null
             } else {
@@ -50,7 +50,7 @@ class ReservesInteractor(
         }
 
     fun getFilters() = listOf(
-        StructuralParamDomain(),
+        StructuralParamDomain(manualType = ManualType.STRUCTURAL),
         ParamDomain(
             type = ManualType.MOL,
             value = ""

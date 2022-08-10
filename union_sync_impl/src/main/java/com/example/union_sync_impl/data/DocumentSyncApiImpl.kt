@@ -64,14 +64,16 @@ class DocumentSyncApiImpl(
         textQuery: String?,
         molId: String?,
         exploitingId: String?,
-        structuralId: String?
+        structuralFromId: String?,
+        structuralToId: String?
     ): Long {
         return documentDao.getCount(
             sqlDocumentsQuery(
                 textQuery = textQuery,
                 molId = molId,
                 exploitingId = exploitingId,
-                structuralId = structuralId,
+                structuralFromId = structuralFromId,
+                structuralToId = structuralToId,
                 isFilterCount = true,
                 type = type
             )
@@ -83,14 +85,16 @@ class DocumentSyncApiImpl(
         textQuery: String?,
         molId: String?,
         exploitingId: String?,
-        structuralId: String?
+        structuralFromId: String?,
+        structuralToId: String?
     ): Flow<List<DocumentSyncEntity>> {
         return documentDao.getAll(
             sqlDocumentsQuery(
                 textQuery = textQuery,
                 molId = molId,
                 exploitingId = exploitingId,
-                structuralId = structuralId,
+                structuralFromId = structuralFromId,
+                structuralToId = structuralToId,
                 type = type
             )
         ).map { documents ->
@@ -101,7 +105,9 @@ class DocumentSyncApiImpl(
                     accountingObjects = listOf(),
                     locationFrom = locationSyncApi.getLocationById(document.documentDb.locationFromId),
                     locationTo = locationSyncApi.getLocationById(document.documentDb.locationToId),
-                    structuralSyncEntity = structuralSyncApi.getStructuralById(document.documentDb.structuralId)
+
+                    structuralToSyncEntity = structuralSyncApi.getStructuralById(document.documentDb.structuralToId),
+                    structuralFromSyncEntity = structuralSyncApi.getStructuralById(document.documentDb.structuralFromId),
                 )
             }
         }
@@ -145,7 +151,8 @@ class DocumentSyncApiImpl(
             reserves = reserves,
             locationFrom = locationSyncApi.getLocationById(fullDocument.documentDb.locationFromId),
             locationTo = locationSyncApi.getLocationById(fullDocument.documentDb.locationToId),
-            structuralSyncEntity = structuralSyncApi.getStructuralById(fullDocument.documentDb.structuralId),
+            structuralToSyncEntity = structuralSyncApi.getStructuralById(fullDocument.documentDb.structuralToId),
+            structuralFromSyncEntity = structuralSyncApi.getStructuralById(fullDocument.documentDb.structuralFromId),
             actionBase = fullDocument.actionBaseDb?.toSyncEntity()
         )
     }

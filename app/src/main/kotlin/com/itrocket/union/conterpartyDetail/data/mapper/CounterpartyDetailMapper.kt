@@ -6,19 +6,11 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.conterpartyDetail.domain.entity.CounterpartyDetailDomain
 
 fun CounterpartySyncEntity.toCounterpartyDetailDomain(): CounterpartyDetailDomain {
-    val listInfo = mutableListOf<ObjectInfoDomain>()
-    listInfo.add(ObjectInfoDomain(R.string.common_name, name))
-    legalAddress?.let {
-        listInfo.add(ObjectInfoDomain(R.string.organization_legal_address, it))
-    }
-    actualAddress?.let {
-        listInfo.add(ObjectInfoDomain(R.string.organization_actual_address, it))
-    }
-    kpp?.let {
-        listInfo.add(ObjectInfoDomain(R.string.common_kpp, it))
-    }
-    inn?.let {
-        listInfo.add(ObjectInfoDomain(R.string.common_inn, it))
+    val listInfo = buildList {
+        add(ObjectInfoDomain(R.string.common_name, name))
+        code?.let {
+            add(ObjectInfoDomain(R.string.common_code, it))
+        }
     }
     return CounterpartyDetailDomain(listInfo)
 }

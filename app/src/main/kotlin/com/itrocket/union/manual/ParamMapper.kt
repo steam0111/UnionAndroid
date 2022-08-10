@@ -5,6 +5,7 @@ import com.example.union_sync_api.entity.ActionBaseSyncEntity
 import com.example.union_sync_api.entity.CounterpartySyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
 import com.example.union_sync_api.entity.EquipmentTypeSyncEntity
+import com.example.union_sync_api.entity.InventoryBaseSyncEntity
 import com.example.union_sync_api.entity.NomenclatureGroupSyncEntity
 import com.example.union_sync_api.entity.ProducerSyncEntity
 import com.example.union_sync_api.entity.ReceptionItemCategorySyncEntity
@@ -55,4 +56,10 @@ fun ActionBaseSyncEntity.toParam() = ParamDomain(
     id = id,
     value = name,
     type = ManualType.ACTION_BASE
+)
+
+fun InventoryBaseSyncEntity.toParam() = ParamDomain(
+    id = id,
+    value = name,
+    type = ManualType.INVENTORY_BASE
 )

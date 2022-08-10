@@ -5,10 +5,12 @@ import com.example.union_sync_api.data.ActionBaseSyncApi
 import com.example.union_sync_api.data.CounterpartySyncApi
 import com.example.union_sync_api.data.EmployeeSyncApi
 import com.example.union_sync_api.data.EquipmentTypeSyncApi
+import com.example.union_sync_api.data.InventoryBaseSyncApi
 import com.example.union_sync_api.data.NomenclatureGroupSyncApi
 import com.example.union_sync_api.data.ProducerSyncApi
 import com.example.union_sync_api.data.ReceptionItemCategorySyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
+import com.example.union_sync_api.entity.InventoryBaseSyncEntity
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
@@ -30,6 +32,7 @@ class SelectParamsRepositoryImpl(
     private val providerSyncApi: CounterpartySyncApi,
     private val nomenclatureGroupSyncApi: NomenclatureGroupSyncApi,
     private val receptionItemCategorySyncApi: ReceptionItemCategorySyncApi,
+    private val inventoryBaseSyncApi: InventoryBaseSyncApi,
     private val coreDispatchers: CoreDispatchers
 ) : SelectParamsRepository {
 
@@ -83,6 +86,12 @@ class SelectParamsRepositoryImpl(
     override suspend fun getActionBases(textQuery: String?): Flow<List<ParamDomain>> {
         return flow {
             emit(actionBaseSyncApi.getActionBases(textQuery = textQuery).map { it.toParam() })
+        }.flowOn(coreDispatchers.io)
+    }
+
+    override suspend fun getInventoryBases(textQuery: String?): Flow<List<ParamDomain>> {
+        return flow {
+            emit(inventoryBaseSyncApi.getAll(textQuery = textQuery).map { it.toParam() })
         }.flowOn(coreDispatchers.io)
     }
 }

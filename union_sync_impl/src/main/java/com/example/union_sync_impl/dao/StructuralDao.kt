@@ -40,6 +40,16 @@ interface StructuralDao {
     )
     suspend fun getAllStructuralsByParentId(parentId: String?): List<StructuralDb>
 
+    @Query(
+        """
+            SELECT * FROM `structural` `structural` 
+                JOIN structuralPath `closure`
+                ON `structural`.`id` = `closure`.`ancestorStructuralId` 
+            WHERE `closure`.`descendantStructuralId` is :childId
+            """
+    )
+    suspend fun getAllStructuralsByChildId(childId: String?): List<StructuralDb>
+
     @RawQuery
     fun getStructuralsByParentId(query: SupportSQLiteQuery): List<StructuralDb>
 }

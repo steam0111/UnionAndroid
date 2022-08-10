@@ -5,6 +5,7 @@ import com.example.union_sync_api.entity.AccountingObjectStatusSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
+import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.entity.AccountingObjectDb
 import com.example.union_sync_impl.entity.AccountingObjectStatusDb
 import com.example.union_sync_impl.entity.AccountingObjectUpdate
@@ -43,11 +44,23 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
         updateDate = System.currentTimeMillis(),
         userUpdated = userUpdated,
         userInserted = userInserted,
-    )
+        subName = subName,
+        code = code,
+        marked = marked ?: false,
+        forWriteOff = forWriteOff ?: false,
+        writtenOff = writtenOff ?: false,
+        registered = registered ?: false,
+        commissioned = commissioned ?: false,
+        accountingObjectCategoryId = accountingObjectCategoryId,
+        invoiceNumber = invoiceNumber,
+        nfc = nfcValue,
+        traceable = traceable ?: false
+        )
 }
 
 fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
-    locationSyncEntity: LocationSyncEntity?
+    locationSyncEntity: LocationSyncEntity?,
+    balanceUnitSyncEntity: StructuralSyncEntity?
 ): AccountingObjectDetailSyncEntity {
     return AccountingObjectDetailSyncEntity(
         accountingObject = accountingObjectDb.toSyncEntity(locationSyncEntity),
@@ -57,7 +70,9 @@ fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
         equipmentType = equipmentType?.toSyncEntity(),
         provider = provider?.toSyncEntity(),
         mol = mol?.toSyncEntity(),
-        structuralSyncEntity = structuralDb?.toStructuralSyncEntity()
+        structuralSyncEntity = structuralDb?.toStructuralSyncEntity(),
+        categorySyncEntity = categoryDb?.toSyncEntity(),
+        balanceUnitSyncEntity = balanceUnitSyncEntity
     )
 }
 
@@ -93,7 +108,17 @@ fun AccountingObjectDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?) =
         nomenclatureId = nomenclatureId,
         nomenclatureGroupId = nomenclatureGroupId,
         userUpdated = userUpdated,
-        structuralId = structuralId
+        structuralId = structuralId,
+        subName = subName,
+        code = code,
+        marked = marked,
+        forWriteOff = forWriteOff,
+        writtenOff = writtenOff,
+        commissioned = commissioned,
+        registered = registered,
+        invoiceNumber = invoiceNumber,
+        nfc = nfc,
+        traceable = traceable
     )
 
 fun FullAccountingObject.toSyncEntity(
@@ -125,13 +150,24 @@ fun FullAccountingObject.toSyncEntity(
     nomenclatureGroupId = accountingObjectDb.nomenclatureGroupId,
     nomenclatureId = accountingObjectDb.nomenclatureId,
     userUpdated = accountingObjectDb.userUpdated,
-    structuralId = structuralDb?.id
+    structuralId = structuralDb?.id,
+    subName = accountingObjectDb.subName,
+    code = accountingObjectDb.code,
+    writtenOff = accountingObjectDb.writtenOff,
+    forWriteOff = accountingObjectDb.forWriteOff,
+    marked = accountingObjectDb.marked,
+    commissioned = accountingObjectDb.commissioned,
+    registered = accountingObjectDb.registered,
+    invoiceNumber = accountingObjectDb.invoiceNumber,
+    nfc = accountingObjectDb.nfc,
+    traceable = accountingObjectDb.traceable
 )
 
 fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObjectDtoV2> {
     return map { fullAccountingObject ->
         val accountingObjectDb = fullAccountingObject.accountingObjectDb
         AccountingObjectDtoV2(
+            // todo
             id = accountingObjectDb.id,
             locationId = accountingObjectDb.locationId,
             exploitingId = accountingObjectDb.exploitingId,

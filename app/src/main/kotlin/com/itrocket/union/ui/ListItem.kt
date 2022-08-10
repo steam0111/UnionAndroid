@@ -532,7 +532,7 @@ fun DocumentInfoItemPreview() {
                     "1", "blbbb",
                     type = ManualType.LOCATION
                 ),
-                StructuralParamDomain()
+                StructuralParamDomain(manualType = ManualType.STRUCTURAL)
             ),
             documentType = DocumentTypeDomain.WRITE_OFF,
             dateUi = "12.12.12",

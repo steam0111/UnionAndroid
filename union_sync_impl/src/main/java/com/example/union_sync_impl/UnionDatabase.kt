@@ -3,6 +3,7 @@ package com.example.union_sync_impl
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.union_sync_impl.dao.AccountingObjectCategoryDao
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.AccountingObjectStatusDao
 import com.example.union_sync_impl.dao.ActionBaseDao
@@ -12,6 +13,7 @@ import com.example.union_sync_impl.dao.CounterpartyDao
 import com.example.union_sync_impl.dao.DocumentDao
 import com.example.union_sync_impl.dao.EmployeeDao
 import com.example.union_sync_impl.dao.EquipmentTypeDao
+import com.example.union_sync_impl.dao.InventoryBaseDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.InventoryRecordDao
 import com.example.union_sync_impl.dao.LocationDao
@@ -26,6 +28,7 @@ import com.example.union_sync_impl.dao.ReceptionItemCategoryDao
 import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_impl.dao.StructuralDao
 import com.example.union_sync_impl.dao.StructuralPathDao
+import com.example.union_sync_impl.entity.AccountingObjectCategoryDb
 import com.example.union_sync_impl.entity.AccountingObjectDb
 import com.example.union_sync_impl.entity.AccountingObjectStatusDb
 import com.example.union_sync_impl.entity.ActionBaseDb
@@ -35,6 +38,7 @@ import com.example.union_sync_impl.entity.CounterpartyDb
 import com.example.union_sync_impl.entity.DocumentDb
 import com.example.union_sync_impl.entity.EmployeeDb
 import com.example.union_sync_impl.entity.EquipmentTypesDb
+import com.example.union_sync_impl.entity.InventoryBaseDb
 import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.entity.InventoryRecordDb
 import com.example.union_sync_impl.entity.NetworkSyncDb
@@ -77,8 +81,10 @@ import com.example.union_sync_impl.utils.Converters
         InventoryRecordDb::class,
         ActionBaseDb::class,
         StructuralPathDb::class,
-        StructuralDb::class
-    ], version = 90
+        StructuralDb::class,
+        AccountingObjectCategoryDb::class,
+        InventoryBaseDb::class
+    ], version = 94
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {
@@ -105,4 +111,6 @@ abstract class UnionDatabase : RoomDatabase() {
     abstract fun actionBaseDao(): ActionBaseDao
     abstract fun structuralDao(): StructuralDao
     abstract fun structuralPathDao(): StructuralPathDao
+    abstract fun accountingObjectCategoryDao() : AccountingObjectCategoryDao
+    abstract fun inventoryBaseDao(): InventoryBaseDao
 }

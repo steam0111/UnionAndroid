@@ -5,7 +5,9 @@ import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.toAccountingObjectIdSyncEntity
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
+import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.getFilterInventoryBaseId
 import com.itrocket.union.manual.getFilterLocationIds
 import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.manual.getMolId
@@ -31,7 +33,7 @@ data class InventoryCreateDomain(
 }
 
 fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
-    val structuralId = documentInfo.getFilterStructuralLastId()
+    val structuralId = documentInfo.getFilterStructuralLastId(ManualType.STRUCTURAL)
     val molId = documentInfo.getMolId()
     val locationIds = documentInfo.getFilterLocationIds()
 
@@ -46,6 +48,7 @@ fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
         updateDate = System.currentTimeMillis(),
         code = number,
         userInserted = userInserted,
-        userUpdated = userUpdated
+        userUpdated = userUpdated,
+        inventoryBaseId = documentInfo.getFilterInventoryBaseId()
     )
 }

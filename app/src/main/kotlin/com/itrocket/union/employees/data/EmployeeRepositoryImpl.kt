@@ -6,6 +6,7 @@ import com.itrocket.union.employees.domain.dependencies.EmployeeRepository
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
 import kotlinx.coroutines.withContext
 import com.itrocket.union.employees.data.mapper.map
+import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getFilterStructuralLastId
 
@@ -19,7 +20,7 @@ class EmployeeRepositoryImpl(
     ): List<EmployeeDomain> =
         withContext(coreDispatchers.io) {
             employeeSyncApi.getEmployees(
-                structuralId = params?.getFilterStructuralLastId(),
+                structuralId = params?.getFilterStructuralLastId(ManualType.STRUCTURAL),
                 textQuery = textQuery
             ).map()
         }
@@ -27,7 +28,7 @@ class EmployeeRepositoryImpl(
     override suspend fun getEmployeesCount(textQuery: String?, params: List<ParamDomain>?): Long =
         withContext(coreDispatchers.io) {
             employeeSyncApi.getEmployeesCount(
-                structuralId = params?.getFilterStructuralLastId(),
+                structuralId = params?.getFilterStructuralLastId(ManualType.STRUCTURAL),
                 textQuery = textQuery
             )
         }

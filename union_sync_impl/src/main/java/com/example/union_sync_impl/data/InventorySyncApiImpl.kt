@@ -46,13 +46,15 @@ class InventorySyncApiImpl(
     override suspend fun getInventories(
         textQuery: String?,
         structuralId: String?,
-        molId: String?
+        molId: String?,
+        inventoryBaseId: String?
     ): Flow<List<InventorySyncEntity>> {
         return inventoryDao.getAll(
             sqlInventoryQuery(
                 textQuery = textQuery,
                 structuralId = structuralId,
-                molId = molId
+                molId = molId,
+                inventoryBaseId = inventoryBaseId
             )
         ).map {
             it.map {
@@ -60,7 +62,8 @@ class InventorySyncApiImpl(
                     structuralSyncEntity = it.structuralDb?.toStructuralSyncEntity(),
                     mol = it.employeeDb?.toSyncEntity(),
                     locationSyncEntities = it.getLocations(),
-                    accountingObjects = listOf()
+                    accountingObjects = listOf(),
+                    inventoryBaseSyncEntity = it.inventoryBaseDb?.toSyncEntity()
                 )
             }
         }
@@ -79,14 +82,16 @@ class InventorySyncApiImpl(
     override suspend fun getInventoriesCount(
         textQuery: String?,
         structuralId: String?,
-        molId: String?
+        molId: String?,
+        inventoryBaseId: String?
     ): Long {
         return inventoryDao.getCount(
             sqlInventoryQuery(
                 textQuery = textQuery,
                 structuralId = structuralId,
                 molId = molId,
-                isFilterCount = true
+                isFilterCount = true,
+                inventoryBaseId = inventoryBaseId
             )
         )
     }
@@ -106,7 +111,8 @@ class InventorySyncApiImpl(
             structuralSyncEntity = structural,
             mol = fullInventory.employeeDb?.toSyncEntity(),
             locationSyncEntities = locations,
-            accountingObjects = getAccountingObjects(fullInventory.inventoryDb)
+            accountingObjects = getAccountingObjects(fullInventory.inventoryDb),
+            inventoryBaseSyncEntity = fullInventory.inventoryBaseDb?.toSyncEntity()
         ).apply {
             Timber.tag(INVENTORY_TAG)
                 .d("InventorySyncEntity accountingObjectsIds : ${accountingObjects.map { it.id }}")

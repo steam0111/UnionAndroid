@@ -5,10 +5,14 @@ data class Params(val paramList: List<ParamDomain>) {
     private val listNotDefaultParams by lazy {
         listOf(
             ManualType.LOCATION,
+            ManualType.LOCATION_INVENTORY,
             ManualType.DATE,
             ManualType.LOCATION_TO,
             ManualType.LOCATION_FROM,
-            ManualType.RELOCATION_LOCATION_TO
+            ManualType.RELOCATION_LOCATION_TO,
+            ManualType.STRUCTURAL_TO,
+            ManualType.STRUCTURAL_FROM,
+            ManualType.STRUCTURAL,
         )
     }
 

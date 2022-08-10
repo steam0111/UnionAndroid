@@ -10,10 +10,12 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.inventory.domain.InventoryInteractor
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.Params
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.manual.filterNotEmpty
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
@@ -27,7 +29,8 @@ class InventoryStoreFactory(
     private val inventoryInteractor: InventoryInteractor,
     private val accountingObjectInteractor: AccountingObjectInteractor,
     private val errorInteractor: ErrorInteractor,
-    private val selectParamsInteractor: SelectParamsInteractor
+    private val selectParamsInteractor: SelectParamsInteractor,
+    private val filterInteractor: FilterInteractor,
 ) {
     fun create(): InventoryStore =
         object : InventoryStore,
@@ -119,7 +122,7 @@ class InventoryStoreFactory(
 
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
             when (param.type) {
-                ManualType.LOCATION -> {
+                ManualType.LOCATION_INVENTORY -> {
                     publish(
                         InventoryStore.Label.ShowLocation(param as LocationParamDomain)
                     )
@@ -130,10 +133,13 @@ class InventoryStoreFactory(
                     )
                 }
                 else -> {
+                    val defaultTypeParams =
+                        filterInteractor.getDefaultTypeParams(Params(params))
+                    val currentStep = defaultTypeParams.indexOf(param) + 1
                     publish(
                         InventoryStore.Label.ShowParamSteps(
-                            currentStep = params.indexOf(param) + 1,
-                            params = params.filter { it.type != ManualType.LOCATION }
+                            currentStep = currentStep,
+                            params = params.filter { it.type != ManualType.LOCATION_INVENTORY && it.type != ManualType.STRUCTURAL }
                         )
                     )
                 }

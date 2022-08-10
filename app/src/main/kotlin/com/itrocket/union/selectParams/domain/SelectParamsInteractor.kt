@@ -22,6 +22,7 @@ class SelectParamsInteractor(
             ManualType.EXPLOITING -> getExploiting(searchText)
             ManualType.STATUS -> getAccountingObjectStatuses(searchText)
             ManualType.ACTION_BASE -> getActionBases(searchText)
+            ManualType.INVENTORY_BASE -> getInventoryBases(searchText)
 
             ManualType.PROVIDER -> getProviders(searchText)
             ManualType.PRODUCER -> getProducers(searchText)
@@ -84,6 +85,10 @@ class SelectParamsInteractor(
 
     private suspend fun getActionBases(searchText: String): Flow<List<ParamDomain>> {
         return selectParamsRepository.getActionBases(textQuery = searchText)
+    }
+
+    private suspend fun getInventoryBases(searchText: String) :Flow<List<ParamDomain>> {
+        return selectParamsRepository.getInventoryBases(textQuery = searchText)
     }
 
     private suspend fun getNomenclatureGroup(searchText: String): Flow<List<ParamDomain>> {

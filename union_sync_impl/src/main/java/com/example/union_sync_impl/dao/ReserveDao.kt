@@ -23,6 +23,11 @@ interface ReserveDao {
     @Query(
         "SELECT reserves.*," +
                 "" +
+                "structural.id AS structural_id, " +
+                "structural.catalogItemName AS structural_catalogItemName, " +
+                "structural.name AS structural_name, " +
+                "structural.parentId AS structural_parentId, " +
+                "" +
                 "molEmployees.id AS mol_id, " +
                 "molEmployees.catalogItemName AS mol_catalogItemName, " +
                 "molEmployees.firstname AS mol_firstname, " +
@@ -62,6 +67,7 @@ interface ReserveDao {
                 "LEFT JOIN nomenclature_group ON reserves.nomenclatureGroupId = nomenclature_group.id " +
                 "LEFT JOIN reception_item_category ON reserves.receptionItemCategoryId = reception_item_category.id " +
                 "LEFT JOIN locationTypes ON reserves.locationTypeId = locationTypes.id " +
+                "LEFT JOIN structural ON reserves.structuralId = structural.id " +
                 "WHERE reserves.id = :id LIMIT 1"
     )
     suspend fun getById(id: String): FullReserve

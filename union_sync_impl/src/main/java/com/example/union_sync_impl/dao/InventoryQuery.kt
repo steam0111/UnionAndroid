@@ -6,6 +6,7 @@ import com.example.union_sync_impl.utils.*
 fun sqlInventoryQuery(
     textQuery: String? = null,
     structuralId: String? = null,
+    inventoryBaseId: String? = null,
     molId: String? = null,
     updateDate: Long? = null,
     limit: Long? = null,
@@ -16,6 +17,9 @@ fun sqlInventoryQuery(
         "SELECT COUNT(*) FROM inventories"
     } else {
         "SELECT inventories.*," +
+                "" +
+                "inventory_base.id AS inventory_base_id, " +
+                "inventory_base.name AS inventory_base_name, " +
                 "" +
                 "structural.id AS structural_id, " +
                 "structural.catalogItemName AS structural_catalogItemName, " +
@@ -32,6 +36,7 @@ fun sqlInventoryQuery(
                 "" +
                 "FROM inventories " +
                 "LEFT JOIN employees ON inventories.employeeId = employees.id " +
+                "LEFT JOIN inventory_base ON inventories.inventoryBaseId = inventory_base.id " +
                 "LEFT JOIN structural ON inventories.structuralId = structural.id "
     }
 
@@ -42,7 +47,8 @@ fun sqlInventoryQuery(
             molId = molId,
             updateDate = updateDate,
             limit = limit,
-            offset = offset
+            offset = offset,
+            inventoryBaseId = inventoryBaseId
         )
     )
 }
@@ -50,6 +56,7 @@ fun sqlInventoryQuery(
 private fun sqlInventoryCountQuery(
     textQuery: String? = null,
     structuralId: String? = null,
+    inventoryBaseId: String? = null,
     molId: String? = null,
     updateDate: Long? = null
 ): SimpleSQLiteQuery {
@@ -60,7 +67,8 @@ private fun sqlInventoryCountQuery(
             textQuery = textQuery,
             structuralId = structuralId,
             molId = molId,
-            updateDate = updateDate
+            updateDate = updateDate,
+            inventoryBaseId = inventoryBaseId
         )
     )
 }
@@ -72,6 +80,7 @@ fun String.getInventoriesFilterPartQuery(
     updateDate: Long? = null,
     limit: Long? = null,
     offset: Long? = null,
+    inventoryBaseId: String?
 ): String =
     addFilters(
         sqlTableFilters = SqlTableFilters(
@@ -88,6 +97,9 @@ fun String.getInventoriesFilterPartQuery(
                 }
                 updateDate?.let {
                     add("updateDate" more updateDate)
+                }
+                inventoryBaseId?.let {
+                    add("inventoryBaseId" isEquals inventoryBaseId)
                 }
             }
         )
