@@ -16,6 +16,7 @@ data class AccountingObjectDomain(
     val isBarcode: Boolean = false,
     val rfidValue: String?,
     val barcodeValue: String?,
+    val factoryNumber: String?,
     val listMainInfo: List<ObjectInfoDomain>,
     val listAdditionallyInfo: List<ObjectInfoDomain>
 ) : Parcelable {

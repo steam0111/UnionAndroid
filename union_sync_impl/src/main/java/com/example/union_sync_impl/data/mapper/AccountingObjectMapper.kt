@@ -1,12 +1,14 @@
 package com.example.union_sync_impl.data.mapper
 
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectStatusSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.entity.AccountingObjectDb
+import com.example.union_sync_impl.entity.AccountingObjectScanningUpdate
 import com.example.union_sync_impl.entity.AccountingObjectStatusDb
 import com.example.union_sync_impl.entity.AccountingObjectUpdate
 import com.example.union_sync_impl.entity.FullAccountingObject
@@ -55,7 +57,7 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
         invoiceNumber = invoiceNumber,
         nfc = nfcValue,
         traceable = traceable ?: false
-        )
+    )
 }
 
 fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
@@ -188,6 +190,7 @@ fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObject
             internalNumber = accountingObjectDb.internalNumber,
             inventoryNumber = accountingObjectDb.inventoryNumber,
             rfidValue = accountingObjectDb.rfidValue,
+            nfcValue = accountingObjectDb.nfc,
             count = accountingObjectDb.count?.toLong(),
             nomenclatureId = accountingObjectDb.nomenclatureId,
             nomenclatureGroupId = accountingObjectDb.nomenclatureGroupId,
@@ -213,3 +216,11 @@ fun AccountingObjectUpdateSyncEntity.toAccountingObjectUpdate(): AccountingObjec
         userUpdated = userUpdated
     )
 }
+
+fun AccountingObjectScanningData.toAccountingObjectScanningUpdate() =
+    AccountingObjectScanningUpdate(
+        id = id,
+        barcodeValue = barcodeValue,
+        rfidValue = rfidValue,
+        factoryNumber = factoryNumber
+    )

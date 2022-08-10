@@ -1,6 +1,7 @@
 package com.itrocket.union.accountingObjectDetail.data.mapper
 
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.data.mapper.toDomainStatus
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
@@ -138,8 +139,16 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
         listAdditionallyInfo = emptyList(),
         barcodeValue = accountingObject.barcodeValue,
         rfidValue = accountingObject.rfidValue,
+        factoryNumber = accountingObject.factoryNumber
     )
 }
+
+fun AccountingObjectDomain.toAccountingObjectScanningData() = AccountingObjectScanningData(
+    id = id,
+    factoryNumber = factoryNumber,
+    barcodeValue = barcodeValue,
+    rfidValue = rfidValue
+)
 
 fun getStringBy(isTrue: Boolean) =
     if (isTrue) {

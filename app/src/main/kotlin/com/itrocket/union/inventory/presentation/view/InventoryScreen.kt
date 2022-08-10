@@ -327,7 +327,8 @@ fun InventoryScreenPreview() {
                         ),
                     ),
                     barcodeValue = "",
-                    rfidValue = ""
+                    rfidValue = "",
+                    factoryNumber = ""
                 ),
                 AccountingObjectDomain(
                     id = "2",
@@ -346,7 +347,8 @@ fun InventoryScreenPreview() {
                     ),
                     listAdditionallyInfo = listOf(),
                     barcodeValue = "",
-                    rfidValue = ""
+                    rfidValue = "",
+                    factoryNumber = ""
                 ), AccountingObjectDomain(
                     id = "3",
                     isBarcode = true,
@@ -364,7 +366,8 @@ fun InventoryScreenPreview() {
                     ),
                     listAdditionallyInfo = listOf(),
                     barcodeValue = "",
-                    rfidValue = ""
+                    rfidValue = "",
+                    factoryNumber = ""
                 )
             ),
             selectedPage = 1,

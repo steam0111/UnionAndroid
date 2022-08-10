@@ -1,6 +1,8 @@
 package com.itrocket.union.readingMode.presentation.store
 
 import com.arkivanov.mvikotlin.core.store.Store
+import com.itrocket.core.navigation.GoBackDialogNavigationLabel
+import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 
 interface ReadingModeStore :
@@ -14,12 +16,20 @@ interface ReadingModeStore :
     }
 
     data class State(
-        val isManualInputEnabled: Boolean = false,
         val tabs: List<ReadingModeTab>,
         val selectedTab: ReadingModeTab = ReadingModeTab.RFID
     )
 
     sealed class Label {
         data class ResultReadingTab(val readingMode: ReadingModeTab) : Label()
+
+        data class ManualReading(override val result: ReadingModeResult) : Label(), GoBackDialogNavigationLabel {
+
+            override val resultCode: String
+                get() = ReadingModeComposeFragment.READING_MODE_RESULT_CODE
+
+            override val resultLabel: String
+                get() = ReadingModeComposeFragment.READING_MODE_RESULT_LABEL
+        }
     }
 }
