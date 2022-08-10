@@ -196,6 +196,7 @@
     <string name="module_settings_label">ModuleSettings</string>
     <string name="module_settings_define_cursor">Определить курок</string>
     <string name="module_settings_cursor_click">Нажмите на курок</string>
+    <string name="choose_power_of_reader">Мощность считывателя</string>
 
     <!-- Inventory -->
     <string name="inventory_ao_title">Инвентаризация «ОУ»</string>
