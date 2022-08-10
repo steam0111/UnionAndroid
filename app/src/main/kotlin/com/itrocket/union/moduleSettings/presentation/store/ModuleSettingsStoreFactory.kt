@@ -48,6 +48,9 @@ class ModuleSettingsStoreFactory(
                     moduleSettingsInteractor.getKeyCode() ?: 0
                 )
             )
+            dispatch(
+                Result.ReaderPower(moduleSettingsInteractor.getReaderPower() ?: "50")
+            )
         }
 
         override suspend fun executeIntent(
@@ -68,7 +71,8 @@ class ModuleSettingsStoreFactory(
                 ModuleSettingsStore.Intent.OnSaveClicked -> {
                     moduleSettingsInteractor.applyChanges(
                         defaultService = getState().defaultService,
-                        keyCode = getState().keyCode
+                        keyCode = getState().keyCode,
+                        readerPower = getState().readerPower
                     )
                     publish(ModuleSettingsStore.Label.GoBack)
                 }
@@ -95,14 +99,28 @@ class ModuleSettingsStoreFactory(
                         intent.service
                     )
                 )
+                ModuleSettingsStore.Intent.OnDropDownReaderPowerDismiss -> dispatch(
+                    Result.DropDownReaderPowerExpanded(false)
+                )
+                is ModuleSettingsStore.Intent.OnPowerOfReaderHandled -> dispatch(
+                    Result.ListPowerOfReader(intent.listPowerOfReader)
+                )
+                is ModuleSettingsStore.Intent.OnDefaultReaderPowerHandled -> dispatch(
+                    Result.ReaderPower(intent.readerPower)
+                )
+                ModuleSettingsStore.Intent.OnDropDownOpenReaderPowerClicked -> dispatch(
+                    Result.DropDownReaderPowerExpanded(true)
+                )
+                is ModuleSettingsStore.Intent.OnDropDownItemReaderPowerClicked -> {
+                    dispatch(Result.DropDownReaderPowerExpanded(false))
+                    dispatch(Result.ReaderPower(intent.readerPower))
+                }
             }
         }
 
         private fun onServicesHandled(services: List<String>, defaultService: String) {
             dispatch(
-                Result.Services(
-                    services
-                )
+                Result.Services(services)
             )
             if (defaultService.isEmpty()) {
                 val selectedService = services.firstOrNull() ?: DEFAULT_SERVICE
@@ -118,10 +136,13 @@ class ModuleSettingsStoreFactory(
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class KeyCode(val keyCode: Int) : Result()
+        data class ReaderPower(val readerPower: String) : Result()
         data class WaitDefine(val waitDefine: Boolean) : Result()
         data class Service(val service: String) : Result()
         data class Services(val services: List<String>) : Result()
         data class DropdownExpanded(val dropdownExpanded: Boolean) : Result()
+        data class DropDownReaderPowerExpanded(val dropDownReaderPowerExpanded: Boolean) : Result()
+        data class ListPowerOfReader(val listPowerOfReader: List<Int>) : Result()
     }
 
     private object ReducerImpl : Reducer<ModuleSettingsStore.State, Result> {
@@ -133,6 +154,9 @@ class ModuleSettingsStoreFactory(
                 is Result.Service -> copy(defaultService = result.service)
                 is Result.Services -> copy(services = result.services)
                 is Result.DropdownExpanded -> copy(dropdownExpanded = result.dropdownExpanded)
+                is Result.DropDownReaderPowerExpanded -> copy(dropDownReaderPowerExpanded = result.dropDownReaderPowerExpanded)
+                is Result.ListPowerOfReader -> copy(listPowerOfReader = result.listPowerOfReader)
+                is Result.ReaderPower -> copy(readerPower = result.readerPower)
             }
     }
 

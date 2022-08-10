@@ -1,11 +1,9 @@
 package com.itrocket.union.moduleSettings.domain
 
-import kotlinx.coroutines.withContext
-import com.itrocket.union.moduleSettings.domain.dependencies.ModuleSettingsRepository
 import com.itrocket.core.base.CoreDispatchers
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.distinctUntilChanged
+import com.itrocket.union.moduleSettings.domain.dependencies.ModuleSettingsRepository
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.withContext
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class ModuleSettingsInteractor(
@@ -13,18 +11,26 @@ class ModuleSettingsInteractor(
     private val serviceEntryManager: ServiceEntryManager,
     private val coreDispatchers: CoreDispatchers
 ) {
-
     suspend fun getKeyCode() = withContext(coreDispatchers.io) {
         repository.getSavedKeyCode().firstOrNull()
     }
 
-    suspend fun applyChanges(defaultService: String, keyCode: Int) {
+    suspend fun getReaderPower() = withContext(coreDispatchers.io) {
+        repository.getReaderPower().firstOrNull()
+    }
+
+    suspend fun applyChanges(
+        defaultService: String,
+        keyCode: Int,
+        readerPower: String
+    ) {
         withContext(coreDispatchers.io) {
             serviceEntryManager.applyChanges(defaultService)
             serviceEntryManager.restartService()
-            serviceEntryManager.applyReadPower("100")
-            serviceEntryManager.applyWritePower("100") //TODO: Пока нет экрана выбора мощности сделал максимальной
+            serviceEntryManager.applyReadPower(readerPower)
+            serviceEntryManager.applyWritePower(readerPower)
             repository.saveKeyCode(keyCode)
+            repository.saveReaderPower(readerPower = readerPower)
         }
     }
 
@@ -39,5 +45,4 @@ class ModuleSettingsInteractor(
             serviceEntryManager.checkInstalledServices()
         }
     }
-
 }
