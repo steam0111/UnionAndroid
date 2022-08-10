@@ -61,9 +61,6 @@ class AccountingObjectDetailStoreFactory(
                 AccountingObjectDetailStore.Intent.OnBackClicked -> publish(
                     AccountingObjectDetailStore.Label.GoBack
                 )
-                is AccountingObjectDetailStore.Intent.OnCheckedFullCharacteristics -> dispatch(
-                    Result.CheckedFullCharacteristics(intent.isChecked)
-                )
                 AccountingObjectDetailStore.Intent.OnReadingModeClicked -> {
                     publish(AccountingObjectDetailStore.Label.ShowReadingMode(getState().readingMode))
                 }
@@ -83,7 +80,6 @@ class AccountingObjectDetailStoreFactory(
     private sealed class Result {
         data class NewPage(val page: Int) : Result()
         data class Loading(val isLoading: Boolean) : Result()
-        data class CheckedFullCharacteristics(val isChecked: Boolean) : Result()
         data class AccountingObject(val obj: AccountingObjectDomain) : Result()
     }
 
@@ -91,7 +87,6 @@ class AccountingObjectDetailStoreFactory(
         override fun AccountingObjectDetailStore.State.reduce(result: Result) =
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
-                is Result.CheckedFullCharacteristics -> copy(isFullCharacteristicChecked = result.isChecked)
                 is Result.NewPage -> copy(selectedPage = result.page)
                 is Result.AccountingObject -> copy(accountingObjectDomain = result.obj)
             }

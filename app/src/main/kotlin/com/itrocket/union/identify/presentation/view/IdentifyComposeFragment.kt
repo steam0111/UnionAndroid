@@ -1,6 +1,7 @@
 package com.itrocket.union.identify.presentation.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -12,6 +13,8 @@ import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectCo
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
 import com.itrocket.union.identify.IdentifyModule.IDENTIFY_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.identify.presentation.store.IdentifyStore
+import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuResult
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment.Companion.SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_RESULT_CODE
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment.Companion.SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_RESULT_LABEL
@@ -51,7 +54,18 @@ class IdentifyComposeFragment :
                         )
                     }
                 }
-            )
+            ),
+            FragmentResult(
+                resultCode = ReadingModeComposeFragment.READING_MODE_TAB_RESULT_CODE,
+                resultLabel = ReadingModeComposeFragment.READING_MODE_TAB_RESULT_LABEL,
+                resultAction = {
+                    (it as ReadingModeTab?)?.let {
+                        accept(
+                            IdentifyStore.Intent.OnReadingModeTabChanged(it)
+                        )
+                    }
+                }
+            ),
         )
 
     private val serviceEntryManager: ServiceEntryManager by inject()

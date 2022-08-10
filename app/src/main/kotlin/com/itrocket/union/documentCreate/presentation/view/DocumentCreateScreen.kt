@@ -326,7 +326,8 @@ private fun AccountingObjectScreen(
                                 onAccountingObjectListener = onAccountingObjectClickListener,
                                 isShowBottomLine = isShowBottomLine,
                                 status = item.status?.type,
-                                isEnabled = documentStatus != DocumentStatus.COMPLETED
+                                isEnabled = documentStatus != DocumentStatus.COMPLETED,
+                                isShowScanInfo = false
                             )
                         }
                     }

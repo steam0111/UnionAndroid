@@ -17,7 +17,6 @@ interface AccountingObjectDetailStore :
 
     sealed class Intent {
         object OnBackClicked : Intent()
-        data class OnCheckedFullCharacteristics(val isChecked: Boolean) : Intent()
         data class OnPageSelected(val selectedPage: Int) : Intent()
         object OnReadingModeClicked : Intent()
         object OnDocumentSearchClicked : Intent()
@@ -27,7 +26,6 @@ interface AccountingObjectDetailStore :
     data class State(
         val accountingObjectDomain: AccountingObjectDomain,
         val isLoading: Boolean = false,
-        val isFullCharacteristicChecked: Boolean = false,
         val readingMode: ReadingModeTab = ReadingModeTab.RFID,
         val selectedPage: Int = 0
     )

@@ -29,6 +29,7 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.reserveDetail.presentation.store.ReserveDetailStore
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.ui.AppTheme
@@ -36,6 +37,7 @@ import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ExpandedInfoField
 import com.itrocket.union.ui.LoadingContent
+import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.psb1
 import com.itrocket.union.ui.white
@@ -76,9 +78,9 @@ fun ReserveDetailScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = state.reserve?.title.orEmpty(),
-                        fontWeight = FontWeight.Medium,
-                        style = AppTheme.typography.body1,
-                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        style = AppTheme.typography.h6,
+                        fontSize = 19.sp,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -121,20 +123,13 @@ private fun Toolbar(
 
 @Composable
 private fun BottomBar(
+    readingModeTab: ReadingModeTab,
     onReadingModeClickListener: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(graphite2)
-            .padding(16.dp)
-    ) {
-        BaseButton(
-            text = stringResource(R.string.accounting_object_detail_reading_mode),
-            onClick = onReadingModeClickListener,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
+    ReadingModeBottomBar(
+        readingModeTab = readingModeTab,
+        onReadingModeClickListener = onReadingModeClickListener
+    )
 }
 
 @Composable

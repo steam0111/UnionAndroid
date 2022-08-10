@@ -71,6 +71,7 @@ fun AccountingObjectItem(
     isShowBottomLine: Boolean,
     statusText: String? = null,
     isEnabled: Boolean = true,
+    isShowScanInfo: Boolean = true
 ) {
     Row(
         modifier = Modifier
@@ -93,14 +94,13 @@ fun AccountingObjectItem(
                         stringResource(id = it.title),
                         it.value.orEmpty()
                     ),
-                    style = AppTheme.typography.subtitle1,
-                    color = psb3
+                    style = AppTheme.typography.subtitle1
                 )
             }
         }
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             status?.let { SmallStatusLabel(status = it, statusText) }
-            if (status is ObjectStatusType) {
+            if (status is ObjectStatusType && isShowScanInfo) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -122,7 +122,7 @@ fun AccountingObjectItem(
                         )
                     )
                 }
-                if (accountingObject.status?.type == ObjectStatusType.AVAILABLE) {
+                if (accountingObject.status?.type == ObjectStatusType.AVAILABLE && isShowScanInfo) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -181,8 +181,7 @@ fun ReservesItem(
                         stringResource(id = it.title),
                         it.value.orEmpty()
                     ),
-                    style = AppTheme.typography.subtitle1,
-                    color = psb3
+                    style = AppTheme.typography.subtitle1
                 )
             }
         }
@@ -193,7 +192,8 @@ fun ReservesItem(
                 style = AppTheme.typography.body2,
                 fontWeight = FontWeight.Medium
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            // Пока нет шк не нужно его отображать
+            /*Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -213,7 +213,7 @@ fun ReservesItem(
                         unselectedColor = graphite3
                     )
                 )
-            }
+            }*/
         }
     }
     if (isShowBottomLine) {

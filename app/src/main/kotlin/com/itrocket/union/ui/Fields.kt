@@ -39,7 +39,6 @@ fun ExpandedInfoField(
         ) {
             Text(
                 text = label,
-                color = psb3,
                 style = AppTheme.typography.body1,
                 modifier = Modifier.fillMaxWidth(0.5f)
             )

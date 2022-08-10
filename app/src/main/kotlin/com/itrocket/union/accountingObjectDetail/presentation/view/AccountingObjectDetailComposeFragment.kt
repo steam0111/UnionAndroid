@@ -29,9 +29,6 @@ class AccountingObjectDetailComposeFragment :
                 onBackClickListener = {
                     accept(AccountingObjectDetailStore.Intent.OnBackClicked)
                 },
-                onCheckedFullCharacteristicsChangeListener = {
-                    accept(AccountingObjectDetailStore.Intent.OnCheckedFullCharacteristics(it))
-                },
                 onReadingModeClickListener = {
                     accept(AccountingObjectDetailStore.Intent.OnReadingModeClicked)
                 },
