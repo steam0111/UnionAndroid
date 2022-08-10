@@ -82,7 +82,7 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
                     DocumentMenuDomain(
                         titleId = R.string.manual_structural,
                         iconId = R.drawable.ic_inventory,
-                        unionPermission = UnionPermission.NO_NEED // TODO: добавить свои пермишены
+                        unionPermission = UnionPermission.STRUCTURAL_UNIT
                     ),
                 )
             }
@@ -96,7 +96,7 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
                     DocumentMenuDomain(
                         titleId = R.string.create_inventory,
                         iconId = R.drawable.ic_inventory,
-                        unionPermission = UnionPermission.NO_NEED
+                        unionPermission = UnionPermission.INVENTORY
                     ),
                 )
             }
