@@ -96,6 +96,20 @@ private fun Content(
 ) {
     Column(modifier = Modifier.padding(paddingValues)) {
         Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            text = stringResource(id = R.string.choose_power_of_reader),
+            modifier = Modifier.padding(horizontal = 16.dp),
+                    style = AppTheme.typography.body1,
+            fontWeight = FontWeight.Medium,
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        SelectPower(
+            state = state,
+            onDropDownOpenReaderPowerClickListener = onDropDownOpenReaderPowerClickListener,
+            onDropDownReaderPowerDismiss = onDropDownReaderPowerDismiss,
+            onDropDownItemReaderPowerClickListener = onDropDownItemReaderPowerClickListener
+        )
+        Spacer(modifier = Modifier.height(24.dp))
         DefineCursorComponent(
             onDefineCursorClickListener = onDefineCursorClickListener,
             keyCode = state.keyCode,
@@ -108,18 +122,7 @@ private fun Content(
             onDropdownDismiss = onDropdownDismiss,
             onDropdownItemClickListener = onDropdownItemClickListener
         )
-        Spacer(modifier = Modifier.height(24.dp))
-        Text(
-            text = stringResource(id = R.string.choose_power_of_reader),
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        SelectPower(
-            state = state,
-            onDropDownOpenReaderPowerClickListener = onDropDownOpenReaderPowerClickListener,
-            onDropDownReaderPowerDismiss = onDropDownReaderPowerDismiss,
-            onDropDownItemReaderPowerClickListener = onDropDownItemReaderPowerClickListener
-        )
+
     }
 }
 
@@ -238,7 +241,6 @@ fun SelectPower(
                 .padding(horizontal = 16.dp)
                 .weight(1f)
         ) {
-            Text(text = stringResource(R.string.read_power_title))
             DropdownMenuItem(
                 onClick = onDropDownOpenReaderPowerClickListener,
                 modifier = Modifier.background(graphite2)
