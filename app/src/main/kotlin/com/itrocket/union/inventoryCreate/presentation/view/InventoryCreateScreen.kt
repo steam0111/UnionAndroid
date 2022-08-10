@@ -314,7 +314,7 @@ fun InventoryCreateScreenPreview() {
         inventoryDocument = InventoryCreateDomain(
             id = "",
             number = "БП-00001374",
-            date = System.currentTimeMillis(),
+            creationDate = System.currentTimeMillis(),
             documentInfo = listOf(
                 StructuralParamDomain(manualType = ManualType.STRUCTURAL),
                 ParamDomain("2", "Систмный интегратор", ManualType.MOL),

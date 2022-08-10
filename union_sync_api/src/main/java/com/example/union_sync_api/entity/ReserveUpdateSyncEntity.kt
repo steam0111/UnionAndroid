@@ -4,5 +4,6 @@ data class ReserveUpdateSyncEntity(
     val id: String,
     val count: Long,
     val locationId: String?,
-    val userUpdated: String?
+    val userUpdated: String?,
+    val dateUpdate: Long
 )

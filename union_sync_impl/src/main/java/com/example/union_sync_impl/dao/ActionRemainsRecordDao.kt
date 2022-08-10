@@ -8,7 +8,6 @@ import androidx.room.Update
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
 import com.example.union_sync_impl.entity.DocumentReserveCount
-import com.example.union_sync_impl.entity.DocumentUpdateReserves
 
 @Dao
 interface ActionRemainsRecordDao {

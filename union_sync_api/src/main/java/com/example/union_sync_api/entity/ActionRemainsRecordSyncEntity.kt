@@ -4,5 +4,5 @@ data class ActionRemainsRecordSyncEntity(
     val id: String,
     val actionId: String,
     val remainId: String,
-    val updateDate: Long
+    val updateDate: Long?
 )

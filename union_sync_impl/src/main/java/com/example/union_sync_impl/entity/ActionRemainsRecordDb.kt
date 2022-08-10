@@ -9,7 +9,14 @@ class ActionRemainsRecordDb(
     val actionId: String,
     val remainId: String,
     val count: Long?,
-    updateDate: Long,
+    updateDate: Long?,
+    insertDate: Long?,
     userInserted: String?,
     userUpdated: String?,
-): SyncItemDb(id, updateDate, userUpdated, userInserted)
+) : SyncItemDb(
+    id = id,
+    insertDate = insertDate,
+    updateDate = updateDate,
+    userUpdated = userUpdated,
+    userInserted = userInserted
+)

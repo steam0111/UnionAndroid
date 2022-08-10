@@ -68,7 +68,7 @@ class AccountingObjectDb(
     val writtenOff: Boolean,
     val code: String?,
     val commissioned: Boolean,
-    val registered : Boolean,
+    val registered: Boolean,
     val accountingObjectCategoryId: String?,
     val invoiceNumber: String?,
     val nfc: String?,
@@ -76,5 +76,12 @@ class AccountingObjectDb(
     userInserted: String?,
     userUpdated: String?,
     updateDate: Long?,
-) : CatalogItemDb(id, updateDate, userUpdated, userInserted)
+    insertDate: Long?
+) : CatalogItemDb(
+    id = id,
+    insertDate = insertDate,
+    updateDate = updateDate,
+    userUpdated = userUpdated,
+    userInserted = userInserted
+)
 

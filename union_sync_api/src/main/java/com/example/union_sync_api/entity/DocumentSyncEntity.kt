@@ -8,7 +8,7 @@ data class DocumentSyncEntity(
     val structuralToSyncEntity: StructuralSyncEntity?,
     val mol: EmployeeSyncEntity?,
     val exploiting: EmployeeSyncEntity? = null,
-    val creationDate: Long,
+    val creationDate: Long?,
     val completionDate: Long? = null,
     val documentStatus: String,
     val documentStatusId: String,
@@ -17,5 +17,6 @@ data class DocumentSyncEntity(
     val locationTo: LocationSyncEntity? = null,
     val actionBase: ActionBaseSyncEntity? = null,
     val code: String?,
-    val userInserted: String?
+    val userInserted: String?,
+    val userUpdated: String?
 )

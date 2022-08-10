@@ -196,6 +196,7 @@ class DocumentSyncApiImpl(
                 id = existRecord?.id ?: UUID.randomUUID().toString(),
                 accountingObjectId = accountingObjectId,
                 actionId = actionId,
+                insertDate = existRecord?.insertDate,
                 updateDate = System.currentTimeMillis(),
                 userInserted = existRecord?.userInserted ?: userUpdated,
                 userUpdated = userUpdated
@@ -222,6 +223,7 @@ class DocumentSyncApiImpl(
                 remainId = remain.id,
                 actionId = actionId,
                 updateDate = System.currentTimeMillis(),
+                insertDate = existRecord?.insertDate,
                 count = remain.count,
                 userUpdated = userUpdated,
                 userInserted = existRecord?.userInserted ?: userUpdated

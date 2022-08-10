@@ -621,7 +621,7 @@ fun InventoryDocumentItemPreview() {
         item = InventoryCreateDomain(
             id = "",
             number = "БП-00001374",
-            date = System.currentTimeMillis(),
+            creationDate = System.currentTimeMillis(),
             documentInfo = listOf(
                 ParamDomain("1", "Систмный интегратор", ManualType.MOL),
                 ParamDomain("2", "Систмный интегратор", ManualType.MOL),

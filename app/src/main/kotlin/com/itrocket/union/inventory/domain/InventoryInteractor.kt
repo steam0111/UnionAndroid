@@ -44,7 +44,6 @@ class InventoryInteractor(
                 },
                 locationIds = locationIds,
                 inventoryStatus = InventoryStatus.CREATED.name,
-                updateDate = System.currentTimeMillis(),
                 userInserted = authMainInteractor.getLogin(),
                 userUpdated = null,
                 inventoryBaseId = params.getFilterInventoryBaseId()

@@ -3,6 +3,7 @@ package com.example.union_sync_impl.data.mapper
 import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.entity.structural.StructuralDb
 import com.example.union_sync_impl.entity.structural.StructuralPathDb
+import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import org.openapitools.client.models.StructuralUnitDtoV2
 import org.openapitools.client.models.StructuralUnitPathDtoV2
 
@@ -24,7 +25,10 @@ fun StructuralUnitDtoV2.toStructuralDb(): StructuralDb {
         balanceUnitCode = balanceUnitCode,
         branch = branch,
         fullCode = fullCode,
-        updateDate = System.currentTimeMillis()
+        updateDate = getMillisDateFromServerFormat(dateUpdate),
+        insertDate = getMillisDateFromServerFormat(dateInsert),
+        userInserted = userInserted,
+        userUpdated = userUpdated
     )
 }
 

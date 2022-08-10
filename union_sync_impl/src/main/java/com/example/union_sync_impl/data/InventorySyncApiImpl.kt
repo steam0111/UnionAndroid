@@ -204,6 +204,7 @@ class InventorySyncApiImpl(
                 inventoryStatus = info.status,
                 inventoryId = inventoryId,
                 updateDate = System.currentTimeMillis(),
+                insertDate = existRecord?.insertDate,
                 userUpdated = userUpdated,
                 userInserted = userUpdated
             )

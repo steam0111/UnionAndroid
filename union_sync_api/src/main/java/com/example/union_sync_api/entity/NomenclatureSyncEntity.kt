@@ -5,5 +5,9 @@ class NomenclatureSyncEntity(
     val catalogItemName: String,
     val name: String,
     val code: String?,
-    val nomenclatureGroupId: String?
+    val nomenclatureGroupId: String?,
+    val userUpdated: String?,
+    var userInserted: String?,
+    val dateInsert: Long?,
+    var updateDate: Long?,
 )

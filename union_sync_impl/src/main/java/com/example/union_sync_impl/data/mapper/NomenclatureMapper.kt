@@ -4,19 +4,8 @@ import com.example.union_sync_api.entity.NomenclatureDetailSyncEntity
 import com.example.union_sync_api.entity.NomenclatureSyncEntity
 import com.example.union_sync_impl.entity.FullNomenclatureDb
 import com.example.union_sync_impl.entity.NomenclatureDb
-import org.openapitools.client.models.CustomNomenclatureDto
+import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import org.openapitools.client.models.NomenclatureDtoV2
-
-fun CustomNomenclatureDto.toNomenclatureDb(): NomenclatureDb {
-    return NomenclatureDb(
-        id = id,
-        catalogItemName = catalogItemName.orEmpty(),
-        nomenclatureGroupId = nomenclatureGroupId,
-        number = code.orEmpty(),
-        name = name.orEmpty(),
-        updateDate = System.currentTimeMillis()
-    )
-}
 
 fun NomenclatureDtoV2.toNomenclatureDb(): NomenclatureDb {
     return NomenclatureDb(
@@ -25,7 +14,10 @@ fun NomenclatureDtoV2.toNomenclatureDb(): NomenclatureDb {
         nomenclatureGroupId = nomenclatureGroupId,
         number = code.orEmpty(),
         name = name.orEmpty(),
-        updateDate = System.currentTimeMillis()
+        updateDate = getMillisDateFromServerFormat(dateUpdate),
+        insertDate = getMillisDateFromServerFormat(dateInsert),
+        userUpdated = userUpdated,
+        userInserted = userInserted
     )
 }
 
@@ -34,7 +26,11 @@ fun NomenclatureDb.toSyncEntity() = NomenclatureSyncEntity(
     code = number,
     name = name,
     nomenclatureGroupId = nomenclatureGroupId,
-    catalogItemName = catalogItemName
+    catalogItemName = catalogItemName,
+    userInserted = userInserted,
+    userUpdated = userUpdated,
+    dateInsert = insertDate,
+    updateDate = updateDate
 )
 
 fun FullNomenclatureDb.toDetailSyncEntity() = NomenclatureDetailSyncEntity(

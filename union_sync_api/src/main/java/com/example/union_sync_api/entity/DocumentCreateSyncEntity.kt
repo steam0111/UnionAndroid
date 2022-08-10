@@ -6,7 +6,6 @@ data class DocumentCreateSyncEntity(
     val documentType: String,
     val documentStatus: String,
     val documentStatusId: String,
-    val creationDate: Long,
     val completionDate: Long?,
     val locationFromId: String? = null,
     val locationToId: String? = null,

@@ -5,5 +5,6 @@ data class ReserveShortSyncEntity(
     val nomenclatureId: String?,
     val orderId: String?,
     val name: String,
-    val userUpdated: String?
+    val userUpdated: String?,
+    val updateDate: Long
 )
