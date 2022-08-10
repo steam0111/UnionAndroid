@@ -50,7 +50,7 @@ interface DocumentMenuStore :
 
         data class ShowDocumentDetail(val item: DocumentMenuDomain) : Label(),
             ForwardNavigationLabel {
-            override val directions: NavDirections
+            override val directions: NavDirections?
                 get() = when (item.titleId) {
                     R.string.main_accounting_object -> DocumentMenuComposeFragmentDirections.toAccountingObjects(null)
                     R.string.main_identification -> DocumentMenuComposeFragmentDirections.toIdentify(null)
@@ -91,7 +91,7 @@ interface DocumentMenuStore :
                     R.string.manual_structural -> DocumentMenuComposeFragmentDirections.toStructural(
                         StructuralArguments(isCanEdit = false)
                     )
-                    else -> DocumentMenuComposeFragmentDirections.toAccountingObjects(null)
+                    else -> null
                 }
         }
 
