@@ -258,13 +258,13 @@ class ScreensTest : ScreenshotTest {
         }
     }
 
-    /*@Test
+    @Test
     fun `ConfirmAlertDialog`() {
         takeScreenShot {
             ConfirmAlertDialogPreview()
         }
     }
-*/
+
     @Test
     fun `ChangeScanData`(){
         takeScreenShot {

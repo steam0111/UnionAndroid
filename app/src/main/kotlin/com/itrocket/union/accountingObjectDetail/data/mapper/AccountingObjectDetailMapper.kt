@@ -6,6 +6,7 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.data.mapper.toDomainStatus
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
+import com.itrocket.union.utils.getStringDateFromMillis
 import com.itrocket.union.utils.getTextDateFromStringDate
 
 
@@ -126,6 +127,19 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
 
         accountingObject.nfc?.let {
             add(ObjectInfoDomain(R.string.common_nfc, it))
+        }
+
+        accountingObject.dateInsert?.let {
+            add(ObjectInfoDomain(R.string.common_date_create, getStringDateFromMillis(it)))
+        }
+        accountingObject.userInserted?.let {
+            add(ObjectInfoDomain(R.string.common_user_create, it))
+        }
+        accountingObject.updateDate?.let {
+            add(ObjectInfoDomain(R.string.common_date_update, getStringDateFromMillis(it)))
+        }
+        accountingObject.userUpdated?.let {
+            add(ObjectInfoDomain(R.string.common_user_update, it))
         }
     }
 

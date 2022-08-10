@@ -15,6 +15,8 @@ data class ReserveSyncEntity(
     val unitPrice: String?,
     val userInserted: String?,
     val userUpdated: String?,
+    val insertDate: Long?,
+    val updateDate: Long?,
     val structuralId: String?,
     val traceable: Boolean,
     val invoiceNumber: String?,
@@ -25,16 +27,19 @@ fun ReserveSyncEntity.toReserveUpdateSyncEntity(userUpdated: String?) = ReserveU
     id = id,
     count = count ?: 0,
     locationId = locationSyncEntity?.id,
-    userUpdated = userUpdated
+    userUpdated = userUpdated,
+    dateUpdate = System.currentTimeMillis()
 )
 
-fun ReserveSyncEntity.toReserveShortSyncEntity(locationId: String? = null, userUpdated: String?) = ReserveShortSyncEntity(
-    locationId = locationId ?: locationSyncEntity?.id,
-    nomenclatureId = nomenclatureId,
-    orderId = orderId,
-    name = name,
-    userUpdated = userUpdated
-)
+fun ReserveSyncEntity.toReserveShortSyncEntity(locationId: String? = null, userUpdated: String?) =
+    ReserveShortSyncEntity(
+        locationId = locationId ?: locationSyncEntity?.id,
+        nomenclatureId = nomenclatureId,
+        orderId = orderId,
+        name = name,
+        userUpdated = userUpdated,
+        updateDate = System.currentTimeMillis()
+    )
 
 fun ReserveSyncEntity.toDocumentReserveCountSyncEntity() = DocumentReserveCountSyncEntity(
     id = id,

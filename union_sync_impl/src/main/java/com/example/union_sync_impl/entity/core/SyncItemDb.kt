@@ -6,9 +6,10 @@ import androidx.room.Ignore
 @Entity
 open class SyncItemDb(
     id: String,
-    var updateDate: Long?,
-    var userUpdated: String?,
-    var userInserted: String?
+    var insertDate: Long? = null,
+    var updateDate: Long? = null,
+    var userUpdated: String? = null,
+    var userInserted: String? = null
 ) : DatabaseItemDb(id) {
 
     @Ignore

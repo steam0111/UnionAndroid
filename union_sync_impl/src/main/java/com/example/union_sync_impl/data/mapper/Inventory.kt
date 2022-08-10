@@ -3,6 +3,7 @@ package com.example.union_sync_impl.data.mapper
 import com.example.union_sync_api.entity.*
 import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
+import com.example.union_sync_impl.utils.getServerFormatFromMillis
 import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.InventoryDtoV2
 
@@ -15,8 +16,8 @@ fun InventoryDtoV2.toInventoryDb(): InventoryDb {
             }
         },
         employeeId = molId,
-        date = getMillisDateFromServerFormat(creationDate.orEmpty()),
-        updateDate = System.currentTimeMillis(),
+        creationDate = getMillisDateFromServerFormat(dateInsert),
+        updateDate = getMillisDateFromServerFormat(dateUpdate),
         inventoryStatus = extendedInventoryState?.id.orEmpty(),
         name = name,
         code = code,
@@ -34,8 +35,8 @@ fun InventoryDb.toInventoryDtoV2(): InventoryDtoV2 {
         molId = employeeId,
         inventoryStateId = inventoryStatus,
         inventoryTypeId = "",
-        creationDate = getStringDateFromMillis(date),
-        dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
+        creationDate = getStringDateFromMillis(creationDate),
+        dateUpdate = getStringDateFromMillis(updateDate),
         id = id,
         deleted = false,
         userInserted = userInserted,
@@ -47,10 +48,10 @@ fun InventoryCreateSyncEntity.toInventoryDb(id: String): InventoryDb {
     return InventoryDb(
         id = id,
         employeeId = employeeId,
-        date = System.currentTimeMillis(),
+        creationDate = System.currentTimeMillis(),
         locationIds = locationIds,
         inventoryStatus = inventoryStatus,
-        updateDate = updateDate,
+        updateDate = System.currentTimeMillis(),
         code = code,
         name = name,
         userUpdated = userUpdated,
@@ -64,10 +65,10 @@ fun InventoryUpdateSyncEntity.toInventoryDb(): InventoryDb {
     return InventoryDb(
         id = id,
         employeeId = employeeId,
-        date = date,
+        creationDate = creationDate,
         locationIds = locationIds,
         inventoryStatus = inventoryStatus,
-        updateDate = updateDate,
+        updateDate = System.currentTimeMillis(),
         code = code,
         name = name,
         userUpdated = userUpdated,
@@ -86,7 +87,7 @@ fun InventoryDb.toInventorySyncEntity(
 ): InventorySyncEntity {
     return InventorySyncEntity(
         id = id,
-        date = date,
+        creationDate = creationDate,
         structuralSyncEntity = structuralSyncEntity,
         mol = mol,
         locationSyncEntities = locationSyncEntities,

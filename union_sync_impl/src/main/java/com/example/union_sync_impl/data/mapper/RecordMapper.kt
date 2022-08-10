@@ -8,8 +8,8 @@ import com.example.union_sync_impl.entity.ActionBaseDb
 import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
 import com.example.union_sync_impl.entity.InventoryRecordDb
+import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import com.example.union_sync_impl.utils.getStringDateFromMillis
-import org.openapitools.client.models.ActionBaseDtoV2
 import org.openapitools.client.models.ActionRecordDtoV2
 import org.openapitools.client.models.ActionRemainsRecordDtoV2
 import org.openapitools.client.models.EnumDtoV2
@@ -19,7 +19,8 @@ fun ActionRecordDtoV2.toActionRecordDb() = ActionRecordDb(
     id = id,
     accountingObjectId = accountingObjectId.orEmpty(),
     actionId = actionId.orEmpty(),
-    updateDate = System.currentTimeMillis(),
+    insertDate = getMillisDateFromServerFormat(dateInsert),
+    updateDate = getMillisDateFromServerFormat(dateUpdate),
     userUpdated = userUpdated,
     userInserted = userInserted
 )
@@ -38,7 +39,8 @@ fun ActionRemainsRecordDtoV2.toActionRemainsRecordDb() = ActionRemainsRecordDb(
     id = id,
     remainId = remainsId.orEmpty(),
     actionId = actionId.orEmpty(),
-    updateDate = System.currentTimeMillis(),
+    updateDate = getMillisDateFromServerFormat(dateUpdate),
+    insertDate = getMillisDateFromServerFormat(dateInsert),
     count = count,
     userUpdated = userUpdated,
     userInserted = userInserted
@@ -59,7 +61,8 @@ fun InventoryRecordDtoV2.toInventoryRecordDb() = InventoryRecordDb(
     id = id,
     accountingObjectId = accountingObjectId.orEmpty(),
     inventoryId = inventoryId.orEmpty(),
-    updateDate = System.currentTimeMillis(),
+    updateDate = getMillisDateFromServerFormat(dateUpdate),
+    insertDate = getMillisDateFromServerFormat(dateInsert),
     inventoryStatus = inventoryRecordStatusId.orEmpty(),
     userUpdated = userUpdated,
     userInserted = userInserted
@@ -69,21 +72,21 @@ fun ActionRecordDb.toSyncEntity() = ActionRecordSyncEntity(
     id = id,
     accountingObjectId = accountingObjectId,
     actionId = actionId,
-    updateDate = updateDate ?: System.currentTimeMillis()
+    updateDate = updateDate
 )
 
 fun ActionRemainsRecordDb.toSyncEntity() = ActionRemainsRecordSyncEntity(
     id = id,
     remainId = remainId,
     actionId = actionId,
-    updateDate = updateDate ?: System.currentTimeMillis()
+    updateDate = updateDate
 )
 
 fun InventoryRecordDb.toSyncEntity() = InventoryRecordSyncEntity(
     id = id,
     accountingObjectId = accountingObjectId,
     inventoryId = inventoryId,
-    updateDate = updateDate ?: System.currentTimeMillis()
+    updateDate = updateDate
 )
 
 fun InventoryRecordDb.toInventoryRecordDtoV2() = InventoryRecordDtoV2(
@@ -98,13 +101,11 @@ fun InventoryRecordDb.toInventoryRecordDtoV2() = InventoryRecordDtoV2(
 )
 
 fun EnumDtoV2.toActionBaseDb() = ActionBaseDb(
-    id = id.orEmpty(),
-    name = name.orEmpty(),
-    updateDate = System.currentTimeMillis()
+    id = id,
+    name = name.orEmpty()
 )
 
 fun ActionBaseDb.toSyncEntity() = ActionBaseSyncEntity(
     id = id,
-    name = name,
-    updateDate = updateDate
+    name = name
 )

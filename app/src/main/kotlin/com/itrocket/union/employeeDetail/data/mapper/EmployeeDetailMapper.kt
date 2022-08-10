@@ -5,6 +5,7 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjectDetail.domain.entity.EmployeeDetailDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.employees.domain.entity.EmployeeStatus
+import com.itrocket.union.utils.getStringDateFromMillis
 
 fun EmployeeDetailSyncEntity.toEmployeeDetailDomain(): EmployeeDetailDomain {
     val listInfo = mutableListOf<ObjectInfoDomain>()
@@ -23,6 +24,19 @@ fun EmployeeDetailSyncEntity.toEmployeeDetailDomain(): EmployeeDetailDomain {
     }
     employee.post?.let {
         listInfo.add(ObjectInfoDomain(R.string.employees_post, it))
+    }
+
+    employee.dateInsert?.let {
+        listInfo.add(ObjectInfoDomain(R.string.common_date_create, getStringDateFromMillis(it)))
+    }
+    employee.userInserted?.let {
+        listInfo.add(ObjectInfoDomain(R.string.common_user_create, it))
+    }
+    employee.updateDate?.let {
+        listInfo.add(ObjectInfoDomain(R.string.common_date_update, getStringDateFromMillis(it)))
+    }
+    employee.userUpdated?.let {
+        listInfo.add(ObjectInfoDomain(R.string.common_user_update, it))
     }
 
     return EmployeeDetailDomain(id = employee.id, name = employee.fullName, listInfo = listInfo)

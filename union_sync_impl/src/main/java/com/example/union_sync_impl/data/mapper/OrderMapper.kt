@@ -2,7 +2,7 @@ package com.example.union_sync_impl.data.mapper
 
 import com.example.union_sync_api.entity.OrderSyncEntity
 import com.example.union_sync_impl.entity.OrderDb
-import org.openapitools.client.models.CustomOrderDto
+import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import org.openapitools.client.models.OrderDtoV2
 
 fun OrderDtoV2.toOrderDb(): OrderDb {
@@ -12,7 +12,10 @@ fun OrderDtoV2.toOrderDb(): OrderDb {
         number = number,
         summary = summary,
         date = date,
-        updateDate = System.currentTimeMillis()
+        updateDate = getMillisDateFromServerFormat(dateUpdate),
+        insertDate = getMillisDateFromServerFormat(dateInsert),
+        userUpdated = userUpdated,
+        userInserted = userInserted
     )
 }
 

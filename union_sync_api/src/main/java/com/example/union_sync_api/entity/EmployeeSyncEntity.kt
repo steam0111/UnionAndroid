@@ -10,7 +10,11 @@ data class EmployeeSyncEntity(
     val number: String,
     val nfc: String?,
     val statusId: String?,
-    val post: String?
+    val post: String?,
+    val userUpdated: String?,
+    var userInserted: String?,
+    val dateInsert: Long?,
+    var updateDate: Long?
 ) {
     val fullName: String
         get() = "$lastname $firstname $patronymic"

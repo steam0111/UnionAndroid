@@ -11,6 +11,7 @@ import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.entity.DocumentDb
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
+import com.example.union_sync_impl.utils.getServerFormatFromMillis
 import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.ActionDtoV2
 
@@ -23,10 +24,10 @@ fun ActionDtoV2.toDocumentDb(): DocumentDb {
         exploitingId = exploitingId,
         documentType = actionTypeId ?: "GIVE",
         completionDate = getMillisDateFromServerFormat(completionDate),
-        creationDate = getMillisDateFromServerFormat(creationDate) ?: System.currentTimeMillis(),
+        creationDate = getMillisDateFromServerFormat(creationDate),
         documentStatus = extendedActionStatus?.id.orEmpty(),
         documentStatusId = actionStatusId.orEmpty(),
-        updateDate = System.currentTimeMillis(),
+        updateDate = getMillisDateFromServerFormat(dateUpdate),
         locationFromId = locationFromId,
         locationToId = locationToId,
         actionBaseId = actionBaseId,
@@ -48,7 +49,7 @@ fun DocumentDb.toActionDtoV2(): ActionDtoV2 {
         locationFromId = locationFromId,
         actionStatusId = documentStatus,
         creationDate = getStringDateFromMillis(creationDate),
-        dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
+        dateUpdate = getStringDateFromMillis(updateDate),
         id = id,
         deleted = false,
         userInserted = userInserted,
@@ -127,6 +128,7 @@ fun DocumentDb.toDocumentSyncEntity(
         locationTo = locationTo,
         actionBase = actionBase,
         code = code,
-        userInserted = userInserted
+        userInserted = userInserted,
+        userUpdated = userUpdated
     )
 }

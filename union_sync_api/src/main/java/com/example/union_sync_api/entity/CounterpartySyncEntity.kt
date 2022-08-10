@@ -8,5 +8,9 @@ class CounterpartySyncEntity(
     val legalAddress: String?,
     val inn: String?,
     val kpp: String?,
-    val code: String?
+    val code: String?,
+    val userUpdated: String?,
+    var userInserted: String?,
+    val dateInsert: Long?,
+    var updateDate: Long?,
 )

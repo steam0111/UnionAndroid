@@ -13,5 +13,14 @@ class CounterpartyDb(
     val inn: String?,
     val kpp: String?,
     val code: String?,
+    insertDate: Long?,
     updateDate: Long?,
-) : CatalogItemDb(id, updateDate)
+    userInserted: String?,
+    userUpdated: String?,
+) : CatalogItemDb(
+    id = id,
+    insertDate = insertDate,
+    updateDate = updateDate,
+    userUpdated = userUpdated,
+    userInserted = userInserted
+)

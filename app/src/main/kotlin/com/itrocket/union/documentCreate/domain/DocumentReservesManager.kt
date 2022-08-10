@@ -110,6 +110,7 @@ class DocumentReservesManager(
                         count = reserve?.itemsCount ?: 0,
                         userUpdated = login,
                         userInserted = login,
+                        updateDate = System.currentTimeMillis()
                     )
                 },
                 existingInNewLocationReserves

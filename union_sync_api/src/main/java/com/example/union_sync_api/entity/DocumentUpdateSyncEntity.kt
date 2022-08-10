@@ -9,7 +9,7 @@ data class DocumentUpdateSyncEntity(
     val locationFromId: String? = null,
     val locationToId: String? = null,
     val actionBaseId: String? = null,
-    val creationDate: Long,
+    val creationDate: Long?,
     val completionDate: Long?,
     val documentStatus: String,
     val documentStatusId: String,

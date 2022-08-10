@@ -22,7 +22,7 @@ data class DocumentDomain(
     val documentStatus: DocumentStatus,
     val documentType: DocumentTypeDomain,
     val params: List<ParamDomain> = emptyList(),
-    val creationDate: Long,
+    val creationDate: Long?,
     val completionDate: Long? = null,
     val accountingObjects: List<AccountingObjectDomain> = listOf(),
     val reserves: List<ReservesDomain> = listOf(),
@@ -88,7 +88,6 @@ fun DocumentDomain.toCreateSyncEntity(): DocumentCreateSyncEntity {
         exploitingId = exploitingId,
         documentType = documentType.name,
         accountingObjectsIds = accountingObjects.map { it.id },
-        creationDate = creationDate,
         completionDate = trueCompletionDate,
         reservesIds = reserves.map {
             DocumentReserveCountSyncEntity(

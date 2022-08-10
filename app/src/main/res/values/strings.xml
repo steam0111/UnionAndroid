@@ -37,6 +37,10 @@
     <string name="common_yes">Да</string>
     <string name="common_no">Нет</string>
     <string name="common_nfc">NFC</string>
+    <string name="common_date_create">Дата создания</string>
+    <string name="common_date_update">Дата обновления</string>
+    <string name="common_user_create">Пользователь создал</string>
+    <string name="common_user_update">Пользователь обновил</string>
     <string name="common_sub_name">Доп. наименование</string>
     <string name="common_invoice_number">Номер накладной</string>
 

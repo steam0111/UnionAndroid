@@ -5,6 +5,7 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjectDetail.data.mapper.getStringBy
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import com.itrocket.union.utils.getStringDateFromMillis
 
 fun ReserveDetailSyncEntity.map(): ReservesDomain {
     val listInfo = mutableListOf<ObjectInfoDomain>()
@@ -34,7 +35,7 @@ fun ReserveDetailSyncEntity.map(): ReservesDomain {
         )
     )
 
-    reserveSyncEntity.invoiceNumber?.let{
+    reserveSyncEntity.invoiceNumber?.let {
         listInfo.add(ObjectInfoDomain(R.string.common_invoice_number, it))
     }
 
@@ -56,6 +57,19 @@ fun ReserveDetailSyncEntity.map(): ReservesDomain {
 
     receptionItemCategorySyncEntity?.let {
         listInfo.add(ObjectInfoDomain(R.string.reserves_detail_reception_item_category, it.name))
+    }
+
+    reserveSyncEntity.insertDate?.let {
+        listInfo.add(ObjectInfoDomain(R.string.common_date_create, getStringDateFromMillis(it)))
+    }
+    reserveSyncEntity.userInserted?.let {
+        listInfo.add(ObjectInfoDomain(R.string.common_user_create, it))
+    }
+    reserveSyncEntity.updateDate?.let {
+        listInfo.add(ObjectInfoDomain(R.string.common_date_update, getStringDateFromMillis(it)))
+    }
+    reserveSyncEntity.userUpdated?.let {
+        listInfo.add(ObjectInfoDomain(R.string.common_user_update, it))
     }
 
     return ReservesDomain(

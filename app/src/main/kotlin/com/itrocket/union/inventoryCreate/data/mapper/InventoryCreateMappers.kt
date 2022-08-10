@@ -20,7 +20,7 @@ fun InventorySyncEntity.map(): InventoryCreateDomain =
     InventoryCreateDomain(
         id = id,
         number = code.orEmpty(),
-        date = date,
+        creationDate = creationDate,
         accountingObjects = accountingObjects.map(),
         documentInfo = buildList {
             add(

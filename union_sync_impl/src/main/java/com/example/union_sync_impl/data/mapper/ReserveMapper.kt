@@ -8,6 +8,7 @@ import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.entity.FullReserve
 import com.example.union_sync_impl.entity.ReserveDb
 import com.example.union_sync_impl.entity.ReserveUpdate
+import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.RemainsDtoV2
 
@@ -26,7 +27,8 @@ fun RemainsDtoV2.toReserveDb(): ReserveDb {
         receptionItemCategoryId = receptionItemCategoryId,
         receptionDocumentNumber = receptionDocumentNumber,
         unitPrice = unitPrice,
-        updateDate = System.currentTimeMillis(),
+        updateDate = getMillisDateFromServerFormat(dateUpdate),
+        insertDate = getMillisDateFromServerFormat(dateInsert),
         userUpdated = userUpdated,
         userInserted = userInserted,
         structuralId = structuralUnitId,
@@ -74,6 +76,7 @@ fun ReserveSyncEntity.toReserveDb(): ReserveDb {
         receptionDocumentNumber = receptionDocumentNumber,
         unitPrice = unitPrice,
         updateDate = System.currentTimeMillis(),
+        insertDate = insertDate,
         userUpdated = userUpdated,
         userInserted = userInserted,
         invoiceNumber = invoiceNumber,
@@ -101,7 +104,9 @@ fun ReserveDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?): ReserveSync
         userInserted = userInserted,
         invoiceNumber = invoiceNumber,
         subName = subName,
-        traceable = traceable
+        traceable = traceable,
+        insertDate = insertDate,
+        updateDate = updateDate
     )
 }
 
@@ -124,7 +129,9 @@ fun FullReserve.toSyncEntity(): ReserveSyncEntity {
         userInserted = reserveDb.userInserted,
         invoiceNumber = reserveDb.invoiceNumber,
         subName = reserveDb.subName,
-        traceable = reserveDb.traceable
+        traceable = reserveDb.traceable,
+        insertDate = reserveDb.insertDate,
+        updateDate = reserveDb.updateDate
     )
 }
 

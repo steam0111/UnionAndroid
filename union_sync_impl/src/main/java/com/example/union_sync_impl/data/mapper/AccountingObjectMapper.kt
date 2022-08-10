@@ -12,10 +12,11 @@ import com.example.union_sync_impl.entity.AccountingObjectScanningUpdate
 import com.example.union_sync_impl.entity.AccountingObjectStatusDb
 import com.example.union_sync_impl.entity.AccountingObjectUpdate
 import com.example.union_sync_impl.entity.FullAccountingObject
+import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
+import com.example.union_sync_impl.utils.getServerFormatFromMillis
 import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.AccountingObjectDtoV2
 import org.openapitools.client.models.AccountingObjectStatusDto
-import org.openapitools.client.models.AccountingObjectStatusDtoV2
 import org.openapitools.client.models.EnumDtoV2
 
 fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
@@ -43,7 +44,8 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
         internalNumber = internalNumber,
         model = model,
         providerId = providerId,
-        updateDate = System.currentTimeMillis(),
+        updateDate = getMillisDateFromServerFormat(dateUpdate),
+        insertDate = getMillisDateFromServerFormat(dateInsert),
         userUpdated = userUpdated,
         userInserted = userInserted,
         subName = subName,
@@ -109,7 +111,6 @@ fun AccountingObjectDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?) =
         locationSyncEntity = locationSyncEntity,
         nomenclatureId = nomenclatureId,
         nomenclatureGroupId = nomenclatureGroupId,
-        userUpdated = userUpdated,
         structuralId = structuralId,
         subName = subName,
         code = code,
@@ -120,7 +121,11 @@ fun AccountingObjectDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?) =
         registered = registered,
         invoiceNumber = invoiceNumber,
         nfc = nfc,
-        traceable = traceable
+        traceable = traceable,
+        updateDate = updateDate,
+        dateInsert = insertDate,
+        userInserted = userInserted,
+        userUpdated = userUpdated
     )
 
 fun FullAccountingObject.toSyncEntity(
@@ -151,7 +156,6 @@ fun FullAccountingObject.toSyncEntity(
     statusId = accountingObjectDb.statusId,
     nomenclatureGroupId = accountingObjectDb.nomenclatureGroupId,
     nomenclatureId = accountingObjectDb.nomenclatureId,
-    userUpdated = accountingObjectDb.userUpdated,
     structuralId = structuralDb?.id,
     subName = accountingObjectDb.subName,
     code = accountingObjectDb.code,
@@ -162,7 +166,11 @@ fun FullAccountingObject.toSyncEntity(
     registered = accountingObjectDb.registered,
     invoiceNumber = accountingObjectDb.invoiceNumber,
     nfc = accountingObjectDb.nfc,
-    traceable = accountingObjectDb.traceable
+    traceable = accountingObjectDb.traceable,
+    updateDate = accountingObjectDb.updateDate,
+    dateInsert = accountingObjectDb.insertDate,
+    userUpdated = accountingObjectDb.userUpdated,
+    userInserted = accountingObjectDb.userInserted
 )
 
 fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObjectDtoV2> {
@@ -210,10 +218,10 @@ fun AccountingObjectUpdateSyncEntity.toAccountingObjectUpdate(): AccountingObjec
         exploitingId = exploitingId,
         status = status?.toStatusDb(),
         statusId = statusId,
-        updateDate = updateDate,
         molId = molId,
         structuralId = structuralId,
-        userUpdated = userUpdated
+        userUpdated = userUpdated,
+        updateDate = System.currentTimeMillis()
     )
 }
 

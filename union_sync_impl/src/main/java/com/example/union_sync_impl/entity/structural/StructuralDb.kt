@@ -13,5 +13,14 @@ class StructuralDb(
     val balanceUnitCode: String? = null,
     val branch: Boolean? = null,
     val fullCode: String? = null,
-    updateDate: Long?
-) : CatalogItemDb(id, updateDate)
+    insertDate: Long?,
+    updateDate: Long?,
+    userInserted: String?,
+    userUpdated: String?,
+) : CatalogItemDb(
+    id = id,
+    insertDate = insertDate,
+    updateDate = updateDate,
+    userUpdated = userUpdated,
+    userInserted = userInserted
+)
