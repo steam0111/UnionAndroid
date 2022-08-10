@@ -47,7 +47,6 @@ import com.itrocket.union.common.DefaultItem
 import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
-import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
@@ -58,7 +57,6 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.utils.clickableUnbounded
-import java.math.BigDecimal
 
 private const val MAX_LIST_INFO = 3
 private const val DATE_ITEM_ROTATION_DURATION = 200
@@ -593,7 +591,8 @@ fun AccountingObjectItemPreview() {
                 ),
             ),
             barcodeValue = "",
-            rfidValue = ""
+            rfidValue = "",
+            factoryNumber = ""
         ), onAccountingObjectListener = {}, isShowBottomLine = true,
         status = ObjectStatusType.REVIEW
     )

@@ -308,4 +308,22 @@
 
     <!-- Identify -->
     <string name="os_tab_title">ОС (%s)</string>
+
+    <!-- ChangeScanData -->
+    <string name="change_scan_data_rfid_title">Изменение RFID</string>
+    <string name="change_scan_data_with_rfid">С RFID</string>
+    <string name="change_scan_data_on_rfid">На RFID</string>
+    <string name="change_scan_data_empty_rfid">Метка не установлена</string>
+
+    <string name="change_scan_data_barcode_title">Изменение ШК</string>
+    <string name="change_scan_data_with_barcode">С штрихкода</string>
+    <string name="change_scan_data_on_barcode">На штрихкод</string>
+    <string name="change_scan_data_empty_barcode">Штрихкод не установлен</string>
+
+    <string name="change_scan_data_sn_title">Изменение SN</string>
+    <string name="change_scan_data_with_sn">С SN</string>
+    <string name="change_scan_data_on_sn">На SN</string>
+    <string name="change_scan_data_empty_sn">SN не установлен</string>
+
+    <string name="change_scan_data_press_cursor">Нажмите курок считывателя</string>
 </resources>

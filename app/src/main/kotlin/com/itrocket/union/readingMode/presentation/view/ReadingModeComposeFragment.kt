@@ -57,5 +57,8 @@ class ReadingModeComposeFragment :
     companion object {
         const val READING_MODE_TAB_RESULT_LABEL = "reading mode tab result label"
         const val READING_MODE_TAB_RESULT_CODE = "reading mode tab result code"
+
+        const val READING_MODE_RESULT_CODE = "reading mode result code"
+        const val READING_MODE_RESULT_LABEL = "reading mode result label"
     }
 }

@@ -49,6 +49,7 @@ import com.itrocket.union.syncAll.SyncAllModule
 import com.itrocket.union.token.TokenModule
 import com.itrocket.union.unionPermissions.UnionPermissionsModule
 import com.union.sdk.SyncModule
+import com.itrocket.union.changeScanData.ChangeScanDataModule
 
 object Modules {
 
@@ -110,5 +111,6 @@ object Modules {
         StructuralModule.module,
         SelectActionWithValuesBottomMenuModule.module,
         IdentifyModule.module,
+        ChangeScanDataModule.module
     )
 }

@@ -2,7 +2,6 @@ package com.itrocket.union.identify.presentation.view
 
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -45,7 +43,6 @@ import com.itrocket.union.identify.presentation.store.IdentifyStore
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.DoubleTabRow
 import com.itrocket.union.ui.MediumSpacer
@@ -298,7 +295,8 @@ fun IdentifyScreenPreview() {
                         ),
                     ),
                     barcodeValue = "",
-                    rfidValue = ""
+                    rfidValue = "",
+                    factoryNumber = ""
                 ),
                 AccountingObjectDomain(
                     id = "2",
@@ -317,7 +315,8 @@ fun IdentifyScreenPreview() {
                     ),
                     listAdditionallyInfo = listOf(),
                     barcodeValue = "",
-                    rfidValue = ""
+                    rfidValue = "",
+                    factoryNumber = ""
                 ), AccountingObjectDomain(
                     id = "3",
                     isBarcode = true,
@@ -335,7 +334,8 @@ fun IdentifyScreenPreview() {
                     ),
                     listAdditionallyInfo = listOf(),
                     barcodeValue = "",
-                    rfidValue = ""
+                    rfidValue = "",
+                    factoryNumber = ""
                 )
             ),
             selectedPage = 1,

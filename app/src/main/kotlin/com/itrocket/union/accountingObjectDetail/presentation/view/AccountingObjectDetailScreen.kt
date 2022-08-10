@@ -2,12 +2,8 @@ package com.itrocket.union.accountingObjectDetail.presentation.view
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -33,7 +28,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,21 +48,13 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.ui.BaseButton
-import com.itrocket.union.ui.BaseToolbar
-import com.itrocket.union.ui.DoubleTabRow
 import com.itrocket.union.ui.ExpandedInfoField
-import com.itrocket.union.ui.FullCharacteristicsSwitcher
 import com.itrocket.union.ui.ReadingModeBottomBar
-import com.itrocket.union.ui.TabIndicatorBlack
-import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.psb1
 import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
-import com.itrocket.utils.getTargetPage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -114,10 +100,10 @@ fun AccountingObjectDetailScreen(
                 )
             },
             bottomBar = {
-                //TODO: Пока не нужен
-                /*BottomBar(
-                    onReadingModeClickListener = onReadingModeClickListener
-                )*/
+                BottomBar(
+                    onReadingModeClickListener = onReadingModeClickListener,
+                    readingModeTab = state.readingMode
+                )
             },
             modifier = Modifier.padding(
                 top = appInsets.topInset.dp,
@@ -316,7 +302,8 @@ fun AccountingObjectDetailScreenPreview() {
                 ),
                 inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
                 barcodeValue = "",
-                rfidValue = ""
+                rfidValue = "",
+                factoryNumber = ""
             ),
         ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {})
 }

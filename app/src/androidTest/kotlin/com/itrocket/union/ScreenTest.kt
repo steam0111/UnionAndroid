@@ -8,6 +8,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailScreenPreview
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectScreenPreview
 import com.itrocket.union.authUser.presentation.view.AuthUserScreenPreview
+import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataScreenPreview
 import com.itrocket.union.conterpartyDetail.presentation.view.CounterpartyDetailScreenPreview
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateScreenPreview
 import com.itrocket.union.documents.presentation.view.DocumentScreenPreview
@@ -257,10 +258,17 @@ class ScreensTest : ScreenshotTest {
         }
     }
 
-    @Test
+    /*@Test
     fun `ConfirmAlertDialog`() {
         takeScreenShot {
             ConfirmAlertDialogPreview()
+        }
+    }
+*/
+    @Test
+    fun `ChangeScanData`(){
+        takeScreenShot {
+            ChangeScanDataScreenPreview()
         }
     }
 }

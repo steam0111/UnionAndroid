@@ -45,7 +45,6 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseCheckbox
 import com.itrocket.union.ui.BaseToolbar
-import com.itrocket.union.ui.ImageButton
 import com.itrocket.union.ui.ConfirmAlertDialog
 import com.itrocket.union.ui.InventoryDocumentItem
 import com.itrocket.union.ui.MediumSpacer
@@ -338,7 +337,8 @@ fun InventoryCreateScreenPreview() {
                     ),
                     listAdditionallyInfo = listOf(),
                     barcodeValue = "",
-                    rfidValue = ""
+                    rfidValue = "",
+                    factoryNumber = ""
                 ),
                 AccountingObjectDomain(
                     id = "8",
@@ -357,7 +357,8 @@ fun InventoryCreateScreenPreview() {
                     ),
                     listAdditionallyInfo = listOf(),
                     barcodeValue = "",
-                    rfidValue = ""
+                    rfidValue = "",
+                    factoryNumber = ""
                 ),
             ),
             inventoryStatus = InventoryStatus.CREATED,

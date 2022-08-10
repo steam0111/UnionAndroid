@@ -29,7 +29,6 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectStore
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.SearchToolbar
 
 @ExperimentalPagerApi
@@ -143,7 +142,8 @@ fun AccountingObjectScreenPreview() {
                     ),
                     listAdditionallyInfo = listOf(),
                     barcodeValue = "",
-                    rfidValue = ""
+                    rfidValue = "",
+                    factoryNumber = ""
                 ),
                 AccountingObjectDomain(
                     id = "8",
@@ -162,7 +162,8 @@ fun AccountingObjectScreenPreview() {
                     ),
                     listAdditionallyInfo = listOf(),
                     barcodeValue = "",
-                    rfidValue = ""
+                    rfidValue = "",
+                    factoryNumber = ""
                 )
             ),
             params = emptyList()

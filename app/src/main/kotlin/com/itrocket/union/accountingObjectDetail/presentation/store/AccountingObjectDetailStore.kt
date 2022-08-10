@@ -9,6 +9,10 @@ import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.changeScanData.domain.entity.ChangeScanType
+import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataArguments
+import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment
+import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment.Companion.CHANGE_SCAN_DATA_ARGS
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 
@@ -21,6 +25,8 @@ interface AccountingObjectDetailStore :
         object OnReadingModeClicked : Intent()
         object OnDocumentSearchClicked : Intent()
         object OnDocumentAddClicked : Intent()
+        data class OnMarkingClicked(val readingModeTab: ReadingModeTab) : Intent()
+        data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
     }
 
     data class State(
@@ -43,6 +49,27 @@ interface AccountingObjectDetailStore :
 
             override val fragment: Fragment
                 get() = ReadingModeComposeFragment()
+        }
+
+        data class ShowChangeScanData(
+            val entityId: String,
+            val scanValue: String?,
+            val changeScanType: ChangeScanType
+        ) : Label(),
+            ShowBottomSheetNavigationLabel {
+            override val arguments: Bundle
+                get() = bundleOf(
+                    CHANGE_SCAN_DATA_ARGS to ChangeScanDataArguments(
+                        entityId = entityId,
+                        scanValue = scanValue,
+                        changeScanType = changeScanType
+                    )
+                )
+            override val containerId: Int
+                get() = R.id.mainActivityNavHostFragment
+            override val fragment: Fragment
+                get() = ChangeScanDataComposeFragment()
+
         }
     }
 }

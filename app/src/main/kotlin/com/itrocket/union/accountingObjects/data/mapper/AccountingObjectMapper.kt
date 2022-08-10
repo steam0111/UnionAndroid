@@ -38,7 +38,8 @@ fun AccountingObjectSyncEntity.map(): AccountingObjectDomain {
         listAdditionallyInfo = emptyList(),
         inventoryStatus = inventoryStatus,
         barcodeValue = barcodeValue,
-        rfidValue = rfidValue
+        rfidValue = rfidValue,
+        factoryNumber = factoryNumber
     )
 }
 
