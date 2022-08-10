@@ -17,7 +17,8 @@ import org.openapitools.client.models.ActionDtoV2
 fun ActionDtoV2.toDocumentDb(): DocumentDb {
     return DocumentDb(
         id = id,
-        structuralId = structuralUnitId,
+        structuralFromId = structuralUnitFromId,
+        structuralToId = structuralUnitToId,
         molId = molId.orEmpty(),
         exploitingId = exploitingId,
         documentType = actionTypeId ?: "GIVE",
@@ -37,7 +38,8 @@ fun ActionDtoV2.toDocumentDb(): DocumentDb {
 
 fun DocumentDb.toActionDtoV2(): ActionDtoV2 {
     return ActionDtoV2(
-        structuralUnitId = structuralId.orEmpty(),
+        structuralUnitFromId = structuralFromId,
+        structuralUnitToId = structuralToId,
         molId = molId.orEmpty(),
         exploitingId = exploitingId,
         actionTypeId = documentType,
@@ -70,7 +72,8 @@ fun DocumentCreateSyncEntity.toDocumentDb(id: String): DocumentDb {
         code = code,
         userUpdated = userUpdated,
         userInserted = userInserted,
-        structuralId = structuralId
+        structuralFromId = structuralFromId,
+        structuralToId = structuralToId,
     )
 }
 
@@ -91,12 +94,14 @@ fun DocumentUpdateSyncEntity.toDocumentDb(): DocumentDb {
         code = code,
         userUpdated = userUpdated,
         userInserted = userInserted,
-        structuralId = structuralId
+        structuralFromId = structuralFromId,
+        structuralToId = structuralToId,
     )
 }
 
 fun DocumentDb.toDocumentSyncEntity(
-    structuralSyncEntity: StructuralSyncEntity?,
+    structuralFromSyncEntity: StructuralSyncEntity?,
+    structuralToSyncEntity: StructuralSyncEntity?,
     mol: EmployeeSyncEntity?,
     exploiting: EmployeeSyncEntity?,
     accountingObjects: List<AccountingObjectSyncEntity>? = null,
@@ -107,7 +112,8 @@ fun DocumentDb.toDocumentSyncEntity(
 ): DocumentSyncEntity {
     return DocumentSyncEntity(
         id = id,
-        structuralSyncEntity = structuralSyncEntity,
+        structuralFromSyncEntity = structuralFromSyncEntity,
+        structuralToSyncEntity = structuralToSyncEntity,
         mol = mol,
         exploiting = exploiting,
         documentType = documentType,

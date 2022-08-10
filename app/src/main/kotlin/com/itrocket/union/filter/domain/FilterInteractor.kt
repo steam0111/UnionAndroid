@@ -118,7 +118,7 @@ class FilterInteractor(
     }
 
     private suspend fun List<ParamDomain>.getFilterStructuralIds(): List<String?>? {
-        val lastStructuralId = getFilterStructuralLastId()
+        val lastStructuralId = getFilterStructuralLastId(ManualType.STRUCTURAL)
         return if (lastStructuralId == null) {
             null
         } else {

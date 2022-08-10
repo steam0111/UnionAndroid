@@ -16,6 +16,7 @@ fun List<InventorySyncEntity>.map(): List<InventoryCreateDomain> = map {
 }
 
 fun InventorySyncEntity.map(): InventoryCreateDomain =
+
     InventoryCreateDomain(
         id = id,
         number = code.orEmpty(),
@@ -23,7 +24,7 @@ fun InventorySyncEntity.map(): InventoryCreateDomain =
         accountingObjects = accountingObjects.map(),
         documentInfo = buildList {
             add(
-                StructuralParamDomain(structurals = buildList {
+                StructuralParamDomain(manualType = ManualType.STRUCTURAL, structurals = buildList {
                     structuralSyncEntity?.let {
                         add(it.toStructuralDomain())
                     }
@@ -32,11 +33,14 @@ fun InventorySyncEntity.map(): InventoryCreateDomain =
             mol?.let { mol ->
                 add(ParamDomain(mol.id, "${mol.firstname} ${mol.lastname}", ManualType.MOL))
             }
-            locationSyncEntities?.let { locationSyncEntities ->
-                add(
-                    LocationParamDomain(
-                        locations = locationSyncEntities.map { it.toLocationDomain() })
+            add(
+                LocationParamDomain(
+                    manualType = ManualType.LOCATION_INVENTORY,
+                    locations = locationSyncEntities?.map { it.toLocationDomain() }.orEmpty()
                 )
+            )
+            inventoryBaseSyncEntity?.let { base ->
+                add(ParamDomain(id = base.id, value = base.name, type = ManualType.INVENTORY_BASE))
             }
         },
         inventoryStatus = InventoryStatus.valueOf(inventoryStatus),

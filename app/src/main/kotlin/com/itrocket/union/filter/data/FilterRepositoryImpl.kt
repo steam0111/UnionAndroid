@@ -9,7 +9,7 @@ import com.itrocket.union.manual.StructuralParamDomain
 class FilterRepositoryImpl : FilterRepository {
     override fun getFilters(): List<ParamDomain> {
         return listOf(
-            StructuralParamDomain(),
+            StructuralParamDomain(manualType = ManualType.STRUCTURAL),
             ParamDomain(
                 type = ManualType.MOL,
                 value = ""

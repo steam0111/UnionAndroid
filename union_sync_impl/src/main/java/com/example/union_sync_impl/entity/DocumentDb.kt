@@ -19,7 +19,8 @@ class DocumentDb(
     val locationToId: String? = null,
     val actionBaseId: String? = null,
     val code: String?,
-    val structuralId: String?,
+    val structuralFromId: String?,
+    val structuralToId: String?,
     userInserted: String?,
     userUpdated: String?,
 ) : SyncItemDb(id, updateDate, userUpdated, userInserted)

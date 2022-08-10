@@ -7,7 +7,9 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.inventoryCreate.data.mapper.map
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
+import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.getFilterInventoryBaseId
 import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.manual.getMolId
 import kotlinx.coroutines.withContext
@@ -42,8 +44,9 @@ class InventoryRepositoryImpl(
         withContext(coreDispatchers.io) {
             inventorySyncApi.getInventories(
                 textQuery = textQuery,
-                structuralId = params?.getFilterStructuralLastId(),
-                molId = params?.getMolId()
+                structuralId = params?.getFilterStructuralLastId(ManualType.STRUCTURAL),
+                molId = params?.getMolId(),
+                inventoryBaseId = params?.getFilterInventoryBaseId()
             ).map {
                 it.map()
             }.flowOn(coreDispatchers.io)
@@ -53,8 +56,9 @@ class InventoryRepositoryImpl(
         withContext(coreDispatchers.io) {
             inventorySyncApi.getInventoriesCount(
                 textQuery = textQuery,
-                structuralId = params?.getFilterStructuralLastId(),
-                molId = params?.getMolId()
+                structuralId = params?.getFilterStructuralLastId(ManualType.STRUCTURAL),
+                molId = params?.getMolId(),
+                inventoryBaseId = params?.getFilterInventoryBaseId()
             )
         }
 

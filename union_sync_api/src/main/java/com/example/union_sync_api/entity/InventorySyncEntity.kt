@@ -12,5 +12,6 @@ data class InventorySyncEntity(
     val code: String?,
     val name: String?,
     val userInserted: String?,
-    val userUpdated: String?
+    val userUpdated: String?,
+    val inventoryBaseSyncEntity: InventoryBaseSyncEntity?
 )

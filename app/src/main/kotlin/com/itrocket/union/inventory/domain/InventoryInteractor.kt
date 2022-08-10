@@ -12,6 +12,7 @@ import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
+import com.itrocket.union.manual.getFilterInventoryBaseId
 import com.itrocket.union.manual.getFilterLocationIds
 import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.manual.getMolId
@@ -27,14 +28,13 @@ class InventoryInteractor(
         params: List<ParamDomain>
     ): InventoryCreateDomain = withContext(coreDispatchers.io) {
         val structuralId =
-            requireNotNull(value = params.getFilterStructuralLastId(),
+            requireNotNull(value = params.getFilterStructuralLastId(ManualType.STRUCTURAL),
                 lazyMessage = {
                     "organizationId must not be null"
                 })
 
         val molId = params.getMolId()
-        val locationIds = params.getFilterLocationIds()
-
+        val locationIds = params.getFilterLocationIds(ManualType.LOCATION_INVENTORY)
         val id = repository.createInventory(
             InventoryCreateSyncEntity(
                 structuralId = structuralId,
@@ -47,6 +47,7 @@ class InventoryInteractor(
                 updateDate = System.currentTimeMillis(),
                 userInserted = authMainInteractor.getLogin(),
                 userUpdated = null,
+                inventoryBaseId = params.getFilterInventoryBaseId()
             )
         )
         repository.getInventoryById(id)
@@ -68,7 +69,7 @@ class InventoryInteractor(
         location: LocationParamDomain
     ): List<ParamDomain> {
         val mutableParams = params.toMutableList()
-        val locationIndex = params.indexOfFirst { it.type == ManualType.LOCATION }
+        val locationIndex = params.indexOfFirst { it.type == ManualType.LOCATION_INVENTORY }
         mutableParams[locationIndex] = location
         return mutableParams
     }
@@ -97,6 +98,6 @@ class InventoryInteractor(
     }
 
     fun isParamsValid(params: List<ParamDomain>): Boolean {
-        return !params.getFilterStructuralLastId().isNullOrEmpty()
+        return !params.getFilterStructuralLastId(ManualType.STRUCTURAL).isNullOrEmpty()
     }
 }

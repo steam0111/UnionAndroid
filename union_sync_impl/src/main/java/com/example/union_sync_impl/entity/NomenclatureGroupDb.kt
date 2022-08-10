@@ -8,5 +8,6 @@ class NomenclatureGroupDb(
     id: String,
     override var catalogItemName: String,
     val name: String,
+    val code: String?,
     updateDate: Long?
 ) : CatalogItemDb(id, updateDate)

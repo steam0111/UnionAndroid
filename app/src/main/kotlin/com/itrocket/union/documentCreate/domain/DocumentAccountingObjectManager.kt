@@ -37,17 +37,17 @@ class DocumentAccountingObjectManager(
                     accountingObjectIds = accountingObjectIds,
                     exploitingId = exploitingId,
                     locationToId = params.getFilterLocationLastId(ManualType.LOCATION_TO),
-                    structuralId = params.getFilterStructuralLastId()
+                    structuralId = params.getFilterStructuralLastId(ManualType.STRUCTURAL_TO)
                 )
                 DocumentTypeDomain.RETURN -> changeReturn(
                     accountingObjectIds = accountingObjectIds,
                     locationToId = params.getFilterLocationLastId(ManualType.LOCATION_TO),
-                    structuralId = params.getFilterStructuralLastId()
+                    structuralId = params.getFilterStructuralLastId(ManualType.STRUCTURAL_TO)
                 )
                 DocumentTypeDomain.RELOCATION -> changeMove(
                     accountingObjectIds = accountingObjectIds,
                     locationToId = params.getFilterLocationLastId(ManualType.RELOCATION_LOCATION_TO),
-                    structuralId = params.getFilterStructuralLastId(),
+                    structuralId = params.getFilterStructuralLastId(ManualType.STRUCTURAL_TO),
                     molId = params.getMolId()
                 )
                 else -> {

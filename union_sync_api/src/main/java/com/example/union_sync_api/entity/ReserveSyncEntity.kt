@@ -16,6 +16,9 @@ data class ReserveSyncEntity(
     val userInserted: String?,
     val userUpdated: String?,
     val structuralId: String?,
+    val traceable: Boolean,
+    val invoiceNumber: String?,
+    val subName: String?
 )
 
 fun ReserveSyncEntity.toReserveUpdateSyncEntity(userUpdated: String?) = ReserveUpdateSyncEntity(

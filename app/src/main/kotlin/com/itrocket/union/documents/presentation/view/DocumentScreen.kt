@@ -206,7 +206,8 @@ fun DocumentScreenPreview() {
                             "1", "blbbb",
                             type = ManualType.LOCATION
                         ),
-                        StructuralParamDomain()
+                        StructuralParamDomain(manualType = ManualType.STRUCTURAL_FROM),
+                        StructuralParamDomain(manualType = ManualType.STRUCTURAL_TO)
                     ),
                     dateUi = "12.12.12",
                     userInserted = ""
@@ -226,7 +227,8 @@ fun DocumentScreenPreview() {
                             "1", "blbbb",
                             type = ManualType.LOCATION
                         ),
-                        StructuralParamDomain()
+                        StructuralParamDomain(manualType = ManualType.STRUCTURAL_TO),
+                        StructuralParamDomain(manualType = ManualType.STRUCTURAL_FROM)
                     ),
                     dateUi = "12.12.12",
                     userInserted = ""
@@ -245,7 +247,8 @@ fun DocumentScreenPreview() {
                             "1", "blbbb",
                             type = ManualType.LOCATION
                         ),
-                        StructuralParamDomain()
+                        StructuralParamDomain(manualType = ManualType.STRUCTURAL_TO),
+                        StructuralParamDomain(manualType = ManualType.STRUCTURAL_FROM)
                     ),
                     dateUi = "12.12.12",
                     userInserted = ""
@@ -265,7 +268,8 @@ fun DocumentScreenPreview() {
                             "1", "blbbb",
                             type = ManualType.LOCATION
                         ),
-                        StructuralParamDomain()
+                        StructuralParamDomain(manualType = ManualType.STRUCTURAL_TO),
+                        StructuralParamDomain(manualType = ManualType.STRUCTURAL_FROM)
                     ),
                     dateUi = "12.12.12",
                     userInserted = ""

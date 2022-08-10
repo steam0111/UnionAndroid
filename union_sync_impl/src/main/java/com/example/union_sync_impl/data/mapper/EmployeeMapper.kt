@@ -2,6 +2,7 @@ package com.example.union_sync_impl.data.mapper
 
 import com.example.union_sync_api.entity.EmployeeDetailSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
+import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.entity.EmployeeDb
 import com.example.union_sync_impl.entity.FullEmployeeDb
 import org.openapitools.client.models.CustomEmployeeDto
@@ -38,7 +39,8 @@ fun EmployeeDb.toSyncEntity(): EmployeeSyncEntity {
     )
 }
 
-fun FullEmployeeDb.toDetailSyncEntity() = EmployeeDetailSyncEntity(
+fun FullEmployeeDb.toDetailSyncEntity(balanceUnit: StructuralSyncEntity?) = EmployeeDetailSyncEntity(
     employeeDb.toSyncEntity(),
-    structural?.toStructuralSyncEntity()
+    structural?.toStructuralSyncEntity(),
+    balanceUnit
 )

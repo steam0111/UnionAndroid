@@ -35,7 +35,9 @@ class SyncRepository(
     private val actionBaseDao: ActionBaseDao,
     private val syncDao: NetworkSyncDao,
     private val structuralDao: StructuralDao,
-    private val structuralPathDao: StructuralPathDao
+    private val structuralPathDao: StructuralPathDao,
+    private val accountingObjectCategoryDao: AccountingObjectCategoryDao,
+    private val inventoryBaseDao: InventoryBaseDao
 ) {
     suspend fun clearDataBeforeDownload() {
         inventoryDao.clearAll()
@@ -143,6 +145,16 @@ class SyncRepository(
             syncControllerApi,
             moshi,
             ::receptionItemCategoryDbSaver
+        ),
+        AccountingObjectCategorySyncEntity(
+            syncControllerApi,
+            moshi,
+            ::accountingObjectCategoryDbSaver
+        ),
+        InventoryBaseSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::inventoryBaseDbSaver
         ),
         ReserveSyncEntity(
             syncControllerApi,
@@ -373,6 +385,7 @@ class SyncRepository(
         statusesDao.insertAll(objects.mapNotNull { it.extendedAccountingObjectStatus?.toStatusDb() })
         structuralDao.insertAll(objects.mapNotNull { it.extendedStructuralUnit?.toStructuralDb() })
         accountingObjectsDao.insertAll(objects.map { it.toAccountingObjectDb() })
+        accountingObjectCategoryDao.insertAll(objects.mapNotNull { it.extendedAccountingObjectCategory?.toAccountingObjectCategoryDb() })
     }
 
     private suspend fun locationsDbSaver(objects: List<LocationDtoV2>) {
@@ -449,6 +462,14 @@ class SyncRepository(
         receptionItemCategoryDao.insertAll(objects.map { it.toReceptionItemCategoryDb() })
     }
 
+    private suspend fun accountingObjectCategoryDbSaver(objects: List<EnumDtoV2>) {
+        accountingObjectCategoryDao.insertAll(objects.map { it.toAccountingObjectCategoryDb() })
+    }
+
+    private suspend fun inventoryBaseDbSaver(objects: List<EnumDtoV2>) {
+        inventoryBaseDao.insertAll(objects.map { it.toInventoryBaseDb() })
+    }
+
     private suspend fun inventoryDbSaver(objects: List<InventoryDtoV2>) {
         structuralDao.insertAll(objects.mapNotNull { it.extendedStructuralUnit?.toStructuralDb() })
         employeeDao.insertAll(
@@ -457,6 +478,7 @@ class SyncRepository(
 
         locationDao.insertAll(objects.mapNotNull { it.extendedLocation?.toLocationDb() })
         inventoryDao.insertAll(objects.map { it.toInventoryDb() })
+        inventoryBaseDao.insertAll(objects.mapNotNull { it.extendedInventoryBase?.toInventoryBaseDb() })
     }
 
     private suspend fun documentDbSaver(objects: List<ActionDtoV2>) {

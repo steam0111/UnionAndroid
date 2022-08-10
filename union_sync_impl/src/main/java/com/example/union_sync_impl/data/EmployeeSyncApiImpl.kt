@@ -4,12 +4,15 @@ import com.example.union_sync_api.data.EmployeeSyncApi
 import com.example.union_sync_api.entity.EmployeeDetailSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
 import com.example.union_sync_impl.dao.EmployeeDao
+import com.example.union_sync_impl.dao.StructuralDao
 import com.example.union_sync_impl.dao.sqlEmployeeQuery
 import com.example.union_sync_impl.data.mapper.toDetailSyncEntity
+import com.example.union_sync_impl.data.mapper.toStructuralSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 
 class EmployeeSyncApiImpl(
-    private val employeeDao: EmployeeDao
+    private val employeeDao: EmployeeDao,
+    private val structuralDao: StructuralDao
 ) : EmployeeSyncApi {
     override suspend fun getEmployees(
         textQuery: String?,
@@ -30,6 +33,8 @@ class EmployeeSyncApiImpl(
     }
 
     override suspend fun getEmployeeDetail(id: String): EmployeeDetailSyncEntity {
-        return employeeDao.getFullById(id).toDetailSyncEntity()
+        val fullEmployee =  employeeDao.getFullById(id)
+        val balanceUnit = structuralDao.getAllStructuralsByChildId(fullEmployee.employeeDb.structuralId).firstOrNull { it.balanceUnit == true }
+            return fullEmployee.toDetailSyncEntity(balanceUnit?.toStructuralSyncEntity())
     }
 }

@@ -13,4 +13,5 @@ data class InventoryUpdateSyncEntity(
     val name: String? = null,
     val userInserted: String?,
     val userUpdated: String?,
+    val inventoryBaseId: String?
 )

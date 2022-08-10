@@ -22,7 +22,7 @@ class InventoriesInteractor(
 
     fun getFilters(): List<ParamDomain> {
         return listOf(
-            StructuralParamDomain(),
+            StructuralParamDomain(manualType = ManualType.STRUCTURAL),
             ParamDomain(
                 type = ManualType.MOL,
                 value = ""

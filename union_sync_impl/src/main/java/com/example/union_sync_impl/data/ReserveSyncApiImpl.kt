@@ -6,15 +6,18 @@ import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_api.entity.ReserveUpdateSyncEntity
+import com.example.union_sync_impl.dao.StructuralDao
 import com.example.union_sync_impl.dao.sqlReserveQuery
 import com.example.union_sync_impl.data.mapper.toDetailSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
 import com.example.union_sync_impl.data.mapper.toReserveDb
 import com.example.union_sync_impl.data.mapper.toReserveUpdate
+import com.example.union_sync_impl.data.mapper.toStructuralSyncEntity
 
 class ReserveSyncApiImpl(
-    private val reserveDao: ReserveDao
+    private val reserveDao: ReserveDao,
+    private val structuralDao: StructuralDao
 ) : ReserveSyncApi {
     override suspend fun getAll(
         structuralIds: List<String?>?,
@@ -45,7 +48,9 @@ class ReserveSyncApiImpl(
 
     override suspend fun getById(id: String): ReserveDetailSyncEntity {
         val fullReserve = reserveDao.getById(id)
-        return fullReserve.toDetailSyncEntity()
+        val balanceUnit = structuralDao.getAllStructuralsByChildId(fullReserve.structuralDb?.id)
+            .firstOrNull { it.balanceUnit == true }
+        return fullReserve.toDetailSyncEntity(balanceUnit?.toStructuralSyncEntity())
     }
 
     override suspend fun getReservesFilterCount(

@@ -528,7 +528,8 @@ fun DocumentCreateScreenPreview() {
                 creationDate = 123213213,
                 accountingObjects = listOf(),
                 params = listOf(
-                    StructuralParamDomain(),
+                    StructuralParamDomain(manualType = ManualType.STRUCTURAL_FROM),
+                    StructuralParamDomain(manualType = ManualType.STRUCTURAL_TO),
                     ParamDomain(
                         "1", "fsdsfsdf",
                         type = ManualType.MOL
@@ -544,7 +545,8 @@ fun DocumentCreateScreenPreview() {
             ),
             accountingObjects = listOf(),
             params = listOf(
-                StructuralParamDomain(),
+                StructuralParamDomain(manualType = ManualType.STRUCTURAL_FROM),
+                StructuralParamDomain(manualType = ManualType.STRUCTURAL_TO),
                 ParamDomain(
                     "1", "fsdsfsdf",
                     type = ManualType.MOL

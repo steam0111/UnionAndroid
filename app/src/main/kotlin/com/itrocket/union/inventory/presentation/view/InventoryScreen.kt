@@ -284,13 +284,13 @@ fun InventoryScreenPreview() {
     InventoryScreen(
         InventoryStore.State(
             params = listOf(
-                StructuralParamDomain(),
+                StructuralParamDomain(manualType = ManualType.STRUCTURAL),
                 ParamDomain(
                     "2",
                     "Колесников Виталий Константинович ",
                     type = ManualType.MOL
                 ),
-                ParamDomain("3", "", type = ManualType.LOCATION),
+                ParamDomain("3", "", type = ManualType.LOCATION_INVENTORY),
             ),
             accountingObjectList = listOf(
                 AccountingObjectDomain(

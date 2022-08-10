@@ -26,7 +26,17 @@ data class AccountingObjectSyncEntity(
     val model: String?,
     val locationSyncEntity: LocationSyncEntity?,
     val structuralId: String?,
-    val userUpdated: String?
+    val userUpdated: String?,
+    val subName: String?,
+    val code: String?,
+    val marked: Boolean,
+    val forWriteOff: Boolean,
+    val writtenOff: Boolean,
+    val commissioned: Boolean,
+    val registered : Boolean,
+    val traceable: Boolean,
+    val invoiceNumber: String?,
+    val nfc: String?
 )
 
 fun AccountingObjectSyncEntity.toAccountingObjectUpdateSyncEntity(userUpdated: String?): AccountingObjectUpdateSyncEntity {

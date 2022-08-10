@@ -57,5 +57,8 @@ class ReserveDb(
     val receptionDocumentNumber: String?,
     val unitPrice: String?,
     val structuralId: String?,
+    val traceable: Boolean,
+    val invoiceNumber: String?,
+    val subName: String?,
     updateDate: Long?
 ) : CatalogItemDb(id, updateDate, userUpdated, userInserted)

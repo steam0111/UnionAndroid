@@ -40,9 +40,10 @@ interface InventoryStore :
         val selectedPage: Int = 0,
         val accountingObjectList: List<AccountingObjectDomain> = listOf(),
         val params: List<ParamDomain> = listOf(
-            StructuralParamDomain(),
+            StructuralParamDomain(manualType = ManualType.STRUCTURAL),
             ParamDomain(id = "", value = "", type = ManualType.MOL),
-            LocationParamDomain(),
+            LocationParamDomain(manualType = ManualType.LOCATION_INVENTORY),
+            ParamDomain(id = "", value = "", type = ManualType.INVENTORY_BASE)
         )
     )
 

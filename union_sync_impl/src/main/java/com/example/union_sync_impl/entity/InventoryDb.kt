@@ -11,6 +11,7 @@ class InventoryDb(
     val employeeId: String?,
     val locationIds: List<String>?,
     val structuralId: String?,
+    val inventoryBaseId: String?,
     val date: Long?,
     val inventoryStatus: String,
     val code: String?,

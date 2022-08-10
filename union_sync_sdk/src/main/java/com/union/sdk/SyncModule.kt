@@ -11,6 +11,7 @@ import com.example.union_sync_api.data.CounterpartySyncApi
 import com.example.union_sync_api.data.DocumentSyncApi
 import com.example.union_sync_api.data.EmployeeSyncApi
 import com.example.union_sync_api.data.EquipmentTypeSyncApi
+import com.example.union_sync_api.data.InventoryBaseSyncApi
 import com.example.union_sync_api.data.InventoryRecordSyncApi
 import com.example.union_sync_api.data.InventorySyncApi
 import com.example.union_sync_api.data.LocationSyncApi
@@ -33,6 +34,7 @@ import com.example.union_sync_impl.data.CounterpartySyncApiImpl
 import com.example.union_sync_impl.data.DocumentSyncApiImpl
 import com.example.union_sync_impl.data.EmployeeSyncApiImpl
 import com.example.union_sync_impl.data.EquipmentTypeSyncApiImpl
+import com.example.union_sync_impl.data.InventoryBaseSyncApiImpl
 import com.example.union_sync_impl.data.InventoryRecordSyncApiImpl
 import com.example.union_sync_impl.data.InventorySyncApiImpl
 import com.example.union_sync_impl.data.LocationSyncApiImpl
@@ -57,6 +59,7 @@ object SyncModule {
         factory<EmployeeSyncApi> {
             EmployeeSyncApiImpl(
                 employeeDao = get(),
+                structuralDao = get()
             )
         }
         factory<ProducerSyncApi> {
@@ -72,7 +75,8 @@ object SyncModule {
         factory<AccountingObjectSyncApi> {
             AccountingObjectSyncApiImpl(
                 accountingObjectsDao = get(),
-                locationSyncApi = get()
+                locationSyncApi = get(),
+                structuralDao = get()
             )
         }
         factory<InventorySyncApi> {
@@ -119,12 +123,18 @@ object SyncModule {
         }
         factory<ReserveSyncApi> {
             ReserveSyncApiImpl(
-                reserveDao = get()
+                reserveDao = get(),
+                structuralDao = get()
             )
         }
         factory<ReceptionItemCategorySyncApi> {
             ReceptionCategoryItemSyncApiImpl(
                 receptionItemCategoryDao = get()
+            )
+        }
+        factory<InventoryBaseSyncApi> {
+            InventoryBaseSyncApiImpl(
+                dao = get()
             )
         }
         factory<OrderSyncApi> {
@@ -163,6 +173,8 @@ object SyncModule {
         }
         factory {
             SyncRepository(
+                get(),
+                get(),
                 get(),
                 get(),
                 get(),
@@ -258,6 +270,12 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().structuralPathDao()
+        }
+        factory {
+            get<UnionDatabase>().accountingObjectCategoryDao()
+        }
+        factory {
+            get<UnionDatabase>().inventoryBaseDao()
         }
         factory<ManageSyncDataApi> {
             ManageSyncDataImpl(

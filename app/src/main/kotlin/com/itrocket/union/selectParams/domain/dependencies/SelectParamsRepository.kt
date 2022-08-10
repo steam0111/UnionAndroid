@@ -23,4 +23,6 @@ interface SelectParamsRepository {
     suspend fun getReceptionCategory(textQuery: String?): Flow<List<ParamDomain>>
 
     suspend fun getActionBases(textQuery: String?): Flow<List<ParamDomain>>
+
+    suspend fun getInventoryBases(textQuery: String?): Flow<List<ParamDomain>>
 }

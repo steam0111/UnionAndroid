@@ -12,7 +12,8 @@ fun sqlDocumentsQuery(
     textQuery: String? = null,
     molId: String? = null,
     exploitingId: String? = null,
-    structuralId: String? = null,
+    structuralFromId: String? = null,
+    structuralToId: String? = null,
     updateDate: Long? = null,
     limit: Long? = null,
     offset: Long? = null,
@@ -63,8 +64,11 @@ fun sqlDocumentsQuery(
                 exploitingId?.let {
                     add("exploitingId" isEquals exploitingId)
                 }
-                structuralId?.let {
-                    add("structuralId" isEquals structuralId)
+                structuralFromId?.let {
+                    add("structuralId" isEquals structuralFromId)
+                }
+                structuralToId?.let {
+                    add("structuralId" isEquals structuralToId)
                 }
                 updateDate?.let {
                     add("updateDate" more updateDate)

@@ -69,7 +69,8 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
         code = number,
         userUpdated = userUpdated,
         userInserted = userInserted,
-        structuralId = params.getFilterStructuralLastId()
+        structuralToId = params.getFilterStructuralLastId(ManualType.STRUCTURAL_TO),
+        structuralFromId = params.getFilterStructuralLastId(ManualType.STRUCTURAL_FROM)
     )
 }
 
@@ -96,7 +97,8 @@ fun DocumentDomain.toCreateSyncEntity(): DocumentCreateSyncEntity {
                 userUpdated = userUpdated
             )
         },
-        structuralId = params.getFilterStructuralLastId(),
+        structuralToId = params.getFilterStructuralLastId(ManualType.STRUCTURAL_TO),
+        structuralFromId = params.getFilterStructuralLastId(ManualType.STRUCTURAL_FROM),
         documentStatusId = documentStatusId,
         documentStatus = documentStatus.name,
         locationFromId = params.getFilterLocationLastId(ManualType.LOCATION_FROM),

@@ -306,7 +306,7 @@ fun InventoryCreateScreenPreview() {
             number = "БП-00001374",
             date = System.currentTimeMillis(),
             documentInfo = listOf(
-                StructuralParamDomain(),
+                StructuralParamDomain(manualType = ManualType.STRUCTURAL),
                 ParamDomain("2", "Систмный интегратор", ManualType.MOL),
             ),
             accountingObjects = listOf(

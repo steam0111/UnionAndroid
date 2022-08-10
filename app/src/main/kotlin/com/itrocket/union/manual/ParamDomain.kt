@@ -25,7 +25,7 @@ open class ParamDomain(
 }
 
 
-fun List<ParamDomain>.getFilterStructuralLastId(type: ManualType = ManualType.STRUCTURAL): String? {
+fun List<ParamDomain>.getFilterStructuralLastId(type: ManualType): String? {
     return getStructuralParamDomain(type)?.structurals?.lastOrNull()?.id
 }
 
@@ -35,6 +35,10 @@ fun List<ParamDomain>.getFilterLocationLastId(type: ManualType = ManualType.LOCA
 
 fun List<ParamDomain>.getFilterLocationIds(type: ManualType = ManualType.LOCATION): List<String>? {
     return getLocationParamDomain(type)?.locations?.map { it.id }
+}
+
+fun List<ParamDomain>.getFilterInventoryBaseId(): String? {
+    return filterNotEmpty().find { it.type == ManualType.INVENTORY_BASE }?.id
 }
 
 fun List<ParamDomain>.getStructuralParamDomain(type: ManualType): StructuralParamDomain? {
@@ -99,7 +103,7 @@ data class LocationParamDomain(
     ) {
 
     override fun toInitialState(): LocationParamDomain {
-        return LocationParamDomain()
+        return LocationParamDomain(manualType = manualType)
     }
 }
 
@@ -107,7 +111,7 @@ data class LocationParamDomain(
 data class StructuralParamDomain(
     val filtered: Boolean = true,
     val structurals: List<StructuralDomain> = emptyList(),
-    val manualType: ManualType = ManualType.STRUCTURAL
+    val manualType: ManualType
 ) : Parcelable,
     ParamDomain(
         id = structurals.lastOrNull()?.id.toString(),
@@ -117,6 +121,6 @@ data class StructuralParamDomain(
     ) {
 
     override fun toInitialState(): StructuralParamDomain {
-        return StructuralParamDomain()
+        return StructuralParamDomain(manualType = manualType)
     }
 }

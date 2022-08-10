@@ -18,7 +18,15 @@ interface EmployeeDao {
     fun getCount(query: SupportSQLiteQuery): Long
 
     @Query(
-        "SELECT* FROM employees " +
+        "SELECT employees.*," +
+                "" +
+                "structural.id AS structural_id, " +
+                "structural.catalogItemName AS structural_catalogItemName, " +
+                "structural.name AS structural_name, " +
+                "structural.parentId AS structural_parentId " +
+                "" +
+                "FROM employees " +
+                "LEFT JOIN structural ON employees.structuralId = structural.id " +
                 "WHERE employees.id = :id LIMIT 1"
     )
     suspend fun getFullById(id: String): FullEmployeeDb

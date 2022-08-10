@@ -33,7 +33,7 @@ class AccountingObjectInteractor(
                 locationRepository.getAllLocationsIdsByParent(lastLocationId)
             }
 
-            val lastStructuralId = params.getFilterStructuralLastId()
+            val lastStructuralId = params.getFilterStructuralLastId(ManualType.STRUCTURAL)
             val filterStructuralIds = if (lastStructuralId == null) {
                 null
             } else {
@@ -54,7 +54,8 @@ class AccountingObjectInteractor(
         return listOf(
             getStatusFilter(isFromDocument),
             StructuralParamDomain(
-                structurals = listOf()
+                structurals = listOf(),
+                manualType = ManualType.STRUCTURAL
             ),
             ParamDomain(
                 type = ManualType.MOL,

@@ -26,13 +26,19 @@
     <string name="common_conduct">Провести</string>
     <string name="confirm_conduct_text">Вы уверены, что хотите провести документ?</string>
     <string name="common_error">Что-то пошло не так…</string>
-    <string name="common_name">Название</string>
+    <string name="common_name">Наименование</string>
     <string name="common_kpp">КПП</string>
     <string name="common_inn">ИНН</string>
     <string name="common_in_work">В работу</string>
     <string name="common_complete">Завершить</string>
+    <string name="common_code">Код</string>
     <string name="search_hint">Введите запрос</string>
     <string name="select_service_hint">Выберите сервис</string>
+    <string name="common_yes">Да</string>
+    <string name="common_no">Нет</string>
+    <string name="common_nfc">NFC</string>
+    <string name="common_sub_name">Доп. наименование</string>
+    <string name="common_invoice_number">Номер накладной</string>
 
     <!-- Auth -->
     <string name="auth_suggest">Это нужно сделать один раз</string>
@@ -89,9 +95,11 @@
 
     <!-- Manual -->
     <string name="manual_organization">Организация</string>
-    <string name="manual_mol">Ответственный</string>
+    <string name="manual_mol">Мол/Ответственный</string>
     <string name="manual_location">Местоположение</string>
     <string name="manual_structural">Подразделение</string>
+    <string name="manual_structural_from">Подразделение отправителя</string>
+    <string name="manual_structural_to">Подразделение получателя</string>
     <string name="manual_exploiting">Эксплуатирующий</string>
     <string name="manual_status">Статус</string>
     <string name="manual_date">Дата заявки</string>
@@ -104,11 +112,11 @@
 
     <!-- AccountingObjectScreen -->
     <string name="main_marking">Маркировка</string>
-    <string name="accounting_objects_factory_number">Зав. номер</string>
+    <string name="accounting_objects_factory_number">Серийный номер</string>
     <string name="accounting_objects_inventory_number">Инвент. номер</string>
-    <string name="accounting_objects_current_status">Текущий статус</string>
-    <string name="accounting_objects_factory_num">Заводской №</string>
-    <string name="accounting_objects_inventory_num">Инвентарный №</string>
+    <string name="accounting_objects_current_status">Статус</string>
+    <string name="accounting_objects_factory_num">Серийный номер</string>
+    <string name="accounting_objects_inventory_num">Инвентарный номер</string>
     <string name="accounting_objects_location">Местоположение</string>
     <string name="accounting_objects_department">Подразделение</string>
     <string name="accounting_objects_model">Модель</string>
@@ -118,6 +126,18 @@
     <string name="accounting_objects_provider">Поставщик</string>
     <string name="accounting_objects_count">Мин. остаток</string>
     <string name="accounting_objects_commissioning_date">Дата поверки</string>
+    <string name="accounting_object_mol">Мол/Ответственный</string>
+    <string name="accounting_object_marked">Промаркирован</string>
+    <string name="accounting_object_for_write_off">На списание</string>
+    <string name="accounting_object_written_off">Списан</string>
+    <string name="accounting_object_registered">Поставлен на учет</string>
+    <string name="accounting_object_commissioned">Введен в эксплуатацию</string>
+    <string name="accounting_object_category">Категория</string>
+    <string name="accounting_object_traceable">Прослеживаемый</string>
+    <string name="accounting_object_commissioning_date">Дата ввода в эксплуатацию</string>
+    <string name="accounting_object_nomenclature">Номенклатура</string>
+    <string name="accounting_object_rfid">Рфид</string>
+    <string name="inventory_location">Место инвентаризации</string>
 
     <!-- NomenclatureGroup -->
     <string name="nomenclature_group_title">Номенклатурные группы</string>
@@ -171,8 +191,8 @@
     <!-- Reserves Detail -->
     <string name="reserves_detail_nomenclature">Номенклатура</string>
     <string name="reserves_detail_nomenclature_group">Номенклатурная группа</string>
-    <string name="reserves_detail_order">№ Заказ</string>
-    <string name="reserves_detail_reception_item_category">Приемная категория</string>
+    <string name="reserves_detail_order">Заказ</string>
+    <string name="reserves_detail_reception_item_category">Категория</string>
     <string name="reserves_detail_count">Количество</string>
 
     <!-- Documents -->
@@ -263,13 +283,13 @@
 
     <!-- Producer -->
     <string name="producer_title">Производители</string>
-    <string name="producer_code">Код производителя</string>
+    <string name="producer_code">Код</string>
 
     <!-- Counterparties -->
     <string name="counterparties_title">Контрагенты</string>
     <string name="counterparties_code">Код контрагента</string>
 
-    <string name="equipment_type_code">Код оборудования</string>
+    <string name="equipment_type_code">Код</string>
     <string name="equipment_type_title">Типы оборудования</string>
     <string name="text_begin_identify">Для начала идентификации нажмите курок считывателя</string>
     <string name="choose_action">Выберите действие</string>
