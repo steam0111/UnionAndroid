@@ -12,20 +12,16 @@ interface ModuleSettingsStore :
         object OnDefineCursorClicked : Intent()
         object OnSaveClicked : Intent()
         object OnDropdownDismiss : Intent()
-        object OnDropDownReadPowerDismiss : Intent()
-        object OnDropDownWritePowerDismiss : Intent()
+        object OnDropDownReaderPowerDismiss : Intent()
         object OnDropdownOpenClicked : Intent()
-        object OnDropDownOpenReadPowerClicked:Intent()
-        object OnDropDownOpenWritePowerClicked:Intent()
+        object OnDropDownOpenReaderPowerClicked:Intent()
         data class OnDropdownItemClicked(val service: String) : Intent()
         data class OnServicesHandled(val services: List<String>) : Intent()
         data class OnDefaultServiceHandled(val service: String) : Intent()
         data class OnCursorDefined(val keyCode: Int) : Intent()
         data class OnPowerOfReaderHandled(val listPowerOfReader: List<Int>) : Intent()
-        data class OnDefaultReadPowerHandled(val readPower: Int) : Intent()
-        data class OnDefaultWritePowerHandled(val writePower: Int) : Intent()
-        data class OnDropDownItemReadPowerClicked(val readPower: Int) : Intent()
-        data class OnDropDownItemWritePowerClicked(val writePower: Int) : Intent()
+        data class OnDefaultReaderPowerHandled(val readerPower: String) : Intent()
+        data class OnDropDownItemReaderPowerClicked(val readerPower: String) : Intent()
     }
 
     data class State(
@@ -35,11 +31,9 @@ interface ModuleSettingsStore :
         val services: List<String> = listOf(),
         val keyCode: Int = 0,
         val dropdownExpanded: Boolean = false,
-        val dropDownReadPowerExpanded: Boolean = false,
-        val dropDownWritePowerExpanded: Boolean = false,
-        val defaultReadPower: String = "60",
-        val defaultWritePower: String = "60",
-        val listPowerOfReader: List<Int> = listOf(10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
+        val dropDownReaderPowerExpanded: Boolean = false,
+        val listPowerOfReader: List<Int> = listOf(10, 20, 30, 40, 50, 60, 70, 80, 90, 100),
+        val readerPower: String = "50"
     )
 
     sealed class Label {

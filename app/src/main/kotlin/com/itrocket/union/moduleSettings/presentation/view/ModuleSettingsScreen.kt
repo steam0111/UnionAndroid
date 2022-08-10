@@ -38,12 +38,9 @@ fun ModuleSettingsScreen(
     onDropdownDismiss: () -> Unit,
     onDropdownItemClickListener: (String) -> Unit,
     onDropdownOpenClickListener: () -> Unit,
-    onDropDownItemReadPowerClickListener: (Int) -> Unit,
-    onDropDownOpenReadPowerClickListener: () -> Unit,
-    onDropDownReadPowerDismiss: () -> Unit,
-    onDropDownItemWritePowerClickListener: (Int) -> Unit,
-    onDropDownOpenWritePowerClickListener: () -> Unit,
-    onDropDownWritePowerDismiss: () -> Unit
+    onDropDownItemReaderPowerClickListener: (String) -> Unit,
+    onDropDownOpenReaderPowerClickListener: () -> Unit,
+    onDropDownReaderPowerDismiss: () -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -67,12 +64,9 @@ fun ModuleSettingsScreen(
                     onDropdownDismiss = onDropdownDismiss,
                     onDropdownItemClickListener = onDropdownItemClickListener,
                     onDropdownOpenClickListener = onDropdownOpenClickListener,
-                    onDropDownItemReadPowerClickListener = onDropDownItemReadPowerClickListener,
-                    onDropDownOpenReadPowerClickListener = onDropDownOpenReadPowerClickListener,
-                    onDropDownReadPowerDismiss = onDropDownReadPowerDismiss,
-                    onDropDownOpenWritePowerClickListener = onDropDownOpenWritePowerClickListener,
-                    onDropDownWritePowerDismiss = onDropDownWritePowerDismiss,
-                    onDropDownItemWritePowerClickListener = onDropDownItemWritePowerClickListener
+                    onDropDownItemReaderPowerClickListener = onDropDownItemReaderPowerClickListener,
+                    onDropDownOpenReaderPowerClickListener = onDropDownOpenReaderPowerClickListener,
+                    onDropDownReaderPowerDismiss = onDropDownReaderPowerDismiss
                 )
             }
         )
@@ -96,12 +90,9 @@ private fun Content(
     onDropdownItemClickListener: (String) -> Unit,
     onDropdownOpenClickListener: () -> Unit,
     paddingValues: PaddingValues,
-    onDropDownReadPowerDismiss: () -> Unit,
-    onDropDownItemReadPowerClickListener: (Int) -> Unit,
-    onDropDownOpenReadPowerClickListener: () -> Unit,
-    onDropDownWritePowerDismiss: () -> Unit,
-    onDropDownItemWritePowerClickListener: (Int) -> Unit,
-    onDropDownOpenWritePowerClickListener: () -> Unit
+    onDropDownReaderPowerDismiss: () -> Unit,
+    onDropDownItemReaderPowerClickListener: (String) -> Unit,
+    onDropDownOpenReaderPowerClickListener: () -> Unit
 ) {
     Column(modifier = Modifier.padding(paddingValues)) {
         Spacer(modifier = Modifier.height(24.dp))
@@ -125,12 +116,9 @@ private fun Content(
         Spacer(modifier = Modifier.height(12.dp))
         SelectPower(
             state = state,
-            onDropDownOpenReadPowerClickListener = onDropDownOpenReadPowerClickListener,
-            onDropDownReadPowerDismiss = onDropDownReadPowerDismiss,
-            onDropDownItemReadPowerClickListener = onDropDownItemReadPowerClickListener,
-            onDropDownOpenWritePowerClickListener = onDropDownOpenWritePowerClickListener,
-            onDropDownWritePowerDismiss = onDropDownWritePowerDismiss,
-            onDropDownItemWritePowerClickListener = onDropDownItemWritePowerClickListener
+            onDropDownOpenReaderPowerClickListener = onDropDownOpenReaderPowerClickListener,
+            onDropDownReaderPowerDismiss = onDropDownReaderPowerDismiss,
+            onDropDownItemReaderPowerClickListener = onDropDownItemReaderPowerClickListener
         )
     }
 }
@@ -236,12 +224,9 @@ private fun SelectServiceComponent(
 @Composable
 fun SelectPower(
     state: ModuleSettingsStore.State,
-    onDropDownReadPowerDismiss: () -> Unit,
-    onDropDownItemReadPowerClickListener: (Int) -> Unit,
-    onDropDownOpenReadPowerClickListener: () -> Unit,
-    onDropDownWritePowerDismiss: () -> Unit,
-    onDropDownItemWritePowerClickListener: (Int) -> Unit,
-    onDropDownOpenWritePowerClickListener: () -> Unit
+    onDropDownReaderPowerDismiss: () -> Unit,
+    onDropDownItemReaderPowerClickListener: (String) -> Unit,
+    onDropDownOpenReaderPowerClickListener: () -> Unit
 ) {
     Row(
         Modifier
@@ -255,48 +240,20 @@ fun SelectPower(
         ) {
             Text(text = stringResource(R.string.read_power_title))
             DropdownMenuItem(
-                onClick = onDropDownOpenReadPowerClickListener,
+                onClick = onDropDownOpenReaderPowerClickListener,
                 modifier = Modifier.background(graphite2)
             ) {
-                Text(text = state.defaultReadPower)
+                Text(text = state.readerPower)
             }
             DropdownMenu(
-                expanded = state.dropDownReadPowerExpanded,
-                onDismissRequest = onDropDownReadPowerDismiss,
+                expanded = state.dropDownReaderPowerExpanded,
+                onDismissRequest = onDropDownReaderPowerDismiss,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
                 state.listPowerOfReader.forEach {
                     DropdownMenuItem(
-                        onClick = { onDropDownItemReadPowerClickListener(it) },
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    ) {
-                        Text(text = it.toString(), style = AppTheme.typography.body2)
-                    }
-                }
-            }
-        }
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .weight(1f)
-        ) {
-            Text(text = stringResource(R.string.write_power_title))
-            DropdownMenuItem(
-                onClick = onDropDownOpenWritePowerClickListener,
-                modifier = Modifier.background(graphite2)
-            ) {
-                Text(text = state.defaultWritePower)
-            }
-            DropdownMenu(
-                expanded = state.dropDownWritePowerExpanded,
-                onDismissRequest = onDropDownWritePowerDismiss,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                state.listPowerOfReader.forEach {
-                    DropdownMenuItem(
-                        onClick = { onDropDownItemWritePowerClickListener(it) },
+                        onClick = { onDropDownItemReaderPowerClickListener(it.toString()) },
                         modifier = Modifier.padding(horizontal = 24.dp)
                     ) {
                         Text(text = it.toString(), style = AppTheme.typography.body2)
@@ -325,9 +282,6 @@ fun ModuleSettingsScreenPreview() {
     ModuleSettingsScreen(
         ModuleSettingsStore.State(),
         AppInsets(topInset = previewTopInsetDp),
-        {},
-        {},
-        {},
         {},
         {},
         {},

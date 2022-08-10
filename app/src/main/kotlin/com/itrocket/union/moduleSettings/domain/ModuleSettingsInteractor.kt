@@ -11,23 +11,26 @@ class ModuleSettingsInteractor(
     private val serviceEntryManager: ServiceEntryManager,
     private val coreDispatchers: CoreDispatchers
 ) {
-
     suspend fun getKeyCode() = withContext(coreDispatchers.io) {
         repository.getSavedKeyCode().firstOrNull()
+    }
+
+    suspend fun getReaderPower() = withContext(coreDispatchers.io) {
+        repository.getReaderPower().firstOrNull()
     }
 
     suspend fun applyChanges(
         defaultService: String,
         keyCode: Int,
-        readPower: String,
-        writePower: String
+        readerPower: String
     ) {
         withContext(coreDispatchers.io) {
             serviceEntryManager.applyChanges(defaultService)
             serviceEntryManager.restartService()
-            serviceEntryManager.applyReadPower(readPower)
-            serviceEntryManager.applyWritePower(writePower)
+            serviceEntryManager.applyReadPower(readerPower)
+            serviceEntryManager.applyWritePower(readerPower)
             repository.saveKeyCode(keyCode)
+            repository.saveReaderPower(readerPower = readerPower)
         }
     }
 
@@ -42,5 +45,4 @@ class ModuleSettingsInteractor(
             serviceEntryManager.checkInstalledServices()
         }
     }
-
 }

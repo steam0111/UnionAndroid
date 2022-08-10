@@ -1,6 +1,10 @@
 package com.itrocket.union.moduleSettings.presentation.store
 
-import com.arkivanov.mvikotlin.core.store.*
+import com.arkivanov.mvikotlin.core.store.Executor
+import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
+import com.arkivanov.mvikotlin.core.store.Store
+import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
@@ -44,6 +48,9 @@ class ModuleSettingsStoreFactory(
                     moduleSettingsInteractor.getKeyCode() ?: 0
                 )
             )
+            dispatch(
+                Result.ReaderPower(moduleSettingsInteractor.getReaderPower() ?: "50")
+            )
         }
 
         override suspend fun executeIntent(
@@ -65,12 +72,10 @@ class ModuleSettingsStoreFactory(
                     moduleSettingsInteractor.applyChanges(
                         defaultService = getState().defaultService,
                         keyCode = getState().keyCode,
-                        readPower = getState().defaultReadPower,
-                        writePower = getState().defaultWritePower
+                        readerPower = getState().readerPower
                     )
                     publish(ModuleSettingsStore.Label.GoBack)
                 }
-/*Service*/
                 is ModuleSettingsStore.Intent.OnServicesHandled -> onServicesHandled(
                     services = intent.services,
                     defaultService = getState().defaultService
@@ -94,45 +99,28 @@ class ModuleSettingsStoreFactory(
                         intent.service
                     )
                 )
-/*ReadPower*/
-                ModuleSettingsStore.Intent.OnDropDownReadPowerDismiss -> dispatch(
-                    Result.DropDownReadPowerExpanded(false)
+                ModuleSettingsStore.Intent.OnDropDownReaderPowerDismiss -> dispatch(
+                    Result.DropDownReaderPowerExpanded(false)
                 )
                 is ModuleSettingsStore.Intent.OnPowerOfReaderHandled -> dispatch(
                     Result.ListPowerOfReader(intent.listPowerOfReader)
                 )
-                is ModuleSettingsStore.Intent.OnDefaultReadPowerHandled -> dispatch(
-                    Result.ReadPower(intent.readPower)
+                is ModuleSettingsStore.Intent.OnDefaultReaderPowerHandled -> dispatch(
+                    Result.ReaderPower(intent.readerPower)
                 )
-                ModuleSettingsStore.Intent.OnDropDownOpenReadPowerClicked -> dispatch(
-                    Result.DropDownReadPowerExpanded(true)
+                ModuleSettingsStore.Intent.OnDropDownOpenReaderPowerClicked -> dispatch(
+                    Result.DropDownReaderPowerExpanded(true)
                 )
-                is ModuleSettingsStore.Intent.OnDropDownItemReadPowerClicked -> {
-                    dispatch(Result.DropDownReadPowerExpanded(false))
-                    dispatch(Result.ReadPower(intent.readPower))
-                }
-/*WritePower*/
-                ModuleSettingsStore.Intent.OnDropDownWritePowerDismiss -> dispatch(
-                    Result.DropDownWritePowerExpanded(false)
-                )
-                is ModuleSettingsStore.Intent.OnDefaultWritePowerHandled -> dispatch(
-                    Result.WritePower(intent.writePower)
-                )
-                ModuleSettingsStore.Intent.OnDropDownOpenWritePowerClicked -> dispatch(
-                    Result.DropDownWritePowerExpanded(true)
-                )
-                is ModuleSettingsStore.Intent.OnDropDownItemWritePowerClicked -> {
-                    dispatch(Result.DropDownWritePowerExpanded(false))
-                    dispatch(Result.WritePower(intent.writePower))
+                is ModuleSettingsStore.Intent.OnDropDownItemReaderPowerClicked -> {
+                    dispatch(Result.DropDownReaderPowerExpanded(false))
+                    dispatch(Result.ReaderPower(intent.readerPower))
                 }
             }
         }
 
         private fun onServicesHandled(services: List<String>, defaultService: String) {
             dispatch(
-                Result.Services(
-                    services
-                )
+                Result.Services(services)
             )
             if (defaultService.isEmpty()) {
                 val selectedService = services.firstOrNull() ?: DEFAULT_SERVICE
@@ -148,14 +136,12 @@ class ModuleSettingsStoreFactory(
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class KeyCode(val keyCode: Int) : Result()
+        data class ReaderPower(val readerPower: String) : Result()
         data class WaitDefine(val waitDefine: Boolean) : Result()
         data class Service(val service: String) : Result()
         data class Services(val services: List<String>) : Result()
         data class DropdownExpanded(val dropdownExpanded: Boolean) : Result()
-        data class DropDownReadPowerExpanded(val dropDownReadPowerExpanded: Boolean) : Result()
-        data class DropDownWritePowerExpanded(val dropDownWritePowerExpanded: Boolean) : Result()
-        data class ReadPower(val readPower: Int) : Result()
-        data class WritePower(val writePower: Int) : Result()
+        data class DropDownReaderPowerExpanded(val dropDownReaderPowerExpanded: Boolean) : Result()
         data class ListPowerOfReader(val listPowerOfReader: List<Int>) : Result()
     }
 
@@ -168,11 +154,9 @@ class ModuleSettingsStoreFactory(
                 is Result.Service -> copy(defaultService = result.service)
                 is Result.Services -> copy(services = result.services)
                 is Result.DropdownExpanded -> copy(dropdownExpanded = result.dropdownExpanded)
-                is Result.DropDownReadPowerExpanded -> copy(dropDownReadPowerExpanded = result.dropDownReadPowerExpanded)
-                is Result.DropDownWritePowerExpanded -> copy(dropDownWritePowerExpanded = result.dropDownWritePowerExpanded)
-                is Result.ReadPower -> copy(defaultReadPower = result.readPower.toString())
-                is Result.WritePower -> copy(defaultWritePower = result.writePower.toString())
+                is Result.DropDownReaderPowerExpanded -> copy(dropDownReaderPowerExpanded = result.dropDownReaderPowerExpanded)
                 is Result.ListPowerOfReader -> copy(listPowerOfReader = result.listPowerOfReader)
+                is Result.ReaderPower -> copy(readerPower = result.readerPower)
             }
     }
 
