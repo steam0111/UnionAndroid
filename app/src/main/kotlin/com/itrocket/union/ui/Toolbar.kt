@@ -163,6 +163,9 @@ fun SearchToolbar(
                     linePadding = 8.dp
                 )
             }
+            LaunchedEffect(Unit) {
+                focusRequest.requestFocus()
+            }
         }
         AnimatedVisibility(
             visible = !isShowSearch,

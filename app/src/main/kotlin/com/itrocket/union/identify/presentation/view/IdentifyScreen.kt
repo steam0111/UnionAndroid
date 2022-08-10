@@ -42,12 +42,14 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.identify.presentation.store.IdentifyStore
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.DoubleTabRow
 import com.itrocket.union.ui.MediumSpacer
+import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.TabIndicatorBlack
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.graphite4
@@ -83,6 +85,7 @@ fun IdentifyScreen(
             },
             bottomBar = {
                 BottomBar(
+                    readingModeTab = state.readingModeTab,
                     onReadingModeClickListener = onReadingModeClickListener
                 )
             },
@@ -199,7 +202,7 @@ private fun ScanningObjectsScreen(
     LazyColumn(
         Modifier
             .fillMaxSize()
-            .padding(paddingValues)
+            .padding(top = paddingValues.calculateTopPadding())
     ) {
         itemsIndexed(accountingObjects, key = { _, item ->
             item.id
@@ -212,6 +215,9 @@ private fun ScanningObjectsScreen(
                 isShowBottomLine = isShowBottomLine,
                 statusText = item.status?.text
             )
+        }
+        item {
+            Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
         }
     }
     Spacer(modifier = Modifier.height(10.dp))
@@ -243,21 +249,13 @@ private fun EmptyListStub(paddingValues: PaddingValues) {
 
 @Composable
 private fun BottomBar(
+    readingModeTab: ReadingModeTab,
     onReadingModeClickListener: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(graphite2)
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        BaseButton(
-            text = stringResource(R.string.accounting_object_detail_reading_mode),
-            onClick = onReadingModeClickListener,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
+    ReadingModeBottomBar(
+        readingModeTab = readingModeTab,
+        onReadingModeClickListener = onReadingModeClickListener
+    )
 }
 
 @Preview
@@ -341,6 +339,7 @@ fun IdentifyScreenPreview() {
                 )
             ),
             selectedPage = 1,
+            readingModeTab = ReadingModeTab.RFID
         ),
         appInsets = AppInsets(),
         onReadingModeClickListener = {},

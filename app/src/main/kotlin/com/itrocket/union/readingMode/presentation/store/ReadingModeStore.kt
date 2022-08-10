@@ -19,5 +19,7 @@ interface ReadingModeStore :
         val selectedTab: ReadingModeTab = ReadingModeTab.RFID
     )
 
-    sealed class Label
+    sealed class Label {
+        data class ResultReadingTab(val readingMode: ReadingModeTab) : Label()
+    }
 }

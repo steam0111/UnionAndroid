@@ -30,6 +30,7 @@ object IdentifyModule {
             IdentifyStoreFactory(
                 DefaultStoreFactory,
                 get(),
+                get(),
                 get()
             ).create()
         }

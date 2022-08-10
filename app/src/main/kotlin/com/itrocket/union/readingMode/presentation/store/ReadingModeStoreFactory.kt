@@ -66,6 +66,7 @@ class ReadingModeStoreFactory(
                     readingModeInteractor.changeScanMode(intent.readingMode.toReaderMode())
                     dispatch(Result.ReadingModeSelected(intent.readingMode))
                     dispatch(Result.IsManualInputEnabled(intent.readingMode != ReadingModeTab.RFID))
+                    publish(ReadingModeStore.Label.ResultReadingTab(intent.readingMode))
                 }
                 ReadingModeStore.Intent.OnSettingsClicked -> {
                     //no-op

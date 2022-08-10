@@ -15,15 +15,19 @@ import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
+import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 import com.itrocket.union.utils.ifBlankOrNull
+import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class InventoryCreateStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val inventoryCreateInteractor: InventoryCreateInteractor,
     private val inventoryCreateArguments: InventoryCreateArguments,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val serviceEntryManager: ServiceEntryManager
 ) {
     fun create(): InventoryCreateStore =
         object : InventoryCreateStore,
@@ -31,6 +35,7 @@ class InventoryCreateStoreFactory(
                 name = "InventoryCreateStore",
                 initialState = InventoryCreateStore.State(
                     inventoryDocument = inventoryCreateArguments.inventoryDocument,
+                    readingModeTab = serviceEntryManager.currentMode.toReadingModeTab()
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
@@ -135,6 +140,11 @@ class InventoryCreateStoreFactory(
                         accountingObjects = getState().inventoryDocument.accountingObjects + getState().newAccountingObjects
                     )
                 }
+                is InventoryCreateStore.Intent.OnReadingModeTabChanged -> dispatch(
+                    Result.ReadingMode(
+                        intent.readingModeTab
+                    )
+                )
             }
         }
 
@@ -294,6 +304,7 @@ class InventoryCreateStoreFactory(
             Result()
 
         data class ConfirmDialogVisibility(val isVisible: Boolean) : Result()
+        data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryCreateStore.State, Result> {
@@ -310,6 +321,7 @@ class InventoryCreateStoreFactory(
                 is Result.NewAccountingObjects -> copy(newAccountingObjects = result.newAccountingObjects)
                 is Result.Inventory -> copy(inventoryDocument = result.inventory)
                 is Result.ConfirmDialogVisibility -> copy(isConfirmDialogVisible = result.isVisible)
+                is Result.ReadingMode -> copy(readingModeTab = result.readingModeTab)
             }
     }
 }

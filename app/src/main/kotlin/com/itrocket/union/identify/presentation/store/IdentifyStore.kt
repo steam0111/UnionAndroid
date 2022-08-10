@@ -10,6 +10,7 @@ import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuArguments
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment
@@ -34,6 +35,8 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
 
         data class OnAccountingObjectSelected(val accountingObject: AccountingObjectDomain) :
             Intent()
+
+        data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
     }
 
     data class State(
@@ -41,6 +44,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         val accountingObjects: List<AccountingObjectDomain> = listOf(),
         val reserves: List<ReservesDomain> = listOf(),
         val selectedPage: Int = 0,
+        val readingModeTab: ReadingModeTab
     )
 
     sealed class Label {

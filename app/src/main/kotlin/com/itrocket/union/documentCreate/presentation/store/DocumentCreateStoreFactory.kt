@@ -175,13 +175,9 @@ class DocumentCreateStoreFactory(
                     intent.rfid,
                     getState().accountingObjects
                 )
-                is DocumentCreateStore.Intent.OnReserveSelected -> dispatch(
-                    Result.Reserves(
-                        documentCreateInteractor.addReserve(
-                            reserves = getState().reserves,
-                            reserve = intent.reserve
-                        )
-                    )
+                is DocumentCreateStore.Intent.OnReserveSelected -> onReserveSelected(
+                    reserves = getState().reserves,
+                    newReserve = intent.reserve
                 )
                 DocumentCreateStore.Intent.OnCompleteClicked -> {
                     dispatch(Result.ConfirmDialogType(DocumentConfirmAlertType.CONDUCT))
@@ -208,6 +204,26 @@ class DocumentCreateStoreFactory(
                     handleOnConfirmActionClick(getState())
                 }
             }
+        }
+
+        private suspend fun onReserveSelected(
+            reserves: List<ReservesDomain>,
+            newReserve: ReservesDomain
+        ) {
+            dispatch(
+                Result.Reserves(
+                    documentCreateInteractor.addReserve(
+                        reserves = reserves,
+                        reserve = newReserve
+                    )
+                )
+            )
+            publish(
+                DocumentCreateStore.Label.ShowSelectCount(
+                    id = newReserve.id,
+                    count = newReserve.itemsCount
+                )
+            )
         }
 
         private suspend fun handleOnConfirmActionClick(state: DocumentCreateStore.State) {

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -38,6 +39,7 @@ import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStor
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
@@ -47,6 +49,7 @@ import com.itrocket.union.ui.ImageButton
 import com.itrocket.union.ui.ConfirmAlertDialog
 import com.itrocket.union.ui.InventoryDocumentItem
 import com.itrocket.union.ui.MediumSpacer
+import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.psb1
 import com.itrocket.union.ui.psb3
@@ -79,15 +82,10 @@ fun InventoryCreateScreen(
                 )
             },
             bottomBar = {
-                if (state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED) {
-                    BottomBar(
-                        onSaveClickListener = onSaveClickListener,
-                        onReadingClickListener = onReadingClickListener,
-                        onInWorkClickListener = onInWorkClickListener,
-                        onFinishClickListener = onFinishClickListener,
-                        inventoryStatus = state.inventoryDocument.inventoryStatus
-                    )
-                }
+                ReadingModeBottomBar(
+                    readingModeTab = state.readingModeTab,
+                    onReadingModeClickListener = onReadingClickListener
+                )
             },
             content = {
                 Content(
@@ -95,7 +93,11 @@ fun InventoryCreateScreen(
                     paddingValues = it,
                     onAddNewChanged = onAddNewChanged,
                     onHideFoundAccountingObjectChanged = onHideFoundAccountingObjectChanged,
-                    onAccountingObjectClickListener = onAccountingObjectClickListener
+                    onAccountingObjectClickListener = onAccountingObjectClickListener,
+                    onInWorkClickListener = onInWorkClickListener,
+                    onFinishClickListener = onFinishClickListener,
+                    onSaveClickListener = onSaveClickListener,
+                    onReadingClickListener = onReadingClickListener
                 )
             },
             modifier = Modifier.padding(
@@ -120,7 +122,11 @@ private fun Content(
     paddingValues: PaddingValues,
     onAddNewChanged: () -> Unit,
     onHideFoundAccountingObjectChanged: () -> Unit,
-    onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit
+    onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit,
+    onInWorkClickListener: () -> Unit,
+    onFinishClickListener: () -> Unit,
+    onSaveClickListener: () -> Unit,
+    onReadingClickListener: () -> Unit,
 ) {
     var accountingObjectList =
         state.newAccountingObjects.toList() + state.inventoryDocument.accountingObjects
@@ -132,18 +138,28 @@ private fun Content(
     Column(
         Modifier
             .fillMaxSize()
-            .padding(paddingValues)
+            .padding(top = paddingValues.calculateTopPadding())
     ) {
-        InventoryDocumentItem(item = state.inventoryDocument, isShowStatus = false)
-        MediumSpacer()
-        SettingsBar(
-            isHideFoundAccountingObjects = state.isHideFoundAccountingObjects,
-            isAddNew = state.isAddNew,
-            onAddNewChanged = onAddNewChanged,
-            onHideFoundAccountingObjectChanged = onHideFoundAccountingObjectChanged
-        )
-        MediumSpacer()
         LazyColumn {
+            item {
+                if (state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED) {
+                    BottomBar(
+                        onSaveClickListener = onSaveClickListener,
+                        onInWorkClickListener = onInWorkClickListener,
+                        onFinishClickListener = onFinishClickListener,
+                        inventoryStatus = state.inventoryDocument.inventoryStatus
+                    )
+                }
+                InventoryDocumentItem(item = state.inventoryDocument, isShowStatus = false)
+                MediumSpacer()
+                SettingsBar(
+                    isHideFoundAccountingObjects = state.isHideFoundAccountingObjects,
+                    isAddNew = state.isAddNew,
+                    onAddNewChanged = onAddNewChanged,
+                    onHideFoundAccountingObjectChanged = onHideFoundAccountingObjectChanged
+                )
+                MediumSpacer()
+            }
             itemsIndexed(items = accountingObjectList, key = { index, item ->
                 item.id
             }) { index, item ->
@@ -155,6 +171,9 @@ private fun Content(
                     status = item.inventoryStatus,
                     isEnabled = state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED
                 )
+            }
+            item {
+                Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
             }
         }
     }
@@ -211,7 +230,6 @@ fun SettingsBar(
 @Composable
 private fun BottomBar(
     onSaveClickListener: () -> Unit,
-    onReadingClickListener: () -> Unit,
     onInWorkClickListener: () -> Unit,
     onFinishClickListener: () -> Unit,
     inventoryStatus: InventoryStatus
@@ -223,17 +241,10 @@ private fun BottomBar(
     ) {
         BaseButton(
             enabled = inventoryStatus == InventoryStatus.CREATED,
-            text = stringResource(R.string.common_reading),
-            onClick = onReadingClickListener,
+            text = stringResource(R.string.common_save),
+            onClick = onSaveClickListener,
             modifier = Modifier.weight(1f),
             disabledBackgroundColor = psb3
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        ImageButton(
-            imageId = R.drawable.ic_save,
-            paddings = PaddingValues(12.dp),
-            onClick = onSaveClickListener,
-            isEnabled = inventoryStatus != InventoryStatus.COMPLETED
         )
         when (inventoryStatus) {
             InventoryStatus.CREATED -> {
@@ -353,6 +364,7 @@ fun InventoryCreateScreenPreview() {
             userInserted = "",
             userUpdated = ""
         ),
-        isConfirmDialogVisible = false
+        isConfirmDialogVisible = false,
+        readingModeTab = ReadingModeTab.RFID
     ), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 }
