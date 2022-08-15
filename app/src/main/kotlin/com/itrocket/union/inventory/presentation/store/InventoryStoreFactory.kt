@@ -19,6 +19,8 @@ import com.itrocket.union.manual.Params
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.manual.filterNotEmpty
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
+import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
+import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -31,6 +33,7 @@ class InventoryStoreFactory(
     private val errorInteractor: ErrorInteractor,
     private val selectParamsInteractor: SelectParamsInteractor,
     private val filterInteractor: FilterInteractor,
+    private val permissionsInteractor: UnionPermissionsInteractor
 ) {
     fun create(): InventoryStore =
         object : InventoryStore,
@@ -53,6 +56,7 @@ class InventoryStoreFactory(
             action: Unit,
             getState: () -> InventoryStore.State
         ) {
+            dispatch(Result.CanCreateInventory(permissionsInteractor.canCreate(UnionPermission.INVENTORY)))
             dispatch(Result.Params(selectParamsInteractor.getInitialDocumentParams(getState().params)))
             observeAccountingObjects(getState().params)
         }
@@ -184,6 +188,7 @@ class InventoryStoreFactory(
         data class SelectPage(val page: Int) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
         data class IsCreateEnabled(val enabled: Boolean) : Result()
+        data class CanCreateInventory(val isCanCreateInventory: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryStore.State, Result> {
@@ -195,6 +200,7 @@ class InventoryStoreFactory(
                 is Result.AccountingObjects -> copy(accountingObjectList = result.accountingObjects)
                 is Result.IsCreateInventoryLoading -> copy(isCreateInventoryLoading = result.isLoading)
                 is Result.IsCreateEnabled -> copy(isCreateEnabled = result.enabled)
+                is Result.CanCreateInventory -> copy(isCanCreateInventory = result.isCanCreateInventory)
             }
     }
 }

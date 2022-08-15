@@ -83,12 +83,14 @@ fun InventoryScreen(
                 )
             },
             bottomBar = {
-                ButtonBottomBar(
-                    onClick = onInventoryCreateClickListener,
-                    text = stringResource(R.string.common_create),
-                    isLoading = state.isCreateInventoryLoading,
-                    isEnabled = state.isCreateEnabled
-                )
+                if (state.isCanCreateInventory) {
+                    ButtonBottomBar(
+                        onClick = onInventoryCreateClickListener,
+                        text = stringResource(R.string.common_create),
+                        isLoading = state.isCreateInventoryLoading,
+                        isEnabled = state.isCreateEnabled
+                    )
+                }
             },
             content = {
                 Content(
