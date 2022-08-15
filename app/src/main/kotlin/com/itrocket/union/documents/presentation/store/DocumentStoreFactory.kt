@@ -18,6 +18,8 @@ import com.itrocket.union.documents.presentation.view.toDocumentDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.search.SearchManager
+import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
+import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -29,7 +31,8 @@ class DocumentStoreFactory(
     private val arguments: DocumentArguments,
     private val errorInteractor: ErrorInteractor,
     private val searchManager: SearchManager,
-    private val authMainInteractor: AuthMainInteractor
+    private val authMainInteractor: AuthMainInteractor,
+    private val permissionsInteractor: UnionPermissionsInteractor
 ) {
     fun create(): DocumentStore =
         object : DocumentStore,
@@ -52,6 +55,7 @@ class DocumentStoreFactory(
             action: Unit,
             getState: () -> DocumentStore.State
         ) {
+            dispatch(Result.CanCreateDocument(permissionsInteractor.canCreate(UnionPermission.ALL_DOCUMENTS)))
             searchManager.listenSearch {
                 listenDocuments(
                     typeDomain = getState().type,
@@ -176,6 +180,7 @@ class DocumentStoreFactory(
         data class SearchText(val searchText: String) : Result()
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
         data class FilterParams(val params: List<ParamDomain>) : Result()
+        data class CanCreateDocument(val isCanCreateDocument: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<DocumentStore.State, Result> {
@@ -188,6 +193,7 @@ class DocumentStoreFactory(
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchText -> copy(searchText = result.searchText)
                 is Result.FilterParams -> copy(params = result.params)
+                is Result.CanCreateDocument -> copy(isCanCreateDocument = result.isCanCreateDocument)
             }
     }
 }

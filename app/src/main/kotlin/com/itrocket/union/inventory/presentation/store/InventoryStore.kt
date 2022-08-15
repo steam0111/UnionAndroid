@@ -44,7 +44,8 @@ interface InventoryStore :
             ParamDomain(id = "", value = "", type = ManualType.MOL),
             LocationParamDomain(manualType = ManualType.LOCATION_INVENTORY),
             ParamDomain(id = "", value = "", type = ManualType.INVENTORY_BASE)
-        )
+        ),
+        val isCanCreateInventory: Boolean = true
     )
 
     sealed class Label {

@@ -67,33 +67,10 @@ fun AccountingObjectDetailScreen(
     onDocumentAddClickListener: () -> Unit,
     onPageChangeListener: (Int) -> Unit
 ) {
-    val pagerState = rememberPagerState()
-    val coroutineScope = rememberCoroutineScope()
-    val tabs = listOf(
-        BaseTab(
-            title = stringResource(R.string.accounting_object_detail_main),
-            screen = {
-                ListInfo(state.accountingObjectDomain.listMainInfo)
-            }
-        ),
-        BaseTab(
-            title = stringResource(R.string.accounting_object_detail_additionally),
-            screen = {
-                ListInfo(state.accountingObjectDomain.listAdditionallyInfo)
-            }
-        )
-    )
-
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.collect {
-            onPageChangeListener(it)
-        }
-    }
     AppTheme {
         Scaffold(
             topBar = {
                 Toolbar(
-                    accountingObjectName = state.accountingObjectDomain.title,
                     onBackClickListener = onBackClickListener,
                     onDocumentAddClickListener = onDocumentAddClickListener,
                     onDocumentSearchClickListener = onDocumentSearchClickListener
@@ -113,10 +90,6 @@ fun AccountingObjectDetailScreen(
             Content(
                 paddingValues = it,
                 state = state,
-                pagerState = pagerState,
-                tabs = tabs,
-                onTabClickListener = onPageChangeListener,
-                coroutineScope = coroutineScope
             )
         }
     }
@@ -126,73 +99,32 @@ fun AccountingObjectDetailScreen(
 @Composable
 private fun Content(
     paddingValues: PaddingValues,
-    state: AccountingObjectDetailStore.State,
-    tabs: List<BaseTab>,
-    pagerState: PagerState,
-    coroutineScope: CoroutineScope,
-    onTabClickListener: (Int) -> Unit
+    state: AccountingObjectDetailStore.State
 ) {
-    Column(modifier = Modifier.padding(paddingValues)) {
-        Header(
-            tabs = tabs,
-            pagerState = pagerState,
-            selectedPage = state.selectedPage,
-            accountingObjectItem = state.accountingObjectDomain,
-            onTabClickListener = onTabClickListener,
-            coroutineScope = coroutineScope
-        )
-        HorizontalPager(count = tabs.size, state = pagerState) { page ->
-            tabs[page].screen()
+    LazyColumn(Modifier.padding(top = paddingValues.calculateTopPadding())) {
+        item {
+            Text(
+                text = state.accountingObjectDomain.title,
+                fontWeight = FontWeight.Bold,
+                style = AppTheme.typography.h6,
+                fontSize = 19.sp,
+            )
         }
-    }
-}
-
-@OptIn(ExperimentalPagerApi::class)
-@Composable
-private fun Header(
-    tabs: List<BaseTab>,
-    pagerState: PagerState,
-    selectedPage: Int,
-    accountingObjectItem: AccountingObjectDomain,
-    coroutineScope: CoroutineScope,
-    onTabClickListener: (Int) -> Unit
-) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = accountingObjectItem.title,
-            fontWeight = FontWeight.Bold,
-            style = AppTheme.typography.h6,
-            fontSize = 19.sp,
-        )
-        //TODO: Пока не нужен
-        /*Spacer(modifier = Modifier.height(16.dp))
-        DoubleTabRow(
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .border(
-                    width = 1.dp,
-                    color = graphite2,
-                    shape = RoundedCornerShape(8.dp)
-                ),
-            selectedPage = selectedPage,
-            targetPage = pagerState.getTargetPage(),
-            tabs = tabs,
-            onTabClickListener = {
-                onTabClickListener(it)
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(it)
-                }
-            },
-            tabIndicator = {
-                TabIndicatorBlack(tabPositions = it, pagerState = pagerState)
-            }
-        )*/
+        items(state.accountingObjectDomain.listMainInfo) {
+            ExpandedInfoField(
+                label = stringResource(id = it.title),
+                value = it.value.orEmpty(),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        item {
+            Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
+        }
     }
 }
 
 @Composable
 private fun Toolbar(
-    accountingObjectName: String,
     onBackClickListener: () -> Unit,
     onDocumentAddClickListener: () -> Unit,
     onDocumentSearchClickListener: () -> Unit
@@ -249,19 +181,6 @@ private fun BottomBar(
         readingModeTab = readingModeTab,
         onReadingModeClickListener = onReadingModeClickListener
     )
-}
-
-@Composable
-private fun ListInfo(listInfo: List<ObjectInfoDomain>) {
-    LazyColumn {
-        items(listInfo) {
-            ExpandedInfoField(
-                label = stringResource(id = it.title),
-                value = it.value.orEmpty(),
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-    }
 }
 
 @Preview(

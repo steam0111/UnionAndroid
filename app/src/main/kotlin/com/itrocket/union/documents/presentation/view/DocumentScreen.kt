@@ -89,11 +89,13 @@ fun DocumentScreen(
                 )
             },
             bottomBar = {
-                ButtonLoaderBottomBar(
-                    text = stringResource(id = R.string.documents_create_issue),
-                    onClick = onCreateRequestClickListener,
-                    isLoading = state.isDocumentCreateLoading,
-                )
+                if (state.isCanCreateDocument) {
+                    ButtonLoaderBottomBar(
+                        text = stringResource(id = R.string.documents_create_issue),
+                        onClick = onCreateRequestClickListener,
+                        isLoading = state.isDocumentCreateLoading,
+                    )
+                }
             },
             content = {
                 when {
