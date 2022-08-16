@@ -20,7 +20,7 @@ fun ActionDtoV2.toDocumentDb(): DocumentDb {
         id = id,
         structuralFromId = structuralUnitFromId,
         structuralToId = structuralUnitToId,
-        molId = molId.orEmpty(),
+        molId = molReceivingId.orEmpty(),
         exploitingId = exploitingId,
         documentType = actionTypeId ?: "GIVE",
         completionDate = getMillisDateFromServerFormat(completionDate),
@@ -53,7 +53,8 @@ fun DocumentDb.toActionDtoV2(): ActionDtoV2 {
         id = id,
         deleted = false,
         userInserted = userInserted,
-        userUpdated = userUpdated
+        userUpdated = userUpdated,
+        molReceivingId = molId.orEmpty()
     )
 }
 
