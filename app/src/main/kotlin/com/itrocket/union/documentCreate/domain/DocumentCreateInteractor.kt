@@ -119,17 +119,6 @@ class DocumentCreateInteractor(
     fun getReservesIds(reserves: List<ReservesDomain>): List<String> =
         reserves.map { it.id }
 
-    fun isParamsValid(
-        params: List<ParamDomain>,
-        documentTypeDomain: DocumentTypeDomain,
-    ): Boolean {
-        return when (documentTypeDomain) {
-            DocumentTypeDomain.RELOCATION -> !params.getFilterLocationLastId(ManualType.LOCATION_TO)
-                .isNullOrBlank()
-            else -> true
-        }
-    }
-
     fun addAccountingObject(
         accountingObjects: List<AccountingObjectDomain>,
         accountingObject: AccountingObjectDomain

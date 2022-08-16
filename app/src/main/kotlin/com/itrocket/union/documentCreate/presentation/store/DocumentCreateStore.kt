@@ -73,7 +73,6 @@ interface DocumentCreateStore :
         val params: List<ParamDomain>,
         val isLoading: Boolean = false,
         val selectedPage: Int = 0,
-        val isParamsValid: Boolean = false,
         val departureLocation: List<LocationDomain> = emptyList(),
         val confirmDialogType: DocumentConfirmAlertType = DocumentConfirmAlertType.NONE
     )

@@ -40,6 +40,11 @@ class InventorySyncApiImpl(
     override suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): String {
         val inventoryId = UUID.randomUUID().toString()
         inventoryDao.insert(inventoryCreateSyncEntity.toInventoryDb(inventoryId))
+        updateRecords(
+            inventoryId = inventoryId,
+            accountingObjectIds = inventoryCreateSyncEntity.accountingObjectsIds,
+            userUpdated = inventoryCreateSyncEntity.userUpdated
+        )
         return inventoryId
     }
 
@@ -122,55 +127,26 @@ class InventorySyncApiImpl(
     private suspend fun getAccountingObjects(
         inventoryDb: InventoryDb
     ): List<AccountingObjectSyncEntity> {
-        /*
-            Если status = CREATED, значит при создание ИВ мы не сохраняли ОУ в records,
-            т.о мы должны их подтнянуть использую фильтрация по полям в самой ИВ
-        * */
-        return if (inventoryDb.inventoryStatus == INVENTORY_STATUS_CREATED) {
-            Timber.tag(INVENTORY_TAG)
-                .d(
-                    "getInventoryById getAccountingObjects " +
-                            "structuralId: ${inventoryDb.structuralId} " +
-                            "employeeId: ${inventoryDb.employeeId} " +
-                            "locationIds: ${inventoryDb.locationIds}"
-                )
+        val inventoryRecords =
+            inventoryRecordDao.getAll(sqlInventoryRecordQuery(inventoryDb.id))
 
-            accountingObjectDao.getAll(
-                sqlAccountingObjectQuery(
-                    structuralIds = listOf(inventoryDb.structuralId),
-                    molId = inventoryDb.employeeId,
-                    locationIds = if (inventoryDb.locationIds.isNullOrEmpty()) {
-                        null
-                    } else {
-                        inventoryDb.locationIds
-                    }
-                )
-            ).map {
-                val location = locationSyncApi.getLocationById(it.accountingObjectDb.locationId)
-                it.toSyncEntity(locationSyncEntity = location)
-            }
-        } else {
-            val inventoryRecords =
-                inventoryRecordDao.getAll(sqlInventoryRecordQuery(inventoryDb.id))
-
-            val accountingObjectIds = inventoryRecords.map {
-                it.accountingObjectId
-            }
-
-            accountingObjectDao.getAll(sqlAccountingObjectQuery(accountingObjectsIds = accountingObjectIds))
-                .map { fullAccountingObject ->
-                    val inventoryStatus = getInventoryStatus(
-                        inventoryRecords = inventoryRecords,
-                        fullAccountingObject = fullAccountingObject
-                    )
-                    val location =
-                        locationSyncApi.getLocationById(fullAccountingObject.accountingObjectDb.locationId)
-                    fullAccountingObject.toSyncEntity(
-                        inventoryStatus = inventoryStatus,
-                        locationSyncEntity = location
-                    )
-                }
+        val accountingObjectIds = inventoryRecords.map {
+            it.accountingObjectId
         }
+
+        return accountingObjectDao.getAll(sqlAccountingObjectQuery(accountingObjectsIds = accountingObjectIds))
+            .map { fullAccountingObject ->
+                val inventoryStatus = getInventoryStatus(
+                    inventoryRecords = inventoryRecords,
+                    fullAccountingObject = fullAccountingObject
+                )
+                val location =
+                    locationSyncApi.getLocationById(fullAccountingObject.accountingObjectDb.locationId)
+                fullAccountingObject.toSyncEntity(
+                    inventoryStatus = inventoryStatus,
+                    locationSyncEntity = location
+                )
+            }
     }
 
     override suspend fun updateInventory(inventoryUpdateSyncEntity: InventoryUpdateSyncEntity) {

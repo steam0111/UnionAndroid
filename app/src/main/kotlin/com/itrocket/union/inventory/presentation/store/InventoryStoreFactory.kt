@@ -116,12 +116,7 @@ class InventoryStoreFactory(
 
         private suspend fun changeParams(params: List<ParamDomain>) {
             dispatch(Result.Params(params))
-            isCreateEnabled(params)
             observeAccountingObjects(params.filterNotEmpty())
-        }
-
-        private fun isCreateEnabled(params: List<ParamDomain>) {
-            dispatch(Result.IsCreateEnabled(inventoryInteractor.isParamsValid(params)))
         }
 
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
@@ -187,7 +182,6 @@ class InventoryStoreFactory(
         data class Params(val params: List<ParamDomain>) : Result()
         data class SelectPage(val page: Int) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
-        data class IsCreateEnabled(val enabled: Boolean) : Result()
         data class CanCreateInventory(val isCanCreateInventory: Boolean) : Result()
     }
 
@@ -199,7 +193,6 @@ class InventoryStoreFactory(
                 is Result.SelectPage -> copy(selectedPage = result.page)
                 is Result.AccountingObjects -> copy(accountingObjectList = result.accountingObjects)
                 is Result.IsCreateInventoryLoading -> copy(isCreateInventoryLoading = result.isLoading)
-                is Result.IsCreateEnabled -> copy(isCreateEnabled = result.enabled)
                 is Result.CanCreateInventory -> copy(isCanCreateInventory = result.isCanCreateInventory)
             }
     }
