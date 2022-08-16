@@ -13,7 +13,6 @@ class DocumentMenuStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val documentMenuInteractor: DocumentMenuInteractor,
     private val authMainInteractor: AuthMainInteractor,
-    private val employeeDetailInteractor: EmployeeDetailInteractor
 ) {
     fun create(): DocumentMenuStore =
         object : DocumentMenuStore,
@@ -78,11 +77,7 @@ class DocumentMenuStoreFactory(
 
         private suspend fun getUsername() {
             val currentEmployeeId = authMainInteractor.getMyConfig().employeeId
-            val username = if (currentEmployeeId != null) {
-                employeeDetailInteractor.getEmployeeDetail(currentEmployeeId).name
-            } else {
-                authMainInteractor.getLogin()
-            }.orEmpty()
+            val username = documentMenuInteractor.getUsername(currentEmployeeId)
             dispatch(Result.Username(username))
         }
     }

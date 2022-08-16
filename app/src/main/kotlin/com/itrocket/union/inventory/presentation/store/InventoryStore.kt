@@ -36,7 +36,6 @@ interface InventoryStore :
     data class State(
         val isAccountingObjectsLoading: Boolean = false,
         val isCreateInventoryLoading: Boolean = false,
-        val isCreateEnabled: Boolean = false,
         val selectedPage: Int = 0,
         val accountingObjectList: List<AccountingObjectDomain> = listOf(),
         val params: List<ParamDomain> = listOf(

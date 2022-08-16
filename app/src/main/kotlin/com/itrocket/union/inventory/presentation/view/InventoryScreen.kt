@@ -88,7 +88,6 @@ fun InventoryScreen(
                         onClick = onInventoryCreateClickListener,
                         text = stringResource(R.string.common_create),
                         isLoading = state.isCreateInventoryLoading,
-                        isEnabled = state.isCreateEnabled
                     )
                 }
             },

@@ -24,13 +24,12 @@ object DocumentMenuModule {
         }
 
         factory {
-            DocumentMenuInteractor(get(), get(), get())
+            DocumentMenuInteractor(get(), get(), get(), get(), get())
         }
 
         factory {
             DocumentMenuStoreFactory(
                 DefaultStoreFactory,
-                get(),
                 get(),
                 get(),
                 get()

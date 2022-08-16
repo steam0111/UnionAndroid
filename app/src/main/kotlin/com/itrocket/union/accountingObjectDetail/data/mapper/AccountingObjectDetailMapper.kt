@@ -50,10 +50,6 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
             add(ObjectInfoDomain(R.string.manual_exploiting, it.fullName))
         }
 
-        accountingObject.status?.name?.let {
-            add(ObjectInfoDomain(R.string.accounting_objects_current_status, it))
-        }
-
         add(
             ObjectInfoDomain(
                 R.string.accounting_object_marked,

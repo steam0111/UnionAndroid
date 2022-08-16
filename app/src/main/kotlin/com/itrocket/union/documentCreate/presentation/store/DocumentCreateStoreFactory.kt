@@ -290,14 +290,6 @@ class DocumentCreateStoreFactory(
             }
 
             dispatch(Result.Params(filters))
-            dispatch(
-                Result.ParamsValid(
-                    documentCreateInteractor.isParamsValid(
-                        filters,
-                        documentTypeDomain
-                    )
-                )
-            )
         }
 
         private suspend fun saveDocument(state: DocumentCreateStore.State) {
@@ -360,7 +352,6 @@ class DocumentCreateStoreFactory(
         data class Loading(val isLoading: Boolean) : Result()
         data class Document(val document: DocumentDomain) : Result()
         data class Params(val params: List<ParamDomain>) : Result()
-        data class ParamsValid(val isParamsValid: Boolean) : Result()
         data class SelectPage(val page: Int) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
         data class Reserves(val reserves: List<ReservesDomain>) : Result()
@@ -376,7 +367,6 @@ class DocumentCreateStoreFactory(
                 is Result.Reserves -> copy(reserves = result.reserves)
                 is Result.SelectPage -> copy(selectedPage = result.page)
                 is Result.Document -> copy(document = result.document)
-                is Result.ParamsValid -> copy(isParamsValid = result.isParamsValid)
                 is Result.ConfirmDialogType -> copy(confirmDialogType = result.type)
             }
     }

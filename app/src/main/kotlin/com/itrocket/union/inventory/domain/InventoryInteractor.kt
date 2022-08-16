@@ -27,12 +27,7 @@ class InventoryInteractor(
         accountingObjects: List<AccountingObjectDomain>,
         params: List<ParamDomain>
     ): InventoryCreateDomain = withContext(coreDispatchers.io) {
-        val structuralId =
-            requireNotNull(value = params.getFilterStructuralLastId(ManualType.STRUCTURAL),
-                lazyMessage = {
-                    "organizationId must not be null"
-                })
-
+        val structuralId = params.getFilterStructuralLastId(ManualType.STRUCTURAL)
         val molId = params.getMolId()
         val locationIds = params.getFilterLocationIds(ManualType.LOCATION_INVENTORY)
         val id = repository.createInventory(
@@ -94,9 +89,5 @@ class InventoryInteractor(
         return list.map {
             it.toInitialState()
         }
-    }
-
-    fun isParamsValid(params: List<ParamDomain>): Boolean {
-        return !params.getFilterStructuralLastId(ManualType.STRUCTURAL).isNullOrEmpty()
     }
 }
