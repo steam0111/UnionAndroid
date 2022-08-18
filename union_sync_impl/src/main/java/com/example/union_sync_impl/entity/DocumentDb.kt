@@ -7,9 +7,8 @@ import com.example.union_sync_impl.entity.core.SyncItemDb
 @Entity(tableName = "documents")
 class DocumentDb(
     id: String = "",
-    val organizationId: String?,
     val molId: String?,
-    val creationDate: Long,
+    val creationDate: Long?,
     updateDate: Long?,
     val completionDate: Long? = null,
     val exploitingId: String? = null,
@@ -18,11 +17,16 @@ class DocumentDb(
     val documentStatusId: String,
     val locationFromId: String? = null,
     val locationToId: String? = null,
-    val departmentFromId: String? = null,
-    val departmentToId: String? = null,
     val actionBaseId: String? = null,
-    val branchId: String? = null,
     val code: String?,
+    val structuralFromId: String?,
+    val structuralToId: String?,
     userInserted: String?,
-    userUpdated: String?,
-) : SyncItemDb(id, updateDate, userUpdated, userInserted)
+    userUpdated: String?
+) : SyncItemDb(
+    id = id,
+    insertDate = creationDate,
+    updateDate = updateDate,
+    userUpdated = userUpdated,
+    userInserted = userInserted
+)

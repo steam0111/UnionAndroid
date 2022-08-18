@@ -1,15 +1,14 @@
 package org.openapitools.client.apis
 
 
+import retrofit2.http.*
+import retrofit2.Response
+import okhttp3.RequestBody
+
 import org.openapitools.client.models.GetResponseV2
 import org.openapitools.client.models.PreviewInventoryRequestV2
+import org.openapitools.client.models.PreviewInventoryResponseV2
 import org.openapitools.client.models.PutResponseV2
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Path
 
 interface InventorySupControllerApi {
     /**
@@ -18,7 +17,7 @@ interface InventorySupControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param inventoryId  
+     * @param inventoryId 
      * @return [PutResponseV2]
      */
     @PUT("api/documents/inventories/{inventoryId}/complete")
@@ -30,8 +29,8 @@ interface InventorySupControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param inventoryId  
-     * @param previewInventoryRequestV2  
+     * @param inventoryId 
+     * @param previewInventoryRequestV2 
      * @return [PutResponseV2]
      */
     @PUT("api/documents/inventories/{inventoryId}/in-progress")
@@ -43,13 +42,13 @@ interface InventorySupControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param locationId  
-     * @param organisationId  
-     * @param molId  
+     * @param locationId 
+     * @param structuralUnitId 
+     * @param molId 
      * @return [GetResponseV2]
      */
-    @GET("api/documents/inventories/locationId/{locationId}/organisationId/{organisationId}/molId/{molId}")
-    suspend fun apiDocumentsInventoriesLocationIdLocationIdOrganisationIdOrganisationIdMolIdMolIdGet(@Path("locationId") locationId: kotlin.String, @Path("organisationId") organisationId: kotlin.String, @Path("molId") molId: kotlin.String): Response<GetResponseV2>
+    @GET("api/documents/inventories/locationId/{locationId}/structuralUnitId/{structuralUnitId}/molId/{molId}")
+    suspend fun apiDocumentsInventoriesLocationIdLocationIdStructuralUnitIdStructuralUnitIdMolIdMolIdGet(@Path("locationId") locationId: kotlin.String, @Path("structuralUnitId") structuralUnitId: kotlin.String, @Path("molId") molId: kotlin.String): Response<GetResponseV2>
 
     /**
      * 
@@ -57,10 +56,10 @@ interface InventorySupControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param previewInventoryRequestV2  
-     * @return [GetResponseV2]
+     * @param previewInventoryRequestV2 
+     * @return [PreviewInventoryResponseV2]
      */
     @POST("api/documents/inventories/preview")
-    suspend fun apiDocumentsInventoriesPreviewPost(@Body previewInventoryRequestV2: PreviewInventoryRequestV2): Response<GetResponseV2>
+    suspend fun apiDocumentsInventoriesPreviewPost(@Body previewInventoryRequestV2: PreviewInventoryRequestV2): Response<PreviewInventoryResponseV2>
 
 }

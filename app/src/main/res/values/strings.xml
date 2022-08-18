@@ -10,6 +10,8 @@
     <string name="common_drop">Сбросить</string>
     <string name="common_apply">Применить</string>
     <string name="common_cancel">Отмена</string>
+    <string name="common_ok">Ок</string>
+    <string name="common_confirm_save_text">Вы уверены, что хотите сохранить?</string>
     <string name="common_continue">Продолжить</string>
     <string name="common_finish">Готово</string>
     <string name="common_step">Шаг %s</string>
@@ -22,14 +24,25 @@
     <string name="common_add">Добавить</string>
     <string name="common_choose">Выбор</string>
     <string name="common_conduct">Провести</string>
+    <string name="confirm_conduct_text">Вы уверены, что хотите провести документ?</string>
     <string name="common_error">Что-то пошло не так…</string>
-    <string name="common_name">Название</string>
+    <string name="common_name">Наименование</string>
     <string name="common_kpp">КПП</string>
     <string name="common_inn">ИНН</string>
     <string name="common_in_work">В работу</string>
     <string name="common_complete">Завершить</string>
+    <string name="common_code">Код</string>
     <string name="search_hint">Введите запрос</string>
     <string name="select_service_hint">Выберите сервис</string>
+    <string name="common_yes">Да</string>
+    <string name="common_no">Нет</string>
+    <string name="common_nfc">NFC</string>
+    <string name="common_date_create">Дата создания</string>
+    <string name="common_date_update">Дата обновления</string>
+    <string name="common_user_create">Пользователь создал</string>
+    <string name="common_user_update">Пользователь обновил</string>
+    <string name="common_sub_name">Доп. наименование</string>
+    <string name="common_invoice_number">Номер накладной</string>
 
     <!-- Auth -->
     <string name="auth_suggest">Это нужно сделать один раз</string>
@@ -54,6 +67,7 @@
     <string name="auth_main_user_change">Сменить пользователя</string>
     <string name="auth_main_database_settings">Настройки БД</string>
     <string name="auth_title">Авторизация</string>
+    <string name="auth_active_directory">Пользователь Active Directory</string>
 
     <!-- MainScreen -->
     <string name="common_hint">Введите значение</string>
@@ -73,13 +87,9 @@
     <string name="main_write_off">Списание</string>
     <string name="nomenclature_group">Ном. группа</string>
     <string name="nomenclature">Номенклатура</string>
-    <string name="organizations">Организации</string>
-    <string name="departments">Подразделения</string>
     <string name="inventories">Инв. ведомости</string>
     <string name="producer">Производители</string>
     <string name="counterparties">Контрагенты</string>
-    <string name="regions">Регионы</string>
-    <string name="branches">Филиалы</string>
     <string name="equipment_types">Типы оборуд.</string>
     <string name="sync">Синхронизация</string>
     <string name="reception_category">Приеная категория</string>
@@ -89,8 +99,11 @@
 
     <!-- Manual -->
     <string name="manual_organization">Организация</string>
-    <string name="manual_mol">Ответственный</string>
+    <string name="manual_mol">Мол/Ответственный</string>
     <string name="manual_location">Местоположение</string>
+    <string name="manual_structural">Подразделение</string>
+    <string name="manual_structural_from">Подразделение отправителя</string>
+    <string name="manual_structural_to">Подразделение получателя</string>
     <string name="manual_exploiting">Эксплуатирующий</string>
     <string name="manual_status">Статус</string>
     <string name="manual_date">Дата заявки</string>
@@ -103,11 +116,11 @@
 
     <!-- AccountingObjectScreen -->
     <string name="main_marking">Маркировка</string>
-    <string name="accounting_objects_factory_number">Зав. номер</string>
+    <string name="accounting_objects_factory_number">Серийный номер</string>
     <string name="accounting_objects_inventory_number">Инвент. номер</string>
-    <string name="accounting_objects_current_status">Текущий статус</string>
-    <string name="accounting_objects_factory_num">Заводской №</string>
-    <string name="accounting_objects_inventory_num">Инвентарный №</string>
+    <string name="accounting_objects_current_status">Статус</string>
+    <string name="accounting_objects_factory_num">Серийный номер</string>
+    <string name="accounting_objects_inventory_num">Инвентарный номер</string>
     <string name="accounting_objects_location">Местоположение</string>
     <string name="accounting_objects_department">Подразделение</string>
     <string name="accounting_objects_model">Модель</string>
@@ -117,6 +130,18 @@
     <string name="accounting_objects_provider">Поставщик</string>
     <string name="accounting_objects_count">Мин. остаток</string>
     <string name="accounting_objects_commissioning_date">Дата поверки</string>
+    <string name="accounting_object_mol">Мол/Ответственный</string>
+    <string name="accounting_object_marked">Промаркирован</string>
+    <string name="accounting_object_for_write_off">На списание</string>
+    <string name="accounting_object_written_off">Списан</string>
+    <string name="accounting_object_registered">Поставлен на учет</string>
+    <string name="accounting_object_commissioned">Введен в эксплуатацию</string>
+    <string name="accounting_object_category">Категория</string>
+    <string name="accounting_object_traceable">Прослеживаемый</string>
+    <string name="accounting_object_commissioning_date">Дата ввода в эксплуатацию</string>
+    <string name="accounting_object_nomenclature">Номенклатура</string>
+    <string name="accounting_object_rfid">Рфид</string>
+    <string name="inventory_location">Место инвентаризации</string>
 
     <!-- NomenclatureGroup -->
     <string name="nomenclature_group_title">Номенклатурные группы</string>
@@ -157,6 +182,11 @@
     <string name="location_select_place">Выберите %s</string>
     <string name="location_hint">Введите запрос</string>
 
+    <!-- Structural -->
+    <string name="structural_level">Уровень подразделения</string>
+    <string name="structural_select_structural">Выберите уровень вложенности</string>
+    <string name="structural_hint">Введите запрос</string>
+
     <!-- Reserves -->
     <string name="reserves_title">Запасы</string>
     <string name="reserves_unit_price">Цена за ед.</string>
@@ -165,8 +195,8 @@
     <!-- Reserves Detail -->
     <string name="reserves_detail_nomenclature">Номенклатура</string>
     <string name="reserves_detail_nomenclature_group">Номенклатурная группа</string>
-    <string name="reserves_detail_order">№ Заказ</string>
-    <string name="reserves_detail_reception_item_category">Приемная категория</string>
+    <string name="reserves_detail_order">Заказ</string>
+    <string name="reserves_detail_reception_item_category">Категория</string>
     <string name="reserves_detail_count">Количество</string>
 
     <!-- Documents -->
@@ -181,7 +211,7 @@
 
     <!-- Document create -->
     <string name="document_create_title">%s &quot;%s&quot;</string>
-    <string name="document_create_accounting_object">Объекты учета</string>
+    <string name="document_create_accounting_object">Об. учета</string>
     <string name="document_create_reserves">Запасы</string>
     <string name="document_create_empty">Для начала считывания нажмите курок или выберите из списка</string>
 
@@ -194,11 +224,12 @@
 
     <!-- Inventory -->
     <string name="inventory_ao_title">Инвентаризация «ОУ»</string>
-    <string name="inventory_params">Параметры</string>
-    <string name="inventory_accounting_object">Объекты учета</string>
+    <string name="inventory_params">Парам.</string>
+    <string name="inventory_accounting_object">Инвент. «ОУ»</string>
     <string name="inventory_created">Создана</string>
     <string name="inventory_in_work">В работе</string>
     <string name="inventory_done">Завершена</string>
+    <string name="identify_title">Идентификация</string>
 
     <!-- InventoryCreate -->
     <string name="inventory_create_hide_found_ao">Скрывать найденные ОС</string>
@@ -257,22 +288,47 @@
 
     <!-- Producer -->
     <string name="producer_title">Производители</string>
-    <string name="producer_code">Код производителя</string>
+    <string name="producer_code">Код</string>
 
     <!-- Counterparties -->
     <string name="counterparties_title">Контрагенты</string>
     <string name="counterparties_code">Код контрагента</string>
 
-    <string name="equipment_type_code">Код оборудования</string>
+    <string name="equipment_type_code">Код</string>
     <string name="equipment_type_title">Типы оборудования</string>
+    <string name="text_begin_identify">Для начала идентификации нажмите курок считывателя</string>
+    <string name="choose_action">Выберите действие</string>
     <string name="equipment_type">Тип оборудования</string>
 
     <!-- ChooseAction -->
     <string name="choose_action_title">Выберите действие</string>
+    <string name="open_card">Открыть карточку</string>
+    <string name="delete_from_list">Удалить из списка</string>
 
     <!-- SelectCount -->
     <string name="select_count_title">Выберите количество</string>
     <string name="to_sync">Синхронизировать</string>
     <string name="to_clear_db">Полная очистка базы данных</string>
     <string name="to_auth">Авторизация</string>
+
+    <!-- Identify -->
+    <string name="os_tab_title">ОС (%s)</string>
+
+    <!-- ChangeScanData -->
+    <string name="change_scan_data_rfid_title">Изменение RFID</string>
+    <string name="change_scan_data_with_rfid">С RFID</string>
+    <string name="change_scan_data_on_rfid">На RFID</string>
+    <string name="change_scan_data_empty_rfid">Метка не установлена</string>
+
+    <string name="change_scan_data_barcode_title">Изменение ШК</string>
+    <string name="change_scan_data_with_barcode">С штрихкода</string>
+    <string name="change_scan_data_on_barcode">На штрихкод</string>
+    <string name="change_scan_data_empty_barcode">Штрихкод не установлен</string>
+
+    <string name="change_scan_data_sn_title">Изменение SN</string>
+    <string name="change_scan_data_with_sn">С SN</string>
+    <string name="change_scan_data_on_sn">На SN</string>
+    <string name="change_scan_data_empty_sn">SN не установлен</string>
+
+    <string name="change_scan_data_press_cursor">Нажмите курок считывателя</string>
 </resources>

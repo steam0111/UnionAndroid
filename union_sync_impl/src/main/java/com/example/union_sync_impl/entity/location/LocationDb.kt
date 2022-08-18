@@ -2,6 +2,7 @@ package com.example.union_sync_impl.entity.location
 
 import androidx.room.Entity
 import com.example.union_sync_impl.entity.core.CatalogItemDb
+import com.example.union_sync_impl.entity.core.SyncItemDb
 
 @Entity(
 //    foreignKeys = [
@@ -20,5 +21,14 @@ class LocationDb(
     var parentId: String? = null,
     val name: String,
     val locationTypeId: String? = null,
-    updateDate: Long?
-) : CatalogItemDb(id, updateDate)
+    insertDate: Long?,
+    updateDate: Long?,
+    userInserted: String?,
+    userUpdated: String?,
+) : CatalogItemDb(
+    id = id,
+    insertDate = insertDate,
+    updateDate = updateDate,
+    userUpdated = userUpdated,
+    userInserted = userInserted
+)

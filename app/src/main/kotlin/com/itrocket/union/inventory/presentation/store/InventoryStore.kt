@@ -13,7 +13,10 @@ import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.selectParams.presentation.store.SelectParamsArguments
+import com.itrocket.union.structural.presentation.store.StructuralArguments
+import com.itrocket.union.structural.presentation.store.StructuralResult
 
 interface InventoryStore :
     Store<InventoryStore.Intent, InventoryStore.State, InventoryStore.Label> {
@@ -27,19 +30,21 @@ interface InventoryStore :
         data class OnParamCrossClicked(val param: ParamDomain) : Intent()
         data class OnParamsChanged(val params: List<ParamDomain>) : Intent()
         data class OnLocationChanged(val locationResult: LocationResult) : Intent()
+        data class OnStructuralChanged(val structural: StructuralResult) : Intent()
     }
 
     data class State(
         val isAccountingObjectsLoading: Boolean = false,
         val isCreateInventoryLoading: Boolean = false,
-        val isCreateEnabled: Boolean = false,
         val selectedPage: Int = 0,
         val accountingObjectList: List<AccountingObjectDomain> = listOf(),
         val params: List<ParamDomain> = listOf(
-            ParamDomain(id = "", value = "", type = ManualType.ORGANIZATION),
+            StructuralParamDomain(manualType = ManualType.STRUCTURAL),
             ParamDomain(id = "", value = "", type = ManualType.MOL),
-            LocationParamDomain(),
-        )
+            LocationParamDomain(manualType = ManualType.LOCATION_INVENTORY),
+            ParamDomain(id = "", value = "", type = ManualType.INVENTORY_BASE)
+        ),
+        val isCanCreateInventory: Boolean = true
     )
 
     sealed class Label {
@@ -48,7 +53,16 @@ interface InventoryStore :
             val inventoryCreate: InventoryCreateDomain
         ) : Label()
 
-        data class ShowLocation(val location: LocationParamDomain) : Label(), ForwardNavigationLabel {
+        data class ShowStructural(val structural: StructuralParamDomain) : Label(),
+            ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = InventoryContainerComposeFragmentDirections.toStructural(
+                    StructuralArguments(structural = structural, isCanEdit = true)
+                )
+        }
+
+        data class ShowLocation(val location: LocationParamDomain) : Label(),
+            ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = InventoryContainerComposeFragmentDirections.toLocation(
                     LocationArguments(location = location)

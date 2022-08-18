@@ -5,6 +5,7 @@ import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.Flow
 
@@ -21,10 +22,7 @@ class InventoriesInteractor(
 
     fun getFilters(): List<ParamDomain> {
         return listOf(
-            ParamDomain(
-                type = ManualType.ORGANIZATION,
-                value = ""
-            ),
+            StructuralParamDomain(manualType = ManualType.STRUCTURAL),
             ParamDomain(
                 type = ManualType.MOL,
                 value = ""

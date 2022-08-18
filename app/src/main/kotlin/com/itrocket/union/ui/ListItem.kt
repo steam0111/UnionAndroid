@@ -47,7 +47,6 @@ import com.itrocket.union.common.DefaultItem
 import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
-import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
@@ -55,9 +54,9 @@ import com.itrocket.union.employees.domain.entity.EmployeeStatus
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.utils.clickableUnbounded
-import java.math.BigDecimal
 
 private const val MAX_LIST_INFO = 3
 private const val DATE_ITEM_ROTATION_DURATION = 200
@@ -70,6 +69,7 @@ fun AccountingObjectItem(
     isShowBottomLine: Boolean,
     statusText: String? = null,
     isEnabled: Boolean = true,
+    isShowScanInfo: Boolean = true
 ) {
     Row(
         modifier = Modifier
@@ -92,14 +92,13 @@ fun AccountingObjectItem(
                         stringResource(id = it.title),
                         it.value.orEmpty()
                     ),
-                    style = AppTheme.typography.subtitle1,
-                    color = psb3
+                    style = AppTheme.typography.subtitle1
                 )
             }
         }
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             status?.let { SmallStatusLabel(status = it, statusText) }
-            if (status is ObjectStatusType) {
+            if (status is ObjectStatusType && isShowScanInfo) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -116,12 +115,12 @@ fun AccountingObjectItem(
                         selected = accountingObject.isBarcode,
                         onClick = null,
                         colors = RadioButtonDefaults.colors(
-                            selectedColor = psb6,
+                            selectedColor = psb3,
                             unselectedColor = graphite3
                         )
                     )
                 }
-                if (accountingObject.status?.type == ObjectStatusType.AVAILABLE) {
+                if (accountingObject.status?.type == ObjectStatusType.AVAILABLE && isShowScanInfo) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -138,7 +137,7 @@ fun AccountingObjectItem(
                             selected = accountingObject.isBarcode,
                             onClick = null,
                             colors = RadioButtonDefaults.colors(
-                                selectedColor = psb6,
+                                selectedColor = psb3,
                                 unselectedColor = graphite3
                             )
                         )
@@ -180,18 +179,19 @@ fun ReservesItem(
                         stringResource(id = it.title),
                         it.value.orEmpty()
                     ),
-                    style = AppTheme.typography.subtitle1,
-                    color = psb3
+                    style = AppTheme.typography.subtitle1
                 )
             }
         }
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             Text(
                 text = reserves.itemsCount.toString(),
+                color = psb1,
                 style = AppTheme.typography.body2,
                 fontWeight = FontWeight.Medium
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            // Пока нет шк не нужно его отображать
+            /*Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -207,11 +207,11 @@ fun ReservesItem(
                     selected = reserves.isBarcode,
                     onClick = null,
                     colors = RadioButtonDefaults.colors(
-                        selectedColor = psb6,
+                        selectedColor = psb3,
                         unselectedColor = graphite3
                     )
                 )
-            }
+            }*/
         }
     }
     if (isShowBottomLine) {
@@ -230,16 +230,7 @@ fun InventoryDocumentItem(
     val annotatedInfo = buildAnnotatedString {
         val filteredDocumentInfo = item.documentInfo.filter { it.value.isNotBlank() }
         filteredDocumentInfo.forEachIndexed { index, info ->
-            withStyle(
-                SpanStyle(
-                    fontWeight = FontWeight.Medium,
-                    letterSpacing = 0.15.sp,
-                    fontSize = 19.sp,
-                    color = psb1
-                )
-            ) {
-                append(info.value)
-            }
+            append(info.value)
 
             if (index < filteredDocumentInfo.lastIndex) {
                 append(" ")
@@ -265,10 +256,11 @@ fun InventoryDocumentItem(
             verticalAlignment = Alignment.Top
         ) {
             Text(
+                color = psb1,
                 text = annotatedTitle.first,
                 inlineContent = annotatedTitle.second,
                 style = AppTheme.typography.body1,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.Bold,
                 lineHeight = 20.sp,
                 modifier = Modifier
                     .padding(end = 40.dp)
@@ -281,7 +273,7 @@ fun InventoryDocumentItem(
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = annotatedInfo, style = AppTheme.typography.caption, color = graphite6)
+        Text(text = annotatedInfo, style = AppTheme.typography.body2, color = psb3)
         Spacer(modifier = Modifier.height(12.dp))
     }
 }
@@ -391,7 +383,8 @@ fun DocumentInfoItem(
                 text = annotatedTitle,
                 inlineContent = numberContent,
                 style = AppTheme.typography.body1,
-                fontWeight = FontWeight.Medium,
+                color = psb1,
+                fontWeight = FontWeight.Bold,
                 lineHeight = 20.sp,
                 modifier = Modifier
                     .padding(end = 40.dp)
@@ -404,7 +397,7 @@ fun DocumentInfoItem(
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = annotatedInfo, style = AppTheme.typography.caption, color = graphite6)
+        Text(text = annotatedInfo, style = AppTheme.typography.body2, color = psb3)
         Spacer(modifier = Modifier.height(12.dp))
         if (isShowBottomLine) {
             Spacer(
@@ -495,7 +488,7 @@ fun DefaultListItem(
                             stringResource(it.key),
                             it.value.orEmpty()
                         ),
-                        style = AppTheme.typography.subtitle1,
+                        style = AppTheme.typography.body2,
                         color = psb3
                     )
                 }
@@ -537,10 +530,7 @@ fun DocumentInfoItemPreview() {
                     "1", "blbbb",
                     type = ManualType.LOCATION
                 ),
-                ParamDomain(
-                    "1", "blbbb",
-                    type = ManualType.ORGANIZATION
-                )
+                StructuralParamDomain(manualType = ManualType.STRUCTURAL)
             ),
             documentType = DocumentTypeDomain.WRITE_OFF,
             dateUi = "12.12.12",
@@ -601,7 +591,8 @@ fun AccountingObjectItemPreview() {
                 ),
             ),
             barcodeValue = "",
-            rfidValue = ""
+            rfidValue = "",
+            factoryNumber = ""
         ), onAccountingObjectListener = {}, isShowBottomLine = true,
         status = ObjectStatusType.REVIEW
     )
@@ -630,7 +621,7 @@ fun InventoryDocumentItemPreview() {
         item = InventoryCreateDomain(
             id = "",
             number = "БП-00001374",
-            date = System.currentTimeMillis(),
+            creationDate = System.currentTimeMillis(),
             documentInfo = listOf(
                 ParamDomain("1", "Систмный интегратор", ManualType.MOL),
                 ParamDomain("2", "Систмный интегратор", ManualType.MOL),
@@ -721,6 +712,7 @@ fun EmployeeItemPreview() {
 private fun HeaderText(text: String) {
     Text(
         text = text,
+        fontWeight = FontWeight.Bold,
         style = AppTheme.typography.h6,
         fontSize = 19.sp,
         color = psb1

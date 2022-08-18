@@ -82,7 +82,6 @@ fun ReadingModeScreen(
                     onCameraClickListener = onCameraClickListener,
                     onSettingsClickListener = onSettingsClickListener,
                     onManualInputClickListener = onManualInputClickListener,
-                    isManualInputEnabled = state.isManualInputEnabled
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -96,7 +95,6 @@ private fun BottomBar(
     onCameraClickListener: () -> Unit,
     onSettingsClickListener: () -> Unit,
     onManualInputClickListener: () -> Unit,
-    isManualInputEnabled: Boolean
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         ImageButton(
@@ -108,8 +106,7 @@ private fun BottomBar(
         BaseButton(
             text = stringResource(id = R.string.reading_mode_manual_input),
             onClick = onManualInputClickListener,
-            modifier = Modifier.weight(1f),
-            enabled = isManualInputEnabled
+            modifier = Modifier.weight(1f)
         )
         Spacer(modifier = Modifier.width(16.dp))
         ImageButton(

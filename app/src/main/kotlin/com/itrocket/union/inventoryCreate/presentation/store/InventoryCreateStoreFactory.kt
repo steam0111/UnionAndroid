@@ -15,15 +15,19 @@ import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
+import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 import com.itrocket.union.utils.ifBlankOrNull
+import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class InventoryCreateStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val inventoryCreateInteractor: InventoryCreateInteractor,
     private val inventoryCreateArguments: InventoryCreateArguments,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val serviceEntryManager: ServiceEntryManager
 ) {
     fun create(): InventoryCreateStore =
         object : InventoryCreateStore,
@@ -31,6 +35,7 @@ class InventoryCreateStoreFactory(
                 name = "InventoryCreateStore",
                 initialState = InventoryCreateStore.State(
                     inventoryDocument = inventoryCreateArguments.inventoryDocument,
+                    readingModeTab = serviceEntryManager.currentMode.toReadingModeTab()
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
@@ -83,10 +88,9 @@ class InventoryCreateStoreFactory(
                 InventoryCreateStore.Intent.OnReadingClicked -> {
                     publish(InventoryCreateStore.Label.ShowReadingMode)
                 }
-                InventoryCreateStore.Intent.OnSaveClicked -> saveInventory(
-                    inventoryDocument = getState().inventoryDocument,
-                    accountingObjects = getState().inventoryDocument.accountingObjects + getState().newAccountingObjects
-                )
+                InventoryCreateStore.Intent.OnSaveClicked -> {
+                    dispatch(Result.ConfirmDialogVisibility(true))
+                }
                 is InventoryCreateStore.Intent.OnNewAccountingObjectBarcodeHandled -> {
                     val inventoryStatus = getState().inventoryDocument.inventoryStatus
                     if (inventoryStatus != InventoryStatus.COMPLETED) {
@@ -109,13 +113,13 @@ class InventoryCreateStoreFactory(
                         )
                     )
                 }
-                is InventoryCreateStore.Intent.OnNewAccountingObjectRfidsHandled -> {
+                is InventoryCreateStore.Intent.OnNewAccountingObjectRfidHandled -> {
                     val inventoryStatus = getState().inventoryDocument.inventoryStatus
                     if (inventoryStatus != InventoryStatus.COMPLETED) {
                         handleNewAccountingObjectRfids(
                             accountingObjects = getState().inventoryDocument.accountingObjects,
                             newAccountingObjects = getState().newAccountingObjects.toList(),
-                            handledAccountingObjectIds = intent.handledAccountingObjectIds,
+                            handledAccountingObjectId = intent.handledAccountingObjectId,
                             inventoryStatus = inventoryStatus,
                             isAddNew = getState().isAddNew
                         )
@@ -125,6 +129,21 @@ class InventoryCreateStoreFactory(
                 InventoryCreateStore.Intent.OnInWorkClicked -> inWorkInventory(
                     inventoryDomain = getState().inventoryDocument,
                     newAccountingObjects = getState().newAccountingObjects.toList()
+                )
+                is InventoryCreateStore.Intent.OnDismissConfirmDialog -> {
+                    dispatch(Result.ConfirmDialogVisibility(false))
+                }
+                is InventoryCreateStore.Intent.OnConfirmActionClick -> {
+                    dispatch(Result.ConfirmDialogVisibility(false))
+                    saveInventory(
+                        inventoryDocument = getState().inventoryDocument,
+                        accountingObjects = getState().inventoryDocument.accountingObjects + getState().newAccountingObjects
+                    )
+                }
+                is InventoryCreateStore.Intent.OnReadingModeTabChanged -> dispatch(
+                    Result.ReadingMode(
+                        intent.readingModeTab
+                    )
                 )
             }
         }
@@ -159,7 +178,7 @@ class InventoryCreateStoreFactory(
 
         private suspend fun handleNewAccountingObjectRfids(
             accountingObjects: List<AccountingObjectDomain>,
-            handledAccountingObjectIds: List<String>,
+            handledAccountingObjectId: String,
             newAccountingObjects: List<AccountingObjectDomain>,
             inventoryStatus: InventoryStatus,
             isAddNew: Boolean
@@ -169,7 +188,7 @@ class InventoryCreateStoreFactory(
                 val inventoryAccountingObjects =
                     inventoryCreateInteractor.handleNewAccountingObjectRfids(
                         accountingObjects = accountingObjects,
-                        handledAccountingObjectIds = handledAccountingObjectIds,
+                        handledAccountingObjectId = handledAccountingObjectId,
                         newAccountingObjects = newAccountingObjects,
                         inventoryStatus = inventoryStatus,
                         isAddNew = isAddNew
@@ -283,6 +302,9 @@ class InventoryCreateStoreFactory(
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
         data class NewAccountingObjects(val newAccountingObjects: Set<AccountingObjectDomain>) :
             Result()
+
+        data class ConfirmDialogVisibility(val isVisible: Boolean) : Result()
+        data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryCreateStore.State, Result> {
@@ -298,6 +320,8 @@ class InventoryCreateStoreFactory(
                 )
                 is Result.NewAccountingObjects -> copy(newAccountingObjects = result.newAccountingObjects)
                 is Result.Inventory -> copy(inventoryDocument = result.inventory)
+                is Result.ConfirmDialogVisibility -> copy(isConfirmDialogVisible = result.isVisible)
+                is Result.ReadingMode -> copy(readingModeTab = result.readingModeTab)
             }
     }
 }

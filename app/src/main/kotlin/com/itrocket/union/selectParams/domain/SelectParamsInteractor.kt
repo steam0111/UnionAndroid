@@ -5,7 +5,6 @@ import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.employeeDetail.domain.EmployeeDetailInteractor
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.organizationDetail.domain.OrganizationDetailInteractor
 import com.itrocket.union.selectParams.domain.dependencies.SelectParamsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,22 +13,16 @@ class SelectParamsInteractor(
     private val selectParamsRepository: SelectParamsRepository,
     private val authMainInteractor: AuthMainInteractor,
     private val employeeDetailInteractor: EmployeeDetailInteractor,
-    private val organizationDetailInteractor: OrganizationDetailInteractor,
     private val coreDispatchers: CoreDispatchers
 ) {
 
     suspend fun getParamValues(type: ManualType, searchText: String): Flow<List<ParamDomain>> =
         when (type) {
-            ManualType.ORGANIZATION -> getOrganizations(searchText)
             ManualType.MOL -> getMols(searchText)
             ManualType.EXPLOITING -> getExploiting(searchText)
             ManualType.STATUS -> getAccountingObjectStatuses(searchText)
-            ManualType.BRANCH -> getBranches(searchText)
             ManualType.ACTION_BASE -> getActionBases(searchText)
-
-            ManualType.DEPARTMENT,
-            ManualType.DEPARTMENT_FROM,
-            ManualType.DEPARTMENT_TO -> getDepartments(searchText, type)
+            ManualType.INVENTORY_BASE -> getInventoryBases(searchText)
 
             ManualType.PROVIDER -> getProviders(searchText)
             ManualType.PRODUCER -> getProducers(searchText)
@@ -63,10 +56,6 @@ class SelectParamsInteractor(
         return mutableParams
     }
 
-    private suspend fun getOrganizations(searchText: String): Flow<List<ParamDomain>> {
-        return selectParamsRepository.getOrganizationList(textQuery = searchText)
-    }
-
     private suspend fun getMols(searchText: String): Flow<List<ParamDomain>> {
         return selectParamsRepository.getEmployees(type = ManualType.MOL, textQuery = searchText)
     }
@@ -94,19 +83,12 @@ class SelectParamsInteractor(
         return selectParamsRepository.getProducers(textQuery = searchText)
     }
 
-    private suspend fun getDepartments(
-        searchText: String,
-        type: ManualType
-    ): Flow<List<ParamDomain>> {
-        return selectParamsRepository.getDepartments(textQuery = searchText, type)
-    }
-
-    private suspend fun getBranches(searchText: String): Flow<List<ParamDomain>> {
-        return selectParamsRepository.getBranches(textQuery = searchText)
-    }
-
     private suspend fun getActionBases(searchText: String): Flow<List<ParamDomain>> {
         return selectParamsRepository.getActionBases(textQuery = searchText)
+    }
+
+    private suspend fun getInventoryBases(searchText: String) :Flow<List<ParamDomain>> {
+        return selectParamsRepository.getInventoryBases(textQuery = searchText)
     }
 
     private suspend fun getNomenclatureGroup(searchText: String): Flow<List<ParamDomain>> {
@@ -120,28 +102,12 @@ class SelectParamsInteractor(
     suspend fun getInitialDocumentParams(params: List<ParamDomain>): List<ParamDomain> {
         val mutableParams = params.toMutableList()
         val config = authMainInteractor.getMyConfig()
-        val organizationId = config.organizationId
         val employeeId = config.employeeId
-
-        val organization = try {
-            organizationDetailInteractor.getOrganizationDetail(requireNotNull(organizationId))
-        } catch (t: Throwable) {
-            null
-        }
 
         val employee = try {
             employeeDetailInteractor.getEmployeeDetail(requireNotNull(employeeId))
         } catch (t: Throwable) {
             null
-        }
-
-        organization?.let {
-            val index = params.indexOfFirst {
-                it.type == ManualType.ORGANIZATION
-            }
-            if (index >= 0 && mutableParams[index].value.isEmpty()) {
-                mutableParams[index] = mutableParams[index].copy(value = it.name, id = it.id)
-            }
         }
 
         employee?.let {

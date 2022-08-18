@@ -20,6 +20,11 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.EmployeeDtoV2
+import org.openapitools.client.models.EnumDtoV2
+import org.openapitools.client.models.LocationDtoV2
+import org.openapitools.client.models.StructuralUnitDtoV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -32,28 +37,33 @@ import com.squareup.moshi.Json
  * @param dateUpdate 
  * @param catalogItemName 
  * @param code 
+ * @param userInserted 
+ * @param userUpdated 
  * @param creationDate 
  * @param completionDate 
  * @param internalNumber 
- * @param organizationId 
+ * @param structuralUnitId 
  * @param locationFromId 
  * @param locationToId 
  * @param molId 
  * @param exploitingId 
  * @param actionStatusId 
  * @param actionTypeId 
- * @param departmentFromId 
- * @param departmentToId 
+ * @param structuralUnitFromId 
+ * @param structuralUnitToId 
  * @param comment 
- * @param extendedOrganization 
+ * @param balanceUnitId 
+ * @param molReceivingId 
+ * @param extendedMolReceiving 
+ * @param extendedStructuralUnit 
  * @param extendedLocationFrom 
  * @param extendedLocationTo 
  * @param extendedMol 
  * @param extendedExploiting 
  * @param extendedActionStatus 
  * @param extendedActionType 
- * @param extendedDepartmentFrom 
- * @param extendedDepartmentTo 
+ * @param extendedStructuralUnitFrom 
+ * @param extendedStructuralUnitTo 
  * @param actionBaseId 
  * @param extendedActionBase 
  */
@@ -67,7 +77,7 @@ data class ActionDtoV2 (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int?=null,
+    val version: kotlin.Int? = null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -75,17 +85,17 @@ data class ActionDtoV2 (
     @Json(name = "dateUpdate")
     val dateUpdate: kotlin.String? = null,
 
-    @Json(name = "UserInserted")
-    val userInserted: String? = null,
-
-    @Json(name = "UserUpdated")
-    val userUpdated: String? = null,
-
     @Json(name = "catalogItemName")
     val catalogItemName: kotlin.String? = null,
 
     @Json(name = "code")
     val code: kotlin.String? = null,
+
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
 
     @Json(name = "creationDate")
     val creationDate: kotlin.String? = null,
@@ -96,8 +106,8 @@ data class ActionDtoV2 (
     @Json(name = "internalNumber")
     val internalNumber: kotlin.String? = null,
 
-    @Json(name = "organizationId")
-    val organizationId: kotlin.String? = null,
+    @Json(name = "structuralUnitId")
+    val structuralUnitId: kotlin.String? = null,
 
     @Json(name = "locationFromId")
     val locationFromId: kotlin.String? = null,
@@ -117,17 +127,26 @@ data class ActionDtoV2 (
     @Json(name = "actionTypeId")
     val actionTypeId: kotlin.String? = null,
 
-    @Json(name = "departmentFromId")
-    val departmentFromId: kotlin.String? = null,
+    @Json(name = "structuralUnitFromId")
+    val structuralUnitFromId: kotlin.String? = null,
 
-    @Json(name = "departmentToId")
-    val departmentToId: kotlin.String? = null,
+    @Json(name = "structuralUnitToId")
+    val structuralUnitToId: kotlin.String? = null,
 
     @Json(name = "comment")
     val comment: kotlin.String? = null,
 
-    @Json(name = "extendedOrganization")
-    val extendedOrganization: OrganizationDtoV2? = null,
+    @Json(name = "balanceUnitId")
+    val balanceUnitId: kotlin.String? = null,
+
+    @Json(name = "molReceivingId")
+    val molReceivingId: kotlin.String? = null,
+
+    @Json(name = "extendedMolReceiving")
+    val extendedMolReceiving: EmployeeDtoV2? = null,
+
+    @Json(name = "extendedStructuralUnit")
+    val extendedStructuralUnit: StructuralUnitDtoV2? = null,
 
     @Json(name = "extendedLocationFrom")
     val extendedLocationFrom: LocationDtoV2? = null,
@@ -142,22 +161,22 @@ data class ActionDtoV2 (
     val extendedExploiting: EmployeeDtoV2? = null,
 
     @Json(name = "extendedActionStatus")
-    val extendedActionStatus: ActionStatusDtoV2? = null,
+    val extendedActionStatus: EnumDtoV2? = null,
 
     @Json(name = "extendedActionType")
-    val extendedActionType: ActionTypeDtoV2? = null,
+    val extendedActionType: EnumDtoV2? = null,
 
-    @Json(name = "extendedDepartmentFrom")
-    val extendedDepartmentFrom: DepartmentDtoV2? = null,
+    @Json(name = "extendedStructuralUnitFrom")
+    val extendedStructuralUnitFrom: StructuralUnitDtoV2? = null,
 
-    @Json(name = "extendedDepartmentTo")
-    val extendedDepartmentTo: DepartmentDtoV2? = null,
+    @Json(name = "extendedStructuralUnitTo")
+    val extendedStructuralUnitTo: StructuralUnitDtoV2? = null,
 
     @Json(name = "actionBaseId")
     val actionBaseId: kotlin.String? = null,
 
     @Json(name = "extendedActionBase")
-    val extendedActionBase: ActionBaseDtoV2? = null
+    val extendedActionBase: EnumDtoV2? = null
 
 )
 

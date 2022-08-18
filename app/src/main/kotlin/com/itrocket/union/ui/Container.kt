@@ -16,7 +16,7 @@ fun AuthContent(title: String, subtitle: String, fields: List<@Composable () -> 
     Column(
         modifier = Modifier
             .wrapContentHeight()
-            .padding(horizontal = 48.dp)
+            .padding(horizontal = AppTheme.dimens.auth_container_horizontal)
     ) {
         LogoToolbar()
         Spacer(Modifier.height(8.dp))

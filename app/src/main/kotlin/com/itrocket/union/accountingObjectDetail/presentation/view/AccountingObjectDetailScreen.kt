@@ -2,12 +2,8 @@ package com.itrocket.union.accountingObjectDetail.presentation.view
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -33,7 +28,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,21 +46,15 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.ui.BaseButton
-import com.itrocket.union.ui.BaseToolbar
-import com.itrocket.union.ui.DoubleTabRow
 import com.itrocket.union.ui.ExpandedInfoField
-import com.itrocket.union.ui.FullCharacteristicsSwitcher
-import com.itrocket.union.ui.TabIndicatorBlack
-import com.itrocket.union.ui.graphite2
+import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.psb1
 import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
-import com.itrocket.utils.getTargetPage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -74,62 +62,25 @@ fun AccountingObjectDetailScreen(
     state: AccountingObjectDetailStore.State,
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
-    onCheckedFullCharacteristicsChangeListener: (Boolean) -> Unit,
     onReadingModeClickListener: () -> Unit,
     onDocumentSearchClickListener: () -> Unit,
     onDocumentAddClickListener: () -> Unit,
     onPageChangeListener: (Int) -> Unit
 ) {
-    val pagerState = rememberPagerState()
-    val coroutineScope = rememberCoroutineScope()
-    val tabs = listOf(
-        BaseTab(
-            title = stringResource(R.string.accounting_object_detail_main),
-            screen = {
-                ListInfo(
-                    if (state.isFullCharacteristicChecked) {
-                        state.accountingObjectDomain.listMainInfo
-                    } else {
-                        state.accountingObjectDomain.getShortMainInfoList()
-                    }
-                )
-            }
-        ),
-        BaseTab(
-            title = stringResource(R.string.accounting_object_detail_additionally),
-            screen = {
-                ListInfo(
-                    if (state.isFullCharacteristicChecked) {
-                        state.accountingObjectDomain.listAdditionallyInfo
-                    } else {
-                        state.accountingObjectDomain.getShortAdditionallyInfoList()
-                    }
-                )
-            }
-        )
-    )
-
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.collect {
-            onPageChangeListener(it)
-        }
-    }
     AppTheme {
         Scaffold(
             topBar = {
                 Toolbar(
-                    isFullCharacteristicChecked = state.isFullCharacteristicChecked,
-                    accountingObjectName = state.accountingObjectDomain.title,
                     onBackClickListener = onBackClickListener,
                     onDocumentAddClickListener = onDocumentAddClickListener,
                     onDocumentSearchClickListener = onDocumentSearchClickListener
                 )
             },
             bottomBar = {
-                //TODO: Пока не нужен
-                /*BottomBar(
-                    onReadingModeClickListener = onReadingModeClickListener
-                )*/
+                BottomBar(
+                    onReadingModeClickListener = onReadingModeClickListener,
+                    readingModeTab = state.readingMode
+                )
             },
             modifier = Modifier.padding(
                 top = appInsets.topInset.dp,
@@ -139,11 +90,6 @@ fun AccountingObjectDetailScreen(
             Content(
                 paddingValues = it,
                 state = state,
-                pagerState = pagerState,
-                tabs = tabs,
-                onTabClickListener = onPageChangeListener,
-                onCheckedFullCharacteristicsChangeListener = onCheckedFullCharacteristicsChangeListener,
-                coroutineScope = coroutineScope
             )
         }
     }
@@ -153,80 +99,32 @@ fun AccountingObjectDetailScreen(
 @Composable
 private fun Content(
     paddingValues: PaddingValues,
-    state: AccountingObjectDetailStore.State,
-    tabs: List<BaseTab>,
-    pagerState: PagerState,
-    coroutineScope: CoroutineScope,
-    onCheckedFullCharacteristicsChangeListener: (Boolean) -> Unit,
-    onTabClickListener: (Int) -> Unit
+    state: AccountingObjectDetailStore.State
 ) {
-    Column(modifier = Modifier.padding(paddingValues)) {
-        AnimatedVisibility(visible = !state.isFullCharacteristicChecked) {
-            Header(
-                tabs = tabs,
-                pagerState = pagerState,
-                selectedPage = state.selectedPage,
-                accountingObjectItem = state.accountingObjectDomain,
-                onTabClickListener = onTabClickListener,
-                coroutineScope = coroutineScope
+    LazyColumn(Modifier.padding(top = paddingValues.calculateTopPadding())) {
+        item {
+            Text(
+                text = state.accountingObjectDomain.title,
+                fontWeight = FontWeight.Bold,
+                style = AppTheme.typography.h6,
+                fontSize = 19.sp,
             )
         }
-        FullCharacteristicsSwitcher(
-            isChecked = state.isFullCharacteristicChecked,
-            onCheckedChangeListener = onCheckedFullCharacteristicsChangeListener
-        )
-        HorizontalPager(count = tabs.size, state = pagerState) { page ->
-            tabs[page].screen()
+        items(state.accountingObjectDomain.listMainInfo) {
+            ExpandedInfoField(
+                label = stringResource(id = it.title),
+                value = it.value.orEmpty(),
+                modifier = Modifier.fillMaxWidth()
+            )
         }
-    }
-}
-
-@OptIn(ExperimentalPagerApi::class)
-@Composable
-private fun Header(
-    tabs: List<BaseTab>,
-    pagerState: PagerState,
-    selectedPage: Int,
-    accountingObjectItem: AccountingObjectDomain,
-    coroutineScope: CoroutineScope,
-    onTabClickListener: (Int) -> Unit
-) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = accountingObjectItem.title,
-            fontWeight = FontWeight.Medium,
-            style = AppTheme.typography.body1,
-            fontSize = 16.sp
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        DoubleTabRow(
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .border(
-                    width = 1.dp,
-                    color = graphite2,
-                    shape = RoundedCornerShape(8.dp)
-                ),
-            selectedPage = selectedPage,
-            targetPage = pagerState.getTargetPage(),
-            tabs = tabs,
-            onTabClickListener = {
-                onTabClickListener(it)
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(it)
-                }
-            },
-            tabIndicator = {
-                TabIndicatorBlack(tabPositions = it, pagerState = pagerState)
-            }
-        )
+        item {
+            Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
+        }
     }
 }
 
 @Composable
 private fun Toolbar(
-    isFullCharacteristicChecked: Boolean,
-    accountingObjectName: String,
     onBackClickListener: () -> Unit,
     onDocumentAddClickListener: () -> Unit,
     onDocumentSearchClickListener: () -> Unit
@@ -250,36 +148,14 @@ private fun Toolbar(
             modifier = Modifier.fillMaxHeight(),
             contentAlignment = Alignment.CenterStart
         ) {
-            androidx.compose.animation.AnimatedVisibility(
-                visible = !isFullCharacteristicChecked,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                Text(
-                    text = stringResource(id = R.string.accounting_object_detail_title),
-                    modifier = Modifier.padding(start = 16.dp),
-                    style = AppTheme.typography.body1,
-                    fontWeight = FontWeight.Medium,
-                    lineHeight = 18.sp,
-                    color = white
-                )
-            }
-            androidx.compose.animation.AnimatedVisibility(
-                visible = isFullCharacteristicChecked,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                Text(
-                    text = accountingObjectName,
-                    modifier = Modifier
-                        .padding(start = 16.dp)
-                        .fillMaxWidth(0.7f),
-                    style = AppTheme.typography.caption,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    color = white
-                )
-            }
+            Text(
+                text = stringResource(id = R.string.accounting_object_detail_title),
+                modifier = Modifier.padding(start = 16.dp),
+                style = AppTheme.typography.body1,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 18.sp,
+                color = white
+            )
         }
         Spacer(modifier = Modifier.weight(1f))
         Image(
@@ -298,33 +174,13 @@ private fun Toolbar(
 
 @Composable
 private fun BottomBar(
+    readingModeTab: ReadingModeTab,
     onReadingModeClickListener: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(graphite2)
-            .padding(16.dp)
-    ) {
-        BaseButton(
-            text = stringResource(R.string.accounting_object_detail_reading_mode),
-            onClick = onReadingModeClickListener,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-}
-
-@Composable
-private fun ListInfo(listInfo: List<ObjectInfoDomain>) {
-    LazyColumn {
-        items(listInfo) {
-            ExpandedInfoField(
-                label = stringResource(id = it.title),
-                value = it.value.orEmpty(),
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-    }
+    ReadingModeBottomBar(
+        readingModeTab = readingModeTab,
+        onReadingModeClickListener = onReadingModeClickListener
+    )
 }
 
 @Preview(
@@ -341,7 +197,7 @@ private fun ListInfo(listInfo: List<ObjectInfoDomain>) {
 )
 @Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
 @Composable
-fun AccountingObjectDetailScreenPreview(isFullCharacteristicChecked: Boolean = true) {
+fun AccountingObjectDetailScreenPreview() {
     AccountingObjectDetailScreen(
         AccountingObjectDetailStore.State(
             accountingObjectDomain = AccountingObjectDomain(
@@ -365,8 +221,8 @@ fun AccountingObjectDetailScreenPreview(isFullCharacteristicChecked: Boolean = t
                 ),
                 inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
                 barcodeValue = "",
-                rfidValue = ""
+                rfidValue = "",
+                factoryNumber = ""
             ),
-            isFullCharacteristicChecked = isFullCharacteristicChecked
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {})
 }

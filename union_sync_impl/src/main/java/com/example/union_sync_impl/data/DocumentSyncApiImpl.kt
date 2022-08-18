@@ -2,6 +2,7 @@ package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.DocumentSyncApi
 import com.example.union_sync_api.data.LocationSyncApi
+import com.example.union_sync_api.data.StructuralSyncApi
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.example.union_sync_api.entity.DocumentReserveCountSyncEntity
@@ -16,6 +17,7 @@ import com.example.union_sync_impl.dao.ActionRemainsRecordDao
 import com.example.union_sync_impl.dao.DocumentDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.ReserveDao
+import com.example.union_sync_impl.dao.StructuralDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.dao.sqlActionRecordQuery
 import com.example.union_sync_impl.dao.sqlActionRemainsRecordQuery
@@ -23,6 +25,7 @@ import com.example.union_sync_impl.dao.sqlDocumentsQuery
 import com.example.union_sync_impl.dao.sqlReserveQuery
 import com.example.union_sync_impl.data.mapper.toDocumentDb
 import com.example.union_sync_impl.data.mapper.toDocumentSyncEntity
+import com.example.union_sync_impl.data.mapper.toStructuralSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
@@ -33,6 +36,7 @@ import java.util.*
 class DocumentSyncApiImpl(
     private val documentDao: DocumentDao,
     private val locationDao: LocationDao,
+    private val structuralSyncApi: StructuralSyncApi,
     private val accountingObjectDao: AccountingObjectDao,
     private val reserveDao: ReserveDao,
     private val locationSyncApi: LocationSyncApi,
@@ -60,14 +64,16 @@ class DocumentSyncApiImpl(
         textQuery: String?,
         molId: String?,
         exploitingId: String?,
-        organizationId: String?
+        structuralFromId: String?,
+        structuralToId: String?
     ): Long {
         return documentDao.getCount(
             sqlDocumentsQuery(
                 textQuery = textQuery,
                 molId = molId,
                 exploitingId = exploitingId,
-                organizationId = organizationId,
+                structuralFromId = structuralFromId,
+                structuralToId = structuralToId,
                 isFilterCount = true,
                 type = type
             )
@@ -79,29 +85,29 @@ class DocumentSyncApiImpl(
         textQuery: String?,
         molId: String?,
         exploitingId: String?,
-        organizationId: String?
+        structuralFromId: String?,
+        structuralToId: String?
     ): Flow<List<DocumentSyncEntity>> {
         return documentDao.getAll(
             sqlDocumentsQuery(
                 textQuery = textQuery,
                 molId = molId,
                 exploitingId = exploitingId,
-                organizationId = organizationId,
+                structuralFromId = structuralFromId,
+                structuralToId = structuralToId,
                 type = type
             )
         ).map { documents ->
             documents.map { document ->
                 document.documentDb.toDocumentSyncEntity(
-                    organizationSyncEntity = document.organizationDb?.toSyncEntity(),
                     mol = document.molDb?.toSyncEntity(),
                     exploiting = document.exploitingDb?.toSyncEntity(),
                     accountingObjects = listOf(),
                     locationFrom = locationSyncApi.getLocationById(document.documentDb.locationFromId),
                     locationTo = locationSyncApi.getLocationById(document.documentDb.locationToId),
-                    departmentFrom = document.departmentFromDb?.toSyncEntity(),
-                    departmentTo = document.departmentToDb?.toSyncEntity(),
-                    branch = document.branchDb?.toSyncEntity(),
-                    actionBase = document.actionBaseDb?.toSyncEntity()
+
+                    structuralToSyncEntity = structuralSyncApi.getStructuralById(document.documentDb.structuralToId),
+                    structuralFromSyncEntity = structuralSyncApi.getStructuralById(document.documentDb.structuralFromId),
                 )
             }
         }
@@ -139,16 +145,14 @@ class DocumentSyncApiImpl(
         }
 
         return fullDocument.documentDb.toDocumentSyncEntity(
-            organizationSyncEntity = fullDocument.organizationDb?.toSyncEntity(),
             mol = fullDocument.molDb?.toSyncEntity(),
             exploiting = fullDocument.exploitingDb?.toSyncEntity(),
             accountingObjects = accountingObjects,
             reserves = reserves,
             locationFrom = locationSyncApi.getLocationById(fullDocument.documentDb.locationFromId),
             locationTo = locationSyncApi.getLocationById(fullDocument.documentDb.locationToId),
-            departmentFrom = fullDocument.departmentFromDb?.toSyncEntity(),
-            departmentTo = fullDocument.departmentToDb?.toSyncEntity(),
-            branch = fullDocument.branchDb?.toSyncEntity(),
+            structuralToSyncEntity = structuralSyncApi.getStructuralById(fullDocument.documentDb.structuralToId),
+            structuralFromSyncEntity = structuralSyncApi.getStructuralById(fullDocument.documentDb.structuralFromId),
             actionBase = fullDocument.actionBaseDb?.toSyncEntity()
         )
     }
@@ -192,6 +196,7 @@ class DocumentSyncApiImpl(
                 id = existRecord?.id ?: UUID.randomUUID().toString(),
                 accountingObjectId = accountingObjectId,
                 actionId = actionId,
+                insertDate = existRecord?.insertDate,
                 updateDate = System.currentTimeMillis(),
                 userInserted = existRecord?.userInserted ?: userUpdated,
                 userUpdated = userUpdated
@@ -218,6 +223,7 @@ class DocumentSyncApiImpl(
                 remainId = remain.id,
                 actionId = actionId,
                 updateDate = System.currentTimeMillis(),
+                insertDate = existRecord?.insertDate,
                 count = remain.count,
                 userUpdated = userUpdated,
                 userInserted = existRecord?.userInserted ?: userUpdated

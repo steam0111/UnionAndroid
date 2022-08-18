@@ -7,10 +7,10 @@ import androidx.lifecycle.lifecycleScope
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
-import com.itrocket.union.inventory.presentation.store.InventoryStore
-import com.itrocket.union.inventoryContainer.presentation.view.InventoryCreateClickHandler
 import com.itrocket.union.inventoryCreate.InventoryCreateModule.INVENTORYCREATE_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
+import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.switcher.presentation.store.SwitcherResult
 import com.itrocket.union.switcher.presentation.view.SwitcherComposeFragment
 import com.itrocket.union.utils.fragment.ChildBackPressedHandler
@@ -45,13 +45,21 @@ class InventoryCreateComposeFragment :
                         accept(InventoryCreateStore.Intent.OnAccountingObjectStatusChanged(it))
                     }
                 }
-            )
+            ),
+            FragmentResult(
+                resultCode = ReadingModeComposeFragment.READING_MODE_TAB_RESULT_CODE,
+                resultLabel = ReadingModeComposeFragment.READING_MODE_TAB_RESULT_LABEL,
+                resultAction = {
+                    (it as ReadingModeTab?)?.let {
+                        accept(
+                            InventoryCreateStore.Intent.OnReadingModeTabChanged(it)
+                        )
+                    }
+                }
+            ),
         )
 
     private val serviceEntryManager: ServiceEntryManager by inject()
-
-    private val scanningDataRfid: MutableSet<String> = mutableSetOf()
-    private var scanningDataBarcode: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,6 +101,12 @@ class InventoryCreateComposeFragment :
                 },
                 onInWorkClickListener = {
                     accept(InventoryCreateStore.Intent.OnInWorkClicked)
+                },
+                onDismissConfirmDialog = {
+                    accept(InventoryCreateStore.Intent.OnDismissConfirmDialog)
+                },
+                onConfirmActionClick = {
+                    accept(InventoryCreateStore.Intent.OnConfirmActionClick)
                 }
             )
         }
@@ -105,12 +119,24 @@ class InventoryCreateComposeFragment :
             }
             launch {
                 serviceEntryManager.barcodeScanDataFlow.collect {
-                    scanningDataBarcode = it.data
+                    withContext(Dispatchers.Main) {
+                        accept(
+                            InventoryCreateStore.Intent.OnNewAccountingObjectBarcodeHandled(
+                                it.data
+                            )
+                        )
+                    }
                 }
             }
             launch {
                 serviceEntryManager.epcInventoryDataFlow.collect {
-                    scanningDataRfid.add(it)
+                    withContext(Dispatchers.Main) {
+                        accept(
+                            InventoryCreateStore.Intent.OnNewAccountingObjectRfidHandled(
+                                it
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -131,23 +157,6 @@ class InventoryCreateComposeFragment :
                         serviceEntryManager.stopRfidOperation()
                     } else {
                         serviceEntryManager.stopBarcodeScan()
-                    }
-                    withContext(Dispatchers.Main) {
-                        if (scanningDataRfid.isNotEmpty()) {
-                            accept(
-                                InventoryCreateStore.Intent.OnNewAccountingObjectRfidsHandled(
-                                    scanningDataRfid.toList()
-                                )
-                            )
-                        } else {
-                            accept(
-                                InventoryCreateStore.Intent.OnNewAccountingObjectBarcodeHandled(
-                                    scanningDataBarcode
-                                )
-                            )
-                        }
-                        scanningDataRfid.clear()
-                        scanningDataBarcode = ""
                     }
                 }
             }

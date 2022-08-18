@@ -25,6 +25,7 @@ import com.itrocket.union.filter.presentation.store.FilterStore
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
@@ -151,16 +152,7 @@ fun FilterScreenPreview() {
         FilterStore.State(
             params = Params(
                 listOf(
-                    ParamDomain(
-                        type = ManualType.ORGANIZATION,
-                        id = "1",
-                        value = ""
-                    ),
-                    ParamDomain(
-                        type = ManualType.ORGANIZATION,
-                        id = "2",
-                        value = ""
-                    ),
+                    StructuralParamDomain(manualType = ManualType.STRUCTURAL),
                     ParamDomain(
                         type = ManualType.LOCATION,
                         id = "3",

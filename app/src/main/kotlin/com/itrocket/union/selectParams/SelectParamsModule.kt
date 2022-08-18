@@ -36,12 +36,11 @@ object SelectParamsModule {
                 get(),
                 get(),
                 get(),
-                get()
             )
         }
 
         factory {
-            SelectParamsInteractor(get(), get(), get(), get(), get())
+            SelectParamsInteractor(get(), get(), get(), get())
         }
 
         factory { (args: SelectParamsComposeFragmentArgs) ->

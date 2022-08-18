@@ -4,5 +4,5 @@ data class ActionRecordSyncEntity(
     val id: String,
     val actionId: String,
     val accountingObjectId: String,
-    val updateDate: Long
+    val updateDate: Long?
 )

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:id="@+id/main"
     app:startDestination="@id/auth">
 
@@ -31,6 +32,9 @@
             android:id="@+id/to_accountingObjects"
             app:destination="@id/accountingObjects" />
         <action
+            android:id="@+id/to_identify"
+            app:destination="@id/identify" />
+        <action
             android:id="@+id/to_reserves"
             app:destination="@id/reserves" />
         <action
@@ -55,12 +59,6 @@
             android:id="@+id/to_inventoryContainer"
             app:destination="@id/inventoryContainer" />
         <action
-            android:id="@+id/to_organizations"
-            app:destination="@id/organization" />
-        <action
-            android:id="@+id/to_departments"
-            app:destination="@id/departments" />
-        <action
             android:id="@+id/to_employees"
             app:destination="@+id/employees" />
         <action
@@ -70,12 +68,6 @@
             android:id="@+id/to_producer"
             app:destination="@id/producer" />
         <action
-            android:id="@+id/to_branches"
-            app:destination="@id/branches" />
-        <action
-            android:id="@+id/to_region"
-            app:destination="@id/region" />
-        <action
             android:id="@+id/to_counterparty"
             app:destination="@id/counterparty" />
         <action
@@ -84,6 +76,9 @@
         <action
             android:id="@+id/to_sync"
             app:destination="@+id/syncAll" />
+        <action
+            android:id="@+id/to_structural"
+            app:destination="@id/structural"/>
     </fragment>
 
     <fragment
@@ -110,6 +105,27 @@
             android:name="AccountingObjectDetailArguments"
             app:argType="com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailArguments"
             app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/identify"
+        android:name="com.itrocket.union.identify.presentation.view.IdentifyComposeFragment"
+        android:label="Identify">
+        <action
+            android:id="@+id/to_accountingObjectsDetails"
+            app:destination="@id/accountingObjectsDetails" />
+
+        <action
+            android:id="@+id/to_reserveDetail"
+            app:destination="@id/reserveDetail" />
+
+        <action
+            android:id="@+id/to_Filter"
+            app:destination="@id/filter" />
+        <argument
+            android:name="IdentifyArguments"
+            app:argType="com.itrocket.union.identify.presentation.store.IdentifyArguments"
+            app:nullable="true"/>
     </fragment>
 
     <fragment
@@ -257,27 +273,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/organization"
-        android:name="com.itrocket.union.organizations.presentation.view.OrganizationComposeFragment">
-        <action
-            android:id="@+id/to_organizationDetail"
-            app:destination="@+id/organizationDetail" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/departments"
-        android:name="com.itrocket.union.departments.presentation.view.DepartmentComposeFragment">
-
-        <action
-            android:id="@+id/to_department_detail"
-            app:destination="@id/departmentDetail" />
-
-        <action
-            android:id="@+id/to_filter"
-            app:destination="@id/filter" />
-    </fragment>
-
-    <fragment
         android:id="@+id/documentCreate"
         android:name="com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragment"
         android:label="DocumentCreate">
@@ -294,6 +289,9 @@
         <action
             android:id="@+id/to_reserves"
             app:destination="@id/reserves" />
+        <action
+            android:id="@+id/to_structural"
+            app:destination="@id/structural" />
         <argument
             android:name="DocumentCreateArguments"
             app:argType="com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments" />
@@ -320,28 +318,6 @@
         <action
             android:id="@+id/to_producerDetail"
             app:destination="@+id/producerDetail" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/branches"
-        android:name="com.itrocket.union.branches.presentation.view.BranchesComposeFragment"
-        android:label="Branches">
-        <action
-            android:id="@+id/to_branchDetail"
-            app:destination="@id/branchDetail" />
-        <action
-            android:id="@+id/to_filter"
-            app:destination="@id/filter" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/region"
-        android:name="com.itrocket.union.regions.presentation.view.RegionComposeFragment"
-        android:label="Region">
-
-        <action
-            android:id="@+id/to_regionDetail"
-            app:destination="@id/regionDetail" />
     </fragment>
 
     <fragment
@@ -381,15 +357,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/departmentDetail"
-        android:name="com.itrocket.union.departmentDetail.presentation.view.DepartmentDetailComposeFragment">
-        <argument
-            android:name="DepartmentComposeFragmentArgs"
-            app:argType="com.itrocket.union.departmentDetail.presentation.store.DepartmentDetailArguments"
-            app:nullable="false" />
-    </fragment>
-
-    <fragment
         android:id="@+id/nomenclatureGroupDetail"
         android:name="com.itrocket.union.nomenclatureGroupDetail.presentation.view.NomenclatureGroupDetailComposeFragment">
         <argument
@@ -397,16 +364,6 @@
             app:argType="com.itrocket.union.nomenclatureGroupDetail.presentation.store.NomenclatureGroupDetailArguments"
             app:nullable="false" />
     </fragment>
-
-    <fragment
-        android:id="@+id/organizationDetail"
-        android:name="com.itrocket.union.organizationDetail.presentation.view.OrganizationDetailComposeFragment">
-        <argument
-            android:name="OrganizationDetailComposeFragmentArgs"
-            app:argType="com.itrocket.union.organizationDetail.presentation.store.OrganizationDetailArguments"
-            app:nullable="false" />
-    </fragment>
-
 
     <fragment
         android:id="@+id/inventoryContainer"
@@ -418,6 +375,9 @@
         <action
             android:id="@+id/to_location"
             app:destination="@id/location" />
+        <action
+            android:id="@+id/to_structural"
+            app:destination="@id/structural" />
         <action
             android:id="@+id/to_accountingObjectsDetails"
             app:destination="@id/accountingObjectsDetails" />
@@ -440,24 +400,6 @@
         <action
             android:id="@+id/to_auth"
             app:destination="@id/auth" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/branchDetail"
-        android:name="com.itrocket.union.branchDetail.presentation.view.BranchDetailComposeFragment">
-        <argument
-            android:name="BranchDetailComposeFragmentArgs"
-            app:argType="com.itrocket.union.branchDetail.presentation.store.BranchDetailArguments"
-            app:nullable="false" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/regionDetail"
-        android:name="com.itrocket.union.regionDetail.presentation.view.RegionDetailComposeFragment">
-        <argument
-            android:name="RegionDetailComposeFragmentArgs"
-            app:argType="com.itrocket.union.regionDetail.presentation.store.RegionDetailArguments"
-            app:nullable="false" />
     </fragment>
 
     <fragment
@@ -491,4 +433,14 @@
         android:id="@+id/chooseAction"
         android:name="com.itrocket.union.chooseAction.presentation.view.ChooseActionComposeFragment"
         android:label="ChooseAction" />
+
+    <fragment
+        android:id="@+id/structural"
+        android:name="com.itrocket.union.structural.presentation.view.StructuralComposeFragment"
+        android:label="Structural">
+
+        <argument
+            android:name="StructuralArguments"
+            app:argType="com.itrocket.union.structural.presentation.store.StructuralArguments" />
+    </fragment>
 </navigation>

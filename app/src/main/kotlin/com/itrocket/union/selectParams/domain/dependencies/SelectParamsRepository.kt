@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface SelectParamsRepository {
 
-    suspend fun getOrganizationList(textQuery: String?): Flow<List<ParamDomain>>
 
     suspend fun getEmployees(type: ManualType, textQuery: String?): Flow<List<ParamDomain>>
 
@@ -14,7 +13,6 @@ interface SelectParamsRepository {
 
     suspend fun getEquipmentTypes(textQuery: String?): Flow<List<ParamDomain>>
 
-    suspend fun getDepartments(textQuery: String?, type: ManualType): Flow<List<ParamDomain>>
 
     suspend fun getProviders(textQuery: String?): Flow<List<ParamDomain>>
 
@@ -24,7 +22,7 @@ interface SelectParamsRepository {
 
     suspend fun getReceptionCategory(textQuery: String?): Flow<List<ParamDomain>>
 
-    suspend fun getBranches(textQuery: String?): Flow<List<ParamDomain>>
-
     suspend fun getActionBases(textQuery: String?): Flow<List<ParamDomain>>
+
+    suspend fun getInventoryBases(textQuery: String?): Flow<List<ParamDomain>>
 }

@@ -20,25 +20,30 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.CreateTransitRequestRemainsItemV2
+
 import com.squareup.moshi.Json
 
 /**
  * 
  *
- * @param organizationId 
+ * @param structuralUnitId 
  * @param responsibleId 
  * @param receivingId 
  * @param locationToId 
  * @param locationFromId 
  * @param vehicleId 
+ * @param molReceivingId 
+ * @param structuralUnitFromId 
+ * @param structuralUnitToId 
  * @param accountingObjectRecords 
  * @param remainsRecords 
  */
 
 data class CreateTransitRequestV2 (
 
-    @Json(name = "organizationId")
-    val organizationId: kotlin.String? = null,
+    @Json(name = "structuralUnitId")
+    val structuralUnitId: kotlin.String? = null,
 
     @Json(name = "responsibleId")
     val responsibleId: kotlin.String? = null,
@@ -54,6 +59,15 @@ data class CreateTransitRequestV2 (
 
     @Json(name = "vehicleId")
     val vehicleId: kotlin.String? = null,
+
+    @Json(name = "molReceivingId")
+    val molReceivingId: kotlin.String? = null,
+
+    @Json(name = "structuralUnitFromId")
+    val structuralUnitFromId: kotlin.String? = null,
+
+    @Json(name = "structuralUnitToId")
+    val structuralUnitToId: kotlin.String? = null,
 
     @Json(name = "accountingObjectRecords")
     val accountingObjectRecords: kotlin.collections.List<kotlin.String>? = null,

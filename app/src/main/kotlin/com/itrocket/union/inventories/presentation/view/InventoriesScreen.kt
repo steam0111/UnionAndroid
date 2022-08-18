@@ -24,7 +24,6 @@ import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.BottomLine
 import com.itrocket.union.ui.InventoryDocumentItem
 import com.itrocket.union.ui.LoadingContent
@@ -121,7 +120,7 @@ fun InventoriesScreenPreview() {
                 InventoryCreateDomain(
                     id = "bh",
                     number = "БП-00001375",
-                    date = System.currentTimeMillis(),
+                    creationDate = System.currentTimeMillis(),
                     documentInfo = listOf(
                         ParamDomain("1", "Систмный интегратор", ManualType.MOL),
                         ParamDomain("2", "Систмный интегратор", ManualType.MOL),
@@ -135,7 +134,7 @@ fun InventoriesScreenPreview() {
                 InventoryCreateDomain(
                     id = "",
                     number = "БП-00001376",
-                    date = System.currentTimeMillis(),
+                    creationDate = System.currentTimeMillis(),
                     documentInfo = listOf(
                         ParamDomain("1", "Систмный интегратор", ManualType.MOL),
                         ParamDomain("2", "Систмный интегратор", ManualType.MOL),
@@ -149,7 +148,7 @@ fun InventoriesScreenPreview() {
                 InventoryCreateDomain(
                     id = "",
                     number = "БП-00001377",
-                    date = System.currentTimeMillis(),
+                    creationDate = System.currentTimeMillis(),
                     documentInfo = listOf(
                         ParamDomain("1", "Систмный интегратор", ManualType.MOL),
                         ParamDomain("2", "Систмный интегратор", ManualType.MOL),

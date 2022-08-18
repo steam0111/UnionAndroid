@@ -1,6 +1,10 @@
 package org.openapitools.client.apis
 
 
+import retrofit2.http.*
+import retrofit2.Response
+import okhttp3.RequestBody
+
 import org.openapitools.client.models.AuthJwtRequestV2
 import org.openapitools.client.models.AuthJwtResponseV2
 import org.openapitools.client.models.InvalidateAllJwtRequestV2
@@ -8,15 +12,6 @@ import org.openapitools.client.models.JwtOperationResponseV2
 import org.openapitools.client.models.RefreshJwtRequestV2
 import org.openapitools.client.models.RefreshJwtResponseV2
 import org.openapitools.client.models.VerifyJwtRequestV2
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.HEAD
-import retrofit2.http.OPTIONS
-import retrofit2.http.PATCH
-import retrofit2.http.POST
-import retrofit2.http.PUT
 
 interface JwtAuthControllerApi {
     /**
@@ -102,7 +97,7 @@ interface JwtAuthControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param invalidateAllJwtRequestV2  
+     * @param invalidateAllJwtRequestV2 
      * @return [JwtOperationResponseV2]
      */
     @POST("api/auth/invalidate-all-tokens")
@@ -125,7 +120,7 @@ interface JwtAuthControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param refreshJwtRequestV2  
+     * @param refreshJwtRequestV2 
      * @return [RefreshJwtResponseV2]
      */
     @POST("api/auth/refresh-token")
@@ -161,7 +156,7 @@ interface JwtAuthControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param verifyJwtRequestV2  
+     * @param verifyJwtRequestV2 
      * @return [JwtOperationResponseV2]
      */
     @POST("api/auth/verify")

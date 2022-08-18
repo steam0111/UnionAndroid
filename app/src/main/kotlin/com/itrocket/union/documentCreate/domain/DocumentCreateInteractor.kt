@@ -13,6 +13,7 @@ import com.itrocket.union.documents.domain.entity.toUpdateSyncEntity
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.manual.getFilterLocationLastId
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import kotlinx.coroutines.withContext
@@ -50,7 +51,7 @@ class DocumentCreateInteractor(
                         reserves = reserves,
                         userInserted = authMainInteractor.getLogin(),
                         userUpdated = authMainInteractor.getLogin()
-                ).toCreateSyncEntity()
+                    ).toCreateSyncEntity()
                 )
             } else {
                 documentRepository.updateDocument(
@@ -89,6 +90,16 @@ class DocumentCreateInteractor(
         return mutableParams
     }
 
+    fun changeStructural(
+        params: List<ParamDomain>,
+        structural: StructuralParamDomain
+    ): List<ParamDomain> {
+        val mutableParams = params.toMutableList()
+        val structuralIndex = params.indexOfFirst { it.type == structural.manualType }
+        mutableParams[structuralIndex] = structural.copy(filtered = false)
+        return mutableParams
+    }
+
     fun clearParam(list: List<ParamDomain>, param: ParamDomain): List<ParamDomain> {
         val mutableList = list.toMutableList()
         val currentIndex = mutableList.indexOfFirst { it.type == param.type }
@@ -108,23 +119,12 @@ class DocumentCreateInteractor(
     fun getReservesIds(reserves: List<ReservesDomain>): List<String> =
         reserves.map { it.id }
 
-    fun isParamsValid(
-        params: List<ParamDomain>,
-        documentTypeDomain: DocumentTypeDomain,
-    ): Boolean {
-        return when (documentTypeDomain) {
-            DocumentTypeDomain.RELOCATION -> !params.getFilterLocationLastId(ManualType.LOCATION_TO)
-                .isNullOrBlank()
-            else -> true
-        }
-    }
-
     fun addAccountingObject(
         accountingObjects: List<AccountingObjectDomain>,
-        accountingObjectDomain: AccountingObjectDomain
+        accountingObject: AccountingObjectDomain
     ): List<AccountingObjectDomain> {
         val mutableList = accountingObjects.toMutableList()
-        mutableList.add(accountingObjectDomain)
+        mutableList.add(accountingObject)
         return mutableList
     }
 
@@ -151,16 +151,14 @@ class DocumentCreateInteractor(
 
     suspend fun handleNewAccountingObjectRfids(
         accountingObjects: List<AccountingObjectDomain>,
-        handledAccountingObjectRfids: List<String>
+        handledAccountingObjectRfid: String
     ): List<AccountingObjectDomain> {
         return withContext(coreDispatchers.io) {
             val newAccountingObjectRfids = mutableListOf<String>()
 
-            handledAccountingObjectRfids.forEach { rfid ->
-                val index = accountingObjects.indexOfFirst { it.rfidValue == rfid }
-                if (index == NO_POSITION) {
-                    newAccountingObjectRfids.add(rfid)
-                }
+            val index = accountingObjects.indexOfFirst { it.rfidValue == handledAccountingObjectRfid }
+            if (index == NO_POSITION) {
+                newAccountingObjectRfids.add(handledAccountingObjectRfid)
             }
             val newAccountingObjects =
                 accountingObjectRepository.getAccountingObjectsByRfids(newAccountingObjectRfids)

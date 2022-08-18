@@ -5,10 +5,12 @@ import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.toAccountingObjectIdSyncEntity
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
+import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.getFilterInventoryBaseId
 import com.itrocket.union.manual.getFilterLocationIds
+import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.manual.getMolId
-import com.itrocket.union.manual.getOrganizationId
 import com.itrocket.union.utils.getStringDateFromMillis
 import com.itrocket.union.utils.getTimeFromMillis
 import kotlinx.parcelize.Parcelize
@@ -17,7 +19,7 @@ import kotlinx.parcelize.Parcelize
 data class InventoryCreateDomain(
     val id: String?,
     val number: String,
-    val date: Long?,
+    val creationDate: Long?,
     val inventoryStatus: InventoryStatus,
     val documentInfo: List<ParamDomain>,
     val accountingObjects: List<AccountingObjectDomain>,
@@ -25,27 +27,27 @@ data class InventoryCreateDomain(
     val userUpdated: String?
 ) : Parcelable {
 
-    fun getTextDate() = getStringDateFromMillis(date)
+    fun getTextDate() = getStringDateFromMillis(creationDate)
 
-    fun getTextTime() = getTimeFromMillis(date)
+    fun getTextTime() = getTimeFromMillis(creationDate)
 }
 
 fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
-    val organizationId = documentInfo.getOrganizationId()
+    val structuralId = documentInfo.getFilterStructuralLastId(ManualType.STRUCTURAL)
     val molId = documentInfo.getMolId()
     val locationIds = documentInfo.getFilterLocationIds()
 
     return InventoryUpdateSyncEntity(
         id = id.orEmpty(),
-        organizationId = organizationId,
+        structuralId = structuralId,
         employeeId = molId,
         accountingObjectsIds = accountingObjects.map { it.toAccountingObjectIdSyncEntity() },
-        date = date,
+        creationDate = creationDate,
         locationIds = locationIds,
         inventoryStatus = this.inventoryStatus.name,
-        updateDate = System.currentTimeMillis(),
         code = number,
         userInserted = userInserted,
-        userUpdated = userUpdated
+        userUpdated = userUpdated,
+        inventoryBaseId = documentInfo.getFilterInventoryBaseId()
     )
 }

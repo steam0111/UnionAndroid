@@ -3,24 +3,29 @@ package com.example.union_sync_impl.data
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
+import com.example.union_sync_impl.dao.StructuralDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDetailSyncEntity
+import com.example.union_sync_impl.data.mapper.toAccountingObjectScanningUpdate
 import com.example.union_sync_impl.data.mapper.toAccountingObjectUpdate
+import com.example.union_sync_impl.data.mapper.toStructuralSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class AccountingObjectSyncApiImpl(
     private val accountingObjectsDao: AccountingObjectDao,
-    private val locationSyncApi: LocationSyncApi
+    private val locationSyncApi: LocationSyncApi,
+    private val structuralDao: StructuralDao
 ) : AccountingObjectSyncApi {
 
     override suspend fun getAccountingObjects(
-        organizationId: String?,
         exploitingId: String?,
         molId: String?,
-        departmentId: String?,
         producerId: String?,
         equipmentTypeId: String?,
         providerId: String?,
@@ -29,16 +34,15 @@ class AccountingObjectSyncApiImpl(
         statusId: String?,
         textQuery: String?,
         accountingObjectsIds: List<String>?,
-        locationIds: List<String?>?
+        locationIds: List<String?>?,
+        structuralId: List<String?>?
     ): List<AccountingObjectSyncEntity> {
         return accountingObjectsDao.getAll(
             sqlAccountingObjectQuery(
-                organizationId = organizationId,
                 exploitingId = exploitingId,
                 producerId = producerId,
                 providerId = providerId,
                 equipmentTypeId = equipmentTypeId,
-                departmentId = departmentId,
                 molId = molId,
                 rfids = rfids,
                 barcode = barcode,
@@ -54,10 +58,8 @@ class AccountingObjectSyncApiImpl(
     }
 
     override suspend fun getAccountingObjectsCount(
-        organizationId: String?,
         exploitingId: String?,
         molId: String?,
-        departmentId: String?,
         producerId: String?,
         equipmentTypeId: String?,
         providerId: String?,
@@ -66,16 +68,15 @@ class AccountingObjectSyncApiImpl(
         statusId: String?,
         textQuery: String?,
         accountingObjectsIds: List<String>?,
-        locationIds: List<String?>?
+        locationIds: List<String?>?,
+        structuralIds: List<String?>?
     ): Long {
         return accountingObjectsDao.getCount(
             sqlAccountingObjectQuery(
-                organizationId = organizationId,
                 exploitingId = exploitingId,
                 producerId = producerId,
                 providerId = providerId,
                 equipmentTypeId = equipmentTypeId,
-                departmentId = departmentId,
                 molId = molId,
                 rfids = rfids,
                 barcode = barcode,
@@ -92,10 +93,30 @@ class AccountingObjectSyncApiImpl(
         val fullAccountingObjectDb = accountingObjectsDao.getById(id)
         val location =
             locationSyncApi.getLocationById(fullAccountingObjectDb.accountingObjectDb.locationId)
-        return fullAccountingObjectDb.toAccountingObjectDetailSyncEntity(location)
+        val balanceUnit =
+            structuralDao.getAllStructuralsByChildId(fullAccountingObjectDb.structuralDb?.id)
+                .firstOrNull { it.balanceUnit == true }
+        return fullAccountingObjectDb.toAccountingObjectDetailSyncEntity(
+            location,
+            balanceUnit?.toStructuralSyncEntity()
+        )
+    }
+
+    override suspend fun getAccountingObjectDetailByIdFlow(id: String): Flow<AccountingObjectDetailSyncEntity> {
+        return accountingObjectsDao.getByIdFlow(id).map {
+            val location =
+                locationSyncApi.getLocationById(it.accountingObjectDb.locationId)
+            val balanceUnit = structuralDao.getAllStructuralsByChildId(it.structuralDb?.id)
+                .firstOrNull { it.balanceUnit == true }
+            it.toAccountingObjectDetailSyncEntity(location, balanceUnit?.toStructuralSyncEntity())
+        }
     }
 
     override suspend fun updateAccountingObjects(accountingObjects: List<AccountingObjectUpdateSyncEntity>) {
         accountingObjectsDao.update(accountingObjects.map { it.toAccountingObjectUpdate() })
+    }
+
+    override suspend fun updateAccountingObjectScanningData(accountingObject: AccountingObjectScanningData) {
+        accountingObjectsDao.update(accountingObject.toAccountingObjectScanningUpdate())
     }
 }

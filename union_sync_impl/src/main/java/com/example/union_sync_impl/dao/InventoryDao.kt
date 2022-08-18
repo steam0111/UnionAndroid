@@ -18,23 +18,26 @@ interface InventoryDao {
     @Query(
         "SELECT inventories.*," +
                 "" +
-                "organizations.id AS organizations_id, " +
-                "organizations.catalogItemName AS organizations_catalogItemName, " +
-                "organizations.name AS organizations_name, " +
-                "organizations.actualAddress AS organizations_actualAddress, " +
-                "organizations.legalAddress AS organizations_legalAddress, " +
+                "structural.id AS structural_id, " +
+                "structural.catalogItemName AS structural_catalogItemName, " +
+                "structural.name AS structural_name, " +
+                "structural.parentId AS structural_parentId, " +
+                "" +
+                "inventory_base.id AS inventory_base_id, " +
+                "inventory_base.name AS inventory_base_name, " +
                 "" +
                 "employees.id AS employees_id, " +
                 "employees.catalogItemName AS employees_catalogItemName, " +
                 "employees.firstname AS employees_firstname, " +
                 "employees.lastname AS employees_lastname, " +
                 "employees.patronymic AS employees_patronymic, " +
-                "employees.organizationId AS employees_organizationId, " +
+                "employees.structuralId AS employees_structuralId, " +
                 "employees.number AS employees_number, " +
                 "employees.nfc AS employees_nfc " +
                 "FROM inventories " +
-                "LEFT JOIN organizations ON inventories.organizationId = organizations.id " +
                 "LEFT JOIN employees ON inventories.employeeId = employees.id " +
+                "LEFT JOIN structural ON inventories.structuralId = structural.id " +
+                "LEFT JOIN inventory_base ON inventories.inventoryBaseId = inventory_base.id " +
                 "WHERE inventories.id = :id LIMIT 1 "
     )
     suspend fun getInventoryById(id: String): FullInventory

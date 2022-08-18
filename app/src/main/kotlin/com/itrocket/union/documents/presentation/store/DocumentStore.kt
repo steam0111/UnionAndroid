@@ -42,7 +42,8 @@ interface DocumentStore : Store<DocumentStore.Intent, DocumentStore.State, Docum
         val rotatedDates: List<String> = listOf(),
         val isShowSearch: Boolean = false,
         val searchText: String = "",
-        val params: List<ParamDomain>? = null
+        val params: List<ParamDomain>? = null,
+        val isCanCreateDocument: Boolean = true
     )
 
     sealed class Label {

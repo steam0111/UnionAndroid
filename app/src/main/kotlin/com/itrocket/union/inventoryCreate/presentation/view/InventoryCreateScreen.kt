@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,13 +38,17 @@ import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseCheckbox
 import com.itrocket.union.ui.BaseToolbar
+import com.itrocket.union.ui.ConfirmAlertDialog
 import com.itrocket.union.ui.InventoryDocumentItem
 import com.itrocket.union.ui.MediumSpacer
+import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.psb1
 import com.itrocket.union.ui.psb3
@@ -63,6 +68,8 @@ fun InventoryCreateScreen(
     onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit,
     onInWorkClickListener: () -> Unit,
     onFinishClickListener: () -> Unit,
+    onConfirmActionClick: () -> Unit,
+    onDismissConfirmDialog: () -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -74,15 +81,10 @@ fun InventoryCreateScreen(
                 )
             },
             bottomBar = {
-                if (state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED) {
-                    BottomBar(
-                        onSaveClickListener = onSaveClickListener,
-                        onReadingClickListener = onReadingClickListener,
-                        onInWorkClickListener = onInWorkClickListener,
-                        onFinishClickListener = onFinishClickListener,
-                        inventoryStatus = state.inventoryDocument.inventoryStatus
-                    )
-                }
+                ReadingModeBottomBar(
+                    readingModeTab = state.readingModeTab,
+                    onReadingModeClickListener = onReadingClickListener
+                )
             },
             content = {
                 Content(
@@ -90,7 +92,11 @@ fun InventoryCreateScreen(
                     paddingValues = it,
                     onAddNewChanged = onAddNewChanged,
                     onHideFoundAccountingObjectChanged = onHideFoundAccountingObjectChanged,
-                    onAccountingObjectClickListener = onAccountingObjectClickListener
+                    onAccountingObjectClickListener = onAccountingObjectClickListener,
+                    onInWorkClickListener = onInWorkClickListener,
+                    onFinishClickListener = onFinishClickListener,
+                    onSaveClickListener = onSaveClickListener,
+                    onReadingClickListener = onReadingClickListener
                 )
             },
             modifier = Modifier.padding(
@@ -98,6 +104,14 @@ fun InventoryCreateScreen(
                 bottom = appInsets.bottomInset.dp
             )
         )
+
+        if (state.isConfirmDialogVisible) {
+            ConfirmAlertDialog(
+                onDismiss = onDismissConfirmDialog,
+                onConfirmClick = onConfirmActionClick,
+                textRes = R.string.common_confirm_save_text
+            )
+        }
     }
 }
 
@@ -107,7 +121,11 @@ private fun Content(
     paddingValues: PaddingValues,
     onAddNewChanged: () -> Unit,
     onHideFoundAccountingObjectChanged: () -> Unit,
-    onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit
+    onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit,
+    onInWorkClickListener: () -> Unit,
+    onFinishClickListener: () -> Unit,
+    onSaveClickListener: () -> Unit,
+    onReadingClickListener: () -> Unit,
 ) {
     var accountingObjectList =
         state.newAccountingObjects.toList() + state.inventoryDocument.accountingObjects
@@ -119,18 +137,28 @@ private fun Content(
     Column(
         Modifier
             .fillMaxSize()
-            .padding(paddingValues)
+            .padding(top = paddingValues.calculateTopPadding())
     ) {
-        InventoryDocumentItem(item = state.inventoryDocument, isShowStatus = false)
-        MediumSpacer()
-        SettingsBar(
-            isHideFoundAccountingObjects = state.isHideFoundAccountingObjects,
-            isAddNew = state.isAddNew,
-            onAddNewChanged = onAddNewChanged,
-            onHideFoundAccountingObjectChanged = onHideFoundAccountingObjectChanged
-        )
-        MediumSpacer()
         LazyColumn {
+            item {
+                if (state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED) {
+                    BottomBar(
+                        onSaveClickListener = onSaveClickListener,
+                        onInWorkClickListener = onInWorkClickListener,
+                        onFinishClickListener = onFinishClickListener,
+                        inventoryStatus = state.inventoryDocument.inventoryStatus
+                    )
+                }
+                InventoryDocumentItem(item = state.inventoryDocument, isShowStatus = false)
+                MediumSpacer()
+                SettingsBar(
+                    isHideFoundAccountingObjects = state.isHideFoundAccountingObjects,
+                    isAddNew = state.isAddNew,
+                    onAddNewChanged = onAddNewChanged,
+                    onHideFoundAccountingObjectChanged = onHideFoundAccountingObjectChanged
+                )
+                MediumSpacer()
+            }
             itemsIndexed(items = accountingObjectList, key = { index, item ->
                 item.id
             }) { index, item ->
@@ -142,6 +170,9 @@ private fun Content(
                     status = item.inventoryStatus,
                     isEnabled = state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED
                 )
+            }
+            item {
+                Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
             }
         }
     }
@@ -198,7 +229,6 @@ fun SettingsBar(
 @Composable
 private fun BottomBar(
     onSaveClickListener: () -> Unit,
-    onReadingClickListener: () -> Unit,
     onInWorkClickListener: () -> Unit,
     onFinishClickListener: () -> Unit,
     inventoryStatus: InventoryStatus
@@ -210,14 +240,6 @@ private fun BottomBar(
     ) {
         BaseButton(
             enabled = inventoryStatus == InventoryStatus.CREATED,
-            text = stringResource(R.string.common_reading),
-            onClick = onReadingClickListener,
-            modifier = Modifier.weight(1f),
-            disabledBackgroundColor = psb3
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        BaseButton(
-            enabled = inventoryStatus != InventoryStatus.COMPLETED,
             text = stringResource(R.string.common_save),
             onClick = onSaveClickListener,
             modifier = Modifier.weight(1f),
@@ -292,11 +314,10 @@ fun InventoryCreateScreenPreview() {
         inventoryDocument = InventoryCreateDomain(
             id = "",
             number = "БП-00001374",
-            date = System.currentTimeMillis(),
+            creationDate = System.currentTimeMillis(),
             documentInfo = listOf(
-                ParamDomain("1", "Систмный интегратор", ManualType.ORGANIZATION),
+                StructuralParamDomain(manualType = ManualType.STRUCTURAL),
                 ParamDomain("2", "Систмный интегратор", ManualType.MOL),
-                ParamDomain("3", "Систмный интегратор", ManualType.ORGANIZATION),
             ),
             accountingObjects = listOf(
                 AccountingObjectDomain(
@@ -316,7 +337,8 @@ fun InventoryCreateScreenPreview() {
                     ),
                     listAdditionallyInfo = listOf(),
                     barcodeValue = "",
-                    rfidValue = ""
+                    rfidValue = "",
+                    factoryNumber = ""
                 ),
                 AccountingObjectDomain(
                     id = "8",
@@ -335,12 +357,15 @@ fun InventoryCreateScreenPreview() {
                     ),
                     listAdditionallyInfo = listOf(),
                     barcodeValue = "",
-                    rfidValue = ""
+                    rfidValue = "",
+                    factoryNumber = ""
                 ),
             ),
             inventoryStatus = InventoryStatus.CREATED,
             userInserted = "",
             userUpdated = ""
         ),
-    ), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {})
+        isConfirmDialogVisible = false,
+        readingModeTab = ReadingModeTab.RFID
+    ), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 }

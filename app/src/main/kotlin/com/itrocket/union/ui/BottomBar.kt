@@ -13,6 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.itrocket.union.R
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 
 private const val MIN_STEP = 1
 
@@ -105,7 +106,7 @@ fun StepBottomBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(white)
-            .padding(vertical = 16.dp, horizontal = 48.dp),
+            .padding(vertical = 16.dp, horizontal = AppTheme.dimens.auth_container_horizontal),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IndicatorWithText(
@@ -156,6 +157,21 @@ fun StepBottomBar(
                 .weight(1f),
             isLoading = isLoading
         )
+    }
+}
+
+@Composable
+fun ReadingModeBottomBar(readingModeTab: ReadingModeTab, onReadingModeClickListener: () -> Unit) {
+    Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.BottomEnd) {
+        ReadingModeButton(readingModeTab = readingModeTab, onClick = onReadingModeClickListener)
+    }
+}
+
+@Composable
+@Preview
+private fun ReadingModeBottomBarPreview(){
+    ReadingModeBottomBar(readingModeTab = ReadingModeTab.RFID) {
+
     }
 }
 

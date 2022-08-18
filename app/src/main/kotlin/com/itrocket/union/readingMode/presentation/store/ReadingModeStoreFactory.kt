@@ -48,7 +48,6 @@ class ReadingModeStoreFactory(
         ) {
             dispatch(Result.ReadingModeSelected(serviceEntryManager.currentMode.toReadingModeTab()))
             readingModeInteractor.changeScanMode(getState().selectedTab.toReaderMode())
-            dispatch(Result.IsManualInputEnabled(getState().selectedTab != ReadingModeTab.RFID))
         }
 
         override suspend fun executeIntent(
@@ -60,12 +59,12 @@ class ReadingModeStoreFactory(
                     //no-op
                 }
                 ReadingModeStore.Intent.OnManualInputClicked -> {
-                    //no-op
+                    publish(ReadingModeStore.Label.ManualReading(ReadingModeResult(getState().selectedTab)))
                 }
                 is ReadingModeStore.Intent.OnReadingModeSelected -> {
                     readingModeInteractor.changeScanMode(intent.readingMode.toReaderMode())
                     dispatch(Result.ReadingModeSelected(intent.readingMode))
-                    dispatch(Result.IsManualInputEnabled(intent.readingMode != ReadingModeTab.RFID))
+                    publish(ReadingModeStore.Label.ResultReadingTab(intent.readingMode))
                 }
                 ReadingModeStore.Intent.OnSettingsClicked -> {
                     //no-op
@@ -76,14 +75,12 @@ class ReadingModeStoreFactory(
 
     private sealed class Result {
         data class ReadingModeSelected(val readingMode: ReadingModeTab) : Result()
-        data class IsManualInputEnabled(val isEnabled: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<ReadingModeStore.State, Result> {
         override fun ReadingModeStore.State.reduce(result: Result) =
             when (result) {
                 is Result.ReadingModeSelected -> copy(selectedTab = result.readingMode)
-                is Result.IsManualInputEnabled -> copy(isManualInputEnabled = result.isEnabled)
             }
     }
 }

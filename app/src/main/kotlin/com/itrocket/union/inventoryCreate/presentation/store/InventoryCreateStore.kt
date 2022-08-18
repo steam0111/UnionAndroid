@@ -13,6 +13,7 @@ import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
 import com.itrocket.union.newAccountingObject.presentation.view.NewAccountingObjectComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 import com.itrocket.union.switcher.presentation.store.SwitcherArguments
 import com.itrocket.union.switcher.presentation.store.SwitcherResult
@@ -28,7 +29,7 @@ interface InventoryCreateStore :
         data class OnAccountingObjectStatusChanged(val switcherResult: SwitcherResult) :
             Intent()
 
-        data class OnNewAccountingObjectRfidsHandled(val handledAccountingObjectIds: List<String>) :
+        data class OnNewAccountingObjectRfidHandled(val handledAccountingObjectId: String) :
             Intent()
 
         data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :
@@ -42,6 +43,9 @@ interface InventoryCreateStore :
         object OnReadingClicked : Intent()
         object OnInWorkClicked : Intent()
         object OnCompleteClicked : Intent()
+        object OnDismissConfirmDialog : Intent()
+        object OnConfirmActionClick : Intent()
+        data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
     }
 
     data class State(
@@ -49,7 +53,9 @@ interface InventoryCreateStore :
         val isHideFoundAccountingObjects: Boolean = false,
         val newAccountingObjects: Set<AccountingObjectDomain> = setOf(),
         val isAddNew: Boolean = false,
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        val isConfirmDialogVisible: Boolean = false,
+        val readingModeTab: ReadingModeTab
     )
 
     sealed class Label {

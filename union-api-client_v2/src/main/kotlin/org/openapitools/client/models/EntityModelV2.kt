@@ -20,6 +20,9 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.EnumDtoV2
+import org.openapitools.client.models.ScopeV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -27,7 +30,7 @@ import com.squareup.moshi.Json
  *
  * @param id 
  * @param name 
- * @param entityModelType 
+ * @param extendedEntityModelType 
  * @param scopes 
  * @param restActions 
  * @param child 
@@ -41,8 +44,8 @@ data class EntityModelV2 (
     @Json(name = "name")
     val name: kotlin.String? = null,
 
-    @Json(name = "entityModelType")
-    val entityModelType: EntityModelV2.EntityModelType? = null,
+    @Json(name = "extendedEntityModelType")
+    val extendedEntityModelType: EnumDtoV2? = null,
 
     @Json(name = "scopes")
     val scopes: kotlin.collections.Set<ScopeV2>? = null,
@@ -55,19 +58,6 @@ data class EntityModelV2 (
 
 ) {
 
-    /**
-     * 
-     *
-     * Values: sECURITY,cATALOGS,dOCUMENTS,iNVENTORIES,tASKS,rEPORTS
-     */
-    enum class EntityModelType(val value: kotlin.String) {
-        @Json(name = "SECURITY") sECURITY("SECURITY"),
-        @Json(name = "CATALOGS") cATALOGS("CATALOGS"),
-        @Json(name = "DOCUMENTS") dOCUMENTS("DOCUMENTS"),
-        @Json(name = "INVENTORIES") iNVENTORIES("INVENTORIES"),
-        @Json(name = "TASKS") tASKS("TASKS"),
-        @Json(name = "REPORTS") rEPORTS("REPORTS");
-    }
     /**
      * 
      *

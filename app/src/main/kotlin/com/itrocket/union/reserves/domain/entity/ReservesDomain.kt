@@ -2,7 +2,6 @@ package com.itrocket.union.reserves.domain.entity
 
 import android.os.Parcelable
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
-import java.math.BigDecimal
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

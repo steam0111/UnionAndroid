@@ -5,7 +5,8 @@ import com.example.union_sync_impl.utils.*
 
 fun sqlInventoryQuery(
     textQuery: String? = null,
-    organizationId: String? = null,
+    structuralId: String? = null,
+    inventoryBaseId: String? = null,
     molId: String? = null,
     updateDate: Long? = null,
     limit: Long? = null,
@@ -17,41 +18,45 @@ fun sqlInventoryQuery(
     } else {
         "SELECT inventories.*," +
                 "" +
-                "organizations.id AS organizations_id, " +
-                "organizations.catalogItemName AS organizations_catalogItemName, " +
-                "organizations.name AS organizations_name, " +
-                "organizations.actualAddress AS organizations_actualAddress, " +
-                "organizations.legalAddress AS organizations_legalAddress, " +
+                "inventory_base.id AS inventory_base_id, " +
+                "inventory_base.name AS inventory_base_name, " +
+                "" +
+                "structural.id AS structural_id, " +
+                "structural.catalogItemName AS structural_catalogItemName, " +
+                "structural.name AS structural_name, " +
+                "structural.parentId AS structural_parentId, " +
                 "" +
                 "employees.id AS employees_id, " +
                 "employees.catalogItemName AS employees_catalogItemName, " +
                 "employees.firstname AS employees_firstname, " +
                 "employees.lastname AS employees_lastname, " +
                 "employees.patronymic AS employees_patronymic, " +
-                "employees.organizationId AS employees_organizationId, " +
                 "employees.number AS employees_number, " +
                 "employees.nfc AS employees_nfc " +
                 "" +
                 "FROM inventories " +
-                "LEFT JOIN organizations ON inventories.organizationId = organizations.id " +
-                "LEFT JOIN employees ON inventories.employeeId = employees.id "
+                "LEFT JOIN employees ON inventories.employeeId = employees.id " +
+                "LEFT JOIN inventory_base ON inventories.inventoryBaseId = inventory_base.id " +
+                "LEFT JOIN structural ON inventories.structuralId = structural.id "
     }
 
     return SimpleSQLiteQuery(
         mainQuery.getInventoriesFilterPartQuery(
             textQuery = textQuery,
-            organizationId = organizationId,
+            structuralId = structuralId,
             molId = molId,
             updateDate = updateDate,
             limit = limit,
-            offset = offset
+            offset = offset,
+            inventoryBaseId = inventoryBaseId
         )
     )
 }
 
 private fun sqlInventoryCountQuery(
     textQuery: String? = null,
-    organizationId: String? = null,
+    structuralId: String? = null,
+    inventoryBaseId: String? = null,
     molId: String? = null,
     updateDate: Long? = null
 ): SimpleSQLiteQuery {
@@ -60,20 +65,22 @@ private fun sqlInventoryCountQuery(
     return SimpleSQLiteQuery(
         mainQuery.getInventoriesFilterPartQuery(
             textQuery = textQuery,
-            organizationId = organizationId,
+            structuralId = structuralId,
             molId = molId,
-            updateDate = updateDate
+            updateDate = updateDate,
+            inventoryBaseId = inventoryBaseId
         )
     )
 }
 
 fun String.getInventoriesFilterPartQuery(
     textQuery: String? = null,
-    organizationId: String? = null,
+    structuralId: String? = null,
     molId: String? = null,
     updateDate: Long? = null,
     limit: Long? = null,
     offset: Long? = null,
+    inventoryBaseId: String?
 ): String =
     addFilters(
         sqlTableFilters = SqlTableFilters(
@@ -82,14 +89,17 @@ fun String.getInventoriesFilterPartQuery(
                 textQuery?.let {
                     add("id" contains textQuery)
                 }
-                organizationId?.let {
-                    add("organizationId" isEquals organizationId)
+                structuralId?.let {
+                    add("structuralId" isEquals structuralId)
                 }
                 molId?.let {
                     add("employeeId" isEquals molId)
                 }
                 updateDate?.let {
                     add("updateDate" more updateDate)
+                }
+                inventoryBaseId?.let {
+                    add("inventoryBaseId" isEquals inventoryBaseId)
                 }
             }
         )

@@ -2,7 +2,7 @@ package com.example.union_sync_impl.data.mapper
 
 import com.example.union_sync_api.entity.CounterpartySyncEntity
 import com.example.union_sync_impl.entity.CounterpartyDb
-import org.openapitools.client.models.Counterparty
+import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import org.openapitools.client.models.CounterpartyDtoV2
 
 fun CounterpartyDtoV2.toCounterpartyDb(): CounterpartyDb {
@@ -14,7 +14,11 @@ fun CounterpartyDtoV2.toCounterpartyDb(): CounterpartyDb {
         legalAddress = legalAddress,
         kpp = kpp,
         inn = inn,
-        updateDate = System.currentTimeMillis()
+        code = code,
+        updateDate = getMillisDateFromServerFormat(dateUpdate),
+        insertDate = getMillisDateFromServerFormat(dateInsert),
+        userUpdated = userUpdated,
+        userInserted = userInserted
     )
 }
 
@@ -26,6 +30,11 @@ fun CounterpartyDb.toSyncEntity(): CounterpartySyncEntity {
         actualAddress = actualAddress,
         legalAddress = legalAddress,
         kpp = kpp,
-        inn = inn
+        inn = inn,
+        code = code,
+        userInserted = userInserted,
+        userUpdated = userUpdated,
+        dateInsert = insertDate,
+        updateDate = updateDate
     )
 }

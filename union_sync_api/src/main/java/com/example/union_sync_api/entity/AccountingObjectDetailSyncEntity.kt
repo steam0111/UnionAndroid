@@ -5,10 +5,10 @@ data class AccountingObjectDetailSyncEntity(
     val location: LocationSyncEntity?,
     val mol: EmployeeSyncEntity?,
     val exploitingEmployee: EmployeeSyncEntity?,
-    val organization: OrganizationSyncEntity?,
-    val department: DepartmentSyncEntity?,
     val producer: ProducerSyncEntity?,
     val equipmentType: EquipmentTypeSyncEntity?,
     val provider: ProviderSyncEntity?,
-    val branch: BranchSyncEntity?
+    val structuralSyncEntity: StructuralSyncEntity?,
+    val categorySyncEntity: AccountingObjectCategorySyncEntity?,
+    val balanceUnitSyncEntity: StructuralSyncEntity?
 )

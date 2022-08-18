@@ -8,36 +8,42 @@ import com.itrocket.union.location.data.mapper.toLocationDomain
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
+import com.itrocket.union.structural.data.mapper.toStructuralDomain
 
 fun List<InventorySyncEntity>.map(): List<InventoryCreateDomain> = map {
     it.map()
 }
 
 fun InventorySyncEntity.map(): InventoryCreateDomain =
+
     InventoryCreateDomain(
         id = id,
         number = code.orEmpty(),
-        date = date,
+        creationDate = creationDate,
         accountingObjects = accountingObjects.map(),
         documentInfo = buildList {
             add(
-                ParamDomain(
-                    organizationSyncEntity?.id,
-                    organizationSyncEntity?.name.orEmpty(),
-                    ManualType.ORGANIZATION
-                )
+                StructuralParamDomain(manualType = ManualType.STRUCTURAL, structurals = buildList {
+                    structuralSyncEntity?.let {
+                        add(it.toStructuralDomain())
+                    }
+                })
             )
             mol?.let { mol ->
                 add(ParamDomain(mol.id, "${mol.firstname} ${mol.lastname}", ManualType.MOL))
             }
-            locationSyncEntities?.let { locationSyncEntities ->
-                add(
-                    LocationParamDomain(
-                        locations = locationSyncEntities.map { it.toLocationDomain() })
+            add(
+                LocationParamDomain(
+                    manualType = ManualType.LOCATION_INVENTORY,
+                    locations = locationSyncEntities?.map { it.toLocationDomain() }.orEmpty()
                 )
+            )
+            inventoryBaseSyncEntity?.let { base ->
+                add(ParamDomain(id = base.id, value = base.name, type = ManualType.INVENTORY_BASE))
             }
         },
         inventoryStatus = InventoryStatus.valueOf(inventoryStatus),
-        userInserted =  userInserted ,
+        userInserted = userInserted,
         userUpdated = userUpdated
     )

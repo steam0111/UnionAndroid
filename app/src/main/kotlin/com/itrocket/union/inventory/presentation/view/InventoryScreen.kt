@@ -39,6 +39,7 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.inventory.presentation.store.InventoryStore
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseToolbar
@@ -82,12 +83,13 @@ fun InventoryScreen(
                 )
             },
             bottomBar = {
-                ButtonBottomBar(
-                    onClick = onInventoryCreateClickListener,
-                    text = stringResource(R.string.common_create),
-                    isLoading = state.isCreateInventoryLoading,
-                    isEnabled = state.isCreateEnabled
-                )
+                if (state.isCanCreateInventory) {
+                    ButtonBottomBar(
+                        onClick = onInventoryCreateClickListener,
+                        text = stringResource(R.string.common_create),
+                        isLoading = state.isCreateInventoryLoading,
+                    )
+                }
             },
             content = {
                 Content(
@@ -139,7 +141,7 @@ private fun Content(
             }
         ),
         BaseTab(
-            title = stringResource(R.string.inventory_ao_title),
+            title = stringResource(R.string.inventory_accounting_object),
             screen = {
                 AccountingObjectScreen(
                     isLoading = state.isAccountingObjectsLoading,
@@ -283,16 +285,13 @@ fun InventoryScreenPreview() {
     InventoryScreen(
         InventoryStore.State(
             params = listOf(
-                ParamDomain(
-                    "1", "ООО «Грандмастер — Юниор»",
-                    type = ManualType.ORGANIZATION
-                ),
+                StructuralParamDomain(manualType = ManualType.STRUCTURAL),
                 ParamDomain(
                     "2",
                     "Колесников Виталий Константинович ",
                     type = ManualType.MOL
                 ),
-                ParamDomain("3", "", type = ManualType.LOCATION),
+                ParamDomain("3", "", type = ManualType.LOCATION_INVENTORY),
             ),
             accountingObjectList = listOf(
                 AccountingObjectDomain(
@@ -329,7 +328,8 @@ fun InventoryScreenPreview() {
                         ),
                     ),
                     barcodeValue = "",
-                    rfidValue = ""
+                    rfidValue = "",
+                    factoryNumber = ""
                 ),
                 AccountingObjectDomain(
                     id = "2",
@@ -348,7 +348,8 @@ fun InventoryScreenPreview() {
                     ),
                     listAdditionallyInfo = listOf(),
                     barcodeValue = "",
-                    rfidValue = ""
+                    rfidValue = "",
+                    factoryNumber = ""
                 ), AccountingObjectDomain(
                     id = "3",
                     isBarcode = true,
@@ -366,7 +367,8 @@ fun InventoryScreenPreview() {
                     ),
                     listAdditionallyInfo = listOf(),
                     barcodeValue = "",
-                    rfidValue = ""
+                    rfidValue = "",
+                    factoryNumber = ""
                 )
             ),
             selectedPage = 1,

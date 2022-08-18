@@ -1,14 +1,13 @@
 package org.openapitools.client.apis
 
 
+import retrofit2.http.*
+import retrofit2.Response
+import okhttp3.RequestBody
+
 import org.openapitools.client.models.AddNomenclatureToReceptionRequestV2
 import org.openapitools.client.models.PostResponseV2
 import org.openapitools.client.models.PutResponseV2
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
 
 interface ReceptionSupControllerApi {
     /**
@@ -17,8 +16,8 @@ interface ReceptionSupControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
-     * @param addNomenclatureToReceptionRequestV2  
+     * @param id 
+     * @param addNomenclatureToReceptionRequestV2 
      * @return [PostResponseV2]
      */
     @POST("api/documents/receptions/{id}/add-nomenclature")
@@ -30,7 +29,7 @@ interface ReceptionSupControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
+     * @param id 
      * @return [PutResponseV2]
      */
     @POST("api/documents/receptions/{id}/complete")
@@ -42,7 +41,7 @@ interface ReceptionSupControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
+     * @param id 
      * @return [Unit]
      */
     @GET("api/documents/receptions/{id}/export-purchase-invoice")
@@ -54,7 +53,7 @@ interface ReceptionSupControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
+     * @param id 
      * @return [Unit]
      */
     @GET("api/documents/receptions/{id}/export-reception-units-act")

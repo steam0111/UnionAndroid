@@ -11,9 +11,11 @@ import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
+import com.itrocket.union.manual.getFilterInventoryBaseId
 import com.itrocket.union.manual.getFilterLocationIds
+import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.manual.getMolId
-import com.itrocket.union.manual.getOrganizationId
 import kotlinx.coroutines.withContext
 
 class InventoryInteractor(
@@ -25,27 +27,21 @@ class InventoryInteractor(
         accountingObjects: List<AccountingObjectDomain>,
         params: List<ParamDomain>
     ): InventoryCreateDomain = withContext(coreDispatchers.io) {
-        val organizationId =
-            requireNotNull(value = params.getOrganizationId(),
-                lazyMessage = {
-                    "organizationId must not be null"
-                })
-
+        val structuralId = params.getFilterStructuralLastId(ManualType.STRUCTURAL)
         val molId = params.getMolId()
-        val locationIds = params.getFilterLocationIds()
-
+        val locationIds = params.getFilterLocationIds(ManualType.LOCATION_INVENTORY)
         val id = repository.createInventory(
             InventoryCreateSyncEntity(
-                organizationId = organizationId,
+                structuralId = structuralId,
                 employeeId = molId,
                 accountingObjectsIds = accountingObjects.map {
                     it.toAccountingObjectIdSyncEntity()
                 },
                 locationIds = locationIds,
                 inventoryStatus = InventoryStatus.CREATED.name,
-                updateDate = System.currentTimeMillis(),
                 userInserted = authMainInteractor.getLogin(),
-                userUpdated = null
+                userUpdated = null,
+                inventoryBaseId = params.getFilterInventoryBaseId()
             )
         )
         repository.getInventoryById(id)
@@ -67,8 +63,18 @@ class InventoryInteractor(
         location: LocationParamDomain
     ): List<ParamDomain> {
         val mutableParams = params.toMutableList()
-        val locationIndex = params.indexOfFirst { it.type == ManualType.LOCATION }
+        val locationIndex = params.indexOfFirst { it.type == ManualType.LOCATION_INVENTORY }
         mutableParams[locationIndex] = location
+        return mutableParams
+    }
+
+    fun changeStructural(
+        params: List<ParamDomain>,
+        structural: StructuralParamDomain
+    ): List<ParamDomain> {
+        val mutableParams = params.toMutableList()
+        val structuralIndex = params.indexOfFirst { it.type == structural.manualType }
+        mutableParams[structuralIndex] = structural.copy(filtered = false)
         return mutableParams
     }
 
@@ -83,9 +89,5 @@ class InventoryInteractor(
         return list.map {
             it.toInitialState()
         }
-    }
-
-    fun isParamsValid(params: List<ParamDomain>): Boolean {
-        return !params.getOrganizationId().isNullOrEmpty()
     }
 }

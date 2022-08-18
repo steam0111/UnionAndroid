@@ -13,6 +13,7 @@ import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 import com.itrocket.union.documentsMenu.presentation.view.DocumentMenuComposeFragmentDirections
 import com.itrocket.union.nomenclature.presentation.store.NomenclatureArguments
 import com.itrocket.union.nomenclatureGroup.presentation.store.NomenclatureGroupArguments
+import com.itrocket.union.structural.presentation.store.StructuralArguments
 
 interface DocumentMenuStore :
     Store<DocumentMenuStore.Intent, DocumentMenuStore.State, DocumentMenuStore.Label> {
@@ -49,11 +50,10 @@ interface DocumentMenuStore :
 
         data class ShowDocumentDetail(val item: DocumentMenuDomain) : Label(),
             ForwardNavigationLabel {
-            override val directions: NavDirections
+            override val directions: NavDirections?
                 get() = when (item.titleId) {
-                    R.string.main_accounting_object -> DocumentMenuComposeFragmentDirections.toAccountingObjects(
-                        null
-                    )
+                    R.string.main_accounting_object -> DocumentMenuComposeFragmentDirections.toAccountingObjects(null)
+                    R.string.main_identification -> DocumentMenuComposeFragmentDirections.toIdentify(null)
                     R.string.main_reserves -> DocumentMenuComposeFragmentDirections.toReserves(null)
                     R.string.main_documents -> DocumentMenuComposeFragmentDirections.toDocuments(
                         DocumentArguments(DocumentTypeDomain.ALL)
@@ -82,17 +82,16 @@ interface DocumentMenuStore :
                     R.string.create_inventory -> DocumentMenuComposeFragmentDirections.toInventoryContainer(
                         null
                     )
-                    R.string.organizations -> DocumentMenuComposeFragmentDirections.toOrganizations()
-                    R.string.departments -> DocumentMenuComposeFragmentDirections.toDepartments()
                     R.string.main_employees -> DocumentMenuComposeFragmentDirections.toEmployees()
                     R.string.inventories -> DocumentMenuComposeFragmentDirections.toInventories()
-                    R.string.regions -> DocumentMenuComposeFragmentDirections.toRegion()
                     R.string.counterparties -> DocumentMenuComposeFragmentDirections.toCounterparty()
-                    R.string.branches -> DocumentMenuComposeFragmentDirections.toBranches()
                     R.string.producer -> DocumentMenuComposeFragmentDirections.toProducer()
                     R.string.equipment_types -> DocumentMenuComposeFragmentDirections.toEquipmentTypes()
                     R.string.sync -> DocumentMenuComposeFragmentDirections.toSync()
-                    else -> DocumentMenuComposeFragmentDirections.toAccountingObjects(null)
+                    R.string.manual_structural -> DocumentMenuComposeFragmentDirections.toStructural(
+                        StructuralArguments(isCanEdit = false)
+                    )
+                    else -> null
                 }
         }
 

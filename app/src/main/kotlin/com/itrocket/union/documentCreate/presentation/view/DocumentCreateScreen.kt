@@ -33,6 +33,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.ColorFilter
@@ -68,12 +71,13 @@ import com.itrocket.union.ui.graphite4
 import com.itrocket.union.ui.psb1
 import com.itrocket.union.ui.psb6
 import com.itrocket.union.ui.white
-import com.itrocket.utils.disabledHorizontalPointerInputScroll
 import com.itrocket.utils.getTargetPage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
+import com.itrocket.union.manual.StructuralParamDomain
+import com.itrocket.union.ui.ConfirmAlertDialog
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -84,15 +88,15 @@ fun DocumentCreateScreen(
     onDropClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
     onPageChanged: (Int) -> Unit,
-    onNextClickListener: () -> Unit,
     onParamClickListener: (ParamDomain) -> Unit,
     onParamCrossClickListener: (ParamDomain) -> Unit,
     onSettingsClickListener: () -> Unit,
     onChooseAccountingObjectClickListener: () -> Unit,
     onChooseReserveClickListener: () -> Unit,
-    onPrevClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
-    onReserveClickListener: (ReservesDomain) -> Unit
+    onReserveClickListener: (ReservesDomain) -> Unit,
+    onConfirmActionClick: () -> Unit,
+    onDismissConfirmDialog: () -> Unit
 ) {
     val pagerState = rememberPagerState(state.selectedPage)
     val coroutineScope = rememberCoroutineScope()
@@ -105,9 +109,6 @@ fun DocumentCreateScreen(
                     params = state.params,
                     onCrossClickListener = onParamCrossClickListener,
                     onSaveClickListener = onSaveClickListener,
-                    onNextClickListener = onNextClickListener,
-                    coroutineScope = coroutineScope,
-                    pagerState = pagerState,
                     documentStatus = state.document.documentStatus,
                     onConductClickListener = onConductClickListener
                 )
@@ -121,12 +122,8 @@ fun DocumentCreateScreen(
                     accountingObjectList = state.accountingObjects,
                     onAccountingObjectClickListener = {},
                     onSaveClickListener = onSaveClickListener,
-                    onNextClickListener = onNextClickListener,
-                    onPrevClickListener = onPrevClickListener,
                     onSettingsClickListener = onSettingsClickListener,
                     onChooseClickListener = onChooseAccountingObjectClickListener,
-                    coroutineScope = coroutineScope,
-                    pagerState = pagerState,
                     documentStatus = state.document.documentStatus,
                     onConductClickListener = onConductClickListener
                 )
@@ -140,11 +137,8 @@ fun DocumentCreateScreen(
                     reserves = state.reserves,
                     onReservesClickListener = onReserveClickListener,
                     onSaveClickListener = onSaveClickListener,
-                    onPrevClickListener = onPrevClickListener,
                     onSettingsClickListener = onSettingsClickListener,
                     onChooseClickListener = onChooseReserveClickListener,
-                    coroutineScope = coroutineScope,
-                    pagerState = pagerState,
                     documentStatus = state.document.documentStatus,
                     onConductClickListener = onConductClickListener
                 )
@@ -179,6 +173,21 @@ fun DocumentCreateScreen(
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { onPageChanged(it) }
+    }
+
+    // todo сделать через side effect
+    if (state.confirmDialogType == DocumentConfirmAlertType.SAVE) {
+        ConfirmAlertDialog(
+            onDismiss = onDismissConfirmDialog,
+            onConfirmClick = onConfirmActionClick,
+            textRes = R.string.common_confirm_save_text
+        )
+    } else if (state.confirmDialogType == DocumentConfirmAlertType.CONDUCT) {
+        ConfirmAlertDialog(
+            onDismiss = onDismissConfirmDialog,
+            onConfirmClick = onConfirmActionClick,
+            textRes = R.string.confirm_conduct_text
+        )
     }
 }
 
@@ -228,17 +237,11 @@ private fun ParamContent(
     documentStatus: DocumentStatus,
     onParamClickListener: (ParamDomain) -> Unit,
     onCrossClickListener: (ParamDomain) -> Unit,
-    onSaveClickListener: () -> Unit,
-    onNextClickListener: () -> Unit,
-    coroutineScope: CoroutineScope,
-    pagerState: PagerState
+    onSaveClickListener: () -> Unit
 ) {
     Scaffold(bottomBar = {
         ParamBottomBar(
             onSaveClickListener = onSaveClickListener,
-            onNextClickListener = onNextClickListener,
-            coroutineScope = coroutineScope,
-            pagerState = pagerState,
             onConductClickListener = onConductClickListener,
             documentStatus = documentStatus
         )
@@ -287,12 +290,8 @@ private fun AccountingObjectScreen(
     onSettingsClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
     onChooseClickListener: () -> Unit,
-    onNextClickListener: () -> Unit,
-    onPrevClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
-    documentStatus: DocumentStatus,
-    coroutineScope: CoroutineScope,
-    pagerState: PagerState
+    documentStatus: DocumentStatus
 ) {
     Scaffold(
         bottomBar = {
@@ -301,18 +300,6 @@ private fun AccountingObjectScreen(
                 onSettingsClickListener = onSettingsClickListener,
                 onSaveClickListener = onSaveClickListener,
                 onChooseClickListener = onChooseClickListener,
-                onNextClickListener = {
-                    onNextClickListener()
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(DocumentCreateStoreFactory.RESERVES_PAGE)
-                    }
-                },
-                onPrevClickListener = {
-                    onPrevClickListener()
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(DocumentCreateStoreFactory.PARAMS_PAGE)
-                    }
-                },
                 onConductClickListener = onConductClickListener,
                 documentStatus = documentStatus
             )
@@ -339,7 +326,8 @@ private fun AccountingObjectScreen(
                                 onAccountingObjectListener = onAccountingObjectClickListener,
                                 isShowBottomLine = isShowBottomLine,
                                 status = item.status?.type,
-                                isEnabled = documentStatus != DocumentStatus.COMPLETED
+                                isEnabled = documentStatus != DocumentStatus.COMPLETED,
+                                isShowScanInfo = false
                             )
                         }
                     }
@@ -357,11 +345,8 @@ private fun ReservesScreen(
     onSettingsClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
     onChooseClickListener: () -> Unit,
-    onPrevClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
-    documentStatus: DocumentStatus,
-    coroutineScope: CoroutineScope,
-    pagerState: PagerState
+    documentStatus: DocumentStatus
 ) {
     Scaffold(
         bottomBar = {
@@ -370,13 +355,6 @@ private fun ReservesScreen(
                 onSettingsClickListener = onSettingsClickListener,
                 onSaveClickListener = onSaveClickListener,
                 onChooseClickListener = onChooseClickListener,
-                onPrevClickListener = {
-                    onPrevClickListener()
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(DocumentCreateStoreFactory.ACCOUNTING_OBJECT_PAGE)
-                    }
-                },
-                onNextClickListener = {},
                 onConductClickListener = onConductClickListener,
                 documentStatus = documentStatus
             )
@@ -463,11 +441,8 @@ private fun Empty(paddingValues: PaddingValues) {
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun ParamBottomBar(
-    onNextClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
-    pagerState: PagerState,
-    coroutineScope: CoroutineScope,
     documentStatus: DocumentStatus
 ) {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -484,20 +459,6 @@ private fun ParamBottomBar(
             modifier = Modifier.weight(1f),
             enabled = documentStatus != DocumentStatus.COMPLETED
         )
-        Spacer(modifier = Modifier.width(16.dp))
-
-        OutlinedImageButton(
-            imageId = R.drawable.ic_arrow_right,
-            paddingValues = PaddingValues(12.dp),
-            onClick = {
-                onNextClickListener()
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(DocumentCreateStoreFactory.ACCOUNTING_OBJECT_PAGE)
-                }
-            },
-            enabled = true,
-            modifier = Modifier
-        )
     }
 }
 
@@ -509,8 +470,6 @@ private fun ListBottomBar(
     onSaveClickListener: () -> Unit,
     onChooseClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
-    onNextClickListener: () -> Unit,
-    onPrevClickListener: () -> Unit,
     documentStatus: DocumentStatus
 ) {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -543,24 +502,6 @@ private fun ListBottomBar(
             onClick = onSaveClickListener,
             isEnabled = documentStatus != DocumentStatus.COMPLETED
         )
-        Spacer(modifier = Modifier.width(8.dp))
-        OutlinedImageButton(
-            imageId = R.drawable.ic_arrow_back,
-            onClick = { onPrevClickListener() },
-            modifier = Modifier,
-            paddingValues = PaddingValues(12.dp),
-            enabled = true
-        )
-        if (isAccountingObject) {
-            Spacer(modifier = Modifier.width(4.dp))
-            OutlinedImageButton(
-                imageId = R.drawable.ic_arrow_right,
-                onClick = { onNextClickListener() },
-                modifier = Modifier,
-                paddingValues = PaddingValues(12.dp),
-                enabled = true
-            )
-        }
     }
 }
 
@@ -588,10 +529,8 @@ fun DocumentCreateScreenPreview() {
                 creationDate = 123213213,
                 accountingObjects = listOf(),
                 params = listOf(
-                    ParamDomain(
-                        "1", "fsdsfsdf",
-                        type = ManualType.ORGANIZATION
-                    ),
+                    StructuralParamDomain(manualType = ManualType.STRUCTURAL_FROM),
+                    StructuralParamDomain(manualType = ManualType.STRUCTURAL_TO),
                     ParamDomain(
                         "1", "fsdsfsdf",
                         type = ManualType.MOL
@@ -607,10 +546,8 @@ fun DocumentCreateScreenPreview() {
             ),
             accountingObjects = listOf(),
             params = listOf(
-                ParamDomain(
-                    "1", "fsdsfsdf",
-                    type = ManualType.ORGANIZATION
-                ),
+                StructuralParamDomain(manualType = ManualType.STRUCTURAL_FROM),
+                StructuralParamDomain(manualType = ManualType.STRUCTURAL_TO),
                 ParamDomain(
                     "1", "fsdsfsdf",
                     type = ManualType.MOL
@@ -635,4 +572,10 @@ fun DocumentCreateScreenPreview() {
         {},
         {},
         {})
+}
+
+enum class DocumentConfirmAlertType {
+    CONDUCT,
+    SAVE,
+    NONE
 }

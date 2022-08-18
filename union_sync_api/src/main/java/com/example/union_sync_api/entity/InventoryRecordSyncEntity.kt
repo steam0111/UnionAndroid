@@ -4,5 +4,5 @@ data class InventoryRecordSyncEntity(
     val id: String,
     val inventoryId: String,
     val accountingObjectId: String,
-    val updateDate: Long
+    val updateDate: Long?
 )

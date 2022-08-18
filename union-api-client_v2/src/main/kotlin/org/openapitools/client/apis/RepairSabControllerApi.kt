@@ -1,14 +1,13 @@
 package org.openapitools.client.apis
 
 
+import retrofit2.http.*
+import retrofit2.Response
+import okhttp3.RequestBody
+
 import org.openapitools.client.models.PostResponseV2
 import org.openapitools.client.models.PutResponseV2
 import org.openapitools.client.models.SaveRepairRequestV2
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Path
 
 interface RepairSabControllerApi {
     /**
@@ -17,7 +16,7 @@ interface RepairSabControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
+     * @param id 
      * @return [PostResponseV2]
      */
     @POST("api/documents/repairs/{id}/complete")
@@ -29,8 +28,8 @@ interface RepairSabControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
-     * @param saveRepairRequestV2  
+     * @param id 
+     * @param saveRepairRequestV2 
      * @return [PutResponseV2]
      */
     @PUT("api/documents/repairs-update/{id}")

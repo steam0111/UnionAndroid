@@ -20,6 +20,9 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.EmployeeDtoV2
+import org.openapitools.client.models.StructuralUnitDtoV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -32,10 +35,12 @@ import com.squareup.moshi.Json
  * @param dateUpdate 
  * @param catalogItemName 
  * @param code 
+ * @param userInserted 
+ * @param userUpdated 
  * @param name 
  * @param creationDate 
- * @param organizationId 
- * @param extendedOrganization 
+ * @param structuralUnitId 
+ * @param extendedStructuralUnit 
  * @param responsibleId 
  * @param extendedResponsible 
  * @param filterDate 
@@ -51,7 +56,7 @@ data class InventoryResultWithAccountingObjectsDtoV2 (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int?=null,
+    val version: kotlin.Int? = null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -65,17 +70,23 @@ data class InventoryResultWithAccountingObjectsDtoV2 (
     @Json(name = "code")
     val code: kotlin.String? = null,
 
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
+
     @Json(name = "name")
     val name: kotlin.String? = null,
 
     @Json(name = "creationDate")
     val creationDate: kotlin.String? = null,
 
-    @Json(name = "organizationId")
-    val organizationId: kotlin.String? = null,
+    @Json(name = "structuralUnitId")
+    val structuralUnitId: kotlin.String? = null,
 
-    @Json(name = "extendedOrganization")
-    val extendedOrganization: OrganizationDtoV2? = null,
+    @Json(name = "extendedStructuralUnit")
+    val extendedStructuralUnit: StructuralUnitDtoV2? = null,
 
     @Json(name = "responsibleId")
     val responsibleId: kotlin.String? = null,

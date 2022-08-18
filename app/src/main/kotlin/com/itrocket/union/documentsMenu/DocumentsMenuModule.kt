@@ -24,7 +24,7 @@ object DocumentMenuModule {
         }
 
         factory {
-            DocumentMenuInteractor(get(), get())
+            DocumentMenuInteractor(get(), get(), get(), get(), get())
         }
 
         factory {

@@ -9,7 +9,7 @@ import org.openapitools.client.models.GetMyPermissionsResponseV2
 
 interface AuthMainRepository {
 
-    suspend fun signIn(authCreds: AuthCredsDomain): AuthDomain
+    suspend fun signIn(authCreds: AuthCredsDomain, isActiveDirectory: Boolean): AuthDomain
 
     suspend fun refreshToken(refreshToken: String, accessToken: String): AuthCredentials
 

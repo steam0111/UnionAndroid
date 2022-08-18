@@ -13,9 +13,12 @@ class AuthMainInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    suspend fun signIn(login: String, password: String) {
+    suspend fun signIn(login: String, password: String, isActiveDirectory: Boolean) {
         withContext(coreDispatchers.io) {
-            val auth = repository.signIn(AuthCredsDomain(login = login, password = password))
+            val auth = repository.signIn(
+                AuthCredsDomain(login = login, password = password),
+                isActiveDirectory
+            )
             repository.saveAuthCredentials(auth)
             repository.saveLogin(login)
             val config = repository.getMyConfig()

@@ -10,28 +10,14 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.openapitools.client.custom_api.AccountingObjectApi
-import org.openapitools.client.custom_api.AuthApi
-import org.openapitools.client.custom_api.BranchesApi
-import org.openapitools.client.custom_api.CounterpartyApi
-import org.openapitools.client.custom_api.DepartmentApi
-import org.openapitools.client.custom_api.EmployeeApi
-import org.openapitools.client.custom_api.EquipmentTypeApi
-import org.openapitools.client.custom_api.LocationApi
-import org.openapitools.client.custom_api.NomenclaturesApi
-import org.openapitools.client.custom_api.OrderApi
-import org.openapitools.client.custom_api.OrganizationApi
-import org.openapitools.client.custom_api.ProducerApi
-import org.openapitools.client.custom_api.ReceptionItemCategoryApi
-import org.openapitools.client.custom_api.RegionApi
-import org.openapitools.client.custom_api.ReserveApi
-import org.openapitools.client.custom_api.SyncControllerApi
+import org.openapitools.client.apis.ExtractMyUserInformationControllerApi
+import org.openapitools.client.custom_api.*
 import org.openapitools.client.infrastructure.BigDecimalAdapter
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
-import org.openapitools.client.apis.ExtractMyUserInformationControllerApi
+import org.openapitools.client.apis.JwtAuthControllerApi
 
 @JvmInline
 value class Seconds(val value: Long)
@@ -47,7 +33,9 @@ object NetworkModule {
     private val timeout: Seconds = Seconds(120L)
 
     val module = module {
-        single { Moshi.Builder().add(BigDecimalAdapter()).build() }
+        single<Moshi> {
+            Moshi.Builder().add(BigDecimalAdapter()).build()
+        }
         single<Retrofit>(UNAUTHORIZED_RETROFIT_QUALIFIER) {
             Retrofit.Builder()
                 .baseUrl(get<ServerConnectRepository>().getReadyServerUrl())
@@ -67,6 +55,7 @@ object NetworkModule {
                 .addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BODY
                 })
+                .getUnsafeClient()
                 .build()
         }
         single<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER) {
@@ -90,6 +79,7 @@ object NetworkModule {
                 .addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BODY
                 })
+                .getUnsafeClient()
                 .build()
         }
         single {
@@ -110,6 +100,10 @@ object NetworkModule {
         single<AuthApi> {
             get<Retrofit>(UNAUTHORIZED_RETROFIT_QUALIFIER)
                 .create(AuthApi::class.java)
+        }
+        single<JwtAuthControllerApi> {
+            get<Retrofit>(UNAUTHORIZED_RETROFIT_QUALIFIER)
+                .create(JwtAuthControllerApi::class.java)
         }
         single<NomenclaturesApi> {
             get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)

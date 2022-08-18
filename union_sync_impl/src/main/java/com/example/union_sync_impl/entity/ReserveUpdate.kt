@@ -7,6 +7,6 @@ data class ReserveUpdate(
     val id: String,
     val count: Long,
     val locationId: String?,
-    val updateDate: Long,
+    val updateDate: Long?,
     val userUpdated: String?
 )

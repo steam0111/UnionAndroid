@@ -8,31 +8,38 @@ data class ReserveSyncEntity(
     val orderId: String?,
     val nomenclatureId: String?,
     val nomenclatureGroupId: String?,
-    val businessUnitId: String?,
     val name: String,
     val count: Long?,
     val receptionItemCategoryId: String?,
-    val structuralSubdivisionId: String?,
     val receptionDocumentNumber: String?,
     val unitPrice: String?,
     val userInserted: String?,
     val userUpdated: String?,
+    val insertDate: Long?,
+    val updateDate: Long?,
+    val structuralId: String?,
+    val traceable: Boolean,
+    val invoiceNumber: String?,
+    val subName: String?
 )
 
 fun ReserveSyncEntity.toReserveUpdateSyncEntity(userUpdated: String?) = ReserveUpdateSyncEntity(
     id = id,
     count = count ?: 0,
     locationId = locationSyncEntity?.id,
-    userUpdated = userUpdated
+    userUpdated = userUpdated,
+    dateUpdate = System.currentTimeMillis()
 )
 
-fun ReserveSyncEntity.toReserveShortSyncEntity(locationId: String? = null, userUpdated: String?) = ReserveShortSyncEntity(
-    locationId = locationId ?: locationSyncEntity?.id,
-    nomenclatureId = nomenclatureId,
-    orderId = orderId,
-    name = name,
-    userUpdated = userUpdated
-)
+fun ReserveSyncEntity.toReserveShortSyncEntity(locationId: String? = null, userUpdated: String?) =
+    ReserveShortSyncEntity(
+        locationId = locationId ?: locationSyncEntity?.id,
+        nomenclatureId = nomenclatureId,
+        orderId = orderId,
+        name = name,
+        userUpdated = userUpdated,
+        updateDate = System.currentTimeMillis()
+    )
 
 fun ReserveSyncEntity.toDocumentReserveCountSyncEntity() = DocumentReserveCountSyncEntity(
     id = id,

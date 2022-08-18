@@ -20,6 +20,9 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.RemainsDtoV2
+import org.openapitools.client.models.TransitDtoV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -32,6 +35,8 @@ import com.squareup.moshi.Json
  * @param dateUpdate 
  * @param catalogItemName 
  * @param code 
+ * @param userInserted 
+ * @param userUpdated 
  * @param transitId 
  * @param extendedTransit 
  * @param remainsId 
@@ -48,7 +53,7 @@ data class TransitRemainsRecordDtoV2 (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int?=null,
+    val version: kotlin.Int? = null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -61,6 +66,12 @@ data class TransitRemainsRecordDtoV2 (
 
     @Json(name = "code")
     val code: kotlin.String? = null,
+
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
 
     @Json(name = "transitId")
     val transitId: kotlin.String? = null,
@@ -75,7 +86,7 @@ data class TransitRemainsRecordDtoV2 (
     val extendedRemains: RemainsDtoV2? = null,
 
     @Json(name = "count")
-    val count: Long? = null
+    val count: java.math.BigDecimal? = null
 
 )
 

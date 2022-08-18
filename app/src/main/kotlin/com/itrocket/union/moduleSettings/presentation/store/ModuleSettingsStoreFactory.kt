@@ -130,6 +130,8 @@ class ModuleSettingsStoreFactory(
         data class Service(val service: String) : Result()
         data class Services(val services: List<String>) : Result()
         data class DropdownExpanded(val dropdownExpanded: Boolean) : Result()
+        data class DropDownReaderPowerExpanded(val dropDownReaderPowerExpanded: Boolean) : Result()
+        data class ListPowerOfReader(val listPowerOfReader: List<Int>) : Result()
     }
 
     private object ReducerImpl : Reducer<ModuleSettingsStore.State, Result> {

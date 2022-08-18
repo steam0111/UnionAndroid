@@ -20,6 +20,8 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.LocationDtoV2
+
 import com.squareup.moshi.Json
 
 /**

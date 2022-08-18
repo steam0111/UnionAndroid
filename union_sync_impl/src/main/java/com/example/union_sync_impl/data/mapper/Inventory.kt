@@ -3,6 +3,7 @@ package com.example.union_sync_impl.data.mapper
 import com.example.union_sync_api.entity.*
 import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
+import com.example.union_sync_impl.utils.getServerFormatFromMillis
 import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.InventoryDtoV2
 
@@ -14,27 +15,28 @@ fun InventoryDtoV2.toInventoryDb(): InventoryDb {
                 add(it)
             }
         },
-        organizationId = organizationId,
         employeeId = molId,
-        date = getMillisDateFromServerFormat(creationDate.orEmpty()),
-        updateDate = System.currentTimeMillis(),
+        creationDate = getMillisDateFromServerFormat(dateInsert),
+        updateDate = getMillisDateFromServerFormat(dateUpdate),
         inventoryStatus = extendedInventoryState?.id.orEmpty(),
         name = name,
         code = code,
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        structuralId = structuralUnitId,
+        inventoryBaseId = inventoryBaseId
     )
 }
 
 fun InventoryDb.toInventoryDtoV2(): InventoryDtoV2 {
     return InventoryDtoV2(
         locationId = locationIds?.lastOrNull(),
-        organizationId = organizationId.orEmpty(),
+        structuralUnitId = structuralId.orEmpty(),
         molId = employeeId,
         inventoryStateId = inventoryStatus,
         inventoryTypeId = "",
-        creationDate = getStringDateFromMillis(date),
-        dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
+        creationDate = getStringDateFromMillis(creationDate),
+        dateUpdate = getStringDateFromMillis(updateDate),
         id = id,
         deleted = false,
         userInserted = userInserted,
@@ -45,45 +47,48 @@ fun InventoryDb.toInventoryDtoV2(): InventoryDtoV2 {
 fun InventoryCreateSyncEntity.toInventoryDb(id: String): InventoryDb {
     return InventoryDb(
         id = id,
-        organizationId = organizationId,
         employeeId = employeeId,
-        date = System.currentTimeMillis(),
+        creationDate = System.currentTimeMillis(),
         locationIds = locationIds,
         inventoryStatus = inventoryStatus,
-        updateDate = updateDate,
+        updateDate = System.currentTimeMillis(),
         code = code,
         name = name,
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        structuralId = structuralId,
+        inventoryBaseId = inventoryBaseId
     )
 }
 
 fun InventoryUpdateSyncEntity.toInventoryDb(): InventoryDb {
     return InventoryDb(
         id = id,
-        organizationId = organizationId,
         employeeId = employeeId,
-        date = date,
+        creationDate = creationDate,
         locationIds = locationIds,
         inventoryStatus = inventoryStatus,
-        updateDate = updateDate,
+        updateDate = System.currentTimeMillis(),
         code = code,
         name = name,
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        structuralId = structuralId,
+        inventoryBaseId = inventoryBaseId
     )
 }
 
 fun InventoryDb.toInventorySyncEntity(
-    organizationSyncEntity: OrganizationSyncEntity?,
+    structuralSyncEntity: StructuralSyncEntity?,
     mol: EmployeeSyncEntity?,
     locationSyncEntities: List<LocationSyncEntity>?,
-    accountingObjects: List<AccountingObjectSyncEntity>
+    accountingObjects: List<AccountingObjectSyncEntity>,
+    inventoryBaseSyncEntity: InventoryBaseSyncEntity?
 ): InventorySyncEntity {
     return InventorySyncEntity(
         id = id,
-        date = date,
-        organizationSyncEntity = organizationSyncEntity,
+        creationDate = creationDate,
+        structuralSyncEntity = structuralSyncEntity,
         mol = mol,
         locationSyncEntities = locationSyncEntities,
         accountingObjects = accountingObjects,
@@ -92,6 +97,7 @@ fun InventoryDb.toInventorySyncEntity(
         code = code,
         name = name,
         userInserted = userInserted,
-        userUpdated = userUpdated
+        userUpdated = userUpdated,
+        inventoryBaseSyncEntity = inventoryBaseSyncEntity
     )
 }

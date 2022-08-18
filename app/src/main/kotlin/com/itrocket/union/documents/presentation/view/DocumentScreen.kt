@@ -52,6 +52,7 @@ import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.store.DocumentStore
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.ButtonBottomBar
 import com.itrocket.union.ui.ButtonLoaderBottomBar
@@ -88,11 +89,13 @@ fun DocumentScreen(
                 )
             },
             bottomBar = {
-                ButtonLoaderBottomBar(
-                    text = stringResource(id = R.string.documents_create_issue),
-                    onClick = onCreateRequestClickListener,
-                    isLoading = state.isDocumentCreateLoading,
-                )
+                if (state.isCanCreateDocument) {
+                    ButtonLoaderBottomBar(
+                        text = stringResource(id = R.string.documents_create_issue),
+                        onClick = onCreateRequestClickListener,
+                        isLoading = state.isDocumentCreateLoading,
+                    )
+                }
             },
             content = {
                 when {
@@ -205,10 +208,8 @@ fun DocumentScreenPreview() {
                             "1", "blbbb",
                             type = ManualType.LOCATION
                         ),
-                        ParamDomain(
-                            "1", "blbbb",
-                            type = ManualType.ORGANIZATION
-                        )
+                        StructuralParamDomain(manualType = ManualType.STRUCTURAL_FROM),
+                        StructuralParamDomain(manualType = ManualType.STRUCTURAL_TO)
                     ),
                     dateUi = "12.12.12",
                     userInserted = ""
@@ -228,10 +229,8 @@ fun DocumentScreenPreview() {
                             "1", "blbbb",
                             type = ManualType.LOCATION
                         ),
-                        ParamDomain(
-                            "1", "blbbb",
-                            type = ManualType.ORGANIZATION
-                        )
+                        StructuralParamDomain(manualType = ManualType.STRUCTURAL_TO),
+                        StructuralParamDomain(manualType = ManualType.STRUCTURAL_FROM)
                     ),
                     dateUi = "12.12.12",
                     userInserted = ""
@@ -250,10 +249,8 @@ fun DocumentScreenPreview() {
                             "1", "blbbb",
                             type = ManualType.LOCATION
                         ),
-                        ParamDomain(
-                            "1", "blbbb",
-                            type = ManualType.ORGANIZATION
-                        )
+                        StructuralParamDomain(manualType = ManualType.STRUCTURAL_TO),
+                        StructuralParamDomain(manualType = ManualType.STRUCTURAL_FROM)
                     ),
                     dateUi = "12.12.12",
                     userInserted = ""
@@ -273,10 +270,8 @@ fun DocumentScreenPreview() {
                             "1", "blbbb",
                             type = ManualType.LOCATION
                         ),
-                        ParamDomain(
-                            "1", "blbbb",
-                            type = ManualType.ORGANIZATION
-                        )
+                        StructuralParamDomain(manualType = ManualType.STRUCTURAL_TO),
+                        StructuralParamDomain(manualType = ManualType.STRUCTURAL_FROM)
                     ),
                     dateUi = "12.12.12",
                     userInserted = ""

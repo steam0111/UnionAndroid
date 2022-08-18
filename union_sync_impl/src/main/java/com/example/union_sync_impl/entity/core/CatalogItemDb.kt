@@ -5,9 +5,10 @@ import androidx.room.Entity
 @Entity
 abstract class CatalogItemDb(
     id: String,
-    updateDate: Long?,
+    insertDate: Long? = null,
+    updateDate: Long? = null,
     userUpdated: String? = null,
-    userInserted: String? = null
-) : SyncItemDb(id, updateDate, userUpdated, userInserted) {
+    userInserted: String? = null,
+) : SyncItemDb(id, insertDate, updateDate, userUpdated, userInserted) {
     abstract var catalogItemName: String
 }

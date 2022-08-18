@@ -3,17 +3,13 @@ package com.example.union_sync_impl.entity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import com.example.union_sync_impl.entity.core.CatalogItemDb
+import com.example.union_sync_impl.entity.core.SyncItemDb
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.squareup.moshi.Json
 import java.math.BigDecimal
 
 @Entity(
-    foreignKeys = [ForeignKey(
-        entity = OrganizationDb::class,
-        parentColumns = arrayOf("id"),
-        childColumns = arrayOf("businessUnitId"),
-        //onDelete = ForeignKey.CASCADE TODO выставить посже когда появиться больше требования к бд
-    ),
+    foreignKeys = [
         ForeignKey(
             entity = LocationDb::class,
             parentColumns = arrayOf("id"),
@@ -43,12 +39,6 @@ import java.math.BigDecimal
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("receptionItemCategoryId"),
             //onDelete = ForeignKey.CASCADE TODO выставить посже когда появиться больше требования к бд
-        ),
-        ForeignKey(
-            entity = DepartmentDb::class,
-            parentColumns = arrayOf("id"),
-            childColumns = arrayOf("structuralSubdivisionId"),
-            //onDelete = ForeignKey.CASCADE TODO выставить посже когда появиться больше требования к бд
         )], tableName = "reserves"
 )
 class ReserveDb(
@@ -58,16 +48,25 @@ class ReserveDb(
     val locationTypeId: String?,
     val molId: String?,
     val orderId: String?,
-    userInserted: String?,
-    userUpdated: String?,
     val nomenclatureId: String?,
     val nomenclatureGroupId: String?,
-    val businessUnitId: String?,
     val name: String?,
     val count: Long?,
     val receptionItemCategoryId: String?,
-    val structuralSubdivisionId: String?,
     val receptionDocumentNumber: String?,
     val unitPrice: String?,
-    updateDate: Long?
-) : CatalogItemDb(id, updateDate, userUpdated, userInserted)
+    val structuralId: String?,
+    val traceable: Boolean,
+    val invoiceNumber: String?,
+    val subName: String?,
+    insertDate: Long?,
+    updateDate: Long?,
+    userInserted: String?,
+    userUpdated: String?,
+) : CatalogItemDb(
+    id = id,
+    insertDate = insertDate,
+    updateDate = updateDate,
+    userUpdated = userUpdated,
+    userInserted = userInserted
+)

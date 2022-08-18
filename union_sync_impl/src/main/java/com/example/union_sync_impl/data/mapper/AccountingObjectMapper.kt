@@ -1,24 +1,29 @@
 package com.example.union_sync_impl.data.mapper
 
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectStatusSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
+import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.entity.AccountingObjectDb
+import com.example.union_sync_impl.entity.AccountingObjectScanningUpdate
 import com.example.union_sync_impl.entity.AccountingObjectStatusDb
 import com.example.union_sync_impl.entity.AccountingObjectUpdate
 import com.example.union_sync_impl.entity.FullAccountingObject
+import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
+import com.example.union_sync_impl.utils.getServerFormatFromMillis
 import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.AccountingObjectDtoV2
 import org.openapitools.client.models.AccountingObjectStatusDto
-import org.openapitools.client.models.AccountingObjectStatusDtoV2
+import org.openapitools.client.models.EnumDtoV2
 
 fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
     return AccountingObjectDb(
         id = id,
         catalogItemName = catalogItemName.orEmpty(),
-        organizationId = organizationId,
+        structuralId = structuralUnitId,
         locationId = locationId,
         molId = molId,
         exploitingId = exploitingId,
@@ -37,18 +42,29 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
         count = count?.toInt(),
         commissioningDate = commissioningDate,
         internalNumber = internalNumber,
-        departmentId = departmentId,
         model = model,
         providerId = providerId,
-        updateDate = System.currentTimeMillis(),
-        branchId = branchId,
+        updateDate = getMillisDateFromServerFormat(dateUpdate),
+        insertDate = getMillisDateFromServerFormat(dateInsert),
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        subName = subName,
+        code = code,
+        marked = marked ?: false,
+        forWriteOff = forWriteOff ?: false,
+        writtenOff = writtenOff ?: false,
+        registered = registered ?: false,
+        commissioned = commissioned ?: false,
+        accountingObjectCategoryId = accountingObjectCategoryId,
+        invoiceNumber = invoiceNumber,
+        nfc = nfcValue,
+        traceable = traceable ?: false
     )
 }
 
 fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
-    locationSyncEntity: LocationSyncEntity?
+    locationSyncEntity: LocationSyncEntity?,
+    balanceUnitSyncEntity: StructuralSyncEntity?
 ): AccountingObjectDetailSyncEntity {
     return AccountingObjectDetailSyncEntity(
         accountingObject = accountingObjectDb.toSyncEntity(locationSyncEntity),
@@ -58,15 +74,15 @@ fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
         equipmentType = equipmentType?.toSyncEntity(),
         provider = provider?.toSyncEntity(),
         mol = mol?.toSyncEntity(),
-        organization = organization?.toSyncEntity(),
-        department = department?.toSyncEntity(),
-        branch = branch?.toSyncEntity()
+        structuralSyncEntity = structuralDb?.toStructuralSyncEntity(),
+        categorySyncEntity = categoryDb?.toSyncEntity(),
+        balanceUnitSyncEntity = balanceUnitSyncEntity
     )
 }
 
 fun AccountingObjectStatusDto.toStatusDb() = AccountingObjectStatusDb(id.orEmpty(), name)
 
-fun AccountingObjectStatusDtoV2.toStatusDb() = AccountingObjectStatusDb(id.orEmpty(), name)
+fun EnumDtoV2.toStatusDb() = AccountingObjectStatusDb(id.orEmpty(), name)
 
 fun AccountingObjectStatusSyncEntity.toStatusDb() = AccountingObjectStatusDb(id, name)
 
@@ -85,19 +101,30 @@ fun AccountingObjectDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?) =
         status = status?.toSyncEntity(),
         statusId = statusId,
         providerId = providerId,
-        departmentId = departmentId,
         producerId = producerId,
         equipmentTypeId = equipmentTypeId,
         locationId = locationId,
         molId = molId,
         exploitingEmployeeId = exploitingId,
-        organizationId = organizationId,
         internalNumber = internalNumber,
         model = model,
         locationSyncEntity = locationSyncEntity,
         nomenclatureId = nomenclatureId,
         nomenclatureGroupId = nomenclatureGroupId,
-        branchId = branchId,
+        structuralId = structuralId,
+        subName = subName,
+        code = code,
+        marked = marked,
+        forWriteOff = forWriteOff,
+        writtenOff = writtenOff,
+        commissioned = commissioned,
+        registered = registered,
+        invoiceNumber = invoiceNumber,
+        nfc = nfc,
+        traceable = traceable,
+        updateDate = updateDate,
+        dateInsert = insertDate,
+        userInserted = userInserted,
         userUpdated = userUpdated
     )
 
@@ -118,27 +145,39 @@ fun FullAccountingObject.toSyncEntity(
     commissioningDate = accountingObjectDb.commissioningDate,
     status = accountingObjectDb.status?.toSyncEntity(),
     providerId = accountingObjectDb.providerId,
-    departmentId = accountingObjectDb.departmentId,
     producerId = accountingObjectDb.producerId,
     equipmentTypeId = accountingObjectDb.equipmentTypeId,
     locationId = accountingObjectDb.locationId,
     molId = accountingObjectDb.molId,
     exploitingEmployeeId = accountingObjectDb.exploitingId,
-    organizationId = accountingObjectDb.organizationId,
     internalNumber = accountingObjectDb.internalNumber,
     model = accountingObjectDb.model,
     locationSyncEntity = locationSyncEntity,
     statusId = accountingObjectDb.statusId,
     nomenclatureGroupId = accountingObjectDb.nomenclatureGroupId,
     nomenclatureId = accountingObjectDb.nomenclatureId,
-    branchId = accountingObjectDb.branchId,
-    userUpdated = accountingObjectDb.userUpdated
+    structuralId = structuralDb?.id,
+    subName = accountingObjectDb.subName,
+    code = accountingObjectDb.code,
+    writtenOff = accountingObjectDb.writtenOff,
+    forWriteOff = accountingObjectDb.forWriteOff,
+    marked = accountingObjectDb.marked,
+    commissioned = accountingObjectDb.commissioned,
+    registered = accountingObjectDb.registered,
+    invoiceNumber = accountingObjectDb.invoiceNumber,
+    nfc = accountingObjectDb.nfc,
+    traceable = accountingObjectDb.traceable,
+    updateDate = accountingObjectDb.updateDate,
+    dateInsert = accountingObjectDb.insertDate,
+    userUpdated = accountingObjectDb.userUpdated,
+    userInserted = accountingObjectDb.userInserted
 )
 
 fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObjectDtoV2> {
     return map { fullAccountingObject ->
         val accountingObjectDb = fullAccountingObject.accountingObjectDb
         AccountingObjectDtoV2(
+            // todo
             id = accountingObjectDb.id,
             locationId = accountingObjectDb.locationId,
             exploitingId = accountingObjectDb.exploitingId,
@@ -150,7 +189,7 @@ fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObject
             startingPrice = accountingObjectDb.actualPrice,
             name = accountingObjectDb.name,
             model = accountingObjectDb.model,
-            organizationId = accountingObjectDb.organizationId,
+            structuralUnitId = accountingObjectDb.structuralId,
             molId = accountingObjectDb.molId,
             producerId = accountingObjectDb.producerId,
             typeId = accountingObjectDb.equipmentTypeId,
@@ -159,13 +198,13 @@ fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObject
             internalNumber = accountingObjectDb.internalNumber,
             inventoryNumber = accountingObjectDb.inventoryNumber,
             rfidValue = accountingObjectDb.rfidValue,
-            departmentId = accountingObjectDb.departmentId,
+            nfcValue = accountingObjectDb.nfc,
             count = accountingObjectDb.count?.toLong(),
             nomenclatureId = accountingObjectDb.nomenclatureId,
             nomenclatureGroupId = accountingObjectDb.nomenclatureGroupId,
-            branchId = accountingObjectDb.branchId,
             userInserted = accountingObjectDb.userInserted,
-            userUpdated = accountingObjectDb.userUpdated
+            userUpdated = accountingObjectDb.userUpdated,
+            deleted = false,
         )
     }
 }
@@ -179,10 +218,17 @@ fun AccountingObjectUpdateSyncEntity.toAccountingObjectUpdate(): AccountingObjec
         exploitingId = exploitingId,
         status = status?.toStatusDb(),
         statusId = statusId,
-        updateDate = updateDate,
         molId = molId,
-        departmentId = departmentId,
-        branchId = branchId,
-        userUpdated = userUpdated
+        structuralId = structuralId,
+        userUpdated = userUpdated,
+        updateDate = System.currentTimeMillis()
     )
 }
+
+fun AccountingObjectScanningData.toAccountingObjectScanningUpdate() =
+    AccountingObjectScanningUpdate(
+        id = id,
+        barcodeValue = barcodeValue,
+        rfidValue = rfidValue,
+        factoryNumber = factoryNumber
+    )

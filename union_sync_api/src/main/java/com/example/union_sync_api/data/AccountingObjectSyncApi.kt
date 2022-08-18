@@ -1,15 +1,15 @@
 package com.example.union_sync_api.data
 
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
+import kotlinx.coroutines.flow.Flow
 
 interface AccountingObjectSyncApi {
     suspend fun getAccountingObjects(
-        organizationId: String? = null,
         exploitingId: String? = null,
         molId: String? = null,
-        departmentId: String? = null,
         producerId: String? = null,
         equipmentTypeId: String? = null,
         providerId: String? = null,
@@ -18,14 +18,13 @@ interface AccountingObjectSyncApi {
         statusId: String? = null,
         textQuery: String? = null,
         accountingObjectsIds: List<String>? = null,
-        locationIds: List<String?>? = null
+        locationIds: List<String?>? = null,
+        structuralId: List<String?>? = null
     ): List<AccountingObjectSyncEntity>
 
     suspend fun getAccountingObjectsCount(
-        organizationId: String? = null,
         exploitingId: String? = null,
         molId: String? = null,
-        departmentId: String? = null,
         producerId: String? = null,
         equipmentTypeId: String? = null,
         providerId: String? = null,
@@ -34,10 +33,15 @@ interface AccountingObjectSyncApi {
         statusId: String? = null,
         textQuery: String? = null,
         accountingObjectsIds: List<String>? = null,
-        locationIds: List<String?>? = null
+        locationIds: List<String?>? = null,
+        structuralIds: List<String?>?
     ): Long
 
     suspend fun getAccountingObjectDetailById(id: String): AccountingObjectDetailSyncEntity
 
+    suspend fun getAccountingObjectDetailByIdFlow(id: String): Flow<AccountingObjectDetailSyncEntity>
+
     suspend fun updateAccountingObjects(accountingObjects: List<AccountingObjectUpdateSyncEntity>)
+
+    suspend fun updateAccountingObjectScanningData(accountingObject: AccountingObjectScanningData)
 }

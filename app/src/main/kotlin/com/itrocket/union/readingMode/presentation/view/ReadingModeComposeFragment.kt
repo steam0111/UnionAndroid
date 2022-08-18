@@ -2,6 +2,8 @@ package com.itrocket.union.readingMode.presentation.view
 
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeBottomSheet
 import com.itrocket.union.R
@@ -39,5 +41,24 @@ class ReadingModeComposeFragment :
                 }
             )
         }
+    }
+
+    override fun handleLabel(label: ReadingModeStore.Label) {
+        if (label is ReadingModeStore.Label.ResultReadingTab) {
+            setFragmentResult(
+                READING_MODE_TAB_RESULT_CODE,
+                bundleOf(READING_MODE_TAB_RESULT_LABEL to label.readingMode)
+            )
+        } else {
+            super.handleLabel(label)
+        }
+    }
+
+    companion object {
+        const val READING_MODE_TAB_RESULT_LABEL = "reading mode tab result label"
+        const val READING_MODE_TAB_RESULT_CODE = "reading mode tab result code"
+
+        const val READING_MODE_RESULT_CODE = "reading mode result code"
+        const val READING_MODE_RESULT_LABEL = "reading mode result label"
     }
 }

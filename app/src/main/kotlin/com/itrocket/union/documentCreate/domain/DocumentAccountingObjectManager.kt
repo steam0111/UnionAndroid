@@ -11,10 +11,9 @@ import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.getBranchId
-import com.itrocket.union.manual.getDepartmentId
 import com.itrocket.union.manual.getExploitingId
 import com.itrocket.union.manual.getFilterLocationLastId
+import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.manual.getMolId
 import kotlinx.coroutines.withContext
 
@@ -38,17 +37,17 @@ class DocumentAccountingObjectManager(
                     accountingObjectIds = accountingObjectIds,
                     exploitingId = exploitingId,
                     locationToId = params.getFilterLocationLastId(ManualType.LOCATION_TO),
-                    departmentToId = params.getDepartmentId(ManualType.DEPARTMENT_TO)
+                    structuralId = params.getFilterStructuralLastId(ManualType.STRUCTURAL_TO)
                 )
                 DocumentTypeDomain.RETURN -> changeReturn(
                     accountingObjectIds = accountingObjectIds,
                     locationToId = params.getFilterLocationLastId(ManualType.LOCATION_TO),
-                    departmentToId = params.getDepartmentId(ManualType.DEPARTMENT_TO)
+                    structuralId = params.getFilterStructuralLastId(ManualType.STRUCTURAL_TO)
                 )
                 DocumentTypeDomain.RELOCATION -> changeMove(
                     accountingObjectIds = accountingObjectIds,
                     locationToId = params.getFilterLocationLastId(ManualType.RELOCATION_LOCATION_TO),
-                    branchId = params.getBranchId(),
+                    structuralId = params.getFilterStructuralLastId(ManualType.STRUCTURAL_TO),
                     molId = params.getMolId()
                 )
                 else -> {
@@ -65,19 +64,20 @@ class DocumentAccountingObjectManager(
         accountingObjectIds: List<String>,
         exploitingId: String?,
         locationToId: String?,
-        departmentToId: String?
+        structuralId: String?
     ): List<AccountingObjectSyncEntity> {
         return withContext(coreDispatchers.io) {
             val accountingObjects = repository.getAccountingObjectsByIds(accountingObjectIds)
             val newStatus =
-                accountingObjectStatusSyncApi.getStatuses(id = ObjectStatusType.GIVEN.name).first()
+                accountingObjectStatusSyncApi.getStatuses(id = ObjectStatusType.GIVEN.name)
+                    .firstOrNull()
             accountingObjects.map {
                 it.copy(
                     exploitingEmployeeId = exploitingId,
                     status = newStatus,
-                    statusId = newStatus.id,
+                    statusId = newStatus?.id,
                     locationId = locationToId ?: it.locationId,
-                    departmentId = departmentToId ?: it.departmentId
+                    structuralId = structuralId ?: it.structuralId
                 )
             }
         }
@@ -86,7 +86,7 @@ class DocumentAccountingObjectManager(
     private suspend fun changeReturn(
         accountingObjectIds: List<String>,
         locationToId: String?,
-        departmentToId: String?
+        structuralId: String?
     ): List<AccountingObjectSyncEntity> {
         return withContext(coreDispatchers.io) {
             val accountingObjects = repository.getAccountingObjectsByIds(accountingObjectIds)
@@ -99,7 +99,7 @@ class DocumentAccountingObjectManager(
                     status = newStatus,
                     statusId = newStatus.id,
                     locationId = locationToId ?: it.locationId,
-                    departmentId = departmentToId ?: it.departmentId
+                    structuralId = structuralId ?: it.structuralId
                 )
             }
         }
@@ -108,7 +108,7 @@ class DocumentAccountingObjectManager(
     private suspend fun changeMove(
         accountingObjectIds: List<String>,
         locationToId: String?,
-        branchId: String?,
+        structuralId: String?,
         molId: String?
     ): List<AccountingObjectSyncEntity> {
         return withContext(coreDispatchers.io) {
@@ -117,7 +117,7 @@ class DocumentAccountingObjectManager(
                 it.copy(
                     locationId = locationToId ?: it.locationId,
                     molId = molId ?: it.molId,
-                    branchId = branchId ?: it.branchId
+                    structuralId = structuralId ?: it.structuralId
                 )
             }
         }

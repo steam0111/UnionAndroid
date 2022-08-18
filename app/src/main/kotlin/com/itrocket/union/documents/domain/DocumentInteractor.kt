@@ -9,6 +9,7 @@ import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.documents.presentation.view.toDocumentItemView
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.utils.getStringDateFromMillis
 import com.itrocket.union.utils.getTextDateFromStringDate
 import com.itrocket.union.utils.isCurrentYear
@@ -77,10 +78,8 @@ class DocumentInteractor(
 
     fun getFilters(): List<ParamDomain> {
         return listOf(
-            ParamDomain(
-                type = ManualType.ORGANIZATION,
-                value = ""
-            ),
+            StructuralParamDomain(manualType = ManualType.STRUCTURAL_FROM),
+            StructuralParamDomain(manualType = ManualType.STRUCTURAL_TO),
             ParamDomain(
                 type = ManualType.MOL,
                 value = ""

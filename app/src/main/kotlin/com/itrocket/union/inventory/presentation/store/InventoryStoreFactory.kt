@@ -10,12 +10,17 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.inventory.domain.InventoryInteractor
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.Params
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.manual.filterNotEmpty
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
+import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
+import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -26,7 +31,9 @@ class InventoryStoreFactory(
     private val inventoryInteractor: InventoryInteractor,
     private val accountingObjectInteractor: AccountingObjectInteractor,
     private val errorInteractor: ErrorInteractor,
-    private val selectParamsInteractor: SelectParamsInteractor
+    private val selectParamsInteractor: SelectParamsInteractor,
+    private val filterInteractor: FilterInteractor,
+    private val permissionsInteractor: UnionPermissionsInteractor
 ) {
     fun create(): InventoryStore =
         object : InventoryStore,
@@ -49,6 +56,7 @@ class InventoryStoreFactory(
             action: Unit,
             getState: () -> InventoryStore.State
         ) {
+            dispatch(Result.CanCreateInventory(permissionsInteractor.canCreate(UnionPermission.INVENTORY)))
             dispatch(Result.Params(selectParamsInteractor.getInitialDocumentParams(getState().params)))
             observeAccountingObjects(getState().params)
         }
@@ -90,6 +98,15 @@ class InventoryStoreFactory(
                     )
                     changeParams(params)
                 }
+                is InventoryStore.Intent.OnStructuralChanged -> {
+                    val params = inventoryInteractor.changeStructural(
+                        getState().params,
+                        intent.structural.structural
+                    )
+                    changeParams(
+                        params = params
+                    )
+                }
             }
         }
 
@@ -99,26 +116,32 @@ class InventoryStoreFactory(
 
         private suspend fun changeParams(params: List<ParamDomain>) {
             dispatch(Result.Params(params))
-            isCreateEnabled(params)
             observeAccountingObjects(params.filterNotEmpty())
         }
 
-        private fun isCreateEnabled(params: List<ParamDomain>) {
-            dispatch(Result.IsCreateEnabled(inventoryInteractor.isParamsValid(params)))
-        }
-
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
-            if (param.type == ManualType.LOCATION) {
-                publish(
-                    InventoryStore.Label.ShowLocation(param as LocationParamDomain)
-                )
-            } else {
-                publish(
-                    InventoryStore.Label.ShowParamSteps(
-                        currentStep = params.indexOf(param) + 1,
-                        params = params.filter { it.type != ManualType.LOCATION }
+            when (param.type) {
+                ManualType.LOCATION_INVENTORY -> {
+                    publish(
+                        InventoryStore.Label.ShowLocation(param as LocationParamDomain)
                     )
-                )
+                }
+                ManualType.STRUCTURAL -> {
+                    publish(
+                        InventoryStore.Label.ShowStructural(param as StructuralParamDomain)
+                    )
+                }
+                else -> {
+                    val defaultTypeParams =
+                        filterInteractor.getDefaultTypeParams(Params(params))
+                    val currentStep = defaultTypeParams.indexOf(param) + 1
+                    publish(
+                        InventoryStore.Label.ShowParamSteps(
+                            currentStep = currentStep,
+                            params = params.filter { it.type != ManualType.LOCATION_INVENTORY && it.type != ManualType.STRUCTURAL }
+                        )
+                    )
+                }
             }
         }
 
@@ -159,7 +182,7 @@ class InventoryStoreFactory(
         data class Params(val params: List<ParamDomain>) : Result()
         data class SelectPage(val page: Int) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
-        data class IsCreateEnabled(val enabled: Boolean) : Result()
+        data class CanCreateInventory(val isCanCreateInventory: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryStore.State, Result> {
@@ -170,7 +193,7 @@ class InventoryStoreFactory(
                 is Result.SelectPage -> copy(selectedPage = result.page)
                 is Result.AccountingObjects -> copy(accountingObjectList = result.accountingObjects)
                 is Result.IsCreateInventoryLoading -> copy(isCreateInventoryLoading = result.isLoading)
-                is Result.IsCreateEnabled -> copy(isCreateEnabled = result.enabled)
+                is Result.CanCreateInventory -> copy(isCanCreateInventory = result.isCanCreateInventory)
             }
     }
 }

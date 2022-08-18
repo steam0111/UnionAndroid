@@ -6,6 +6,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.documentsMenu.domain.DocumentMenuInteractor
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
+import com.itrocket.union.employeeDetail.domain.EmployeeDetailInteractor
 
 class DocumentMenuStoreFactory(
     private val storeFactory: StoreFactory,
@@ -35,6 +36,7 @@ class DocumentMenuStoreFactory(
             getState: () -> DocumentMenuStore.State
         ) {
             dispatch(Result.Documents(documentMenuInteractor.getDocuments(), 0))
+            getUsername()
         }
 
         override suspend fun executeIntent(
@@ -72,12 +74,19 @@ class DocumentMenuStoreFactory(
         override fun handleError(throwable: Throwable) {
             publish(DocumentMenuStore.Label.Error(throwable.message.orEmpty()))
         }
+
+        private suspend fun getUsername() {
+            val currentEmployeeId = authMainInteractor.getMyConfig().employeeId
+            val username = documentMenuInteractor.getUsername(currentEmployeeId)
+            dispatch(Result.Username(username))
+        }
     }
 
     private sealed class Result {
         data class Documents(val documents: List<DocumentMenuDomain>, val menuDeepLevel: Int) :
             Result()
 
+        data class Username(val username: String) : Result()
         data class Loading(val loading: Boolean) : Result()
     }
 
@@ -89,6 +98,7 @@ class DocumentMenuStoreFactory(
                     menuDeepLevel = result.menuDeepLevel
                 )
                 is Result.Loading -> copy(loading = result.loading)
+                is Result.Username -> copy(userName = result.username)
             }
     }
 }

@@ -20,6 +20,11 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.EmployeeDtoV2
+import org.openapitools.client.models.EnumDtoV2
+import org.openapitools.client.models.LocationDtoV2
+import org.openapitools.client.models.StructuralUnitDtoV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -28,19 +33,21 @@ import com.squareup.moshi.Json
  * @param id 
  * @param deleted 
  * @param version 
- * @param organizationId 
+ * @param structuralUnitId 
  * @param inventoryStateId 
  * @param inventoryTypeId 
  * @param dateInsert 
  * @param dateUpdate 
  * @param catalogItemName 
  * @param code 
+ * @param userInserted 
+ * @param userUpdated 
  * @param creationDate 
  * @param internalNumber 
  * @param locationId 
  * @param molId 
  * @param name 
- * @param extendedOrganization 
+ * @param extendedStructuralUnit 
  * @param extendedLocation 
  * @param extendedMol 
  * @param extendedInventoryState 
@@ -59,10 +66,10 @@ data class InventoryDtoV2 (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int?=null,
+    val version: kotlin.Int? = null,
 
-    @Json(name = "organizationId")
-    val organizationId: kotlin.String,
+    @Json(name = "structuralUnitId")
+    val structuralUnitId: kotlin.String,
 
     @Json(name = "inventoryStateId")
     val inventoryStateId: kotlin.String,
@@ -76,17 +83,17 @@ data class InventoryDtoV2 (
     @Json(name = "dateUpdate")
     val dateUpdate: kotlin.String? = null,
 
-    @Json(name = "UserInserted")
-    val userInserted: String? = null,
-
-    @Json(name = "UserUpdated")
-    val userUpdated: String? = null,
-
     @Json(name = "catalogItemName")
     val catalogItemName: kotlin.String? = null,
 
     @Json(name = "code")
     val code: kotlin.String? = null,
+
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
 
     @Json(name = "creationDate")
     val creationDate: kotlin.String? = null,
@@ -103,8 +110,8 @@ data class InventoryDtoV2 (
     @Json(name = "name")
     val name: kotlin.String? = null,
 
-    @Json(name = "extendedOrganization")
-    val extendedOrganization: OrganizationDtoV2? = null,
+    @Json(name = "extendedStructuralUnit")
+    val extendedStructuralUnit: StructuralUnitDtoV2? = null,
 
     @Json(name = "extendedLocation")
     val extendedLocation: LocationDtoV2? = null,
@@ -113,16 +120,16 @@ data class InventoryDtoV2 (
     val extendedMol: EmployeeDtoV2? = null,
 
     @Json(name = "extendedInventoryState")
-    val extendedInventoryState: InventoryStateDtoV2? = null,
+    val extendedInventoryState: EnumDtoV2? = null,
 
     @Json(name = "extendedInventoryType")
-    val extendedInventoryType: InventoryTypeDtoV2? = null,
+    val extendedInventoryType: EnumDtoV2? = null,
 
     @Json(name = "inventoryBaseId")
     val inventoryBaseId: kotlin.String? = null,
 
     @Json(name = "extendedInventoryBase")
-    val extendedInventoryBase: InventoryBaseDtoV2? = null,
+    val extendedInventoryBase: EnumDtoV2? = null,
 
     @Json(name = "comment")
     val comment: kotlin.String? = null

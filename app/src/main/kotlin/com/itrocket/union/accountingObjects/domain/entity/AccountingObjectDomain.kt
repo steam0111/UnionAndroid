@@ -2,7 +2,6 @@ package com.itrocket.union.accountingObjects.domain.entity
 
 import android.os.Parcelable
 import com.example.union_sync_api.entity.AccountingObjectInfoSyncEntity
-import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import kotlinx.parcelize.Parcelize
 
@@ -17,6 +16,7 @@ data class AccountingObjectDomain(
     val isBarcode: Boolean = false,
     val rfidValue: String?,
     val barcodeValue: String?,
+    val factoryNumber: String?,
     val listMainInfo: List<ObjectInfoDomain>,
     val listAdditionallyInfo: List<ObjectInfoDomain>
 ) : Parcelable {

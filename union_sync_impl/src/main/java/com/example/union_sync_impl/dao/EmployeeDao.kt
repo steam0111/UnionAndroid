@@ -19,14 +19,14 @@ interface EmployeeDao {
 
     @Query(
         "SELECT employees.*," +
-                "organizations.id AS organizations_id, " +
-                "organizations.catalogItemName AS organizations_catalogItemName, " +
-                "organizations.name AS organizations_name, " +
-                "organizations.actualAddress AS organizations_actualAddress, " +
-                "organizations.legalAddress AS organizations_legalAddress " +
+                "" +
+                "structural.id AS structural_id, " +
+                "structural.catalogItemName AS structural_catalogItemName, " +
+                "structural.name AS structural_name, " +
+                "structural.parentId AS structural_parentId " +
                 "" +
                 "FROM employees " +
-                "LEFT JOIN organizations ON employees.organizationId = organizations.id " +
+                "LEFT JOIN structural ON employees.structuralId = structural.id " +
                 "WHERE employees.id = :id LIMIT 1"
     )
     suspend fun getFullById(id: String): FullEmployeeDb

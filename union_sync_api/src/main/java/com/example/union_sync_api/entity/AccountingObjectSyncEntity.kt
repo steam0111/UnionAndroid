@@ -18,17 +18,28 @@ data class AccountingObjectSyncEntity(
     val status: AccountingObjectStatusSyncEntity?,
     val statusId: String?,
     val providerId: String?,
-    val departmentId: String?,
     val producerId: String?,
     val equipmentTypeId: String?,
     val locationId: String?,
     val molId: String?,
     val exploitingEmployeeId: String?,
-    val organizationId: String?,
     val model: String?,
     val locationSyncEntity: LocationSyncEntity?,
-    val branchId: String?,
-    val userUpdated: String?
+    val structuralId: String?,
+    val subName: String?,
+    val code: String?,
+    val marked: Boolean,
+    val forWriteOff: Boolean,
+    val writtenOff: Boolean,
+    val commissioned: Boolean,
+    val registered: Boolean,
+    val traceable: Boolean,
+    val invoiceNumber: String?,
+    val nfc: String?,
+    val userUpdated: String?,
+    var userInserted: String?,
+    val dateInsert: Long?,
+    var updateDate: Long?,
 )
 
 fun AccountingObjectSyncEntity.toAccountingObjectUpdateSyncEntity(userUpdated: String?): AccountingObjectUpdateSyncEntity {
@@ -39,8 +50,7 @@ fun AccountingObjectSyncEntity.toAccountingObjectUpdateSyncEntity(userUpdated: S
         status = status,
         statusId = statusId,
         updateDate = System.currentTimeMillis(),
-        departmentId = departmentId,
-        branchId = branchId,
+        structuralId = structuralId,
         molId = molId,
         userUpdated = userUpdated
     )

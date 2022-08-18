@@ -20,6 +20,10 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.AccountingObjectDtoV2
+import org.openapitools.client.models.EnumDtoV2
+import org.openapitools.client.models.WriteOffDtoV2
+
 import com.squareup.moshi.Json
 
 /**
@@ -32,6 +36,8 @@ import com.squareup.moshi.Json
  * @param dateUpdate 
  * @param catalogItemName 
  * @param code 
+ * @param userInserted 
+ * @param userUpdated 
  * @param writeOffId 
  * @param extendedWriteOff 
  * @param accountingObjectId 
@@ -53,7 +59,7 @@ data class WriteOffRecordDtoV2 (
     val deleted: kotlin.Boolean,
 
     @Json(name = "version")
-    val version: kotlin.Int?=null,
+    val version: kotlin.Int? = null,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -66,6 +72,12 @@ data class WriteOffRecordDtoV2 (
 
     @Json(name = "code")
     val code: kotlin.String? = null,
+
+    @Json(name = "userInserted")
+    val userInserted: kotlin.String? = null,
+
+    @Json(name = "userUpdated")
+    val userUpdated: kotlin.String? = null,
 
     @Json(name = "writeOffId")
     val writeOffId: kotlin.String? = null,
@@ -86,13 +98,13 @@ data class WriteOffRecordDtoV2 (
     val writeOffReasonsId: kotlin.String? = null,
 
     @Json(name = "extendedWriteOffReasons")
-    val extendedWriteOffReasons: WriteOffReasonsDtoV2? = null,
+    val extendedWriteOffReasons: EnumDtoV2? = null,
 
     @Json(name = "destructionConditionsId")
     val destructionConditionsId: kotlin.String? = null,
 
     @Json(name = "extendedDestructionConditions")
-    val extendedDestructionConditions: DestructionConditionsDtoV2? = null,
+    val extendedDestructionConditions: EnumDtoV2? = null,
 
     @Json(name = "professionalJudgment")
     val professionalJudgment: kotlin.String? = null

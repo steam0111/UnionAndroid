@@ -9,5 +9,14 @@ class EquipmentTypesDb(
     override var catalogItemName: String,
     val name: String?,
     val code: String?,
-    updateDate: Long?
-) : CatalogItemDb(id, updateDate)
+    insertDate: Long?,
+    updateDate: Long?,
+    userInserted: String?,
+    userUpdated: String?,
+) : CatalogItemDb(
+    id = id,
+    insertDate = insertDate,
+    updateDate = updateDate,
+    userUpdated = userUpdated,
+    userInserted = userInserted
+)

@@ -5,10 +5,10 @@ data class ReserveDetailSyncEntity(
     val locationSyncEntity: LocationSyncEntity?,
     val locationTypeSyncEntity: LocationTypeSyncEntity?,
     val molSyncEntity: EmployeeSyncEntity?,
-    val businessUnitSyncEntity: OrganizationSyncEntity?,
-    val structuralSubdivisionSyncEntity: DepartmentSyncEntity?,
+    val structuralSyncEntity: StructuralSyncEntity?,
     val nomenclatureSyncEntity: NomenclatureSyncEntity?,
     val nomenclatureGroupSyncEntity: NomenclatureGroupSyncEntity?,
     val orderSyncEntity: OrderSyncEntity?,
-    val receptionItemCategorySyncEntity: ReceptionItemCategorySyncEntity?
+    val receptionItemCategorySyncEntity: ReceptionItemCategorySyncEntity?,
+    val balanceUnitSyncEntity: StructuralSyncEntity?
 )

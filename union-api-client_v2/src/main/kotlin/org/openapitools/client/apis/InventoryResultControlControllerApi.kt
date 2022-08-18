@@ -1,17 +1,15 @@
 package org.openapitools.client.apis
 
 
+import retrofit2.http.*
+import retrofit2.Response
+import okhttp3.RequestBody
+import org.openapitools.client.models.ApiSecurityUserRolesGetRequestsParametersParameterV2
+
 import org.openapitools.client.models.ChangeRecordsStatusesRequestV2
 import org.openapitools.client.models.InventoryResultWithAccountingObjectsDtoV2
 import org.openapitools.client.models.PostResponseV2
 import org.openapitools.client.models.SpringResponseV2
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface InventoryResultControlControllerApi {
     /**
@@ -20,8 +18,8 @@ interface InventoryResultControlControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
-     * @param newChecked  
+     * @param id 
+     * @param newChecked 
      * @return [SpringResponseV2]
      */
     @PUT("api/reports/inventory-result-records/{id}/set-checked/single")
@@ -33,8 +31,8 @@ interface InventoryResultControlControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
-     * @param newStatus  
+     * @param id 
+     * @param newStatus 
      * @return [SpringResponseV2]
      */
     @PUT("api/reports/inventory-result-records/{id}/set-status/single")
@@ -46,8 +44,8 @@ interface InventoryResultControlControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
-     * @param changeRecordsStatusesRequestV2  
+     * @param id 
+     * @param changeRecordsStatusesRequestV2 
      * @return [SpringResponseV2]
      */
     @PUT("api/reports/inventory-results/{id}/changeStatuses")
@@ -59,12 +57,12 @@ interface InventoryResultControlControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
-     * @param requestsParameters  
+     * @param id 
+     * @param requestsParameters 
      * @return [kotlin.Boolean]
      */
     @GET("api/reports/inventory-results/{id}/is-all-checked")
-    suspend fun apiReportsInventoryResultsIdIsAllCheckedGet(@Path("id") id: kotlin.String, @Query("requestsParameters") requestsParameters: kotlin.collections.Map<kotlin.String, kotlin.collections.List<kotlin.String>>): Response<kotlin.Boolean>
+    suspend fun apiReportsInventoryResultsIdIsAllCheckedGet(@Path("id") id: kotlin.String, @Query("requestsParameters") requestsParameters: ApiSecurityUserRolesGetRequestsParametersParameterV2): Response<kotlin.Boolean>
 
     /**
      * 
@@ -72,14 +70,14 @@ interface InventoryResultControlControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
-     * @param filterValues  
-     * @param newChecked  
+     * @param id 
+     * @param filterValues 
+     * @param newChecked 
      * @param searchQuery  (optional, default to "")
      * @return [SpringResponseV2]
      */
     @PUT("api/reports/inventory-results/{id}/set-checked/batch")
-    suspend fun apiReportsInventoryResultsIdSetCheckedBatchPut(@Path("id") id: kotlin.String, @Query("filterValues") filterValues: kotlin.String, @Query("newChecked") newChecked: kotlin.Boolean, @Query("searchQuery") searchQuery: kotlin.String? = null): Response<SpringResponseV2>
+    suspend fun apiReportsInventoryResultsIdSetCheckedBatchPut(@Path("id") id: kotlin.String, @Query("filterValues") filterValues: kotlin.String, @Query("newChecked") newChecked: kotlin.Boolean, @Query("searchQuery") searchQuery: kotlin.String? = ""): Response<SpringResponseV2>
 
     /**
      * 
@@ -87,8 +85,8 @@ interface InventoryResultControlControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param id  
-     * @param newStatus  
+     * @param id 
+     * @param newStatus 
      * @return [SpringResponseV2]
      */
     @PUT("api/reports/inventory-results/{id}/set-status/batch")
@@ -100,7 +98,7 @@ interface InventoryResultControlControllerApi {
      * Responses:
      *  - 200: OK
      *
-     * @param inventoryResultWithAccountingObjectsDtoV2  
+     * @param inventoryResultWithAccountingObjectsDtoV2 
      * @return [PostResponseV2]
      */
     @POST("api/reports/inventory-results/withAccountingObjects")

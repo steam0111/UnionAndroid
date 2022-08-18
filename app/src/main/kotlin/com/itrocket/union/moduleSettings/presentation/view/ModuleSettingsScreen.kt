@@ -146,8 +146,10 @@ private fun Content(
             onDropdownDismiss = onDropdownDismiss,
             onDropdownItemClickListener = onDropdownItemClickListener
         )
+
     }
 }
+
 
 @Composable
 fun ReaderPowerPicker(

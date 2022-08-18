@@ -26,5 +26,6 @@ enum class ObjectStatusType(
         textColor = graphite6,
         textId = R.string.accounting_object_decommissioned
     ),
-    TRANSIT(backgroundColor = blue6, textId = R.string.accounting_object_transit)
+    TRANSIT(backgroundColor = blue6, textId = R.string.accounting_object_transit),
+    WRITTEN_OFF(backgroundColor = graphite5, textId = R.string.accounting_object_written_off)
 }

@@ -2,8 +2,6 @@ package com.itrocket.union.filter.domain
 
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
-import com.itrocket.union.branches.domain.dependencies.BranchesRepository
-import com.itrocket.union.departments.domain.dependencies.DepartmentRepository
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.employees.domain.dependencies.EmployeeRepository
 import com.itrocket.union.filter.domain.dependencies.FilterRepository
@@ -15,19 +13,18 @@ import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
 import com.itrocket.union.manual.getFilterLocationLastId
+import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.nomenclature.domain.dependencies.NomenclatureRepository
-import com.itrocket.union.regions.domain.dependencies.RegionRepository
 import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
+import com.itrocket.union.structural.domain.dependencies.StructuralRepository
 import kotlinx.coroutines.withContext
 
 class FilterInteractor(
     private val repository: FilterRepository,
     private val accountingObjectRepository: AccountingObjectRepository,
     private val employeeRepository: EmployeeRepository,
-    private val branchesRepository: BranchesRepository,
-    private val departmentRepository: DepartmentRepository,
+    private val structuralRepository: StructuralRepository,
     private val nomenclatureRepository: NomenclatureRepository,
-    private val regionRepository: RegionRepository,
     private val coreDispatchers: CoreDispatchers,
     private val documentRepository: DocumentRepository,
     private val inventoriesRepository: InventoryRepository,
@@ -81,23 +78,15 @@ class FilterInteractor(
             CatalogType.AccountingObjects -> {
                 accountingObjectRepository.getAccountingObjectsCount(
                     params = params,
-                    selectedLocationIds = params.getFilterLocationIds()
+                    selectedLocationIds = params.getFilterLocationIds(),
+                    structuralIds = params.getFilterStructuralIds()
                 )
             }
             CatalogType.Employees -> {
                 employeeRepository.getEmployeesCount(params = params)
             }
-            CatalogType.Branches -> {
-                branchesRepository.getBranchesCount(params = params)
-            }
-            CatalogType.Departments -> {
-                departmentRepository.getDepartmentsCount(params = params)
-            }
             CatalogType.Nomenclatures -> {
                 nomenclatureRepository.getNomenclaturesCount(params = params)
-            }
-            CatalogType.Regions -> {
-                regionRepository.getRegionsCount()
             }
             is CatalogType.Documents -> {
                 documentRepository.getDocumentsCount(
@@ -111,7 +100,8 @@ class FilterInteractor(
             CatalogType.Reserves -> {
                 reservesRepository.getReservesFilterCount(
                     params = params,
-                    selectedLocationIds = params.getFilterLocationIds()
+                    selectedLocationIds = params.getFilterLocationIds(),
+                    structuralIds = params.getFilterStructuralIds()
                 )
             }
             else -> 0
@@ -124,6 +114,15 @@ class FilterInteractor(
             null
         } else {
             locationRepository.getAllLocationsIdsByParent(lastLocationId)
+        }
+    }
+
+    private suspend fun List<ParamDomain>.getFilterStructuralIds(): List<String?>? {
+        val lastStructuralId = getFilterStructuralLastId(ManualType.STRUCTURAL)
+        return if (lastStructuralId == null) {
+            null
+        } else {
+            structuralRepository.getAllStructuralsIdsByParent(lastStructuralId)
         }
     }
 
