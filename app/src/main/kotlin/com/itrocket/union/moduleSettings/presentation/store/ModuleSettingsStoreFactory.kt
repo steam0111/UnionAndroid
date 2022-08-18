@@ -1,5 +1,6 @@
 package com.itrocket.union.moduleSettings.presentation.store
 
+import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -49,7 +50,10 @@ class ModuleSettingsStoreFactory(
                 )
             )
             dispatch(
-                Result.ReaderPower(moduleSettingsInteractor.getReaderPower() ?: "50")
+                Result.ReaderPower(
+                    (moduleSettingsInteractor.getReaderPower()?.toInt()?.div(10)).toString() ?: "5"
+
+                )
             )
         }
 
@@ -72,7 +76,11 @@ class ModuleSettingsStoreFactory(
                     moduleSettingsInteractor.applyChanges(
                         defaultService = getState().defaultService,
                         keyCode = getState().keyCode,
-                        readerPower = getState().readerPower
+                        readerPower = (getState().readerPower.toInt() * 10).toString()
+                    )
+                    Log.d(
+                        "SukhanovAlex",
+                        "Power in settings = " + getState().readerPower.toString()
                     )
                     publish(ModuleSettingsStore.Label.GoBack)
                 }
@@ -99,20 +107,7 @@ class ModuleSettingsStoreFactory(
                         intent.service
                     )
                 )
-                ModuleSettingsStore.Intent.OnDropDownReaderPowerDismiss -> dispatch(
-                    Result.DropDownReaderPowerExpanded(false)
-                )
-                is ModuleSettingsStore.Intent.OnPowerOfReaderHandled -> dispatch(
-                    Result.ListPowerOfReader(intent.listPowerOfReader)
-                )
-                is ModuleSettingsStore.Intent.OnDefaultReaderPowerHandled -> dispatch(
-                    Result.ReaderPower(intent.readerPower)
-                )
-                ModuleSettingsStore.Intent.OnDropDownOpenReaderPowerClicked -> dispatch(
-                    Result.DropDownReaderPowerExpanded(true)
-                )
-                is ModuleSettingsStore.Intent.OnDropDownItemReaderPowerClicked -> {
-                    dispatch(Result.DropDownReaderPowerExpanded(false))
+                is ModuleSettingsStore.Intent.OnPowerChangedClicked -> {
                     dispatch(Result.ReaderPower(intent.readerPower))
                 }
             }
@@ -142,7 +137,6 @@ class ModuleSettingsStoreFactory(
         data class Services(val services: List<String>) : Result()
         data class DropdownExpanded(val dropdownExpanded: Boolean) : Result()
         data class DropDownReaderPowerExpanded(val dropDownReaderPowerExpanded: Boolean) : Result()
-        data class ListPowerOfReader(val listPowerOfReader: List<Int>) : Result()
     }
 
     private object ReducerImpl : Reducer<ModuleSettingsStore.State, Result> {
@@ -155,10 +149,10 @@ class ModuleSettingsStoreFactory(
                 is Result.Services -> copy(services = result.services)
                 is Result.DropdownExpanded -> copy(dropdownExpanded = result.dropdownExpanded)
                 is Result.DropDownReaderPowerExpanded -> copy(dropDownReaderPowerExpanded = result.dropDownReaderPowerExpanded)
-                is Result.ListPowerOfReader -> copy(listPowerOfReader = result.listPowerOfReader)
                 is Result.ReaderPower -> copy(readerPower = result.readerPower)
             }
     }
+
 
     companion object {
         private const val DEFAULT_SERVICE = "ru.interid.chainwayservice"

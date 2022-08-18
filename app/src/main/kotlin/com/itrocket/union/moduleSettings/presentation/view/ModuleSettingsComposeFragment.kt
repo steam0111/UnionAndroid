@@ -7,6 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.union.moduleSettings.ModuleSettingsModule.MODULESETTINGS_VIEW_MODEL_QUALIFIER
+import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.moduleSettings.presentation.store.ModuleSettingsStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -54,17 +55,37 @@ class ModuleSettingsComposeFragment :
                 onDropdownOpenClickListener = {
                     accept(ModuleSettingsStore.Intent.OnDropdownOpenClicked)
                 },
-                onDropDownItemReaderPowerClickListener = {
-                    accept(ModuleSettingsStore.Intent.OnDropDownItemReaderPowerClicked(it))
+                onPowerChangedClickListener = {
+                    accept(ModuleSettingsStore.Intent.OnPowerChangedClicked(it.toString()))
                 },
-                onDropDownOpenReaderPowerClickListener = {
-                    accept(ModuleSettingsStore.Intent.OnDropDownOpenReaderPowerClicked)
+                onArrowDownClickListener = {
+                    accept(
+                        ModuleSettingsStore.Intent.OnPowerChangedClicked(
+                            changeUpValuePower(state.readerPower)
+                        )
+                    )
                 },
-                onDropDownReaderPowerDismiss = {
-                    accept(ModuleSettingsStore.Intent.OnDropDownReaderPowerDismiss)
+                onArrowUpClickListener = {
+                    accept(
+                        ModuleSettingsStore.Intent.OnPowerChangedClicked(
+                            changeDownValuePower(state.readerPower)
+                        )
+                    )
                 }
             )
         }
+    }
+
+    private fun changeUpValuePower(readerPower: String): String {
+        return if (readerPower.toInt() == ModuleSettingsInteractor.MAX_READER_POWER) {
+            (ModuleSettingsInteractor.MIN_READER_POWER).toString()
+        } else (readerPower.toInt() + 1).toString()
+    }
+
+    private fun changeDownValuePower(readerPower: String): String {
+        return if (readerPower.toInt() == ModuleSettingsInteractor.MIN_READER_POWER) {
+            (ModuleSettingsInteractor.MAX_READER_POWER).toString()
+        } else (readerPower.toInt() - 1).toString()
     }
 
     private fun observeKeyCode() {
@@ -96,5 +117,4 @@ class ModuleSettingsComposeFragment :
             }
         }
     }
-
 }

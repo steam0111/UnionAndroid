@@ -2,31 +2,55 @@ package com.itrocket.union.moduleSettings.presentation.view
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.widget.NumberPicker
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
+import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.moduleSettings.presentation.store.ModuleSettingsStore
-import com.itrocket.union.ui.*
+import com.itrocket.union.ui.AppTheme
+import com.itrocket.union.ui.BaseToolbar
+import com.itrocket.union.ui.ButtonBottomBar
+import com.itrocket.union.ui.graphite2
+import com.itrocket.union.ui.graphite4
+import com.itrocket.union.ui.graphite6
+import com.itrocket.union.ui.psb6
+import com.itrocket.union.ui.white
+import com.itrocket.utils.rememberViewInteropNestedScrollConnection
 
 @Composable
 fun ModuleSettingsScreen(
@@ -38,9 +62,9 @@ fun ModuleSettingsScreen(
     onDropdownDismiss: () -> Unit,
     onDropdownItemClickListener: (String) -> Unit,
     onDropdownOpenClickListener: () -> Unit,
-    onDropDownItemReaderPowerClickListener: (String) -> Unit,
-    onDropDownOpenReaderPowerClickListener: () -> Unit,
-    onDropDownReaderPowerDismiss: () -> Unit
+    onPowerChangedClickListener: (Int) -> Unit,
+    onArrowDownClickListener: () -> Unit,
+    onArrowUpClickListener: () -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -64,9 +88,9 @@ fun ModuleSettingsScreen(
                     onDropdownDismiss = onDropdownDismiss,
                     onDropdownItemClickListener = onDropdownItemClickListener,
                     onDropdownOpenClickListener = onDropdownOpenClickListener,
-                    onDropDownItemReaderPowerClickListener = onDropDownItemReaderPowerClickListener,
-                    onDropDownOpenReaderPowerClickListener = onDropDownOpenReaderPowerClickListener,
-                    onDropDownReaderPowerDismiss = onDropDownReaderPowerDismiss
+                    onPowerChangedClickListener = onPowerChangedClickListener,
+                    onArrowDownClickListener = onArrowDownClickListener,
+                    onArrowUpClickListener = onArrowUpClickListener
                 )
             }
         )
@@ -90,24 +114,24 @@ private fun Content(
     onDropdownItemClickListener: (String) -> Unit,
     onDropdownOpenClickListener: () -> Unit,
     paddingValues: PaddingValues,
-    onDropDownReaderPowerDismiss: () -> Unit,
-    onDropDownItemReaderPowerClickListener: (String) -> Unit,
-    onDropDownOpenReaderPowerClickListener: () -> Unit
+    onPowerChangedClickListener: (Int) -> Unit,
+    onArrowDownClickListener: () -> Unit,
+    onArrowUpClickListener: () -> Unit
 ) {
     Column(modifier = Modifier.padding(paddingValues)) {
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = stringResource(id = R.string.choose_power_of_reader),
             modifier = Modifier.padding(horizontal = 16.dp),
-                    style = AppTheme.typography.body1,
+            style = AppTheme.typography.body1,
             fontWeight = FontWeight.Medium,
         )
         Spacer(modifier = Modifier.height(12.dp))
-        SelectPower(
-            state = state,
-            onDropDownOpenReaderPowerClickListener = onDropDownOpenReaderPowerClickListener,
-            onDropDownReaderPowerDismiss = onDropDownReaderPowerDismiss,
-            onDropDownItemReaderPowerClickListener = onDropDownItemReaderPowerClickListener
+        ReaderPowerPicker(
+            power = state.readerPower.toInt(),
+            onPowerChanged = onPowerChangedClickListener,
+            onArrowDownClickListener = onArrowDownClickListener,
+            onArrowUpClickListener = onArrowUpClickListener
         )
         Spacer(modifier = Modifier.height(24.dp))
         DefineCursorComponent(
@@ -122,10 +146,65 @@ private fun Content(
             onDropdownDismiss = onDropdownDismiss,
             onDropdownItemClickListener = onDropdownItemClickListener
         )
-
     }
 }
 
+@Composable
+fun ReaderPowerPicker(
+    power: Int,
+    onPowerChanged: (Int) -> Unit,
+    onArrowDownClickListener: () -> Unit,
+    onArrowUpClickListener: () -> Unit,
+    paddingValues: PaddingValues = PaddingValues(vertical = 24.dp, horizontal = 16.dp)
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(paddingValues)
+            .background(white),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(R.drawable.ic_arrow_down),
+            contentDescription = null,
+            modifier = Modifier.clickable(
+                onClick = onArrowDownClickListener,
+                indication = rememberRipple(bounded = false),
+                interactionSource = remember {
+                    MutableInteractionSource()
+                }
+            )
+        )
+        Spacer(modifier = Modifier.width(24.dp))
+        AndroidView(
+            factory = {
+                NumberPicker(it).apply {
+                    setOnValueChangedListener { numberPicker, _, _ -> onPowerChanged(numberPicker.value) }
+                    value = power
+                    minValue = ModuleSettingsInteractor.MIN_READER_POWER
+                    maxValue = ModuleSettingsInteractor.MAX_READER_POWER
+                }
+            }, modifier = Modifier
+                .weight(1f)
+                .nestedScroll(rememberViewInteropNestedScrollConnection()),
+            update = {
+                it.value = power
+            }
+        )
+        Spacer(modifier = Modifier.width(24.dp))
+        Image(
+            painter = painterResource(R.drawable.ic_arrow_up),
+            modifier = Modifier.clickable(
+                onClick = onArrowUpClickListener,
+                indication = rememberRipple(bounded = false),
+                interactionSource = remember {
+                    MutableInteractionSource()
+                }
+            ),
+            contentDescription = null
+        )
+    }
+}
 
 @Composable
 private fun DefineCursorComponent(
@@ -224,48 +303,6 @@ private fun SelectServiceComponent(
     }
 }
 
-@Composable
-fun SelectPower(
-    state: ModuleSettingsStore.State,
-    onDropDownReaderPowerDismiss: () -> Unit,
-    onDropDownItemReaderPowerClickListener: (String) -> Unit,
-    onDropDownOpenReaderPowerClickListener: () -> Unit
-) {
-    Row(
-        Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .weight(1f)
-        ) {
-            DropdownMenuItem(
-                onClick = onDropDownOpenReaderPowerClickListener,
-                modifier = Modifier.background(graphite2)
-            ) {
-                Text(text = state.readerPower)
-            }
-            DropdownMenu(
-                expanded = state.dropDownReaderPowerExpanded,
-                onDismissRequest = onDropDownReaderPowerDismiss,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                state.listPowerOfReader.forEach {
-                    DropdownMenuItem(
-                        onClick = { onDropDownItemReaderPowerClickListener(it.toString()) },
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    ) {
-                        Text(text = it.toString(), style = AppTheme.typography.body2)
-                    }
-                }
-            }
-        }
-    }
-}
-
 @Preview(
     name = "светлая тема экран - 6.3 (3040x1440)",
     showSystemUi = true,
@@ -284,14 +321,6 @@ fun ModuleSettingsScreenPreview() {
     ModuleSettingsScreen(
         ModuleSettingsStore.State(),
         AppInsets(topInset = previewTopInsetDp),
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {}
+        {}, {}, {}, {}, {}, {}, {}, {}, {}
     )
 }

@@ -1,8 +1,8 @@
 package com.itrocket.union.moduleSettings.presentation.store
 
-import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
+import com.itrocket.core.navigation.GoBackNavigationLabel
 
 interface ModuleSettingsStore :
     Store<ModuleSettingsStore.Intent, ModuleSettingsStore.State, ModuleSettingsStore.Label> {
@@ -12,16 +12,13 @@ interface ModuleSettingsStore :
         object OnDefineCursorClicked : Intent()
         object OnSaveClicked : Intent()
         object OnDropdownDismiss : Intent()
-        object OnDropDownReaderPowerDismiss : Intent()
         object OnDropdownOpenClicked : Intent()
-        object OnDropDownOpenReaderPowerClicked:Intent()
         data class OnDropdownItemClicked(val service: String) : Intent()
         data class OnServicesHandled(val services: List<String>) : Intent()
         data class OnDefaultServiceHandled(val service: String) : Intent()
         data class OnCursorDefined(val keyCode: Int) : Intent()
         data class OnPowerOfReaderHandled(val listPowerOfReader: List<Int>) : Intent()
-        data class OnDefaultReaderPowerHandled(val readerPower: String) : Intent()
-        data class OnDropDownItemReaderPowerClicked(val readerPower: String) : Intent()
+        data class OnPowerChangedClicked(val readerPower: String) : Intent()
     }
 
     data class State(
@@ -35,6 +32,7 @@ interface ModuleSettingsStore :
         val listPowerOfReader: List<Int> = listOf(10, 20, 30, 40, 50, 60, 70, 80, 90, 100),
         val readerPower: String = "50"
     )
+
 
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
