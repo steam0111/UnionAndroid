@@ -36,18 +36,32 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataStore
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import com.itrocket.ui.EditText
 import com.itrocket.union.changeScanData.domain.entity.ChangeScanType
+import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.TextButton
+import com.itrocket.union.ui.brightGray
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.graphite4
 import com.itrocket.union.ui.psb1
+import com.itrocket.union.ui.psb3
+import com.itrocket.union.ui.psb6
 import com.itrocket.union.ui.white
 import com.itrocket.union.utils.ifBlankOrNull
 import com.itrocket.union.utils.ifBlankOrNullComposable
@@ -59,7 +73,8 @@ fun ChangeScanDataScreen(
     onBackClickListener: () -> Unit,
     onApplyClickListener: () -> Unit,
     onCancelClickListener: () -> Unit,
-    onReaderPowerClickListener: () -> Unit
+    onReaderPowerClickListener: () -> Unit,
+    onScanDataTextChanged: (String) -> Unit
 ) {
     AppTheme {
         Box(
@@ -68,21 +83,27 @@ fun ChangeScanDataScreen(
                 .padding(
                     bottom = appInsets.bottomInset.dp,
                     top = appInsets.topInset.dp
-                ),
+                )
+                .verticalScroll(rememberScrollState()),
             contentAlignment = Alignment.BottomStart
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(white, RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                    .padding(
-                        top = 8.dp,
-                        start = 16.dp,
-                        end = 16.dp
-                    ),
+                    .padding(top = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Toolbar(onCrossClick = onBackClickListener, changeScanType = state.changeScanType)
+                if (state.changeScanType != ChangeScanType.RFID) {
+                    MediumSpacer()
+                    ScanTextField(
+                        scanData = state.newScanValue,
+                        onScanTextChanged = onScanDataTextChanged,
+                        type = state.changeScanType
+                    )
+                    MediumSpacer()
+                }
                 Content(
                     currentScanValue = state.currentScanValue,
                     newScanValue = state.newScanValue,
@@ -108,12 +129,14 @@ private fun Toolbar(onCrossClick: () -> Unit, changeScanType: ChangeScanType) {
                 white,
                 RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
             )
-            .padding(start = 16.dp, top = 16.dp, end = 20.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 20.dp)
+        ) {
             Text(
                 text = stringResource(changeScanType.titleId),
-                style = AppTheme.typography.h6
+                style = AppTheme.typography.h6,
             )
             Spacer(modifier = Modifier.weight(1f))
             Image(
@@ -128,11 +151,58 @@ private fun Toolbar(onCrossClick: () -> Unit, changeScanType: ChangeScanType) {
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Spacer(
+        if (changeScanType == ChangeScanType.RFID) {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(graphite2)
+            )
+        }
+    }
+}
+
+@Composable
+private fun ScanTextField(
+    scanData: String,
+    onScanTextChanged: (String) -> Unit,
+    type: ChangeScanType
+) {
+    var underlineColor by remember {
+        mutableStateOf(brightGray)
+    }
+    val focusRequester = FocusRequester()
+    val focusManager = LocalFocusManager.current
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(white)
+            .padding(vertical = 4.dp)
+    ) {
+        EditText(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(1.dp)
-                .background(graphite2)
+                .background(white)
+                .padding(start = 16.dp, top = 20.dp, end = 16.dp, bottom = 4.dp),
+            text = scanData,
+            hint = stringResource(type.hintId),
+            hintStyle = AppTheme.typography.body1,
+            hintColor = psb3,
+            textStyle = AppTheme.typography.body1,
+            onTextChanged = onScanTextChanged,
+            focusRequester = focusRequester,
+            singleLine = true,
+            keyboardActions = KeyboardActions(onDone = {
+                focusManager.clearFocus(true)
+            }),
+            onFocusChanged = {
+                underlineColor = if (it.hasFocus) {
+                    psb6
+                } else {
+                    brightGray
+                }
+            },
+            underlineColor = underlineColor
         )
     }
 }
@@ -147,7 +217,7 @@ private fun Content(
         modifier = Modifier.padding(horizontal = 16.dp),
         contentAlignment = Alignment.Center
     ) {
-        Column {
+        Column(modifier = Modifier.padding(top = 24.dp)) {
             ChangeBarcodeItem(
                 subtitle = stringResource(changeScanType.fromChangeId),
                 title = currentScanValue.ifBlankOrNullComposable {
@@ -243,6 +313,7 @@ fun ChangeScanDataScreenPreview() {
     ChangeScanDataScreen(
         ChangeScanDataStore.State(changeScanType = ChangeScanType.RFID),
         AppInsets(),
+        {},
         {},
         {},
         {},
