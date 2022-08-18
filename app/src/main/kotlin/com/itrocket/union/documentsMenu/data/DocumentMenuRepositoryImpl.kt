@@ -40,11 +40,12 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
                         iconId = R.drawable.ic_moved,
                         unionPermission = UnionPermission.ALL_DOCUMENTS
                     ),
-                    DocumentMenuDomain(
+                    //TODO: Пока попросили скрыть
+                    /*DocumentMenuDomain(
                         titleId = R.string.main_write_off,
                         iconId = R.drawable.ic_write_off,
                         unionPermission = UnionPermission.ALL_DOCUMENTS
-                    ),
+                    ),*/
                 )
             }
             currentDocument?.titleId == R.string.main_books -> {

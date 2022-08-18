@@ -59,7 +59,7 @@ object SyncModule {
         factory<EmployeeSyncApi> {
             EmployeeSyncApiImpl(
                 employeeDao = get(),
-                structuralDao = get()
+                structuralSyncApi = get()
             )
         }
         factory<ProducerSyncApi> {
@@ -76,7 +76,7 @@ object SyncModule {
             AccountingObjectSyncApiImpl(
                 accountingObjectsDao = get(),
                 locationSyncApi = get(),
-                structuralDao = get()
+                structuralSyncApi = get()
             )
         }
         factory<InventorySyncApi> {
@@ -124,7 +124,7 @@ object SyncModule {
         factory<ReserveSyncApi> {
             ReserveSyncApiImpl(
                 reserveDao = get(),
-                structuralDao = get()
+                structuralSyncApi = get()
             )
         }
         factory<ReceptionItemCategorySyncApi> {

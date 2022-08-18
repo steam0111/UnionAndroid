@@ -11,7 +11,6 @@ import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.entity.DocumentDb
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
-import com.example.union_sync_impl.utils.getServerFormatFromMillis
 import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.ActionDtoV2
 
@@ -102,8 +101,8 @@ fun DocumentUpdateSyncEntity.toDocumentDb(): DocumentDb {
 }
 
 fun DocumentDb.toDocumentSyncEntity(
-    structuralFromSyncEntity: StructuralSyncEntity?,
-    structuralToSyncEntity: StructuralSyncEntity?,
+    structuralFromSyncEntity: List<StructuralSyncEntity>?,
+    structuralToSyncEntity: List<StructuralSyncEntity>?,
     mol: EmployeeSyncEntity?,
     exploiting: EmployeeSyncEntity?,
     accountingObjects: List<AccountingObjectSyncEntity>? = null,
@@ -114,8 +113,8 @@ fun DocumentDb.toDocumentSyncEntity(
 ): DocumentSyncEntity {
     return DocumentSyncEntity(
         id = id,
-        structuralFromSyncEntity = structuralFromSyncEntity,
-        structuralToSyncEntity = structuralToSyncEntity,
+        structuralFromSyncEntities = structuralFromSyncEntity,
+        structuralToSyncEntities = structuralToSyncEntity,
         mol = mol,
         exploiting = exploiting,
         documentType = documentType,

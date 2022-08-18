@@ -239,7 +239,7 @@ private fun BottomBar(
             .padding(16.dp)
     ) {
         BaseButton(
-            enabled = inventoryStatus == InventoryStatus.CREATED,
+            enabled = inventoryStatus != InventoryStatus.COMPLETED,
             text = stringResource(R.string.common_save),
             onClick = onSaveClickListener,
             modifier = Modifier.weight(1f),

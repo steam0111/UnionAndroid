@@ -1,6 +1,7 @@
 package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.EmployeeSyncApi
+import com.example.union_sync_api.data.StructuralSyncApi
 import com.example.union_sync_api.entity.EmployeeDetailSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
 import com.example.union_sync_impl.dao.EmployeeDao
@@ -12,7 +13,7 @@ import com.example.union_sync_impl.data.mapper.toSyncEntity
 
 class EmployeeSyncApiImpl(
     private val employeeDao: EmployeeDao,
-    private val structuralDao: StructuralDao
+    private val structuralSyncApi: StructuralSyncApi
 ) : EmployeeSyncApi {
     override suspend fun getEmployees(
         textQuery: String?,
@@ -33,8 +34,16 @@ class EmployeeSyncApiImpl(
     }
 
     override suspend fun getEmployeeDetail(id: String): EmployeeDetailSyncEntity {
-        val fullEmployee =  employeeDao.getFullById(id)
-        val balanceUnit = structuralDao.getAllStructuralsByChildId(fullEmployee.employeeDb.structuralId).firstOrNull { it.balanceUnit == true }
-            return fullEmployee.toDetailSyncEntity(balanceUnit?.toStructuralSyncEntity())
+        val fullEmployee = employeeDao.getFullById(id)
+        val structurals =
+            structuralSyncApi.getStructuralFullPath(
+                fullEmployee.structural?.id,
+                mutableListOf()
+            ).orEmpty()
+        val balanceUnits = structurals.filter { it.balanceUnit }
+        return fullEmployee.toDetailSyncEntity(
+            balanceUnits = balanceUnits,
+            structurals = structurals
+        )
     }
 }

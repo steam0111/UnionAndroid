@@ -2,6 +2,7 @@ package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.LocationSyncApi
+import com.example.union_sync_api.data.StructuralSyncApi
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
@@ -20,7 +21,7 @@ import kotlinx.coroutines.flow.map
 class AccountingObjectSyncApiImpl(
     private val accountingObjectsDao: AccountingObjectDao,
     private val locationSyncApi: LocationSyncApi,
-    private val structuralDao: StructuralDao
+    private val structuralSyncApi: StructuralSyncApi
 ) : AccountingObjectSyncApi {
 
     override suspend fun getAccountingObjects(
@@ -93,12 +94,18 @@ class AccountingObjectSyncApiImpl(
         val fullAccountingObjectDb = accountingObjectsDao.getById(id)
         val location =
             locationSyncApi.getLocationById(fullAccountingObjectDb.accountingObjectDb.locationId)
-        val balanceUnit =
-            structuralDao.getAllStructuralsByChildId(fullAccountingObjectDb.structuralDb?.id)
-                .firstOrNull { it.balanceUnit == true }
+
+        val structurals =
+            structuralSyncApi.getStructuralFullPath(
+                fullAccountingObjectDb.structuralDb?.id,
+                mutableListOf()
+            ).orEmpty()
+        val balanceUnit = structurals.filter { it.balanceUnit }
+
         return fullAccountingObjectDb.toAccountingObjectDetailSyncEntity(
             location,
-            balanceUnit?.toStructuralSyncEntity()
+            balanceUnit,
+            structurals
         )
     }
 
@@ -106,9 +113,17 @@ class AccountingObjectSyncApiImpl(
         return accountingObjectsDao.getByIdFlow(id).map {
             val location =
                 locationSyncApi.getLocationById(it.accountingObjectDb.locationId)
-            val balanceUnit = structuralDao.getAllStructuralsByChildId(it.structuralDb?.id)
-                .firstOrNull { it.balanceUnit == true }
-            it.toAccountingObjectDetailSyncEntity(location, balanceUnit?.toStructuralSyncEntity())
+
+            val structurals =
+                structuralSyncApi.getStructuralFullPath(it.structuralDb?.id, mutableListOf())
+                    .orEmpty()
+            val balanceUnit = structurals.filter { it.balanceUnit }
+
+            it.toAccountingObjectDetailSyncEntity(
+                location,
+                balanceUnit,
+                structurals
+            )
         }
     }
 

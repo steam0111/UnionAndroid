@@ -3,7 +3,7 @@ package com.example.union_sync_api.entity
 data class InventorySyncEntity(
     val id: String,
     val creationDate: Long?,
-    val structuralSyncEntity: StructuralSyncEntity?,
+    val structuralSyncEntities: List<StructuralSyncEntity>?,
     val accountingObjects: List<AccountingObjectSyncEntity>,
     val mol: EmployeeSyncEntity?,
     val locationSyncEntities: List<LocationSyncEntity>?,

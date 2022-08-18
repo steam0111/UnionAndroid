@@ -47,9 +47,9 @@ fun EmployeeDb.toSyncEntity(): EmployeeSyncEntity {
     )
 }
 
-fun FullEmployeeDb.toDetailSyncEntity(balanceUnit: StructuralSyncEntity?) =
+fun FullEmployeeDb.toDetailSyncEntity(balanceUnits: List<StructuralSyncEntity>?, structurals: List<StructuralSyncEntity>?) =
     EmployeeDetailSyncEntity(
         employeeDb.toSyncEntity(),
-        structural?.toStructuralSyncEntity(),
-        balanceUnit
+        structurals,
+        balanceUnits
     )

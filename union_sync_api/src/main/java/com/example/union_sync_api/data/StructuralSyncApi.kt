@@ -13,6 +13,11 @@ interface StructuralSyncApi {
 
     suspend fun getAllStructuralsIdsByParentId(parentId: String?): List<String?>
 
+    suspend fun getStructuralFullPath(
+        childId: String?,
+        structurals: MutableList<StructuralSyncEntity>
+    ): List<StructuralSyncEntity>?
+
     suspend fun getStructuralById(structuralId: String?): StructuralSyncEntity?
 
     suspend fun getStructuralsByIds(ids: List<String?>): List<StructuralSyncEntity>
