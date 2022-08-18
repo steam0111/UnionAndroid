@@ -128,7 +128,7 @@ private fun Content(
         )
         Spacer(modifier = Modifier.height(12.dp))
         ReaderPowerPicker(
-            power = state.readerPower.toInt(),
+            power = state.readerPower,
             onPowerChanged = onPowerChangedClickListener,
             onArrowDownClickListener = onArrowDownClickListener,
             onArrowUpClickListener = onArrowUpClickListener

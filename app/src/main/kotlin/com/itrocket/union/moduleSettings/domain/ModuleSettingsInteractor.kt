@@ -45,6 +45,7 @@ class ModuleSettingsInteractor(
             serviceEntryManager.checkInstalledServices()
         }
     }
+
     companion object {
         val MIN_READER_POWER = 0
         val MAX_READER_POWER = 10

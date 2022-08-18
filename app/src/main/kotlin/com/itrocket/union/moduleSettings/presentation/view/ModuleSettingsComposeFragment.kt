@@ -56,7 +56,7 @@ class ModuleSettingsComposeFragment :
                     accept(ModuleSettingsStore.Intent.OnDropdownOpenClicked)
                 },
                 onPowerChangedClickListener = {
-                    accept(ModuleSettingsStore.Intent.OnPowerChangedClicked(it.toString()))
+                    accept(ModuleSettingsStore.Intent.OnPowerChangedClicked(it))
                 },
                 onArrowDownClickListener = {
                     accept(
@@ -76,16 +76,16 @@ class ModuleSettingsComposeFragment :
         }
     }
 
-    private fun changeUpValuePower(readerPower: String): String {
-        return if (readerPower.toInt() == ModuleSettingsInteractor.MAX_READER_POWER) {
-            (ModuleSettingsInteractor.MIN_READER_POWER).toString()
-        } else (readerPower.toInt() + 1).toString()
+    private fun changeUpValuePower(readerPower: Int): Int {
+        return if (readerPower == ModuleSettingsInteractor.MAX_READER_POWER) {
+            (ModuleSettingsInteractor.MIN_READER_POWER)
+        } else (readerPower + 1)
     }
 
-    private fun changeDownValuePower(readerPower: String): String {
-        return if (readerPower.toInt() == ModuleSettingsInteractor.MIN_READER_POWER) {
-            (ModuleSettingsInteractor.MAX_READER_POWER).toString()
-        } else (readerPower.toInt() - 1).toString()
+    private fun changeDownValuePower(readerPower: Int): Int {
+        return if (readerPower == ModuleSettingsInteractor.MIN_READER_POWER) {
+            (ModuleSettingsInteractor.MAX_READER_POWER)
+        } else (readerPower - 1)
     }
 
     private fun observeKeyCode() {

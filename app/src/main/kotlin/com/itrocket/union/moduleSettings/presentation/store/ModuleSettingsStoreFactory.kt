@@ -1,6 +1,5 @@
 package com.itrocket.union.moduleSettings.presentation.store
 
-import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -51,8 +50,7 @@ class ModuleSettingsStoreFactory(
             )
             dispatch(
                 Result.ReaderPower(
-                    (moduleSettingsInteractor.getReaderPower()?.toInt()?.div(10)).toString() ?: "5"
-
+                    (moduleSettingsInteractor.getReaderPower()?.toInt()?.div(10)) ?: 5
                 )
             )
         }
@@ -76,11 +74,7 @@ class ModuleSettingsStoreFactory(
                     moduleSettingsInteractor.applyChanges(
                         defaultService = getState().defaultService,
                         keyCode = getState().keyCode,
-                        readerPower = (getState().readerPower.toInt() * 10).toString()
-                    )
-                    Log.d(
-                        "SukhanovAlex",
-                        "Power in settings = " + getState().readerPower.toString()
+                        readerPower = (getState().readerPower * 10).toString()
                     )
                     publish(ModuleSettingsStore.Label.GoBack)
                 }
@@ -131,12 +125,11 @@ class ModuleSettingsStoreFactory(
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class KeyCode(val keyCode: Int) : Result()
-        data class ReaderPower(val readerPower: String) : Result()
+        data class ReaderPower(val readerPower: Int) : Result()
         data class WaitDefine(val waitDefine: Boolean) : Result()
         data class Service(val service: String) : Result()
         data class Services(val services: List<String>) : Result()
         data class DropdownExpanded(val dropdownExpanded: Boolean) : Result()
-        data class DropDownReaderPowerExpanded(val dropDownReaderPowerExpanded: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<ModuleSettingsStore.State, Result> {
@@ -148,7 +141,6 @@ class ModuleSettingsStoreFactory(
                 is Result.Service -> copy(defaultService = result.service)
                 is Result.Services -> copy(services = result.services)
                 is Result.DropdownExpanded -> copy(dropdownExpanded = result.dropdownExpanded)
-                is Result.DropDownReaderPowerExpanded -> copy(dropDownReaderPowerExpanded = result.dropDownReaderPowerExpanded)
                 is Result.ReaderPower -> copy(readerPower = result.readerPower)
             }
     }
