@@ -25,8 +25,8 @@ fun InventorySyncEntity.map(): InventoryCreateDomain =
         documentInfo = buildList {
             add(
                 StructuralParamDomain(manualType = ManualType.STRUCTURAL, structurals = buildList {
-                    structuralSyncEntity?.let {
-                        add(it.toStructuralDomain())
+                    structuralSyncEntities?.let {
+                        addAll(it.map { it.toStructuralDomain() })
                     }
                 })
             )

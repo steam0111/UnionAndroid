@@ -36,6 +36,24 @@ class StructuralSyncApiImpl(
         }
     }
 
+    /**
+     * Метод для получения полного пути до childId струткуры
+     **/
+    override suspend fun getStructuralFullPath(
+        childId: String?,
+        structurals: MutableList<StructuralSyncEntity>
+    ): List<StructuralSyncEntity>? {
+        val childStructural = structuralDao.getStructuralById(childId)
+        childStructural?.let {
+            structurals.add(it.toStructuralSyncEntity())
+        }
+        return if (childStructural?.parentId == null) {
+            structurals.reversed()
+        } else {
+            getStructuralFullPath(childStructural.parentId, structurals)
+        }
+    }
+
     override suspend fun getStructuralById(structuralId: String?): StructuralSyncEntity? {
         return structuralDao.getStructuralById(structuralId)?.toStructuralSyncEntity()
     }

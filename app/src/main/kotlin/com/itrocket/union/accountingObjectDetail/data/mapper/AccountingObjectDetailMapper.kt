@@ -27,12 +27,12 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
             add(ObjectInfoDomain(R.string.accounting_objects_inventory_num, it))
         }
 
-        structuralSyncEntity?.let {
-            add(ObjectInfoDomain(R.string.manual_structural, it.name))
+        structuralSyncEntities?.let {
+            add(ObjectInfoDomain(R.string.manual_structural, it.joinToString(", ") { it.name }))
         }
 
-        balanceUnitSyncEntity?.let {
-            add(ObjectInfoDomain(R.string.balance_unit, it.name))
+        balanceUnitSyncEntities?.let {
+            add(ObjectInfoDomain(R.string.balance_unit, it.joinToString(", ") { it.name }))
         }
 
         location?.name?.let {

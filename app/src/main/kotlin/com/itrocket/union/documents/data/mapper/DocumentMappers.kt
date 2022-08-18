@@ -38,8 +38,8 @@ fun DocumentSyncEntity.map(): DocumentDomain =
             locationFrom = locationFrom,
             locationTo = locationTo,
             actionBase = actionBase,
-            structuralTo = structuralToSyncEntity,
-            structuralFrom = structuralFromSyncEntity
+            structuralsTo = structuralToSyncEntities,
+            structuralsFrom = structuralFromSyncEntities
         ),
         documentStatusId = documentStatusId,
         userInserted = userInserted,
@@ -49,8 +49,8 @@ fun DocumentSyncEntity.map(): DocumentDomain =
 fun getParams(
     mol: EmployeeSyncEntity? = null,
     exploiting: EmployeeSyncEntity? = null,
-    structuralTo: StructuralSyncEntity? = null,
-    structuralFrom: StructuralSyncEntity? = null,
+    structuralsTo: List<StructuralSyncEntity>? = null,
+    structuralsFrom: List<StructuralSyncEntity>? = null,
     documentType: String,
     locationFrom: LocationSyncEntity? = null,
     locationTo: LocationSyncEntity? = null,
@@ -59,8 +59,8 @@ fun getParams(
     return getAccountingObjectParams(
         mol = mol,
         exploiting = exploiting,
-        structuralTo = structuralTo,
-        structuralFrom = structuralFrom,
+        structuralsTo = structuralsTo,
+        structuralsFrom = structuralsFrom,
         documentType = documentType,
         locationFrom = locationFrom,
         locationTo = locationTo,
@@ -71,8 +71,8 @@ fun getParams(
 private fun getAccountingObjectParams(
     mol: EmployeeSyncEntity?,
     exploiting: EmployeeSyncEntity?,
-    structuralTo: StructuralSyncEntity?,
-    structuralFrom: StructuralSyncEntity?,
+    structuralsTo: List<StructuralSyncEntity>?,
+    structuralsFrom: List<StructuralSyncEntity>?,
     documentType: String,
     locationFrom: LocationSyncEntity? = null,
     locationTo: LocationSyncEntity? = null,
@@ -85,13 +85,13 @@ private fun getAccountingObjectParams(
         params = params,
         types = type.manualTypes,
         manualType = ManualType.STRUCTURAL_FROM,
-        destinations = listOfNotNull(structuralFrom)
+        destinations = structuralsFrom
     )
     addStructuralParam(
         params = params,
         types = type.manualTypes,
         manualType = ManualType.STRUCTURAL_TO,
-        destinations = listOfNotNull(structuralTo)
+        destinations = structuralsTo
     )
     addMolParam(params = params, mol = mol)
     addExploitingParam(

@@ -20,12 +20,12 @@ fun ReserveDetailSyncEntity.map(): ReservesDomain {
         listInfo.add(ObjectInfoDomain(R.string.reserves_detail_count, it.toString()))
     }
 
-    structuralSyncEntity?.let {
-        listInfo.add(ObjectInfoDomain(R.string.manual_structural, it.name))
+    structuralSyncEntities?.let {
+        listInfo.add(ObjectInfoDomain(R.string.manual_structural, it.joinToString(", ") { it.name }))
     }
 
-    balanceUnitSyncEntity?.let {
-        listInfo.add(ObjectInfoDomain(R.string.balance_unit, it.name))
+    balanceUnitSyncEntities?.let {
+        listInfo.add(ObjectInfoDomain(R.string.balance_unit, it.joinToString(", ") { it.name }))
     }
 
     listInfo.add(

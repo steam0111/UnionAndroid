@@ -3,7 +3,6 @@ package com.example.union_sync_impl.data.mapper
 import com.example.union_sync_api.entity.*
 import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
-import com.example.union_sync_impl.utils.getServerFormatFromMillis
 import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.InventoryDtoV2
 
@@ -79,7 +78,7 @@ fun InventoryUpdateSyncEntity.toInventoryDb(): InventoryDb {
 }
 
 fun InventoryDb.toInventorySyncEntity(
-    structuralSyncEntity: StructuralSyncEntity?,
+    structuralSyncEntities: List<StructuralSyncEntity>?,
     mol: EmployeeSyncEntity?,
     locationSyncEntities: List<LocationSyncEntity>?,
     accountingObjects: List<AccountingObjectSyncEntity>,
@@ -88,7 +87,7 @@ fun InventoryDb.toInventorySyncEntity(
     return InventorySyncEntity(
         id = id,
         creationDate = creationDate,
-        structuralSyncEntity = structuralSyncEntity,
+        structuralSyncEntities = structuralSyncEntities,
         mol = mol,
         locationSyncEntities = locationSyncEntities,
         accountingObjects = accountingObjects,

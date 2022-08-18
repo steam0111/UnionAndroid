@@ -66,7 +66,7 @@ class InventoryCreateInteractor(
                     mutableAccountingObjects,
                     accountingObjectIndex
                 )
-                newAccountingObjectIndex == NO_INDEX && inventoryStatus == InventoryStatus.CREATED && isAddNew -> newAccountingObjectRfids.add(
+                newAccountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew -> newAccountingObjectRfids.add(
                     handledAccountingObjectId
                 )
             }
@@ -102,7 +102,7 @@ class InventoryCreateInteractor(
                     mutableAccountingObjects,
                     accountingObjectIndex
                 )
-                newAccountingObjectIndex == NO_INDEX && inventoryStatus == InventoryStatus.CREATED && isAddNew -> {
+                newAccountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew -> {
                     val accountingObjectDomain = getHandleAccountingObjectByBarcode(barcode)
                     if (accountingObjectDomain != null) {
                         barcodeAccountingObjects.add(accountingObjectDomain)

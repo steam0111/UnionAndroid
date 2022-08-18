@@ -108,6 +108,7 @@ private fun Content(
                 fontWeight = FontWeight.Bold,
                 style = AppTheme.typography.h6,
                 fontSize = 19.sp,
+                modifier = Modifier.padding(16.dp)
             )
         }
         items(state.accountingObjectDomain.listMainInfo) {

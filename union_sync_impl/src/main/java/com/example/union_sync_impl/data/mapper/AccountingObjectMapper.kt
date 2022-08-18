@@ -13,7 +13,6 @@ import com.example.union_sync_impl.entity.AccountingObjectStatusDb
 import com.example.union_sync_impl.entity.AccountingObjectUpdate
 import com.example.union_sync_impl.entity.FullAccountingObject
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
-import com.example.union_sync_impl.utils.getServerFormatFromMillis
 import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.AccountingObjectDtoV2
 import org.openapitools.client.models.AccountingObjectStatusDto
@@ -64,7 +63,8 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
 
 fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
     locationSyncEntity: LocationSyncEntity?,
-    balanceUnitSyncEntity: StructuralSyncEntity?
+    balanceUnitSyncEntities: List<StructuralSyncEntity>?,
+    structuralSyncEntities: List<StructuralSyncEntity>?
 ): AccountingObjectDetailSyncEntity {
     return AccountingObjectDetailSyncEntity(
         accountingObject = accountingObjectDb.toSyncEntity(locationSyncEntity),
@@ -74,9 +74,9 @@ fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
         equipmentType = equipmentType?.toSyncEntity(),
         provider = provider?.toSyncEntity(),
         mol = mol?.toSyncEntity(),
-        structuralSyncEntity = structuralDb?.toStructuralSyncEntity(),
+        structuralSyncEntities = structuralSyncEntities,
         categorySyncEntity = categoryDb?.toSyncEntity(),
-        balanceUnitSyncEntity = balanceUnitSyncEntity
+        balanceUnitSyncEntities = balanceUnitSyncEntities
     )
 }
 

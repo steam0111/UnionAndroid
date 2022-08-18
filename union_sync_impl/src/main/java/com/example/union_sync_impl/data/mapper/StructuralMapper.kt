@@ -35,6 +35,7 @@ fun StructuralUnitDtoV2.toStructuralDb(): StructuralDb {
 fun StructuralDb.toStructuralSyncEntity(): StructuralSyncEntity {
     return StructuralSyncEntity(
         id = id,
-        name = name
+        name = name,
+        balanceUnit = balanceUnit ?: false
     )
 }

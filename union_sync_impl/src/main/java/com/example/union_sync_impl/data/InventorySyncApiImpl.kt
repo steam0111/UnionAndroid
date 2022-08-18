@@ -64,7 +64,7 @@ class InventorySyncApiImpl(
         ).map {
             it.map {
                 it.inventoryDb.toInventorySyncEntity(
-                    structuralSyncEntity = it.structuralDb?.toStructuralSyncEntity(),
+                    structuralSyncEntities = listOfNotNull(it.structuralDb?.toStructuralSyncEntity()),
                     mol = it.employeeDb?.toSyncEntity(),
                     locationSyncEntities = it.getLocations(),
                     accountingObjects = listOf(),
@@ -110,10 +110,15 @@ class InventorySyncApiImpl(
             .d("getInventoryById status ${fullInventory.inventoryDb.inventoryStatus}")
 
         val locations = fullInventory.getLocations()
-        val structural = structuralSyncApi.getStructuralById(fullInventory.inventoryDb.structuralId)
+
+        val structurals =
+            structuralSyncApi.getStructuralFullPath(
+                fullInventory.structuralDb?.id,
+                mutableListOf()
+            ).orEmpty()
 
         return fullInventory.inventoryDb.toInventorySyncEntity(
-            structuralSyncEntity = structural,
+            structuralSyncEntities = structurals,
             mol = fullInventory.employeeDb?.toSyncEntity(),
             locationSyncEntities = locations,
             accountingObjects = getAccountingObjects(fullInventory.inventoryDb),

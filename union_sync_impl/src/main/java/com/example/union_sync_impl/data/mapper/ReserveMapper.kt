@@ -135,7 +135,7 @@ fun FullReserve.toSyncEntity(): ReserveSyncEntity {
     )
 }
 
-fun FullReserve.toDetailSyncEntity(balanceUnitSyncEntity: StructuralSyncEntity?): ReserveDetailSyncEntity {
+fun FullReserve.toDetailSyncEntity(balanceUnits: List<StructuralSyncEntity>?, structurals: List<StructuralSyncEntity>?): ReserveDetailSyncEntity {
     val locationEntity = locationDb?.toLocationSyncEntity(locationTypeDb)
     return ReserveDetailSyncEntity(
         reserveSyncEntity = reserveDb.toSyncEntity(locationEntity),
@@ -146,8 +146,8 @@ fun FullReserve.toDetailSyncEntity(balanceUnitSyncEntity: StructuralSyncEntity?)
         nomenclatureGroupSyncEntity = nomenclatureGroupDb?.toSyncEntity(),
         orderSyncEntity = orderDb?.toSyncEntity(),
         receptionItemCategorySyncEntity = receptionItemCategoryDb?.toSyncEntity(),
-        structuralSyncEntity = structuralDb?.toStructuralSyncEntity(),
-        balanceUnitSyncEntity = balanceUnitSyncEntity
+        structuralSyncEntities = structurals,
+        balanceUnitSyncEntities = balanceUnits
     )
 }
 

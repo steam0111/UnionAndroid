@@ -16,11 +16,11 @@ fun EmployeeDetailSyncEntity.toEmployeeDetailDomain(): EmployeeDetailDomain {
     employee.statusId?.toEmployeeStatus()?.let {
         listInfo.add(ObjectInfoDomain(R.string.employees_status, valueRes = it.titleId))
     }
-    structuralSyncEntity?.name?.let {
-        listInfo.add(ObjectInfoDomain(R.string.manual_structural, it))
+    structuralSyncEntities?.let {
+        listInfo.add(ObjectInfoDomain(R.string.manual_structural, it.joinToString(", ") { it.name }))
     }
-    balanceUnit?.let {
-        listInfo.add(ObjectInfoDomain(R.string.balance_unit, it.name))
+    balanceUnitSyncEntities?.let {
+        listInfo.add(ObjectInfoDomain(R.string.balance_unit, it.joinToString(", ") { it.name }))
     }
     employee.post?.let {
         listInfo.add(ObjectInfoDomain(R.string.employees_post, it))
