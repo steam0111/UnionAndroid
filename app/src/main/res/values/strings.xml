@@ -324,11 +324,13 @@
     <string name="change_scan_data_with_barcode">С штрихкода</string>
     <string name="change_scan_data_on_barcode">На штрихкод</string>
     <string name="change_scan_data_empty_barcode">Штрихкод не установлен</string>
+    <string name="change_scan_data_hint_barcode">Введите штрихкод</string>
 
     <string name="change_scan_data_sn_title">Изменение SN</string>
     <string name="change_scan_data_with_sn">С SN</string>
     <string name="change_scan_data_on_sn">На SN</string>
     <string name="change_scan_data_empty_sn">SN не установлен</string>
+    <string name="change_scan_data_hint_sn">Введите серийный номер</string>
 
     <string name="change_scan_data_press_cursor">Нажмите курок считывателя</string>
 </resources>

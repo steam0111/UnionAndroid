@@ -11,6 +11,7 @@ interface ChangeScanDataStore :
     sealed class Intent {
         data class OnPowerChanged(val power: Int?) : Intent()
         data class OnScanning(val scanningValue: String) : Intent()
+        data class OnScanDataChanged(val scanData: String) : Intent()
         object OnPowerClicked : Intent()
         object OnBackClicked : Intent()
         object OnCancelClicked : Intent()

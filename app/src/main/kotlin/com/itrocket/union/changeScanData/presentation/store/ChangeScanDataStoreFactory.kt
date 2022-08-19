@@ -66,12 +66,14 @@ class ChangeScanDataStoreFactory(
                 ChangeScanDataStore.Intent.OnPowerClicked -> {
                     //no-op
                 }
-                is ChangeScanDataStore.Intent.OnScanning -> {
-                    val scanningValue = intent.scanningValue
-                    dispatch(Result.ScanningValue(scanningValue))
-                    dispatch(Result.IsApplyEnabled(scanningValue.isNotBlank()))
-                }
+                is ChangeScanDataStore.Intent.OnScanning -> onScanningValueChanged(intent.scanningValue)
+                is ChangeScanDataStore.Intent.OnScanDataChanged -> onScanningValueChanged(intent.scanData)
             }
+        }
+
+        private fun onScanningValueChanged(scanningValue: String){
+            dispatch(Result.ScanningValue(scanningValue))
+            dispatch(Result.IsApplyEnabled(scanningValue.isNotBlank()))
         }
 
         override fun handleError(throwable: Throwable) {
