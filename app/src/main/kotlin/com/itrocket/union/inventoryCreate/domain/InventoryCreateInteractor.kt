@@ -29,16 +29,9 @@ class InventoryCreateInteractor(
         inventoryCreate: InventoryCreateDomain,
         accountingObjects: List<AccountingObjectDomain>
     ) = withContext(coreDispatchers.io) {
-        val newAccountingObjects = accountingObjects.map {
-            if (it.inventoryStatus == InventoryAccountingObjectStatus.NEW) {
-                it.copy(inventoryStatus = InventoryAccountingObjectStatus.FOUND)
-            } else {
-                it
-            }
-        }
         inventoryRepository.updateInventory(
             inventoryCreate.copy(
-                accountingObjects = newAccountingObjects,
+                accountingObjects = accountingObjects,
                 userUpdated = authMainInteractor.getLogin()
             ).toUpdateSyncEntity()
         )
@@ -138,15 +131,6 @@ class InventoryCreateInteractor(
         newAccountingObject: AccountingObjectDomain
     ): Boolean {
         return !accountingObjects.contains(newAccountingObject)
-    }
-
-    fun makeInInventoryAccountingObjects(
-        accountingObjects: List<AccountingObjectDomain>,
-        newAccountingObjects: List<AccountingObjectDomain>
-    ): List<AccountingObjectDomain> {
-        return accountingObjects + newAccountingObjects.map {
-            it.copy(inventoryStatus = InventoryAccountingObjectStatus.FOUND)
-        }
     }
 
     private suspend fun getHandlesAccountingObjectByRfid(rfids: List<String>): List<AccountingObjectDomain> {

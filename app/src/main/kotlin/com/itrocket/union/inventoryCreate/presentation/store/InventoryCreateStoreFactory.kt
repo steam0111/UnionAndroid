@@ -125,7 +125,10 @@ class InventoryCreateStoreFactory(
                         )
                     }
                 }
-                InventoryCreateStore.Intent.OnCompleteClicked -> completeInventory(inventoryDomain = getState().inventoryDocument)
+                InventoryCreateStore.Intent.OnCompleteClicked -> completeInventory(
+                    inventoryDomain = getState().inventoryDocument,
+                    newAccountingObjects = getState().newAccountingObjects.toList()
+                )
                 InventoryCreateStore.Intent.OnInWorkClicked -> inWorkInventory(
                     inventoryDomain = getState().inventoryDocument,
                     newAccountingObjects = getState().newAccountingObjects.toList()
@@ -149,9 +152,13 @@ class InventoryCreateStoreFactory(
         }
 
         private suspend fun completeInventory(
-            inventoryDomain: InventoryCreateDomain
+            inventoryDomain: InventoryCreateDomain,
+            newAccountingObjects: List<AccountingObjectDomain>
         ) {
-            val inventory = inventoryDomain.copy(inventoryStatus = InventoryStatus.COMPLETED)
+            val inventory = inventoryDomain.copy(
+                inventoryStatus = InventoryStatus.COMPLETED,
+                accountingObjects = newAccountingObjects + inventoryDomain.accountingObjects
+            )
             dispatch(Result.Inventory(inventory))
             inventoryCreateInteractor.saveInventoryDocument(inventory, inventory.accountingObjects)
         }
@@ -160,10 +167,7 @@ class InventoryCreateStoreFactory(
             inventoryDomain: InventoryCreateDomain,
             newAccountingObjects: List<AccountingObjectDomain>
         ) {
-            val accountingObjects = inventoryCreateInteractor.makeInInventoryAccountingObjects(
-                accountingObjects = inventoryDomain.accountingObjects,
-                newAccountingObjects = newAccountingObjects
-            )
+            val accountingObjects = newAccountingObjects + inventoryDomain.accountingObjects
             val inventory = inventoryDomain.copy(
                 inventoryStatus = InventoryStatus.IN_PROGRESS,
                 accountingObjects = accountingObjects
