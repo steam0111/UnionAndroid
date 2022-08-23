@@ -20,6 +20,7 @@ import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.filter.presentation.store.FilterArguments
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.transit.presentation.store.TransitArguments
 
 interface DocumentStore : Store<DocumentStore.Intent, DocumentStore.State, DocumentStore.Label> {
 
@@ -55,6 +56,19 @@ interface DocumentStore : Store<DocumentStore.Intent, DocumentStore.State, Docum
                 get() = DocumentComposeFragmentDirections.toDocumentCreate(
                     DocumentCreateArguments(
                         document = document
+                    )
+                )
+
+        }
+
+        data class ShowTransitCreate(
+            private val transit: DocumentDomain
+        ) : Label(),
+            ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = DocumentComposeFragmentDirections.toTransitCreate(
+                    TransitArguments(
+                        transit = transit
                     )
                 )
 

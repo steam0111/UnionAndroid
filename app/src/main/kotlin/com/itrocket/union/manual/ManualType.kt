@@ -22,5 +22,7 @@ enum class ManualType(@StringRes val titleId: Int) {
     LOCATION_TO(R.string.location_to),
     RELOCATION_LOCATION_TO(R.string.relocate_location_to),
     ACTION_BASE(R.string.action_base),
-    INVENTORY_BASE(R.string.action_base)
+    INVENTORY_BASE(R.string.action_base),
+    TRANSIT(R.string.transit_location),
+    RECIPIENT(R.string.recipient),
 }

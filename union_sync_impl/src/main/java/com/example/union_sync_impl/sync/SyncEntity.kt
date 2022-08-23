@@ -24,7 +24,8 @@ abstract class SyncEntity<SyncType>(
      * ActionStatus, nomenclature, AccountingObjectStatus, InventoryState, equipment-type,
      * action, department, EntityModelType, AccountingCategory, InventoryType, nomenclatureGroup,
      * ActionBase, EmployeeStatus, organization, counterparty, producer, InventoryRecordStatus,
-     * location, region, accountingObject, locationPath
+     * location, region, accountingObject, locationPath, transit, transitAccountingObjectRecord, transitRemainsRecord,
+     * commissioning, commissioningRecord
      */
     abstract val id: String
 

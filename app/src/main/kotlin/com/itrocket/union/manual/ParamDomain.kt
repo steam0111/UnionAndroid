@@ -85,6 +85,10 @@ fun List<ParamDomain>.getReceptionCategoryId(): String? {
     return filterNotEmpty().find { it.type == ManualType.RECEPTION_CATEGORY }?.id
 }
 
+fun List<ParamDomain>.getReceivingId(): String? {
+    return filterNotEmpty().find { it.type == ManualType.RECIPIENT }?.id
+}
+
 fun List<ParamDomain>.filterNotEmpty(): List<ParamDomain> {
     return filterNot { it.id.isNullOrBlank() }
 }

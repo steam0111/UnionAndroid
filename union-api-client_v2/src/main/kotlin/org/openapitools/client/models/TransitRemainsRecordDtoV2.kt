@@ -86,7 +86,7 @@ data class TransitRemainsRecordDtoV2 (
     val extendedRemains: RemainsDtoV2? = null,
 
     @Json(name = "count")
-    val count: java.math.BigDecimal? = null
+    val count: Long? = null
 
 )
 

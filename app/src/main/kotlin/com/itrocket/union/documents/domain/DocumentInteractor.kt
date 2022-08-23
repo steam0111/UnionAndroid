@@ -31,11 +31,14 @@ class DocumentInteractor(
     ): Flow<List<DocumentView>> {
         return withContext(coreDispatchers.io) {
             groupDocuments(
-                repository.getDocumentsByType(
-                    type = type,
-                    textQuery = searchQuery,
-                    params = params
-                )
+                when (type) {
+                    DocumentTypeDomain.TRANSIT -> repository.getTransitDocument(textQuery = searchQuery)
+                    else -> repository.getDocumentsByType(
+                        type = type,
+                        textQuery = searchQuery,
+                        params = params
+                    )
+                }
             )
         }
     }

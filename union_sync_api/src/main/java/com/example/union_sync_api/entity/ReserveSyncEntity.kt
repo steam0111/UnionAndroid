@@ -41,7 +41,7 @@ fun ReserveSyncEntity.toReserveShortSyncEntity(locationId: String? = null, userU
         updateDate = System.currentTimeMillis()
     )
 
-fun ReserveSyncEntity.toDocumentReserveCountSyncEntity() = DocumentReserveCountSyncEntity(
+fun ReserveSyncEntity.toReserveCountSyncEntity() = ReserveCountSyncEntity(
     id = id,
     count = count,
     userUpdated = userUpdated

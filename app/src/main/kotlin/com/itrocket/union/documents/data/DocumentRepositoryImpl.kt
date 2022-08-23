@@ -2,8 +2,9 @@ package com.itrocket.union.documents.data
 
 import com.example.union_sync_api.data.ActionRemainsRecordSyncApi
 import com.example.union_sync_api.data.DocumentSyncApi
+import com.example.union_sync_api.data.TransitSyncApi
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
-import com.example.union_sync_api.entity.DocumentReserveCountSyncEntity
+import com.example.union_sync_api.entity.ReserveCountSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateReservesSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.itrocket.core.base.CoreDispatchers
@@ -23,7 +24,8 @@ import kotlinx.coroutines.withContext
 class DocumentRepositoryImpl(
     private val documentSyncApi: DocumentSyncApi,
     private val coreDispatchers: CoreDispatchers,
-    private val documentRemainsRecordSyncApi: ActionRemainsRecordSyncApi
+    private val documentRemainsRecordSyncApi: ActionRemainsRecordSyncApi,
+    private val transitSyncApi: TransitSyncApi,
 ) : DocumentRepository {
 
     override suspend fun getDocumentsCount(
@@ -58,6 +60,14 @@ class DocumentRepositoryImpl(
         ).map { it.map() }
     }
 
+    override suspend fun getTransitDocument(textQuery: String?): Flow<List<DocumentDomain>> {
+        return transitSyncApi.getAllTransit(textQuery = textQuery).map {
+            it.map {
+                it.map()
+            }
+        }
+    }
+
     override suspend fun getDocumentById(id: String): DocumentDomain {
         return documentSyncApi.getDocumentById(id).map()
     }
@@ -74,7 +84,7 @@ class DocumentRepositoryImpl(
         return documentSyncApi.createDocument(documentCreateSyncEntity)
     }
 
-    override suspend fun insertDocumentReserveCount(documentReserveCounts: List<DocumentReserveCountSyncEntity>) {
+    override suspend fun insertDocumentReserveCount(documentReserveCounts: List<ReserveCountSyncEntity>) {
         return documentRemainsRecordSyncApi.updateCounts(documentReserveCounts)
     }
 }

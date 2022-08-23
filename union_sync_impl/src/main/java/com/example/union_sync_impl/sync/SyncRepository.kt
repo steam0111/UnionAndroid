@@ -37,7 +37,10 @@ class SyncRepository(
     private val structuralDao: StructuralDao,
     private val structuralPathDao: StructuralPathDao,
     private val accountingObjectCategoryDao: AccountingObjectCategoryDao,
-    private val inventoryBaseDao: InventoryBaseDao
+    private val inventoryBaseDao: InventoryBaseDao,
+    private val transitDao: TransitDao,
+    private val transitRemainsRecordDao: TransitRemainsRecordDao,
+    private val transitAccountingObjectRecordDao: TransitAccountingObjectRecordDao
 ) {
     suspend fun clearDataBeforeDownload() {
         inventoryDao.clearAll()
@@ -86,7 +89,25 @@ class SyncRepository(
             moshi,
             ::inventoryRecordDbSaver,
             getInventoryRecordDbCollector()
-        )
+        ),
+        TransitSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::transitDbSaver,
+            getTransitDbCollector()
+        ),
+        TransitRemainsRecordSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::transitRemainsRecordDbSaver,
+            getTransitRecordRemainsDbCollector()
+        ),
+        TransitAccountingObjectRecordSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::transitRecordDbSaver,
+            getTransitRecordAccountingObjectDbCollector()
+        ),
     )
 
     fun getSyncEntities(): Map<Pair<String, String>, SyncEntity<*>> = listOf(
@@ -211,7 +232,25 @@ class SyncRepository(
             syncControllerApi,
             moshi,
             ::structuralPathDbSaver
-        )
+        ),
+        TransitSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::transitDbSaver,
+            getTransitDbCollector()
+        ),
+        TransitRemainsRecordSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::transitRemainsRecordDbSaver,
+            getTransitRecordRemainsDbCollector()
+        ),
+        TransitAccountingObjectRecordSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::transitRecordDbSaver,
+            getTransitRecordAccountingObjectDbCollector()
+        ),
     ).associateBy {
         it.id to it.table
     }
@@ -292,6 +331,65 @@ class SyncRepository(
         }.filterNot {
             it.isEmpty()
         }
+    }
+
+    private fun getTransitDbCollector(): Flow<List<TransitDtoV2>> {
+        return flow {
+            paginationEmitter(
+                getData = { limit, offset ->
+                    transitDao.getAll(
+                        sqlDocumentsQuery(
+                            limit = limit,
+                            offset = offset,
+                            updateDate = getLastSyncTime()
+                        )
+                    ).firstOrNull().orEmpty()
+                },
+                localToNetworkMapper = { localObjects ->
+                    localObjects.map { it.transitDb.toTransitDtoV2() }
+                }
+            )
+        }.filterNot {
+            it.isEmpty()
+        }
+    }
+
+    private fun getTransitRecordRemainsDbCollector(): Flow<List<TransitRemainsRecordDtoV2>> {
+        return flow {
+            paginationEmitter(
+                getData = { limit, offset ->
+                    transitRemainsRecordDao.getAll(
+                        sqlTransitRemainsRecordQuery(
+                            limit = limit,
+                            offset = offset,
+                            updateDate = getLastSyncTime()
+                        )
+                    )
+                },
+                localToNetworkMapper = { localObjects ->
+                    localObjects.map { it.toTransitRemainsDb() }
+                }
+            )
+        }.filterNot { it.isEmpty() }
+    }
+
+    private fun getTransitRecordAccountingObjectDbCollector(): Flow<List<TransitAccountingObjectRecordDtoV2>> {
+        return flow {
+            paginationEmitter(
+                getData = { limit, offset ->
+                    transitAccountingObjectRecordDao.getAll(
+                        sqlTransitRecordQuery(
+                            limit = limit,
+                            offset = offset,
+                            updateDate = getLastSyncTime()
+                        )
+                    )
+                },
+                localToNetworkMapper = { localObjects ->
+                    localObjects.map { it.toTransitAccountingObjectDb() }
+                }
+            )
+        }.filterNot { it.isEmpty() }
     }
 
     private fun getActionRecordRemainsDbCollector(): Flow<List<ActionRemainsRecordDtoV2>> {
@@ -493,12 +591,39 @@ class SyncRepository(
         )
     }
 
+    private suspend fun transitDbSaver(objects: List<TransitDtoV2>) {
+        structuralDao.insertAll(objects.mapNotNull { it.extendedStructuralUnitFrom?.toStructuralDb() })
+        structuralDao.insertAll(objects.mapNotNull { it.extendedStructuralUnitTo?.toStructuralDb() })
+        employeeDao.insertAll(
+            objects.mapNotNull { it.extendedReceiving?.toEmployeeDb() } +
+                    objects.mapNotNull { it.extendedResponsible?.toEmployeeDb() }
+                        .distinctBy { it.id }
+        )
+
+        locationDao.insertAll(
+            objects.mapNotNull { it.extendedLocationFrom?.toLocationDb() } +
+                    objects.mapNotNull { it.extendedLocationTo?.toLocationDb() } +
+                    objects.mapNotNull { it.extendedVehicleId?.toLocationDb() }
+                        .distinctBy { it.id }
+        )
+
+        transitDao.insertAll(objects.map { it.toTransitDb() })
+    }
+
     private suspend fun actionRecordDbSaver(objects: List<ActionRecordDtoV2>) {
         actionRecordDao.insertAll(objects.map { it.toActionRecordDb() })
     }
 
     private suspend fun actionRemainsRecordDbSaver(objects: List<ActionRemainsRecordDtoV2>) {
         actionRemainsRecordDao.insertAll(objects.map { it.toActionRemainsRecordDb() })
+    }
+
+    private suspend fun transitRecordDbSaver(objects: List<TransitAccountingObjectRecordDtoV2>) {
+        transitAccountingObjectRecordDao.insertAll(objects.map { it.toTransitAccountingObjectDb() })
+    }
+
+    private suspend fun transitRemainsRecordDbSaver(objects: List<TransitRemainsRecordDtoV2>) {
+        transitRemainsRecordDao.insertAll(objects.map { it.toTransitRemainsDb() })
     }
 
     private suspend fun inventoryRecordDbSaver(objects: List<InventoryRecordDtoV2>) {

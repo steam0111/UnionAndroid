@@ -9,11 +9,16 @@ import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
 import com.example.union_sync_impl.entity.InventoryRecordDb
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
+import com.example.union_sync_impl.entity.TransitAccountingObjectRecordDb
+import com.example.union_sync_impl.entity.TransitDb
+import com.example.union_sync_impl.entity.TransitRemainsRecordDb
 import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.ActionRecordDtoV2
 import org.openapitools.client.models.ActionRemainsRecordDtoV2
 import org.openapitools.client.models.EnumDtoV2
 import org.openapitools.client.models.InventoryRecordDtoV2
+import org.openapitools.client.models.TransitAccountingObjectRecordDtoV2
+import org.openapitools.client.models.TransitRemainsRecordDtoV2
 
 fun ActionRecordDtoV2.toActionRecordDb() = ActionRecordDb(
     id = id,
@@ -108,4 +113,40 @@ fun EnumDtoV2.toActionBaseDb() = ActionBaseDb(
 fun ActionBaseDb.toSyncEntity() = ActionBaseSyncEntity(
     id = id,
     name = name
+)
+
+fun TransitRemainsRecordDtoV2.toTransitRemainsDb() = TransitRemainsRecordDb(
+    id = id,
+    transitId = transitId,
+    remainId = remainsId,
+    count = count,
+    updateDate = System.currentTimeMillis(),
+    userUpdated = userUpdated,
+    userInserted = userInserted,
+    insertDate = getMillisDateFromServerFormat(dateInsert)
+)
+
+fun TransitAccountingObjectRecordDtoV2.toTransitAccountingObjectDb() = TransitAccountingObjectRecordDb(
+    id = id,
+    transitId = transitId,
+    accountingObjectId = accountingObjectId,
+    updateDate = System.currentTimeMillis(),
+    userInserted = userInserted,
+    userUpdated = userUpdated,
+    insertDate = getMillisDateFromServerFormat(dateInsert)
+)
+
+fun TransitRemainsRecordDb.toTransitRemainsDb() = TransitRemainsRecordDtoV2(
+    id = id,
+    transitId = transitId,
+    remainsId = remainId,
+    count = count,
+    deleted = false
+)
+
+fun TransitAccountingObjectRecordDb.toTransitAccountingObjectDb() = TransitAccountingObjectRecordDtoV2(
+    id = id,
+    transitId = transitId,
+    accountingObjectId = accountingObjectId,
+    deleted = false
 )

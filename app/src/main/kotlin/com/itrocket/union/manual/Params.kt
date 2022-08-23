@@ -13,6 +13,7 @@ data class Params(val paramList: List<ParamDomain>) {
             ManualType.STRUCTURAL_TO,
             ManualType.STRUCTURAL_FROM,
             ManualType.STRUCTURAL,
+            ManualType.TRANSIT
         )
     }
 

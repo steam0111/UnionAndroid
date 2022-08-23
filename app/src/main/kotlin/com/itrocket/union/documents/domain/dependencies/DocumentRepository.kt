@@ -1,7 +1,7 @@
 package com.itrocket.union.documents.domain.dependencies
 
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
-import com.example.union_sync_api.entity.DocumentReserveCountSyncEntity
+import com.example.union_sync_api.entity.ReserveCountSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateReservesSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.itrocket.union.documents.domain.entity.DocumentDomain
@@ -23,6 +23,8 @@ interface DocumentRepository {
         params: List<ParamDomain>?
     ): Flow<List<DocumentDomain>>
 
+    suspend fun getTransitDocument(textQuery: String?): Flow<List<DocumentDomain>>
+
     suspend fun getDocumentById(id: String): DocumentDomain
 
     suspend fun updateDocument(documentUpdateSyncEntity: DocumentUpdateSyncEntity)
@@ -31,5 +33,5 @@ interface DocumentRepository {
 
     suspend fun updateDocumentReserves(documentUpdateReservesSyncEntity: DocumentUpdateReservesSyncEntity)
 
-    suspend fun insertDocumentReserveCount(documentReserveCounts: List<DocumentReserveCountSyncEntity>)
+    suspend fun insertDocumentReserveCount(documentReserveCounts: List<ReserveCountSyncEntity>)
 }

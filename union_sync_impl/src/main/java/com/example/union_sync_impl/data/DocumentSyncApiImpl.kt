@@ -5,7 +5,7 @@ import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
-import com.example.union_sync_api.entity.DocumentReserveCountSyncEntity
+import com.example.union_sync_api.entity.ReserveCountSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateReservesSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
@@ -15,9 +15,7 @@ import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.ActionRecordDao
 import com.example.union_sync_impl.dao.ActionRemainsRecordDao
 import com.example.union_sync_impl.dao.DocumentDao
-import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.ReserveDao
-import com.example.union_sync_impl.dao.StructuralDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.dao.sqlActionRecordQuery
 import com.example.union_sync_impl.dao.sqlActionRemainsRecordQuery
@@ -35,7 +33,6 @@ import java.util.*
 
 class DocumentSyncApiImpl(
     private val documentDao: DocumentDao,
-    private val locationDao: LocationDao,
     private val structuralSyncApi: StructuralSyncApi,
     private val accountingObjectDao: AccountingObjectDao,
     private val reserveDao: ReserveDao,
@@ -222,7 +219,7 @@ class DocumentSyncApiImpl(
     }
 
     private suspend fun updateRemainsActionRecords(
-        remainIds: List<DocumentReserveCountSyncEntity>,
+        remainIds: List<ReserveCountSyncEntity>,
         actionId: String,
         userUpdated: String?
     ) {

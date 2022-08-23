@@ -158,11 +158,22 @@ class DocumentStoreFactory(
         }
 
         private fun showDocument(document: DocumentDomain) {
-            publish(
-                DocumentStore.Label.ShowDocumentCreate(
-                    document = document
-                )
-            )
+            when (document.documentType) {
+                DocumentTypeDomain.TRANSIT -> {
+                    publish(
+                        DocumentStore.Label.ShowTransitCreate(
+                            transit = document
+                        )
+                    )
+                }
+                else -> {
+                    publish(
+                        DocumentStore.Label.ShowDocumentCreate(
+                            document = document
+                        )
+                    )
+                }
+            }
         }
 
         override fun handleError(throwable: Throwable) {
