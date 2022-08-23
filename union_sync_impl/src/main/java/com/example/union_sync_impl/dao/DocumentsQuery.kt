@@ -65,10 +65,10 @@ fun sqlDocumentsQuery(
                     add("exploitingId" isEquals exploitingId)
                 }
                 structuralFromId?.let {
-                    add("structuralId" isEquals structuralFromId)
+                    add("structuralFromId" isEquals structuralFromId)
                 }
                 structuralToId?.let {
-                    add("structuralId" isEquals structuralToId)
+                    add("structuralToId" isEquals structuralToId)
                 }
                 updateDate?.let {
                     add("updateDate" more updateDate)

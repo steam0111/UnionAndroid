@@ -73,6 +73,9 @@ interface DocumentMenuStore :
                     R.string.main_write_off -> DocumentMenuComposeFragmentDirections.toDocuments(
                         DocumentArguments(DocumentTypeDomain.WRITE_OFF)
                     )
+                    R.string.main_transit -> DocumentMenuComposeFragmentDirections.toDocuments(
+                        DocumentArguments(DocumentTypeDomain.TRANSIT)
+                    )
                     R.string.nomenclature_group -> DocumentMenuComposeFragmentDirections.toNomenclatureGroup(
                         NomenclatureGroupArguments(0)
                     )

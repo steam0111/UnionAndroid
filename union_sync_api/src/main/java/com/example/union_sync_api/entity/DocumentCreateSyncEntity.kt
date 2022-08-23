@@ -11,7 +11,7 @@ data class DocumentCreateSyncEntity(
     val locationToId: String? = null,
     val actionBaseId: String? = null,
     val accountingObjectsIds: List<String>? = null,
-    val reservesIds: List<DocumentReserveCountSyncEntity>? = null,
+    val reservesIds: List<ReserveCountSyncEntity>? = null,
     val code: String?,
     val userInserted: String?,
     val userUpdated: String?,

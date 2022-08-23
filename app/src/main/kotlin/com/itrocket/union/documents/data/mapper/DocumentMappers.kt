@@ -4,6 +4,7 @@ import com.example.union_sync_api.entity.ActionBaseSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
+import com.example.union_sync_api.entity.TransitSyncEntity
 import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.itrocket.union.accountingObjects.data.mapper.map
 import com.itrocket.union.documents.domain.entity.DocumentDomain
@@ -15,6 +16,7 @@ import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.reserves.data.mapper.map
+import com.itrocket.union.transit.domain.TransitTypeDomain
 import com.itrocket.union.structural.data.mapper.toStructuralDomain
 
 fun List<DocumentSyncEntity>.map(): List<DocumentDomain> = map {
@@ -76,7 +78,7 @@ private fun getAccountingObjectParams(
     documentType: String,
     locationFrom: LocationSyncEntity? = null,
     locationTo: LocationSyncEntity? = null,
-    actionBase: ActionBaseSyncEntity? = null
+    actionBase: ActionBaseSyncEntity? = null,
 ): List<ParamDomain> {
     val params = mutableListOf<ParamDomain>()
     val type = DocumentTypeDomain.valueOf(documentType)
@@ -93,11 +95,19 @@ private fun getAccountingObjectParams(
         manualType = ManualType.STRUCTURAL_TO,
         destinations = structuralsTo
     )
-    addMolParam(params = params, mol = mol)
-    addExploitingParam(
+    addEmployeeParam(
         params = params,
-        exploiting = exploiting,
-        documentType = type,
+        employee = mol,
+        manualType = ManualType.MOL,
+        manualTypes = type.manualTypes
+    )
+    addEmployeeParam(
+        params = params,
+        employee = exploiting,
+        isFilterExpression = {
+            type == DocumentTypeDomain.RETURN
+        },
+        manualType = ManualType.EXPLOITING,
         manualTypes = type.manualTypes
     )
     addLocationParam(
@@ -143,15 +153,6 @@ private fun addStructuralParam(
     }
 }
 
-private fun addMolParam(params: MutableList<ParamDomain>, mol: EmployeeSyncEntity?) {
-    val molValue = if (mol != null) {
-        "${mol.firstname} ${mol.lastname}"
-    } else {
-        ""
-    }
-    params.add(ParamDomain(mol?.id.orEmpty(), molValue, ManualType.MOL))
-}
-
 private fun addActionBaseParam(
     params: MutableList<ParamDomain>,
     actionBase: ActionBaseSyncEntity?,
@@ -179,25 +180,111 @@ private fun addLocationParam(
     }
 }
 
-
-private fun addExploitingParam(
+private fun addEmployeeParam(
     params: MutableList<ParamDomain>,
-    exploiting: EmployeeSyncEntity?,
-    documentType: DocumentTypeDomain,
+    employee: EmployeeSyncEntity?,
+    manualType: ManualType,
+    isFilterExpression: () -> Boolean = { false },
     manualTypes: List<ManualType>
 ) {
-    if (manualTypes.contains(ManualType.EXPLOITING)) {
-        val exploitingValue = if (exploiting != null) {
-            "${exploiting.firstname} ${exploiting.lastname}"
+    if (manualTypes.contains(manualType)) {
+        val employeeValue = if (employee != null) {
+            "${employee.firstname} ${employee.lastname}"
         } else {
             ""
         }
-        val param = ParamDomain(
-            id = exploiting?.id.orEmpty(),
-            value = exploitingValue,
-            type = ManualType.EXPLOITING,
-            isFilter = documentType == DocumentTypeDomain.RETURN
+        params.add(
+            ParamDomain(
+                id = employee?.id.orEmpty(),
+                value = employeeValue,
+                type = manualType,
+                isFilter = isFilterExpression()
+            )
         )
-        params.add(param)
     }
+}
+
+fun TransitSyncEntity.map(): DocumentDomain = DocumentDomain(
+    id = id,
+    number = code,
+    creationDate = creationDate,
+    accountingObjects = accountingObjects.map(),
+    reserves = reserves.map(),
+    documentStatus = DocumentStatus.valueOf(transitStatus.ifEmpty { DocumentStatus.CREATED.name }),
+    documentType = DocumentTypeDomain.TRANSIT,
+    params = getTransitParams(
+        vehicle = vehicle,
+        mol = mol,
+        receiving = receiving,
+        locationFrom = locationFrom,
+        locationTo = locationTo,
+        structuralsFrom = structuralFromSyncEntities,
+        structuralsTo = structuralToSyncEntities
+    ),
+    documentStatusId = transitStatusId,
+    transitType = if (transitType.isNotBlank()) {
+        TransitTypeDomain.valueOf(transitType)
+    } else {
+        TransitTypeDomain.TRANSIT_SENDING
+    },
+    userInserted = userInserted,
+    userUpdated = userUpdated
+)
+
+fun getTransitParams(
+    structuralsTo: List<StructuralSyncEntity>? = null,
+    structuralsFrom: List<StructuralSyncEntity>? = null,
+    vehicle: LocationSyncEntity? = null,
+    mol: EmployeeSyncEntity? = null,
+    receiving: EmployeeSyncEntity? = null,
+    locationFrom: LocationSyncEntity? = null,
+    locationTo: LocationSyncEntity? = null,
+): List<ParamDomain> {
+    val params = mutableListOf<ParamDomain>()
+    val type = DocumentTypeDomain.TRANSIT
+
+    addStructuralParam(
+        params = params,
+        types = type.manualTypes,
+        manualType = ManualType.STRUCTURAL_FROM,
+        destinations = structuralsFrom
+    )
+    addStructuralParam(
+        params = params,
+        types = type.manualTypes,
+        manualType = ManualType.STRUCTURAL_TO,
+        destinations = structuralsTo
+    )
+    addEmployeeParam(
+        params = params,
+        employee = mol,
+        manualType = ManualType.MOL,
+        manualTypes = type.manualTypes
+    )
+    addEmployeeParam(
+        params = params,
+        employee = receiving,
+        manualType = ManualType.RECIPIENT,
+        manualTypes = type.manualTypes
+    )
+    addLocationParam(
+        params = params,
+        types = type.manualTypes,
+        manualType = ManualType.LOCATION_TO,
+        destinations = listOfNotNull(locationTo)
+    )
+    addLocationParam(
+        params = params,
+        types = type.manualTypes,
+        manualType = ManualType.TRANSIT,
+        destinations = listOfNotNull(vehicle)
+    )
+    addLocationParam(
+        params = params,
+        types = type.manualTypes,
+        manualType = ManualType.LOCATION_FROM,
+        destinations = listOfNotNull(locationFrom)
+    )
+
+    return params
 }

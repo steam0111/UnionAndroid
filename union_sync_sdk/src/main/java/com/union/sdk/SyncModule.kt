@@ -23,6 +23,7 @@ import com.example.union_sync_api.data.ProducerSyncApi
 import com.example.union_sync_api.data.ReceptionItemCategorySyncApi
 import com.example.union_sync_api.data.ReserveSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
+import com.example.union_sync_api.data.TransitSyncApi
 import com.example.union_sync_impl.UnionDatabase
 import com.example.union_sync_impl.data.AccountingObjectStatusSyncApiImpl
 import com.example.union_sync_impl.data.AccountingObjectSyncApiImpl
@@ -46,6 +47,7 @@ import com.example.union_sync_impl.data.ProducerSyncApiImpl
 import com.example.union_sync_impl.data.ReceptionCategoryItemSyncApiImpl
 import com.example.union_sync_impl.data.ReserveSyncApiImpl
 import com.example.union_sync_impl.data.StructuralSyncApiImpl
+import com.example.union_sync_impl.data.TransitSyncApiImpl
 import com.example.union_sync_impl.sync.SyncRepository
 import org.koin.dsl.module
 
@@ -92,7 +94,6 @@ object SyncModule {
         factory<DocumentSyncApi> {
             DocumentSyncApiImpl(
                 documentDao = get(),
-                locationDao = get(),
                 accountingObjectDao = get(),
                 reserveDao = get(),
                 actionRecordDao = get(),
@@ -157,6 +158,17 @@ object SyncModule {
         factory<ActionRemainsRecordSyncApi> {
             ActionRemainsRecordSyncApiImpl(actionRemainsRecordDao = get())
         }
+        factory<TransitSyncApi> {
+            TransitSyncApiImpl(
+                transitDao = get(),
+                accountingObjectDao = get(),
+                reserveDao = get(),
+                transitAccountingObjectRecordDao = get(),
+                transitRemainsRecordDao = get(),
+                locationSyncApi = get(),
+                structuralSyncApi = get()
+            )
+        }
         factory<AllSyncApi> {
             AllSyncImpl(
                 get(),
@@ -200,6 +212,9 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
+                get(),
+                get(),
+                get()
             )
         }
         factory {
@@ -276,6 +291,15 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().inventoryBaseDao()
+        }
+        factory {
+            get<UnionDatabase>().transitDao()
+        }
+        factory {
+            get<UnionDatabase>().transitAccountingObjectRecordDao()
+        }
+        factory {
+            get<UnionDatabase>().transitRemainsRecordDao()
         }
         factory<ManageSyncDataApi> {
             ManageSyncDataImpl(

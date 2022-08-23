@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.data
 
+import android.util.Log
 import com.example.union_sync_api.data.AllSyncApi
 import com.example.union_sync_impl.dao.NetworkSyncDao
 import com.example.union_sync_impl.entity.NetworkSyncDb
@@ -32,7 +33,6 @@ class AllSyncImpl(
         Timber.tag(SYNC_TAG).d("sync started ${syncInfo.id}")
 
         startExportFromLocalToServer(syncInfo.id)
-
         startExportFromServerToLocal(syncInfo.id)
 
         val syncCompletedInfo = syncControllerApi.apiSyncIdCompleteSyncPost(syncInfo.id)
@@ -87,7 +87,6 @@ class AllSyncImpl(
             val exportPartId = exportPartInformationV2.id
             val entityId = exportPartInformationV2.entityModel.id
             val tableId = exportPartInformationV2.table
-
             entityModelIds.add(entityId)
 
             if (syncEntities.contains(entityId to tableId)) {
@@ -102,7 +101,6 @@ class AllSyncImpl(
             .d("exportPartsInformation count ${exportSyncInfo.exportPartBufferInformation.exportPartsInformation.size}")
         Timber.tag(SYNC_TAG).d("all entityModelIds $entityModelIds in this sync")
         syncControllerApi.apiSyncIdCompleteExportPost(syncId)
-
         Timber.tag(SYNC_TAG).d("completed export from server to local")
     }
 

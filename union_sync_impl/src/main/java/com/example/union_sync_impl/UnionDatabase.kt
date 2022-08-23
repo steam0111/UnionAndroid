@@ -29,6 +29,9 @@ import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_impl.dao.StructuralDao
 import com.example.union_sync_impl.dao.StructuralPathDao
 import com.example.union_sync_impl.entity.AccountingObjectCategoryDb
+import com.example.union_sync_impl.dao.TransitAccountingObjectRecordDao
+import com.example.union_sync_impl.dao.TransitDao
+import com.example.union_sync_impl.dao.TransitRemainsRecordDao
 import com.example.union_sync_impl.entity.AccountingObjectDb
 import com.example.union_sync_impl.entity.AccountingObjectStatusDb
 import com.example.union_sync_impl.entity.ActionBaseDb
@@ -49,6 +52,9 @@ import com.example.union_sync_impl.entity.ProducerDb
 import com.example.union_sync_impl.entity.ProviderDb
 import com.example.union_sync_impl.entity.ReceptionItemCategoryDb
 import com.example.union_sync_impl.entity.ReserveDb
+import com.example.union_sync_impl.entity.TransitAccountingObjectRecordDb
+import com.example.union_sync_impl.entity.TransitDb
+import com.example.union_sync_impl.entity.TransitRemainsRecordDb
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationPathDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
@@ -83,8 +89,11 @@ import com.example.union_sync_impl.utils.Converters
         StructuralPathDb::class,
         StructuralDb::class,
         AccountingObjectCategoryDb::class,
-        InventoryBaseDb::class
-    ], version = 96
+        InventoryBaseDb::class,
+        TransitDb::class,
+        TransitAccountingObjectRecordDb::class,
+        TransitRemainsRecordDb::class
+    ], version = 97
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {
@@ -113,4 +122,7 @@ abstract class UnionDatabase : RoomDatabase() {
     abstract fun structuralPathDao(): StructuralPathDao
     abstract fun accountingObjectCategoryDao() : AccountingObjectCategoryDao
     abstract fun inventoryBaseDao(): InventoryBaseDao
+    abstract fun transitDao(): TransitDao
+    abstract fun transitAccountingObjectRecordDao(): TransitAccountingObjectRecordDao
+    abstract fun transitRemainsRecordDao(): TransitRemainsRecordDao
 }

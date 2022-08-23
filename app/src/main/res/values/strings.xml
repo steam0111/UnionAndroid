@@ -79,6 +79,7 @@
     <string name="main_accounting_object">Объекты уч.</string>
     <string name="main_reserves">Запасы</string>
     <string name="main_commissioning">Ввод в экспл.</string>
+    <string name="main_transit">Транзит</string>
     <string name="main_employees">Сотрудники</string>
     <string name="main_documents">Документы</string>
     <string name="main_issue">Выдача</string>
@@ -113,6 +114,8 @@
     <string name="department_to">Подразделение получателя</string>
     <string name="action_base">Основание</string>
     <string name="relocate_location_to">Место назначения</string>
+    <string name="transit_location">Транзитное местоположение</string>
+    <string name="recipient">Получатель</string>
 
     <!-- AccountingObjectScreen -->
     <string name="main_marking">Маркировка</string>

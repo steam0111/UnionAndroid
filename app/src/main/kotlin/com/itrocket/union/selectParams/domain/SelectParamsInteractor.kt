@@ -29,7 +29,8 @@ class SelectParamsInteractor(
             ManualType.EQUIPMENT_TYPE -> getEquipmentTypes(searchText)
             ManualType.NOMENCLATURE_GROUP -> getNomenclatureGroup(searchText)
             ManualType.RECEPTION_CATEGORY -> getReceptionCategory(searchText)
-            else -> flow { }
+            ManualType.RECIPIENT -> getRecipient(searchText)
+            else -> flow {  }
         }
 
 
@@ -65,6 +66,10 @@ class SelectParamsInteractor(
             type = ManualType.EXPLOITING,
             textQuery = searchText
         )
+    }
+
+    private suspend fun getRecipient(searchText: String): Flow<List<ParamDomain>> {
+        return selectParamsRepository.getEmployees(type = ManualType.RECIPIENT, textQuery = searchText)
     }
 
     private suspend fun getAccountingObjectStatuses(searchText: String): Flow<List<ParamDomain>> {

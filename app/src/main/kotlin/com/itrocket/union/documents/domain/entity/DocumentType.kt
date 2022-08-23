@@ -54,6 +54,18 @@ enum class DocumentTypeDomain(
         titleId = R.string.main_commissioning,
         manualTypes = listOf(ManualType.EXPLOITING),
     ),
+    TRANSIT(
+        titleId = R.string.main_transit,
+        manualTypes = listOf(
+            ManualType.STRUCTURAL_FROM,
+            ManualType.STRUCTURAL_TO,
+            ManualType.RECIPIENT,
+            ManualType.MOL,
+            ManualType.LOCATION_FROM,
+            ManualType.TRANSIT,
+            ManualType.LOCATION_TO,
+        )
+    ),
     ALL(
         titleId = R.string.common_empty,
         manualTypes = listOf(ManualType.EXPLOITING),

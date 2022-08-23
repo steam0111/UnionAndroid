@@ -249,7 +249,6 @@ class DocumentCreateStoreFactory(
                 params = state.params
             )
             documentReservesManager.changeReservesAfterConduct(
-                documentId = documentId,
                 documentTypeDomain = state.document.documentType,
                 reserves = state.reserves,
                 params = state.params

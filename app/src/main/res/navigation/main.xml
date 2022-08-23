@@ -78,7 +78,7 @@
             app:destination="@+id/syncAll" />
         <action
             android:id="@+id/to_structural"
-            app:destination="@id/structural"/>
+            app:destination="@id/structural" />
     </fragment>
 
     <fragment
@@ -125,7 +125,7 @@
         <argument
             android:name="IdentifyArguments"
             app:argType="com.itrocket.union.identify.presentation.store.IdentifyArguments"
-            app:nullable="true"/>
+            app:nullable="true" />
     </fragment>
 
     <fragment
@@ -161,6 +161,9 @@
         <action
             android:id="@+id/to_documentCreate"
             app:destination="@id/documentCreate" />
+        <action
+            android:id="@+id/to_transitCreate"
+            app:destination="@id/transit" />
         <action
             android:id="@+id/to_filter"
             app:destination="@id/filter" />
@@ -442,5 +445,29 @@
         <argument
             android:name="StructuralArguments"
             app:argType="com.itrocket.union.structural.presentation.store.StructuralArguments" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/transit"
+        android:name="com.itrocket.union.transit.presentation.view.TransitComposeFragment"
+        android:label="Transit">
+        <action
+            android:id="@+id/to_selectParams"
+            app:destination="@id/selectParams" />
+        <action
+            android:id="@+id/to_location"
+            app:destination="@id/location" />
+        <action
+            android:id="@+id/to_structural"
+            app:destination="@id/structural" />
+        <action
+            android:id="@+id/to_accountingObjects"
+            app:destination="@id/accountingObjects" />
+        <action
+            android:id="@+id/to_reserves"
+            app:destination="@id/reserves" />
+        <argument
+            android:name="TransitArguments"
+            app:argType="com.itrocket.union.transit.presentation.store.TransitArguments" />
     </fragment>
 </navigation>
