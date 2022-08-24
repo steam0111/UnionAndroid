@@ -262,7 +262,7 @@ fun DocumentParamContent(
                         onFieldClickListener = {
                             onParamClickListener(it)
                         },
-                        isCrossVisible = true,
+                        isCrossVisible = it.isClickable,
                         onCrossClickListener = {
                             onCrossClickListener(it)
                         }
@@ -270,6 +270,7 @@ fun DocumentParamContent(
                 } else {
                     UnselectedBaseField(
                         label = stringResource(it.type.titleId),
+                        clickable = it.isClickable,
                         onFieldClickListener = {
                             onParamClickListener(it)
                         })

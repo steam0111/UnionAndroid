@@ -13,6 +13,7 @@ import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 
 class FilterStoreFactory(
@@ -95,6 +96,14 @@ class FilterStoreFactory(
                     dispatch(Result.Filters(filters))
                     dispatch(Result.Count(getResultCount(filters, getState())))
                 }
+                is FilterStore.Intent.OnStructuralChanged -> {
+                    val filters = filterInteractor.changeStructuralFilter(
+                        filters = getState().params.paramList,
+                        structural = intent.structural.structural
+                    )
+                    dispatch(Result.Filters(filters))
+                    dispatch(Result.Count(getResultCount(filters, getState())))
+                }
             }
         }
 
@@ -113,6 +122,10 @@ class FilterStoreFactory(
                 ManualType.DATE -> {
                     //no-op
                 }
+                ManualType.STRUCTURAL,
+                ManualType.STRUCTURAL_TO,
+                ManualType.STRUCTURAL_FROM -> publish(FilterStore.Label.ShowStructural(filter as StructuralParamDomain))
+
                 else -> {
                     val defaultTypeParams =
                         filterInteractor.getDefaultTypeParams(getState().params)
@@ -120,7 +133,8 @@ class FilterStoreFactory(
                     publish(
                         FilterStore.Label.ShowFilters(
                             currentStep = currentStep,
-                            filters = defaultTypeParams
+                            filters = defaultTypeParams,
+                            allParams = getState().params.paramList
                         )
                     )
                 }

@@ -34,7 +34,8 @@ class SelectParamsStoreFactory(
                 name = "SelectParamsStore",
                 initialState = SelectParamsStore.State(
                     currentStep = selectParamsArguments.currentStep,
-                    params = selectParamsArguments.params
+                    params = selectParamsArguments.params,
+                    allParams = selectParamsArguments.allParams
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
@@ -56,7 +57,7 @@ class SelectParamsStoreFactory(
             initialAction(getState)
             searchManager.listenSearch {
                 val currentParam = getState().params[getState().currentStep - 1]
-                dispatchValues(currentParam.type, it)
+                dispatchValues(getState().params, getState().allParams, currentParam.type, it)
             }
         }
 
@@ -104,8 +105,10 @@ class SelectParamsStoreFactory(
             dispatch(Result.Loading(true))
             catchException {
                 selectParamsInteractor.getParamValues(
-                    currentParam.type,
-                    currentParam.value
+                    params = getState().params,
+                    allParams = getState().allParams,
+                    type = currentParam.type,
+                    searchText = currentParam.value
                 )
                     .catch {
                         handleError(it)
@@ -151,7 +154,12 @@ class SelectParamsStoreFactory(
             val currentParam = getState().params[getState().currentStep - 1]
 
             dispatchSearchText(currentParam.value)
-            dispatchValues(currentParam.type, currentParam.value)
+            dispatchValues(
+                params = getState().params,
+                allParams = getState().allParams,
+                type = currentParam.type,
+                searchText = currentParam.value
+            )
             dispatch(Result.Loading(false))
         }
 
@@ -169,7 +177,12 @@ class SelectParamsStoreFactory(
                 val currentParam = getState().params[getState().currentStep - 1]
 
                 dispatchSearchText(currentParam.value)
-                dispatchValues(currentParam.type, currentParam.value)
+                dispatchValues(
+                    params = getState().params,
+                    allParams = getState().allParams,
+                    type = currentParam.type,
+                    searchText = currentParam.value
+                )
                 dispatch(Result.Loading(false))
             }
         }
@@ -185,9 +198,19 @@ class SelectParamsStoreFactory(
             )
         }
 
-        private suspend fun dispatchValues(type: ManualType, searchText: String) {
+        private suspend fun dispatchValues(
+            params: List<ParamDomain>,
+            allParams: List<ParamDomain>,
+            type: ManualType,
+            searchText: String
+        ) {
             catchException {
-                selectParamsInteractor.getParamValues(type, searchText)
+                selectParamsInteractor.getParamValues(
+                    params = params,
+                    allParams = allParams,
+                    type = type,
+                    searchText = searchText
+                )
                     .catch { handleError(it) }
                     .collect {
                         dispatch(Result.Values(it))

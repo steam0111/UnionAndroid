@@ -211,7 +211,7 @@ private fun ParamContent(
                     onFieldClickListener = {
                         onParamClickListener(it)
                     },
-                    isCrossVisible = true,
+                    isCrossVisible = it.isClickable,
                     onCrossClickListener = {
                         onCrossClickListener(it)
                     }
@@ -219,6 +219,7 @@ private fun ParamContent(
             } else {
                 UnselectedBaseField(
                     label = stringResource(it.type.titleId),
+                    clickable = it.isClickable,
                     onFieldClickListener = {
                         onParamClickListener(it)
                     })

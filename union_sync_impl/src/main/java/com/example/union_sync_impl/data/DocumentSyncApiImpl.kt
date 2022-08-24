@@ -102,6 +102,9 @@ class DocumentSyncApiImpl(
                 val structuralFromSyncEntity =
                     listOfNotNull(structuralSyncApi.getStructuralById(document.documentDb.structuralFromId))
 
+                val balanceUnitFrom = structuralFromSyncEntity.lastOrNull { it.balanceUnit }
+                val balanceUnitTo = structuralToSyncEntity.lastOrNull { it.balanceUnit }
+
                 document.documentDb.toDocumentSyncEntity(
                     mol = document.molDb?.toSyncEntity(),
                     exploiting = document.exploitingDb?.toSyncEntity(),
@@ -110,6 +113,8 @@ class DocumentSyncApiImpl(
                     locationTo = listOfNotNull(locationSyncApi.getLocationById(document.documentDb.locationToId)),
                     structuralToSyncEntity = structuralToSyncEntity,
                     structuralFromSyncEntity = structuralFromSyncEntity,
+                    balanceUnitFrom = listOfNotNull(balanceUnitFrom),
+                    balanceUnitTo = listOfNotNull(balanceUnitTo)
                 )
             }
         }
@@ -161,6 +166,12 @@ class DocumentSyncApiImpl(
                 mutableListOf()
             ).orEmpty()
 
+        val balanceUnitFrom = structuralFromIds.lastOrNull { it.balanceUnit }
+        val balanceUnitTo = structuralToIds.lastOrNull { it.balanceUnit }
+
+        val balanceUnitFromFullPath = structuralSyncApi.getStructuralFullPath(balanceUnitFrom?.id, mutableListOf())
+        val balanceUnitToFullPath = structuralSyncApi.getStructuralFullPath(balanceUnitTo?.id, mutableListOf())
+
         return fullDocument.documentDb.toDocumentSyncEntity(
             mol = fullDocument.molDb?.toSyncEntity(),
             exploiting = fullDocument.exploitingDb?.toSyncEntity(),
@@ -170,7 +181,9 @@ class DocumentSyncApiImpl(
             locationTo = locationSyncApi.getLocationFullPath(fullDocument.documentDb.locationToId),
             structuralToSyncEntity = structuralToIds,
             structuralFromSyncEntity = structuralFromIds,
-            actionBase = fullDocument.actionBaseDb?.toSyncEntity()
+            actionBase = fullDocument.actionBaseDb?.toSyncEntity(),
+            balanceUnitFrom = balanceUnitFromFullPath,
+            balanceUnitTo = balanceUnitToFullPath
         )
     }
 

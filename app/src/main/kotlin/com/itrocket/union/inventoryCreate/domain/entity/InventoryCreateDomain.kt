@@ -10,7 +10,7 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getFilterInventoryBaseId
 import com.itrocket.union.manual.getFilterLocationIds
 import com.itrocket.union.manual.getFilterStructuralLastId
-import com.itrocket.union.manual.getMolId
+import com.itrocket.union.manual.getMolInDepartmentId
 import com.itrocket.union.utils.getStringDateFromMillis
 import com.itrocket.union.utils.getTimeFromMillis
 import kotlinx.parcelize.Parcelize
@@ -34,7 +34,7 @@ data class InventoryCreateDomain(
 
 fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
     val structuralId = documentInfo.getFilterStructuralLastId(ManualType.STRUCTURAL)
-    val molId = documentInfo.getMolId()
+    val molId = documentInfo.getMolInDepartmentId()
     val locationIds = documentInfo.getFilterLocationIds(ManualType.LOCATION_INVENTORY)
 
     return InventoryUpdateSyncEntity(

@@ -4,7 +4,6 @@ import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
-import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventoryContainer.presentation.view.InventoryContainerComposeFragmentDirections
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
@@ -42,7 +41,8 @@ interface InventoryStore :
         val accountingObjectList: List<AccountingObjectDomain> = listOf(),
         val params: List<ParamDomain> = listOf(
             StructuralParamDomain(manualType = ManualType.STRUCTURAL),
-            ParamDomain(id = "", value = "", type = ManualType.MOL),
+            StructuralParamDomain(manualType = ManualType.BALANCE_UNIT, clickable = false),
+            ParamDomain(id = "", value = "", type = ManualType.MOL_IN_STRUCTURAL),
             LocationParamDomain(manualType = ManualType.LOCATION_INVENTORY),
             ParamDomain(id = "", value = "", type = ManualType.INVENTORY_BASE)
         ),
@@ -74,13 +74,15 @@ interface InventoryStore :
 
         data class ShowParamSteps(
             val currentStep: Int,
-            val params: List<ParamDomain>
+            val params: List<ParamDomain>,
+            val allParams: List<ParamDomain>
         ) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = InventoryContainerComposeFragmentDirections.toSelectParams(
                     SelectParamsArguments(
                         params = params,
-                        currentStep = currentStep
+                        currentStep = currentStep,
+                        allParams = allParams
                     )
                 )
         }

@@ -15,35 +15,39 @@ enum class DocumentTypeDomain(
     GIVE(
         titleId = R.string.main_issue,
         manualTypes = listOf(
-            ManualType.MOL,
             ManualType.EXPLOITING,
             ManualType.LOCATION_FROM,
             ManualType.LOCATION_TO,
             ManualType.STRUCTURAL_FROM,
             ManualType.STRUCTURAL_TO,
-            ManualType.ACTION_BASE
+            ManualType.ACTION_BASE,
+            ManualType.BALANCE_UNIT_FROM,
+            ManualType.BALANCE_UNIT_TO
         ),
     ),
     RETURN(
         titleId = R.string.main_return,
         manualTypes = listOf(
-            ManualType.MOL,
             ManualType.LOCATION_FROM,
             ManualType.LOCATION_TO,
             ManualType.STRUCTURAL_FROM,
             ManualType.STRUCTURAL_TO,
-            ManualType.ACTION_BASE
+            ManualType.ACTION_BASE,
+            ManualType.BALANCE_UNIT_FROM,
+            ManualType.BALANCE_UNIT_TO
         ),
     ),
     RELOCATION(
         titleId = R.string.main_moved,
         manualTypes = listOf(
-            ManualType.MOL,
+            ManualType.MOL_IN_STRUCTURAL,
             ManualType.LOCATION_FROM,
             ManualType.RELOCATION_LOCATION_TO,
             ManualType.STRUCTURAL_FROM,
             ManualType.STRUCTURAL_TO,
-            ManualType.ACTION_BASE
+            ManualType.ACTION_BASE,
+            ManualType.BALANCE_UNIT_FROM,
+            ManualType.BALANCE_UNIT_TO
         ),
     ),
     WRITE_OFF(

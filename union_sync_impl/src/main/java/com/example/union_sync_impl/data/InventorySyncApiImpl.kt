@@ -63,12 +63,17 @@ class InventorySyncApiImpl(
             )
         ).map {
             it.map {
+                val structurals = listOfNotNull(it.structuralDb?.toStructuralSyncEntity())
+                val balanceUnit = structurals.lastOrNull { it.balanceUnit }
+                val balanceUnitFullPath =
+                    structuralSyncApi.getStructuralFullPath(balanceUnit?.id, mutableListOf())
                 it.inventoryDb.toInventorySyncEntity(
-                    structuralSyncEntities = listOfNotNull(it.structuralDb?.toStructuralSyncEntity()),
+                    structuralSyncEntities = structurals,
                     mol = it.employeeDb?.toSyncEntity(),
                     locationSyncEntities = it.getLocations(),
                     accountingObjects = listOf(),
-                    inventoryBaseSyncEntity = it.inventoryBaseDb?.toSyncEntity()
+                    inventoryBaseSyncEntity = it.inventoryBaseDb?.toSyncEntity(),
+                    balanceUnit = balanceUnitFullPath.orEmpty()
                 )
             }
         }
@@ -117,12 +122,17 @@ class InventorySyncApiImpl(
                 mutableListOf()
             ).orEmpty()
 
+        val balanceUnit = structurals.lastOrNull { it.balanceUnit }
+        val balanceUnitFullPath =
+            structuralSyncApi.getStructuralFullPath(balanceUnit?.id, mutableListOf())
+
         return fullInventory.inventoryDb.toInventorySyncEntity(
             structuralSyncEntities = structurals,
             mol = fullInventory.employeeDb?.toSyncEntity(),
             locationSyncEntities = locations,
             accountingObjects = getAccountingObjects(fullInventory.inventoryDb),
-            inventoryBaseSyncEntity = fullInventory.inventoryBaseDb?.toSyncEntity()
+            inventoryBaseSyncEntity = fullInventory.inventoryBaseDb?.toSyncEntity(),
+            balanceUnitFullPath.orEmpty()
         ).apply {
             Timber.tag(INVENTORY_TAG)
                 .d("InventorySyncEntity accountingObjectsIds : ${accountingObjects.map { it.id }}")

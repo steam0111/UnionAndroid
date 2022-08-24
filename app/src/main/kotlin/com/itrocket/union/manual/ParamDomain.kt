@@ -7,12 +7,13 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 open class ParamDomain(
-    val id: String? = null,
-    val value: String = "",
-    val type: ManualType,
-    val isFilter: Boolean = true
+    open val id: String? = null,
+    open val value: String = "",
+    open val type: ManualType,
+    open val isFilter: Boolean = true,
+    open val isClickable: Boolean = true
 ) : Parcelable {
-    fun copy(
+    open fun copy(
         id: String? = this.id,
         value: String = this.value,
         type: ManualType = this.type,
@@ -55,6 +56,10 @@ fun List<ParamDomain>.getExploitingId(): String? {
 
 fun List<ParamDomain>.getMolId(): String? {
     return filterNotEmpty().find { it.type == ManualType.MOL }?.id
+}
+
+fun List<ParamDomain>.getMolInDepartmentId(): String? {
+    return filterNotEmpty().find { it.type == ManualType.MOL_IN_STRUCTURAL }?.id
 }
 
 fun List<ParamDomain>.getActionBaseId(): String? {
@@ -115,13 +120,15 @@ data class LocationParamDomain(
 data class StructuralParamDomain(
     val filtered: Boolean = true,
     val structurals: List<StructuralDomain> = emptyList(),
-    val manualType: ManualType
+    val manualType: ManualType,
+    val clickable: Boolean = true
 ) : Parcelable,
     ParamDomain(
-        id = structurals.lastOrNull()?.id.toString(),
+        id = structurals.lastOrNull()?.id,
         value = structurals.joinToString(", ") { it.value },
         type = manualType,
-        isFilter = filtered
+        isFilter = filtered,
+        isClickable = clickable
     ) {
 
     override fun toInitialState(): StructuralParamDomain {

@@ -41,7 +41,9 @@ fun DocumentSyncEntity.map(): DocumentDomain =
             locationTo = locationTo,
             actionBase = actionBase,
             structuralsTo = structuralToSyncEntities,
-            structuralsFrom = structuralFromSyncEntities
+            structuralsFrom = structuralFromSyncEntities,
+            balanceUnitFrom = balanceUnitFrom,
+            balanceUnitTo = balanceUnitTo
         ),
         documentStatusId = documentStatusId,
         userInserted = userInserted,
@@ -56,7 +58,9 @@ fun getParams(
     documentType: String,
     locationFrom: List<LocationSyncEntity>? = null,
     locationTo: List<LocationSyncEntity>? = null,
-    actionBase: ActionBaseSyncEntity? = null
+    actionBase: ActionBaseSyncEntity? = null,
+    balanceUnitFrom: List<StructuralSyncEntity>? = null,
+    balanceUnitTo: List<StructuralSyncEntity>? = null
 ): List<ParamDomain> {
     return getAccountingObjectParams(
         mol = mol,
@@ -66,7 +70,9 @@ fun getParams(
         documentType = documentType,
         locationFrom = locationFrom,
         locationTo = locationTo,
-        actionBase = actionBase
+        actionBase = actionBase,
+        balanceUnitFrom = balanceUnitFrom,
+        balanceUnitTo = balanceUnitTo
     )
 }
 
@@ -79,6 +85,8 @@ private fun getAccountingObjectParams(
     locationFrom: List<LocationSyncEntity>? = null,
     locationTo: List<LocationSyncEntity>? = null,
     actionBase: ActionBaseSyncEntity? = null,
+    balanceUnitFrom: List<StructuralSyncEntity>?,
+    balanceUnitTo: List<StructuralSyncEntity>?
 ): List<ParamDomain> {
     val params = mutableListOf<ParamDomain>()
     val type = DocumentTypeDomain.valueOf(documentType)
@@ -92,23 +100,28 @@ private fun getAccountingObjectParams(
     addStructuralParam(
         params = params,
         types = type.manualTypes,
+        manualType = ManualType.BALANCE_UNIT_FROM,
+        destinations = balanceUnitFrom,
+        isClickable = false
+    )
+    addLocationParam(
+        params = params,
+        types = type.manualTypes,
+        manualType = ManualType.LOCATION_FROM,
+        destinations = locationFrom
+    )
+    addStructuralParam(
+        params = params,
+        types = type.manualTypes,
         manualType = ManualType.STRUCTURAL_TO,
         destinations = structuralsTo
     )
-    addEmployeeParam(
+    addStructuralParam(
         params = params,
-        employee = mol,
-        manualType = ManualType.MOL,
-        manualTypes = type.manualTypes
-    )
-    addEmployeeParam(
-        params = params,
-        employee = exploiting,
-        isFilterExpression = {
-            type == DocumentTypeDomain.RETURN
-        },
-        manualType = ManualType.EXPLOITING,
-        manualTypes = type.manualTypes
+        types = type.manualTypes,
+        manualType = ManualType.BALANCE_UNIT_TO,
+        destinations = balanceUnitTo,
+        isClickable = false
     )
     addLocationParam(
         params = params,
@@ -122,11 +135,26 @@ private fun getAccountingObjectParams(
         manualType = ManualType.LOCATION_TO,
         destinations = locationTo
     )
-    addLocationParam(
+    addEmployeeParam(
         params = params,
-        types = type.manualTypes,
-        manualType = ManualType.LOCATION_FROM,
-        destinations = locationFrom
+        employee = mol,
+        manualType = ManualType.MOL,
+        manualTypes = type.manualTypes
+    )
+    addEmployeeParam(
+        params = params,
+        employee = mol,
+        manualTypes = type.manualTypes,
+        manualType = ManualType.MOL_IN_STRUCTURAL
+    )
+    addEmployeeParam(
+        params = params,
+        employee = exploiting,
+        isFilterExpression = {
+            type == DocumentTypeDomain.RETURN
+        },
+        manualType = ManualType.EXPLOITING,
+        manualTypes = type.manualTypes
     )
     addActionBaseParam(
         params = params,
@@ -142,12 +170,14 @@ private fun addStructuralParam(
     types: List<ManualType>,
     manualType: ManualType,
     destinations: List<StructuralSyncEntity>?,
+    isClickable: Boolean = true
 ) {
     if (types.contains(manualType)) {
         val structuralParam = StructuralParamDomain(
             manualType = manualType,
             structurals = destinations?.map { it.toStructuralDomain() }.orEmpty(),
-            filtered = false
+            filtered = false,
+            clickable = isClickable
         )
         params.add(structuralParam)
     }

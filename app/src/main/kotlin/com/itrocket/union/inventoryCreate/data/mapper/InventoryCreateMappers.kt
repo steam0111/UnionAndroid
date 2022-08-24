@@ -30,18 +30,33 @@ fun InventorySyncEntity.map(): InventoryCreateDomain =
                     }
                 })
             )
-            mol?.let { mol ->
-                add(ParamDomain(mol.id, "${mol.firstname} ${mol.lastname}", ManualType.MOL))
-            }
+            add(
+                StructuralParamDomain(
+                    manualType = ManualType.BALANCE_UNIT,
+                    structurals = balanceUnit.map { it.toStructuralDomain() })
+            )
+            add(
+                ParamDomain(
+                    id = mol?.id,
+                    value = mol?.let { "${it.firstname} ${it.lastname}" }.orEmpty(),
+                    type = ManualType.MOL_IN_STRUCTURAL
+                )
+            )
             add(
                 LocationParamDomain(
                     manualType = ManualType.LOCATION_INVENTORY,
                     locations = locationSyncEntities?.map { it.toLocationDomain() }.orEmpty()
                 )
             )
-            inventoryBaseSyncEntity?.let { base ->
-                add(ParamDomain(id = base.id, value = base.name, type = ManualType.INVENTORY_BASE))
-            }
+
+            add(
+                ParamDomain(
+                    id = inventoryBaseSyncEntity?.id,
+                    value = inventoryBaseSyncEntity?.name.orEmpty(),
+                    type = ManualType.INVENTORY_BASE
+                )
+            )
+
         },
         inventoryStatus = InventoryStatus.valueOf(inventoryStatus),
         userInserted = userInserted,

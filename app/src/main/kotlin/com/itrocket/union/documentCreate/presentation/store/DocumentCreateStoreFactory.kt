@@ -308,7 +308,11 @@ class DocumentCreateStoreFactory(
                 ManualType.RELOCATION_LOCATION_TO, ManualType.LOCATION_TO -> publish(
                     DocumentCreateStore.Label.ShowLocation(param as LocationParamDomain)
                 )
-                ManualType.STRUCTURAL_TO, ManualType.STRUCTURAL_FROM -> publish(DocumentCreateStore.Label.ShowStructural(param as StructuralParamDomain))
+                ManualType.STRUCTURAL_TO, ManualType.STRUCTURAL_FROM -> publish(
+                    DocumentCreateStore.Label.ShowStructural(
+                        param as StructuralParamDomain
+                    )
+                )
                 else -> {
                     val defaultTypeParams =
                         filterInteractor.getDefaultTypeParams(Params(params))
@@ -316,7 +320,8 @@ class DocumentCreateStoreFactory(
                     publish(
                         DocumentCreateStore.Label.ShowParamSteps(
                             currentStep = currentStep,
-                            params = defaultTypeParams
+                            params = defaultTypeParams,
+                            allParams = params
                         )
                     )
                 }

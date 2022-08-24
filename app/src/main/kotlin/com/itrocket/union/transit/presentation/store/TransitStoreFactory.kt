@@ -320,7 +320,8 @@ class TransitStoreFactory(
                     publish(
                         TransitStore.Label.ShowParamSteps(
                             currentStep = currentStep,
-                            params = defaultTypeParams
+                            params = defaultTypeParams,
+                            allParams = params
                         )
                     )
                 }
