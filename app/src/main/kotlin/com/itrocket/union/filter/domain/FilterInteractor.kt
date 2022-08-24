@@ -12,6 +12,7 @@ import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.manual.getFilterLocationLastId
 import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.nomenclature.domain.dependencies.NomenclatureRepository
@@ -72,6 +73,21 @@ class FilterInteractor(
             mutableFilters
         }
     }
+
+    suspend fun changeStructuralFilter(
+        filters: List<ParamDomain>,
+        structural: StructuralParamDomain
+    ): List<ParamDomain> {
+        return withContext(coreDispatchers.io) {
+            val mutableFilters = filters.toMutableList()
+            val structuralIndex = filters.indexOfFirst { it.type == structural.manualType }
+            if (structuralIndex != NO_POSITION) {
+                mutableFilters[structuralIndex] = structural
+            }
+            mutableFilters
+        }
+    }
+
 
     suspend fun getResultCount(from: CatalogType?, params: List<ParamDomain>): Long {
         return when (from) {

@@ -159,7 +159,8 @@ class InventoryStoreFactory(
                     publish(
                         InventoryStore.Label.ShowParamSteps(
                             currentStep = currentStep,
-                            params = params.filter { it.type != ManualType.LOCATION_INVENTORY && it.type != ManualType.STRUCTURAL }
+                            params = params.filter { it.type != ManualType.LOCATION_INVENTORY && it.type != ManualType.STRUCTURAL },
+                            allParams = params
                         )
                     )
                 }

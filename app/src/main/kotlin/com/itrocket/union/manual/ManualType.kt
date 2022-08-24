@@ -5,6 +5,7 @@ import com.itrocket.union.R
 
 enum class ManualType(@StringRes val titleId: Int) {
     MOL(R.string.manual_mol),
+    MOL_IN_STRUCTURAL(R.string.manual_mol),
     LOCATION(R.string.manual_location),
     LOCATION_INVENTORY(R.string.inventory_location),
     STRUCTURAL(R.string.manual_structural),
@@ -25,4 +26,7 @@ enum class ManualType(@StringRes val titleId: Int) {
     INVENTORY_BASE(R.string.action_base),
     TRANSIT(R.string.transit_location),
     RECIPIENT(R.string.recipient),
+    BALANCE_UNIT_FROM(R.string.balance_unit_from),
+    BALANCE_UNIT_TO(R.string.balance_unit_to),
+    BALANCE_UNIT(R.string.balance_unit)
 }

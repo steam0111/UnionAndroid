@@ -23,6 +23,7 @@ interface SelectParamsStore :
         val isLoading: Boolean = false,
         val currentStep: Int,
         val params: List<ParamDomain>,
+        val allParams: List<ParamDomain>,
         val currentParamValues: List<ParamDomain> = listOf(),
         val searchText: TextFieldValue = TextFieldValue(),
     )

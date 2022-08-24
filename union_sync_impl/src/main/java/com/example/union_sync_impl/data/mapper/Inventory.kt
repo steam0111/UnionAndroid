@@ -82,7 +82,8 @@ fun InventoryDb.toInventorySyncEntity(
     mol: EmployeeSyncEntity?,
     locationSyncEntities: List<LocationSyncEntity>?,
     accountingObjects: List<AccountingObjectSyncEntity>,
-    inventoryBaseSyncEntity: InventoryBaseSyncEntity?
+    inventoryBaseSyncEntity: InventoryBaseSyncEntity?,
+    balanceUnit: List<StructuralSyncEntity>
 ): InventorySyncEntity {
     return InventorySyncEntity(
         id = id,
@@ -97,6 +98,7 @@ fun InventoryDb.toInventorySyncEntity(
         name = name,
         userInserted = userInserted,
         userUpdated = userUpdated,
-        inventoryBaseSyncEntity = inventoryBaseSyncEntity
+        inventoryBaseSyncEntity = inventoryBaseSyncEntity,
+        balanceUnit = balanceUnit
     )
 }

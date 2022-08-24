@@ -6,6 +6,8 @@ data class DocumentSyncEntity(
     val id: String,
     val structuralFromSyncEntities: List<StructuralSyncEntity>?,
     val structuralToSyncEntities: List<StructuralSyncEntity>?,
+    val balanceUnitFrom: List<StructuralSyncEntity>?,
+    val balanceUnitTo: List<StructuralSyncEntity>?,
     val mol: EmployeeSyncEntity?,
     val exploiting: EmployeeSyncEntity? = null,
     val creationDate: Long?,

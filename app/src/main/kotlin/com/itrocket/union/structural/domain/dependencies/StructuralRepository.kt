@@ -12,4 +12,9 @@ interface StructuralRepository {
     suspend fun getStructuralById(structuralId: String): StructuralSyncEntity?
 
     suspend fun getAllStructuralsIdsByParent(parentId: String?): List<String?>
+
+    suspend fun getBalanceUnitFullPath(
+        childId: String?,
+        structurals: MutableList<StructuralSyncEntity>
+    ): List<StructuralDomain>?
 }

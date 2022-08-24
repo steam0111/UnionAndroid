@@ -94,4 +94,16 @@ class SelectParamsRepositoryImpl(
             emit(inventoryBaseSyncApi.getAll(textQuery = textQuery).map { it.toParam() })
         }.flowOn(coreDispatchers.io)
     }
+
+    override suspend fun getEmployeesByStructural(
+        structuralId: String?,
+        type: ManualType,
+        textQuery: String?
+    ): Flow<List<ParamDomain>> {
+        return flow {
+            emit(
+                employeeSyncApi.getEmployees(textQuery = textQuery, structuralId = structuralId)
+                    .map { it.toParam(type) })
+        }.flowOn(coreDispatchers.io)
+    }
 }

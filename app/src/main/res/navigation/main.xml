@@ -197,6 +197,10 @@
             android:id="@+id/to_selectParams"
             app:destination="@id/selectParams" />
 
+        <action
+            android:id="@+id/to_structural"
+            app:destination="@id/structural" />
+
         <argument
             android:name="FilterArguments"
             app:argType="com.itrocket.union.filter.presentation.store.FilterArguments"

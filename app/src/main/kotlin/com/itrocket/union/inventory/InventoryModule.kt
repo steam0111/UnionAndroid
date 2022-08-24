@@ -36,7 +36,7 @@ object InventoryModule {
         }
 
         factory {
-            InventoryInteractor(get(), get(), get())
+            InventoryInteractor(get(), get(), get(), get())
         }
 
         factory { (arguments : InventoryArguments)->

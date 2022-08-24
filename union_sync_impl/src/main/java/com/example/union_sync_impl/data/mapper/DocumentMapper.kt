@@ -109,12 +109,16 @@ fun DocumentDb.toDocumentSyncEntity(
     reserves: List<ReserveSyncEntity>? = null,
     locationFrom: List<LocationSyncEntity>?,
     locationTo: List<LocationSyncEntity>?,
-    actionBase: ActionBaseSyncEntity? = null
+    actionBase: ActionBaseSyncEntity? = null,
+    balanceUnitFrom: List<StructuralSyncEntity>?,
+    balanceUnitTo: List<StructuralSyncEntity>?
 ): DocumentSyncEntity {
     return DocumentSyncEntity(
         id = id,
         structuralFromSyncEntities = structuralFromSyncEntity,
         structuralToSyncEntities = structuralToSyncEntity,
+        balanceUnitFrom = balanceUnitFrom,
+        balanceUnitTo =  balanceUnitTo,
         mol = mol,
         exploiting = exploiting,
         documentType = documentType,

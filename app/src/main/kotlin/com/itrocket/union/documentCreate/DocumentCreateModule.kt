@@ -24,7 +24,7 @@ object DocumentCreateModule {
         }
 
         factory {
-            DocumentCreateInteractor(get(), get(), get(), get())
+            DocumentCreateInteractor(get(), get(), get(), get(), get(), get())
         }
 
         factory {

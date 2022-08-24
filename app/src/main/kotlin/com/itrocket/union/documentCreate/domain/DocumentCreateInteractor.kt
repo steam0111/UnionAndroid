@@ -7,22 +7,24 @@ import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
-import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.toCreateSyncEntity
 import com.itrocket.union.documents.domain.entity.toUpdateSyncEntity
+import com.itrocket.union.employeeDetail.domain.EmployeeDetailInteractor
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
-import com.itrocket.union.manual.getFilterLocationLastId
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import com.itrocket.union.structural.domain.dependencies.StructuralRepository
 import kotlinx.coroutines.withContext
 
 class DocumentCreateInteractor(
     private val documentRepository: DocumentRepository,
     private val accountingObjectRepository: AccountingObjectRepository,
     private val coreDispatchers: CoreDispatchers,
-    private val authMainInteractor: AuthMainInteractor
+    private val authMainInteractor: AuthMainInteractor,
+    private val structuralRepository: StructuralRepository,
+    private val employeeInteractor: EmployeeDetailInteractor
 ) {
 
     suspend fun getDocumentById(
@@ -69,7 +71,10 @@ class DocumentCreateInteractor(
         }
     }
 
-    fun changeParams(params: List<ParamDomain>, newParams: List<ParamDomain>): List<ParamDomain> {
+    suspend fun changeParams(
+        params: List<ParamDomain>,
+        newParams: List<ParamDomain>
+    ): List<ParamDomain> {
         val mutableParams = params.toMutableList()
         mutableParams.forEachIndexed { index, paramDomain ->
             val newParam = newParams.find { it.type == paramDomain.type }
@@ -77,6 +82,23 @@ class DocumentCreateInteractor(
                 mutableParams[index] = newParam
             }
         }
+
+        val oldEmployee = params.find { it.type == ManualType.MOL_IN_STRUCTURAL }
+        val newEmployee = newParams.find { it.type == ManualType.MOL_IN_STRUCTURAL }
+
+        if (oldEmployee?.id != newEmployee?.id) {
+            val oldStructuralTo = mutableParams.firstOrNull { it.type == ManualType.STRUCTURAL_TO }
+            val indexOfStructuralTo = mutableParams.indexOf(oldStructuralTo)
+            if (indexOfStructuralTo >= 0) {
+                val newStructuralTo = (oldStructuralTo as? StructuralParamDomain)?.let {
+                    employeeInteractor.getEmployeeStructuralById(newEmployee?.id, it)
+                }
+
+                mutableParams[indexOfStructuralTo] =
+                    newStructuralTo ?: oldStructuralTo!!.toInitialState()
+            }
+        }
+
         return mutableParams
     }
 
@@ -90,20 +112,77 @@ class DocumentCreateInteractor(
         return mutableParams
     }
 
-    fun changeStructural(
+    suspend fun changeStructural(
         params: List<ParamDomain>,
         structural: StructuralParamDomain
     ): List<ParamDomain> {
         val mutableParams = params.toMutableList()
         val structuralIndex = params.indexOfFirst { it.type == structural.manualType }
         mutableParams[structuralIndex] = structural.copy(filtered = false)
+
+        changeBalanceUnit(mutableParams, structural)
+
+        if (structural.type == ManualType.STRUCTURAL_TO) {
+            val indexOfMolInStructuralTo =
+                mutableParams.indexOfFirst { it.type == ManualType.MOL_IN_STRUCTURAL }
+            if (indexOfMolInStructuralTo >= 0) {
+                mutableParams[indexOfMolInStructuralTo] =
+                    mutableParams[indexOfMolInStructuralTo].toInitialState()
+            }
+        }
+
         return mutableParams
+    }
+
+    private suspend fun changeBalanceUnit(
+        mutableParams: MutableList<ParamDomain>,
+        structural: StructuralParamDomain
+    ) {
+        val balanceUnitType = if (structural.manualType == ManualType.STRUCTURAL_TO) {
+            ManualType.BALANCE_UNIT_TO
+        } else {
+            ManualType.BALANCE_UNIT_FROM
+        }
+        val index = mutableParams.indexOfFirst { it.type == balanceUnitType }
+        if (index != NO_POSITION) {
+            val oldBalanceUnitTo = mutableParams[index]
+            val newBalanceUnitToPath = structuralRepository.getBalanceUnitFullPath(
+                structural.id,
+                mutableListOf()
+            )
+            mutableParams[index] =
+                (oldBalanceUnitTo as StructuralParamDomain).copy(structurals = newBalanceUnitToPath.orEmpty())
+        }
     }
 
     fun clearParam(list: List<ParamDomain>, param: ParamDomain): List<ParamDomain> {
         val mutableList = list.toMutableList()
         val currentIndex = mutableList.indexOfFirst { it.type == param.type }
         mutableList[currentIndex] = mutableList[currentIndex].toInitialState()
+
+        when (param.type) {
+            ManualType.STRUCTURAL_TO -> {
+                val balanceUnitToIndex =
+                    mutableList.indexOfFirst { it.type == ManualType.BALANCE_UNIT_TO }
+                if (balanceUnitToIndex >= 0) {
+                    mutableList[balanceUnitToIndex] =
+                        mutableList[balanceUnitToIndex].toInitialState()
+                }
+
+                val molIndex = mutableList.indexOfFirst { it.type == ManualType.MOL_IN_STRUCTURAL }
+                if (molIndex >= 0) {
+                    mutableList[molIndex] = mutableList[molIndex].toInitialState()
+                }
+            }
+            ManualType.STRUCTURAL_FROM -> {
+                val balanceUnitFromIndex =
+                    mutableList.indexOfFirst { it.type == ManualType.BALANCE_UNIT_FROM }
+                if (balanceUnitFromIndex >= 0) {
+                    mutableList[balanceUnitFromIndex] =
+                        mutableList[balanceUnitFromIndex].toInitialState()
+                }
+            }
+        }
         return mutableList
     }
 
@@ -156,7 +235,8 @@ class DocumentCreateInteractor(
         return withContext(coreDispatchers.io) {
             val newAccountingObjectRfids = mutableListOf<String>()
 
-            val index = accountingObjects.indexOfFirst { it.rfidValue == handledAccountingObjectRfid }
+            val index =
+                accountingObjects.indexOfFirst { it.rfidValue == handledAccountingObjectRfid }
             if (index == NO_POSITION) {
                 newAccountingObjectRfids.add(handledAccountingObjectRfid)
             }

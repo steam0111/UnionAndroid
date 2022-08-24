@@ -12,8 +12,7 @@ import kotlinx.coroutines.withContext
 class StructuralRepositoryImpl(
     private val syncApi: StructuralSyncApi,
     private val coreDispatchers: CoreDispatchers
-) :
-    StructuralRepository {
+) : StructuralRepository {
 
     override suspend fun getStructuralList(
         selectedStructural: StructuralDomain?,
@@ -29,6 +28,21 @@ class StructuralRepositoryImpl(
 
     override suspend fun getAllStructuralsIdsByParent(parentId: String?): List<String?> {
         return syncApi.getAllStructuralsIdsByParentId(parentId)
+    }
+
+    override suspend fun getBalanceUnitFullPath(
+        childId: String?,
+        structurals: MutableList<StructuralSyncEntity>
+    ): List<StructuralDomain>? {
+        return withContext(coreDispatchers.io) {
+            val structuralFullPath = syncApi.getStructuralFullPath(childId, structurals)
+            val indexOfBalanceUnit =
+                structuralFullPath?.indexOf(structuralFullPath.lastOrNull { it.balanceUnit })
+            if (indexOfBalanceUnit == null || indexOfBalanceUnit < 0) return@withContext null
+
+            structuralFullPath.slice(IntRange(0, indexOfBalanceUnit))
+                .map { it.toStructuralDomain() }
+        }
     }
 
     private suspend fun getLocations(

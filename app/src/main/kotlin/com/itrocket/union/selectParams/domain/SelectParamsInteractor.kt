@@ -16,8 +16,14 @@ class SelectParamsInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    suspend fun getParamValues(type: ManualType, searchText: String): Flow<List<ParamDomain>> =
+    suspend fun getParamValues(
+        params: List<ParamDomain>,
+        allParams: List<ParamDomain>,
+        type: ManualType,
+        searchText: String
+    ): Flow<List<ParamDomain>> =
         when (type) {
+            ManualType.MOL_IN_STRUCTURAL -> getMolsInStructural(allParams, searchText)
             ManualType.MOL -> getMols(searchText)
             ManualType.EXPLOITING -> getExploiting(searchText)
             ManualType.STATUS -> getAccountingObjectStatuses(searchText)
@@ -30,8 +36,20 @@ class SelectParamsInteractor(
             ManualType.NOMENCLATURE_GROUP -> getNomenclatureGroup(searchText)
             ManualType.RECEPTION_CATEGORY -> getReceptionCategory(searchText)
             ManualType.RECIPIENT -> getRecipient(searchText)
-            else -> flow {  }
+            else -> flow { }
         }
+
+    private suspend fun getMolsInStructural(
+        allParams: List<ParamDomain>,
+        searchText: String
+    ): Flow<List<ParamDomain>> {
+        val structuralId = allParams.firstOrNull { it.type == ManualType.STRUCTURAL_TO }?.id
+        return selectParamsRepository.getEmployeesByStructural(
+            type = ManualType.MOL_IN_STRUCTURAL,
+            textQuery = searchText,
+            structuralId = structuralId
+        )
+    }
 
 
     fun changeParamValue(
@@ -69,7 +87,10 @@ class SelectParamsInteractor(
     }
 
     private suspend fun getRecipient(searchText: String): Flow<List<ParamDomain>> {
-        return selectParamsRepository.getEmployees(type = ManualType.RECIPIENT, textQuery = searchText)
+        return selectParamsRepository.getEmployees(
+            type = ManualType.RECIPIENT,
+            textQuery = searchText
+        )
     }
 
     private suspend fun getAccountingObjectStatuses(searchText: String): Flow<List<ParamDomain>> {
@@ -92,7 +113,7 @@ class SelectParamsInteractor(
         return selectParamsRepository.getActionBases(textQuery = searchText)
     }
 
-    private suspend fun getInventoryBases(searchText: String) :Flow<List<ParamDomain>> {
+    private suspend fun getInventoryBases(searchText: String): Flow<List<ParamDomain>> {
         return selectParamsRepository.getInventoryBases(textQuery = searchText)
     }
 
@@ -117,7 +138,7 @@ class SelectParamsInteractor(
 
         employee?.let {
             val index = params.indexOfFirst {
-                it.type == ManualType.MOL
+                it.type == ManualType.MOL_IN_STRUCTURAL
             }
             if (index >= 0 && mutableParams[index].value.isEmpty()) {
                 mutableParams[index] = mutableParams[index].copy(value = it.name, id = it.id)

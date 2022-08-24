@@ -117,6 +117,9 @@
     <string name="transit_location">Транзитное местоположение</string>
     <string name="recipient">Получатель</string>
 
+    <string name="balance_unit_from">Балансовая единица отправителя</string>
+    <string name="balance_unit_to">Балансовая единица получателя</string>
+
     <!-- AccountingObjectScreen -->
     <string name="main_marking">Маркировка</string>
     <string name="accounting_objects_factory_number">Серийный номер</string>

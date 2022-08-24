@@ -14,6 +14,7 @@ import com.itrocket.union.manual.getExploitingId
 import com.itrocket.union.manual.getFilterLocationLastId
 import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.manual.getMolId
+import com.itrocket.union.manual.getMolInDepartmentId
 import com.itrocket.union.manual.getReceivingId
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.transit.domain.TransitTypeDomain
@@ -43,7 +44,7 @@ data class DocumentDomain(
 }
 
 fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
-    val molId = params.getMolId()
+    val molId = params.getMolInDepartmentId()
     val exploitingId = params.getExploitingId()
     val trueCompletionDate =
         if (documentStatus == DocumentStatus.COMPLETED) System.currentTimeMillis() else completionDate
@@ -80,7 +81,7 @@ fun DocumentDomain.toUpdateSyncEntity(): DocumentUpdateSyncEntity {
 }
 
 fun DocumentDomain.toCreateSyncEntity(): DocumentCreateSyncEntity {
-    val molId = params.getMolId()
+    val molId = params.getMolInDepartmentId()
     val exploitingId = params.getExploitingId()
     val trueCompletionDate = if (documentStatus == DocumentStatus.COMPLETED) {
         System.currentTimeMillis()

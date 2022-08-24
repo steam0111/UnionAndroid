@@ -14,7 +14,7 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getExploitingId
 import com.itrocket.union.manual.getFilterLocationLastId
 import com.itrocket.union.manual.getFilterStructuralLastId
-import com.itrocket.union.manual.getMolId
+import com.itrocket.union.manual.getMolInDepartmentId
 import kotlinx.coroutines.withContext
 
 class DocumentAccountingObjectManager(
@@ -48,7 +48,7 @@ class DocumentAccountingObjectManager(
                     accountingObjectIds = accountingObjectIds,
                     locationToId = params.getFilterLocationLastId(ManualType.RELOCATION_LOCATION_TO),
                     structuralId = params.getFilterStructuralLastId(ManualType.STRUCTURAL_TO),
-                    molId = params.getMolId()
+                    molId = params.getMolInDepartmentId()
                 )
                 else -> {
                     listOf()

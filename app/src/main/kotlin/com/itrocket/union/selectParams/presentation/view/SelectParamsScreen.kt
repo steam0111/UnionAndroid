@@ -267,6 +267,7 @@ fun SelectParamsScreenPreview() {
             params = listOf(
                 ParamDomain("2", "param", ManualType.MOL),
                 ParamDomain("3", "param", ManualType.LOCATION)
-            )
+            ),
+            allParams = listOf()
         ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {})
 }

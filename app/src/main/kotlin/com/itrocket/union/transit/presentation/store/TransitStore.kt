@@ -128,13 +128,15 @@ interface TransitStore : Store<TransitStore.Intent, TransitStore.State, TransitS
 
         data class ShowParamSteps(
             val currentStep: Int,
-            val params: List<ParamDomain>
+            val params: List<ParamDomain>,
+            val allParams: List<ParamDomain>
         ) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = TransitComposeFragmentDirections.toSelectParams(
                     SelectParamsArguments(
                         params = params,
-                        currentStep = currentStep
+                        currentStep = currentStep,
+                        allParams = allParams
                     )
                 )
         }
