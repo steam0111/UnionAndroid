@@ -107,8 +107,8 @@ fun DocumentDb.toDocumentSyncEntity(
     exploiting: EmployeeSyncEntity?,
     accountingObjects: List<AccountingObjectSyncEntity>? = null,
     reserves: List<ReserveSyncEntity>? = null,
-    locationFrom: LocationSyncEntity?,
-    locationTo: LocationSyncEntity?,
+    locationFrom: List<LocationSyncEntity>?,
+    locationTo: List<LocationSyncEntity>?,
     actionBase: ActionBaseSyncEntity? = null
 ): DocumentSyncEntity {
     return DocumentSyncEntity(

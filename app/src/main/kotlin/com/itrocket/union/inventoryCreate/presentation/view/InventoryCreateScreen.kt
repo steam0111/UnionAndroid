@@ -142,7 +142,7 @@ private fun Content(
         LazyColumn {
             item {
                 if (state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED) {
-                    BottomBar(
+                    InventoryBottomBar(
                         onSaveClickListener = onSaveClickListener,
                         onInWorkClickListener = onInWorkClickListener,
                         onFinishClickListener = onFinishClickListener,
@@ -227,7 +227,7 @@ fun SettingsBar(
 }
 
 @Composable
-private fun BottomBar(
+fun InventoryBottomBar(
     onSaveClickListener: () -> Unit,
     onInWorkClickListener: () -> Unit,
     onFinishClickListener: () -> Unit,

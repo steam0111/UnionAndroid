@@ -121,6 +121,9 @@ interface AccountingObjectDao {
                 "equipment_types.name AS equipment_type_name, " +
                 "equipment_types.code AS equipment_type_code, " +
                 "" +
+                "accounting_object_category.id AS category_id, " +
+                "accounting_object_category.name AS category_name, " +
+                "" +
                 "providers.id AS provider_id, " +
                 "providers.catalogItemName AS provider_catalogItemName, " +
                 "providers.name AS provider_name " +
@@ -133,6 +136,7 @@ interface AccountingObjectDao {
                 "LEFT JOIN employees molEmployees ON accounting_objects.molId = molEmployees.id " +
                 "LEFT JOIN structural ON accounting_objects.structuralId = structural.id " +
                 "LEFT JOIN employees exploitingEmployees ON accounting_objects.exploitingId = exploitingEmployees.id " +
+                "LEFT JOIN accounting_object_category ON accounting_objects.accountingObjectCategoryId = accounting_object_category.id " +
                 "WHERE accounting_objects.id = :id LIMIT 1"
     )
     fun getByIdFlow(id: String): Flow<FullAccountingObject>

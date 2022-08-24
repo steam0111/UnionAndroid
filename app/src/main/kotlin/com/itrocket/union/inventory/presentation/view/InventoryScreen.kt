@@ -37,6 +37,7 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.inventory.presentation.store.InventoryStore
+import com.itrocket.union.inventoryCreate.presentation.view.InventoryBottomBar
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
@@ -69,7 +70,9 @@ fun InventoryScreen(
     onInventoryCreateClickListener: () -> Unit,
     onPageChanged: (Int) -> Unit,
     onParamClickListener: (ParamDomain) -> Unit,
-    onParamCrossClickListener: (ParamDomain) -> Unit
+    onParamCrossClickListener: (ParamDomain) -> Unit,
+    onSaveClickListener: () -> Unit,
+    onInWorkClickListener: () -> Unit
 ) {
     val pagerState = rememberPagerState(state.selectedPage)
     val coroutineScope = rememberCoroutineScope()
@@ -83,12 +86,22 @@ fun InventoryScreen(
                 )
             },
             bottomBar = {
-                if (state.isCanCreateInventory) {
-                    ButtonBottomBar(
-                        onClick = onInventoryCreateClickListener,
-                        text = stringResource(R.string.common_create),
-                        isLoading = state.isCreateInventoryLoading,
-                    )
+                when {
+                    state.isCanCreateInventory && state.inventoryCreateDomain != null -> {
+                        InventoryBottomBar(
+                            onSaveClickListener = onSaveClickListener,
+                            onInWorkClickListener = onInWorkClickListener,
+                            onFinishClickListener = { },
+                            inventoryStatus = state.inventoryCreateDomain.inventoryStatus
+                        )
+                    }
+                    state.isCanCreateInventory -> {
+                        ButtonBottomBar(
+                            onClick = onInventoryCreateClickListener,
+                            text = stringResource(R.string.common_create),
+                            isLoading = state.isCreateInventoryLoading,
+                        )
+                    }
                 }
             },
             content = {
@@ -372,8 +385,11 @@ fun InventoryScreenPreview() {
                 )
             ),
             selectedPage = 1,
+            inventoryCreateDomain = null
         ),
         AppInsets(topInset = previewTopInsetDp),
+        {},
+        {},
         {},
         {},
         {},

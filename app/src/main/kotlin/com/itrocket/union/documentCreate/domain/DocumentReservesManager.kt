@@ -87,7 +87,7 @@ class DocumentReservesManager(
                 val reserve = reserves.find { it.id == changedReserve.id }
                 changedReserve.copy(
                     count = reserve?.itemsCount,
-                    locationSyncEntity = locationSyncEntity
+                    locationSyncEntity = listOfNotNull(locationSyncEntity)
                 )
             }
             val existingInNewLocationReservesInfo =
@@ -101,7 +101,7 @@ class DocumentReservesManager(
                 oldReserves = oldReserves.map { oldReserve ->
                     val reserve = reserves.find { it.id == oldReserve.id }
                     oldReserve.copy(
-                        locationSyncEntity = locationSyncEntity,
+                        locationSyncEntity = listOfNotNull(locationSyncEntity),
                         count = reserve?.itemsCount ?: 0,
                         userUpdated = login,
                         userInserted = login,
@@ -160,7 +160,7 @@ class DocumentReservesManager(
         return oldReserve.name == newReserve.name &&
                 oldReserve.nomenclatureId == newReserve.nomenclatureId
                 && oldReserve.orderId == newReserve.orderId
-                && oldReserve.locationSyncEntity?.id == newReserve.locationSyncEntity?.id
+                && oldReserve.locationSyncEntity?.lastOrNull()?.id == newReserve.locationSyncEntity?.lastOrNull()?.id
     }
 
     private suspend fun changeReserveCount(

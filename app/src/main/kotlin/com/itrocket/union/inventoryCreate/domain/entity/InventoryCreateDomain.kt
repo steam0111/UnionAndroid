@@ -35,7 +35,7 @@ data class InventoryCreateDomain(
 fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
     val structuralId = documentInfo.getFilterStructuralLastId(ManualType.STRUCTURAL)
     val molId = documentInfo.getMolId()
-    val locationIds = documentInfo.getFilterLocationIds()
+    val locationIds = documentInfo.getFilterLocationIds(ManualType.LOCATION_INVENTORY)
 
     return InventoryUpdateSyncEntity(
         id = id.orEmpty(),

@@ -13,6 +13,9 @@ interface StructuralSyncApi {
 
     suspend fun getAllStructuralsIdsByParentId(parentId: String?): List<String?>
 
+    /**
+     * Метод для получения полного пути до childId структуры
+     **/
     suspend fun getStructuralFullPath(
         childId: String?,
         structurals: MutableList<StructuralSyncEntity>

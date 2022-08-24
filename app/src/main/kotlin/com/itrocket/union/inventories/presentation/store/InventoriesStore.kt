@@ -8,6 +8,7 @@ import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.filter.presentation.store.FilterArguments
 import com.itrocket.union.inventories.presentation.view.InventoriesComposeFragmentDirections
+import com.itrocket.union.inventoryContainer.domain.InventoryContainerType
 import com.itrocket.union.inventoryContainer.presentation.store.InventoryContainerArguments
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateArguments
@@ -35,11 +36,11 @@ interface InventoriesStore :
 
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
-        data class ShowInventoryDetail(val inventory: InventoryCreateDomain) : Label(),
+        data class ShowInventoryDetail(val inventory: InventoryCreateDomain, val type: InventoryContainerType) : Label(),
             ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = InventoriesComposeFragmentDirections.toInventoryContainer(
-                    InventoryContainerArguments(inventory)
+                    InventoryContainerArguments(inventory, type)
                 )
 
         }

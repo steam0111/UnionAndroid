@@ -63,8 +63,8 @@ fun ReserveSyncEntity.toReserveDb(): ReserveDb {
     return ReserveDb(
         id = id,
         catalogItemName = catalogItemName,
-        locationId = locationSyncEntity?.id,
-        locationTypeId = locationSyncEntity?.locationTypeId,
+        locationId = locationSyncEntity?.lastOrNull()?.id,
+        locationTypeId = locationSyncEntity?.lastOrNull()?.locationTypeId,
         molId = molId,
         orderId = orderId,
         nomenclatureId = nomenclatureId,
@@ -85,7 +85,7 @@ fun ReserveSyncEntity.toReserveDb(): ReserveDb {
     )
 }
 
-fun ReserveDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?): ReserveSyncEntity {
+fun ReserveDb.toSyncEntity(locationSyncEntity: List<LocationSyncEntity>?): ReserveSyncEntity {
     return ReserveSyncEntity(
         id = id,
         catalogItemName = catalogItemName,
@@ -110,7 +110,7 @@ fun ReserveDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?): ReserveSync
     )
 }
 
-fun FullReserve.toSyncEntity(): ReserveSyncEntity {
+fun FullReserve.toSyncEntity(location: List<LocationSyncEntity>?): ReserveSyncEntity {
     return ReserveSyncEntity(
         id = reserveDb.id,
         catalogItemName = reserveDb.catalogItemName,
@@ -124,7 +124,7 @@ fun FullReserve.toSyncEntity(): ReserveSyncEntity {
         structuralId = structuralDb?.id,
         receptionDocumentNumber = reserveDb.receptionDocumentNumber,
         unitPrice = reserveDb.unitPrice,
-        locationSyncEntity = locationDb?.toLocationSyncEntity(locationTypeDb),
+        locationSyncEntity = location ?: listOfNotNull(locationDb?.toLocationSyncEntity(locationTypeDb)),
         userUpdated = reserveDb.userUpdated,
         userInserted = reserveDb.userInserted,
         invoiceNumber = reserveDb.invoiceNumber,
@@ -135,11 +135,10 @@ fun FullReserve.toSyncEntity(): ReserveSyncEntity {
     )
 }
 
-fun FullReserve.toDetailSyncEntity(balanceUnits: List<StructuralSyncEntity>?, structurals: List<StructuralSyncEntity>?): ReserveDetailSyncEntity {
-    val locationEntity = locationDb?.toLocationSyncEntity(locationTypeDb)
+fun FullReserve.toDetailSyncEntity(balanceUnits: List<StructuralSyncEntity>?, structurals: List<StructuralSyncEntity>?, location: List<LocationSyncEntity>?): ReserveDetailSyncEntity {
     return ReserveDetailSyncEntity(
-        reserveSyncEntity = reserveDb.toSyncEntity(locationEntity),
-        locationSyncEntity = locationEntity,
+        reserveSyncEntity = reserveDb.toSyncEntity(location),
+        locationSyncEntity = location,
         locationTypeSyncEntity = locationTypeDb?.toSyncEntity(),
         molSyncEntity = molDb?.toSyncEntity(),
         nomenclatureSyncEntity = nomenclatureDb?.toSyncEntity(),

@@ -21,6 +21,7 @@ import com.example.union_sync_impl.dao.sqlTransitQuery
 import com.example.union_sync_impl.dao.sqlTransitRecordQuery
 import com.example.union_sync_impl.dao.sqlTransitRemainsRecordQuery
 import com.example.union_sync_impl.data.mapper.toDocumentReserveCount
+import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.data.mapper.toTransitDb
 import com.example.union_sync_impl.data.mapper.toTransitSyncEntity
@@ -80,11 +81,11 @@ class TransitSyncApiImpl(
                     listOfNotNull(structuralSyncApi.getStructuralById(transit.transitDb.structuralFromId))
 
                 transit.transitDb.toTransitSyncEntity(
-                    locationFrom = locationSyncApi.getLocationById(transit.transitDb.locationFromId),
-                    locationTo = locationSyncApi.getLocationById(transit.transitDb.locationToId),
+                    locationFrom = locationSyncApi.getLocationFullPath(transit.transitDb.locationFromId),
+                    locationTo = locationSyncApi.getLocationFullPath(transit.transitDb.locationToId),
                     receiving = transit.receivingDb?.toSyncEntity(),
                     mol = transit.molDb?.toSyncEntity(),
-                    vehicle = locationSyncApi.getLocationById(transit.transitDb.vehicleId),
+                    vehicle = listOfNotNull(locationSyncApi.getLocationById(transit.transitDb.vehicleId)),
                     accountingObjects = listOf(),
                     structuralToSyncEntity = structuralToSyncEntity,
                     structuralFromSyncEntity = structuralFromSyncEntity,
@@ -105,7 +106,7 @@ class TransitSyncApiImpl(
                 )
             ).map {
                 val location = locationSyncApi.getLocationById(it.accountingObjectDb.locationId)
-                it.toSyncEntity(locationSyncEntity = location)
+                it.toSyncEntity(locationSyncEntity = listOfNotNull(location))
             }
 
         val reserveRecords =
@@ -114,7 +115,10 @@ class TransitSyncApiImpl(
         var reserves: List<ReserveSyncEntity> =
             reserveDao.getAll(sqlReserveQuery(reservesIds = reserveRecords.map { it.remainId }
                 .filterNotNull()))
-                .map { it.toSyncEntity() }
+                .map {
+                    val locationSyncEntity = it.locationDb?.toLocationSyncEntity(it.locationTypeDb)
+                    it.toSyncEntity(listOfNotNull(locationSyncEntity))
+                }
 
         reserves = reserves.map { reserve ->
             val documentReserveCount = reserveRecords.find { it.remainId == reserve.id }
@@ -142,11 +146,11 @@ class TransitSyncApiImpl(
             structuralToSyncEntity = structuralToIds,
             accountingObjects = accountingObjects,
             reserves = reserves,
-            locationFrom = locationSyncApi.getLocationById(fullTransit.transitDb.locationFromId),
-            locationTo = locationSyncApi.getLocationById(fullTransit.transitDb.locationToId),
+            locationFrom = locationSyncApi.getLocationFullPath(fullTransit.transitDb.locationFromId),
+            locationTo = locationSyncApi.getLocationFullPath(fullTransit.transitDb.locationToId),
             receiving = fullTransit.receivingDb?.toSyncEntity(),
             mol = fullTransit.molDb?.toSyncEntity(),
-            vehicle = locationSyncApi.getLocationById(fullTransit.transitDb.vehicleId),
+            vehicle = locationSyncApi.getLocationFullPath(fullTransit.transitDb.vehicleId),
         )
     }
 

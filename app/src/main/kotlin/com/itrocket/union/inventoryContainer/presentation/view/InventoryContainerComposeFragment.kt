@@ -14,8 +14,11 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.union.R
 import com.itrocket.union.addFragment
+import com.itrocket.union.inventory.presentation.store.InventoryArguments
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment
+import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_ARGUMENT
 import com.itrocket.union.inventoryContainer.InventoryContainerModule.INVENTORYCONTAINER_VIEW_MODEL_QUALIFIER
+import com.itrocket.union.inventoryContainer.domain.InventoryContainerType
 import com.itrocket.union.inventoryContainer.presentation.store.InventoryContainerStore
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateArguments
@@ -64,12 +67,11 @@ class InventoryContainerComposeFragment :
 
     private fun initStartFragment() {
         val argument = navArgs.inventoryContainerArguments
-        val initialFragment = if (argument != null) {
-            getInventoryCreateFragment(
-                InventoryCreateArguments(argument.inventoryCreateDomain)
+        val initialFragment = when (argument.type) {
+            InventoryContainerType.INVENTORY_CREATE -> getInventoryCreateFragment(
+                InventoryCreateArguments(requireNotNull(argument.inventoryCreateDomain))
             )
-        } else {
-            InventoryComposeFragment()
+            InventoryContainerType.INVENTORY -> getInventoryFragment(InventoryArguments(argument.inventoryCreateDomain))
         }
         childFragmentManager.addFragment(
             R.id.inventoryContainer,
@@ -81,6 +83,14 @@ class InventoryContainerComposeFragment :
         return InventoryCreateComposeFragment().apply {
             arguments = bundleOf(
                 INVENTORY_CREATE_ARGUMENTS to argument
+            )
+        }
+    }
+
+    private fun getInventoryFragment(argument: InventoryArguments): Fragment {
+        return InventoryComposeFragment().apply {
+            arguments = bundleOf(
+                INVENTORY_ARGUMENT to argument
             )
         }
     }

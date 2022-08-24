@@ -149,7 +149,7 @@ class InventorySyncApiImpl(
                     locationSyncApi.getLocationById(fullAccountingObject.accountingObjectDb.locationId)
                 fullAccountingObject.toSyncEntity(
                     inventoryStatus = inventoryStatus,
-                    locationSyncEntity = location
+                    locationSyncEntity = listOfNotNull(location)
                 )
             }
     }

@@ -3,7 +3,7 @@ package com.example.union_sync_api.entity
 data class ReserveSyncEntity(
     val id: String,
     var catalogItemName: String,
-    val locationSyncEntity: LocationSyncEntity?,
+    val locationSyncEntity: List<LocationSyncEntity>?,
     val molId: String?,
     val orderId: String?,
     val nomenclatureId: String?,
@@ -26,14 +26,14 @@ data class ReserveSyncEntity(
 fun ReserveSyncEntity.toReserveUpdateSyncEntity(userUpdated: String?) = ReserveUpdateSyncEntity(
     id = id,
     count = count ?: 0,
-    locationId = locationSyncEntity?.id,
+    locationId = locationSyncEntity?.lastOrNull()?.id,
     userUpdated = userUpdated,
     dateUpdate = System.currentTimeMillis()
 )
 
 fun ReserveSyncEntity.toReserveShortSyncEntity(locationId: String? = null, userUpdated: String?) =
     ReserveShortSyncEntity(
-        locationId = locationId ?: locationSyncEntity?.id,
+        locationId = locationId ?: locationSyncEntity?.lastOrNull()?.id,
         nomenclatureId = nomenclatureId,
         orderId = orderId,
         name = name,

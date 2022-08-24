@@ -94,9 +94,9 @@ fun TransitDb.toTransitSyncEntity(
     structuralToSyncEntity: List<StructuralSyncEntity>?,
     accountingObjects: List<AccountingObjectSyncEntity>? = null,
     reserves: List<ReserveSyncEntity>? = null,
-    locationFrom: LocationSyncEntity?,
-    locationTo: LocationSyncEntity?,
-    vehicle: LocationSyncEntity?,
+    locationFrom: List<LocationSyncEntity>?,
+    locationTo: List<LocationSyncEntity>?,
+    vehicle: List<LocationSyncEntity>?,
     mol: EmployeeSyncEntity?,
     receiving: EmployeeSyncEntity?
 ): TransitSyncEntity {

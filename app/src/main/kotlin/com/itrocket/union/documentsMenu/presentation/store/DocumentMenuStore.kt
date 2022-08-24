@@ -11,6 +11,8 @@ import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.presentation.store.DocumentArguments
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 import com.itrocket.union.documentsMenu.presentation.view.DocumentMenuComposeFragmentDirections
+import com.itrocket.union.inventoryContainer.domain.InventoryContainerType
+import com.itrocket.union.inventoryContainer.presentation.store.InventoryContainerArguments
 import com.itrocket.union.nomenclature.presentation.store.NomenclatureArguments
 import com.itrocket.union.nomenclatureGroup.presentation.store.NomenclatureGroupArguments
 import com.itrocket.union.structural.presentation.store.StructuralArguments
@@ -83,7 +85,7 @@ interface DocumentMenuStore :
                         NomenclatureArguments(0)
                     )
                     R.string.create_inventory -> DocumentMenuComposeFragmentDirections.toInventoryContainer(
-                        null
+                        InventoryContainerArguments(null, InventoryContainerType.INVENTORY)
                     )
                     R.string.main_employees -> DocumentMenuComposeFragmentDirections.toEmployees()
                     R.string.inventories -> DocumentMenuComposeFragmentDirections.toInventories()

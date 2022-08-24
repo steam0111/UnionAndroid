@@ -35,8 +35,12 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
             add(ObjectInfoDomain(R.string.balance_unit, it.joinToString(", ") { it.name }))
         }
 
-        location?.name?.let {
-            add(ObjectInfoDomain(R.string.accounting_objects_location, it))
+        location?.let {
+            add(
+                ObjectInfoDomain(
+                    R.string.accounting_objects_location,
+                    it.joinToString(", ") { it.name })
+            )
         }
 
         accountingObject.status?.name?.let {
@@ -95,15 +99,6 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
                 valueRes = getStringBy(accountingObject.traceable)
             )
         )
-
-        accountingObject.commissioningDate?.let {
-            add(
-                ObjectInfoDomain(
-                    R.string.accounting_object_category,
-                    getTextDateFromStringDate(it)
-                )
-            )
-        }
 
         producer?.let {
             add(ObjectInfoDomain(R.string.accounting_objects_producer, it.name.orEmpty()))

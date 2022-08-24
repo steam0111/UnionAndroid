@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.data
 
+import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.ReserveSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
 import com.example.union_sync_api.entity.ReserveDetailSyncEntity
@@ -7,6 +8,7 @@ import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_api.entity.ReserveUpdateSyncEntity
+import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.StructuralDao
 import com.example.union_sync_impl.dao.sqlReserveQuery
 import com.example.union_sync_impl.data.mapper.toDetailSyncEntity
@@ -18,7 +20,8 @@ import com.example.union_sync_impl.data.mapper.toStructuralSyncEntity
 
 class ReserveSyncApiImpl(
     private val reserveDao: ReserveDao,
-    private val structuralSyncApi: StructuralSyncApi
+    private val structuralSyncApi: StructuralSyncApi,
+    private val locationSyncApi: LocationSyncApi
 ) : ReserveSyncApi {
     override suspend fun getAll(
         structuralIds: List<String?>?,
@@ -44,18 +47,24 @@ class ReserveSyncApiImpl(
                 locationIds = locationIds,
                 reservesShorts = reservesShorts
             )
-        ).map { it.toSyncEntity() }
+        )
+            .map { it.toSyncEntity(location = listOfNotNull(locationSyncApi.getLocationById(it.locationDb?.parentId))) }
     }
 
     override suspend fun getById(id: String): ReserveDetailSyncEntity {
         val fullReserve = reserveDao.getById(id)
+        val location = locationSyncApi.getLocationFullPath(fullReserve.locationDb?.parentId)
         val structurals =
             structuralSyncApi.getStructuralFullPath(
                 fullReserve.structuralDb?.id,
                 mutableListOf()
             ).orEmpty()
         val balanceUnits = structurals.filter { it.balanceUnit }
-        return fullReserve.toDetailSyncEntity(balanceUnits = balanceUnits, structurals = structurals)
+        return fullReserve.toDetailSyncEntity(
+            balanceUnits = balanceUnits,
+            structurals = structurals,
+            location = location
+        )
     }
 
     override suspend fun getReservesFilterCount(

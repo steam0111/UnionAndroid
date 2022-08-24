@@ -18,7 +18,7 @@ fun AccountingObjectSyncEntity.map(): AccountingObjectDomain {
     inventoryNumber?.let {
         listMainInfo.add(ObjectInfoDomain(R.string.accounting_objects_inventory_number, it))
     }
-    locationSyncEntity?.name?.let {
+    locationSyncEntity?.lastOrNull()?.name?.let {
         listMainInfo.add(ObjectInfoDomain(R.string.accounting_objects_location, it))
     }
 

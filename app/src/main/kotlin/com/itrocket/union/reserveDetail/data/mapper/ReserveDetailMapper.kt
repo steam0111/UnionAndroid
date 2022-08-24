@@ -43,8 +43,8 @@ fun ReserveDetailSyncEntity.map(): ReservesDomain {
         listInfo.add(ObjectInfoDomain(R.string.accounting_object_mol, it.fullName))
     }
 
-    locationSyncEntity?.name?.let {
-        listInfo.add(ObjectInfoDomain(R.string.accounting_objects_location, it))
+    locationSyncEntity?.let {
+        listInfo.add(ObjectInfoDomain(R.string.accounting_objects_location, it.joinToString(", ") { it.name }))
     }
 
     nomenclatureSyncEntity?.let {

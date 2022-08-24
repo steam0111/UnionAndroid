@@ -93,6 +93,12 @@ class InventoryComposeFragment :
                 },
                 onParamCrossClickListener = {
                     accept(InventoryStore.Intent.OnParamCrossClicked(it))
+                },
+                onSaveClickListener = {
+                    accept(InventoryStore.Intent.OnSaveClicked)
+                },
+                onInWorkClickListener = {
+                    accept(InventoryStore.Intent.OnInWorkClicked)
                 }
             )
         }
@@ -107,5 +113,9 @@ class InventoryComposeFragment :
             )
         }
 
+    }
+
+    companion object {
+        const val INVENTORY_ARGUMENT = "inventory argument"
     }
 }

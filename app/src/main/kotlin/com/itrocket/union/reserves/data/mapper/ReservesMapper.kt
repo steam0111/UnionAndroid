@@ -20,7 +20,7 @@ fun ReserveSyncEntity.map(): ReservesDomain {
         listInfo.add(ObjectInfoDomain(R.string.reserves_unit_price, it))
     }
 
-    locationSyncEntity?.name?.let {
+    locationSyncEntity?.lastOrNull()?.name?.let {
         listInfo.add(ObjectInfoDomain(R.string.accounting_objects_location, it))
     }
 
