@@ -24,7 +24,7 @@ data class AccountingObjectSyncEntity(
     val molId: String?,
     val exploitingEmployeeId: String?,
     val model: String?,
-    val locationSyncEntity: LocationSyncEntity?,
+    val locationSyncEntity: List<LocationSyncEntity>?,
     val structuralId: String?,
     val subName: String?,
     val code: String?,

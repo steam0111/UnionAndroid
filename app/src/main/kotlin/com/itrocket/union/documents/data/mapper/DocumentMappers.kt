@@ -54,8 +54,8 @@ fun getParams(
     structuralsTo: List<StructuralSyncEntity>? = null,
     structuralsFrom: List<StructuralSyncEntity>? = null,
     documentType: String,
-    locationFrom: LocationSyncEntity? = null,
-    locationTo: LocationSyncEntity? = null,
+    locationFrom: List<LocationSyncEntity>? = null,
+    locationTo: List<LocationSyncEntity>? = null,
     actionBase: ActionBaseSyncEntity? = null
 ): List<ParamDomain> {
     return getAccountingObjectParams(
@@ -76,8 +76,8 @@ private fun getAccountingObjectParams(
     structuralsTo: List<StructuralSyncEntity>?,
     structuralsFrom: List<StructuralSyncEntity>?,
     documentType: String,
-    locationFrom: LocationSyncEntity? = null,
-    locationTo: LocationSyncEntity? = null,
+    locationFrom: List<LocationSyncEntity>? = null,
+    locationTo: List<LocationSyncEntity>? = null,
     actionBase: ActionBaseSyncEntity? = null,
 ): List<ParamDomain> {
     val params = mutableListOf<ParamDomain>()
@@ -114,19 +114,19 @@ private fun getAccountingObjectParams(
         params = params,
         types = type.manualTypes,
         manualType = ManualType.RELOCATION_LOCATION_TO,
-        destinations = listOfNotNull(locationTo)
+        destinations = locationTo
     )
     addLocationParam(
         params = params,
         types = type.manualTypes,
         manualType = ManualType.LOCATION_TO,
-        destinations = listOfNotNull(locationTo)
+        destinations = locationTo
     )
     addLocationParam(
         params = params,
         types = type.manualTypes,
         manualType = ManualType.LOCATION_FROM,
-        destinations = listOfNotNull(locationFrom)
+        destinations = locationFrom
     )
     addActionBaseParam(
         params = params,
@@ -234,11 +234,11 @@ fun TransitSyncEntity.map(): DocumentDomain = DocumentDomain(
 fun getTransitParams(
     structuralsTo: List<StructuralSyncEntity>? = null,
     structuralsFrom: List<StructuralSyncEntity>? = null,
-    vehicle: LocationSyncEntity? = null,
+    vehicle: List<LocationSyncEntity>? = null,
     mol: EmployeeSyncEntity? = null,
     receiving: EmployeeSyncEntity? = null,
-    locationFrom: LocationSyncEntity? = null,
-    locationTo: LocationSyncEntity? = null,
+    locationFrom: List<LocationSyncEntity>? = null,
+    locationTo: List<LocationSyncEntity>? = null,
 ): List<ParamDomain> {
     val params = mutableListOf<ParamDomain>()
     val type = DocumentTypeDomain.TRANSIT
@@ -271,19 +271,19 @@ fun getTransitParams(
         params = params,
         types = type.manualTypes,
         manualType = ManualType.LOCATION_TO,
-        destinations = listOfNotNull(locationTo)
+        destinations = locationTo
     )
     addLocationParam(
         params = params,
         types = type.manualTypes,
         manualType = ManualType.TRANSIT,
-        destinations = listOfNotNull(vehicle)
+        destinations = vehicle
     )
     addLocationParam(
         params = params,
         types = type.manualTypes,
         manualType = ManualType.LOCATION_FROM,
-        destinations = listOfNotNull(locationFrom)
+        destinations = locationFrom
     )
 
     return params

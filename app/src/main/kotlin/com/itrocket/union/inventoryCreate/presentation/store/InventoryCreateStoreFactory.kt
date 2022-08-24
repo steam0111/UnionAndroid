@@ -129,10 +129,6 @@ class InventoryCreateStoreFactory(
                     inventoryDomain = getState().inventoryDocument,
                     newAccountingObjects = getState().newAccountingObjects.toList()
                 )
-                InventoryCreateStore.Intent.OnInWorkClicked -> inWorkInventory(
-                    inventoryDomain = getState().inventoryDocument,
-                    newAccountingObjects = getState().newAccountingObjects.toList()
-                )
                 is InventoryCreateStore.Intent.OnDismissConfirmDialog -> {
                     dispatch(Result.ConfirmDialogVisibility(false))
                 }
@@ -161,23 +157,6 @@ class InventoryCreateStoreFactory(
             )
             dispatch(Result.Inventory(inventory))
             inventoryCreateInteractor.saveInventoryDocument(inventory, inventory.accountingObjects)
-        }
-
-        private suspend fun inWorkInventory(
-            inventoryDomain: InventoryCreateDomain,
-            newAccountingObjects: List<AccountingObjectDomain>
-        ) {
-            val accountingObjects = newAccountingObjects + inventoryDomain.accountingObjects
-            val inventory = inventoryDomain.copy(
-                inventoryStatus = InventoryStatus.IN_PROGRESS,
-                accountingObjects = accountingObjects
-            )
-            inventoryCreateInteractor.saveInventoryDocument(
-                inventoryCreate = inventory,
-                accountingObjects = accountingObjects
-            )
-            dispatch(Result.NewAccountingObjects(setOf()))
-            dispatch(Result.Inventory(inventory))
         }
 
         private suspend fun handleNewAccountingObjectRfids(

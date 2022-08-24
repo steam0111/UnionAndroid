@@ -25,6 +25,8 @@ interface InventoryStore :
         object OnBackClicked : Intent()
         object OnDropClicked : Intent()
         object OnCreateDocumentClicked : Intent()
+        object OnInWorkClicked : Intent()
+        object OnSaveClicked : Intent()
         data class OnSelectPage(val selectedPage: Int) : Intent()
         data class OnParamClicked(val param: ParamDomain) : Intent()
         data class OnParamCrossClicked(val param: ParamDomain) : Intent()
@@ -44,7 +46,8 @@ interface InventoryStore :
             LocationParamDomain(manualType = ManualType.LOCATION_INVENTORY),
             ParamDomain(id = "", value = "", type = ManualType.INVENTORY_BASE)
         ),
-        val isCanCreateInventory: Boolean = true
+        val isCanCreateInventory: Boolean = true,
+        val inventoryCreateDomain: InventoryCreateDomain?
     )
 
     sealed class Label {

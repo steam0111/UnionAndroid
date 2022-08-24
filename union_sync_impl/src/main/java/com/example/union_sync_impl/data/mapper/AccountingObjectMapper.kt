@@ -62,7 +62,7 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
 }
 
 fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
-    locationSyncEntity: LocationSyncEntity?,
+    locationSyncEntity: List<LocationSyncEntity>?,
     balanceUnitSyncEntities: List<StructuralSyncEntity>?,
     structuralSyncEntities: List<StructuralSyncEntity>?
 ): AccountingObjectDetailSyncEntity {
@@ -86,7 +86,7 @@ fun EnumDtoV2.toStatusDb() = AccountingObjectStatusDb(id.orEmpty(), name)
 
 fun AccountingObjectStatusSyncEntity.toStatusDb() = AccountingObjectStatusDb(id, name)
 
-fun AccountingObjectDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?) =
+fun AccountingObjectDb.toSyncEntity(locationSyncEntity: List<LocationSyncEntity>?) =
     AccountingObjectSyncEntity(
         id = id,
         catalogItemName = catalogItemName,
@@ -130,7 +130,7 @@ fun AccountingObjectDb.toSyncEntity(locationSyncEntity: LocationSyncEntity?) =
 
 fun FullAccountingObject.toSyncEntity(
     inventoryStatus: String? = null,
-    locationSyncEntity: LocationSyncEntity?
+    locationSyncEntity: List<LocationSyncEntity>?
 ) = AccountingObjectSyncEntity(
     id = accountingObjectDb.id,
     catalogItemName = accountingObjectDb.catalogItemName,

@@ -36,9 +36,6 @@ class StructuralSyncApiImpl(
         }
     }
 
-    /**
-     * Метод для получения полного пути до childId струткуры
-     **/
     override suspend fun getStructuralFullPath(
         childId: String?,
         structurals: MutableList<StructuralSyncEntity>

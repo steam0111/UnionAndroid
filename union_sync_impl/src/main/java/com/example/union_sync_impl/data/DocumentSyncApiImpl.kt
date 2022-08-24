@@ -23,6 +23,7 @@ import com.example.union_sync_impl.dao.sqlDocumentsQuery
 import com.example.union_sync_impl.dao.sqlReserveQuery
 import com.example.union_sync_impl.data.mapper.toDocumentDb
 import com.example.union_sync_impl.data.mapper.toDocumentSyncEntity
+import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
 import com.example.union_sync_impl.data.mapper.toStructuralSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.entity.ActionRecordDb
@@ -105,8 +106,8 @@ class DocumentSyncApiImpl(
                     mol = document.molDb?.toSyncEntity(),
                     exploiting = document.exploitingDb?.toSyncEntity(),
                     accountingObjects = listOf(),
-                    locationFrom = locationSyncApi.getLocationById(document.documentDb.locationFromId),
-                    locationTo = locationSyncApi.getLocationById(document.documentDb.locationToId),
+                    locationFrom = listOfNotNull(locationSyncApi.getLocationById(document.documentDb.locationFromId)),
+                    locationTo = listOfNotNull(locationSyncApi.getLocationById(document.documentDb.locationToId)),
                     structuralToSyncEntity = structuralToSyncEntity,
                     structuralFromSyncEntity = structuralFromSyncEntity,
                 )
@@ -126,7 +127,7 @@ class DocumentSyncApiImpl(
                 )
             ).map {
                 val location = locationSyncApi.getLocationById(it.accountingObjectDb.locationId)
-                it.toSyncEntity(locationSyncEntity = location)
+                it.toSyncEntity(locationSyncEntity = listOfNotNull(location))
             }
 
         val reserveRecords =
@@ -134,7 +135,10 @@ class DocumentSyncApiImpl(
 
         var reserves: List<ReserveSyncEntity> =
             reserveDao.getAll(sqlReserveQuery(reservesIds = reserveRecords.map { it.remainId }))
-                .map { it.toSyncEntity() }
+                .map {
+                    val locationSyncEntity = it.locationDb?.toLocationSyncEntity(it.locationTypeDb)
+                    it.toSyncEntity(listOfNotNull(locationSyncEntity))
+                }
 
         reserves = reserves.map { reserve ->
             val documentReserveCount = reserveRecords.find { it.remainId == reserve.id }
@@ -162,8 +166,8 @@ class DocumentSyncApiImpl(
             exploiting = fullDocument.exploitingDb?.toSyncEntity(),
             accountingObjects = accountingObjects,
             reserves = reserves,
-            locationFrom = locationSyncApi.getLocationById(fullDocument.documentDb.locationFromId),
-            locationTo = locationSyncApi.getLocationById(fullDocument.documentDb.locationToId),
+            locationFrom = locationSyncApi.getLocationFullPath(fullDocument.documentDb.locationFromId),
+            locationTo = locationSyncApi.getLocationFullPath(fullDocument.documentDb.locationToId),
             structuralToSyncEntity = structuralToIds,
             structuralFromSyncEntity = structuralFromIds,
             actionBase = fullDocument.actionBaseDb?.toSyncEntity()

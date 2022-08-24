@@ -17,4 +17,12 @@ interface LocationSyncApi {
     suspend fun getLocationById(locationId: String?): LocationSyncEntity?
 
     suspend fun getLocationsByIds(ids: List<String?>): List<LocationSyncEntity>
+
+    /**
+     * Метод для получения полного пути до childId локации
+     **/
+    suspend fun getLocationFullPath(
+        childId: String?,
+        locations: MutableList<LocationSyncEntity> = mutableListOf()
+    ): List<LocationSyncEntity>?
 }

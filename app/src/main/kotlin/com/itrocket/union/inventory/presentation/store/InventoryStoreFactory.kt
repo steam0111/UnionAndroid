@@ -11,7 +11,10 @@ import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
+import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventory.domain.InventoryInteractor
+import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
@@ -33,13 +36,15 @@ class InventoryStoreFactory(
     private val errorInteractor: ErrorInteractor,
     private val selectParamsInteractor: SelectParamsInteractor,
     private val filterInteractor: FilterInteractor,
-    private val permissionsInteractor: UnionPermissionsInteractor
+    private val permissionsInteractor: UnionPermissionsInteractor,
+    private val inventoryCreateDomain: InventoryCreateDomain?,
+    private val inventoryCreateInteractor: InventoryCreateInteractor
 ) {
     fun create(): InventoryStore =
         object : InventoryStore,
             Store<InventoryStore.Intent, InventoryStore.State, InventoryStore.Label> by storeFactory.create(
                 name = "InventoryStore",
-                initialState = InventoryStore.State(),
+                initialState = InventoryStore.State(inventoryCreateDomain = inventoryCreateDomain),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
@@ -56,9 +61,15 @@ class InventoryStoreFactory(
             action: Unit,
             getState: () -> InventoryStore.State
         ) {
-            dispatch(Result.CanCreateInventory(permissionsInteractor.canCreate(UnionPermission.INVENTORY)))
-            dispatch(Result.Params(selectParamsInteractor.getInitialDocumentParams(getState().params)))
-            observeAccountingObjects(getState().params)
+            val inventory = getState().inventoryCreateDomain
+            if (inventory != null) {
+                dispatch(Result.Params(inventory.documentInfo))
+                observeAccountingObjects(getState().params)
+            } else {
+                dispatch(Result.CanCreateInventory(permissionsInteractor.canCreate(UnionPermission.INVENTORY)))
+                dispatch(Result.Params(selectParamsInteractor.getInitialDocumentParams(getState().params)))
+                observeAccountingObjects(getState().params)
+            }
         }
 
         override suspend fun executeIntent(
@@ -107,6 +118,16 @@ class InventoryStoreFactory(
                         params = params
                     )
                 }
+                InventoryStore.Intent.OnInWorkClicked -> inWorkInventory(
+                    inventoryDomain = requireNotNull(getState().inventoryCreateDomain),
+                    accountingObjects = getState().accountingObjectList,
+                    params = getState().params
+                )
+                InventoryStore.Intent.OnSaveClicked -> saveInventory(
+                    inventoryDocument = requireNotNull(getState().inventoryCreateDomain),
+                    accountingObjects = getState().accountingObjectList,
+                    params = getState().params
+                )
             }
         }
 
@@ -145,6 +166,44 @@ class InventoryStoreFactory(
             }
         }
 
+        private suspend fun saveInventory(
+            inventoryDocument: InventoryCreateDomain,
+            accountingObjects: List<AccountingObjectDomain>,
+            params: List<ParamDomain>
+        ) {
+            dispatch(Result.IsAccountingObjectsLoading(true))
+            catchException {
+                inventoryCreateInteractor.saveInventoryDocument(
+                    inventoryDocument.copy(documentInfo = params),
+                    accountingObjects
+                )
+                publish(InventoryStore.Label.GoBack)
+            }
+            dispatch(Result.IsAccountingObjectsLoading(false))
+        }
+
+        private suspend fun inWorkInventory(
+            inventoryDomain: InventoryCreateDomain,
+            accountingObjects: List<AccountingObjectDomain>,
+            params: List<ParamDomain>
+        ) {
+            val inventory = inventoryDomain.copy(
+                inventoryStatus = InventoryStatus.IN_PROGRESS,
+                accountingObjects = accountingObjects,
+                documentInfo = params
+
+            )
+            inventoryCreateInteractor.saveInventoryDocument(
+                inventoryCreate = inventory,
+                accountingObjects = accountingObjects
+            )
+            publish(
+                InventoryStore.Label.ShowCreateInventory(
+                    inventoryCreate = inventory
+                )
+            )
+        }
+
         private suspend fun createInventory(
             accountingObjects: List<AccountingObjectDomain>,
             params: List<ParamDomain>
@@ -153,11 +212,7 @@ class InventoryStoreFactory(
             catchException {
                 val inventoryCreate =
                     inventoryInteractor.createInventory(accountingObjects, params)
-                publish(
-                    InventoryStore.Label.ShowCreateInventory(
-                        inventoryCreate = inventoryCreate
-                    )
-                )
+                dispatch(Result.InventoryCreate(inventoryCreate))
             }
             dispatch(Result.IsAccountingObjectsLoading(false))
         }
@@ -183,6 +238,7 @@ class InventoryStoreFactory(
         data class SelectPage(val page: Int) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
         data class CanCreateInventory(val isCanCreateInventory: Boolean) : Result()
+        data class InventoryCreate(val inventoryCreateDomain: InventoryCreateDomain) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryStore.State, Result> {
@@ -194,6 +250,7 @@ class InventoryStoreFactory(
                 is Result.AccountingObjects -> copy(accountingObjectList = result.accountingObjects)
                 is Result.IsCreateInventoryLoading -> copy(isCreateInventoryLoading = result.isLoading)
                 is Result.CanCreateInventory -> copy(isCanCreateInventory = result.isCanCreateInventory)
+                is Result.InventoryCreate -> copy(inventoryCreateDomain = result.inventoryCreateDomain)
             }
     }
 }

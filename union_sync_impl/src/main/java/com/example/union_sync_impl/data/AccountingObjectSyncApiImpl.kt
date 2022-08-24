@@ -54,7 +54,7 @@ class AccountingObjectSyncApiImpl(
             )
         ).map {
             val location = locationSyncApi.getLocationById(it.accountingObjectDb.locationId)
-            it.toSyncEntity(locationSyncEntity = location)
+            it.toSyncEntity(locationSyncEntity = listOfNotNull(location))
         }
     }
 
@@ -93,7 +93,7 @@ class AccountingObjectSyncApiImpl(
     override suspend fun getAccountingObjectDetailById(id: String): AccountingObjectDetailSyncEntity {
         val fullAccountingObjectDb = accountingObjectsDao.getById(id)
         val location =
-            locationSyncApi.getLocationById(fullAccountingObjectDb.accountingObjectDb.locationId)
+            locationSyncApi.getLocationFullPath(fullAccountingObjectDb.accountingObjectDb.locationId)
 
         val structurals =
             structuralSyncApi.getStructuralFullPath(
@@ -112,7 +112,7 @@ class AccountingObjectSyncApiImpl(
     override suspend fun getAccountingObjectDetailByIdFlow(id: String): Flow<AccountingObjectDetailSyncEntity> {
         return accountingObjectsDao.getByIdFlow(id).map {
             val location =
-                locationSyncApi.getLocationById(it.accountingObjectDb.locationId)
+                locationSyncApi.getLocationFullPath(it.accountingObjectDb.locationId)
 
             val structurals =
                 structuralSyncApi.getStructuralFullPath(it.structuralDb?.id, mutableListOf())

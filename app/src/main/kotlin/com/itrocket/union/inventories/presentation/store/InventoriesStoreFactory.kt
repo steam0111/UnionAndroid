@@ -9,6 +9,7 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.inventories.domain.InventoriesInteractor
+import com.itrocket.union.inventory.data.mapper.toInventoryContainerType
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.search.SearchManager
@@ -66,7 +67,8 @@ class InventoriesStoreFactory(
                 }
                 is InventoriesStore.Intent.OnInventoryClicked -> publish(
                     InventoriesStore.Label.ShowInventoryDetail(
-                        intent.inventory
+                        intent.inventory,
+                        intent.inventory.inventoryStatus.toInventoryContainerType()
                     )
                 )
                 InventoriesStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))

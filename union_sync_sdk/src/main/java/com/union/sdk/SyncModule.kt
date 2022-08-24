@@ -125,7 +125,8 @@ object SyncModule {
         factory<ReserveSyncApi> {
             ReserveSyncApiImpl(
                 reserveDao = get(),
-                structuralSyncApi = get()
+                structuralSyncApi = get(),
+                locationSyncApi = get()
             )
         }
         factory<ReceptionItemCategorySyncApi> {
