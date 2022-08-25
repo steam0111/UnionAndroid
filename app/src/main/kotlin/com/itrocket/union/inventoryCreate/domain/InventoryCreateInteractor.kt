@@ -39,7 +39,6 @@ class InventoryCreateInteractor(
 
     suspend fun handleNewAccountingObjectRfids(
         accountingObjects: List<AccountingObjectDomain>,
-        newAccountingObjects: List<AccountingObjectDomain>,
         handledAccountingObjectId: String,
         inventoryStatus: InventoryStatus,
         isAddNew: Boolean
@@ -51,15 +50,17 @@ class InventoryCreateInteractor(
             val accountingObjectIndex = mutableAccountingObjects.indexOfFirst {
                 it.rfidValue == handledAccountingObjectId
             }
-            val newAccountingObjectIndex =
-                newAccountingObjects.indexOfFirst { it.rfidValue == handledAccountingObjectId }
-
+            val isNewExist = if (accountingObjectIndex != NO_INDEX) {
+                mutableAccountingObjects[accountingObjectIndex].inventoryStatus == InventoryAccountingObjectStatus.NEW
+            } else {
+                false
+            }
             when {
-                accountingObjectIndex != NO_INDEX -> changeStatusByIndex(
+                accountingObjectIndex != NO_INDEX && !isNewExist && inventoryStatus != InventoryStatus.COMPLETED -> changeStatusByIndex(
                     mutableAccountingObjects,
                     accountingObjectIndex
                 )
-                newAccountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew -> newAccountingObjectRfids.add(
+                accountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew -> newAccountingObjectRfids.add(
                     handledAccountingObjectId
                 )
             }
@@ -76,7 +77,6 @@ class InventoryCreateInteractor(
     suspend fun handleNewAccountingObjectBarcode(
         accountingObjects: List<AccountingObjectDomain>,
         barcode: String,
-        newAccountingObjects: List<AccountingObjectDomain>,
         inventoryStatus: InventoryStatus,
         isAddNew: Boolean
     ): InventoryAccountingObjectsDomain {
@@ -87,15 +87,18 @@ class InventoryCreateInteractor(
             val accountingObjectIndex = mutableAccountingObjects.indexOfFirst {
                 it.barcodeValue == barcode
             }
-            val newAccountingObjectIndex =
-                newAccountingObjects.indexOfFirst { it.barcodeValue == barcode }
+            val isNewExist = if (accountingObjectIndex != NO_INDEX) {
+                mutableAccountingObjects[accountingObjectIndex].inventoryStatus == InventoryAccountingObjectStatus.NEW
+            } else {
+                false
+            }
 
             when {
-                accountingObjectIndex != NO_INDEX -> changeStatusByIndex(
+                accountingObjectIndex != NO_INDEX && !isNewExist && inventoryStatus != InventoryStatus.COMPLETED -> changeStatusByIndex(
                     mutableAccountingObjects,
                     accountingObjectIndex
                 )
-                newAccountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew -> {
+                accountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew-> {
                     val accountingObjectDomain = getHandleAccountingObjectByBarcode(barcode)
                     if (accountingObjectDomain != null) {
                         barcodeAccountingObjects.add(accountingObjectDomain)

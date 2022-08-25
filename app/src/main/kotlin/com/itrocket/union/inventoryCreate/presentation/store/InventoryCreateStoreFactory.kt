@@ -172,7 +172,6 @@ class InventoryCreateStoreFactory(
                     inventoryCreateInteractor.handleNewAccountingObjectRfids(
                         accountingObjects = accountingObjects,
                         handledAccountingObjectId = handledAccountingObjectId,
-                        newAccountingObjects = newAccountingObjects,
                         inventoryStatus = inventoryStatus,
                         isAddNew = isAddNew
                     )
@@ -197,7 +196,6 @@ class InventoryCreateStoreFactory(
                     inventoryCreateInteractor.handleNewAccountingObjectBarcode(
                         accountingObjects = accountingObjects,
                         barcode = barcode,
-                        newAccountingObjects = newAccountingObjects,
                         inventoryStatus = inventoryStatus,
                         isAddNew = isAddNew
                     )

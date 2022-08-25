@@ -11,8 +11,8 @@ import com.example.union_sync_impl.utils.more
 fun sqlTransitQuery(
     textQuery: String? = null,
     molId: String? = null,
-    structuralFromId: String?,
-    structuralToId: String?,
+    structuralFromId: String? = null,
+    structuralToId: String? = null,
     receivingId: String? = null,
     updateDate: Long? = null,
     limit: Long? = null,

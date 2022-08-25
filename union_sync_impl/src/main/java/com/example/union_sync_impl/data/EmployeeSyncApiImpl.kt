@@ -40,7 +40,8 @@ class EmployeeSyncApiImpl(
                 fullEmployee.structural?.id,
                 mutableListOf()
             ).orEmpty()
-        val balanceUnits = structurals.filter { it.balanceUnit }
+        val balanceUnitIndex = structurals.indexOfLast { it.balanceUnit }.takeIf { it >= 0 } ?: 0
+        val balanceUnits = structurals.subList(0, balanceUnitIndex)
         return fullEmployee.toDetailSyncEntity(
             balanceUnits = balanceUnits,
             structurals = structurals
