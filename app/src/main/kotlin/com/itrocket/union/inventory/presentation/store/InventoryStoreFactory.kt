@@ -61,8 +61,13 @@ class InventoryStoreFactory(
             action: Unit,
             getState: () -> InventoryStore.State
         ) {
-            val inventory = getState().inventoryCreateDomain
+            val inventory = getState().inventoryCreateDomain?.let {
+                inventoryCreateInteractor.getInventoryById(
+                    requireNotNull(it.id)
+                )
+            }
             if (inventory != null) {
+                dispatch(Result.InventoryCreate(inventory))
                 dispatch(Result.Params(inventory.documentInfo))
                 observeAccountingObjects(getState().params)
             } else {
