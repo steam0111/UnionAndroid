@@ -50,7 +50,8 @@ class AccountingObjectSyncApiImpl(
                 statusId = statusId,
                 accountingObjectsIds = accountingObjectsIds,
                 textQuery = textQuery,
-                locationIds = locationIds
+                locationIds = locationIds,
+                structuralIds = structuralId
             )
         ).map {
             val location = locationSyncApi.getLocationById(it.accountingObjectDb.locationId)
@@ -100,7 +101,8 @@ class AccountingObjectSyncApiImpl(
                 fullAccountingObjectDb.structuralDb?.id,
                 mutableListOf()
             ).orEmpty()
-        val balanceUnit = structurals.filter { it.balanceUnit }
+        val balanceUnitIndex = structurals.indexOfLast { it.balanceUnit }.takeIf { it >= 0 } ?: 0
+        val balanceUnit = structurals.subList(0, balanceUnitIndex)
 
         return fullAccountingObjectDb.toAccountingObjectDetailSyncEntity(
             location,
@@ -117,7 +119,8 @@ class AccountingObjectSyncApiImpl(
             val structurals =
                 structuralSyncApi.getStructuralFullPath(it.structuralDb?.id, mutableListOf())
                     .orEmpty()
-            val balanceUnit = structurals.filter { it.balanceUnit }
+            val balanceUnitIndex = structurals.indexOfLast { it.balanceUnit }
+            val balanceUnit = structurals.subList(0, balanceUnitIndex + 1)
 
             it.toAccountingObjectDetailSyncEntity(
                 location,

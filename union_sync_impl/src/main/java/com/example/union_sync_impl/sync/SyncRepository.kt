@@ -338,7 +338,7 @@ class SyncRepository(
             paginationEmitter(
                 getData = { limit, offset ->
                     transitDao.getAll(
-                        sqlDocumentsQuery(
+                        sqlTransitQuery(
                             limit = limit,
                             offset = offset,
                             updateDate = getLastSyncTime()
