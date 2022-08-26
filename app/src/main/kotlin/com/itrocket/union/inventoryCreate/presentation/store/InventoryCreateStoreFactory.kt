@@ -155,6 +155,7 @@ class InventoryCreateStoreFactory(
                 inventoryStatus = InventoryStatus.COMPLETED,
                 accountingObjects = newAccountingObjects + inventoryDomain.accountingObjects
             )
+            dispatch(Result.NewAccountingObjects(setOf()))
             dispatch(Result.Inventory(inventory))
             inventoryCreateInteractor.saveInventoryDocument(inventory, inventory.accountingObjects)
         }
@@ -173,7 +174,8 @@ class InventoryCreateStoreFactory(
                         accountingObjects = accountingObjects,
                         handledAccountingObjectId = handledAccountingObjectId,
                         inventoryStatus = inventoryStatus,
-                        isAddNew = isAddNew
+                        isAddNew = isAddNew,
+                        existNewAccountingObjects = newAccountingObjects
                     )
                 dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
                 dispatch(
@@ -197,7 +199,8 @@ class InventoryCreateStoreFactory(
                         accountingObjects = accountingObjects,
                         barcode = barcode,
                         inventoryStatus = inventoryStatus,
-                        isAddNew = isAddNew
+                        isAddNew = isAddNew,
+                        existNewAccountingObjects = newAccountingObjects
                     )
                 dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
                 dispatch(

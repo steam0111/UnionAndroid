@@ -68,7 +68,7 @@ class InventoryStoreFactory(
             }
             if (inventory != null) {
                 dispatch(Result.InventoryCreate(inventory))
-                dispatch(Result.Params(inventory.documentInfo))
+                dispatch(Result.Params(inventoryCreateInteractor.disableBalanceUnit(inventory.documentInfo)))
                 observeAccountingObjects(getState().params)
             } else {
                 dispatch(Result.CanCreateInventory(permissionsInteractor.canCreate(UnionPermission.INVENTORY)))

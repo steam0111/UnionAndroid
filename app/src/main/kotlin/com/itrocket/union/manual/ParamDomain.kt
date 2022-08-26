@@ -17,9 +17,16 @@ open class ParamDomain(
         id: String? = this.id,
         value: String = this.value,
         type: ManualType = this.type,
-        isFilter: Boolean = this.isFilter
+        isFilter: Boolean = this.isFilter,
+        isClickable: Boolean = this.isClickable
     ): ParamDomain {
-        return ParamDomain(id = id, value = value, type = type, isFilter = isFilter)
+        return ParamDomain(
+            id = id,
+            value = value,
+            type = type,
+            isFilter = isFilter,
+            isClickable = isClickable
+        )
     }
 
     open fun toInitialState() = ParamDomain(type = type)

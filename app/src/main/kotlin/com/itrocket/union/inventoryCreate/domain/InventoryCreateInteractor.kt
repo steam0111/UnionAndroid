@@ -10,6 +10,8 @@ import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjec
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectsDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.inventoryCreate.domain.entity.toUpdateSyncEntity
+import com.itrocket.union.manual.ManualType
+import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 import kotlinx.coroutines.withContext
 
@@ -41,7 +43,8 @@ class InventoryCreateInteractor(
         accountingObjects: List<AccountingObjectDomain>,
         handledAccountingObjectId: String,
         inventoryStatus: InventoryStatus,
-        isAddNew: Boolean
+        isAddNew: Boolean,
+        existNewAccountingObjects: List<AccountingObjectDomain>
     ): InventoryAccountingObjectsDomain {
         return withContext(coreDispatchers.io) {
             val newAccountingObjectRfids = mutableListOf<String>()
@@ -50,6 +53,8 @@ class InventoryCreateInteractor(
             val accountingObjectIndex = mutableAccountingObjects.indexOfFirst {
                 it.rfidValue == handledAccountingObjectId
             }
+            val isRfidNewExist =
+                existNewAccountingObjects.indexOfFirst { it.rfidValue == handledAccountingObjectId } != NO_INDEX
             val isNewExist = if (accountingObjectIndex != NO_INDEX) {
                 mutableAccountingObjects[accountingObjectIndex].inventoryStatus == InventoryAccountingObjectStatus.NEW
             } else {
@@ -60,7 +65,7 @@ class InventoryCreateInteractor(
                     mutableAccountingObjects,
                     accountingObjectIndex
                 )
-                accountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew -> newAccountingObjectRfids.add(
+                accountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew && !isRfidNewExist -> newAccountingObjectRfids.add(
                     handledAccountingObjectId
                 )
             }
@@ -78,7 +83,8 @@ class InventoryCreateInteractor(
         accountingObjects: List<AccountingObjectDomain>,
         barcode: String,
         inventoryStatus: InventoryStatus,
-        isAddNew: Boolean
+        isAddNew: Boolean,
+        existNewAccountingObjects: List<AccountingObjectDomain>
     ): InventoryAccountingObjectsDomain {
         return withContext(coreDispatchers.io) {
             val barcodeAccountingObjects = mutableListOf<AccountingObjectDomain>()
@@ -87,6 +93,8 @@ class InventoryCreateInteractor(
             val accountingObjectIndex = mutableAccountingObjects.indexOfFirst {
                 it.barcodeValue == barcode
             }
+            val isRfidNewExist =
+                existNewAccountingObjects.indexOfFirst { it.barcodeValue == barcode } != NO_INDEX
             val isNewExist = if (accountingObjectIndex != NO_INDEX) {
                 mutableAccountingObjects[accountingObjectIndex].inventoryStatus == InventoryAccountingObjectStatus.NEW
             } else {
@@ -98,7 +106,7 @@ class InventoryCreateInteractor(
                     mutableAccountingObjects,
                     accountingObjectIndex
                 )
-                accountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew-> {
+                accountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew && !isRfidNewExist -> {
                     val accountingObjectDomain = getHandleAccountingObjectByBarcode(barcode)
                     if (accountingObjectDomain != null) {
                         barcodeAccountingObjects.add(accountingObjectDomain)
@@ -111,6 +119,15 @@ class InventoryCreateInteractor(
                 createdAccountingObjects = mutableAccountingObjects
             )
         }
+    }
+
+    fun disableBalanceUnit(params: List<ParamDomain>): List<ParamDomain> {
+        val mutableParams = params.toMutableList()
+        val index = params.indexOfFirst { it.type == ManualType.BALANCE_UNIT }
+        if(index >= 0){
+            mutableParams[index] = mutableParams[index].copy(isClickable = false)
+        }
+        return mutableParams
     }
 
     fun dropAccountingObjects(accountingObjects: List<AccountingObjectDomain>): List<AccountingObjectDomain> {
