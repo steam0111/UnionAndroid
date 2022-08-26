@@ -208,6 +208,7 @@ private fun ParamContent(
                 SelectedBaseField(
                     label = stringResource(it.type.titleId),
                     value = it.value,
+                    clickable = it.isClickable,
                     onFieldClickListener = {
                         onParamClickListener(it)
                     },
