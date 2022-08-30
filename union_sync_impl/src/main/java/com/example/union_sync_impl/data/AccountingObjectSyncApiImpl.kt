@@ -86,7 +86,8 @@ class AccountingObjectSyncApiImpl(
                 accountingObjectsIds = accountingObjectsIds,
                 textQuery = textQuery,
                 isFilterCount = true,
-                locationIds = locationIds
+                locationIds = locationIds,
+                structuralIds = structuralIds
             )
         )
     }
