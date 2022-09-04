@@ -52,9 +52,7 @@ private fun Toolbar(
     BaseToolbar(
         title = stringResource(id = R.string.equipment_type_title),
         startImageId = R.drawable.ic_cross,
-        onStartImageClickListener = onBackClickListener,
-        backgroundColor = psb1,
-        textColor = white
+        onStartImageClickListener = onBackClickListener
     )
 }
 

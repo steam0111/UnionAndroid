@@ -3,7 +3,6 @@ package com.itrocket.union.reserveDetail.presentation.view
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +17,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,16 +33,11 @@ import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.reserveDetail.presentation.store.ReserveDetailStore
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ExpandedInfoField
 import com.itrocket.union.ui.LoadingContent
 import com.itrocket.union.ui.ReadingModeBottomBar
-import com.itrocket.union.ui.graphite2
-import com.itrocket.union.ui.psb1
-import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
-import java.math.BigDecimal
 
 @Composable
 fun ReserveDetailScreen(
@@ -101,19 +96,19 @@ private fun Toolbar(
         title = stringResource(id = R.string.reserves_title),
         startImageId = R.drawable.ic_cross,
         onStartImageClickListener = onBackClickListener,
-        backgroundColor = psb1,
-        textColor = white,
         content = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_document_add),
                     contentDescription = null,
+                    colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
                     modifier = Modifier.clickableUnbounded(onClick = onDocumentAddClickListener)
                 )
                 Spacer(modifier = Modifier.width(24.dp))
                 Image(
                     painter = painterResource(id = R.drawable.ic_document_search),
                     contentDescription = null,
+                    colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
                     modifier = Modifier.clickableUnbounded(onClick = onDocumentSearchClickListener)
                 )
             }

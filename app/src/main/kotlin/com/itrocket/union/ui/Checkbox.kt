@@ -19,7 +19,10 @@ fun BaseCheckbox(isChecked: Boolean, onCheckClickListener: () -> Unit) {
         checked = isChecked, onCheckedChange = {
             onCheckClickListener()
         }, modifier = Modifier.size(20.dp, 20.dp),
-        colors = CheckboxDefaults.colors(uncheckedColor = psb4, checkedColor = psb6)
+        colors = CheckboxDefaults.colors(
+            uncheckedColor = psb4,
+            checkedColor = AppTheme.colors.mainColor
+        )
     )
 }
 
@@ -27,7 +30,10 @@ fun BaseCheckbox(isChecked: Boolean, onCheckClickListener: () -> Unit) {
 fun BaseRadioButton(isSelected: Boolean, onClick: () -> Unit) {
     RadioButton(
         selected = isSelected, onClick = onClick, modifier = Modifier.size(20.dp, 20.dp),
-        colors = RadioButtonDefaults.colors(unselectedColor = psb4, selectedColor = psb6)
+        colors = RadioButtonDefaults.colors(
+            unselectedColor = psb4,
+            selectedColor = AppTheme.colors.mainColor
+        )
     )
 }
 

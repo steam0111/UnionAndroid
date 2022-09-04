@@ -7,7 +7,7 @@ import com.itrocket.union.accountingObjects.domain.entity.Status
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.graphite6
 import com.itrocket.union.ui.green7
-import com.itrocket.union.ui.psb6
+import com.itrocket.union.ui.orange
 import com.itrocket.union.ui.white
 
 enum class InventoryStatus(
@@ -22,7 +22,7 @@ enum class InventoryStatus(
     ),
     IN_PROGRESS(
         textId = R.string.inventory_in_work,
-        backgroundColor = psb6,
+        backgroundColor = orange,
         textColor = white
     ),
     COMPLETED(

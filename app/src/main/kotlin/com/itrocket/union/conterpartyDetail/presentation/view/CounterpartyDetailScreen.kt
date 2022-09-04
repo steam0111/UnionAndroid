@@ -53,8 +53,6 @@ private fun Toolbar(
         title = stringResource(id = R.string.counterparties),
         startImageId = R.drawable.ic_cross,
         onStartImageClickListener = onBackClickListener,
-        backgroundColor = psb1,
-        textColor = white
     )
 }
 

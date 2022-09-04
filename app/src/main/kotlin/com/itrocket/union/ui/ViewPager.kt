@@ -24,8 +24,12 @@ import com.itrocket.ui.TabIndicator
 
 @ExperimentalPagerApi
 @Composable
-fun TabIndicatorBlack(tabPositions: List<TabPosition>, pagerState: PagerState) {
-    TabIndicator(tabPositions = tabPositions, pagerState = pagerState, backgroundColor = psb1)
+fun TabRowIndicator(tabPositions: List<TabPosition>, pagerState: PagerState) {
+    TabIndicator(
+        tabPositions = tabPositions,
+        pagerState = pagerState,
+        backgroundColor = AppTheme.colors.appBarBackgroundColor
+    )
 }
 
 @ExperimentalPagerApi
@@ -39,7 +43,7 @@ fun DoubleTabRow(
     tabIndicator: @Composable (List<TabPosition>) -> Unit,
     backgroundColor: Color = white,
     selectedTextColor: Color = white,
-    unselectedTextColor: Color = psb3,
+    unselectedTextColor: Color = AppTheme.colors.secondaryColor,
     enabled: Boolean = true
 ) {
     TabRow(
@@ -108,7 +112,7 @@ fun DoubleTabRowPreview() {
 
         },
         tabIndicator = {
-            TabIndicatorBlack(it, pagerState)
+            TabRowIndicator(it, pagerState)
         })
 
     HorizontalPager(count = tabs.size, state = pagerState) { page ->

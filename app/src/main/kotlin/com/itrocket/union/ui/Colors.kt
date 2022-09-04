@@ -3,10 +3,9 @@ package com.itrocket.union.ui
 import androidx.compose.ui.graphics.Color
 
 val white = Color(0xFFFFFFFF)
-val psb1 = Color(0xFF323242)
-val psb3 = Color(0xFF84848E)
+val grey = Color(0xFF84848E)
 val psb4 = Color(0xFFC7CAD3)
-val psb6 = Color(0xFFF26328)
+val orange = Color(0xFFF26328)
 val green7 = Color(0xFF28BC00)
 val graphite2 = Color(0xFFECF0F2)
 val violet5 = Color(0xFF783294)

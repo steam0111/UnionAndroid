@@ -44,6 +44,10 @@
     <string name="common_sub_name">Доп. наименование</string>
     <string name="common_invoice_number">Номер накладной</string>
 
+    <!-- Splash -->
+    <string name="splash_description">ПРОГРАММНЫЙ КОМПЛЕКС ДЛЯ УЧЕТА ИМУЩЕСТВА ПРЕДПРИЯТИЯ</string>
+    <string name="splash_company_title">Developed on Union EAM software product</string>
+
     <!-- Auth -->
     <string name="auth_suggest">Это нужно сделать один раз</string>
     <string name="auth_sign_in">Войти</string>

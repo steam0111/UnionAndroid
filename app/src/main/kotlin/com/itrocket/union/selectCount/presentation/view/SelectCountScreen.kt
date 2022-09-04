@@ -47,8 +47,6 @@ import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BottomSheetDivider
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.brightGray
-import com.itrocket.union.ui.psb3
-import com.itrocket.union.ui.psb6
 import com.itrocket.union.ui.white
 
 @Composable
@@ -91,6 +89,7 @@ fun SelectCountScreen(
                     mutableStateOf(brightGray)
                 }
                 val focusRequester = FocusRequester()
+                val mainColor = AppTheme.colors.mainColor
                 EditText(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -99,7 +98,7 @@ fun SelectCountScreen(
                     text = state.count.toString(),
                     hint = stringResource(R.string.count),
                     hintStyle = AppTheme.typography.body1,
-                    hintColor = psb3,
+                    hintColor = AppTheme.colors.secondaryColor,
                     textStyle = AppTheme.typography.body1,
                     onTextChanged = {
                         if (it.isDigitsOnly()) {
@@ -109,7 +108,7 @@ fun SelectCountScreen(
                     focusRequester = focusRequester,
                     onFocusChanged = {
                         underlineColor = if (it.hasFocus) {
-                            psb6
+                            mainColor
                         } else {
                             brightGray
                         }

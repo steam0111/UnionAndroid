@@ -24,8 +24,6 @@ import com.itrocket.union.nomenclatureDetail.presentation.store.NomenclatureDeta
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ExpandedInfoField
-import com.itrocket.union.ui.psb1
-import com.itrocket.union.ui.white
 
 @Composable
 fun NomenclatureDetailScreen(
@@ -60,9 +58,7 @@ private fun Toolbar(
     BaseToolbar(
         title = stringResource(id = R.string.nomenclature_title),
         startImageId = R.drawable.ic_cross,
-        onStartImageClickListener = onBackClickListener,
-        backgroundColor = psb1,
-        textColor = white
+        onStartImageClickListener = onBackClickListener
     )
 }
 

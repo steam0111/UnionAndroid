@@ -5,7 +5,6 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,12 +18,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,12 +30,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.rememberPagerState
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
-import com.itrocket.ui.BaseTab
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailStore
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
@@ -50,11 +43,8 @@ import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.ExpandedInfoField
 import com.itrocket.union.ui.ReadingModeBottomBar
-import com.itrocket.union.ui.psb1
 import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collect
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -135,7 +125,7 @@ private fun Toolbar(
             .fillMaxWidth()
             .height(60.dp)
             .shadow(4.dp)
-            .background(psb1)
+            .background(AppTheme.colors.appBarBackgroundColor)
             .padding(horizontal = 16.dp)
     ) {
         Image(
@@ -143,7 +133,8 @@ private fun Toolbar(
             contentDescription = null,
             modifier = Modifier.clickableUnbounded(
                 onClick = onBackClickListener
-            )
+            ),
+            colorFilter = ColorFilter.tint(AppTheme.colors.mainColor)
         )
         Box(
             modifier = Modifier.fillMaxHeight(),

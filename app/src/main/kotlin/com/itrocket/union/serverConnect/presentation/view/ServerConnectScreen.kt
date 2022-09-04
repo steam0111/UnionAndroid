@@ -77,7 +77,8 @@ fun ServerConnectScreen(
                         focusRequester = focusRequest
                     )
                 }
-            )
+            ),
+            medias = state.medias
         )
     }
 }

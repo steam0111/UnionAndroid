@@ -62,6 +62,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.bundles.androidx.compose)
     implementation(libs.bundles.koin.android)
+    implementation(libs.koin.compose)
+    implementation(libs.svg)
 
     implementation(libs.bundles.retrofit)
     implementation(libs.okhttp3.logging)

@@ -49,12 +49,9 @@ import com.itrocket.union.ui.DoubleTabRow
 import com.itrocket.union.ui.Loader
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.SelectedBaseField
-import com.itrocket.union.ui.TabIndicatorBlack
+import com.itrocket.union.ui.TabRowIndicator
 import com.itrocket.union.ui.UnselectedBaseField
 import com.itrocket.union.ui.graphite2
-import com.itrocket.union.ui.psb1
-import com.itrocket.union.ui.psb6
-import com.itrocket.union.ui.white
 import com.itrocket.utils.getTargetPage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
@@ -184,7 +181,7 @@ private fun Content(
                 }
             },
             tabIndicator = {
-                TabIndicatorBlack(tabPositions = it, pagerState = pagerState)
+                TabRowIndicator(tabPositions = it, pagerState = pagerState)
             }
         )
         MediumSpacer()
@@ -269,13 +266,11 @@ private fun Toolbar(
         title = stringResource(id = R.string.inventory_ao_title),
         onStartImageClickListener = onBackClickListener,
         startImageId = R.drawable.ic_arrow_back,
-        backgroundColor = psb1,
-        textColor = white,
         content = {
             Text(
                 text = stringResource(R.string.common_drop),
                 style = AppTheme.typography.body2,
-                color = psb6,
+                color = AppTheme.colors.mainColor,
                 modifier = Modifier.clickable(onClick = onDropClickListener)
             )
         }

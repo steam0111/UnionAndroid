@@ -32,7 +32,7 @@ fun HorizontalFilledIndicator(
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth(count / maxCount)
-                .background(psb6, RoundedCornerShape(111.dp))
+                .background(AppTheme.colors.mainColor, RoundedCornerShape(111.dp))
         )
     }
 }

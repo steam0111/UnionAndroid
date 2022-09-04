@@ -11,6 +11,8 @@ import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.authUser.domain.AuthUserInteractor
 import com.itrocket.union.container.domain.IsDbSyncedUseCase
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.theme.domain.MediaInteractor
+import com.itrocket.union.theme.domain.entity.Medias
 import com.itrocket.union.utils.ifBlankOrNull
 
 class AuthUserStoreFactory(
@@ -21,6 +23,7 @@ class AuthUserStoreFactory(
     private val initialState: AuthUserStore.State?,
     private val errorInteractor: ErrorInteractor,
     private val isDbSyncedUseCase: IsDbSyncedUseCase,
+    private val mediaInteractor: MediaInteractor
 ) {
     fun create(): AuthUserStore =
         object : AuthUserStore,
@@ -43,6 +46,7 @@ class AuthUserStoreFactory(
             action: Unit,
             getState: () -> AuthUserStore.State
         ) {
+            dispatch(Result.MediaList(mediaInteractor.getMedias()))
             val login = authMainInteractor.getLogin()
             if (!login.isNullOrBlank()) {
                 dispatch(Result.Login(login))
@@ -122,6 +126,7 @@ class AuthUserStoreFactory(
         data class Password(val password: String) : Result()
         data class PasswordVisible(val isPasswordVisible: Boolean) : Result()
         data class ActiveDirectory(val isActiveDirectory: Boolean) : Result()
+        data class MediaList(val medias: Medias) : Result()
     }
 
     private object ReducerImpl : Reducer<AuthUserStore.State, Result> {
@@ -131,6 +136,7 @@ class AuthUserStoreFactory(
                 is Result.Password -> copy(password = result.password)
                 is Result.PasswordVisible -> copy(isPasswordVisible = result.isPasswordVisible)
                 is Result.ActiveDirectory -> copy(isActiveDirectory = result.isActiveDirectory)
+                is Result.MediaList -> copy(medias = result.medias)
             }
     }
 }

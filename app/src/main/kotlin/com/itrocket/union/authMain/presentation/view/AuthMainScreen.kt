@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,7 +27,6 @@ import com.itrocket.union.ui.AuthContent
 import com.itrocket.union.ui.AuthEditText
 import com.itrocket.union.ui.ButtonWithLoader
 import com.itrocket.union.ui.OutlinedButton
-import com.itrocket.union.ui.psb3
 import com.itrocket.union.ui.psb4
 import com.itrocket.union.ui.white
 
@@ -64,7 +62,8 @@ fun AuthMainScreen(
                         isTextVisible = state.isPasswordVisible,
                         onVisibilityClickListener = onPasswordVisibilityClickListener
                     )
-                }
+                },
+                medias = state.medias
             )
             Spacer(modifier = Modifier.height(24.dp))
             ButtonWithLoader(
@@ -98,7 +97,7 @@ fun AuthMainScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 48.dp),
-                textColor = psb3,
+                textColor = AppTheme.colors.secondaryColor ,
                 outlineColor = psb4
             )
 

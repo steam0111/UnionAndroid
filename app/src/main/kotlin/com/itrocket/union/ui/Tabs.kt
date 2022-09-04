@@ -55,7 +55,7 @@ fun RowScope.ReadingModeTab(
     onClick: (ReadingModeTab) -> Unit
 ) {
     val backgroundColor = if (isSelected) {
-        psb1
+        AppTheme.colors.appBarBackgroundColor
     } else {
         psb4
     }

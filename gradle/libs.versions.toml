@@ -49,6 +49,8 @@ junit = "4.13.2"
 
 logger = "5.0.1"
 
+svg = "1.4"
+
 [libraries]
 
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
@@ -67,7 +69,7 @@ androidx-compose-foundation = { module = "androidx.compose.foundation:foundation
 androidx-compose-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
 androidx-compose-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
 
-accompanist-view-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist"}
+accompanist-view-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
 accompanist-tab-indicator = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanist" }
 
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
@@ -87,29 +89,31 @@ mvi-kotlin-core = { module = "com.arkivanov.mvikotlin:mvikotlin", version.ref = 
 mvi-kotlin-main = { module = "com.arkivanov.mvikotlin:mvikotlin-main", version.ref = "mvi" }
 mvi-kotlin-coroutines = { module = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines", version.ref = "mvi" }
 
-android-ext-lifecycle = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle"}
-android-ext-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment"}
+android-ext-lifecycle = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle" }
+android-ext-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment" }
 
-retrofit-client = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit"}
-retrofit-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit"}
-retrofit-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit"}
+retrofit-client = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
+retrofit-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit" }
 
-okhttp3-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp3-logging"}
+okhttp3-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp3-logging" }
 
-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore"}
+datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
-itrocket-core = { module = "ru.itrocket:core", version.ref = "core"}
-itrocket-ui = { module = "ru.itrocket:ui", version.ref = "ui"}
-itrocket-utils = { module = "ru.itrocket:utils", version.ref = "utils"}
+itrocket-core = { module = "ru.itrocket:core", version.ref = "core" }
+itrocket-ui = { module = "ru.itrocket:ui", version.ref = "ui" }
+itrocket-utils = { module = "ru.itrocket:utils", version.ref = "utils" }
 
-database-runtime = { module = "androidx.room:room-ktx", version.ref = "database"}
-database-compiler = { module = "androidx.room:room-compiler", version.ref = "database"}
+database-runtime = { module = "androidx.room:room-ktx", version.ref = "database" }
+database-compiler = { module = "androidx.room:room-compiler", version.ref = "database" }
 
-scannerclient-impl = { module = "ru.interid:scannerclient-impl", version.ref = "scannerclient_impl"}
-scannerclient = { module = "ru.interid:scanner_client", version.ref = "scannerclient"}
+scannerclient-impl = { module = "ru.interid:scannerclient-impl", version.ref = "scannerclient_impl" }
+scannerclient = { module = "ru.interid:scanner_client", version.ref = "scannerclient" }
 
 logger = { module = "com.jakewharton.timber:timber", version.ref = "logger" }
-junit = { module = "junit:junit", version.ref = "junit"}
+junit = { module = "junit:junit", version.ref = "junit" }
+
+svg = { module = "com.caverock:androidsvg-aar", version.ref = "svg" }
 
 [bundles]
 android-ext = ["android-ext-lifecycle", "android-ext-fragment"]
@@ -136,7 +140,6 @@ itrocket = [
     "itrocket-ui",
     "itrocket-utils"
 ]
-
 
 koin-android = [
     "koin-android"

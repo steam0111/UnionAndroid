@@ -1,10 +1,8 @@
 package com.itrocket.union.ui
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Shapes
-import androidx.compose.material.Typography
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
@@ -14,14 +12,8 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-
-private val DarkColorPalette = darkColors(
-    primary = psb1,
-)
-
-private val LightColorPalette = lightColors(
-    primary = psb1,
-)
+import com.itrocket.union.theme.domain.entity.ColorSettings
+import org.koin.androidx.compose.get
 
 class Dimensions(
     val auth_container_horizontal: Dp
@@ -34,6 +26,40 @@ private val normalDimensions = Dimensions(
 private val smallDimensions = Dimensions(
     auth_container_horizontal = 24.dp
 )
+
+private val defaultColors = ColorSettings()
+
+private val defaultTypography: Typography = Typography()
+
+@Composable
+fun ProvideTypography(
+    typography: Typography,
+    content: @Composable () -> Unit
+) {
+    val typographies = remember {
+        typography
+    }
+    CompositionLocalProvider(LocalAppTypography provides typographies, content = content)
+}
+
+private val LocalAppTypography = staticCompositionLocalOf {
+    defaultTypography
+}
+
+@Composable
+fun ProvideColors(
+    colorSettings: ColorSettings,
+    content: @Composable () -> Unit
+) {
+    val colors = remember {
+        colorSettings
+    }
+    CompositionLocalProvider(LocalAppColors provides colors, content = content)
+}
+
+private val LocalAppColors = staticCompositionLocalOf {
+    defaultColors
+}
 
 @Composable
 fun ProvideDimens(
@@ -50,36 +76,41 @@ private val LocalAppDimens = staticCompositionLocalOf {
 
 @Composable
 fun AppTheme(
+    colors: ColorSettings = get(),
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
+    val paletteColor = if (darkTheme) {
+        darkColors(primary = colors.mainColor)
     } else {
-        LightColorPalette
+        lightColors(primary = colors.mainColor)
     }
 
     val configuration = LocalConfiguration.current
     val dimensions = if (configuration.screenWidthDp <= 320) smallDimensions else normalDimensions
 
-    ProvideDimens(dimensions = dimensions) {
-        CompositionLocalProvider() {
-            MaterialTheme(
-                colors = colors,
-                content = content
-            )
+    ProvideColors(colorSettings = colors) {
+        ProvideTypography(typography = defaultTypography.changeTextColor(colors.mainTextColor)) {
+            ProvideDimens(dimensions = dimensions) {
+                CompositionLocalProvider {
+                    MaterialTheme(
+                        colors = paletteColor,
+                        content = content
+                    )
+                }
+            }
         }
     }
 }
 
 object AppTheme {
-    val colors: Colors
+    val colors: ColorSettings
         @Composable
-        get() = MaterialTheme.colors
+        get() = LocalAppColors.current
 
     val typography: Typography
         @Composable
-        get() = MaterialTheme.typography
+        get() = LocalAppTypography.current
 
     val shapes: Shapes
         @Composable

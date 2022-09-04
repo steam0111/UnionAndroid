@@ -6,7 +6,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,55 +14,42 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.itrocket.union.R
-import com.itrocket.union.ui.AppTheme
-import com.itrocket.core.base.AppInsets
-import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataStore
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.itrocket.core.base.AppInsets
 import com.itrocket.ui.EditText
+import com.itrocket.union.R
 import com.itrocket.union.changeScanData.domain.entity.ChangeScanType
+import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataStore
+import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.TextButton
 import com.itrocket.union.ui.brightGray
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.graphite4
-import com.itrocket.union.ui.psb1
-import com.itrocket.union.ui.psb3
-import com.itrocket.union.ui.psb6
 import com.itrocket.union.ui.white
-import com.itrocket.union.utils.ifBlankOrNull
 import com.itrocket.union.utils.ifBlankOrNullComposable
 
 @Composable
@@ -173,6 +159,7 @@ private fun ScanTextField(
     }
     val focusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
+    val mainColor = AppTheme.colors.mainColor
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -187,7 +174,7 @@ private fun ScanTextField(
             text = scanData,
             hint = stringResource(type.hintId),
             hintStyle = AppTheme.typography.body1,
-            hintColor = psb3,
+            hintColor = AppTheme.colors.secondaryColor,
             textStyle = AppTheme.typography.body1,
             onTextChanged = onScanTextChanged,
             focusRequester = focusRequester,
@@ -197,7 +184,7 @@ private fun ScanTextField(
             }),
             onFocusChanged = {
                 underlineColor = if (it.hasFocus) {
-                    psb6
+                    mainColor
                 } else {
                     brightGray
                 }
@@ -237,6 +224,7 @@ private fun Content(
         Image(
             painter = painterResource(id = R.drawable.ic_rounded_arrows),
             contentDescription = null,
+            colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
             modifier = Modifier
                 .size(48.dp)
                 .shadow(20.dp, CircleShape)
@@ -254,7 +242,7 @@ fun ChangeBarcodeItem(
 ) {
     Row(
         modifier = modifier
-            .background(psb1, RoundedCornerShape(16.dp))
+            .background(AppTheme.colors.appBarBackgroundColor, RoundedCornerShape(16.dp))
             .padding(vertical = 16.dp, horizontal = 24.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

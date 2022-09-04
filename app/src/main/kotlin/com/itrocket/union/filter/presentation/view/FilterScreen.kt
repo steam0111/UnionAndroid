@@ -32,9 +32,6 @@ import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.SelectedBaseField
 import com.itrocket.union.ui.UnselectedBaseField
 import com.itrocket.union.ui.graphite2
-import com.itrocket.union.ui.psb1
-import com.itrocket.union.ui.psb6
-import com.itrocket.union.ui.white
 
 @Composable
 fun FilterScreen(
@@ -79,14 +76,12 @@ fun FilterScreen(
 private fun FilterToolbar(onCrossClickListener: () -> Unit, onDropClickListener: () -> Unit) {
     BaseToolbar(
         title = stringResource(R.string.filter_title),
-        textColor = white,
         startImageId = R.drawable.ic_cross,
         onStartImageClickListener = onCrossClickListener,
-        backgroundColor = psb1
     ) {
         Text(
             text = stringResource(id = R.string.common_drop),
-            color = psb6,
+            color = AppTheme.colors.mainColor,
             modifier = Modifier.clickable(onClick = onDropClickListener)
         )
     }

@@ -47,11 +47,13 @@ fun DocumentMenuScreen(
                 onStartImageClickListener = onBackClickListener,
                 startImageId = if (state.isBackButtonVisible) R.drawable.ic_arrow_back else null,
                 title = state.userName,
+                backgroundColor = white,
+                textColor = AppTheme.colors.mainTextColor
             ) {
                 Spacer(modifier = Modifier.width(16.dp))
                 Image(
                     painter = painterResource(R.drawable.ic_settings),
-                    colorFilter = ColorFilter.tint(psb6),
+                    colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
                     contentDescription = null,
                     modifier = Modifier.clickableUnbounded(onClick = onSettingsClickListener)
                 )
@@ -59,7 +61,7 @@ fun DocumentMenuScreen(
                 Text(
                     text = stringResource(R.string.common_exit),
                     style = AppTheme.typography.body2,
-                    color = psb6,
+                    color = AppTheme.colors.mainColor,
                     modifier = Modifier.clickable(onClick = onLogoutClickListener)
                 )
             }
@@ -140,7 +142,7 @@ private fun DocumentItem(
             contentDescription = null,
             modifier = Modifier
                 .background(
-                    psb1,
+                    AppTheme.colors.appBarBackgroundColor,
                     CircleShape
                 )
                 .padding(documentMenuItem.paddings.dp)

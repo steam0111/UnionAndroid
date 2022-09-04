@@ -21,9 +21,13 @@ data class HttpException(val error: String? = "", val path: String? = "") : IOEx
     companion object {
 
         fun parseFromString(jsonString: String): HttpException? {
-            val moshi = Moshi.Builder().build()
-            return moshi.adapter(HttpException::class.java)
-                .fromJson(jsonString)
+            return try {
+                val moshi = Moshi.Builder().build()
+                return moshi.adapter(HttpException::class.java)
+                    .fromJson(jsonString)
+            } catch (t: Throwable) {
+                null
+            }
         }
     }
 }

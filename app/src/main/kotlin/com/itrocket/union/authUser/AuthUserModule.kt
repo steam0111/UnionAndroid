@@ -47,6 +47,7 @@ object AuthUserModule {
                 ),
                 get(),
                 get(),
+                get()
             ).create()
         }
     }

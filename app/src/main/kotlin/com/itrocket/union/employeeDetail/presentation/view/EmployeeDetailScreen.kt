@@ -1,10 +1,7 @@
 package com.itrocket.union.employeeDetail.presentation.view
 
 import android.content.res.Configuration
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,9 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,13 +22,9 @@ import com.itrocket.union.accountingObjectDetail.domain.entity.EmployeeDetailDom
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.employeeDetail.presentation.store.EmployeeDetailStore
 import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ExpandedInfoField
-import com.itrocket.union.ui.graphite2
-import com.itrocket.union.ui.psb1
 import com.itrocket.union.ui.white
-import com.itrocket.utils.clickableUnbounded
 
 @Composable
 fun EmployeeDetailScreen(
@@ -69,8 +60,6 @@ private fun Toolbar(
         title = stringResource(id = R.string.employees_title),
         startImageId = R.drawable.ic_cross,
         onStartImageClickListener = onBackClickListener,
-        backgroundColor = psb1,
-        textColor = white
     )
 }
 

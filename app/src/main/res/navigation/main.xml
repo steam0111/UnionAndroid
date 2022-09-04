@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     android:id="@+id/main"
-    app:startDestination="@id/auth">
+    app:startDestination="@id/splash">
 
     <fragment
         android:id="@+id/auth"
@@ -391,8 +390,7 @@
 
         <argument
             android:name="InventoryContainerArguments"
-            app:argType="com.itrocket.union.inventoryContainer.presentation.store.InventoryContainerArguments"
-            />
+            app:argType="com.itrocket.union.inventoryContainer.presentation.store.InventoryContainerArguments" />
     </fragment>
 
     <fragment
@@ -473,5 +471,23 @@
         <argument
             android:name="TransitArguments"
             app:argType="com.itrocket.union.transit.presentation.store.TransitArguments" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/splash"
+        android:name="com.itrocket.union.splash.presentation.view.SplashComposeFragment"
+        android:label="Splash">
+        <action
+            android:id="@+id/to_auth"
+            app:destination="@id/auth"
+            app:popUpTo="@id/main"/>
+        <action
+            android:id="@id/to_documentsMenu"
+            app:destination="@id/documentsMenu"
+            app:popUpTo="@id/main"/>
+        <action
+            android:id="@+id/to_SyncAll"
+            app:destination="@+id/syncAll"
+            app:popUpTo="@id/main" />
     </fragment>
 </navigation>

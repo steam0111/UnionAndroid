@@ -1,19 +1,28 @@
 package com.itrocket.union.serverConnect.presentation.store
 
+import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.serverConnect.domain.ServerConnectInteractor
+import com.itrocket.union.theme.domain.ColorInteractor
+import com.itrocket.union.theme.domain.MediaInteractor
+import com.itrocket.union.theme.domain.entity.Medias
+import com.itrocket.union.utils.ifBlankOrNull
 
 class ServerConnectStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val serverConnectInteractor: ServerConnectInteractor,
-    private val initialState: ServerConnectStore.State?
+    private val initialState: ServerConnectStore.State?,
+    private val colorInteractor: ColorInteractor,
+    private val mediaInteractor: MediaInteractor,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): ServerConnectStore =
         object : ServerConnectStore,
@@ -29,13 +38,14 @@ class ServerConnectStoreFactory(
         ServerConnectExecutor()
 
     private inner class ServerConnectExecutor :
-        SuspendExecutor<ServerConnectStore.Intent, Unit, ServerConnectStore.State, Result, ServerConnectStore.Label>(
-            mainContext = coreDispatchers.ui
+        BaseExecutor<ServerConnectStore.Intent, Unit, ServerConnectStore.State, Result, ServerConnectStore.Label>(
+            context = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
             action: Unit,
             getState: () -> ServerConnectStore.State
         ) {
+            dispatch(Result.MediaList(mediaInteractor.getMedias()))
             val serverUrl = serverConnectInteractor.getBaseUrl()
             val port = serverConnectInteractor.getPort()
             if (!serverUrl.isNullOrBlank()) {
@@ -87,17 +97,42 @@ class ServerConnectStoreFactory(
                         )
                     }
                 }
-                ServerConnectStore.Intent.OnNextClicked -> {
-                    serverConnectInteractor.clearAllSyncDataIfNeeded(
-                        getState().serverAddress,
-                        getState().port
-                    )
-                    serverConnectInteractor.saveBaseUrl(getState().serverAddress)
-                    serverConnectInteractor.savePort(getState().port)
-                    publish(ServerConnectStore.Label.NextFinish)
-                }
+                ServerConnectStore.Intent.OnNextClicked -> onNextClicked(getState)
             }
         }
+
+        private suspend fun onNextClicked(getState: () -> ServerConnectStore.State) {
+            catchException {
+                serverConnectInteractor.clearAllSyncDataIfNeeded(
+                    getState().serverAddress,
+                    getState().port
+                )
+                serverConnectInteractor.saveBaseUrl(getState().serverAddress)
+                serverConnectInteractor.savePort(getState().port)
+                loadSettings()
+                publish(ServerConnectStore.Label.NextFinish)
+            }
+        }
+
+        private suspend fun loadSettings() {
+            val colors = serverConnectInteractor.getStyleSettings()
+            val logoFile = serverConnectInteractor.getLogoFile()
+            val headerFile = serverConnectInteractor.getHeaderFile()
+            colorInteractor.saveColorSettings(
+                mainColor = colors.mainColor,
+                mainTextColor = colors.mainTextColor,
+                secondaryTextColor = colors.secondaryTextColor,
+                appBarBackgroundColor = colors.appBarBackgroundColor,
+                appBarTextColor = colors.appBarTextColor
+            )
+            colorInteractor.initColorSettings()
+            mediaInteractor.saveMedias(headerFile = headerFile, logoFile = logoFile)
+        }
+
+        override fun handleError(throwable: Throwable) {
+            publish(ServerConnectStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+        }
+
     }
 
     private fun isEnabled(serverAddress: String, port: String) =
@@ -107,6 +142,7 @@ class ServerConnectStoreFactory(
     private sealed class Result {
         data class ServerAddress(val serverAddress: String) : Result()
         data class Port(val port: String) : Result()
+        data class MediaList(val medias: Medias) : Result()
     }
 
     private object ReducerImpl : Reducer<ServerConnectStore.State, Result> {
@@ -114,6 +150,7 @@ class ServerConnectStoreFactory(
             when (result) {
                 is Result.ServerAddress -> copy(serverAddress = result.serverAddress)
                 is Result.Port -> copy(port = result.port)
+                is Result.MediaList -> copy(medias = result.medias)
             }
     }
 }
