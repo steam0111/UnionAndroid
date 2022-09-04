@@ -11,6 +11,7 @@ import com.itrocket.union.serverConnect.domain.ServerConnectInteractor
 import com.itrocket.union.serverConnect.domain.dependencies.ServerConnectRepository
 import com.itrocket.union.serverConnect.presentation.store.ServerConnectStore
 import com.itrocket.union.serverConnect.presentation.store.ServerConnectStoreFactory
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -37,7 +38,8 @@ object ServerConnectModule {
                 portPreferencesKey = get(PORT_PREFERENCE_KEY),
                 dataStore = get(),
                 coreDispatchers = get(),
-                manageSyncDataApi = get()
+                manageSyncDataApi = get(),
+                applicationContext = androidContext()
             )
         }
 
@@ -52,7 +54,10 @@ object ServerConnectModule {
                 get(),
                 initialState = getSavedState<ServerConnectStore.State, AuthContainerModule>(
                     SERVERCONNECT_STATE_SAVER
-                )
+                ),
+                get(),
+                get(),
+                get()
             ).create()
         }
 

@@ -54,15 +54,11 @@ import com.itrocket.union.location.presentation.store.LocationStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
-import com.itrocket.union.ui.Loader
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.RadioButtonField
 import com.itrocket.union.ui.brightGray
 import com.itrocket.union.ui.graphite2
-import com.itrocket.union.ui.psb1
-import com.itrocket.union.ui.psb3
 import com.itrocket.union.ui.psb4
-import com.itrocket.union.ui.psb6
 import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
 
@@ -84,13 +80,12 @@ fun LocationScreen(
                     title = stringResource(id = R.string.manual_location),
                     startImageId = R.drawable.ic_cross,
                     onStartImageClickListener = onCrossClickListener,
-                    backgroundColor = white,
-                    textColor = psb1,
                     content = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_accept),
                                 contentDescription = null,
+                                colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
                                 modifier = Modifier.clickableUnbounded(onClick = onAcceptClickListener)
                             )
                         }
@@ -129,6 +124,7 @@ private fun Content(
     val focusRequest = remember {
         FocusRequester()
     }
+    val mainColor = AppTheme.colors.mainColor
     Column(Modifier.padding(paddingValues = paddingValues)) {
         PlaceComponent(
             selectedPlaceScheme = state.selectPlaceScheme,
@@ -143,12 +139,12 @@ private fun Content(
             hint = stringResource(id = R.string.location_hint),
             textStyle = AppTheme.typography.body1,
             hintStyle = AppTheme.typography.body2,
-            hintColor = psb3,
+            hintColor = AppTheme.colors.secondaryColor,
             onTextChanged = onSearchTextChanged,
             focusRequester = focusRequest,
             onFocusChanged = {
                 underlineColor = if (it.hasFocus) {
-                    psb6
+                    mainColor
                 } else {
                     brightGray
                 }
@@ -221,7 +217,7 @@ private fun PlaceComponent(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(psb1)
+            .background(AppTheme.colors.appBarBackgroundColor)
             .padding(vertical = 12.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -254,7 +250,13 @@ private fun LocationLevelComponent(selectedPlaceScheme: List<LocationDomain>, le
             }
         }
         if (levelHint.isNotBlank()) {
-            withStyle(SpanStyle(color = psb6, fontSize = 14.sp, fontWeight = FontWeight.Normal)) {
+            withStyle(
+                SpanStyle(
+                    color = AppTheme.colors.mainColor,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            ) {
                 append(stringResource(id = R.string.location_select_place, levelHint.lowercase()))
             }
         }
@@ -294,9 +296,9 @@ private fun ArrowBackButton(enabled: Boolean, onClick: () -> Unit) {
             .border(
                 width = 1.dp,
                 color = if (enabled) {
-                    psb6
+                    AppTheme.colors.mainColor
                 } else {
-                    psb3
+                    AppTheme.colors.secondaryColor
                 },
                 shape = RoundedCornerShape(8.dp)
             )
@@ -309,9 +311,9 @@ private fun ArrowBackButton(enabled: Boolean, onClick: () -> Unit) {
             contentDescription = null,
             colorFilter = ColorFilter.tint(
                 if (enabled) {
-                    psb6
+                    AppTheme.colors.mainColor
                 } else {
-                    psb3
+                    AppTheme.colors.secondaryColor
                 }
             )
         )

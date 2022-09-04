@@ -22,7 +22,6 @@ import com.itrocket.union.nomenclature.domain.entity.NomenclatureDomain
 import com.itrocket.union.nomenclature.domain.entity.toDefaultItem
 import com.itrocket.union.nomenclature.presentation.store.NomenclatureStore
 import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.DefaultListItem
 import com.itrocket.union.ui.SearchToolbar
 

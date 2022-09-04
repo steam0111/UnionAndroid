@@ -22,7 +22,7 @@ object ContainerModule {
             OnSessionExpiredUseCase(get())
         }
         viewModel {
-            MainViewModel(get(), get(), get())
+            MainViewModel(get())
         }
         single(createdAtStart = true) {
             ScannerManager(get(), get(), get())

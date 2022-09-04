@@ -36,6 +36,8 @@ fun AuthEditText(
     var underlineColor by remember {
         mutableStateOf(brightGray)
     }
+    val mainColor = AppTheme.colors.mainColor
+    val appBarBackgroundColor = AppTheme.colors.appBarBackgroundColor
     Box(contentAlignment = Alignment.CenterEnd) {
         EditText(
             modifier = Modifier
@@ -45,7 +47,7 @@ fun AuthEditText(
             hint = hint,
             textStyle = AppTheme.typography.body1,
             hintStyle = AppTheme.typography.body1,
-            hintColor = psb3,
+            hintColor = AppTheme.colors.secondaryColor,
             keyboardOptions = keyboardOptions,
             visualTransformation = if (isTextVisible) {
                 VisualTransformation.None
@@ -57,9 +59,9 @@ fun AuthEditText(
             focusRequester = focusRequester,
             onFocusChanged = {
                 underlineColor = if (it.hasFocus) {
-                    psb6
+                    mainColor
                 } else {
-                    psb1
+                    appBarBackgroundColor
                 }
             },
             underlineColor = underlineColor

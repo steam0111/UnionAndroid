@@ -17,7 +17,6 @@ import com.itrocket.union.employees.domain.entity.EmployeeDomain
 import com.itrocket.union.employees.domain.entity.EmployeeStatus
 import com.itrocket.union.employees.presentation.store.EmployeeStore
 import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.ui.BlackToolbar
 import com.itrocket.union.ui.EmployeeItem
 import com.itrocket.union.ui.LoadingContent
 import com.itrocket.union.ui.SearchToolbar

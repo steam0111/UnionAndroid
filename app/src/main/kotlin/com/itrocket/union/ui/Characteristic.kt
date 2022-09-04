@@ -40,14 +40,14 @@ fun FullCharacteristicsSwitcher(
             Text(
                 text = stringResource(R.string.accounting_object_detail_show_full_characteristics),
                 style = AppTheme.typography.subtitle2,
-                color = psb1
+                color = AppTheme.colors.mainTextColor
             )
             Switch(
                 checked = isChecked,
                 onCheckedChange = onCheckedChangeListener,
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = white,
-                    checkedTrackColor = psb6
+                    checkedTrackColor = AppTheme.colors.mainColor
                 )
             )
         }

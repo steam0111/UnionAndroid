@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -99,7 +100,7 @@ private fun Content(
         Text(
             text = stringResource(id = R.string.choose_power_of_reader),
             modifier = Modifier.padding(horizontal = 16.dp),
-                    style = AppTheme.typography.body1,
+            style = AppTheme.typography.body1,
             fontWeight = FontWeight.Medium,
         )
         Spacer(modifier = Modifier.height(12.dp))
@@ -147,7 +148,8 @@ private fun DefineCursorComponent(
         Image(
             painter = painterResource(R.drawable.ic_reader),
             contentDescription = null,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(24.dp),
+            colorFilter = ColorFilter.tint(AppTheme.colors.mainColor)
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
@@ -159,14 +161,14 @@ private fun DefineCursorComponent(
                 }
             ).uppercase(),
             style = AppTheme.typography.body2,
-            color = psb6
+            color = AppTheme.colors.mainColor
         )
         Spacer(modifier = Modifier.weight(1f))
 
         val keyCodeModifier = if (waitDefine) {
             Modifier
                 .background(white, RoundedCornerShape(8.dp))
-                .border(1.dp, psb6, RoundedCornerShape(8.dp))
+                .border(1.dp, AppTheme.colors.mainColor, RoundedCornerShape(8.dp))
                 .padding(vertical = 12.dp, horizontal = 16.dp)
         } else {
             Modifier
@@ -245,7 +247,7 @@ fun SelectPower(
                 onClick = onDropDownOpenReaderPowerClickListener,
                 modifier = Modifier.background(graphite2)
             ) {
-                Text(text = state.readerPower)
+                Text(text = state.readerPower, style = AppTheme.typography.body2)
             }
             DropdownMenu(
                 expanded = state.dropDownReaderPowerExpanded,

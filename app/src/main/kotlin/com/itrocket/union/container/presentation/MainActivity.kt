@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
 
         initObservers()
+        initGraph(R.id.splash)
     }
 
     private fun initGraph(initFragmentId: Int) {

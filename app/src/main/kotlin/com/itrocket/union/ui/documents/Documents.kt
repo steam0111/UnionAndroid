@@ -42,7 +42,6 @@ import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.ui.BaseTab
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStoreFactory
 import com.itrocket.union.documentCreate.presentation.view.DocumentConfirmAlertType
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
@@ -58,16 +57,12 @@ import com.itrocket.union.ui.DoubleTabRow
 import com.itrocket.union.ui.ImageButton
 import com.itrocket.union.ui.Loader
 import com.itrocket.union.ui.MediumSpacer
-import com.itrocket.union.ui.OutlinedImageButton
 import com.itrocket.union.ui.ReservesItem
 import com.itrocket.union.ui.SelectedBaseField
-import com.itrocket.union.ui.TabIndicatorBlack
+import com.itrocket.union.ui.TabRowIndicator
 import com.itrocket.union.ui.UnselectedBaseField
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.graphite4
-import com.itrocket.union.ui.psb1
-import com.itrocket.union.ui.psb6
-import com.itrocket.union.ui.white
 import com.itrocket.utils.getTargetPage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
@@ -220,7 +215,7 @@ fun DocumentContent(
                 }
             },
             tabIndicator = {
-                TabIndicatorBlack(tabPositions = it, pagerState = pagerState)
+                TabRowIndicator(tabPositions = it, pagerState = pagerState)
             }
         )
         MediumSpacer()
@@ -396,13 +391,11 @@ fun DocumentToolbar(
         title = stringResource(id = documentType.titleId),
         onStartImageClickListener = onBackClickListener,
         startImageId = R.drawable.ic_arrow_back,
-        backgroundColor = psb1,
-        textColor = white,
         content = {
             Text(
                 text = stringResource(R.string.common_drop),
                 style = AppTheme.typography.body2,
-                color = psb6,
+                color = AppTheme.colors.mainColor,
                 modifier = Modifier.clickable(onClick = onDropClickListener)
             )
         }

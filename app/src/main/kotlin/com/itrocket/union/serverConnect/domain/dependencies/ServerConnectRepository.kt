@@ -1,5 +1,7 @@
 package com.itrocket.union.serverConnect.domain.dependencies
 
+import com.itrocket.union.serverConnect.domain.entity.ColorDomain
+import java.io.File
 import kotlinx.coroutines.flow.Flow
 
 
@@ -17,4 +19,10 @@ interface ServerConnectRepository {
     fun getReadyServerUrl(): String
 
     suspend fun clearAllSyncDataIfNeeded(newServerAddress: String, newPort: String)
+
+    suspend fun getStyleSettings(): ColorDomain
+
+    suspend fun getLogoFile(): File
+
+    suspend fun getHeaderFile(): File
 }

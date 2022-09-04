@@ -25,7 +25,6 @@ import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BottomSheetDivider
-import com.itrocket.union.ui.psb1
 import com.itrocket.union.ui.white
 
 @Composable
@@ -70,7 +69,7 @@ fun ChooseActionScreen(
                             onTypeClickListener(it)
                         },
                         modifier = Modifier.fillMaxWidth(),
-                        backgroundColor = psb1
+                        backgroundColor = AppTheme.colors.appBarBackgroundColor
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))

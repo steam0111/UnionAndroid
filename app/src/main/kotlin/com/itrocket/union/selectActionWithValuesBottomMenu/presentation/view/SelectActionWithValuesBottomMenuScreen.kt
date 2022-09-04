@@ -61,7 +61,7 @@ fun SelectActionWithValuesBottomMenuScreen(
                         text = stringResource(id = it.textId),
                         onClick = { onTypeClickListener(it) },
                         modifier = Modifier.fillMaxWidth(),
-                        backgroundColor = psb1
+                        backgroundColor = AppTheme.colors.appBarBackgroundColor
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))

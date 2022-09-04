@@ -108,14 +108,14 @@ fun AccountingObjectItem(
                     Text(
                         text = stringResource(R.string.common_barcode),
                         style = AppTheme.typography.caption,
-                        color = psb3,
+                        color = AppTheme.colors.secondaryColor,
                         modifier = Modifier.padding(end = 4.dp)
                     )
                     RadioButton(
                         selected = accountingObject.isBarcode,
                         onClick = null,
                         colors = RadioButtonDefaults.colors(
-                            selectedColor = psb3,
+                            selectedColor = AppTheme.colors.secondaryColor,
                             unselectedColor = graphite3
                         )
                     )
@@ -130,14 +130,14 @@ fun AccountingObjectItem(
                         Text(
                             text = stringResource(R.string.common_rfid),
                             style = AppTheme.typography.caption,
-                            color = psb3,
+                            color = AppTheme.colors.secondaryColor,
                             modifier = Modifier.padding(end = 4.dp)
                         )
                         RadioButton(
                             selected = accountingObject.isBarcode,
                             onClick = null,
                             colors = RadioButtonDefaults.colors(
-                                selectedColor = psb3,
+                                selectedColor = AppTheme.colors.secondaryColor,
                                 unselectedColor = graphite3
                             )
                         )
@@ -186,7 +186,7 @@ fun ReservesItem(
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             Text(
                 text = reserves.itemsCount.toString(),
-                color = psb1,
+                color = AppTheme.colors.mainTextColor,
                 style = AppTheme.typography.body2,
                 fontWeight = FontWeight.Medium
             )
@@ -234,7 +234,7 @@ fun InventoryDocumentItem(
 
             if (index < filteredDocumentInfo.lastIndex) {
                 append(" ")
-                withStyle(SpanStyle(color = psb6, fontWeight = FontWeight.ExtraBold)) {
+                withStyle(SpanStyle(color = AppTheme.colors.mainColor, fontWeight = FontWeight.ExtraBold)) {
                     append("|")
                 }
                 append(" ")
@@ -256,7 +256,7 @@ fun InventoryDocumentItem(
             verticalAlignment = Alignment.Top
         ) {
             Text(
-                color = psb1,
+                color = AppTheme.colors.mainTextColor,
                 text = annotatedTitle.first,
                 inlineContent = annotatedTitle.second,
                 style = AppTheme.typography.body1,
@@ -273,7 +273,7 @@ fun InventoryDocumentItem(
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = annotatedInfo, style = AppTheme.typography.body2, color = psb3)
+        Text(text = annotatedInfo, style = AppTheme.typography.body2, color = AppTheme.colors.secondaryColor)
         Spacer(modifier = Modifier.height(12.dp))
     }
 }
@@ -357,7 +357,7 @@ fun DocumentInfoItem(
             append(info.value)
             if (index < filteredParams.lastIndex) {
                 append(" ")
-                withStyle(SpanStyle(color = psb6, fontWeight = FontWeight.ExtraBold)) {
+                withStyle(SpanStyle(color = AppTheme.colors.mainColor, fontWeight = FontWeight.ExtraBold)) {
                     append("|")
                 }
                 append(" ")
@@ -383,7 +383,7 @@ fun DocumentInfoItem(
                 text = annotatedTitle,
                 inlineContent = numberContent,
                 style = AppTheme.typography.body1,
-                color = psb1,
+                color = AppTheme.colors.mainTextColor,
                 fontWeight = FontWeight.Bold,
                 lineHeight = 20.sp,
                 modifier = Modifier
@@ -397,7 +397,7 @@ fun DocumentInfoItem(
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = annotatedInfo, style = AppTheme.typography.body2, color = psb3)
+        Text(text = annotatedInfo, style = AppTheme.typography.body2, color = AppTheme.colors.secondaryColor)
         Spacer(modifier = Modifier.height(12.dp))
         if (isShowBottomLine) {
             Spacer(
@@ -437,7 +437,7 @@ fun DocumentDateItem(
                 DocumentDateType.OTHER -> item.dateUi
             },
             style = AppTheme.typography.subtitle1,
-            color = psb1,
+            color = AppTheme.colors.mainTextColor,
             fontWeight = FontWeight.Medium
         )
         Spacer(modifier = Modifier.width(6.dp))
@@ -489,7 +489,7 @@ fun DefaultListItem(
                             it.value.orEmpty()
                         ),
                         style = AppTheme.typography.body2,
-                        color = psb3
+                        color = AppTheme.colors.secondaryColor
                     )
                 }
             }
@@ -659,7 +659,7 @@ fun EmployeeItem(
                     item.number
                 ),
                 style = AppTheme.typography.subtitle1,
-                color = psb3
+                color = AppTheme.colors.secondaryColor
             )
         }
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
@@ -678,7 +678,7 @@ fun EmployeeItem(
                     selected = item.hasNfc,
                     onClick = null,
                     colors = RadioButtonDefaults.colors(
-                        selectedColor = psb6,
+                        selectedColor = AppTheme.colors.mainColor,
                         unselectedColor = graphite3
                     )
                 )
@@ -715,6 +715,6 @@ private fun HeaderText(text: String) {
         fontWeight = FontWeight.Bold,
         style = AppTheme.typography.h6,
         fontSize = 19.sp,
-        color = psb1
+        color = AppTheme.colors.mainTextColor
     )
 }

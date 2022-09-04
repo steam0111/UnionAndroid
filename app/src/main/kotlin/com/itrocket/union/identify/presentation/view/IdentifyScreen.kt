@@ -47,11 +47,9 @@ import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.DoubleTabRow
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.ReadingModeBottomBar
-import com.itrocket.union.ui.TabIndicatorBlack
+import com.itrocket.union.ui.TabRowIndicator
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.graphite4
-import com.itrocket.union.ui.psb1
-import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
 import com.itrocket.utils.getTargetPage
 import kotlinx.coroutines.CoroutineScope
@@ -157,7 +155,7 @@ private fun Content(
                 }
             },
             tabIndicator = {
-                TabIndicatorBlack(tabPositions = it, pagerState = pagerState)
+                TabRowIndicator(tabPositions = it, pagerState = pagerState)
             }
         )
         MediumSpacer()
@@ -176,13 +174,12 @@ private fun Toolbar(
         title = stringResource(id = R.string.identify_title),
         onStartImageClickListener = onBackClickListener,
         startImageId = R.drawable.ic_arrow_back,
-        backgroundColor = psb1,
-        textColor = white,
         content = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(id = android.R.drawable.ic_menu_delete),
                     contentDescription = null,
+                    colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
                     modifier = Modifier.clickableUnbounded(onClick = onDropClickListener)
                 )
             }

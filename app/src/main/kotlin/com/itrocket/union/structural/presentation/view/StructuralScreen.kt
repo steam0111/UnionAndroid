@@ -57,10 +57,7 @@ import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.RadioButtonField
 import com.itrocket.union.ui.brightGray
 import com.itrocket.union.ui.graphite2
-import com.itrocket.union.ui.psb1
-import com.itrocket.union.ui.psb3
 import com.itrocket.union.ui.psb4
-import com.itrocket.union.ui.psb6
 import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
 
@@ -82,14 +79,13 @@ fun StructuralScreen(
                     title = stringResource(id = R.string.manual_structural),
                     startImageId = R.drawable.ic_cross,
                     onStartImageClickListener = onCrossClickListener,
-                    backgroundColor = white,
-                    textColor = psb1,
                     content = {
                         if (state.isCanEdit) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Image(
                                     painter = painterResource(id = R.drawable.ic_accept),
                                     contentDescription = null,
+                                    colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
                                     modifier = Modifier.clickableUnbounded(onClick = onAcceptClickListener)
                                 )
                             }
@@ -137,6 +133,7 @@ private fun Content(
             onBackClickListener = onBackClickListener,
             isLevelHintShow = state.isLevelHintShow
         )
+        val mainColor = AppTheme.colors.mainColor
         EditText(
             modifier = Modifier
                 .fillMaxWidth()
@@ -145,12 +142,12 @@ private fun Content(
             hint = stringResource(id = R.string.structural_hint),
             textStyle = AppTheme.typography.body1,
             hintStyle = AppTheme.typography.body2,
-            hintColor = psb3,
+            hintColor = AppTheme.colors.secondaryColor,
             onTextChanged = onSearchTextChanged,
             focusRequester = focusRequest,
             onFocusChanged = {
                 underlineColor = if (it.hasFocus) {
-                    psb6
+                    mainColor
                 } else {
                     brightGray
                 }
@@ -197,7 +194,7 @@ private fun StructuralComponent(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(psb1)
+            .background(AppTheme.colors.appBarBackgroundColor)
             .padding(vertical = 12.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -233,7 +230,13 @@ private fun StructuralLevelComponent(
             }
         }
         if (isLevelHintShow) {
-            withStyle(SpanStyle(color = psb6, fontSize = 14.sp, fontWeight = FontWeight.Normal)) {
+            withStyle(
+                SpanStyle(
+                    color = AppTheme.colors.mainColor,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            ) {
                 append(stringResource(id = R.string.structural_select_structural))
             }
         }
@@ -251,7 +254,8 @@ private fun StructuralLevelComponent(
             Image(
                 painter = painterResource(R.drawable.ic_arrow_right_small),
                 contentDescription = null,
-                modifier = Modifier.padding(horizontal = 12.dp)
+                modifier = Modifier.padding(horizontal = 12.dp),
+                colorFilter = ColorFilter.tint(AppTheme.colors.mainColor)
             )
         }
         inlineContent[itemId] = textInlineContent
@@ -273,9 +277,9 @@ private fun ArrowBackButton(enabled: Boolean, onClick: () -> Unit) {
             .border(
                 width = 1.dp,
                 color = if (enabled) {
-                    psb6
+                    AppTheme.colors.mainColor
                 } else {
-                    psb3
+                    AppTheme.colors.secondaryColor
                 },
                 shape = RoundedCornerShape(8.dp)
             )
@@ -288,9 +292,9 @@ private fun ArrowBackButton(enabled: Boolean, onClick: () -> Unit) {
             contentDescription = null,
             colorFilter = ColorFilter.tint(
                 if (enabled) {
-                    psb6
+                    AppTheme.colors.mainColor
                 } else {
-                    psb3
+                    AppTheme.colors.secondaryColor
                 }
             )
         )

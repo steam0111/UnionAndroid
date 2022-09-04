@@ -160,7 +160,7 @@ fun RadioButtonField(
             Text(
                 text = label,
                 style = AppTheme.typography.body2,
-                color = psb1,
+                color = AppTheme.colors.mainTextColor,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(end = 40.dp)

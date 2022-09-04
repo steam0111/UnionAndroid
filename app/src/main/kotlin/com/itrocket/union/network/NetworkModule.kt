@@ -169,5 +169,9 @@ object NetworkModule {
             get<Retrofit>(AUTHORIZED_RETROFIT_QUALIFIER)
                 .create(ExtractMyUserInformationControllerApi::class.java)
         }
+        single<StyleControllerApi> {
+            get<Retrofit>(UNAUTHORIZED_RETROFIT_QUALIFIER)
+                .create(StyleControllerApi::class.java)
+        }
     }
 }

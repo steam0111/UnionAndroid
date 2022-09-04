@@ -50,13 +50,16 @@ import com.itrocket.union.token.TokenModule
 import com.itrocket.union.unionPermissions.UnionPermissionsModule
 import com.union.sdk.SyncModule
 import com.itrocket.union.changeScanData.ChangeScanDataModule
+import com.itrocket.union.theme.ThemeModule
 import com.itrocket.union.transit.TransitModule
+import com.itrocket.union.splash.SplashModule
 
 object Modules {
 
     val modules = listOf(
         ContainerModule.module,
         CoreModule.module,
+        ThemeModule.module,
         ProducerModule.module,
         ReadingModeModule.module,
         ReserveDetailModule.module,
@@ -113,6 +116,7 @@ object Modules {
         SelectActionWithValuesBottomMenuModule.module,
         IdentifyModule.module,
         ChangeScanDataModule.module,
-        TransitModule.module
+        TransitModule.module,
+        SplashModule.module
     )
 }

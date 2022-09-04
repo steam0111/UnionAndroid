@@ -9,6 +9,8 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.theme.domain.MediaInteractor
+import com.itrocket.union.theme.domain.entity.Medias
 import com.itrocket.union.utils.ifBlankOrNull
 
 class AuthMainStoreFactory(
@@ -17,6 +19,7 @@ class AuthMainStoreFactory(
     private val authMainInteractor: AuthMainInteractor,
     private val authMainArguments: AuthMainArguments,
     private val errorInteractor: ErrorInteractor,
+    private val mediaInteractor: MediaInteractor
 ) {
     fun create(): AuthMainStore =
         object : AuthMainStore,
@@ -42,6 +45,7 @@ class AuthMainStoreFactory(
             action: Unit,
             getState: () -> AuthMainStore.State
         ) {
+            dispatch(Result.MediaList(mediaInteractor.getMedias()))
             dispatch(Result.Enabled(authMainInteractor.validatePassword(getState().password)))
         }
 
@@ -92,6 +96,7 @@ class AuthMainStoreFactory(
         data class Password(val password: String) : Result()
         data class Enabled(val enabled: Boolean) : Result()
         data class PasswordVisible(val isPasswordVisible: Boolean) : Result()
+        data class MediaList(val medias: Medias) : Result()
     }
 
     private object ReducerImpl : Reducer<AuthMainStore.State, Result> {
@@ -101,6 +106,7 @@ class AuthMainStoreFactory(
                 is Result.Password -> copy(password = result.password)
                 is Result.PasswordVisible -> copy(isPasswordVisible = result.isPasswordVisible)
                 is Result.Enabled -> copy(enabled = result.enabled)
+                is Result.MediaList -> copy(medias = result.medias)
             }
     }
 }

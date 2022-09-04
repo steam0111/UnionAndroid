@@ -57,6 +57,7 @@ object AuthMainModule {
                 get(),
                 args.authMainComposeFragmentArgs,
                 get(),
+                get()
             ).create()
         }
         single(qualifier = ACCESS_TOKEN_PREFERENCE_KEY) {

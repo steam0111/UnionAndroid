@@ -27,9 +27,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,9 +52,6 @@ import com.itrocket.union.ui.OutlinedImageButton
 import com.itrocket.union.ui.RadioButtonField
 import com.itrocket.union.ui.brightGray
 import com.itrocket.union.ui.graphite2
-import com.itrocket.union.ui.psb1
-import com.itrocket.union.ui.psb3
-import com.itrocket.union.ui.psb6
 import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
 
@@ -76,13 +73,12 @@ fun SelectParamsScreen(
                     title = stringResource(id = R.string.filter_title),
                     startImageId = R.drawable.ic_cross,
                     onStartImageClickListener = onCrossClickListener,
-                    backgroundColor = psb1,
-                    textColor = white,
                     content = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_accept),
                                 contentDescription = null,
+                                colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
                                 modifier = Modifier.clickableUnbounded(onClick = onAcceptClickListener)
                             )
                         }
@@ -138,6 +134,7 @@ private fun Content(
                 .background(white)
                 .padding(vertical = 4.dp)
         ) {
+            val mainColor = AppTheme.colors.mainColor
             EditText(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -146,13 +143,13 @@ private fun Content(
                 textField = searchText,
                 hint = stringResource(currentParam.type.titleId),
                 hintStyle = AppTheme.typography.body1,
-                hintColor = psb3,
+                hintColor = AppTheme.colors.secondaryColor,
                 textStyle = AppTheme.typography.body1,
                 onTextChanged = onSearchTextChanged,
                 focusRequester = focusRequester,
                 onFocusChanged = {
                     underlineColor = if (it.hasFocus) {
-                        psb6
+                        mainColor
                     } else {
                         brightGray
                     }

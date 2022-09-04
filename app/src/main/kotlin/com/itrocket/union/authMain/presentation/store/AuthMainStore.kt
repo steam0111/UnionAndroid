@@ -5,6 +5,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.union.authMain.presentation.view.AuthMainComposeFragmentDirections
+import com.itrocket.union.theme.domain.entity.Medias
 
 interface AuthMainStore : Store<AuthMainStore.Intent, AuthMainStore.State, AuthMainStore.Label> {
 
@@ -21,7 +22,8 @@ interface AuthMainStore : Store<AuthMainStore.Intent, AuthMainStore.State, AuthM
         val login: String,
         val password: String,
         val enabled: Boolean = false,
-        val isPasswordVisible: Boolean = false
+        val isPasswordVisible: Boolean = false,
+        val medias: Medias? = null
     )
 
     sealed class Label {

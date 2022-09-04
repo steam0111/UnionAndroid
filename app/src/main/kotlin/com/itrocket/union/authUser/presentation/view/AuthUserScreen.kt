@@ -84,7 +84,8 @@ fun AuthUserScreen(
                         Text(text = stringResource(R.string.auth_active_directory))
                     }
                 }
-            )
+            ),
+            medias = state.medias
         )
     }
 }

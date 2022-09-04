@@ -47,7 +47,7 @@ fun BaseButton(
     modifier: Modifier,
     enabled: Boolean = true,
     isAllUppercase: Boolean = true,
-    backgroundColor: Color = psb6,
+    backgroundColor: Color = AppTheme.colors.mainColor,
     disabledBackgroundColor: Color = graphite2
 ) {
     Button(
@@ -80,9 +80,9 @@ fun OutlinedButton(
     onClick: () -> Unit,
     modifier: Modifier,
     textStyle: TextStyle = AppTheme.typography.body2,
-    textColor: Color = psb6,
+    textColor: Color = AppTheme.colors.mainColor,
     fontWeight: FontWeight = FontWeight.Medium,
-    outlineColor: Color = psb6
+    outlineColor: Color = AppTheme.colors.mainColor
 ) {
     Button(
         onClick = onClick,
@@ -108,7 +108,7 @@ fun ImageButton(
     onClick: () -> Unit,
     isEnabled: Boolean = true
 ) {
-    val backgroundColor = if (isEnabled) psb6 else graphite3
+    val backgroundColor = if (isEnabled) AppTheme.colors.mainColor else graphite3
 
     Image(
         painter = painterResource(id = imageId),
@@ -134,7 +134,7 @@ fun ButtonWithContent(
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = psb6,
+            backgroundColor = AppTheme.colors.mainColor,
             disabledBackgroundColor = graphite3
         ),
         shape = RoundedCornerShape(8.dp),
@@ -191,7 +191,7 @@ fun TextButton(
             } else {
                 text
             }, color = if (enabled) {
-                psb6
+                AppTheme.colors.mainColor
             } else {
                 psb4
             }, style = AppTheme.typography.body2
@@ -218,7 +218,7 @@ fun OutlinedImageButton(
             )
             .border(
                 width = 1.dp, color = if (enabled) {
-                    psb6
+                    AppTheme.colors.mainColor
                 } else {
                     timberWolf
                 }, shape = RoundedCornerShape(8.dp)
@@ -232,7 +232,7 @@ fun OutlinedImageButton(
             contentDescription = null,
             colorFilter = ColorFilter.tint(
                 if (enabled) {
-                    psb6
+                    AppTheme.colors.mainColor
                 } else {
                     white
                 }
@@ -247,7 +247,7 @@ fun ReadingModeButton(readingModeTab: ReadingModeTab, onClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .shadow(4.dp, RoundedCornerShape(8.dp))
-            .background(psb6, RoundedCornerShape(8.dp))
+            .background(AppTheme.colors.mainColor, RoundedCornerShape(8.dp))
             .padding(
                 start = 16.dp,
                 top = 4.dp,

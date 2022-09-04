@@ -50,9 +50,6 @@ import com.itrocket.union.ui.InventoryDocumentItem
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.graphite2
-import com.itrocket.union.ui.psb1
-import com.itrocket.union.ui.psb3
-import com.itrocket.union.ui.psb6
 import com.itrocket.union.ui.white
 
 @Composable
@@ -243,7 +240,7 @@ fun InventoryBottomBar(
             text = stringResource(R.string.common_save),
             onClick = onSaveClickListener,
             modifier = Modifier.weight(1f),
-            disabledBackgroundColor = psb3
+            disabledBackgroundColor = AppTheme.colors.secondaryColor
         )
         when (inventoryStatus) {
             InventoryStatus.CREATED -> {
@@ -279,13 +276,11 @@ private fun Toolbar(
         title = stringResource(id = R.string.inventory_ao_title),
         onStartImageClickListener = onBackClickListener,
         startImageId = R.drawable.ic_arrow_back,
-        backgroundColor = psb1,
-        textColor = white,
         content = {
             Text(
                 text = stringResource(R.string.common_drop),
                 style = AppTheme.typography.body2,
-                color = psb6,
+                color = AppTheme.colors.mainColor,
                 modifier = Modifier.clickable(
                     onClick = onDropClickListener,
                     enabled = inventoryStatus == InventoryStatus.CREATED
