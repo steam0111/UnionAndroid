@@ -39,7 +39,7 @@ fun EmployeeDetailSyncEntity.toEmployeeDetailDomain(): EmployeeDetailDomain {
         listInfo.add(ObjectInfoDomain(R.string.common_user_update, it))
     }
 
-    return EmployeeDetailDomain(id = employee.id, name = employee.fullName, listInfo = listInfo)
+    return EmployeeDetailDomain(id = employee.id, name = employee.fullName, listInfo = listInfo, nfc = employee.nfc)
 }
 
 fun String?.toEmployeeStatus() = EmployeeStatus.values().firstOrNull { it.slug == this }

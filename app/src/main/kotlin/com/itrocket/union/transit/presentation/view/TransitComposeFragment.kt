@@ -14,6 +14,8 @@ import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectCo
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.location.presentation.view.LocationComposeFragment
+import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
+import com.itrocket.union.nfcReader.presentation.view.NfcReaderComposeFragment
 import com.itrocket.union.reserves.presentation.store.ReservesResult
 import com.itrocket.union.reserves.presentation.view.ReservesComposeFragment
 import com.itrocket.union.selectCount.presentation.store.SelectCountResult
@@ -105,6 +107,17 @@ class TransitComposeFragment :
                     }
                 }
             ),
+            FragmentResult(
+                resultCode = NfcReaderComposeFragment.NFC_READER_RESULT_CODE,
+                resultLabel = NfcReaderComposeFragment.NFC_READER_RESULT_LABEL,
+                resultAction = {
+                    (it as NfcReaderResult?)?.let {
+                        accept(
+                            TransitStore.Intent.OnNfcReaderClose(it)
+                        )
+                    }
+                }
+            )
         )
 
     private val serviceEntryManager: ServiceEntryManager by inject()

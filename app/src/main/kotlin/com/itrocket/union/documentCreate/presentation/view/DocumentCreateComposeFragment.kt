@@ -1,7 +1,6 @@
 package com.itrocket.union.documentCreate.presentation.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -14,6 +13,8 @@ import com.itrocket.union.documentCreate.DocumentCreateModule.DOCUMENTCREATE_VIE
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.location.presentation.view.LocationComposeFragment
+import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
+import com.itrocket.union.nfcReader.presentation.view.NfcReaderComposeFragment
 import com.itrocket.union.reserves.presentation.store.ReservesResult
 import com.itrocket.union.reserves.presentation.view.ReservesComposeFragment
 import com.itrocket.union.selectCount.presentation.store.SelectCountResult
@@ -36,7 +37,7 @@ class DocumentCreateComposeFragment :
         DOCUMENTCREATE_VIEW_MODEL_QUALIFIER
     ) {
     override val navArgs by navArgs<DocumentCreateComposeFragmentArgs>()
-
+    
     override val fragmentResultList: List<FragmentResult>
         get() = listOf(
             FragmentResult(
@@ -101,6 +102,17 @@ class DocumentCreateComposeFragment :
                     (it as SelectCountResult?)?.let {
                         accept(
                             DocumentCreateStore.Intent.OnReserveCountSelected(it)
+                        )
+                    }
+                }
+            ),
+            FragmentResult(
+                resultCode = NfcReaderComposeFragment.NFC_READER_RESULT_CODE,
+                resultLabel = NfcReaderComposeFragment.NFC_READER_RESULT_LABEL,
+                resultAction = {
+                    (it as NfcReaderResult?)?.let {
+                        accept(
+                            DocumentCreateStore.Intent.OnNfcReaderClose(it)
                         )
                     }
                 }

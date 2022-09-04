@@ -106,7 +106,8 @@ fun EmployeeDetailScreenPreview() {
                         R.string.auth_main_title,
                         "таылватвлыавыалвыоалвыа"
                     )
-                )
+                ),
+                nfc = ""
             )
         ), AppInsets(topInset = previewTopInsetDp), {})
 }
