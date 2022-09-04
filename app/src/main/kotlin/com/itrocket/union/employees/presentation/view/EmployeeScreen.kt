@@ -14,7 +14,6 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
-import com.itrocket.union.employees.domain.entity.EmployeeStatus
 import com.itrocket.union.employees.presentation.store.EmployeeStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.EmployeeItem
@@ -109,7 +108,6 @@ fun EmployeeScreenPreview() {
                     number = "12345667890",
                     nfc = "dbdj",
                     post = "dfdf",
-                    employeeStatus = EmployeeStatus.MOL
                 ),
                 EmployeeDomain(
                     id = "2",
@@ -120,7 +118,6 @@ fun EmployeeScreenPreview() {
                     number = "0987654321",
                     nfc = null,
                     post = "dfdf",
-                    employeeStatus = EmployeeStatus.WITHOUT_ORGANIZATION
                 )
             )
         ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {})

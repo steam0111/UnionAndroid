@@ -149,7 +149,7 @@ fun AccountingObjectScreenPreview() {
                     id = "8",
                     isBarcode = true,
                     title = "Ширикоформатный жидкокристалический монитор Samsung2",
-                    status = ObjectStatus("available", ObjectStatusType.AVAILABLE),
+                    status = ObjectStatus("available"),
                     listMainInfo = listOf(
                         ObjectInfoDomain(
                             R.string.auth_main_title,

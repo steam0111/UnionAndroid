@@ -1,17 +1,15 @@
 package com.union.sdk
 
 import androidx.room.Room
-import com.example.union_sync_api.data.AccountingObjectStatusSyncApi
 import com.example.union_sync_api.data.AccountingObjectSyncApi
-import com.example.union_sync_api.data.ActionBaseSyncApi
 import com.example.union_sync_api.data.ActionRecordSyncApi
 import com.example.union_sync_api.data.ActionRemainsRecordSyncApi
 import com.example.union_sync_api.data.AllSyncApi
 import com.example.union_sync_api.data.CounterpartySyncApi
 import com.example.union_sync_api.data.DocumentSyncApi
 import com.example.union_sync_api.data.EmployeeSyncApi
+import com.example.union_sync_api.data.EnumsSyncApi
 import com.example.union_sync_api.data.EquipmentTypeSyncApi
-import com.example.union_sync_api.data.InventoryBaseSyncApi
 import com.example.union_sync_api.data.InventoryRecordSyncApi
 import com.example.union_sync_api.data.InventorySyncApi
 import com.example.union_sync_api.data.LocationSyncApi
@@ -25,17 +23,15 @@ import com.example.union_sync_api.data.ReserveSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
 import com.example.union_sync_api.data.TransitSyncApi
 import com.example.union_sync_impl.UnionDatabase
-import com.example.union_sync_impl.data.AccountingObjectStatusSyncApiImpl
 import com.example.union_sync_impl.data.AccountingObjectSyncApiImpl
-import com.example.union_sync_impl.data.ActionBaseSyncApiImpl
 import com.example.union_sync_impl.data.ActionRecordSyncApiImpl
 import com.example.union_sync_impl.data.ActionRemainsRecordSyncApiImpl
 import com.example.union_sync_impl.data.AllSyncImpl
 import com.example.union_sync_impl.data.CounterpartySyncApiImpl
 import com.example.union_sync_impl.data.DocumentSyncApiImpl
 import com.example.union_sync_impl.data.EmployeeSyncApiImpl
+import com.example.union_sync_impl.data.EnumsSyncApiImpl
 import com.example.union_sync_impl.data.EquipmentTypeSyncApiImpl
-import com.example.union_sync_impl.data.InventoryBaseSyncApiImpl
 import com.example.union_sync_impl.data.InventoryRecordSyncApiImpl
 import com.example.union_sync_impl.data.InventorySyncApiImpl
 import com.example.union_sync_impl.data.LocationSyncApiImpl
@@ -61,17 +57,13 @@ object SyncModule {
         factory<EmployeeSyncApi> {
             EmployeeSyncApiImpl(
                 employeeDao = get(),
-                structuralSyncApi = get()
+                structuralSyncApi = get(),
+                enumSyncApi = get()
             )
         }
         factory<ProducerSyncApi> {
             ProducerSyncApiImpl(
                 producerDao = get()
-            )
-        }
-        factory<ActionBaseSyncApi> {
-            ActionBaseSyncApiImpl(
-                actionBaseDao = get(),
             )
         }
         factory<AccountingObjectSyncApi> {
@@ -134,11 +126,6 @@ object SyncModule {
                 receptionItemCategoryDao = get()
             )
         }
-        factory<InventoryBaseSyncApi> {
-            InventoryBaseSyncApiImpl(
-                dao = get()
-            )
-        }
         factory<OrderSyncApi> {
             OrderSyncApiImpl(
                 orderDao = get()
@@ -147,8 +134,8 @@ object SyncModule {
         factory<NomenclatureSyncApi> {
             NomenclatureSyncApiImpl(nomenclatureDao = get())
         }
-        factory<AccountingObjectStatusSyncApi> {
-            AccountingObjectStatusSyncApiImpl(dao = get())
+        factory<EnumsSyncApi> {
+            EnumsSyncApiImpl(dao = get())
         }
         factory<InventoryRecordSyncApi> {
             InventoryRecordSyncApiImpl(inventoryRecordDao = get())
@@ -213,9 +200,6 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
-                get(),
-                get(),
-                get()
             )
         }
         factory {
@@ -258,9 +242,6 @@ object SyncModule {
             get<UnionDatabase>().providerDao()
         }
         factory {
-            get<UnionDatabase>().statusDao()
-        }
-        factory {
             get<UnionDatabase>().reserveDao()
         }
         factory {
@@ -279,19 +260,10 @@ object SyncModule {
             get<UnionDatabase>().inventoryRecordDao()
         }
         factory {
-            get<UnionDatabase>().actionBaseDao()
-        }
-        factory {
             get<UnionDatabase>().structuralDao()
         }
         factory {
             get<UnionDatabase>().structuralPathDao()
-        }
-        factory {
-            get<UnionDatabase>().accountingObjectCategoryDao()
-        }
-        factory {
-            get<UnionDatabase>().inventoryBaseDao()
         }
         factory {
             get<UnionDatabase>().transitDao()
@@ -301,6 +273,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().transitRemainsRecordDao()
+        }
+        factory {
+            get<UnionDatabase>().enumsDao()
         }
         factory<ManageSyncDataApi> {
             ManageSyncDataImpl(

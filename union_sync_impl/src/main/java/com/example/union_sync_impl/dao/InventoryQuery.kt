@@ -18,8 +18,9 @@ fun sqlInventoryQuery(
     } else {
         "SELECT inventories.*," +
                 "" +
-                "inventory_base.id AS inventory_base_id, " +
-                "inventory_base.name AS inventory_base_name, " +
+                "enums.id AS inventory_base_id, " +
+                "enums.name AS inventory_base_name, " +
+                "enums.enumType AS inventory_base_enumType, " +
                 "" +
                 "structural.id AS structural_id, " +
                 "structural.catalogItemName AS structural_catalogItemName, " +
@@ -36,7 +37,7 @@ fun sqlInventoryQuery(
                 "" +
                 "FROM inventories " +
                 "LEFT JOIN employees ON inventories.employeeId = employees.id " +
-                "LEFT JOIN inventory_base ON inventories.inventoryBaseId = inventory_base.id " +
+                "LEFT JOIN enums ON inventories.inventoryBaseId = enums.id " +
                 "LEFT JOIN structural ON inventories.structuralId = structural.id "
     }
 

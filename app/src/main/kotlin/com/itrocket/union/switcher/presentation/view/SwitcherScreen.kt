@@ -60,7 +60,7 @@ fun SwitcherScreen(
     val pagerState = rememberPagerState(state.selectedPage)
     val tabs = state.switcherData.values.map {
         BaseTab(
-            title = stringResource(it.textId),
+            title = it.text ?: it.textId?.let { stringResource(it) }.orEmpty(),
             screen = {
 
             }
@@ -162,7 +162,10 @@ fun SwitcherScreenPreview() {
         SwitcherStore.State(
             switcherData = SwitcherDomain(
                 titleId = R.string.switcher_accounting_object_status,
-                values = listOf(InventoryAccountingObjectStatus.NOT_FOUND, InventoryAccountingObjectStatus.FOUND),
+                values = listOf(
+                    InventoryAccountingObjectStatus.NOT_FOUND,
+                    InventoryAccountingObjectStatus.FOUND
+                ),
                 currentValue = InventoryAccountingObjectStatus.FOUND,
                 entityId = "123"
             ),

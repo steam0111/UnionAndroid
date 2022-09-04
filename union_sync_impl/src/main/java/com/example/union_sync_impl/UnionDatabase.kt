@@ -3,17 +3,14 @@ package com.example.union_sync_impl
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.union_sync_impl.dao.AccountingObjectCategoryDao
 import com.example.union_sync_impl.dao.AccountingObjectDao
-import com.example.union_sync_impl.dao.AccountingObjectStatusDao
-import com.example.union_sync_impl.dao.ActionBaseDao
 import com.example.union_sync_impl.dao.ActionRecordDao
 import com.example.union_sync_impl.dao.ActionRemainsRecordDao
 import com.example.union_sync_impl.dao.CounterpartyDao
 import com.example.union_sync_impl.dao.DocumentDao
 import com.example.union_sync_impl.dao.EmployeeDao
+import com.example.union_sync_impl.dao.EnumsDao
 import com.example.union_sync_impl.dao.EquipmentTypeDao
-import com.example.union_sync_impl.dao.InventoryBaseDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.InventoryRecordDao
 import com.example.union_sync_impl.dao.LocationDao
@@ -28,20 +25,17 @@ import com.example.union_sync_impl.dao.ReceptionItemCategoryDao
 import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_impl.dao.StructuralDao
 import com.example.union_sync_impl.dao.StructuralPathDao
-import com.example.union_sync_impl.entity.AccountingObjectCategoryDb
 import com.example.union_sync_impl.dao.TransitAccountingObjectRecordDao
 import com.example.union_sync_impl.dao.TransitDao
 import com.example.union_sync_impl.dao.TransitRemainsRecordDao
 import com.example.union_sync_impl.entity.AccountingObjectDb
-import com.example.union_sync_impl.entity.AccountingObjectStatusDb
-import com.example.union_sync_impl.entity.ActionBaseDb
 import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
 import com.example.union_sync_impl.entity.CounterpartyDb
 import com.example.union_sync_impl.entity.DocumentDb
 import com.example.union_sync_impl.entity.EmployeeDb
+import com.example.union_sync_impl.entity.EnumDb
 import com.example.union_sync_impl.entity.EquipmentTypesDb
-import com.example.union_sync_impl.entity.InventoryBaseDb
 import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.entity.InventoryRecordDb
 import com.example.union_sync_impl.entity.NetworkSyncDb
@@ -78,22 +72,19 @@ import com.example.union_sync_impl.utils.Converters
         LocationTypeDb::class,
         DocumentDb::class,
         ProviderDb::class,
-        AccountingObjectStatusDb::class,
         ReceptionItemCategoryDb::class,
         OrderDb::class,
         ReserveDb::class,
         ActionRecordDb::class,
         ActionRemainsRecordDb::class,
         InventoryRecordDb::class,
-        ActionBaseDb::class,
         StructuralPathDb::class,
         StructuralDb::class,
-        AccountingObjectCategoryDb::class,
-        InventoryBaseDb::class,
         TransitDb::class,
         TransitAccountingObjectRecordDb::class,
-        TransitRemainsRecordDb::class
-    ], version = 97
+        TransitRemainsRecordDb::class,
+        EnumDb::class
+    ], version = 100
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {
@@ -110,19 +101,16 @@ abstract class UnionDatabase : RoomDatabase() {
     abstract fun equipmentTypeDao(): EquipmentTypeDao
     abstract fun documentDao(): DocumentDao
     abstract fun providerDao(): ProviderDao
-    abstract fun statusDao(): AccountingObjectStatusDao
     abstract fun receptionItemCategoryDao(): ReceptionItemCategoryDao
     abstract fun orderDao(): OrderDao
     abstract fun reserveDao(): ReserveDao
     abstract fun actionRecordDao(): ActionRecordDao
     abstract fun actionRemainsRecordDao(): ActionRemainsRecordDao
     abstract fun inventoryRecordDao(): InventoryRecordDao
-    abstract fun actionBaseDao(): ActionBaseDao
     abstract fun structuralDao(): StructuralDao
     abstract fun structuralPathDao(): StructuralPathDao
-    abstract fun accountingObjectCategoryDao() : AccountingObjectCategoryDao
-    abstract fun inventoryBaseDao(): InventoryBaseDao
     abstract fun transitDao(): TransitDao
     abstract fun transitAccountingObjectRecordDao(): TransitAccountingObjectRecordDao
     abstract fun transitRemainsRecordDao(): TransitRemainsRecordDao
+    abstract fun enumsDao(): EnumsDao
 }

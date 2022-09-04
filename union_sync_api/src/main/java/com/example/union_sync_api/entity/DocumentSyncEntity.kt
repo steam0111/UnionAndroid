@@ -17,7 +17,7 @@ data class DocumentSyncEntity(
     val reserves: List<ReserveSyncEntity>,
     val locationFrom: List<LocationSyncEntity>? = null,
     val locationTo: List<LocationSyncEntity>? = null,
-    val actionBase: ActionBaseSyncEntity? = null,
+    val actionBase: EnumSyncEntity? = null,
     val code: String?,
     val userInserted: String?,
     val userUpdated: String?

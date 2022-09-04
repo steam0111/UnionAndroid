@@ -37,8 +37,10 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.itrocket.union.App
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectStatus
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
@@ -50,7 +52,6 @@ import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
-import com.itrocket.union.employees.domain.entity.EmployeeStatus
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
@@ -120,7 +121,7 @@ fun AccountingObjectItem(
                         )
                     )
                 }
-                if (accountingObject.status?.type == ObjectStatusType.AVAILABLE && isShowScanInfo) {
+                if (accountingObject.status?.type?.type == AccountingObjectStatus.AVAILABLE.name && isShowScanInfo) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -234,7 +235,12 @@ fun InventoryDocumentItem(
 
             if (index < filteredDocumentInfo.lastIndex) {
                 append(" ")
-                withStyle(SpanStyle(color = AppTheme.colors.mainColor, fontWeight = FontWeight.ExtraBold)) {
+                withStyle(
+                    SpanStyle(
+                        color = AppTheme.colors.mainColor,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                ) {
                     append("|")
                 }
                 append(" ")
@@ -273,7 +279,11 @@ fun InventoryDocumentItem(
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = annotatedInfo, style = AppTheme.typography.body2, color = AppTheme.colors.secondaryColor)
+        Text(
+            text = annotatedInfo,
+            style = AppTheme.typography.body2,
+            color = AppTheme.colors.secondaryColor
+        )
         Spacer(modifier = Modifier.height(12.dp))
     }
 }
@@ -357,7 +367,12 @@ fun DocumentInfoItem(
             append(info.value)
             if (index < filteredParams.lastIndex) {
                 append(" ")
-                withStyle(SpanStyle(color = AppTheme.colors.mainColor, fontWeight = FontWeight.ExtraBold)) {
+                withStyle(
+                    SpanStyle(
+                        color = AppTheme.colors.mainColor,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                ) {
                     append("|")
                 }
                 append(" ")
@@ -397,7 +412,11 @@ fun DocumentInfoItem(
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = annotatedInfo, style = AppTheme.typography.body2, color = AppTheme.colors.secondaryColor)
+        Text(
+            text = annotatedInfo,
+            style = AppTheme.typography.body2,
+            color = AppTheme.colors.secondaryColor
+        )
         Spacer(modifier = Modifier.height(12.dp))
         if (isShowBottomLine) {
             Spacer(
@@ -569,7 +588,7 @@ fun AccountingObjectItemPreview() {
             id = "1",
             isBarcode = true,
             title = "Ширикоформатный жидкокристалический монитор Samsung",
-            status = ObjectStatus("available", ObjectStatusType.REVIEW),
+            status = ObjectStatus("available"),
             listMainInfo = listOf(
                 ObjectInfoDomain(
                     R.string.auth_main_title,
@@ -594,7 +613,12 @@ fun AccountingObjectItemPreview() {
             rfidValue = "",
             factoryNumber = ""
         ), onAccountingObjectListener = {}, isShowBottomLine = true,
-        status = ObjectStatusType.REVIEW
+        status = ObjectStatusType(
+            "",
+            AppTheme.colors.secondaryColor,
+            AppTheme.colors.secondaryColor,
+            ""
+        )
     )
 }
 
@@ -703,7 +727,6 @@ fun EmployeeItemPreview() {
             lastname = "У",
             patronymic = "Бин",
             post = "bb",
-            employeeStatus = EmployeeStatus.MOL
         ), onEmployeeClickListener = {}, isShowBottomLine = true
     )
 }

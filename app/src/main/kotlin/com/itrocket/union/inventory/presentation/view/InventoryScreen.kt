@@ -308,7 +308,7 @@ fun InventoryScreenPreview() {
                     id = "1",
                     isBarcode = true,
                     title = "Ширикоформатный жидкокристалический монитор Samsung",
-                    status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
+                    status = ObjectStatus("AVAILABLE"),
                     listMainInfo = listOf(
                         ObjectInfoDomain(
                             R.string.auth_main_title,
@@ -345,7 +345,7 @@ fun InventoryScreenPreview() {
                     id = "2",
                     isBarcode = true,
                     title = "Ширикоформатный жидкокристалический монитор Samsung",
-                    status = ObjectStatus("AVAILABLE", ObjectStatusType.DECOMMISSIONED),
+                    status = ObjectStatus("AVAILABLE"),
                     listMainInfo = listOf(
                         ObjectInfoDomain(
                             R.string.auth_main_title,
@@ -364,7 +364,7 @@ fun InventoryScreenPreview() {
                     id = "3",
                     isBarcode = true,
                     title = "Ширикоформатный жидкокристалический монитор Samsung",
-                    status = ObjectStatus("AVAILABLE", ObjectStatusType.REPAIR),
+                    status = ObjectStatus("AVAILABLE"),
                     listMainInfo = listOf(
                         ObjectInfoDomain(
                             R.string.auth_main_title,

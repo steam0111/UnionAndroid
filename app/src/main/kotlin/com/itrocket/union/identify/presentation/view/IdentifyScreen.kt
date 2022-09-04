@@ -262,7 +262,7 @@ fun IdentifyScreenPreview() {
                     id = "1",
                     isBarcode = true,
                     title = "Ширикоформатный жидкокристалический монитор Samsung",
-                    status = ObjectStatus("Доступен", ObjectStatusType.AVAILABLE),
+                    status = ObjectStatus("Доступен"),
                     listMainInfo = listOf(
                         ObjectInfoDomain(
                             R.string.auth_main_title,
@@ -299,7 +299,7 @@ fun IdentifyScreenPreview() {
                     id = "2",
                     isBarcode = true,
                     title = "Ширикоформатный жидкокристалический монитор Samsung",
-                    status = ObjectStatus("Доступен", ObjectStatusType.DECOMMISSIONED),
+                    status = ObjectStatus("Доступен"),
                     listMainInfo = listOf(
                         ObjectInfoDomain(
                             R.string.auth_main_title,
@@ -318,7 +318,7 @@ fun IdentifyScreenPreview() {
                     id = "3",
                     isBarcode = true,
                     title = "Ширикоформатный жидкокристалический монитор Samsung",
-                    status = ObjectStatus("Доступен", ObjectStatusType.REPAIR),
+                    status = ObjectStatus("Доступен"),
                     listMainInfo = listOf(
                         ObjectInfoDomain(
                             R.string.auth_main_title,

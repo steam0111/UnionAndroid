@@ -1,14 +1,15 @@
 package com.itrocket.union.accountingObjects.data
 
-import com.example.union_sync_api.data.AccountingObjectStatusSyncApi
 import com.example.union_sync_api.data.AccountingObjectSyncApi
+import com.example.union_sync_api.data.EnumsSyncApi
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
+import com.example.union_sync_api.entity.EnumType
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.data.mapper.map
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
+import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectStatus
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getEquipmentTypeId
@@ -23,7 +24,7 @@ import kotlinx.coroutines.withContext
 class AccountingObjectRepositoryImpl(
     private val coreDispatchers: CoreDispatchers,
     private val syncApi: AccountingObjectSyncApi,
-    private val statusesSyncApi: AccountingObjectStatusSyncApi
+    private val enumsSyncApi: EnumsSyncApi
 ) : AccountingObjectRepository {
 
     override suspend fun getAccountingObjects(
@@ -92,8 +93,11 @@ class AccountingObjectRepositoryImpl(
 
     override suspend fun getAvailableStatus(): ParamDomain {
         return withContext(coreDispatchers.io) {
-            statusesSyncApi.getStatuses(id = ObjectStatusType.AVAILABLE.name)
-                .map { it.toParam() }
+            enumsSyncApi.getAllByType(
+                id = AccountingObjectStatus.AVAILABLE.name,
+                enumType = EnumType.ACCOUNTING_OBJECT_STATUS
+            )
+                .map { it.toParam(ManualType.STATUS) }
                 .firstOrNull() ?: ParamDomain(type = ManualType.STATUS, value = "")
         }
     }

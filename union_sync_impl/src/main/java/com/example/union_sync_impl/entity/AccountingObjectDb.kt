@@ -53,7 +53,7 @@ class AccountingObjectDb(
     val rfidValue: String?,
     val factoryNumber: String?,
     val inventoryNumber: String?,
-    val status: AccountingObjectStatusDb?,
+    val status: EnumDb?,
     val statusId: String?,
     val equipmentTypeId: String?,
     val actualPrice: String?,

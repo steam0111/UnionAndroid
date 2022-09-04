@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.sync
 
+import com.example.union_sync_api.entity.EnumType
 import com.example.union_sync_impl.dao.*
 import com.example.union_sync_impl.data.mapper.*
 import com.example.union_sync_impl.data.mapper.toActionRecordDb
@@ -20,7 +21,6 @@ class SyncRepository(
     private val locationDao: LocationDao,
     private val locationPathDao: LocationPathDao,
     private val providerDao: ProviderDao,
-    private val statusesDao: AccountingObjectStatusDao,
     private val producerDao: ProducerDao,
     private val equipmentTypeDao: EquipmentTypeDao,
     private val counterpartyDao: CounterpartyDao,
@@ -32,15 +32,13 @@ class SyncRepository(
     private val actionRecordDao: ActionRecordDao,
     private val actionRemainsRecordDao: ActionRemainsRecordDao,
     private val inventoryRecordDao: InventoryRecordDao,
-    private val actionBaseDao: ActionBaseDao,
     private val syncDao: NetworkSyncDao,
     private val structuralDao: StructuralDao,
     private val structuralPathDao: StructuralPathDao,
-    private val accountingObjectCategoryDao: AccountingObjectCategoryDao,
-    private val inventoryBaseDao: InventoryBaseDao,
     private val transitDao: TransitDao,
     private val transitRemainsRecordDao: TransitRemainsRecordDao,
-    private val transitAccountingObjectRecordDao: TransitAccountingObjectRecordDao
+    private val transitAccountingObjectRecordDao: TransitAccountingObjectRecordDao,
+    private val enumsDao: EnumsDao
 ) {
     suspend fun clearDataBeforeDownload() {
         inventoryDao.clearAll()
@@ -250,6 +248,46 @@ class SyncRepository(
             moshi,
             ::transitRecordDbSaver,
             getTransitRecordAccountingObjectDbCollector()
+        ),
+        AccountingObjectStatusSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::accountingObjectStatusDbSaver
+        ),
+        ActionStatusSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::actionStatusDbSaver
+        ),
+        ActionTypeSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::actionTypeDbSaver
+        ),
+        EmployeeStatusSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::employeeStatusDbSaver
+        ),
+        EntityModelTypeSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::entityModelTypeDbSaver
+        ),
+        InventoryRecordStatusSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::inventoryRecordStatusDbSaver
+        ),
+        InventoryStateSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::inventoryStateDbSaver
+        ),
+        InventoryTypeSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::inventoryTypeDbSaver
         ),
     ).associateBy {
         it.id to it.table
@@ -480,10 +518,14 @@ class SyncRepository(
         nomenclatureDao.insertAll(objects.mapNotNull { it.extendedNomenclature?.toNomenclatureDb() })
         locationDao.insertAll(objects.mapNotNull { it.extendedLocation?.toLocationDb() })
         providerDao.insertAll(objects.mapNotNull { it.extendedProvider?.toProviderDb() })
-        statusesDao.insertAll(objects.mapNotNull { it.extendedAccountingObjectStatus?.toStatusDb() })
+        enumsDao.insertAll(objects.mapNotNull { it.extendedAccountingObjectStatus?.toEnumDb(EnumType.ACCOUNTING_OBJECT_STATUS) })
         structuralDao.insertAll(objects.mapNotNull { it.extendedStructuralUnit?.toStructuralDb() })
         accountingObjectsDao.insertAll(objects.map { it.toAccountingObjectDb() })
-        accountingObjectCategoryDao.insertAll(objects.mapNotNull { it.extendedAccountingObjectCategory?.toAccountingObjectCategoryDb() })
+        enumsDao.insertAll(objects.mapNotNull {
+            it.extendedAccountingObjectCategory?.toEnumDb(
+                EnumType.ACCOUNTING_CATEGORY
+            )
+        })
     }
 
     private suspend fun locationsDbSaver(objects: List<LocationDtoV2>) {
@@ -561,11 +603,11 @@ class SyncRepository(
     }
 
     private suspend fun accountingObjectCategoryDbSaver(objects: List<EnumDtoV2>) {
-        accountingObjectCategoryDao.insertAll(objects.map { it.toAccountingObjectCategoryDb() })
+        enumsDao.insertAll(objects.map { it.toEnumDb(EnumType.ACCOUNTING_CATEGORY) })
     }
 
     private suspend fun inventoryBaseDbSaver(objects: List<EnumDtoV2>) {
-        inventoryBaseDao.insertAll(objects.map { it.toInventoryBaseDb() })
+        enumsDao.insertAll(objects.map { it.toEnumDb(EnumType.INVENTORY_BASE) })
     }
 
     private suspend fun inventoryDbSaver(objects: List<InventoryDtoV2>) {
@@ -576,7 +618,7 @@ class SyncRepository(
 
         locationDao.insertAll(objects.mapNotNull { it.extendedLocation?.toLocationDb() })
         inventoryDao.insertAll(objects.map { it.toInventoryDb() })
-        inventoryBaseDao.insertAll(objects.mapNotNull { it.extendedInventoryBase?.toInventoryBaseDb() })
+        enumsDao.insertAll(objects.mapNotNull { it.extendedInventoryBase?.toEnumDb(EnumType.INVENTORY_BASE) })
     }
 
     private suspend fun documentDbSaver(objects: List<ActionDtoV2>) {
@@ -586,8 +628,8 @@ class SyncRepository(
         )
         documentDao.insertAll(objects.map { it.toDocumentDb() })
 
-        actionBaseDao.insertAll(
-            objects.mapNotNull { it.extendedActionBase?.toActionBaseDb() }
+        enumsDao.insertAll(
+            objects.mapNotNull { it.extendedActionBase?.toEnumDb(EnumType.ACTION_BASE) }
         )
     }
 
@@ -631,7 +673,39 @@ class SyncRepository(
     }
 
     private suspend fun actionBasesDbSaver(objects: List<EnumDtoV2>) {
-        actionBaseDao.insertAll(objects.map { it.toActionBaseDb() })
+        enumsDao.insertAll(objects.map { it.toEnumDb(EnumType.ACTION_BASE) })
+    }
+
+    private suspend fun accountingObjectStatusDbSaver(objects: List<EnumDtoV2>) {
+        enumsDao.insertAll(objects.map { it.toEnumDb(EnumType.ACCOUNTING_OBJECT_STATUS) })
+    }
+
+    private suspend fun actionStatusDbSaver(objects: List<EnumDtoV2>) {
+        enumsDao.insertAll(objects.map { it.toEnumDb(EnumType.ACTION_STATUS) })
+    }
+
+    private suspend fun actionTypeDbSaver(objects: List<EnumDtoV2>) {
+        enumsDao.insertAll(objects.map { it.toEnumDb(EnumType.ACTION_TYPE) })
+    }
+
+    private suspend fun employeeStatusDbSaver(objects: List<EnumDtoV2>) {
+        enumsDao.insertAll(objects.map { it.toEnumDb(EnumType.EMPLOYEE_STATUS) })
+    }
+
+    private suspend fun entityModelTypeDbSaver(objects: List<EnumDtoV2>) {
+        enumsDao.insertAll(objects.map { it.toEnumDb(EnumType.ENTITY_MODEL_TYPE) })
+    }
+
+    private suspend fun inventoryRecordStatusDbSaver(objects: List<EnumDtoV2>) {
+        enumsDao.insertAll(objects.map { it.toEnumDb(EnumType.INVENTORY_RECORD_STATUS) })
+    }
+
+    private suspend fun inventoryStateDbSaver(objects: List<EnumDtoV2>) {
+        enumsDao.insertAll(objects.map { it.toEnumDb(EnumType.INVENTORY_STATE) })
+    }
+
+    private suspend fun inventoryTypeDbSaver(objects: List<EnumDtoV2>) {
+        enumsDao.insertAll(objects.map { it.toEnumDb(EnumType.INVENTORY_TYPE) })
     }
 
     private suspend fun locationPathDbSaver(objects: List<LocationPathDto>) {

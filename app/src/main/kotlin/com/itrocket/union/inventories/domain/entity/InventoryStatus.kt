@@ -13,7 +13,8 @@ import com.itrocket.union.ui.white
 enum class InventoryStatus(
     override val backgroundColor: Color,
     @StringRes override val textId: Int,
-    override val textColor: Color
+    override val textColor: Color,
+    override val text: String? = null
 ) : Status {
     CREATED(
         textId = R.string.inventory_created,

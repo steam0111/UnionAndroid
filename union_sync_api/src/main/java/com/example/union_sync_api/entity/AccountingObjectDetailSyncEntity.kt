@@ -9,6 +9,6 @@ data class AccountingObjectDetailSyncEntity(
     val equipmentType: EquipmentTypeSyncEntity?,
     val provider: ProviderSyncEntity?,
     val structuralSyncEntities: List<StructuralSyncEntity>?,
-    val categorySyncEntity: AccountingObjectCategorySyncEntity?,
+    val categorySyncEntity: EnumSyncEntity?,
     val balanceUnitSyncEntities: List<StructuralSyncEntity>?
 )

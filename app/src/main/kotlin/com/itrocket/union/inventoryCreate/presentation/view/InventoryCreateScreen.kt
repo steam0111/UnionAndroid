@@ -319,7 +319,7 @@ fun InventoryCreateScreenPreview() {
                     id = "7",
                     isBarcode = true,
                     title = "Ширикоформатный жидкокристалический монитор Samsung2",
-                    status = ObjectStatus("Доступен", ObjectStatusType.AVAILABLE),
+                    status = ObjectStatus("Доступен"),
                     listMainInfo = listOf(
                         ObjectInfoDomain(
                             R.string.auth_main_title,
@@ -339,7 +339,7 @@ fun InventoryCreateScreenPreview() {
                     id = "8",
                     isBarcode = true,
                     title = "Ширикоформатный жидкокристалический монитор Samsung2",
-                    status = ObjectStatus("Доступен", ObjectStatusType.AVAILABLE),
+                    status = ObjectStatus("Доступен"),
                     listMainInfo = listOf(
                         ObjectInfoDomain(
                             R.string.auth_main_title,

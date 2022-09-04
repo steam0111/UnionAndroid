@@ -3,8 +3,9 @@ package com.example.union_sync_impl.entity
 import androidx.room.Entity
 import com.example.union_sync_impl.entity.core.SyncItemDb
 
-@Entity(tableName = "action_base")
-class ActionBaseDb(
+@Entity(tableName = "enums")
+class EnumDb(
     id: String,
-    val name: String
+    val name: String,
+    val enumType: String
 ) : SyncItemDb(id)

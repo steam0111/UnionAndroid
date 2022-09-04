@@ -82,7 +82,7 @@ fun InventoryDb.toInventorySyncEntity(
     mol: EmployeeSyncEntity?,
     locationSyncEntities: List<LocationSyncEntity>?,
     accountingObjects: List<AccountingObjectSyncEntity>,
-    inventoryBaseSyncEntity: InventoryBaseSyncEntity?,
+    inventoryBaseSyncEntity: EnumSyncEntity?,
     balanceUnit: List<StructuralSyncEntity>
 ): InventorySyncEntity {
     return InventorySyncEntity(

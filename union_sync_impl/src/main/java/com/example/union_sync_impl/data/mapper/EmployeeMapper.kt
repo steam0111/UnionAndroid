@@ -2,9 +2,11 @@ package com.example.union_sync_impl.data.mapper
 
 import com.example.union_sync_api.entity.EmployeeDetailSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
+import com.example.union_sync_api.entity.EnumSyncEntity
 import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.entity.EmployeeDb
 import com.example.union_sync_impl.entity.FullEmployeeDb
+import com.example.union_sync_impl.sync.EmployeeStatusSyncEntity
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import org.openapitools.client.models.CustomEmployeeDto
 import org.openapitools.client.models.EmployeeDtoV2
@@ -47,9 +49,14 @@ fun EmployeeDb.toSyncEntity(): EmployeeSyncEntity {
     )
 }
 
-fun FullEmployeeDb.toDetailSyncEntity(balanceUnits: List<StructuralSyncEntity>?, structurals: List<StructuralSyncEntity>?) =
+fun FullEmployeeDb.toDetailSyncEntity(
+    balanceUnits: List<StructuralSyncEntity>?,
+    structurals: List<StructuralSyncEntity>?,
+    employeeStatusSyncEntity: EnumSyncEntity?
+) =
     EmployeeDetailSyncEntity(
         employeeDb.toSyncEntity(),
         structurals,
-        balanceUnits
+        balanceUnits,
+        employeeStatusSyncEntity
     )
