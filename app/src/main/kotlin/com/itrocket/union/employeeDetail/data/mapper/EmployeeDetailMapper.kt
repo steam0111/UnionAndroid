@@ -4,7 +4,6 @@ import com.example.union_sync_api.entity.EmployeeDetailSyncEntity
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjectDetail.domain.entity.EmployeeDetailDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
-import com.itrocket.union.employees.domain.entity.EmployeeStatus
 import com.itrocket.union.utils.getStringDateFromMillis
 
 fun EmployeeDetailSyncEntity.toEmployeeDetailDomain(): EmployeeDetailDomain {
@@ -13,11 +12,15 @@ fun EmployeeDetailSyncEntity.toEmployeeDetailDomain(): EmployeeDetailDomain {
     listInfo.add(ObjectInfoDomain(R.string.employees_firstname, employee.firstname))
     listInfo.add(ObjectInfoDomain(R.string.employees_patronymic, employee.patronymic))
     listInfo.add(ObjectInfoDomain(R.string.employees_number, employee.number))
-    employee.statusId?.toEmployeeStatus()?.let {
-        listInfo.add(ObjectInfoDomain(R.string.employees_status, valueRes = it.titleId))
+    employeeStatusSyncEntity?.let {
+        listInfo.add(ObjectInfoDomain(R.string.employees_status, value = it.name))
     }
     structuralSyncEntities?.let {
-        listInfo.add(ObjectInfoDomain(R.string.manual_structural, it.joinToString(", ") { it.name }))
+        listInfo.add(
+            ObjectInfoDomain(
+                R.string.manual_structural,
+                it.joinToString(", ") { it.name })
+        )
     }
     balanceUnitSyncEntities?.let {
         listInfo.add(ObjectInfoDomain(R.string.balance_unit, it.joinToString(", ") { it.name }))
@@ -41,5 +44,3 @@ fun EmployeeDetailSyncEntity.toEmployeeDetailDomain(): EmployeeDetailDomain {
 
     return EmployeeDetailDomain(id = employee.id, name = employee.fullName, listInfo = listInfo, nfc = employee.nfc)
 }
-
-fun String?.toEmployeeStatus() = EmployeeStatus.values().firstOrNull { it.slug == this }

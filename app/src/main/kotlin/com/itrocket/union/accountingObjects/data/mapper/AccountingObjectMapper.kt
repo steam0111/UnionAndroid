@@ -1,10 +1,18 @@
 package com.itrocket.union.accountingObjects.data.mapper
 
-import com.example.union_sync_api.entity.AccountingObjectStatusSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
+import com.example.union_sync_api.entity.EnumSyncEntity
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.*
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
+import com.itrocket.union.ui.blue6
+import com.itrocket.union.ui.burntSienna
+import com.itrocket.union.ui.graphite2
+import com.itrocket.union.ui.graphite5
+import com.itrocket.union.ui.graphite6
+import com.itrocket.union.ui.green7
+import com.itrocket.union.ui.violet5
+import com.itrocket.union.ui.white
 
 fun List<AccountingObjectSyncEntity>.map(): List<AccountingObjectDomain> = map { syncEntity ->
     syncEntity.map()
@@ -43,8 +51,39 @@ fun AccountingObjectSyncEntity.map(): AccountingObjectDomain {
     )
 }
 
-fun AccountingObjectStatusSyncEntity.toDomainStatus(): ObjectStatus =
-    ObjectStatus(
-        text = name.orEmpty(),
-        type = ObjectStatusType.valueOf(id)
+fun EnumSyncEntity.toDomainStatus(): ObjectStatus {
+    return ObjectStatus(
+        text = name,
+        type =  this.toObjectStatusType()
     )
+}
+
+fun EnumSyncEntity.toObjectStatusType(): ObjectStatusType {
+    var backgroundColor = graphite2
+    var textColor = white
+    when (id) {
+        AccountingObjectStatus.AVAILABLE.name -> {
+            backgroundColor = green7
+        }
+        AccountingObjectStatus.GIVEN.name -> {
+            backgroundColor = blue6
+        }
+        AccountingObjectStatus.REVIEW.name -> {
+            backgroundColor = burntSienna
+        }
+        AccountingObjectStatus.REPAIR.name -> {
+            backgroundColor = violet5
+        }
+        AccountingObjectStatus.DECOMMISSIONED.name -> {
+            backgroundColor = blue6
+        }
+        AccountingObjectStatus.WRITTEN_OFF.name -> {
+            backgroundColor = graphite5
+        }
+        AccountingObjectStatus.TRANSIT.name -> {
+            textColor = graphite6
+        }
+    }
+    return ObjectStatusType(id, backgroundColor, textColor, name)
+}
+

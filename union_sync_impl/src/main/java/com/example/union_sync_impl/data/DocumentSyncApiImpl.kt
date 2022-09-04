@@ -24,7 +24,6 @@ import com.example.union_sync_impl.dao.sqlReserveQuery
 import com.example.union_sync_impl.data.mapper.toDocumentDb
 import com.example.union_sync_impl.data.mapper.toDocumentSyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
-import com.example.union_sync_impl.data.mapper.toStructuralSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
@@ -169,8 +168,10 @@ class DocumentSyncApiImpl(
         val balanceUnitFrom = structuralFromIds.lastOrNull { it.balanceUnit }
         val balanceUnitTo = structuralToIds.lastOrNull { it.balanceUnit }
 
-        val balanceUnitFromFullPath = structuralSyncApi.getStructuralFullPath(balanceUnitFrom?.id, mutableListOf())
-        val balanceUnitToFullPath = structuralSyncApi.getStructuralFullPath(balanceUnitTo?.id, mutableListOf())
+        val balanceUnitFromFullPath =
+            structuralSyncApi.getStructuralFullPath(balanceUnitFrom?.id, mutableListOf())
+        val balanceUnitToFullPath =
+            structuralSyncApi.getStructuralFullPath(balanceUnitTo?.id, mutableListOf())
 
         return fullDocument.documentDb.toDocumentSyncEntity(
             mol = fullDocument.molDb?.toSyncEntity(),

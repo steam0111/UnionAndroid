@@ -1,8 +1,8 @@
 package com.itrocket.union.documents.data.mapper
 
-import com.example.union_sync_api.entity.ActionBaseSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
+import com.example.union_sync_api.entity.EnumSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.TransitSyncEntity
 import com.example.union_sync_api.entity.StructuralSyncEntity
@@ -58,7 +58,7 @@ fun getParams(
     documentType: String,
     locationFrom: List<LocationSyncEntity>? = null,
     locationTo: List<LocationSyncEntity>? = null,
-    actionBase: ActionBaseSyncEntity? = null,
+    actionBase: EnumSyncEntity? = null,
     balanceUnitFrom: List<StructuralSyncEntity>? = null,
     balanceUnitTo: List<StructuralSyncEntity>? = null
 ): List<ParamDomain> {
@@ -84,7 +84,7 @@ private fun getAccountingObjectParams(
     documentType: String,
     locationFrom: List<LocationSyncEntity>? = null,
     locationTo: List<LocationSyncEntity>? = null,
-    actionBase: ActionBaseSyncEntity? = null,
+    actionBase: EnumSyncEntity? = null,
     balanceUnitFrom: List<StructuralSyncEntity>?,
     balanceUnitTo: List<StructuralSyncEntity>?
 ): List<ParamDomain> {
@@ -185,7 +185,7 @@ private fun addStructuralParam(
 
 private fun addActionBaseParam(
     params: MutableList<ParamDomain>,
-    actionBase: ActionBaseSyncEntity?,
+    actionBase: EnumSyncEntity?,
     types: List<ManualType>,
     manualType: ManualType
 ) {

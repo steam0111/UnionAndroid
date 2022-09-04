@@ -4,22 +4,28 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
 import com.example.union_sync_impl.utils.contains
+import com.example.union_sync_impl.utils.isEquals
 
-fun sqlInventoryBaseQuery(
-    textQuery: String? = null,
+fun sqlEnumsQuery(
+    enumType: String,
+    id: String? = null,
+    name: String? = null
 ): SimpleSQLiteQuery {
-    val mainQuery = "SELECT * FROM inventory_base"
+    val mainQuery = "SELECT * FROM enums"
 
     val query = mainQuery.addFilters(
         sqlTableFilters = SqlTableFilters(
-            tableName = "inventory_base",
+            tableName = "enums",
             filter = buildList {
-                textQuery?.let {
-                    add("name" contains textQuery)
+                add("enumType" isEquals enumType)
+                id?.let {
+                    add("id" isEquals id)
+                }
+                name?.let {
+                    add("name" contains name)
                 }
             }
         )
     )
-
     return SimpleSQLiteQuery(query)
 }

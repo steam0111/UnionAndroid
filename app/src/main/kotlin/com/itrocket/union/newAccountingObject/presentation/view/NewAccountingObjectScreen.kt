@@ -162,7 +162,7 @@ fun NewAccountingObjectScreenPreview() {
             id = "8",
             isBarcode = true,
             title = "Ширикоформатный жидкокристалический монитор Samsung ЕК288, 23 дюйма",
-            status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
+            status = ObjectStatus("AVAILABLE"),
             listMainInfo = listOf(
                 ObjectInfoDomain(
                     R.string.auth_main_title,

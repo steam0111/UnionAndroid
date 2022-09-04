@@ -15,7 +15,7 @@ data class AccountingObjectSyncEntity(
     val inventoryStatus: String? = null,
     val nomenclatureId: String?,
     val nomenclatureGroupId: String?,
-    val status: AccountingObjectStatusSyncEntity?,
+    val status: EnumSyncEntity?,
     val statusId: String?,
     val providerId: String?,
     val producerId: String?,

@@ -11,5 +11,5 @@ class FullInventory(
     @Embedded(prefix = "structural_")
     val structuralDb: StructuralDb?,
     @Embedded(prefix = "inventory_base_")
-    val inventoryBaseDb: InventoryBaseDb?
+    val inventoryBaseDb: EnumDb?
 )

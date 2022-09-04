@@ -1,16 +1,13 @@
 package com.example.union_sync_impl.data.mapper
 
-import com.example.union_sync_api.entity.ActionBaseSyncEntity
 import com.example.union_sync_api.entity.ActionRecordSyncEntity
 import com.example.union_sync_api.entity.ActionRemainsRecordSyncEntity
 import com.example.union_sync_api.entity.InventoryRecordSyncEntity
-import com.example.union_sync_impl.entity.ActionBaseDb
 import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
 import com.example.union_sync_impl.entity.InventoryRecordDb
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import com.example.union_sync_impl.entity.TransitAccountingObjectRecordDb
-import com.example.union_sync_impl.entity.TransitDb
 import com.example.union_sync_impl.entity.TransitRemainsRecordDb
 import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.ActionRecordDtoV2
@@ -105,16 +102,6 @@ fun InventoryRecordDb.toInventoryRecordDtoV2() = InventoryRecordDtoV2(
     userUpdated = userUpdated
 )
 
-fun EnumDtoV2.toActionBaseDb() = ActionBaseDb(
-    id = id,
-    name = name.orEmpty()
-)
-
-fun ActionBaseDb.toSyncEntity() = ActionBaseSyncEntity(
-    id = id,
-    name = name
-)
-
 fun TransitRemainsRecordDtoV2.toTransitRemainsDb() = TransitRemainsRecordDb(
     id = id,
     transitId = transitId,
@@ -126,15 +113,16 @@ fun TransitRemainsRecordDtoV2.toTransitRemainsDb() = TransitRemainsRecordDb(
     insertDate = getMillisDateFromServerFormat(dateInsert)
 )
 
-fun TransitAccountingObjectRecordDtoV2.toTransitAccountingObjectDb() = TransitAccountingObjectRecordDb(
-    id = id,
-    transitId = transitId,
-    accountingObjectId = accountingObjectId,
-    updateDate = System.currentTimeMillis(),
-    userInserted = userInserted,
-    userUpdated = userUpdated,
-    insertDate = getMillisDateFromServerFormat(dateInsert)
-)
+fun TransitAccountingObjectRecordDtoV2.toTransitAccountingObjectDb() =
+    TransitAccountingObjectRecordDb(
+        id = id,
+        transitId = transitId,
+        accountingObjectId = accountingObjectId,
+        updateDate = System.currentTimeMillis(),
+        userInserted = userInserted,
+        userUpdated = userUpdated,
+        insertDate = getMillisDateFromServerFormat(dateInsert)
+    )
 
 fun TransitRemainsRecordDb.toTransitRemainsDb() = TransitRemainsRecordDtoV2(
     id = id,
@@ -144,9 +132,10 @@ fun TransitRemainsRecordDb.toTransitRemainsDb() = TransitRemainsRecordDtoV2(
     deleted = false
 )
 
-fun TransitAccountingObjectRecordDb.toTransitAccountingObjectDb() = TransitAccountingObjectRecordDtoV2(
-    id = id,
-    transitId = transitId,
-    accountingObjectId = accountingObjectId,
-    deleted = false
-)
+fun TransitAccountingObjectRecordDb.toTransitAccountingObjectDb() =
+    TransitAccountingObjectRecordDtoV2(
+        id = id,
+        transitId = transitId,
+        accountingObjectId = accountingObjectId,
+        deleted = false
+    )

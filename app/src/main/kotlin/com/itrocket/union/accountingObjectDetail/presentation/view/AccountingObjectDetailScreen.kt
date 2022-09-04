@@ -195,7 +195,7 @@ fun AccountingObjectDetailScreenPreview() {
             accountingObjectDomain = AccountingObjectDomain(
                 id = "123",
                 title = "Ширикоформатный жидкокристалический монитор Samsung ЕК288, 23 дюйма и еще очень много текста текста",
-                status = ObjectStatus("available", ObjectStatusType.AVAILABLE),
+                status = ObjectStatus("available"),
                 isBarcode = false,
                 listMainInfo = listOf(
                     ObjectInfoDomain(

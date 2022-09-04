@@ -5,7 +5,7 @@ import androidx.room.Entity
 @Entity
 data class AccountingObjectUpdate(
     val id: String,
-    val status: AccountingObjectStatusDb?,
+    val status: EnumDb?,
     val statusId: String?,
     val exploitingId: String?,
     val locationId: String?,

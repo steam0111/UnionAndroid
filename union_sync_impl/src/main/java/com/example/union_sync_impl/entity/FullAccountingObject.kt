@@ -2,7 +2,6 @@ package com.example.union_sync_impl.entity
 
 import androidx.room.Embedded
 import com.example.union_sync_impl.entity.location.LocationDb
-import com.example.union_sync_impl.entity.location.LocationTypeDb
 import com.example.union_sync_impl.entity.structural.StructuralDb
 
 class FullAccountingObject(
@@ -23,5 +22,5 @@ class FullAccountingObject(
     @Embedded(prefix = "structural_")
     val structuralDb: StructuralDb?,
     @Embedded(prefix = "category_")
-    val categoryDb: AccountingObjectCategoryDb?
+    val categoryDb: EnumDb?
 )

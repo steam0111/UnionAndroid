@@ -2,21 +2,18 @@ package com.example.union_sync_impl.data.mapper
 
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectScanningData
-import com.example.union_sync_api.entity.AccountingObjectStatusSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
+import com.example.union_sync_api.entity.EnumType
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.entity.AccountingObjectDb
 import com.example.union_sync_impl.entity.AccountingObjectScanningUpdate
-import com.example.union_sync_impl.entity.AccountingObjectStatusDb
 import com.example.union_sync_impl.entity.AccountingObjectUpdate
 import com.example.union_sync_impl.entity.FullAccountingObject
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.AccountingObjectDtoV2
-import org.openapitools.client.models.AccountingObjectStatusDto
-import org.openapitools.client.models.EnumDtoV2
 
 fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
     return AccountingObjectDb(
@@ -33,7 +30,7 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
         rfidValue = rfidValue,
         factoryNumber = factoryNumber,
         inventoryNumber = inventoryNumber,
-        status = extendedAccountingObjectStatus?.toStatusDb(),
+        status = extendedAccountingObjectStatus?.toEnumDb(EnumType.ACCOUNTING_OBJECT_STATUS),
         statusId = accountingObjectStatusId,
         producerId = producerId,
         equipmentTypeId = typeId,
@@ -79,12 +76,6 @@ fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
         balanceUnitSyncEntities = balanceUnitSyncEntities
     )
 }
-
-fun AccountingObjectStatusDto.toStatusDb() = AccountingObjectStatusDb(id.orEmpty(), name)
-
-fun EnumDtoV2.toStatusDb() = AccountingObjectStatusDb(id.orEmpty(), name)
-
-fun AccountingObjectStatusSyncEntity.toStatusDb() = AccountingObjectStatusDb(id, name)
 
 fun AccountingObjectDb.toSyncEntity(locationSyncEntity: List<LocationSyncEntity>?) =
     AccountingObjectSyncEntity(
@@ -209,14 +200,12 @@ fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObject
     }
 }
 
-fun AccountingObjectStatusDb.toSyncEntity() = AccountingObjectStatusSyncEntity(id, name)
-
 fun AccountingObjectUpdateSyncEntity.toAccountingObjectUpdate(): AccountingObjectUpdate {
     return AccountingObjectUpdate(
         id = id,
         locationId = locationId,
         exploitingId = exploitingId,
-        status = status?.toStatusDb(),
+        status = status?.toEnumDb(),
         statusId = statusId,
         molId = molId,
         structuralId = structuralId,

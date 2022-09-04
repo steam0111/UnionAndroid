@@ -1,11 +1,13 @@
 package com.itrocket.union.transit.domain
 
-import com.example.union_sync_api.data.AccountingObjectStatusSyncApi
+import com.example.union_sync_api.data.EnumsSyncApi
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
+import com.example.union_sync_api.entity.EnumType
 import com.example.union_sync_api.entity.toAccountingObjectUpdateSyncEntity
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectStatus
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.manual.ManualType
@@ -16,7 +18,7 @@ import kotlinx.coroutines.withContext
 
 class TransitAccountingObjectManager(
     private val coreDispatchers: CoreDispatchers,
-    private val accountingObjectStatusSyncApi: AccountingObjectStatusSyncApi,
+    private val enumsSyncApi: EnumsSyncApi,
     private val repository: AccountingObjectRepository,
     private val authMainInteractor: AuthMainInteractor
 ) {
@@ -57,7 +59,10 @@ class TransitAccountingObjectManager(
     ): List<AccountingObjectSyncEntity> {
         return withContext(coreDispatchers.io) {
             val status =
-                accountingObjectStatusSyncApi.getStatuses(id = ObjectStatusType.TRANSIT.name)
+                enumsSyncApi.getAllByType(
+                    id = AccountingObjectStatus.TRANSIT.name,
+                    enumType = EnumType.ACCOUNTING_OBJECT_STATUS
+                )
                     .first()
 
             val accountingObjects = repository.getAccountingObjectsByIds(accountingObjectIds)
@@ -77,7 +82,10 @@ class TransitAccountingObjectManager(
     ): List<AccountingObjectSyncEntity> {
         return withContext(coreDispatchers.io) {
             val status =
-                accountingObjectStatusSyncApi.getStatuses(id = ObjectStatusType.AVAILABLE.name)
+                enumsSyncApi.getAllByType(
+                    id = AccountingObjectStatus.AVAILABLE.name,
+                    enumType = EnumType.ACCOUNTING_OBJECT_STATUS
+                )
                     .first()
 
             val accountingObjects = repository.getAccountingObjectsByIds(accountingObjectIds)

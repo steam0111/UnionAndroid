@@ -5,14 +5,14 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.RawQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.example.union_sync_impl.entity.ActionBaseDb
+import com.example.union_sync_impl.entity.EnumDb
 
 @Dao
-interface ActionBaseDao {
+interface EnumsDao {
 
     @RawQuery
-    fun getAll(query: SupportSQLiteQuery): List<ActionBaseDb>
+    fun getAll(query: SupportSQLiteQuery): List<EnumDb>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(actions: List<ActionBaseDb>)
+    suspend fun insertAll(actions: List<EnumDb>)
 }

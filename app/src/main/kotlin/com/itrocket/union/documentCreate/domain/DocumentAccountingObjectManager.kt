@@ -1,12 +1,14 @@
 package com.itrocket.union.documentCreate.domain
 
-import com.example.union_sync_api.data.AccountingObjectStatusSyncApi
+import com.example.union_sync_api.data.EnumsSyncApi
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
+import com.example.union_sync_api.entity.EnumType
 import com.example.union_sync_api.entity.toAccountingObjectUpdateSyncEntity
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
+import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectStatus
 import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.manual.ManualType
@@ -19,7 +21,7 @@ import kotlinx.coroutines.withContext
 
 class DocumentAccountingObjectManager(
     private val coreDispatchers: CoreDispatchers,
-    private val accountingObjectStatusSyncApi: AccountingObjectStatusSyncApi,
+    private val enumsSyncApi: EnumsSyncApi,
     private val repository: AccountingObjectRepository,
     private val authMainInteractor: AuthMainInteractor
 ) {
@@ -68,9 +70,11 @@ class DocumentAccountingObjectManager(
     ): List<AccountingObjectSyncEntity> {
         return withContext(coreDispatchers.io) {
             val accountingObjects = repository.getAccountingObjectsByIds(accountingObjectIds)
-            val newStatus =
-                accountingObjectStatusSyncApi.getStatuses(id = ObjectStatusType.GIVEN.name)
-                    .firstOrNull()
+            val newStatus = enumsSyncApi.getAllByType(
+                id = AccountingObjectStatus.GIVEN.name,
+                enumType = EnumType.ACCOUNTING_OBJECT_STATUS
+            )
+                .firstOrNull()
             accountingObjects.map {
                 it.copy(
                     exploitingEmployeeId = exploitingId,
@@ -91,7 +95,10 @@ class DocumentAccountingObjectManager(
         return withContext(coreDispatchers.io) {
             val accountingObjects = repository.getAccountingObjectsByIds(accountingObjectIds)
             val newStatus =
-                accountingObjectStatusSyncApi.getStatuses(id = ObjectStatusType.AVAILABLE.name)
+                enumsSyncApi.getAllByType(
+                    id = AccountingObjectStatus.AVAILABLE.name,
+                    enumType = EnumType.ACCOUNTING_OBJECT_STATUS
+                )
                     .first()
             accountingObjects.map {
                 it.copy(

@@ -12,7 +12,8 @@ import com.itrocket.union.ui.white
 enum class DocumentStatus(
     override val backgroundColor: Color,
     @StringRes override val textId: Int,
-    override val textColor: Color
+    override val textColor: Color,
+    override val text: String? = null
 ): Status {
     CREATED(
         textId = R.string.documents_created,

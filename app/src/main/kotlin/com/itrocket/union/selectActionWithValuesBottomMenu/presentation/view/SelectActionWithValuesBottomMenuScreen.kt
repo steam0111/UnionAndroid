@@ -83,7 +83,7 @@ fun SelectActionWithValuesBottomMenuScreenPreview() {
                 id = "1",
                 isBarcode = true,
                 title = "Ширикоформатный жидкокристалический монитор Samsung",
-                status = ObjectStatus("AVAILABLE", ObjectStatusType.AVAILABLE),
+                status = ObjectStatus("AVAILABLE"),
                 listMainInfo = listOf(),
                 listAdditionallyInfo = listOf(),
                 barcodeValue = "",

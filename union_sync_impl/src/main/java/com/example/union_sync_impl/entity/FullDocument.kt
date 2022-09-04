@@ -1,7 +1,6 @@
 package com.example.union_sync_impl.entity
 
 import androidx.room.Embedded
-import com.example.union_sync_impl.entity.structural.StructuralDb
 
 class FullDocument(
     @Embedded
@@ -11,5 +10,5 @@ class FullDocument(
     @Embedded(prefix = "exploiting_")
     val exploitingDb: EmployeeDb? = null,
     @Embedded(prefix = "action_bases_")
-    val actionBaseDb: ActionBaseDb? = null
+    val actionBaseDb: EnumDb? = null
 )

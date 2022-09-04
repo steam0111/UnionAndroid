@@ -1,11 +1,11 @@
 package com.example.union_sync_impl.data.mapper
 
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
-import com.example.union_sync_api.entity.ActionBaseSyncEntity
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
+import com.example.union_sync_api.entity.EnumSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_api.entity.StructuralSyncEntity
@@ -109,7 +109,7 @@ fun DocumentDb.toDocumentSyncEntity(
     reserves: List<ReserveSyncEntity>? = null,
     locationFrom: List<LocationSyncEntity>?,
     locationTo: List<LocationSyncEntity>?,
-    actionBase: ActionBaseSyncEntity? = null,
+    actionBase: EnumSyncEntity? = null,
     balanceUnitFrom: List<StructuralSyncEntity>?,
     balanceUnitTo: List<StructuralSyncEntity>?
 ): DocumentSyncEntity {
@@ -118,7 +118,7 @@ fun DocumentDb.toDocumentSyncEntity(
         structuralFromSyncEntities = structuralFromSyncEntity,
         structuralToSyncEntities = structuralToSyncEntity,
         balanceUnitFrom = balanceUnitFrom,
-        balanceUnitTo =  balanceUnitTo,
+        balanceUnitTo = balanceUnitTo,
         mol = mol,
         exploiting = exploiting,
         documentType = documentType,

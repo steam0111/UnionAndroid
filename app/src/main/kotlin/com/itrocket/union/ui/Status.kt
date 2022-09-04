@@ -53,7 +53,7 @@ private fun BaseLabel(
     textStyle: TextStyle
 ) {
     Text(
-        text = text ?: stringResource(status.textId),
+        text = text ?: status.textId?.let { stringResource(it) } ?: status.text.orEmpty(),
         style = textStyle,
         color = status.textColor,
         modifier = Modifier
@@ -69,8 +69,22 @@ private fun BaseLabel(
 @Preview
 private fun PreviewLabels() {
     Column {
-        SmallStatusLabel(ObjectStatusType.AVAILABLE, "available")
+        SmallStatusLabel(
+            ObjectStatusType(
+                "",
+                AppTheme.colors.secondaryColor,
+                AppTheme.colors.secondaryColor,
+                ""
+            ), "available"
+        )
         Spacer(modifier = Modifier.height(16.dp))
-        MediumStatusLabel(ObjectStatusType.AVAILABLE, "available")
+        MediumStatusLabel(
+            ObjectStatusType(
+                "",
+                AppTheme.colors.secondaryColor,
+                AppTheme.colors.secondaryColor,
+                ""
+            ), "available"
+        )
     }
 }

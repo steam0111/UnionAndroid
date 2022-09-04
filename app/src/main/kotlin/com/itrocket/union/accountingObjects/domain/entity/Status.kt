@@ -5,6 +5,7 @@ import com.itrocket.union.switcher.presentation.store.SwitcherItem
 
 interface Status: SwitcherItem {
     val backgroundColor: Color
-    override val textId: Int
+    override val text: String?
+    override val textId: Int?
     val textColor: Color
 }
