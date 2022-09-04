@@ -5,6 +5,8 @@
     android:sharedUserId="com.itrocket.union.uid"> <!-- При сборке релизной сборки удалить -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-feature android:name="android.hardware.nfc" android:required="true" />
 
     <application
         android:name=".App"
@@ -24,8 +26,10 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
+                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
     </application>

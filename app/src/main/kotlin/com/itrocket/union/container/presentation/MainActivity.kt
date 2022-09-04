@@ -1,5 +1,6 @@
 package com.itrocket.union.container.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -11,17 +12,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.itrocket.core.base.AppInsetsStateHolder
+import com.itrocket.nfc.NfcManager
 import com.itrocket.union.R
 import com.itrocket.union.container.domain.ScannerManager
+import com.itrocket.union.intentHandler.IntentHandler
 import com.itrocket.utils.setGraph
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import ru.interid.scannerclient.domain.reader.ReaderMode
-import ru.interid.scannerclient_impl.platform.entry.ServiceEntry
-import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
@@ -30,6 +29,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val scannerManager: ScannerManager by inject()
 
     private val viewModel by viewModel<MainViewModel>()
+
+    private val nfcManager: NfcManager by inject()
+
+    private val intentHandler: IntentHandler by inject()
 
     private val navController by lazy {
         findNavController(R.id.mainActivityNavHostFragment)
@@ -48,12 +51,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         initObservers()
         initGraph(R.id.splash)
+        nfcManager.init(this)
     }
 
     private fun initGraph(initFragmentId: Int) {
-        val navHostFragment =
-            findViewById<FragmentContainerView>(R.id.mainActivityNavHostFragment).getFragment<NavHostFragment>()
-
+        val navHostFragment = getNavHostFragment()
         navHostFragment.setGraph(R.navigation.main, initFragmentId)
     }
 
@@ -78,4 +80,21 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent) =
         scannerManager.onKeyUp(keyCode) ?: super.onKeyUp(keyCode, event)
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let {
+            lifecycleScope.launch {
+                intentHandler.pushIntent(intent)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        nfcManager.onDestroy()
+        super.onDestroy()
+    }
+
+    private fun getNavHostFragment() =
+        findViewById<FragmentContainerView>(R.id.mainActivityNavHostFragment).getFragment<NavHostFragment>()
 }

@@ -48,6 +48,9 @@
     <string name="splash_description">ПРОГРАММНЫЙ КОМПЛЕКС ДЛЯ УЧЕТА ИМУЩЕСТВА ПРЕДПРИЯТИЯ</string>
     <string name="splash_company_title">Developed on Union EAM software product</string>
 
+    <!-- Error -->
+    <string name="nfc_reading_not_same_error">Код метки неверный</string>
+
     <!-- Auth -->
     <string name="auth_suggest">Это нужно сделать один раз</string>
     <string name="auth_sign_in">Войти</string>
@@ -343,4 +346,13 @@
     <string name="change_scan_data_hint_sn">Введите серийный номер</string>
 
     <string name="change_scan_data_press_cursor">Нажмите курок считывателя</string>
+
+    <!-- NfcReader -->
+    <string name="nfc_reader_document_conduct_title">Провести документ</string>
+    <string name="nfc_reader_transit_conduct_title">Провести транзит</string>
+    <string name="nfc_reader_description">Для подтверждения операции поднесите карточку сотрудника к считывателю</string>
+    <string name="nfc_reader_repeat">Попробуйте еще раз</string>
+    <string name="nfc_reader_success">Успешно</string>
+    <string name="nfc_reader_document_conduct_success">Документ проведен</string>
+    <string name="nfc_reader_error">Не корректный номер nfc</string>
 </resources>

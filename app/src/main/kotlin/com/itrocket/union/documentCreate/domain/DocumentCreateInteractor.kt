@@ -265,6 +265,19 @@ class DocumentCreateInteractor(
         }
     }
 
+    fun completeDocument(
+        params: List<ParamDomain>,
+        accountingObjects: List<AccountingObjectDomain>,
+        reserves: List<ReservesDomain>,
+        document: DocumentDomain
+    ): DocumentDomain {
+        return document.copy(
+            params = params,
+            accountingObjects = accountingObjects,
+            reserves = reserves
+        )
+    }
+
     suspend fun getFilterParams(params: List<ParamDomain>) = withContext(coreDispatchers.io) {
         params.filter { it.isFilter }
     }

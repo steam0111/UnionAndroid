@@ -52,6 +52,7 @@ import com.union.sdk.SyncModule
 import com.itrocket.union.changeScanData.ChangeScanDataModule
 import com.itrocket.union.theme.ThemeModule
 import com.itrocket.union.transit.TransitModule
+import com.itrocket.union.nfcReader.NfcReaderModule
 import com.itrocket.union.splash.SplashModule
 
 object Modules {
@@ -117,6 +118,7 @@ object Modules {
         IdentifyModule.module,
         ChangeScanDataModule.module,
         TransitModule.module,
-        SplashModule.module
+        SplashModule.module,
+        NfcReaderModule.module
     )
 }

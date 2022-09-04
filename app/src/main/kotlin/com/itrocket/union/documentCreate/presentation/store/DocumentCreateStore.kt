@@ -21,6 +21,10 @@ import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
+import com.itrocket.union.nfcReader.domain.entity.NfcReaderType
+import com.itrocket.union.nfcReader.presentation.store.NfcReaderArguments
+import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
+import com.itrocket.union.nfcReader.presentation.view.NfcReaderComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.reserves.presentation.store.ReservesArguments
@@ -62,6 +66,7 @@ interface DocumentCreateStore :
         data class OnLocationChanged(val location: LocationResult) : Intent()
         data class OnStructuralChanged(val structural: StructuralResult) : Intent()
         data class OnReserveClicked(val reserve: ReservesDomain) : Intent()
+        data class OnNfcReaderClose(val nfcReaderResult: NfcReaderResult) : Intent()
         object OnDismissConfirmDialog : Intent()
         object OnConfirmActionClick : Intent()
     }
@@ -74,7 +79,7 @@ interface DocumentCreateStore :
         val isLoading: Boolean = false,
         val selectedPage: Int = 0,
         val departureLocation: List<LocationDomain> = emptyList(),
-        val confirmDialogType: DocumentConfirmAlertType = DocumentConfirmAlertType.NONE
+        val confirmDialogType: DocumentConfirmAlertType = DocumentConfirmAlertType.NONE,
     )
 
     sealed class Label {
@@ -167,6 +172,21 @@ interface DocumentCreateStore :
             override val fragment: Fragment
                 get() = SelectCountComposeFragment()
 
+        }
+
+        data class ShowNfcReader(val document: DocumentDomain) : Label(),
+            ShowBottomSheetNavigationLabel {
+            override val arguments: Bundle
+                get() = bundleOf(
+                    NfcReaderComposeFragment.NFC_READER_ARGUMENT to NfcReaderArguments(
+                        NfcReaderType.DocumentConduct(
+                            document
+                        )
+                    )
+                )
+            override val containerId: Int = R.id.mainActivityNavHostFragment
+            override val fragment: Fragment
+                get() = NfcReaderComposeFragment()
         }
     }
 }

@@ -8,13 +8,10 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.documentCreate.domain.DocumentAccountingObjectManager
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
-import com.itrocket.union.documentCreate.domain.DocumentReservesManager
 import com.itrocket.union.documentCreate.presentation.view.DocumentConfirmAlertType
 import com.itrocket.union.documents.data.mapper.getParams
 import com.itrocket.union.documents.domain.entity.DocumentDomain
-import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
@@ -23,6 +20,7 @@ import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
 import com.itrocket.union.manual.StructuralParamDomain
+import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.utils.ifBlankOrNull
@@ -32,11 +30,9 @@ class DocumentCreateStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val documentCreateInteractor: DocumentCreateInteractor,
     private val documentCreateArguments: DocumentCreateArguments,
-    private val documentAccountingObjectManager: DocumentAccountingObjectManager,
-    private val documentReservesManager: DocumentReservesManager,
     private val errorInteractor: ErrorInteractor,
     private val filterInteractor: FilterInteractor,
-    private val selectParamsInteractor: SelectParamsInteractor
+    private val selectParamsInteractor: SelectParamsInteractor,
 ) {
     fun create(): DocumentCreateStore =
         object : DocumentCreateStore,
@@ -203,6 +199,19 @@ class DocumentCreateStoreFactory(
                 is DocumentCreateStore.Intent.OnConfirmActionClick -> {
                     handleOnConfirmActionClick(getState())
                 }
+                is DocumentCreateStore.Intent.OnNfcReaderClose -> {
+                    onNfcReaderClose(intent.nfcReaderResult)
+                }
+            }
+        }
+
+        private suspend fun onNfcReaderClose(nfcReaderResult: NfcReaderResult) {
+            if (nfcReaderResult.isNfcReadingSuccess) {
+                catchException {
+                    val document =
+                        documentCreateInteractor.getDocumentById(requireNotNull(nfcReaderResult.documentId))
+                    dispatch(Result.Document(document))
+                }
             }
         }
 
@@ -230,31 +239,20 @@ class DocumentCreateStoreFactory(
             if (state.confirmDialogType == DocumentConfirmAlertType.SAVE) {
                 saveDocument(state)
             } else if (state.confirmDialogType == DocumentConfirmAlertType.CONDUCT) {
-                conductDocument(state)
+                publish(
+                    DocumentCreateStore.Label.ShowNfcReader(
+                        documentCreateInteractor.completeDocument(
+                            document = state.document,
+                            accountingObjects = state.accountingObjects,
+                            reserves = state.reserves,
+                            params = state.params
+                        )
+                    )
+                )
             }
             dispatch(Result.ConfirmDialogType(DocumentConfirmAlertType.NONE))
         }
 
-        private suspend fun conductDocument(state: DocumentCreateStore.State) {
-            val documentId = documentCreateInteractor.createOrUpdateDocument(
-                document = state.document,
-                accountingObjects = state.accountingObjects,
-                params = state.params,
-                reserves = state.reserves,
-                status = DocumentStatus.COMPLETED
-            )
-            documentAccountingObjectManager.changeAccountingObjectsAfterConduct(
-                documentTypeDomain = state.document.documentType,
-                accountingObjects = state.accountingObjects,
-                params = state.params
-            )
-            documentReservesManager.changeReservesAfterConduct(
-                documentTypeDomain = state.document.documentType,
-                reserves = state.reserves,
-                params = state.params
-            )
-            dispatch(Result.Document(state.document.copy(documentStatus = DocumentStatus.COMPLETED)))
-        }
 
         private suspend fun handleBarcodeAccountingObjects(
             barcode: String,
@@ -328,6 +326,7 @@ class DocumentCreateStoreFactory(
             }
         }
 
+
         private suspend fun onChooseAccountingObjectClicked(getState: () -> DocumentCreateStore.State) {
             publish(
                 DocumentCreateStore.Label.ShowAccountingObjects(
@@ -373,11 +372,5 @@ class DocumentCreateStoreFactory(
                 is Result.Document -> copy(document = result.document)
                 is Result.ConfirmDialogType -> copy(confirmDialogType = result.type)
             }
-    }
-
-    companion object {
-        const val PARAMS_PAGE = 0
-        const val ACCOUNTING_OBJECT_PAGE = 1
-        const val RESERVES_PAGE = 2
     }
 }
