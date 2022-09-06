@@ -184,7 +184,11 @@ fun LogoToolbar(medias: Medias?) {
             .padding(vertical = 12.dp),
         contentAlignment = Alignment.Center
     ) {
-        when {
+        Image(
+            painter = painterResource(R.drawable.ic_logo_small),
+            contentDescription = null
+        )
+        /*when {
             medias?.header != null -> {
                 Image(bitmap = medias.header, contentDescription = null)
             }
@@ -195,6 +199,6 @@ fun LogoToolbar(medias: Medias?) {
                 )
             }
 
-        }
+        }*/
     }
 }

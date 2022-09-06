@@ -115,7 +115,7 @@ class ServerConnectStoreFactory(
         }
 
         private suspend fun loadSettings() {
-            val colors = serverConnectInteractor.getStyleSettings()
+            /*val colors = serverConnectInteractor.getStyleSettings()
             val logoFile = serverConnectInteractor.getLogoFile()
             val headerFile = serverConnectInteractor.getHeaderFile()
             colorInteractor.saveColorSettings(
@@ -126,7 +126,7 @@ class ServerConnectStoreFactory(
                 appBarTextColor = colors.appBarTextColor
             )
             colorInteractor.initColorSettings()
-            mediaInteractor.saveMedias(headerFile = headerFile, logoFile = logoFile)
+            mediaInteractor.saveMedias(headerFile = headerFile, logoFile = logoFile)*/
         }
 
         override fun handleError(throwable: Throwable) {

@@ -111,7 +111,14 @@ private fun Splash(appInsets: AppInsets, medias: Medias) {
 private fun Logo(header: ImageBitmap?) {
     Column {
         Spacer(modifier = Modifier.height(48.dp))
-        if (header != null) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_header),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 34.dp, end = 34.dp)
+        )
+        /*if (header != null) {
             Image(
                 bitmap = header,
                 contentDescription = null,
@@ -127,14 +134,18 @@ private fun Logo(header: ImageBitmap?) {
                     .fillMaxWidth()
                     .padding(start = 34.dp, end = 34.dp)
             )
-        }
+        }*/
     }
 }
 
 @Composable
 private fun CenterContent(logo: ImageBitmap?) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        if (logo != null) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_logo),
+            contentDescription = null,
+        )
+       /* if (logo != null) {
             Image(
                 bitmap = logo,
                 contentDescription = null,
@@ -144,7 +155,7 @@ private fun CenterContent(logo: ImageBitmap?) {
                 painter = painterResource(id = R.drawable.ic_logo),
                 contentDescription = null,
             )
-        }
+        }*/
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = stringResource(R.string.splash_description),
