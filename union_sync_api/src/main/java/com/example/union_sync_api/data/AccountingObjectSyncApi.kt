@@ -19,7 +19,9 @@ interface AccountingObjectSyncApi {
         textQuery: String? = null,
         accountingObjectsIds: List<String>? = null,
         locationIds: List<String?>? = null,
-        structuralId: List<String?>? = null
+        structuralId: List<String?>? = null,
+        offset: Long? = null,
+        limit: Long? = null
     ): List<AccountingObjectSyncEntity>
 
     suspend fun getAccountingObjectsCount(

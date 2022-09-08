@@ -11,7 +11,9 @@ interface AccountingObjectRepository {
         textQuery: String? = null,
         params: List<ParamDomain>,
         selectedLocationIds: List<String?>?,
-        structuralIds: List<String?>?
+        structuralIds: List<String?>?,
+        offset: Long?,
+        limit: Long?
     ): List<AccountingObjectDomain>
 
     suspend fun getAccountingObjectsCount(
