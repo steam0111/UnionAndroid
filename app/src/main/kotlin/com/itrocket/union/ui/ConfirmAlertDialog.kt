@@ -1,5 +1,6 @@
 package com.itrocket.union.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,34 +38,43 @@ fun ConfirmAlertDialog(
             Box(
                 contentAlignment = Alignment.Center
             ) {
-                Column(modifier = Modifier.padding(24.dp, 12.dp, 12.dp, 8.dp)) {
-                    Text(
-                        text = stringResource(textRes),
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            color = graphite8
-                        )
-                    )
+                Content(textRes = textRes, onConfirmClick = onConfirmClick, onDismiss = onDismiss)
+            }
+        }
+    }
+}
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        TextButton(
-                            text = stringResource(R.string.common_cancel),
-                            onClick = onDismiss,
-                            isTextUpperCased = false
-                        )
-                        TextButton(
-                            text = stringResource(R.string.common_ok),
-                            onClick = {
-                                onConfirmClick()
-                                onDismiss()
-                            },
-                            isTextUpperCased = false
-                        )
-                    }
-                }
+@Composable
+private fun Content(textRes: Int, onDismiss: () -> Unit, onConfirmClick: () -> Unit) {
+    Box(
+        contentAlignment = Alignment.Center
+    ) {
+        Column(modifier = Modifier.padding(24.dp, 12.dp, 12.dp, 8.dp)) {
+            Text(
+                text = stringResource(textRes),
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = graphite8
+                )
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                TextButton(
+                    text = stringResource(R.string.common_cancel),
+                    onClick = onDismiss,
+                    isTextUpperCased = false
+                )
+                TextButton(
+                    text = stringResource(R.string.common_ok),
+                    onClick = {
+                        onConfirmClick()
+                        onDismiss()
+                    },
+                    isTextUpperCased = false
+                )
             }
         }
     }
@@ -72,11 +82,11 @@ fun ConfirmAlertDialog(
 
 @Composable
 @Preview
-fun ConfirmAlertDialogPreview() {
+fun ConfirmAlertDialogContentPreview() {
     Box(
-        modifier = Modifier.fillMaxHeight(),
-        contentAlignment = Alignment.CenterStart
+        modifier = Modifier.background(Color.White, RoundedCornerShape(8.dp)),
+        contentAlignment = Alignment.Center,
     ) {
-        ConfirmAlertDialog({}, {}, R.string.common_confirm_save_text)
+        Content(R.string.common_confirm_save_text, {}, {})
     }
 }

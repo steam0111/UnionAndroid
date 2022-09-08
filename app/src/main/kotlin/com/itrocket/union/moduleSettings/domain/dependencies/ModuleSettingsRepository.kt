@@ -8,7 +8,7 @@ interface ModuleSettingsRepository {
 
     suspend fun getSavedKeyCode(): Flow<Int?>
 
-    suspend fun getReaderPower(): Flow<String?>
+    suspend fun getReaderPower(): Flow<Int?>
 
-    suspend fun saveReaderPower(readerPower: String)
+    suspend fun saveReaderPower(readerPower: Int)
 }

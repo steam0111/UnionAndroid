@@ -356,4 +356,8 @@
     <string name="nfc_reader_success">Успешно</string>
     <string name="nfc_reader_document_conduct_success">Документ проведен</string>
     <string name="nfc_reader_error">Не корректный номер nfc</string>
+
+    <!-- ReaderPower -->
+    <string name="reader_power_title">Мощность считывателя</string>
+    <string name="reader_power_hint">Введите или выберите мощность считывателя</string>
 </resources>

@@ -28,6 +28,7 @@ import com.itrocket.union.nomenclatureDetail.presentation.view.NomenclatureDetai
 import com.itrocket.union.nomenclatureGroupDetail.presentation.view.NomenclatureGroupDetailScreenPreview
 import com.itrocket.union.producer.presentation.view.ProducerScreenPreview
 import com.itrocket.union.producerDetail.presentation.view.ProducerDetailScreenPreview
+import com.itrocket.union.readerPower.presentation.view.ReaderPowerScreenPreview
 import com.itrocket.union.readingMode.presentation.view.ReadingModeScreenPreview
 import com.itrocket.union.reserveDetail.presentation.view.ReserveDetailScreenPreview
 import com.itrocket.union.reserves.presentation.view.ReservesScreenPreview
@@ -35,7 +36,7 @@ import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.Sel
 import com.itrocket.union.serverConnect.presentation.view.ServerConnectScreenPreview
 import com.itrocket.union.structural.presentation.view.StructuralScreenPreview
 import com.itrocket.union.switcher.presentation.view.SwitcherScreenPreview
-import com.itrocket.union.ui.ConfirmAlertDialogPreview
+import com.itrocket.union.ui.ConfirmAlertDialogContentPreview
 import com.karumi.shot.ScreenshotTest
 import org.junit.Rule
 import org.junit.Test
@@ -261,14 +262,21 @@ class ScreensTest : ScreenshotTest {
     @Test
     fun `ConfirmAlertDialog`() {
         takeScreenShot {
-            ConfirmAlertDialogPreview()
+            ConfirmAlertDialogContentPreview()
         }
     }
 
     @Test
-    fun `ChangeScanData`(){
+    fun `ChangeScanData`() {
         takeScreenShot {
             ChangeScanDataScreenPreview()
+        }
+    }
+
+    @Test
+    fun `ReaderPower`() {
+        takeScreenShot {
+            ReaderPowerScreenPreview()
         }
     }
 }

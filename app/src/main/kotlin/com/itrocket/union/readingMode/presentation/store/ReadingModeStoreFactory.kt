@@ -66,9 +66,7 @@ class ReadingModeStoreFactory(
                     dispatch(Result.ReadingModeSelected(intent.readingMode))
                     publish(ReadingModeStore.Label.ResultReadingTab(intent.readingMode))
                 }
-                ReadingModeStore.Intent.OnSettingsClicked -> {
-                    //no-op
-                }
+                ReadingModeStore.Intent.OnSettingsClicked -> publish(ReadingModeStore.Label.ReaderPower)
             }
         }
     }

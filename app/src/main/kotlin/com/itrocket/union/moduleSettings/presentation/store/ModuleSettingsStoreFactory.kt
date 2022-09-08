@@ -9,6 +9,8 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
+import com.itrocket.union.readerPower.domain.ReaderPowerInteractor
+import com.itrocket.union.readerPower.domain.ReaderPowerInteractor.Companion.MIN_READER_POWER
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,7 +19,8 @@ class ModuleSettingsStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val moduleSettingsInteractor: ModuleSettingsInteractor,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val readerPowerInteractor: ReaderPowerInteractor
 ) {
     fun create(): ModuleSettingsStore =
         object : ModuleSettingsStore,
@@ -49,7 +52,7 @@ class ModuleSettingsStoreFactory(
                 )
             )
             dispatch(
-                Result.ReaderPower(moduleSettingsInteractor.getReaderPower() ?: "50")
+                Result.ReaderPower(moduleSettingsInteractor.getReaderPower())
             )
         }
 
@@ -99,21 +102,24 @@ class ModuleSettingsStoreFactory(
                         intent.service
                     )
                 )
-                ModuleSettingsStore.Intent.OnDropDownReaderPowerDismiss -> dispatch(
-                    Result.DropDownReaderPowerExpanded(false)
-                )
-                is ModuleSettingsStore.Intent.OnPowerOfReaderHandled -> dispatch(
-                    Result.ListPowerOfReader(intent.listPowerOfReader)
-                )
-                is ModuleSettingsStore.Intent.OnDefaultReaderPowerHandled -> dispatch(
-                    Result.ReaderPower(intent.readerPower)
-                )
-                ModuleSettingsStore.Intent.OnDropDownOpenReaderPowerClicked -> dispatch(
-                    Result.DropDownReaderPowerExpanded(true)
-                )
-                is ModuleSettingsStore.Intent.OnDropDownItemReaderPowerClicked -> {
-                    dispatch(Result.DropDownReaderPowerExpanded(false))
-                    dispatch(Result.ReaderPower(intent.readerPower))
+                is ModuleSettingsStore.Intent.OnPowerChanged -> {
+                    val power = intent.newPowerText.toIntOrNull()
+                    val newPower = if (power != null) {
+                        readerPowerInteractor.validateNewPower(power = power)
+                    } else {
+                        power
+                    }
+                    dispatch(Result.ReaderPower(newPower))
+                }
+                ModuleSettingsStore.Intent.OnArrowDownClicked -> {
+                    val readerPower = getState().readerPower ?: MIN_READER_POWER
+                    val newPower = readerPowerInteractor.increasePower(readerPower)
+                    dispatch(Result.ReaderPower(newPower))
+                }
+                ModuleSettingsStore.Intent.OnArrowUpClicked -> {
+                    val readerPower = getState().readerPower ?: MIN_READER_POWER
+                    val newPower = readerPowerInteractor.decreasePower(readerPower)
+                    dispatch(Result.ReaderPower(newPower))
                 }
             }
         }
@@ -136,13 +142,11 @@ class ModuleSettingsStoreFactory(
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class KeyCode(val keyCode: Int) : Result()
-        data class ReaderPower(val readerPower: String) : Result()
+        data class ReaderPower(val readerPower: Int?) : Result()
         data class WaitDefine(val waitDefine: Boolean) : Result()
         data class Service(val service: String) : Result()
         data class Services(val services: List<String>) : Result()
         data class DropdownExpanded(val dropdownExpanded: Boolean) : Result()
-        data class DropDownReaderPowerExpanded(val dropDownReaderPowerExpanded: Boolean) : Result()
-        data class ListPowerOfReader(val listPowerOfReader: List<Int>) : Result()
     }
 
     private object ReducerImpl : Reducer<ModuleSettingsStore.State, Result> {
@@ -154,8 +158,6 @@ class ModuleSettingsStoreFactory(
                 is Result.Service -> copy(defaultService = result.service)
                 is Result.Services -> copy(services = result.services)
                 is Result.DropdownExpanded -> copy(dropdownExpanded = result.dropdownExpanded)
-                is Result.DropDownReaderPowerExpanded -> copy(dropDownReaderPowerExpanded = result.dropDownReaderPowerExpanded)
-                is Result.ListPowerOfReader -> copy(listPowerOfReader = result.listPowerOfReader)
                 is Result.ReaderPower -> copy(readerPower = result.readerPower)
             }
     }

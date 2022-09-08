@@ -12,16 +12,14 @@ interface ModuleSettingsStore :
         object OnDefineCursorClicked : Intent()
         object OnSaveClicked : Intent()
         object OnDropdownDismiss : Intent()
-        object OnDropDownReaderPowerDismiss : Intent()
         object OnDropdownOpenClicked : Intent()
-        object OnDropDownOpenReaderPowerClicked:Intent()
         data class OnDropdownItemClicked(val service: String) : Intent()
         data class OnServicesHandled(val services: List<String>) : Intent()
         data class OnDefaultServiceHandled(val service: String) : Intent()
         data class OnCursorDefined(val keyCode: Int) : Intent()
-        data class OnPowerOfReaderHandled(val listPowerOfReader: List<Int>) : Intent()
-        data class OnDefaultReaderPowerHandled(val readerPower: String) : Intent()
-        data class OnDropDownItemReaderPowerClicked(val readerPower: String) : Intent()
+        object OnArrowUpClicked : Intent()
+        object OnArrowDownClicked : Intent()
+        data class OnPowerChanged(val newPowerText: String) : Intent()
     }
 
     data class State(
@@ -31,9 +29,7 @@ interface ModuleSettingsStore :
         val services: List<String> = listOf(),
         val keyCode: Int = 0,
         val dropdownExpanded: Boolean = false,
-        val dropDownReaderPowerExpanded: Boolean = false,
-        val listPowerOfReader: List<Int> = listOf(10, 20, 30, 40, 50, 60, 70, 80, 90, 100),
-        val readerPower: String = "50"
+        val readerPower: Int? = null
     )
 
     sealed class Label {

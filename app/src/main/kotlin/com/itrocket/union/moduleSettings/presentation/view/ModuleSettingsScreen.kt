@@ -27,6 +27,7 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
 import com.itrocket.union.moduleSettings.presentation.store.ModuleSettingsStore
+import com.itrocket.union.readerPower.domain.ReaderPowerInteractor
 import com.itrocket.union.ui.*
 
 @Composable
@@ -39,9 +40,9 @@ fun ModuleSettingsScreen(
     onDropdownDismiss: () -> Unit,
     onDropdownItemClickListener: (String) -> Unit,
     onDropdownOpenClickListener: () -> Unit,
-    onDropDownItemReaderPowerClickListener: (String) -> Unit,
-    onDropDownOpenReaderPowerClickListener: () -> Unit,
-    onDropDownReaderPowerDismiss: () -> Unit
+    onArrowDownClickListener: () -> Unit,
+    onArrowUpClickListener: () -> Unit,
+    onPowerChanged: (String) -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -65,9 +66,9 @@ fun ModuleSettingsScreen(
                     onDropdownDismiss = onDropdownDismiss,
                     onDropdownItemClickListener = onDropdownItemClickListener,
                     onDropdownOpenClickListener = onDropdownOpenClickListener,
-                    onDropDownItemReaderPowerClickListener = onDropDownItemReaderPowerClickListener,
-                    onDropDownOpenReaderPowerClickListener = onDropDownOpenReaderPowerClickListener,
-                    onDropDownReaderPowerDismiss = onDropDownReaderPowerDismiss
+                    onArrowDownClickListener = onArrowDownClickListener,
+                    onArrowUpClickListener = onArrowUpClickListener,
+                    onPowerChanged = onPowerChanged
                 )
             }
         )
@@ -91,9 +92,9 @@ private fun Content(
     onDropdownItemClickListener: (String) -> Unit,
     onDropdownOpenClickListener: () -> Unit,
     paddingValues: PaddingValues,
-    onDropDownReaderPowerDismiss: () -> Unit,
-    onDropDownItemReaderPowerClickListener: (String) -> Unit,
-    onDropDownOpenReaderPowerClickListener: () -> Unit
+    onArrowDownClickListener: () -> Unit,
+    onArrowUpClickListener: () -> Unit,
+    onPowerChanged: (String) -> Unit
 ) {
     Column(modifier = Modifier.padding(paddingValues)) {
         Spacer(modifier = Modifier.height(24.dp))
@@ -104,11 +105,11 @@ private fun Content(
             fontWeight = FontWeight.Medium,
         )
         Spacer(modifier = Modifier.height(12.dp))
-        SelectPower(
-            state = state,
-            onDropDownOpenReaderPowerClickListener = onDropDownOpenReaderPowerClickListener,
-            onDropDownReaderPowerDismiss = onDropDownReaderPowerDismiss,
-            onDropDownItemReaderPowerClickListener = onDropDownItemReaderPowerClickListener
+        ReaderPowerPicker(
+            power = state.readerPower ?: ReaderPowerInteractor.MIN_READER_POWER,
+            onPowerChanged = onPowerChanged,
+            onArrowDownClickListener = onArrowDownClickListener,
+            onArrowUpClickListener = onArrowUpClickListener
         )
         Spacer(modifier = Modifier.height(24.dp))
         DefineCursorComponent(
@@ -226,47 +227,6 @@ private fun SelectServiceComponent(
     }
 }
 
-@Composable
-fun SelectPower(
-    state: ModuleSettingsStore.State,
-    onDropDownReaderPowerDismiss: () -> Unit,
-    onDropDownItemReaderPowerClickListener: (String) -> Unit,
-    onDropDownOpenReaderPowerClickListener: () -> Unit
-) {
-    Row(
-        Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .weight(1f)
-        ) {
-            DropdownMenuItem(
-                onClick = onDropDownOpenReaderPowerClickListener,
-                modifier = Modifier.background(graphite2)
-            ) {
-                Text(text = state.readerPower, style = AppTheme.typography.body2)
-            }
-            DropdownMenu(
-                expanded = state.dropDownReaderPowerExpanded,
-                onDismissRequest = onDropDownReaderPowerDismiss,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                state.listPowerOfReader.forEach {
-                    DropdownMenuItem(
-                        onClick = { onDropDownItemReaderPowerClickListener(it.toString()) },
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    ) {
-                        Text(text = it.toString(), style = AppTheme.typography.body2)
-                    }
-                }
-            }
-        }
-    }
-}
 
 @Preview(
     name = "светлая тема экран - 6.3 (3040x1440)",

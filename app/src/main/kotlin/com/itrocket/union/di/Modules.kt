@@ -54,6 +54,7 @@ import com.itrocket.union.theme.ThemeModule
 import com.itrocket.union.transit.TransitModule
 import com.itrocket.union.nfcReader.NfcReaderModule
 import com.itrocket.union.splash.SplashModule
+import com.itrocket.union.readerPower.ReaderPowerModule
 
 object Modules {
 
@@ -119,6 +120,7 @@ object Modules {
         ChangeScanDataModule.module,
         TransitModule.module,
         SplashModule.module,
-        NfcReaderModule.module
+        NfcReaderModule.module,
+        ReaderPowerModule.module
     )
 }

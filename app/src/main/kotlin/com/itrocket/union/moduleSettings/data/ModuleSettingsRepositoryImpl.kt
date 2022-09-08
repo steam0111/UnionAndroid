@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
 class ModuleSettingsRepositoryImpl(
     private val dataStore: DataStore<Preferences>,
     private val keyCodePreferencesKey: Preferences.Key<Int>,
-    private val readerPowerPreferencesKey: Preferences.Key<String>,
+    private val readerPowerPreferencesKey: Preferences.Key<Int>,
 ) : ModuleSettingsRepository {
     override suspend fun saveKeyCode(keyCode: Int) {
         dataStore.edit { it[keyCodePreferencesKey] = keyCode }
@@ -20,11 +20,11 @@ class ModuleSettingsRepositoryImpl(
         return dataStore.data.map { it[keyCodePreferencesKey] }
     }
 
-    override suspend fun getReaderPower(): Flow<String?> {
+    override suspend fun getReaderPower(): Flow<Int?> {
         return dataStore.data.map { it[readerPowerPreferencesKey] }
     }
 
-    override suspend fun saveReaderPower(readerPower: String) {
+    override suspend fun saveReaderPower(readerPower: Int) {
         dataStore.edit { it[readerPowerPreferencesKey] = readerPower }
     }
 }
