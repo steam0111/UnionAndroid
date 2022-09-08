@@ -36,7 +36,9 @@ class AccountingObjectSyncApiImpl(
         textQuery: String?,
         accountingObjectsIds: List<String>?,
         locationIds: List<String?>?,
-        structuralId: List<String?>?
+        structuralId: List<String?>?,
+        offset: Long?,
+        limit: Long?
     ): List<AccountingObjectSyncEntity> {
         return accountingObjectsDao.getAll(
             sqlAccountingObjectQuery(
@@ -51,7 +53,9 @@ class AccountingObjectSyncApiImpl(
                 accountingObjectsIds = accountingObjectsIds,
                 textQuery = textQuery,
                 locationIds = locationIds,
-                structuralIds = structuralId
+                structuralIds = structuralId,
+                offset = offset,
+                limit = limit
             )
         ).map {
             val location = locationSyncApi.getLocationById(it.accountingObjectDb.locationId)

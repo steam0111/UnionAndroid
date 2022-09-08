@@ -13,6 +13,7 @@ import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
+import com.itrocket.utils.paging.Paginator
 
 class AccountingObjectStoreFactory(
     private val storeFactory: StoreFactory,
@@ -41,6 +42,18 @@ class AccountingObjectStoreFactory(
             context = coreDispatchers.ui
         ) {
 
+        private val paginator = Paginator<AccountingObjectDomain>(
+            onError = {
+                handleError(it)
+            },
+            onLoadUpdate = {
+                dispatch(Result.Loading(it))
+            },
+            onSuccess = {
+                dispatch(Result.AccountingObjects(it))
+            }
+        )
+
         override suspend fun executeAction(
             action: Unit,
             getState: () -> AccountingObjectStore.State
@@ -49,12 +62,15 @@ class AccountingObjectStoreFactory(
                 accountingObjectInteractor.getFilters(accountingObjectArguments?.isFromDocument == true)
             }
             dispatch(Result.Params(filters))
-
             searchManager.listenSearch {
-                getAccountingObjects(
-                    params = getState().params,
-                    searchText = it
-                )
+                reset()
+                paginator.onLoadNext {
+                    getAccountingObjects(
+                        params = getState().params,
+                        searchText = getState().searchText,
+                        offset = it
+                    )
+                }
             }
         }
 
@@ -77,16 +93,29 @@ class AccountingObjectStoreFactory(
                 }
                 is AccountingObjectStore.Intent.OnFilterResult -> {
                     dispatch(Result.Params(intent.params))
-                    getAccountingObjects(getState().params, getState().searchText)
+                    reset()
+                    paginator.onLoadNext {
+                        getAccountingObjects(
+                            params = getState().params,
+                            searchText = getState().searchText,
+                            offset = it
+                        )
+                    }
                 }
                 is AccountingObjectStore.Intent.OnItemClicked -> onItemClick(intent.item)
                 is AccountingObjectStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
                     searchManager.emit(intent.searchText)
                 }
+                AccountingObjectStore.Intent.OnLoadNext -> paginator.onLoadNext {
+                    getAccountingObjects(
+                        params = getState().params,
+                        searchText = getState().searchText,
+                        offset = it
+                    )
+                }
             }
         }
-
 
         private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
@@ -100,21 +129,26 @@ class AccountingObjectStoreFactory(
 
         private suspend fun getAccountingObjects(
             params: List<ParamDomain>,
-            searchText: String = ""
-        ) {
-            catchException {
-                dispatch(Result.Loading(true))
-                dispatch(
-                    Result.AccountingObjects(
-                        accountingObjectInteractor.getAccountingObjects(
-                            params = params,
-                            searchQuery = searchText,
-                            selectedAccountingObjectIds = accountingObjectArguments?.selectedAccountingObjectIds.orEmpty()
-                        )
-                    )
-                )
-                dispatch(Result.Loading(false))
+            searchText: String = "",
+            offset: Long = 0
+        ) = runCatching {
+            val accountingObjects = accountingObjectInteractor.getAccountingObjects(
+                params = params,
+                searchQuery = searchText,
+                selectedAccountingObjectIds = accountingObjectArguments?.selectedAccountingObjectIds.orEmpty(),
+                offset = offset,
+                limit = Paginator.PAGE_SIZE
+            )
+            if (accountingObjects.isEmpty()) {
+                dispatch(Result.IsListEndReached(true))
             }
+            accountingObjects
+        }
+
+        private suspend fun reset() {
+            paginator.reset()
+            dispatch(Result.IsListEndReached(false))
+            dispatch(Result.AccountingObjects(listOf()))
         }
 
         private fun onItemClick(item: AccountingObjectDomain) {
@@ -136,6 +170,7 @@ class AccountingObjectStoreFactory(
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
         data class SearchText(val searchText: String) : Result()
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
+        data class IsListEndReached(val isListEndReached: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<AccountingObjectStore.State, Result> {
@@ -146,10 +181,7 @@ class AccountingObjectStoreFactory(
                 is Result.AccountingObjects -> copy(accountingObjects = result.accountingObjects)
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchText -> copy(searchText = result.searchText)
+                is Result.IsListEndReached -> copy(isListEndReached = result.isListEndReached)
             }
-    }
-
-    companion object {
-        private const val SEARCH_DELAY = 300L
     }
 }
