@@ -14,5 +14,6 @@ data class InventorySyncEntity(
     val userInserted: String?,
     val userUpdated: String?,
     val inventoryBaseSyncEntity: EnumSyncEntity?,
-    val balanceUnit: List<StructuralSyncEntity>
+    val balanceUnit: List<StructuralSyncEntity>,
+    val checkers: List<InventoryCheckerSyncEntity>?
 )

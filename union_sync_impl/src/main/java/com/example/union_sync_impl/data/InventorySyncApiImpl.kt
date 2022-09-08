@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.data
 
+import com.example.union_sync_api.data.InventoryCheckerSyncApi
 import com.example.union_sync_api.data.InventorySyncApi
 import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
@@ -35,7 +36,8 @@ class InventorySyncApiImpl(
     private val structuralSyncApi: StructuralSyncApi,
     private val accountingObjectDao: AccountingObjectDao,
     private val inventoryRecordDao: InventoryRecordDao,
-    private val locationSyncApi: LocationSyncApi
+    private val locationSyncApi: LocationSyncApi,
+    private val checkerSyncApi: InventoryCheckerSyncApi
 ) : InventorySyncApi {
     override suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): String {
         val inventoryId = UUID.randomUUID().toString()
@@ -67,13 +69,15 @@ class InventorySyncApiImpl(
                 val balanceUnit = structurals.lastOrNull { it.balanceUnit }
                 val balanceUnitFullPath =
                     structuralSyncApi.getStructuralFullPath(balanceUnit?.id, mutableListOf())
+
                 it.inventoryDb.toInventorySyncEntity(
                     structuralSyncEntities = structurals,
                     mol = it.employeeDb?.toSyncEntity(),
                     locationSyncEntities = it.getLocations(),
                     accountingObjects = listOf(),
                     inventoryBaseSyncEntity = it.inventoryBaseDb?.toSyncEntity(),
-                    balanceUnit = balanceUnitFullPath.orEmpty()
+                    balanceUnit = balanceUnitFullPath.orEmpty(),
+                    checkers = checkerSyncApi.getCheckers(it.inventoryDb.id)
                 )
             }
         }
@@ -132,7 +136,8 @@ class InventorySyncApiImpl(
             locationSyncEntities = locations,
             accountingObjects = getAccountingObjects(fullInventory.inventoryDb),
             inventoryBaseSyncEntity = fullInventory.inventoryBaseDb?.toSyncEntity(),
-            balanceUnitFullPath.orEmpty()
+            balanceUnitFullPath.orEmpty(),
+            checkers = checkerSyncApi.getCheckers(fullInventory.inventoryDb.id)
         ).apply {
             Timber.tag(INVENTORY_TAG)
                 .d("InventorySyncEntity accountingObjectsIds : ${accountingObjects.map { it.id }}")

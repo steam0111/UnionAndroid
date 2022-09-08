@@ -28,5 +28,6 @@ enum class ManualType(@StringRes val titleId: Int) {
     RECIPIENT(R.string.recipient),
     BALANCE_UNIT_FROM(R.string.balance_unit_from),
     BALANCE_UNIT_TO(R.string.balance_unit_to),
-    BALANCE_UNIT(R.string.balance_unit)
+    BALANCE_UNIT(R.string.balance_unit),
+    INVENTORY_CHECKER(R.string.inventory_checker_title)
 }

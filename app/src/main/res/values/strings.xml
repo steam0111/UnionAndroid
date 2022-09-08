@@ -298,6 +298,7 @@
 
     <!-- Inventories -->
     <string name="inventories_title">Список инв. ведомостей</string>
+    <string name="inventory_checker_title">Проверяющие</string>
 
     <!-- Producer -->
     <string name="producer_title">Производители</string>
