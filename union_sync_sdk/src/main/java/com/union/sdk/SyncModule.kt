@@ -10,6 +10,7 @@ import com.example.union_sync_api.data.DocumentSyncApi
 import com.example.union_sync_api.data.EmployeeSyncApi
 import com.example.union_sync_api.data.EnumsSyncApi
 import com.example.union_sync_api.data.EquipmentTypeSyncApi
+import com.example.union_sync_api.data.InventoryCheckerSyncApi
 import com.example.union_sync_api.data.InventoryRecordSyncApi
 import com.example.union_sync_api.data.InventorySyncApi
 import com.example.union_sync_api.data.LocationSyncApi
@@ -32,6 +33,7 @@ import com.example.union_sync_impl.data.DocumentSyncApiImpl
 import com.example.union_sync_impl.data.EmployeeSyncApiImpl
 import com.example.union_sync_impl.data.EnumsSyncApiImpl
 import com.example.union_sync_impl.data.EquipmentTypeSyncApiImpl
+import com.example.union_sync_impl.data.InventoryCheckerSyncApiImpl
 import com.example.union_sync_impl.data.InventoryRecordSyncApiImpl
 import com.example.union_sync_impl.data.InventorySyncApiImpl
 import com.example.union_sync_impl.data.LocationSyncApiImpl
@@ -80,7 +82,8 @@ object SyncModule {
                 accountingObjectDao = get(),
                 inventoryRecordDao = get(),
                 locationSyncApi = get(),
-                structuralSyncApi = get()
+                structuralSyncApi = get(),
+                checkerSyncApi = get()
             )
         }
         factory<DocumentSyncApi> {
@@ -157,6 +160,9 @@ object SyncModule {
                 structuralSyncApi = get()
             )
         }
+        factory<InventoryCheckerSyncApi> {
+            InventoryCheckerSyncApiImpl(get())
+        }
         factory<AllSyncApi> {
             AllSyncImpl(
                 get(),
@@ -200,6 +206,7 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
+                get()
             )
         }
         factory {
@@ -276,6 +283,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().enumsDao()
+        }
+        factory {
+            get<UnionDatabase>().inventoryChecker()
         }
         factory<ManageSyncDataApi> {
             ManageSyncDataImpl(

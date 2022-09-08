@@ -11,6 +11,7 @@ import com.example.union_sync_impl.dao.DocumentDao
 import com.example.union_sync_impl.dao.EmployeeDao
 import com.example.union_sync_impl.dao.EnumsDao
 import com.example.union_sync_impl.dao.EquipmentTypeDao
+import com.example.union_sync_impl.dao.InventoryCheckerDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.InventoryRecordDao
 import com.example.union_sync_impl.dao.LocationDao
@@ -36,6 +37,7 @@ import com.example.union_sync_impl.entity.DocumentDb
 import com.example.union_sync_impl.entity.EmployeeDb
 import com.example.union_sync_impl.entity.EnumDb
 import com.example.union_sync_impl.entity.EquipmentTypesDb
+import com.example.union_sync_impl.entity.InventoryCheckerDb
 import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.entity.InventoryRecordDb
 import com.example.union_sync_impl.entity.NetworkSyncDb
@@ -83,8 +85,9 @@ import com.example.union_sync_impl.utils.Converters
         TransitDb::class,
         TransitAccountingObjectRecordDb::class,
         TransitRemainsRecordDb::class,
-        EnumDb::class
-    ], version = 100
+        EnumDb::class,
+        InventoryCheckerDb::class
+    ], version = 101
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {
@@ -113,4 +116,5 @@ abstract class UnionDatabase : RoomDatabase() {
     abstract fun transitAccountingObjectRecordDao(): TransitAccountingObjectRecordDao
     abstract fun transitRemainsRecordDao(): TransitRemainsRecordDao
     abstract fun enumsDao(): EnumsDao
+    abstract fun inventoryChecker(): InventoryCheckerDao
 }

@@ -56,7 +56,14 @@ fun InventorySyncEntity.map(): InventoryCreateDomain =
                     type = ManualType.INVENTORY_BASE
                 )
             )
-
+            add(
+                ParamDomain(
+                    value = checkers?.joinToString(", ") { it.employee.catalogItemName }.orEmpty(),
+                    type = ManualType.INVENTORY_CHECKER,
+                    isClickable = false,
+                    isFilter = false
+                )
+            )
         },
         inventoryStatus = InventoryStatus.valueOf(inventoryStatus),
         userInserted = userInserted,

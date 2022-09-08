@@ -38,7 +38,8 @@ class SyncRepository(
     private val transitDao: TransitDao,
     private val transitRemainsRecordDao: TransitRemainsRecordDao,
     private val transitAccountingObjectRecordDao: TransitAccountingObjectRecordDao,
-    private val enumsDao: EnumsDao
+    private val enumsDao: EnumsDao,
+    private val inventoryCheckerDao: InventoryCheckerDao
 ) {
     suspend fun clearDataBeforeDownload() {
         inventoryDao.clearAll()
@@ -215,6 +216,11 @@ class SyncRepository(
             moshi,
             ::inventoryRecordDbSaver,
             getInventoryRecordDbCollector()
+        ),
+        InventoryCheckerSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::inventoryCheckerDbSaver,
         ),
         ActionBasesSyncEntity(
             syncControllerApi,
@@ -670,6 +676,12 @@ class SyncRepository(
 
     private suspend fun inventoryRecordDbSaver(objects: List<InventoryRecordDtoV2>) {
         inventoryRecordDao.insertAll(objects.map { it.toInventoryRecordDb() })
+    }
+
+    private suspend fun inventoryCheckerDbSaver(objects: List<InventoryCheckerDto>) {
+        employeeDao.insertAll(objects.mapNotNull { it.extendedEmployee?.toEmployeeDb() })
+        inventoryDao.insertAll(objects.mapNotNull { it.extendedInventory?.toInventoryDb() })
+        inventoryCheckerDao.insertAll(objects.map { it.toInventoryCheckerDb() })
     }
 
     private suspend fun actionBasesDbSaver(objects: List<EnumDtoV2>) {
