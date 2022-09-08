@@ -41,6 +41,7 @@ object ModuleSettingsModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
+                get(),
                 get()
             ).create()
         }
@@ -50,7 +51,7 @@ object ModuleSettingsModule {
         }
 
         single(qualifier = READER_POWER_PREFERENCE_KEY) {
-            stringPreferencesKey(READER_POWER_PREFERENCE_KEY.value)
+            intPreferencesKey(READER_POWER_PREFERENCE_KEY.value)
         }
     }
 }

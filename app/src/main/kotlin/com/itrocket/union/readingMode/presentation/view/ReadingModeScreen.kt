@@ -82,6 +82,7 @@ fun ReadingModeScreen(
                     onCameraClickListener = onCameraClickListener,
                     onSettingsClickListener = onSettingsClickListener,
                     onManualInputClickListener = onManualInputClickListener,
+                    selectedTab = state.selectedTab
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -95,12 +96,14 @@ private fun BottomBar(
     onCameraClickListener: () -> Unit,
     onSettingsClickListener: () -> Unit,
     onManualInputClickListener: () -> Unit,
+    selectedTab: ReadingModeTab
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         ImageButton(
             imageId = R.drawable.ic_settings,
             paddings = PaddingValues(12.dp),
-            onClick = onCameraClickListener
+            onClick = onSettingsClickListener,
+            isEnabled = selectedTab == ReadingModeTab.RFID
         )
         Spacer(modifier = Modifier.width(16.dp))
         BaseButton(
@@ -112,7 +115,7 @@ private fun BottomBar(
         ImageButton(
             imageId = R.drawable.ic_camera,
             paddings = PaddingValues(12.dp),
-            onClick = onSettingsClickListener
+            onClick = onCameraClickListener
         )
     }
 }

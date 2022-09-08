@@ -115,7 +115,7 @@ fun ImageButton(
         contentDescription = null,
         modifier = Modifier
             .background(backgroundColor, RoundedCornerShape(8.dp))
-            .clickable(onClick = onClick, interactionSource = remember {
+            .clickable(onClick = onClick, enabled = isEnabled, interactionSource = remember {
                 MutableInteractionSource()
             }, indication = rememberRipple())
             .clip(RoundedCornerShape(8.dp))
