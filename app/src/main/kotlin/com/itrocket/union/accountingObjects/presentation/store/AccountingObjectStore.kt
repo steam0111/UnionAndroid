@@ -24,6 +24,7 @@ interface AccountingObjectStore :
         object OnFilterClicked : Intent()
         object OnBackClicked : Intent()
         object OnSearchClicked : Intent()
+        object OnLoadNext : Intent()
         data class OnSearchTextChanged(val searchText: String) : Intent()
     }
 
@@ -32,6 +33,7 @@ interface AccountingObjectStore :
         val accountingObjects: List<AccountingObjectDomain> = listOf(),
         val isShowSearch: Boolean = false,
         val searchText: String = "",
+        val isListEndReached: Boolean = false,
         val params: List<ParamDomain>
     )
 

@@ -23,7 +23,9 @@ class AccountingObjectInteractor(
     suspend fun getAccountingObjects(
         searchQuery: String = "",
         params: List<ParamDomain>,
-        selectedAccountingObjectIds: List<String> = listOf()
+        selectedAccountingObjectIds: List<String> = listOf(),
+        offset: Long? = null,
+        limit: Long? = null
     ): List<AccountingObjectDomain> =
         withContext(coreDispatchers.io) {
             val lastLocationId = params.getFilterLocationLastId(ManualType.LOCATION_INVENTORY)
@@ -44,7 +46,9 @@ class AccountingObjectInteractor(
                 searchQuery,
                 params,
                 filterLocationIds,
-                filterStructuralIds
+                filterStructuralIds,
+                offset = offset,
+                limit = limit
             ).filter {
                 !selectedAccountingObjectIds.contains(it.id)
             }

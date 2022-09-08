@@ -64,6 +64,9 @@ class AccountingObjectComposeFragment :
                 },
                 onSearchTextChanged = {
                     accept(AccountingObjectStore.Intent.OnSearchTextChanged(it))
+                },
+                onLoadNext = {
+                    accept(AccountingObjectStore.Intent.OnLoadNext)
                 }
             )
         }

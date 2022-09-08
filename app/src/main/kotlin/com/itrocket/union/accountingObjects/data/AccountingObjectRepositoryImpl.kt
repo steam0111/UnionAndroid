@@ -31,7 +31,9 @@ class AccountingObjectRepositoryImpl(
         textQuery: String?,
         params: List<ParamDomain>,
         selectedLocationIds: List<String?>?,
-        structuralIds: List<String?>?
+        structuralIds: List<String?>?,
+        offset: Long?,
+        limit: Long?
     ): List<AccountingObjectDomain> =
         withContext(coreDispatchers.io) {
             syncApi.getAccountingObjects(
@@ -43,7 +45,9 @@ class AccountingObjectRepositoryImpl(
                 providerId = params.getProviderId(),
                 statusId = params.getStatusId(),
                 locationIds = selectedLocationIds,
-                structuralId = structuralIds
+                structuralId = structuralIds,
+                offset = offset,
+                limit = limit
             ).map { it.map() }
         }
 
