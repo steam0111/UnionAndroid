@@ -1,6 +1,7 @@
 package com.union.sdk
 
 import androidx.room.Room
+import com.example.union_sync_api.data.AccountingObjectAdditionalFieldsSyncApi
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.ActionRecordSyncApi
 import com.example.union_sync_api.data.ActionRemainsRecordSyncApi
@@ -24,6 +25,7 @@ import com.example.union_sync_api.data.ReserveSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
 import com.example.union_sync_api.data.TransitSyncApi
 import com.example.union_sync_impl.UnionDatabase
+import com.example.union_sync_impl.data.AccountingObjectAdditionalFieldsSyncApiImpl
 import com.example.union_sync_impl.data.AccountingObjectSyncApiImpl
 import com.example.union_sync_impl.data.ActionRecordSyncApiImpl
 import com.example.union_sync_impl.data.ActionRemainsRecordSyncApiImpl
@@ -72,7 +74,8 @@ object SyncModule {
             AccountingObjectSyncApiImpl(
                 accountingObjectsDao = get(),
                 locationSyncApi = get(),
-                structuralSyncApi = get()
+                structuralSyncApi = get(),
+                accountingObjectAdditionalFieldsSyncApi = get()
             )
         }
         factory<InventorySyncApi> {
@@ -171,6 +174,12 @@ object SyncModule {
                 get()
             )
         }
+        factory<AccountingObjectAdditionalFieldsSyncApi> {
+            AccountingObjectAdditionalFieldsSyncApiImpl(
+                simpleDao = get(),
+                vocabularyDao = get()
+            )
+        }
         single {
             Room.databaseBuilder(
                 get(),
@@ -179,6 +188,11 @@ object SyncModule {
         }
         factory {
             SyncRepository(
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
                 get(),
                 get(),
                 get(),
@@ -286,6 +300,21 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().inventoryChecker()
+        }
+        factory {
+            get<UnionDatabase>().accountingObjectSimpleAdditionalFieldDao()
+        }
+        factory {
+            get<UnionDatabase>().accountingObjectVocabularyAdditionalFieldDao()
+        }
+        factory {
+            get<UnionDatabase>().simpleAdditionalFieldDao()
+        }
+        factory {
+            get<UnionDatabase>().vocabularyAdditionalFieldDao()
+        }
+        factory {
+            get<UnionDatabase>().vocabularyAdditionalFieldValueDao()
         }
         factory<ManageSyncDataApi> {
             ManageSyncDataImpl(

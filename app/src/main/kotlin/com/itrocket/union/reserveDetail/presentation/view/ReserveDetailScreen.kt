@@ -132,7 +132,7 @@ private fun ListInfo(listInfo: List<ObjectInfoDomain>) {
     LazyColumn {
         items(listInfo) {
             ExpandedInfoField(
-                label = stringResource(id = it.title),
+                label = it.title?.let { stringResource(id = it) }.orEmpty(),
                 value = it.value.orEmpty(),
                 modifier = Modifier.fillMaxWidth()
             )

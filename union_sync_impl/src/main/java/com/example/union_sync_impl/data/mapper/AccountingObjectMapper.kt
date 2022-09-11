@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.data.mapper
 
+import com.example.union_sync_api.entity.AccountingObjectAdditionalFieldSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
@@ -61,7 +62,9 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
 fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
     locationSyncEntity: List<LocationSyncEntity>?,
     balanceUnitSyncEntities: List<StructuralSyncEntity>?,
-    structuralSyncEntities: List<StructuralSyncEntity>?
+    structuralSyncEntities: List<StructuralSyncEntity>?,
+    simpleAdditionalFields: List<AccountingObjectAdditionalFieldSyncEntity>?,
+    vocabularyAdditionalFields: List<AccountingObjectAdditionalFieldSyncEntity>?
 ): AccountingObjectDetailSyncEntity {
     return AccountingObjectDetailSyncEntity(
         accountingObject = accountingObjectDb.toSyncEntity(locationSyncEntity),
@@ -73,7 +76,9 @@ fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
         mol = mol?.toSyncEntity(),
         structuralSyncEntities = structuralSyncEntities,
         categorySyncEntity = categoryDb?.toSyncEntity(),
-        balanceUnitSyncEntities = balanceUnitSyncEntities
+        balanceUnitSyncEntities = balanceUnitSyncEntities,
+        simpleAdditionalFields = simpleAdditionalFields,
+        vocabularyAdditionalFields = vocabularyAdditionalFields
     )
 }
 

@@ -37,7 +37,6 @@ import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingOb
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.AppTheme
@@ -103,7 +102,7 @@ private fun Content(
         }
         items(state.accountingObjectDomain.listMainInfo) {
             ExpandedInfoField(
-                label = stringResource(id = it.title),
+                label = it.name ?: it.title?.let { stringResource(id = it) }.orEmpty(),
                 value = it.valueRes?.let { stringResource(id = it) } ?: it.value.orEmpty(),
                 modifier = Modifier.fillMaxWidth()
             )

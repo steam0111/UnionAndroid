@@ -6,9 +6,7 @@ import com.example.union_sync_api.entity.EnumSyncEntity
 import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.entity.EmployeeDb
 import com.example.union_sync_impl.entity.FullEmployeeDb
-import com.example.union_sync_impl.sync.EmployeeStatusSyncEntity
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
-import org.openapitools.client.models.CustomEmployeeDto
 import org.openapitools.client.models.EmployeeDtoV2
 
 fun EmployeeDtoV2.toEmployeeDb(): EmployeeDb {

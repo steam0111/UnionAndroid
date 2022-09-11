@@ -132,6 +132,14 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
         accountingObject.userUpdated?.let {
             add(ObjectInfoDomain(R.string.common_user_update, it))
         }
+
+        simpleAdditionalFields?.forEach {
+            add(ObjectInfoDomain(name = it.name, value = it.value))
+        }
+
+        vocabularyAdditionalFields?.forEach {
+            add(ObjectInfoDomain(name = it.name, value = it.value))
+        }
     }
 
 
