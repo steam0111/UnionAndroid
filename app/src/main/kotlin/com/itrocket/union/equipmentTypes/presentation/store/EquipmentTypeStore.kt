@@ -17,13 +17,15 @@ interface EquipmentTypeStore :
         data class OnItemClicked(val id: String) : Intent()
         data class OnSearchTextChanged(val searchText: String) : Intent()
         object OnSearchClicked : Intent()
+        object OnLoadNext : Intent()
     }
 
     data class State(
         val isLoading: Boolean = false,
         val types: List<EquipmentTypesDomain> = listOf(),
         val isShowSearch: Boolean = false,
-        val searchText: String = ""
+        val searchText: String = "",
+        val isListEndReached: Boolean = false
     )
 
     sealed class Label {

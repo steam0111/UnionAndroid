@@ -24,7 +24,7 @@ object ReservesModule {
         }
 
         factory<ReservesRepository> {
-            ReservesRepositoryImpl(syncApi = get())
+            ReservesRepositoryImpl(syncApi = get(), coreDispatchers = get())
         }
 
         factory {

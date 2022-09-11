@@ -10,10 +10,14 @@ class NomenclatureInteractor(
     private val repository: NomenclatureRepository,
     private val coreDispatchers: CoreDispatchers
 ) {
-    suspend fun getNomenclatures(params: List<ParamDomain>?, searchQuery: String = "") =
-        withContext(coreDispatchers.io) {
-            repository.getNomenclatures(searchQuery, params)
-        }
+    suspend fun getNomenclatures(
+        params: List<ParamDomain>?,
+        searchQuery: String = "",
+        offset: Long? = null,
+        limit: Long? = null
+    ) = withContext(coreDispatchers.io) {
+        repository.getNomenclatures(searchQuery, params, limit = limit, offset = offset)
+    }
 
     fun getFilters(): List<ParamDomain> {
         return listOf(

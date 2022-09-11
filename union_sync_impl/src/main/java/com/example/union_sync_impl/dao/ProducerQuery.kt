@@ -3,12 +3,15 @@ package com.example.union_sync_impl.dao
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
+import com.example.union_sync_impl.utils.addPagination
 import com.example.union_sync_impl.utils.contains
 import com.example.union_sync_impl.utils.more
 
 fun sqlProducerQuery(
     textQuery: String? = null,
-    updateDate: Long? = null
+    updateDate: Long? = null,
+    offset: Long? = null,
+    limit: Long? = null
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT * FROM producer"
 
@@ -24,7 +27,7 @@ fun sqlProducerQuery(
                 }
             }
         )
-    )
+    ).addPagination(limit = limit, offset = offset)
 
     return SimpleSQLiteQuery(query)
 

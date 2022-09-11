@@ -7,12 +7,16 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.equipmentTypes.domain.entity.EquipmentTypesDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.nomenclature.domain.NomenclatureInteractor
 import com.itrocket.union.nomenclature.domain.entity.NomenclatureDomain
 import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
+import com.itrocket.utils.paging.Paginator
+import org.koin.androidx.compose.get
+
 
 class NomenclatureStoreFactory(
     private val storeFactory: StoreFactory,
@@ -41,12 +45,28 @@ class NomenclatureStoreFactory(
         BaseExecutor<NomenclatureStore.Intent, Unit, NomenclatureStore.State, Result, NomenclatureStore.Label>(
             context = coreDispatchers.ui
         ) {
+
+        private val paginator = Paginator<NomenclatureDomain>(
+            onError = {
+                handleError(it)
+            },
+            onLoadUpdate = {
+                dispatch(Result.Loading(it))
+            },
+            onSuccess = {
+                dispatch(Result.Nomenclatures(it))
+            }
+        )
+
         override suspend fun executeAction(
             action: Unit,
             getState: () -> NomenclatureStore.State
         ) {
             searchManager.listenSearch {
-                getNomenclatures(searchText = it, params = params)
+                reset()
+                paginator.onLoadNext {
+                    getNomenclatures(params = params, getState().searchText, offset = it)
+                }
             }
         }
 
@@ -70,12 +90,26 @@ class NomenclatureStoreFactory(
                 )
                 is NomenclatureStore.Intent.OnFilterResult -> {
                     params = intent.params
-                    getNomenclatures(params, getState().searchText)
+                    reset()
+                    paginator.onLoadNext {
+                        getNomenclatures(
+                            params = params,
+                            searchText = getState().searchText,
+                            offset = it
+                        )
+                    }
                 }
                 NomenclatureStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is NomenclatureStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
                     searchManager.emit(intent.searchText)
+                }
+                is NomenclatureStore.Intent.OnLoadNext -> paginator.onLoadNext {
+                    getNomenclatures(
+                        params = params,
+                        searchText = getState().searchText,
+                        offset = it
+                    )
                 }
             }
         }
@@ -97,20 +131,26 @@ class NomenclatureStoreFactory(
 
         private suspend fun getNomenclatures(
             params: List<ParamDomain>? = null,
-            searchText: String = ""
-        ) {
-            catchException {
-                dispatch(Result.Loading(true))
-                dispatch(
-                    Result.Nomenclatures(
-                        nomenclatureInteractor.getNomenclatures(
-                            params,
-                            searchText
-                        )
-                    )
-                )
-                dispatch(Result.Loading(false))
+            searchText: String = "",
+            offset: Long = 0
+        ) = runCatching {
+            val nomenclatures = nomenclatureInteractor.getNomenclatures(
+                params = params,
+                searchQuery = searchText,
+                offset = offset,
+                limit = Paginator.PAGE_SIZE
+            )
+
+            if (nomenclatures.isEmpty()) {
+                dispatch(Result.IsListEndReached(true))
             }
+            nomenclatures
+        }
+
+        private suspend fun reset() {
+            paginator.reset()
+            dispatch(Result.IsListEndReached(false))
+            dispatch(Result.Nomenclatures(listOf()))
         }
     }
 
@@ -119,6 +159,7 @@ class NomenclatureStoreFactory(
         data class Nomenclatures(val nomenclatures: List<NomenclatureDomain>) : Result()
         data class SearchText(val searchText: String) : Result()
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
+        data class IsListEndReached(val isListEndReached: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<NomenclatureStore.State, Result> {
@@ -128,6 +169,7 @@ class NomenclatureStoreFactory(
                 is Result.Nomenclatures -> copy(nomenclatures = result.nomenclatures)
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchText -> copy(searchText = result.searchText)
+                is Result.IsListEndReached -> copy(isListEndReached = result.isListEndReached)
             }
     }
 }

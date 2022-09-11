@@ -23,13 +23,15 @@ interface CounterpartyStore :
         object OnBackClicked : Intent()
         data class OnCounterpartyClicked(val id: String) : Intent()
         data class OnSearchTextChanged(val searchText: String) : Intent()
+        object OnLoadNext : Intent()
     }
 
     data class State(
         val isLoading: Boolean = false,
         val counterparties: List<CounterpartyDomain> = listOf(),
         val isShowSearch: Boolean = false,
-        val searchText: String = ""
+        val searchText: String = "",
+        val isListEndReached: Boolean = false
     )
 
     sealed class Label {

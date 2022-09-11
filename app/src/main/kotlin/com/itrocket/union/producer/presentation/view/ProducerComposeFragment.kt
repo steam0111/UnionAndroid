@@ -42,6 +42,9 @@ class ProducerComposeFragment :
                 onSearchTextChanged = {
                     accept(ProducerStore.Intent.OnSearchTextChanged(it))
                 },
+                onLoadNext = {
+                    accept(ProducerStore.Intent.OnLoadNext)
+                }
             )
         }
     }

@@ -17,11 +17,15 @@ class EmployeeRepositoryImpl(
     override suspend fun getEmployees(
         textQuery: String?,
         params: List<ParamDomain>?,
+        offset: Long?,
+        limit: Long?
     ): List<EmployeeDomain> =
         withContext(coreDispatchers.io) {
             employeeSyncApi.getEmployees(
                 structuralId = params?.getFilterStructuralLastId(ManualType.STRUCTURAL),
-                textQuery = textQuery
+                textQuery = textQuery,
+                limit = limit,
+                offset = offset
             ).map()
         }
 

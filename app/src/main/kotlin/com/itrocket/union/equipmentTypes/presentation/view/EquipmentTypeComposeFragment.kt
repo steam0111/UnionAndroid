@@ -41,6 +41,9 @@ class EquipmentTypeComposeFragment :
                 onSearchTextChanged = {
                     accept(EquipmentTypeStore.Intent.OnSearchTextChanged(it))
                 },
+                onLoadNext = {
+                    accept(EquipmentTypeStore.Intent.OnLoadNext)
+                }
             )
         }
     }

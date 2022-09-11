@@ -7,5 +7,9 @@ class NomenclatureGroupInteractor(
     private val repository: NomenclatureGroupRepository,
     private val coreDispatchers: CoreDispatchers
 ) {
-    suspend fun getNomenclatureGroups(searchQuery: String = "") = repository.getNomenclatureGroups(searchQuery)
+    suspend fun getNomenclatureGroups(
+        searchQuery: String = "",
+        offset: Long? = null,
+        limit: Long? = null
+    ) = repository.getNomenclatureGroups(searchQuery, limit = limit, offset = offset)
 }

@@ -17,13 +17,15 @@ interface NomenclatureGroupStore :
         class OnItemClick(val id: String) : Intent()
         data class OnSearchTextChanged(val searchText: String) : Intent()
         object OnSearchClicked : Intent()
+        object OnLoadNext : Intent()
     }
 
     data class State(
         val nomenclatureGroups: List<NomenclatureGroupDomain> = emptyList(),
         val isLoading: Boolean = false,
         val isShowSearch: Boolean = false,
-        val searchText: String = ""
+        val searchText: String = "",
+        val isListEndReached: Boolean = false
     )
 
     sealed class Label {

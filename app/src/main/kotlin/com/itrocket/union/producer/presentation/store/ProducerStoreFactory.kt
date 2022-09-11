@@ -12,8 +12,7 @@ import com.itrocket.union.producer.domain.ProducerInteractor
 import com.itrocket.union.producer.domain.entity.ProducerDomain
 import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
+import com.itrocket.utils.paging.Paginator
 
 class ProducerStoreFactory(
     private val storeFactory: StoreFactory,
@@ -39,12 +38,28 @@ class ProducerStoreFactory(
         BaseExecutor<ProducerStore.Intent, Unit, ProducerStore.State, Result, ProducerStore.Label>(
             context = coreDispatchers.ui
         ) {
+
+        private val paginator = Paginator<ProducerDomain>(
+            onError = {
+                handleError(it)
+            },
+            onLoadUpdate = {
+                dispatch(Result.Loading(it))
+            },
+            onSuccess = {
+                dispatch(Result.Producers(it))
+            }
+        )
+
         override suspend fun executeAction(
             action: Unit,
             getState: () -> ProducerStore.State
         ) {
             searchManager.listenSearch {
-                listenProducers(searchText = it)
+                reset()
+                paginator.onLoadNext {
+                    getProducers(getState().searchText, offset = it)
+                }
             }
         }
 
@@ -64,22 +79,29 @@ class ProducerStoreFactory(
                     dispatch(Result.SearchText(intent.searchText))
                     searchManager.emit(intent.searchText)
                 }
+                is ProducerStore.Intent.OnLoadNext -> paginator.onLoadNext {
+                    getProducers(
+                        searchText = getState().searchText,
+                        offset = it
+                    )
+                }
             }
         }
 
-        private suspend fun listenProducers(searchText: String = "") {
-            catchException {
-                dispatch(Result.Loading(true))
-                producerInteractor.getProducers(searchQuery = searchText)
-                    .catch {
-                        handleError(it)
-                    }
-                    .collect {
-                        dispatch(Result.Producers(it))
-                        dispatch(Result.Loading(false))
-                    }
+        private suspend fun getProducers(searchText: String = "", offset: Long = 0) =
+            runCatching {
+                val producers = producerInteractor.getProducers(
+                    searchQuery = searchText,
+                    offset = offset,
+                    limit = Paginator.PAGE_SIZE
+                )
+
+                if (producers.isEmpty()) {
+                    dispatch(Result.IsListEndReached(true))
+                }
+                producers
+
             }
-        }
 
         private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
@@ -95,6 +117,12 @@ class ProducerStoreFactory(
             dispatch(Result.Loading(false))
             publish(ProducerStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
+
+        private suspend fun reset() {
+            paginator.reset()
+            dispatch(Result.IsListEndReached(false))
+            dispatch(Result.Producers(listOf()))
+        }
     }
 
     private sealed class Result {
@@ -102,6 +130,7 @@ class ProducerStoreFactory(
         data class Producers(val producers: List<ProducerDomain>) : Result()
         data class SearchText(val searchText: String) : Result()
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
+        data class IsListEndReached(val isListEndReached: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<ProducerStore.State, Result> {
@@ -111,6 +140,7 @@ class ProducerStoreFactory(
                 is Result.Producers -> copy(producers = result.producers)
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchText -> copy(searchText = result.searchText)
+                is Result.IsListEndReached -> copy(isListEndReached = result.isListEndReached)
             }
     }
 }

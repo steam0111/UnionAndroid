@@ -14,10 +14,25 @@ import kotlinx.coroutines.flow.flowOn
 class EquipmentTypeSyncApiImpl(
     private val equipmentTypeDao: EquipmentTypeDao,
 ) : EquipmentTypeSyncApi {
-    override suspend fun getEquipmentTypes(textQuery: String?): Flow<List<EquipmentTypeSyncEntity>> {
+    override suspend fun getEquipmentTypesFlow(textQuery: String?): Flow<List<EquipmentTypeSyncEntity>> {
         return flow {
-            emit(equipmentTypeDao.getAll(sqlEquipmentTypeQuery(textQuery)).map { it.toSyncEntity() })
+            emit(
+                equipmentTypeDao.getAll(sqlEquipmentTypeQuery(textQuery)).map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun getEquipmentTypes(
+        textQuery: String?,
+        offset: Long?,
+        limit: Long?
+    ): List<EquipmentTypeSyncEntity> {
+        return equipmentTypeDao.getAll(
+            sqlEquipmentTypeQuery(
+                textQuery,
+                limit = limit,
+                offset = offset
+            )
+        ).map { it.toSyncEntity() }
     }
 
     override suspend fun getEquipmentTypeDetail(id: String): EquipmentTypeSyncEntity {

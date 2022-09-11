@@ -14,7 +14,9 @@ interface ReservesRepository {
         textQuery: String? = null,
         reservesShorts: List<ReserveShortSyncEntity>? = null,
         selectedLocationIds: List<String?>?,
-        structuralIds: List<String?>?
+        structuralIds: List<String?>?,
+        offset: Long?,
+        limit: Long?
     ): List<ReservesDomain>
 
     suspend fun getReservesByIds(

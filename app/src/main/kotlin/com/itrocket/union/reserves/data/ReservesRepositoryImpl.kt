@@ -4,6 +4,7 @@ import com.example.union_sync_api.data.ReserveSyncApi
 import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_api.entity.ReserveUpdateSyncEntity
+import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getMolId
 import com.itrocket.union.manual.getNomenclatureGroupId
@@ -12,8 +13,10 @@ import com.itrocket.union.reserveDetail.data.mapper.map
 import com.itrocket.union.reserves.data.mapper.map
 import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import kotlinx.coroutines.withContext
 
 class ReservesRepositoryImpl(
+    private val coreDispatchers: CoreDispatchers,
     private val syncApi: ReserveSyncApi
 ) : ReservesRepository {
     override suspend fun getReserves(
@@ -22,18 +25,23 @@ class ReservesRepositoryImpl(
         textQuery: String?,
         reservesShorts: List<ReserveShortSyncEntity>?,
         selectedLocationIds: List<String?>?,
-        structuralIds: List<String?>?
-    ): List<ReservesDomain> {
-        return syncApi.getAll(
-            structuralIds = structuralIds,
-            molId = params?.getMolId(),
-            nomenclatureGroupId = params?.getNomenclatureGroupId(),
-            receptionItemCategoryId = params?.getReceptionCategoryId(),
-            reservesIds = reservesIds,
-            textQuery = textQuery,
-            locationIds = selectedLocationIds
-        ).map()
-    }
+        structuralIds: List<String?>?,
+        offset: Long?,
+        limit: Long?
+    ): List<ReservesDomain> =
+        withContext(coreDispatchers.io) {
+            syncApi.getAll(
+                structuralIds = structuralIds,
+                molId = params?.getMolId(),
+                nomenclatureGroupId = params?.getNomenclatureGroupId(),
+                receptionItemCategoryId = params?.getReceptionCategoryId(),
+                reservesIds = reservesIds,
+                textQuery = textQuery,
+                locationIds = selectedLocationIds,
+                offset = offset,
+                limit = limit
+            ).map()
+        }
 
     override suspend fun getReservesFilterCount(
         params: List<ParamDomain>?,

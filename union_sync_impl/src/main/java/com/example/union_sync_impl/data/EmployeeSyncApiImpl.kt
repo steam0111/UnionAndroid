@@ -20,9 +20,18 @@ class EmployeeSyncApiImpl(
 ) : EmployeeSyncApi {
     override suspend fun getEmployees(
         textQuery: String?,
-        structuralId: String?
+        structuralId: String?,
+        offset: Long?,
+        limit: Long?
     ): List<EmployeeSyncEntity> {
-        val employeeDb = employeeDao.getAll(sqlEmployeeQuery(structuralId, textQuery))
+        val employeeDb = employeeDao.getAll(
+            sqlEmployeeQuery(
+                structuralId,
+                textQuery,
+                limit = limit,
+                offset = offset
+            )
+        )
         return employeeDb.map { it.toSyncEntity() }
     }
 

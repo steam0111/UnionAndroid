@@ -24,6 +24,7 @@ interface ReservesStore : Store<ReservesStore.Intent, ReservesStore.State, Reser
         object OnSearchClicked : Intent()
         data class OnFilterResult(val params: List<ParamDomain>) : Intent()
         data class OnSearchTextChanged(val searchText: String) : Intent()
+        object OnLoadNext : Intent()
     }
 
     data class State(
@@ -31,11 +32,13 @@ interface ReservesStore : Store<ReservesStore.Intent, ReservesStore.State, Reser
         val reserves: List<ReservesDomain> = listOf(),
         val isShowSearch: Boolean = false,
         val searchText: String = "",
-        val params: List<ParamDomain>
+        val params: List<ParamDomain>,
+        val isListEndReached: Boolean = false
     )
 
     sealed class Label {
-        data class GoBack(override val result: ReservesResult? = null) : Label(), GoBackNavigationLabel {
+        data class GoBack(override val result: ReservesResult? = null) : Label(),
+            GoBackNavigationLabel {
             override val resultCode: String
                 get() = ReservesComposeFragment.RESERVES_RESULT_CODE
 

@@ -14,9 +14,18 @@ class NomenclatureSyncApiImpl(
 
     override suspend fun getNomenclatures(
         groupId: String?,
-        textQuery: String?
+        textQuery: String?,
+        offset: Long?,
+        limit: Long?
     ): List<NomenclatureSyncEntity> {
-        return nomenclatureDao.getAll(sqlNomenclatureQuery(groupId, textQuery))
+        return nomenclatureDao.getAll(
+            sqlNomenclatureQuery(
+                groupId,
+                textQuery,
+                limit = limit,
+                offset = offset
+            )
+        )
             .map { it.toSyncEntity() }
     }
 

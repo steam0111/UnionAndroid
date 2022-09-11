@@ -21,13 +21,15 @@ interface EmployeeStore : Store<EmployeeStore.Intent, EmployeeStore.State, Emplo
         data class OnEmployeeClicked(val employeeId: String) : Intent()
         data class OnSearchTextChanged(val searchText: String) : Intent()
         data class OnFilterResult(val params: List<ParamDomain>) : Intent()
+        object OnLoadNext : Intent()
     }
 
     data class State(
         val isLoading: Boolean = false,
         val employees: List<EmployeeDomain> = listOf(),
         val isShowSearch: Boolean = false,
-        val searchText: String = ""
+        val searchText: String = "",
+        val isListEndReached: Boolean = false
     )
 
     sealed class Label {

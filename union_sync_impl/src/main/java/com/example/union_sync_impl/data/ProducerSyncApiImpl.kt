@@ -14,10 +14,19 @@ import kotlinx.coroutines.flow.flowOn
 class ProducerSyncApiImpl(
     private val producerDao: ProducerDao
 ) : ProducerSyncApi {
-    override suspend fun getProducers(textQuery: String?): Flow<List<ProducerSyncEntity>> {
+    override suspend fun getProducersFlow(textQuery: String?): Flow<List<ProducerSyncEntity>> {
         return flow {
             emit(producerDao.getAll(sqlProducerQuery(textQuery)).map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun getProducers(
+        textQuery: String?,
+        offset: Long?,
+        limit: Long?
+    ): List<ProducerSyncEntity> {
+        return producerDao.getAll(sqlProducerQuery(textQuery, limit = limit, offset = offset))
+            .map { it.toSyncEntity() }
     }
 
     override suspend fun getProducerDetail(id: String): ProducerSyncEntity {

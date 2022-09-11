@@ -12,11 +12,13 @@ import kotlinx.coroutines.withContext
 class CounterpartyRepositoryImpl(
     private val coreDispatchers: CoreDispatchers,
     private val counterpartySyncApi: CounterpartySyncApi
-) :
-    CounterpartyRepository {
+) : CounterpartyRepository {
 
-    override suspend fun getCounterparties(textQuery: String?): Flow<List<CounterpartyDomain>> =
-        withContext(coreDispatchers.io) {
-            counterpartySyncApi.getCounterparties(textQuery).map { it.map() }
-        }
+    override suspend fun getCounterparties(
+        textQuery: String?,
+        offset: Long?,
+        limit: Long?
+    ): List<CounterpartyDomain> = withContext(coreDispatchers.io) {
+        counterpartySyncApi.getCounterparties(textQuery, offset = offset, limit = limit).map()
+    }
 }

@@ -4,5 +4,9 @@ import com.itrocket.union.equipmentTypes.domain.entity.EquipmentTypesDomain
 import kotlinx.coroutines.flow.Flow
 
 interface EquipmentTypeRepository {
-    suspend fun getEquipmentTypes(textQuery: String?): Flow<List<EquipmentTypesDomain>>
+    suspend fun getEquipmentTypes(
+        textQuery: String?,
+        offset: Long?,
+        limit: Long?
+    ): List<EquipmentTypesDomain>
 }

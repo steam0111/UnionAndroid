@@ -13,6 +13,7 @@ import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
+import com.itrocket.utils.paging.Paginator
 
 class EmployeeStoreFactory(
     private val storeFactory: StoreFactory,
@@ -41,12 +42,28 @@ class EmployeeStoreFactory(
         BaseExecutor<EmployeeStore.Intent, Unit, EmployeeStore.State, Result, EmployeeStore.Label>(
             context = coreDispatchers.ui
         ) {
+
+        private val paginator = Paginator<EmployeeDomain>(
+            onError = {
+                handleError(it)
+            },
+            onLoadUpdate = {
+                dispatch(Result.Loading(it))
+            },
+            onSuccess = {
+                dispatch(Result.Employees(it))
+            }
+        )
+
         override suspend fun executeAction(
             action: Unit,
             getState: () -> EmployeeStore.State
         ) {
             searchManager.listenSearch {
-                getEmployees(params = params, searchText = it)
+                reset()
+                paginator.onLoadNext {
+                    getEmployees(params = params, getState().searchText, offset = it)
+                }
             }
         }
 
@@ -67,11 +84,21 @@ class EmployeeStoreFactory(
                 }
                 is EmployeeStore.Intent.OnFilterResult -> {
                     params = intent.params
-                    getEmployees(params, getState().searchText)
+                    reset()
+                    paginator.onLoadNext {
+                        getEmployees(params, getState().searchText, offset = it)
+                    }
                 }
                 is EmployeeStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
                     searchManager.emit(intent.searchText)
+                }
+                is EmployeeStore.Intent.OnLoadNext -> paginator.onLoadNext {
+                    getEmployees(
+                        params = params,
+                        searchText = getState().searchText,
+                        offset = it
+                    )
                 }
             }
         }
@@ -93,13 +120,26 @@ class EmployeeStoreFactory(
 
         private suspend fun getEmployees(
             params: List<ParamDomain>? = null,
-            searchText: String = ""
-        ) {
-            catchException {
-                dispatch(Result.Loading(true))
-                dispatch(Result.Employees(employeeInteractor.getEmployees(params, searchText)))
-                dispatch(Result.Loading(false))
+            searchText: String = "",
+            offset: Long = 0
+        ) = runCatching {
+            val employees = employeeInteractor.getEmployees(
+                params,
+                searchText,
+                offset = offset,
+                limit = Paginator.PAGE_SIZE
+            )
+
+            if (employees.isEmpty()) {
+                dispatch(Result.IsListEndReached(true))
             }
+            employees
+        }
+
+        private suspend fun reset() {
+            paginator.reset()
+            dispatch(Result.IsListEndReached(false))
+            dispatch(Result.Employees(listOf()))
         }
     }
 
@@ -108,6 +148,7 @@ class EmployeeStoreFactory(
         data class Employees(val employees: List<EmployeeDomain>) : Result()
         data class SearchText(val searchText: String) : Result()
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
+        data class IsListEndReached(val isListEndReached: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<EmployeeStore.State, Result> {
@@ -117,6 +158,7 @@ class EmployeeStoreFactory(
                 is Result.Employees -> copy(employees = result.employees)
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchText -> copy(searchText = result.searchText)
+                is Result.IsListEndReached -> copy(isListEndReached = result.isListEndReached)
             }
     }
 }

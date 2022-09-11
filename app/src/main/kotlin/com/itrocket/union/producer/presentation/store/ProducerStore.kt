@@ -17,13 +17,15 @@ interface ProducerStore : Store<ProducerStore.Intent, ProducerStore.State, Produ
         object OnBackClicked : Intent()
         data class OnProducerClicked(val id: String) : Intent()
         data class OnSearchTextChanged(val searchText: String) : Intent()
+        object OnLoadNext : Intent()
     }
 
     data class State(
         val isLoading: Boolean = false,
         val producers: List<ProducerDomain> = listOf(),
         val isShowSearch: Boolean = false,
-        val searchText: String = ""
+        val searchText: String = "",
+        val isListEndReached: Boolean = false
     )
 
     sealed class Label {
