@@ -1,8 +1,10 @@
 package com.example.union_sync_impl.data
 
+import com.example.union_sync_api.data.AccountingObjectAdditionalFieldsSyncApi
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
+import com.example.union_sync_api.entity.AccountingObjectAdditionalFieldSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
@@ -21,7 +23,8 @@ import kotlinx.coroutines.flow.map
 class AccountingObjectSyncApiImpl(
     private val accountingObjectsDao: AccountingObjectDao,
     private val locationSyncApi: LocationSyncApi,
-    private val structuralSyncApi: StructuralSyncApi
+    private val structuralSyncApi: StructuralSyncApi,
+    private val accountingObjectAdditionalFieldsSyncApi: AccountingObjectAdditionalFieldsSyncApi
 ) : AccountingObjectSyncApi {
 
     override suspend fun getAccountingObjects(
@@ -112,7 +115,13 @@ class AccountingObjectSyncApiImpl(
         return fullAccountingObjectDb.toAccountingObjectDetailSyncEntity(
             location,
             balanceUnit,
-            structurals
+            structurals,
+            simpleAdditionalFields = accountingObjectAdditionalFieldsSyncApi.getSimpleAdditionalFields(
+                fullAccountingObjectDb.accountingObjectDb.id
+            ),
+            vocabularyAdditionalFields = accountingObjectAdditionalFieldsSyncApi.getVocabularyAdditionalFields(
+                fullAccountingObjectDb.accountingObjectDb.id
+            )
         )
     }
 
@@ -130,7 +139,13 @@ class AccountingObjectSyncApiImpl(
             it.toAccountingObjectDetailSyncEntity(
                 location,
                 balanceUnit,
-                structurals
+                structurals,
+                simpleAdditionalFields = accountingObjectAdditionalFieldsSyncApi.getSimpleAdditionalFields(
+                    it.accountingObjectDb.id
+                ),
+                vocabularyAdditionalFields = accountingObjectAdditionalFieldsSyncApi.getVocabularyAdditionalFields(
+                    it.accountingObjectDb.id
+                )
             )
         }
     }

@@ -26,9 +26,10 @@ data class AccountingObjectDomain(
 
 @Parcelize
 data class ObjectInfoDomain(
-    val title: Int,
+    val title: Int? = null,
     val value: String? = null,
-    val valueRes: Int? = null
+    val valueRes: Int? = null,
+    val name: String? = null
 ) : Parcelable
 
 fun AccountingObjectDomain.toAccountingObjectIdSyncEntity() =

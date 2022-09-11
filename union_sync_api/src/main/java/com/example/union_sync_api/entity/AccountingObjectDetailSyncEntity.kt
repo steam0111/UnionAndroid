@@ -10,5 +10,7 @@ data class AccountingObjectDetailSyncEntity(
     val provider: ProviderSyncEntity?,
     val structuralSyncEntities: List<StructuralSyncEntity>?,
     val categorySyncEntity: EnumSyncEntity?,
-    val balanceUnitSyncEntities: List<StructuralSyncEntity>?
+    val balanceUnitSyncEntities: List<StructuralSyncEntity>?,
+    val simpleAdditionalFields: List<AccountingObjectAdditionalFieldSyncEntity>?,
+    val vocabularyAdditionalFields: List<AccountingObjectAdditionalFieldSyncEntity>?
 )

@@ -90,7 +90,7 @@ fun AccountingObjectItem(
                 Text(
                     text = stringResource(
                         R.string.common_two_dots,
-                        stringResource(id = it.title),
+                        it.title?.let { stringResource(id = it) }.orEmpty(),
                         it.value.orEmpty()
                     ),
                     style = AppTheme.typography.subtitle1
@@ -177,7 +177,7 @@ fun ReservesItem(
                 Text(
                     text = stringResource(
                         R.string.common_two_dots,
-                        stringResource(id = it.title),
+                        it.title?.let { stringResource(id = it) }.orEmpty(),
                         it.value.orEmpty()
                     ),
                     style = AppTheme.typography.subtitle1

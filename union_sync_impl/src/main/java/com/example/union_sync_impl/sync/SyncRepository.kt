@@ -39,7 +39,12 @@ class SyncRepository(
     private val transitRemainsRecordDao: TransitRemainsRecordDao,
     private val transitAccountingObjectRecordDao: TransitAccountingObjectRecordDao,
     private val enumsDao: EnumsDao,
-    private val inventoryCheckerDao: InventoryCheckerDao
+    private val inventoryCheckerDao: InventoryCheckerDao,
+    private val accountingObjectSimpleAdditionalFieldDao: AccountingObjectSimpleAdditionalFieldDao,
+    private val accountingObjectVocabularyAdditionalFieldDao: AccountingObjectVocabularyAdditionalFieldDao,
+    private val simpleAdditionalFieldDao: SimpleAdditionalFieldDao,
+    private val vocabularyAdditionalFieldDao: VocabularyAdditionalFieldDao,
+    private val vocabularyAdditionalFieldValueDao: VocabularyAdditionalFieldValueDao
 ) {
     suspend fun clearDataBeforeDownload() {
         inventoryDao.clearAll()
@@ -170,6 +175,16 @@ class SyncRepository(
             syncControllerApi,
             moshi,
             ::accountingObjectCategoryDbSaver
+        ),
+        AccountingObjectVocabularyAdditionalFieldSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::accountingObjectVocabularyAdditionalFieldDbSaver
+        ),
+        AccountingObjectSimpleAdditionalFieldSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::accountingObjectSimpleAdditionalFieldDbSaver
         ),
         InventoryBaseSyncEntity(
             syncControllerApi,
@@ -610,6 +625,17 @@ class SyncRepository(
 
     private suspend fun accountingObjectCategoryDbSaver(objects: List<EnumDtoV2>) {
         enumsDao.insertAll(objects.map { it.toEnumDb(EnumType.ACCOUNTING_CATEGORY) })
+    }
+
+    private suspend fun accountingObjectSimpleAdditionalFieldDbSaver(objects: List<AccountingObjectSimpleAdditionalFieldValueDtoV2>) {
+        simpleAdditionalFieldDao.insertAll(objects.mapNotNull { it.extendedSimpleAdditionalField?.toDb() })
+        accountingObjectSimpleAdditionalFieldDao.insertAll(objects.map { it.toDb() })
+    }
+
+    private suspend fun accountingObjectVocabularyAdditionalFieldDbSaver(objects: List<AccountingObjectVocabularyAdditionalFieldValueDtoV2>) {
+        vocabularyAdditionalFieldDao.insertAll(objects.mapNotNull { it.extendedVocabularyAdditionalField?.toDb() })
+        vocabularyAdditionalFieldValueDao.insertAll(objects.mapNotNull { it.extendedVocabularyAdditionalFieldValue?.toDb() })
+        accountingObjectVocabularyAdditionalFieldDao.insertAll(objects.map { it.toDb() })
     }
 
     private suspend fun inventoryBaseDbSaver(objects: List<EnumDtoV2>) {
