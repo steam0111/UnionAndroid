@@ -4,5 +4,9 @@ import com.itrocket.union.producer.domain.entity.ProducerDomain
 import kotlinx.coroutines.flow.Flow
 
 interface ProducerRepository {
-    suspend fun getProducers(textQuery: String?): Flow<List<ProducerDomain>>
+    suspend fun getProducers(
+        textQuery: String?,
+        offset: Long?,
+        limit: Long?
+    ): List<ProducerDomain>
 }

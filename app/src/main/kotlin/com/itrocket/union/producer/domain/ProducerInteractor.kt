@@ -9,7 +9,11 @@ class ProducerInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    suspend fun getProducers(searchQuery: String = "") = withContext(coreDispatchers.io) {
-        repository.getProducers(searchQuery)
+    suspend fun getProducers(
+        searchQuery: String = "",
+        offset: Long? = null,
+        limit: Long? = null
+    ) = withContext(coreDispatchers.io) {
+        repository.getProducers(searchQuery, limit = limit, offset = offset)
     }
 }

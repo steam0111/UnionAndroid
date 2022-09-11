@@ -12,6 +12,7 @@ import com.itrocket.union.nomenclatureGroup.domain.NomenclatureGroupInteractor
 import com.itrocket.union.nomenclatureGroup.domain.entity.NomenclatureGroupDomain
 import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
+import com.itrocket.utils.paging.Paginator
 
 class NomenclatureGroupStoreFactory(
     private val storeFactory: StoreFactory,
@@ -38,12 +39,28 @@ class NomenclatureGroupStoreFactory(
         BaseExecutor<NomenclatureGroupStore.Intent, Unit, NomenclatureGroupStore.State, Result, NomenclatureGroupStore.Label>(
             context = coreDispatchers.ui
         ) {
+
+        private val paginator = Paginator<NomenclatureGroupDomain>(
+            onError = {
+                handleError(it)
+            },
+            onLoadUpdate = {
+                dispatch(Result.Loading(it))
+            },
+            onSuccess = {
+                dispatch(Result.NomenclatureGroups(it))
+            }
+        )
+
         override suspend fun executeAction(
             action: Unit,
             getState: () -> NomenclatureGroupStore.State
         ) {
             searchManager.listenSearch {
-                getNomenclatureGroup(searchText = it)
+                reset()
+                paginator.onLoadNext {
+                    getNomenclatureGroup(getState().searchText, offset = it)
+                }
             }
         }
 
@@ -63,22 +80,28 @@ class NomenclatureGroupStoreFactory(
                     dispatch(Result.SearchText(intent.searchText))
                     searchManager.emit(intent.searchText)
                 }
+                is NomenclatureGroupStore.Intent.OnLoadNext -> paginator.onLoadNext {
+                    getNomenclatureGroup(
+                        searchText = getState().searchText,
+                        offset = it
+                    )
+                }
             }
         }
 
-        private suspend fun getNomenclatureGroup(searchText: String = "") {
-            dispatch(Result.Loading(true))
-            catchException {
-                dispatch(
-                    Result.NomenclatureGroups(
-                        nomenclatureGroupInteractor.getNomenclatureGroups(
-                            searchQuery = searchText
-                        )
-                    )
+        private suspend fun getNomenclatureGroup(searchText: String = "", offset: Long = 0) =
+            runCatching {
+                val nomenclatureGroups = nomenclatureGroupInteractor.getNomenclatureGroups(
+                    searchQuery = searchText,
+                    offset = offset,
+                    limit = Paginator.PAGE_SIZE
                 )
+
+                if (nomenclatureGroups.isEmpty()) {
+                    dispatch(Result.IsListEndReached(true))
+                }
+                nomenclatureGroups
             }
-            dispatch(Result.Loading(false))
-        }
 
         private suspend fun onBackClicked(isShowSearch: Boolean) {
             if (isShowSearch) {
@@ -94,6 +117,12 @@ class NomenclatureGroupStoreFactory(
             dispatch(Result.Loading(false))
             publish(NomenclatureGroupStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
         }
+
+        private suspend fun reset() {
+            paginator.reset()
+            dispatch(Result.IsListEndReached(false))
+            dispatch(Result.NomenclatureGroups(listOf()))
+        }
     }
 
     private sealed class Result {
@@ -103,6 +132,7 @@ class NomenclatureGroupStoreFactory(
 
         data class SearchText(val searchText: String) : Result()
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
+        data class IsListEndReached(val isListEndReached: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<NomenclatureGroupStore.State, Result> {
@@ -112,6 +142,7 @@ class NomenclatureGroupStoreFactory(
                 is Result.NomenclatureGroups -> copy(nomenclatureGroups = result.nomenclatureGroupsDomain)
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchText -> copy(searchText = result.searchText)
+                is Result.IsListEndReached -> copy(isListEndReached = result.isListEndReached)
             }
     }
 }

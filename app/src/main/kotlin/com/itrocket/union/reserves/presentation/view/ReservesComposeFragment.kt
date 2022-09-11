@@ -7,6 +7,7 @@ import androidx.navigation.fragment.navArgs
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
+import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectStore
 import com.itrocket.union.filter.presentation.view.FilterComposeFragment
 import com.itrocket.union.reserves.ReservesModule.RESERVES_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.reserves.presentation.store.ReservesStore
@@ -63,6 +64,9 @@ class ReservesComposeFragment :
                 },
                 onSearchTextChanged = {
                     accept(ReservesStore.Intent.OnSearchTextChanged(it))
+                },
+                onLoadNext = {
+                    accept(ReservesStore.Intent.OnLoadNext)
                 }
             )
         }

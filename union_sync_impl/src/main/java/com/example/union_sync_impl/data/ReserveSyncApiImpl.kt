@@ -32,7 +32,9 @@ class ReserveSyncApiImpl(
         reservesIds: List<String>?,
         reservesShorts: List<ReserveShortSyncEntity>?,
         textQuery: String?,
-        locationIds: List<String?>?
+        locationIds: List<String?>?,
+        offset: Long?,
+        limit: Long?
     ): List<ReserveSyncEntity> {
         return reserveDao.getAll(
             sqlReserveQuery(
@@ -45,7 +47,9 @@ class ReserveSyncApiImpl(
                 textQuery = textQuery,
                 isFilterCount = false,
                 locationIds = locationIds,
-                reservesShorts = reservesShorts
+                reservesShorts = reservesShorts,
+                offset = offset,
+                limit = limit
             )
         )
             .map { it.toSyncEntity(location = listOfNotNull(locationSyncApi.getLocationById(it.locationDb?.parentId))) }

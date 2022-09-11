@@ -6,7 +6,9 @@ import com.itrocket.union.nomenclature.domain.entity.NomenclatureDomain
 interface NomenclatureRepository {
     suspend fun getNomenclatures(
         textQuery: String? = null,
-        params: List<ParamDomain>?
+        params: List<ParamDomain>?,
+        offset: Long?,
+        limit: Long?
     ): List<NomenclatureDomain>
 
     suspend fun getNomenclaturesCount(

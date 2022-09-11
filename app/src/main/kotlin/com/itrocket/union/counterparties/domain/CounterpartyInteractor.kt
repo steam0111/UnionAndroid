@@ -9,7 +9,11 @@ class CounterpartyInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    suspend fun getCounterparties(searchQuery: String = "") = withContext(coreDispatchers.io) {
-        repository.getCounterparties(searchQuery)
+    suspend fun getCounterparties(
+        searchQuery: String = "",
+        offset: Long? = null,
+        limit: Long? = null
+    ) = withContext(coreDispatchers.io) {
+        repository.getCounterparties(searchQuery, limit = limit, offset = offset)
     }
 }

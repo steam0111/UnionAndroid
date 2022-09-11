@@ -14,7 +14,16 @@ import kotlinx.coroutines.flow.flowOn
 class CounterpartySyncApiImpl(
     val counterpartyDao: CounterpartyDao
 ) : CounterpartySyncApi {
-    override suspend fun getCounterparties(textQuery: String?): Flow<List<CounterpartySyncEntity>> {
+    override suspend fun getCounterparties(
+        textQuery: String?,
+        offset: Long?,
+        limit: Long?
+    ): List<CounterpartySyncEntity> {
+        return counterpartyDao.getAll(sqlCounterpartyQuery(textQuery, offset, limit))
+            .map { it.toSyncEntity() }
+    }
+
+    override suspend fun getCounterpartiesFlow(textQuery: String?): Flow<List<CounterpartySyncEntity>> {
         return flow {
             emit(counterpartyDao.getAll(sqlCounterpartyQuery(textQuery)).map { it.toSyncEntity() })
         }.distinctUntilChanged().flowOn(Dispatchers.IO)

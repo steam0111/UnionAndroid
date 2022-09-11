@@ -14,9 +14,13 @@ class EquipmentTypeRepositoryImpl(
     private val equipmentTypesSyncApi: EquipmentTypeSyncApi
 ) : EquipmentTypeRepository {
 
-    override suspend fun getEquipmentTypes(textQuery: String?): Flow<List<EquipmentTypesDomain>> {
+    override suspend fun getEquipmentTypes(
+        textQuery: String?,
+        offset: Long?,
+        limit: Long?
+    ): List<EquipmentTypesDomain> {
         return withContext(coreDispatchers.io) {
-            equipmentTypesSyncApi.getEquipmentTypes(textQuery).map { it.map() }
+            equipmentTypesSyncApi.getEquipmentTypes(textQuery, limit = limit, offset = offset).map()
         }
     }
 }

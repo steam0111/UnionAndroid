@@ -23,7 +23,9 @@ class ReservesInteractor(
     suspend fun getReserves(
         searchText: String,
         params: List<ParamDomain>,
-        selectedReservesIds: List<String> = listOf()
+        selectedReservesIds: List<String> = listOf(),
+        offset: Long? = null,
+        limit: Long? = null
     ): List<ReservesDomain> =
         withContext(coreDispatchers.io) {
             val lastLocationId = params.getFilterLocationLastId()
@@ -42,7 +44,9 @@ class ReservesInteractor(
                 textQuery = searchText,
                 params = params,
                 selectedLocationIds = filterLocationIds,
-                structuralIds = filterStructuralIds
+                structuralIds = filterStructuralIds,
+                offset = offset,
+                limit = limit
             ).filter {
                 !selectedReservesIds.contains(it.id) && it.itemsCount != 0L
             }

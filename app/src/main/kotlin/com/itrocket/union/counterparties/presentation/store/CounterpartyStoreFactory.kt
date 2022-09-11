@@ -10,6 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.counterparties.domain.CounterpartyInteractor
 import com.itrocket.union.counterparties.domain.entity.CounterpartyDomain
 import com.itrocket.union.search.SearchManager
+import com.itrocket.utils.paging.Paginator
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 
@@ -36,12 +37,28 @@ class CounterpartyStoreFactory(
         BaseExecutor<CounterpartyStore.Intent, Unit, CounterpartyStore.State, Result, CounterpartyStore.Label>(
             context = coreDispatchers.ui
         ) {
+
+        private val paginator = Paginator<CounterpartyDomain>(
+            onError = {
+                handleError(it)
+            },
+            onLoadUpdate = {
+                dispatch(Result.Loading(it))
+            },
+            onSuccess = {
+                dispatch(Result.Counterparties(it))
+            }
+        )
+
         override suspend fun executeAction(
             action: Unit,
             getState: () -> CounterpartyStore.State
         ) {
             searchManager.listenSearch {
-                listenCounterparty(it)
+                reset()
+                paginator.onLoadNext {
+                    getCounterparties(getState().searchText, offset = it)
+                }
             }
         }
 
@@ -61,6 +78,12 @@ class CounterpartyStoreFactory(
                     dispatch(Result.SearchText(intent.searchText))
                     searchManager.emit(intent.searchText)
                 }
+                is CounterpartyStore.Intent.OnLoadNext -> paginator.onLoadNext {
+                    getCounterparties(
+                        searchText = getState().searchText,
+                        offset = it
+                    )
+                }
             }
         }
 
@@ -74,21 +97,29 @@ class CounterpartyStoreFactory(
             }
         }
 
-        private suspend fun listenCounterparty(searchText: String = "") {
-            catchException {
-                dispatch(Result.Loading(true))
-                counterpartyInteractor.getCounterparties(searchText)
-                    .catch { handleError(it) }
-                    .collect {
-                        dispatch(Result.Counterparties(it))
-                        dispatch(Result.Loading(false))
-                    }
+        private suspend fun getCounterparties(searchText: String = "", offset: Long = 0) =
+            runCatching {
+                val counterparties = counterpartyInteractor.getCounterparties(
+                    searchText,
+                    offset = offset,
+                    limit = Paginator.PAGE_SIZE
+                )
+
+                if (counterparties.isEmpty()) {
+                    dispatch(Result.IsListEndReached(true))
+                }
+                counterparties
             }
-        }
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
             publish(CounterpartyStore.Label.Error(throwable.message.orEmpty()))
+        }
+
+        private suspend fun reset() {
+            paginator.reset()
+            dispatch(Result.IsListEndReached(false))
+            dispatch(Result.Counterparties(listOf()))
         }
     }
 
@@ -97,6 +128,7 @@ class CounterpartyStoreFactory(
         data class Counterparties(val counterparties: List<CounterpartyDomain>) : Result()
         data class SearchText(val searchText: String) : Result()
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
+        data class IsListEndReached(val isListEndReached: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<CounterpartyStore.State, Result> {
@@ -106,6 +138,7 @@ class CounterpartyStoreFactory(
                 is Result.Counterparties -> copy(counterparties = result.counterparties)
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchText -> copy(searchText = result.searchText)
+                is Result.IsListEndReached -> copy(isListEndReached = result.isListEndReached)
             }
     }
 }
