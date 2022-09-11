@@ -4,14 +4,18 @@ import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,7 +31,7 @@ import com.itrocket.union.reserves.presentation.store.ReservesStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.ReservesItem
 import com.itrocket.union.ui.SearchToolbar
-import com.itrocket.union.ui.SearchToolbar
+import com.itrocket.utils.paging.subscribePagingListIndex
 
 @Composable
 fun ReservesScreen(
@@ -37,7 +41,8 @@ fun ReservesScreen(
     onSearchClickListener: () -> Unit,
     onFilterClickListener: () -> Unit,
     onReservesListener: (ReservesDomain) -> Unit,
-    onSearchTextChanged: (String) -> Unit
+    onSearchTextChanged: (String) -> Unit,
+    onLoadNext: () -> Unit
 ) {
     AppTheme {
         Column(
@@ -54,37 +59,32 @@ fun ReservesScreen(
                 isShowSearch = state.isShowSearch,
                 searchText = state.searchText
             )
-            when {
-                state.isLoading -> {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-                state.reserves.isNotEmpty() -> {
-                    ReservesList(
-                        reserves = state.reserves,
-                        navBarPadding = appInsets.bottomInset,
-                        onReservesListener = {
-                            onReservesListener(it)
-                        }
-                    )
-                }
-            }
+            ReservesList(
+                reserves = state.reserves,
+                navBarPadding = appInsets.bottomInset,
+                onReservesListener = {
+                    onReservesListener(it)
+                },
+                onLoadNext = onLoadNext,
+                isLoading = state.isLoading,
+                isEndReached = state.isListEndReached
+            )
         }
     }
 }
+
 
 @Composable
 private fun ReservesList(
     reserves: List<ReservesDomain>,
     navBarPadding: Int,
-    onReservesListener: (ReservesDomain) -> Unit
+    onReservesListener: (ReservesDomain) -> Unit,
+    isLoading: Boolean,
+    isEndReached: Boolean,
+    onLoadNext: () -> Unit
 ) {
-    LazyColumn(Modifier.fillMaxSize()) {
+    val listState = rememberLazyListState()
+    LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
         itemsIndexed(reserves, key = { index, item ->
             item.id
         }) { index, item ->
@@ -95,9 +95,30 @@ private fun ReservesList(
                 isShowBottomLine = isShowBottomLine
             )
         }
+        if (isLoading) {
+            item {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp)
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+        }
         item {
             Spacer(modifier = Modifier.height(navBarPadding.dp))
         }
+    }
+    LaunchedEffect(listState.firstVisibleItemIndex) {
+        subscribePagingListIndex(
+            listState = listState,
+            listSize = reserves.size,
+            isListEndReached = isEndReached,
+            isLoading = isLoading,
+            onLoadNext = onLoadNext
+        )
     }
 }
 
@@ -167,5 +188,5 @@ fun ReservesScreenPreview() {
             )
         ),
         params = listOf()
-    ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {})
+    ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {})
 }

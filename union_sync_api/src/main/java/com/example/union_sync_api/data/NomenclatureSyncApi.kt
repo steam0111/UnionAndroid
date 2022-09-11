@@ -6,7 +6,9 @@ import com.example.union_sync_api.entity.NomenclatureSyncEntity
 interface NomenclatureSyncApi {
     suspend fun getNomenclatures(
         groupId: String? = null,
-        textQuery: String? = null
+        textQuery: String? = null,
+        offset: Long? = null,
+        limit: Long? = null
     ): List<NomenclatureSyncEntity>
 
     suspend fun getNomenclaturesCount(

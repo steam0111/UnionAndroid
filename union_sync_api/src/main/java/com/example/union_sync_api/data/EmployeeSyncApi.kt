@@ -6,7 +6,9 @@ import com.example.union_sync_api.entity.EmployeeSyncEntity
 interface EmployeeSyncApi {
     suspend fun getEmployees(
         textQuery: String? = null,
-        structuralId: String? = null
+        structuralId: String? = null,
+        offset: Long? = null,
+        limit: Long? = null
     ): List<EmployeeSyncEntity>
 
     suspend fun getEmployeesCount(

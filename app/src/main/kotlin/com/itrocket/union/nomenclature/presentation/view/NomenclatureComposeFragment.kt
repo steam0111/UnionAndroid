@@ -59,7 +59,12 @@ class NomenclatureComposeFragment :
                 onSearchClickListener = {
                     accept(NomenclatureStore.Intent.OnSearchClicked)
                 },
-                onFilterClickListener = { accept(NomenclatureStore.Intent.OnFilterClicked) }
+                onFilterClickListener = {
+                    accept(NomenclatureStore.Intent.OnFilterClicked)
+                },
+                onLoadNext = {
+                    accept(NomenclatureStore.Intent.OnLoadNext)
+                }
             )
         }
     }

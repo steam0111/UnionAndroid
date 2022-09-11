@@ -18,11 +18,15 @@ class NomenclatureRepositoryImpl(
     override suspend fun getNomenclatures(
         textQuery: String?,
         params: List<ParamDomain>?,
+        offset: Long?,
+        limit: Long?
     ): List<NomenclatureDomain> =
         withContext(coreDispatchers.io) {
             syncApi.getNomenclatures(
                 groupId = params?.getNomenclatureGroupId(),
-                textQuery = textQuery
+                textQuery = textQuery,
+                limit = limit,
+                offset = offset
             ).map()
         }
 

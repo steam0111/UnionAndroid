@@ -16,7 +16,9 @@ interface ReserveSyncApi {
         reservesIds: List<String>? = null,
         reservesShorts: List<ReserveShortSyncEntity>? = null,
         textQuery: String? = null,
-        locationIds: List<String?>? = null
+        locationIds: List<String?>? = null,
+        offset: Long? = null,
+        limit: Long? = null
     ): List<ReserveSyncEntity>
 
     suspend fun getById(id: String): ReserveDetailSyncEntity

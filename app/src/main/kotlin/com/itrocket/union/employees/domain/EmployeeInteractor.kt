@@ -14,10 +14,12 @@ class EmployeeInteractor(
 ) {
     suspend fun getEmployees(
         params: List<ParamDomain>?,
-        searchQuery: String = ""
+        searchQuery: String = "",
+        offset: Long? = null,
+        limit: Long? = null
     ): List<EmployeeDomain> =
         withContext(coreDispatchers.io) {
-            repository.getEmployees(searchQuery, params)
+            repository.getEmployees(searchQuery, params, limit = limit, offset = offset)
         }
 
     fun getFilters(): List<ParamDomain> {

@@ -53,7 +53,12 @@ class EmployeeComposeFragment :
                 onSearchClickListener = {
                     accept(EmployeeStore.Intent.OnSearchClicked)
                 },
-                onFilterClickListener = { accept(EmployeeStore.Intent.OnFilterClicked) }
+                onFilterClickListener = {
+                    accept(EmployeeStore.Intent.OnFilterClicked)
+                },
+                onLoadNext = {
+                    accept(EmployeeStore.Intent.OnLoadNext)
+                }
             )
         }
     }

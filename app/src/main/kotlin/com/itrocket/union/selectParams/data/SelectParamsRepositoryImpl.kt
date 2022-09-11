@@ -49,19 +49,19 @@ class SelectParamsRepositoryImpl(
     }
 
     override suspend fun getEquipmentTypes(textQuery: String?): Flow<List<ParamDomain>> {
-        return equipmentTypeSyncApi.getEquipmentTypes(textQuery = textQuery).map { list ->
+        return equipmentTypeSyncApi.getEquipmentTypesFlow(textQuery = textQuery).map { list ->
             list.map { it.toParam() }
         }
     }
 
     override suspend fun getProviders(textQuery: String?): Flow<List<ParamDomain>> {
-        return providerSyncApi.getCounterparties(textQuery = textQuery).map { list ->
+        return providerSyncApi.getCounterpartiesFlow(textQuery = textQuery).map { list ->
             list.map { it.toParam() }
         }
     }
 
     override suspend fun getProducers(textQuery: String?): Flow<List<ParamDomain>> {
-        return producerSyncApi.getProducers(textQuery = textQuery).map { list ->
+        return producerSyncApi.getProducersFlow(textQuery = textQuery).map { list ->
             list.map { it.toParam() }
         }
     }
