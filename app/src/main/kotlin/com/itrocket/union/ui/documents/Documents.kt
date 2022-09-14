@@ -96,50 +96,21 @@ fun DocumentCreateBaseScreen(
 ) {
     val pagerState = rememberPagerState(selectedPage)
     val coroutineScope = rememberCoroutineScope()
-    val tabs = listOf(
-        BaseTab(
-            title = stringResource(R.string.inventory_params),
-            screen = {
-                DocumentParamContent(
-                    onParamClickListener = onParamClickListener,
-                    params = params,
-                    onCrossClickListener = onParamCrossClickListener,
-                    onSaveClickListener = onSaveClickListener,
-                    documentStatus = documentStatus,
-                    onConductClickListener = onConductClickListener
-                )
-            }
-        ),
-        BaseTab(
-            title = stringResource(R.string.document_create_accounting_object),
-            screen = {
-                DocumentAccountingObjectScreen(
-                    isLoading = isLoading,
-                    accountingObjectList = accountingObjectList,
-                    onAccountingObjectClickListener = {},
-                    onSaveClickListener = onSaveClickListener,
-                    onSettingsClickListener = onSettingsClickListener,
-                    onChooseClickListener = onChooseAccountingObjectClickListener,
-                    documentStatus = documentStatus,
-                    onConductClickListener = onConductClickListener
-                )
-            }
-        ),
-        BaseTab(
-            title = stringResource(R.string.document_create_reserves),
-            screen = {
-                DocumentReservesScreen(
-                    isLoading = isLoading,
-                    reserves = reserves,
-                    onReservesClickListener = onReserveClickListener,
-                    onSaveClickListener = onSaveClickListener,
-                    onSettingsClickListener = onSettingsClickListener,
-                    onChooseClickListener = onChooseReserveClickListener,
-                    documentStatus = documentStatus,
-                    onConductClickListener = onConductClickListener
-                )
-            }
-        )
+    val tabs = getTabList(
+        params = params,
+        documentStatus = documentStatus,
+        accountingObjectList = accountingObjectList,
+        isLoading = isLoading,
+        reserves = reserves,
+        onSaveClickListener = onSaveClickListener,
+        onParamClickListener = onParamClickListener,
+        onParamCrossClickListener = onParamCrossClickListener,
+        onSettingsClickListener = onSettingsClickListener,
+        onChooseAccountingObjectClickListener = onChooseAccountingObjectClickListener,
+        onChooseReserveClickListener = onChooseReserveClickListener,
+        onConductClickListener = onConductClickListener,
+        onReserveClickListener = onReserveClickListener,
+        documentType = documentType
     )
 
     AppTheme {
@@ -372,7 +343,8 @@ fun DocumentReservesScreen(
                             ReservesItem(
                                 reserves = item,
                                 onReservesListener = onReservesClickListener,
-                                isShowBottomLine = isShowBottomLine
+                                isShowBottomLine = isShowBottomLine,
+                                clickable = documentStatus != DocumentStatus.COMPLETED
                             )
                         }
                     }
@@ -493,6 +465,74 @@ fun DocumentListBottomBar(
             isEnabled = documentStatus != DocumentStatus.COMPLETED
         )
     }
+}
+
+@Composable
+private fun getTabList(
+    params: List<ParamDomain>,
+    documentStatus: DocumentStatus,
+    accountingObjectList: List<AccountingObjectDomain>,
+    isLoading: Boolean,
+    reserves: List<ReservesDomain>,
+    documentType: DocumentTypeDomain,
+    onSaveClickListener: () -> Unit,
+    onParamClickListener: (ParamDomain) -> Unit,
+    onParamCrossClickListener: (ParamDomain) -> Unit,
+    onSettingsClickListener: () -> Unit,
+    onChooseAccountingObjectClickListener: () -> Unit,
+    onChooseReserveClickListener: () -> Unit,
+    onConductClickListener: () -> Unit,
+    onReserveClickListener: (ReservesDomain) -> Unit,
+): List<BaseTab> {
+    val baseTabs = mutableListOf(
+        BaseTab(
+            title = stringResource(R.string.inventory_params),
+            screen = {
+                DocumentParamContent(
+                    onParamClickListener = onParamClickListener,
+                    params = params,
+                    onCrossClickListener = onParamCrossClickListener,
+                    onSaveClickListener = onSaveClickListener,
+                    documentStatus = documentStatus,
+                    onConductClickListener = onConductClickListener
+                )
+            }
+        ),
+        BaseTab(
+            title = stringResource(R.string.document_create_accounting_object),
+            screen = {
+                DocumentAccountingObjectScreen(
+                    isLoading = isLoading,
+                    accountingObjectList = accountingObjectList,
+                    onAccountingObjectClickListener = {},
+                    onSaveClickListener = onSaveClickListener,
+                    onSettingsClickListener = onSettingsClickListener,
+                    onChooseClickListener = onChooseAccountingObjectClickListener,
+                    documentStatus = documentStatus,
+                    onConductClickListener = onConductClickListener
+                )
+            }
+        )
+    )
+    if (documentType != DocumentTypeDomain.RETURN) {
+        baseTabs.add(
+            BaseTab(
+                title = stringResource(R.string.document_create_reserves),
+                screen = {
+                    DocumentReservesScreen(
+                        isLoading = isLoading,
+                        reserves = reserves,
+                        onReservesClickListener = onReserveClickListener,
+                        onSaveClickListener = onSaveClickListener,
+                        onSettingsClickListener = onSettingsClickListener,
+                        onChooseClickListener = onChooseReserveClickListener,
+                        documentStatus = documentStatus,
+                        onConductClickListener = onConductClickListener
+                    )
+                }
+            ))
+    }
+    return baseTabs
 }
 
 @Preview(
