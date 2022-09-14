@@ -7,6 +7,7 @@ import androidx.core.graphics.drawable.toBitmap
 import com.caverock.androidsvg.SVG
 import com.itrocket.union.theme.domain.dependencies.MediaRepository
 import com.itrocket.union.theme.domain.entity.Medias
+import com.itrocket.utils.toPx
 import java.io.File
 
 class MediaRepositoryImpl(private val applicationContext: Context) : MediaRepository {
@@ -34,13 +35,19 @@ class MediaRepositoryImpl(private val applicationContext: Context) : MediaReposi
 
         val logoBitmap = if (logoFile != null) {
             val svgLogo = SVG.getFromInputStream(logoFile.inputStream())
-            PictureDrawable(svgLogo.renderToPicture()).toBitmap()
+            svgLogo.setDocumentHeight(svgLogo.documentHeight.toInt().toPx.toString())
+            svgLogo.setDocumentWidth(svgLogo.documentWidth.toInt().toPx.toString())
+            PictureDrawable(
+                svgLogo.renderToPicture()
+            ).toBitmap()
         } else {
             null
         }
 
         val headerBitmap = if (headerFile != null) {
             val svgHeader = SVG.getFromInputStream(headerFile.inputStream())
+            svgHeader.setDocumentHeight(svgHeader.documentHeight.toInt().toPx.toString())
+            svgHeader.setDocumentWidth(svgHeader.documentWidth.toInt().toPx.toString())
             PictureDrawable(svgHeader.renderToPicture()).toBitmap()
         } else {
             null

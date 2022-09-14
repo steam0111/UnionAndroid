@@ -185,13 +185,13 @@ fun LogoToolbar(medias: Medias?) {
         contentAlignment = Alignment.Center
     ) {
         when {
-            medias?.header != null -> {
-                Image(bitmap = medias.header, contentDescription = null)
+            medias?.logo != null -> {
+                Image(bitmap = medias.logo, contentDescription = null)
             }
             medias != null -> {
                 Image(
-                    painter = painterResource(R.drawable.ic_logo_small),
-                    contentDescription = null
+                    painter = painterResource(R.drawable.ic_logo),
+                    contentDescription = null,
                 )
             }
 
