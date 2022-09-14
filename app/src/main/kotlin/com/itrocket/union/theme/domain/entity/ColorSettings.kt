@@ -3,9 +3,9 @@ package com.itrocket.union.theme.domain.entity
 import androidx.compose.ui.graphics.Color
 
 data class ColorSettings(
-    var mainColor: Color = Color(0xFFF26328),
-    var mainTextColor: Color = Color(0xFF363636),
-    var secondaryColor: Color = Color(0xFF90A4AF),
-    var appBarBackgroundColor: Color = Color(0xFF323242),
+    var mainColor: Color = Color(0xFF1269FF),
+    var mainTextColor: Color = Color(0xFF253238),
+    var secondaryColor: Color = Color(0xFF617E8C),
+    var appBarBackgroundColor: Color = Color(0xFF1269FF),
     var appBarTextColor: Color = Color(0xFFFFFFFF),
 )

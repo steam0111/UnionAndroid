@@ -30,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -77,14 +78,14 @@ private fun Splash(appInsets: AppInsets, medias: Medias) {
                 Arrangement.SpaceBetween
             ) {
                 Row {
-                    Logo(header = medias.header)
+                    Logo(header = medias.logo)
                 }
                 Row(
                     Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
-                    CenterContent(logo = medias.logo)
+                    CenterContent(logo = medias.header)
                 }
                 Row(
                     Modifier
@@ -143,6 +144,7 @@ private fun CenterContent(logo: ImageBitmap?) {
             Image(
                 painter = painterResource(id = R.drawable.ic_logo),
                 contentDescription = null,
+                colorFilter = ColorFilter.tint(white)
             )
         }
         Spacer(modifier = Modifier.height(24.dp))
