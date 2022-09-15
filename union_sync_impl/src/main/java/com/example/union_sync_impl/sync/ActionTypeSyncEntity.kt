@@ -11,7 +11,7 @@ class ActionTypeSyncEntity(
 ) : SyncEntity<EnumDtoV2>(syncControllerApi, moshi) {
 
     override val id: String
-        get() = "ActionType"
+        get() = "actionType"
 
     override suspend fun exportFromServer(syncId: String, exportPartId: String) {
         defaultGetAndSave<EnumDtoV2>(syncId, exportPartId)
