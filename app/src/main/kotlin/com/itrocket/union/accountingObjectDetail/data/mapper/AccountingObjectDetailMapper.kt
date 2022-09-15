@@ -12,133 +12,208 @@ import com.itrocket.union.utils.getTextDateFromStringDate
 
 fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): AccountingObjectDomain {
     val listMainInfo = buildList {
-        add(ObjectInfoDomain(R.string.common_name, accountingObject.name))
-        accountingObject.subName?.let {
-            add(ObjectInfoDomain(R.string.common_sub_name, it))
-        }
-        accountingObject.code?.let {
-            add(ObjectInfoDomain(R.string.common_code, it))
-        }
-        accountingObject.factoryNumber?.let {
-            add(ObjectInfoDomain(R.string.accounting_objects_factory_num, it))
-        }
-
-        accountingObject.inventoryNumber?.let {
-            add(ObjectInfoDomain(R.string.accounting_objects_inventory_num, it))
-        }
-
-        structuralSyncEntities?.let {
-            add(ObjectInfoDomain(R.string.manual_structural, it.joinToString(", ") { it.name }))
-        }
-
-        balanceUnitSyncEntities?.let {
-            add(ObjectInfoDomain(R.string.balance_unit, it.joinToString(", ") { it.name }))
-        }
-
-        location?.let {
-            add(
-                ObjectInfoDomain(
-                    R.string.accounting_objects_location,
-                    it.joinToString(", ") { it.name })
-            )
-        }
-
-        accountingObject.status?.name?.let {
-            add(ObjectInfoDomain(R.string.accounting_objects_current_status, it))
-        }
-
-        mol?.let {
-            add(ObjectInfoDomain(R.string.accounting_object_mol, it.fullName))
-        }
-        exploitingEmployee?.let {
-            add(ObjectInfoDomain(R.string.manual_exploiting, it.fullName))
-        }
-
         add(
             ObjectInfoDomain(
-                R.string.accounting_object_marked,
-                value = accountingObject.marked.toString()
+                title = R.string.common_name,
+                value = accountingObject.name,
+                valueRes = R.string.value_not_defined
             )
         )
-
         add(
             ObjectInfoDomain(
-                R.string.accounting_object_for_write_off,
-                value = accountingObject.forWriteOff.toString()
+                title = R.string.common_sub_name,
+                value = accountingObject.subName,
+                valueRes = R.string.value_not_defined
             )
         )
-
         add(
             ObjectInfoDomain(
-                R.string.accounting_object_written_off,
-                value = accountingObject.writtenOff.toString()
+                title = R.string.common_code,
+                value = accountingObject.code,
+                valueRes = R.string.value_not_defined
             )
         )
-
         add(
             ObjectInfoDomain(
-                R.string.accounting_object_registered,
-                value = accountingObject.registered.toString()
+                title = R.string.accounting_objects_factory_num,
+                value = accountingObject.factoryNumber,
+                valueRes = R.string.value_not_defined
             )
         )
-
         add(
             ObjectInfoDomain(
-                R.string.accounting_object_commissioned,
-                value = accountingObject.commissioned.toString()
+                title = R.string.accounting_objects_inventory_num,
+                value = accountingObject.inventoryNumber,
+                valueRes = R.string.value_not_defined
             )
         )
-
-        categorySyncEntity?.name?.let {
-            add(ObjectInfoDomain(R.string.accounting_object_category, it))
-        }
-
         add(
             ObjectInfoDomain(
-                R.string.accounting_object_traceable,
-                valueRes = getStringBy(accountingObject.traceable)
+                title = R.string.manual_structural,
+                value = structuralSyncEntities?.joinToString(", ") { it.name },
+                valueRes = R.string.value_not_defined
             )
         )
-
-        producer?.let {
-            add(ObjectInfoDomain(R.string.accounting_objects_producer, it.name.orEmpty()))
-        }
-
-        provider?.let {
-            add(ObjectInfoDomain(R.string.accounting_objects_provider, it.name.orEmpty()))
-        }
-
-        accountingObject.barcodeValue?.let {
-            add(ObjectInfoDomain(R.string.common_barcode, it))
-        }
-
-        accountingObject.rfidValue?.let {
-            add(ObjectInfoDomain(R.string.accounting_object_rfid, it))
-        }
-
-        accountingObject.nfc?.let {
-            add(ObjectInfoDomain(R.string.common_nfc, it))
-        }
-
-        accountingObject.dateInsert?.let {
-            add(ObjectInfoDomain(R.string.common_date_create, getStringDateFromMillis(it)))
-        }
-        accountingObject.userInserted?.let {
-            add(ObjectInfoDomain(R.string.common_user_create, it))
-        }
-        accountingObject.updateDate?.let {
-            add(ObjectInfoDomain(R.string.common_date_update, getStringDateFromMillis(it)))
-        }
-        accountingObject.userUpdated?.let {
-            add(ObjectInfoDomain(R.string.common_user_update, it))
-        }
+        add(
+            ObjectInfoDomain(
+                title = R.string.balance_unit,
+                value = balanceUnitSyncEntities?.joinToString(", ") { it.name },
+                valueRes = R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.accounting_objects_location,
+                value = location?.joinToString(", ") { it.name },
+                valueRes = R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.accounting_objects_current_status,
+                value = accountingObject.status?.name,
+                valueRes = R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.accounting_object_mol,
+                value = mol?.fullName,
+                valueRes = R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.manual_exploiting,
+                value = exploitingEmployee?.fullName,
+                valueRes = R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.accounting_object_marked,
+                valueRes = getStringBy(accountingObject.marked) ?: R.string.value_not_defined,
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.accounting_object_for_write_off,
+                valueRes = getStringBy(accountingObject.forWriteOff) ?: R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.accounting_object_written_off,
+                valueRes = getStringBy(accountingObject.writtenOff) ?: R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.accounting_object_registered,
+                valueRes = getStringBy(accountingObject.registered) ?: R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.accounting_object_commissioned,
+                valueRes = getStringBy(accountingObject.commissioned) ?: R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.accounting_object_category,
+                value = categorySyncEntity?.name,
+                valueRes = R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.accounting_object_traceable,
+                valueRes = getStringBy(accountingObject.traceable) ?: R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.accounting_objects_producer,
+                value = producer?.name,
+                valueRes = R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.accounting_objects_provider,
+                value = provider?.name,
+                valueRes = R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.common_barcode,
+                value = accountingObject.barcodeValue,
+                valueRes = R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.accounting_object_rfid,
+                value = accountingObject.rfidValue,
+                valueRes = R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.common_nfc,
+                value = accountingObject.nfc,
+                valueRes = R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.common_date_create,
+                value = accountingObject.dateInsert?.let { getStringDateFromMillis(it) },
+                valueRes = R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.common_user_create,
+                value = accountingObject.userInserted,
+                valueRes = R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.common_date_update,
+                value = accountingObject.updateDate?.let { getStringDateFromMillis(it) },
+                valueRes = R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.common_user_update,
+                value = accountingObject.userUpdated,
+                valueRes = R.string.value_not_defined
+            )
+        )
 
         simpleAdditionalFields?.forEach {
-            add(ObjectInfoDomain(name = it.name, value = it.value))
+            add(
+                ObjectInfoDomain(
+                    name = it.name,
+                    value = it.value,
+                    valueRes = R.string.value_not_defined
+                )
+            )
         }
 
         vocabularyAdditionalFields?.forEach {
-            add(ObjectInfoDomain(name = it.name, value = it.value))
+            add(
+                ObjectInfoDomain(
+                    name = it.name,
+                    value = it.value,
+                    valueRes = R.string.value_not_defined
+                )
+            )
         }
     }
 
@@ -163,9 +238,9 @@ fun AccountingObjectDomain.toAccountingObjectScanningData() = AccountingObjectSc
     rfidValue = rfidValue
 )
 
-fun getStringBy(isTrue: Boolean) =
-    if (isTrue) {
-        R.string.common_yes
-    } else {
-        R.string.common_no
+fun getStringBy(isTrue: Boolean?) =
+    when (isTrue) {
+        true -> R.string.common_yes
+        false -> R.string.common_no
+        else -> null
     }

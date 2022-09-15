@@ -103,7 +103,7 @@ private fun Content(
         items(state.accountingObjectDomain.listMainInfo) {
             ExpandedInfoField(
                 label = it.name ?: it.title?.let { stringResource(id = it) }.orEmpty(),
-                value = it.valueRes?.let { stringResource(id = it) } ?: it.value.orEmpty(),
+                value = it.value ?: it.valueRes?.let { stringResource(id = it) }.orEmpty(),
                 modifier = Modifier.fillMaxWidth()
             )
         }
