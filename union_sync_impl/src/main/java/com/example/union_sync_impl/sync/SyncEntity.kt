@@ -20,10 +20,10 @@ abstract class SyncEntity<SyncType>(
 ) {
     /**
      * Возможные варианты id, получены через запрос api/security/entity-models
-     * ActionType, InventoryBase, locationType, remains, employee, inventory, branch,
-     * ActionStatus, nomenclature, AccountingObjectStatus, InventoryState, equipment-type,
-     * action, department, EntityModelType, AccountingCategory, InventoryType, nomenclatureGroup,
-     * ActionBase, EmployeeStatus, organization, counterparty, producer, InventoryRecordStatus,
+     * actionType, inventoryBase, locationType, remains, employee, inventory, branch,
+     * actionStatus, nomenclature, accountingObjectStatus, inventoryState, equipment-type,
+     * action, department, entityModelType, accountingCategory, inventoryType, nomenclatureGroup,
+     * actionBase, employeeStatus, organization, counterparty, producer, inventoryRecordStatus,
      * location, region, accountingObject, locationPath, transit, transitAccountingObjectRecord, transitRemainsRecord,
      * commissioning, commissioningRecord
      */

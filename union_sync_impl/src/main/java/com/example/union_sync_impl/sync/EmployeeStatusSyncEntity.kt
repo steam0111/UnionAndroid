@@ -11,7 +11,7 @@ class EmployeeStatusSyncEntity(
 ) : SyncEntity<EnumDtoV2>(syncControllerApi, moshi) {
 
     override val id: String
-        get() = "EmployeeStatus"
+        get() = "employeeStatus"
 
     override suspend fun exportFromServer(syncId: String, exportPartId: String) {
         defaultGetAndSave<EnumDtoV2>(syncId, exportPartId)
