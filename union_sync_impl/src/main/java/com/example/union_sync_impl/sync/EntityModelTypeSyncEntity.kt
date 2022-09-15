@@ -11,7 +11,7 @@ class EntityModelTypeSyncEntity(
 ) : SyncEntity<EnumDtoV2>(syncControllerApi, moshi) {
 
     override val id: String
-        get() = "EntityModelType"
+        get() = "entityModelType"
 
     override suspend fun exportFromServer(syncId: String, exportPartId: String) {
         defaultGetAndSave<EnumDtoV2>(syncId, exportPartId)

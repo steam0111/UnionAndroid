@@ -11,7 +11,7 @@ class InventoryTypeSyncEntity(
 ) : SyncEntity<EnumDtoV2>(syncControllerApi, moshi) {
 
     override val id: String
-        get() = "InventoryType"
+        get() = "inventoryType"
 
     override suspend fun exportFromServer(syncId: String, exportPartId: String) {
         defaultGetAndSave<EnumDtoV2>(syncId, exportPartId)
