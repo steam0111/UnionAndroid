@@ -7,5 +7,9 @@ object SearchModule {
         factory {
             SearchManager()
         }
+
+        factory {
+            TextFieldManager()
+        }
     }
 }

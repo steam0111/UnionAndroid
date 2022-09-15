@@ -59,7 +59,7 @@ class ReadingModeStoreFactory(
                     //no-op
                 }
                 ReadingModeStore.Intent.OnManualInputClicked -> {
-                    publish(ReadingModeStore.Label.ManualReading(ReadingModeResult(getState().selectedTab)))
+                    //no-op
                 }
                 is ReadingModeStore.Intent.OnReadingModeSelected -> {
                     readingModeInteractor.changeScanMode(intent.readingMode.toReaderMode())

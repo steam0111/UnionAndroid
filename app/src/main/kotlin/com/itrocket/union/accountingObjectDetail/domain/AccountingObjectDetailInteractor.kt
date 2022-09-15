@@ -16,7 +16,20 @@ class AccountingObjectDetailInteractor(
             repository.getAccountingObject(id)
         }
 
-    suspend fun getAccountingObjectFlow(id: String): Flow<AccountingObjectDomain> = repository.getAccountingObjectFlow(id)
+    suspend fun getAccountingObjectByParams(
+        rfid: String? = null,
+        barcode: String? = null,
+        factoryNumber: String? = null
+    ): AccountingObjectDomain = withContext(coreDispatchers.io) {
+        repository.getAccountingObjectByParams(
+            rfid = rfid,
+            barcode = barcode,
+            factoryNumber = factoryNumber
+        )
+    }
+
+    suspend fun getAccountingObjectFlow(id: String): Flow<AccountingObjectDomain> =
+        repository.getAccountingObjectFlow(id)
 
     suspend fun updateScanningData(accountingObjectDomain: AccountingObjectDomain) =
         withContext(coreDispatchers.io) {

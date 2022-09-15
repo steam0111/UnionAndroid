@@ -41,6 +41,12 @@ interface AccountingObjectSyncApi {
 
     suspend fun getAccountingObjectDetailById(id: String): AccountingObjectDetailSyncEntity
 
+    suspend fun getAccountingObjectDetailByParams(
+        rfid: String? = null,
+        barcode: String? = null,
+        factoryNumber: String? = null
+    ): AccountingObjectDetailSyncEntity
+
     suspend fun getAccountingObjectDetailByIdFlow(id: String): Flow<AccountingObjectDetailSyncEntity>
 
     suspend fun updateAccountingObjects(accountingObjects: List<AccountingObjectUpdateSyncEntity>)

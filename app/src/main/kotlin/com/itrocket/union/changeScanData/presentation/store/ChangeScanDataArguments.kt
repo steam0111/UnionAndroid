@@ -10,5 +10,6 @@ import kotlinx.android.parcel.Parcelize
 data class ChangeScanDataArguments(
     val changeScanType: ChangeScanType,
     val scanValue: String?,
-    val entityId: String
+    val entityId: String,
+    val newScanValue: String
 ) : Parcelable

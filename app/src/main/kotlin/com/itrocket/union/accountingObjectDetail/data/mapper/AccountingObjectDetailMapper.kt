@@ -57,35 +57,35 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
         add(
             ObjectInfoDomain(
                 R.string.accounting_object_marked,
-                valueRes = getStringBy(accountingObject.marked)
+                value = accountingObject.marked.toString()
             )
         )
 
         add(
             ObjectInfoDomain(
                 R.string.accounting_object_for_write_off,
-                valueRes = getStringBy(accountingObject.forWriteOff)
+                value = accountingObject.forWriteOff.toString()
             )
         )
 
         add(
             ObjectInfoDomain(
                 R.string.accounting_object_written_off,
-                valueRes = getStringBy(accountingObject.writtenOff)
+                value = accountingObject.writtenOff.toString()
             )
         )
 
         add(
             ObjectInfoDomain(
                 R.string.accounting_object_registered,
-                valueRes = getStringBy(accountingObject.registered)
+                value = accountingObject.registered.toString()
             )
         )
 
         add(
             ObjectInfoDomain(
                 R.string.accounting_object_commissioned,
-                valueRes = getStringBy(accountingObject.commissioned)
+                value = accountingObject.commissioned.toString()
             )
         )
 
