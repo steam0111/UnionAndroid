@@ -31,16 +31,6 @@ interface ReadingModeStore :
     sealed class Label {
         data class ResultReadingTab(val readingMode: ReadingModeTab) : Label()
 
-        data class ManualReading(override val result: ReadingModeResult) : Label(),
-            GoBackDialogNavigationLabel {
-
-            override val resultCode: String
-                get() = ReadingModeComposeFragment.READING_MODE_RESULT_CODE
-
-            override val resultLabel: String
-                get() = ReadingModeComposeFragment.READING_MODE_RESULT_LABEL
-        }
-
         object ReaderPower : Label(), ShowBottomSheetNavigationLabel {
             override val arguments: Bundle
                 get() = bundleOf()

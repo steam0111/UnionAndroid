@@ -67,25 +67,38 @@ class AccountingObjectDetailStoreFactory(
                 is AccountingObjectDetailStore.Intent.OnPageSelected -> dispatch(
                     Result.NewPage(intent.selectedPage)
                 )
-                is AccountingObjectDetailStore.Intent.OnMarkingClicked -> {
-                    publish(
-                        AccountingObjectDetailStore.Label.ShowChangeScanData(
-                            entityId = getState().accountingObjectDomain.id,
-                            scanValue = when (intent.readingModeTab) {
-                                ReadingModeTab.RFID -> getState().accountingObjectDomain.rfidValue
-                                ReadingModeTab.BARCODE -> getState().accountingObjectDomain.barcodeValue
-                                ReadingModeTab.SN -> getState().accountingObjectDomain.factoryNumber
-                            },
-                            changeScanType = intent.readingModeTab.toChangeScanType()
-                        )
-                    )
-                }
+                is AccountingObjectDetailStore.Intent.OnScanHandled -> onScanHandled(
+                    getState = getState,
+                    scanData = intent.scanData
+                )
                 is AccountingObjectDetailStore.Intent.OnReadingModeTabChanged -> dispatch(
                     Result.ReadingMode(
                         intent.readingModeTab
                     )
                 )
+                AccountingObjectDetailStore.Intent.OnMarkingClosed -> publish(
+                    AccountingObjectDetailStore.Label.ChangeSubscribeScanData(true)
+                )
             }
+        }
+
+        private fun onScanHandled(
+            getState: () -> AccountingObjectDetailStore.State,
+            scanData: String
+        ) {
+            publish(AccountingObjectDetailStore.Label.ChangeSubscribeScanData(false))
+            publish(
+                AccountingObjectDetailStore.Label.ShowChangeScanData(
+                    entityId = getState().accountingObjectDomain.id,
+                    scanValue = when (getState().readingMode) {
+                        ReadingModeTab.RFID -> getState().accountingObjectDomain.rfidValue
+                        ReadingModeTab.BARCODE -> getState().accountingObjectDomain.barcodeValue
+                        ReadingModeTab.SN -> getState().accountingObjectDomain.factoryNumber
+                    },
+                    changeScanType = getState().readingMode.toChangeScanType(),
+                    newScanValue = scanData
+                )
+            )
         }
 
         private suspend fun listenAccountingObject() {
@@ -95,9 +108,9 @@ class AccountingObjectDetailStoreFactory(
                     .catch {
                         handleError(it)
                     }.collect {
-                    dispatch(Result.Loading(false))
-                    dispatch(Result.AccountingObject(it))
-                }
+                        dispatch(Result.Loading(false))
+                        dispatch(Result.AccountingObject(it))
+                    }
             }
         }
     }

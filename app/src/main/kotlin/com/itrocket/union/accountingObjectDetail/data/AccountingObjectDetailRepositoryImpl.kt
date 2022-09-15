@@ -16,6 +16,18 @@ class AccountingObjectDetailRepositoryImpl(
         return syncApi.getAccountingObjectDetailById(id).toAccountingObjectDetailDomain()
     }
 
+    override suspend fun getAccountingObjectByParams(
+        rfid: String?,
+        barcode: String?,
+        factoryNumber: String?
+    ): AccountingObjectDomain {
+        return syncApi.getAccountingObjectDetailByParams(
+            rfid = rfid,
+            barcode = barcode,
+            factoryNumber = factoryNumber
+        ).toAccountingObjectDetailDomain()
+    }
+
     override suspend fun getAccountingObjectFlow(id: String): Flow<AccountingObjectDomain> {
         return syncApi.getAccountingObjectDetailByIdFlow(id)
             .map { it.toAccountingObjectDetailDomain() }

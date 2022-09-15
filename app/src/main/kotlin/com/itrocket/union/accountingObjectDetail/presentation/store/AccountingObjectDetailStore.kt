@@ -25,7 +25,8 @@ interface AccountingObjectDetailStore :
         object OnReadingModeClicked : Intent()
         object OnDocumentSearchClicked : Intent()
         object OnDocumentAddClicked : Intent()
-        data class OnMarkingClicked(val readingModeTab: ReadingModeTab) : Intent()
+        object OnMarkingClosed : Intent()
+        data class OnScanHandled(val scanData: String) : Intent()
         data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
     }
 
@@ -54,6 +55,7 @@ interface AccountingObjectDetailStore :
         data class ShowChangeScanData(
             val entityId: String,
             val scanValue: String?,
+            val newScanValue: String,
             val changeScanType: ChangeScanType
         ) : Label(),
             ShowBottomSheetNavigationLabel {
@@ -62,7 +64,8 @@ interface AccountingObjectDetailStore :
                     CHANGE_SCAN_DATA_ARGS to ChangeScanDataArguments(
                         entityId = entityId,
                         scanValue = scanValue,
-                        changeScanType = changeScanType
+                        changeScanType = changeScanType,
+                        newScanValue = newScanValue
                     )
                 )
             override val containerId: Int
@@ -71,5 +74,7 @@ interface AccountingObjectDetailStore :
                 get() = ChangeScanDataComposeFragment()
 
         }
+
+        data class ChangeSubscribeScanData(val isSubscribe: Boolean) : Label()
     }
 }

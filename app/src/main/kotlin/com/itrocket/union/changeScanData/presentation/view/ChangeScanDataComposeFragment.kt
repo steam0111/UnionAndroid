@@ -3,11 +3,14 @@ package com.itrocket.union.changeScanData.presentation.view
 import android.os.Bundle
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeBottomSheet
 import com.itrocket.union.R
 import com.itrocket.union.changeScanData.ChangeScanDataModule.CHANGESCANDATA_VIEW_MODEL_QUALIFIER
+import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataResult
 import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -74,6 +77,7 @@ class ChangeScanDataComposeFragment :
                                 it.data
                             )
                         )
+                        serviceEntryManager.stopBarcodeScan()
                     }
                 }
             }
@@ -85,10 +89,20 @@ class ChangeScanDataComposeFragment :
                                 it
                             )
                         )
+                        serviceEntryManager.stopRfidOperation()
                     }
                 }
             }
         }
+    }
+
+    override fun dismiss() {
+        setFragmentResult(
+            CHANGE_SCAN_DATA_RESULT_CODE, bundleOf(
+                CHANGE_SCAN_DATA_RESULT_LABEL to ChangeScanDataResult
+            )
+        )
+        super.dismiss()
     }
 
     private suspend fun observeTriggerPress() {
@@ -114,5 +128,7 @@ class ChangeScanDataComposeFragment :
 
     companion object {
         const val CHANGE_SCAN_DATA_ARGS = "change scan data args"
+        const val CHANGE_SCAN_DATA_RESULT_CODE = "change scan data result code"
+        const val CHANGE_SCAN_DATA_RESULT_LABEL = "change scan data result label"
     }
 }

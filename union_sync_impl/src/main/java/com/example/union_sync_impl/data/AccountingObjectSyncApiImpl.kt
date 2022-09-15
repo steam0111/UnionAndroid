@@ -11,6 +11,7 @@ import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.StructuralDao
+import com.example.union_sync_impl.dao.sqlAccountingObjectDetailQuery
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDetailSyncEntity
 import com.example.union_sync_impl.data.mapper.toAccountingObjectScanningUpdate
@@ -121,6 +122,43 @@ class AccountingObjectSyncApiImpl(
             ),
             vocabularyAdditionalFields = accountingObjectAdditionalFieldsSyncApi.getVocabularyAdditionalFields(
                 fullAccountingObjectDb.accountingObjectDb.id
+            )
+        )
+    }
+
+    override suspend fun getAccountingObjectDetailByParams(
+        rfid: String?,
+        barcode: String?,
+        factoryNumber: String?
+    ): AccountingObjectDetailSyncEntity {
+        val fullAccountingObject = accountingObjectsDao.getById(
+            sqlAccountingObjectDetailQuery(
+                rfid = rfid,
+                barcode = barcode,
+                factoryNumber = factoryNumber
+            )
+        )
+        val location =
+            locationSyncApi.getLocationFullPath(fullAccountingObject.accountingObjectDb.locationId)
+
+        val structurals =
+            structuralSyncApi.getStructuralFullPath(
+                fullAccountingObject.structuralDb?.id,
+                mutableListOf()
+            )
+                .orEmpty()
+        val balanceUnitIndex = structurals.indexOfLast { it.balanceUnit }
+        val balanceUnit = structurals.subList(0, balanceUnitIndex + 1)
+
+        return fullAccountingObject.toAccountingObjectDetailSyncEntity(
+            location,
+            balanceUnit,
+            structurals,
+            simpleAdditionalFields = accountingObjectAdditionalFieldsSyncApi.getSimpleAdditionalFields(
+                fullAccountingObject.accountingObjectDb.id
+            ),
+            vocabularyAdditionalFields = accountingObjectAdditionalFieldsSyncApi.getVocabularyAdditionalFields(
+                fullAccountingObject.accountingObjectDb.id
             )
         )
     }

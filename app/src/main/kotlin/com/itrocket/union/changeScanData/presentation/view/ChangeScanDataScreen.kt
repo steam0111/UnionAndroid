@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,11 +45,14 @@ import com.itrocket.union.R
 import com.itrocket.union.changeScanData.domain.entity.ChangeScanType
 import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataStore
 import com.itrocket.union.ui.AppTheme
+import com.itrocket.union.ui.ImageButton
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.TextButton
 import com.itrocket.union.ui.brightGray
+import com.itrocket.union.ui.burntSienna
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.graphite4
+import com.itrocket.union.ui.green7
 import com.itrocket.union.ui.white
 import com.itrocket.union.utils.ifBlankOrNullComposable
 
@@ -93,13 +97,16 @@ fun ChangeScanDataScreen(
                 Content(
                     currentScanValue = state.currentScanValue,
                     newScanValue = state.newScanValue,
-                    changeScanType = state.changeScanType
+                    changeScanType = state.changeScanType,
+                    isSuccess = state.isApplyEnabled,
+                    isScanDataExistError = state.isScanDataExistError
                 )
                 BottomBar(
                     isApplyEnabled = state.isApplyEnabled,
                     onApplyClickListener = onApplyClickListener,
                     onCancelClickListener = onCancelClickListener,
-                    onReaderPowerClickListener = onReaderPowerClickListener
+                    onReaderPowerClickListener = onReaderPowerClickListener,
+                    isRfid = state.changeScanType == ChangeScanType.RFID
                 )
             }
         }
@@ -198,40 +205,74 @@ private fun ScanTextField(
 private fun Content(
     currentScanValue: String?,
     newScanValue: String,
-    changeScanType: ChangeScanType
+    changeScanType: ChangeScanType,
+    isSuccess: Boolean,
+    isScanDataExistError: Boolean
 ) {
-    Box(
-        modifier = Modifier.padding(horizontal = 16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(modifier = Modifier.padding(top = 24.dp)) {
-            ChangeBarcodeItem(
-                subtitle = stringResource(changeScanType.fromChangeId),
-                title = currentScanValue.ifBlankOrNullComposable {
-                    stringResource(changeScanType.emptyValueId)
-                },
+    Column {
+        Spacer(modifier = Modifier.height(20.dp))
+        Box(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column {
+                ChangeBarcodeItem(
+                    subtitle = stringResource(changeScanType.fromChangeId),
+                    title = currentScanValue.ifBlankOrNullComposable {
+                        stringResource(changeScanType.emptyValueId)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(40.dp))
+                ChangeBarcodeItem(
+                    subtitle = stringResource(changeScanType.toChangeId),
+                    title = newScanValue.ifBlank { stringResource(id = R.string.change_scan_data_press_cursor) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+            }
+            Image(
+                painter = painterResource(id = R.drawable.ic_rounded_arrows),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
                 modifier = Modifier
-                    .fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(40.dp))
-            ChangeBarcodeItem(
-                subtitle = stringResource(changeScanType.toChangeId),
-                title = newScanValue.ifBlank { stringResource(id = R.string.change_scan_data_press_cursor) },
-                modifier = Modifier
-                    .fillMaxWidth()
+                    .size(48.dp)
+                    .shadow(20.dp, CircleShape)
+                    .background(white, CircleShape)
+                    .padding(horizontal = 10.dp, vertical = 11.dp)
             )
         }
-        Image(
-            painter = painterResource(id = R.drawable.ic_rounded_arrows),
-            contentDescription = null,
-            colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
-            modifier = Modifier
-                .size(48.dp)
-                .shadow(20.dp, CircleShape)
-                .background(white, CircleShape)
-                .padding(horizontal = 10.dp, vertical = 11.dp)
+        InfoBlock(
+            changeScanType = changeScanType,
+            isSuccess = isSuccess,
+            isScanDataExistError = isScanDataExistError
         )
     }
+}
+
+@Composable
+private fun InfoBlock(
+    changeScanType: ChangeScanType,
+    isSuccess: Boolean,
+    isScanDataExistError: Boolean
+) {
+    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Spacer(modifier = Modifier.height(16.dp))
+        when {
+            isSuccess -> Text(
+                text = stringResource(changeScanType.successLabelId),
+                style = AppTheme.typography.h6,
+                color = green7
+            )
+            isScanDataExistError -> Text(
+                text = stringResource(changeScanType.errorLabelId),
+                style = AppTheme.typography.h6,
+                color = burntSienna
+            )
+        }
+    }
+
 }
 
 @Composable
@@ -260,7 +301,8 @@ private fun BottomBar(
     isApplyEnabled: Boolean,
     onApplyClickListener: () -> Unit,
     onCancelClickListener: () -> Unit,
-    onReaderPowerClickListener: () -> Unit
+    onReaderPowerClickListener: () -> Unit,
+    isRfid: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -268,7 +310,13 @@ private fun BottomBar(
             .padding(vertical = 16.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        //Power btn
+        if (isRfid) {
+            ImageButton(
+                imageId = R.drawable.ic_settings,
+                paddings = PaddingValues(12.dp),
+                onClick = onReaderPowerClickListener,
+            )
+        }
         Spacer(modifier = Modifier.weight(1f))
         TextButton(
             text = stringResource(R.string.common_cancel),

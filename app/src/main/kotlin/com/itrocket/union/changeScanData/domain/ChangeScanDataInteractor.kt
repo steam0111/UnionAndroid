@@ -25,4 +25,27 @@ class ChangeScanDataInteractor(
         accountingObjectDetailInteractor.updateScanningData(newAccountingObject)
     }
 
+    suspend fun isScanDataExist(
+        changeScanType: ChangeScanType,
+        scanData: String,
+    ): Boolean {
+        return try {
+            when (changeScanType) {
+                ChangeScanType.RFID -> accountingObjectDetailInteractor.getAccountingObjectByParams(
+                    rfid = scanData
+                )
+                ChangeScanType.BARCODE -> accountingObjectDetailInteractor.getAccountingObjectByParams(
+                    barcode = scanData
+                )
+                ChangeScanType.SN -> accountingObjectDetailInteractor.getAccountingObjectByParams(
+                    factoryNumber = scanData
+                )
+            }
+            true
+
+        } catch (t: Throwable) {
+            false
+        }
+    }
+
 }

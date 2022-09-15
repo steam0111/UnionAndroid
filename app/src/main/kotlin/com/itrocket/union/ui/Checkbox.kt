@@ -14,15 +14,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun BaseCheckbox(isChecked: Boolean, onCheckClickListener: () -> Unit) {
+fun BaseCheckbox(isChecked: Boolean, enabled: Boolean = true, onCheckClickListener: () -> Unit) {
     Checkbox(
-        checked = isChecked, onCheckedChange = {
+        checked = isChecked,
+        onCheckedChange = {
             onCheckClickListener()
-        }, modifier = Modifier.size(20.dp, 20.dp),
+        },
+        enabled = enabled,
+        modifier = Modifier.size(20.dp, 20.dp),
         colors = CheckboxDefaults.colors(
             uncheckedColor = psb4,
             checkedColor = AppTheme.colors.mainColor
-        )
+        ),
     )
 }
 

@@ -38,7 +38,8 @@ object ChangeScanDataModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args
+                args,
+                get()
             ).create()
         }
     }

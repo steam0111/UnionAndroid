@@ -83,6 +83,9 @@ interface AccountingObjectDao {
     )
     suspend fun getById(id: String): FullAccountingObject
 
+    @RawQuery
+    suspend fun getById(query: SupportSQLiteQuery): FullAccountingObject
+
     @Query(
         "SELECT accounting_objects.*," +
                 "" +

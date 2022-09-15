@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,20 +38,43 @@ fun ExpandedInfoField(
                 .padding(start = 24.dp, top = 12.dp, end = 24.dp)
 
         ) {
+            val fraction = getFraction(value)
             Text(
                 text = label,
                 style = AppTheme.typography.body1,
-                modifier = Modifier.fillMaxWidth(0.5f)
+                modifier = Modifier.fillMaxWidth(fraction)
             )
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(32.dp))
+            ExpandedInfoValue(value)
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        BottomLine()
+    }
+}
+
+private fun getFraction(value: String) = when {
+    value.toBooleanStrictOrNull() != null -> 0.8f
+    else -> 0.5f
+}
+
+@Composable
+private fun RowScope.ExpandedInfoValue(value: String) {
+    when {
+        value.toBooleanStrictOrNull() != null -> {
+            Spacer(modifier = Modifier.weight(1f))
+            BaseCheckbox(
+                isChecked = value.toBooleanStrict(),
+                onCheckClickListener = {},
+                enabled = false
+            )
+        }
+        else -> {
             Text(
                 text = value,
                 style = AppTheme.typography.body1,
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        Spacer(modifier = Modifier.height(12.dp))
-        BottomLine()
     }
 }
 
@@ -154,7 +178,9 @@ fun RadioButtonField(
             .padding(start = 16.dp, top = 16.dp, end = 16.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(end = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(

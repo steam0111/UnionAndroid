@@ -333,18 +333,24 @@
     <string name="change_scan_data_with_rfid">С RFID</string>
     <string name="change_scan_data_on_rfid">На RFID</string>
     <string name="change_scan_data_empty_rfid">Метка не установлена</string>
+    <string name="change_scan_data_success_rfid">RFID успешно считан</string>
+    <string name="change_scan_data_error_rfid">RFID уже используется</string>
 
     <string name="change_scan_data_barcode_title">Изменение ШК</string>
     <string name="change_scan_data_with_barcode">С штрихкода</string>
     <string name="change_scan_data_on_barcode">На штрихкод</string>
     <string name="change_scan_data_empty_barcode">Штрихкод не установлен</string>
     <string name="change_scan_data_hint_barcode">Введите штрихкод</string>
+    <string name="change_scan_data_success_barcode">Штрихкод успешно считан</string>
+    <string name="change_scan_data_error_barcode">Штрихкод уже используется</string>
 
     <string name="change_scan_data_sn_title">Изменение SN</string>
     <string name="change_scan_data_with_sn">С SN</string>
     <string name="change_scan_data_on_sn">На SN</string>
     <string name="change_scan_data_empty_sn">SN не установлен</string>
     <string name="change_scan_data_hint_sn">Введите серийный номер</string>
+    <string name="change_scan_data_success_sn">Серийный номер успешно считан</string>
+    <string name="change_scan_data_error_sn">Серийный номер уже используется</string>
 
     <string name="change_scan_data_press_cursor">Нажмите курок считывателя</string>
 
