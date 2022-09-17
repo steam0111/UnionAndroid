@@ -21,6 +21,7 @@ class AccountingObjectInteractor(
 ) {
 
     suspend fun getAccountingObjects(
+        locationManualType: ManualType,
         searchQuery: String = "",
         params: List<ParamDomain>,
         selectedAccountingObjectIds: List<String> = listOf(),
@@ -28,7 +29,7 @@ class AccountingObjectInteractor(
         limit: Long? = null
     ): List<AccountingObjectDomain> =
         withContext(coreDispatchers.io) {
-            val lastLocationId = params.getFilterLocationLastId(ManualType.LOCATION_INVENTORY)
+            val lastLocationId = params.getFilterLocationLastId(locationManualType)
             val filterLocationIds = if (lastLocationId == null) {
                 null
             } else {
