@@ -229,7 +229,7 @@ class InventoryStoreFactory(
                 dispatch(Result.IsAccountingObjectsLoading(false))
                 dispatch(
                     Result.AccountingObjects(
-                        accountingObjectInteractor.getAccountingObjects("", params)
+                        accountingObjectInteractor.getAccountingObjects(ManualType.LOCATION_INVENTORY,"", params)
                     )
                 )
                 dispatch(Result.IsAccountingObjectsLoading(false))

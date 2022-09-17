@@ -10,6 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
@@ -133,6 +134,7 @@ class AccountingObjectStoreFactory(
             offset: Long = 0
         ) = runCatching {
             val accountingObjects = accountingObjectInteractor.getAccountingObjects(
+                locationManualType = ManualType.LOCATION,
                 params = params,
                 searchQuery = searchText,
                 selectedAccountingObjectIds = accountingObjectArguments?.selectedAccountingObjectIds.orEmpty(),

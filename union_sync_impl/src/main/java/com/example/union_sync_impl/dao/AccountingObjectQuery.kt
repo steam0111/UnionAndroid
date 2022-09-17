@@ -115,7 +115,7 @@ private fun String.getAccountingObjectsFilterPartQuery(
                 add("statusId" isEquals statusId)
             }
             textQuery?.let {
-                add("name" contains textQuery)
+                add(listOf("name", "inventoryNumber", "factoryNumber") contains textQuery)
             }
             updateDate?.let {
                 add("updateDate" more updateDate)
