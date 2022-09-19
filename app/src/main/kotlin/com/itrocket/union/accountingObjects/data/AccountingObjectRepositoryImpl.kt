@@ -15,6 +15,7 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getEquipmentTypeId
 import com.itrocket.union.manual.getExploitingId
 import com.itrocket.union.manual.getMolId
+import com.itrocket.union.manual.getMolInDepartmentId
 import com.itrocket.union.manual.getProducerId
 import com.itrocket.union.manual.getProviderId
 import com.itrocket.union.manual.getStatusId
@@ -39,7 +40,7 @@ class AccountingObjectRepositoryImpl(
             syncApi.getAccountingObjects(
                 textQuery = textQuery,
                 exploitingId = params.getExploitingId(),
-                molId = params.getMolId(),
+                molId = params.getMolInDepartmentId() ?: params.getMolId(),
                 producerId = params.getProducerId(),
                 equipmentTypeId = params.getEquipmentTypeId(),
                 providerId = params.getProviderId(),
