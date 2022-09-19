@@ -13,46 +13,55 @@ import com.itrocket.union.utils.getTextDateFromStringDate
 fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): AccountingObjectDomain {
     val listMainInfo = buildList {
         add(ObjectInfoDomain(R.string.common_name, accountingObject.name))
-        accountingObject.subName?.let {
-            add(ObjectInfoDomain(R.string.common_sub_name, it))
-        }
-        accountingObject.code?.let {
-            add(ObjectInfoDomain(R.string.common_code, it))
-        }
-        accountingObject.factoryNumber?.let {
-            add(ObjectInfoDomain(R.string.accounting_objects_factory_num, it))
-        }
 
-        accountingObject.inventoryNumber?.let {
-            add(ObjectInfoDomain(R.string.accounting_objects_inventory_num, it))
-        }
+        add(ObjectInfoDomain(R.string.common_sub_name, accountingObject.subName))
 
-        structuralSyncEntities?.let {
-            add(ObjectInfoDomain(R.string.manual_structural, it.joinToString(", ") { it.name }))
-        }
+        add(ObjectInfoDomain(R.string.common_code, accountingObject.code))
 
-        balanceUnitSyncEntities?.let {
-            add(ObjectInfoDomain(R.string.balance_unit, it.joinToString(", ") { it.name }))
-        }
-
-        location?.let {
-            add(
-                ObjectInfoDomain(
-                    R.string.accounting_objects_location,
-                    it.joinToString(", ") { it.name })
+        add(
+            ObjectInfoDomain(
+                R.string.accounting_objects_factory_num,
+                accountingObject.factoryNumber
             )
-        }
+        )
 
-        accountingObject.status?.name?.let {
-            add(ObjectInfoDomain(R.string.accounting_objects_current_status, it))
-        }
+        add(
+            ObjectInfoDomain(
+                R.string.accounting_objects_inventory_num,
+                accountingObject.inventoryNumber
+            )
+        )
 
-        mol?.let {
-            add(ObjectInfoDomain(R.string.accounting_object_mol, it.fullName))
-        }
-        exploitingEmployee?.let {
-            add(ObjectInfoDomain(R.string.manual_exploiting, it.fullName))
-        }
+        add(
+            ObjectInfoDomain(
+                R.string.manual_structural,
+                structuralSyncEntities?.joinToString(", ") { it.name })
+        )
+
+
+        add(
+            ObjectInfoDomain(
+                R.string.balance_unit,
+                balanceUnitSyncEntities?.joinToString(", ") { it.name })
+        )
+
+        add(
+            ObjectInfoDomain(
+                R.string.accounting_objects_location,
+                location?.joinToString(", ") { it.name })
+        )
+
+        add(
+            ObjectInfoDomain(
+                R.string.accounting_objects_current_status,
+                accountingObject.status?.name
+            )
+        )
+
+        add(ObjectInfoDomain(R.string.accounting_object_mol, mol?.fullName))
+
+        add(ObjectInfoDomain(R.string.manual_exploiting, exploitingEmployee?.fullName))
+
 
         add(
             ObjectInfoDomain(
@@ -89,9 +98,9 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
             )
         )
 
-        categorySyncEntity?.name?.let {
-            add(ObjectInfoDomain(R.string.accounting_object_category, it))
-        }
+
+        add(ObjectInfoDomain(R.string.accounting_object_category, categorySyncEntity?.name))
+
 
         add(
             ObjectInfoDomain(
@@ -100,38 +109,30 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
             )
         )
 
-        producer?.let {
-            add(ObjectInfoDomain(R.string.accounting_objects_producer, it.name.orEmpty()))
-        }
+        add(ObjectInfoDomain(R.string.accounting_objects_producer, producer?.name.orEmpty()))
 
-        provider?.let {
-            add(ObjectInfoDomain(R.string.accounting_objects_provider, it.name.orEmpty()))
-        }
+        add(ObjectInfoDomain(R.string.accounting_objects_provider, provider?.name.orEmpty()))
 
-        accountingObject.barcodeValue?.let {
-            add(ObjectInfoDomain(R.string.common_barcode, it))
-        }
+        add(ObjectInfoDomain(R.string.common_barcode, accountingObject.barcodeValue))
 
-        accountingObject.rfidValue?.let {
-            add(ObjectInfoDomain(R.string.accounting_object_rfid, it))
-        }
+        add(ObjectInfoDomain(R.string.accounting_object_rfid, accountingObject.rfidValue))
 
-        accountingObject.nfc?.let {
-            add(ObjectInfoDomain(R.string.common_nfc, it))
-        }
+        add(ObjectInfoDomain(R.string.common_nfc, accountingObject.nfc))
 
-        accountingObject.dateInsert?.let {
-            add(ObjectInfoDomain(R.string.common_date_create, getStringDateFromMillis(it)))
-        }
-        accountingObject.userInserted?.let {
-            add(ObjectInfoDomain(R.string.common_user_create, it))
-        }
-        accountingObject.updateDate?.let {
-            add(ObjectInfoDomain(R.string.common_date_update, getStringDateFromMillis(it)))
-        }
-        accountingObject.userUpdated?.let {
-            add(ObjectInfoDomain(R.string.common_user_update, it))
-        }
+        add(
+            ObjectInfoDomain(
+                R.string.common_date_create,
+                getStringDateFromMillis(accountingObject.dateInsert)
+            )
+        )
+        add(ObjectInfoDomain(R.string.common_user_create, accountingObject.userInserted))
+        add(
+            ObjectInfoDomain(
+                R.string.common_date_update,
+                getStringDateFromMillis(accountingObject.updateDate)
+            )
+        )
+        add(ObjectInfoDomain(R.string.common_user_update, accountingObject.userUpdated))
     }
 
 
