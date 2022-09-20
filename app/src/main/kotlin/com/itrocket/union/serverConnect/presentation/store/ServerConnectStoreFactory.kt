@@ -102,6 +102,7 @@ class ServerConnectStoreFactory(
         }
 
         private suspend fun onNextClicked(getState: () -> ServerConnectStore.State) {
+            publish(ServerConnectStore.Label.ParentLoading(true))
             catchException {
                 serverConnectInteractor.clearAllSyncDataIfNeeded(
                     getState().serverAddress,
@@ -112,6 +113,7 @@ class ServerConnectStoreFactory(
                 loadSettings()
                 publish(ServerConnectStore.Label.NextFinish)
             }
+            publish(ServerConnectStore.Label.ParentLoading(false))
         }
 
         private suspend fun loadSettings() {
