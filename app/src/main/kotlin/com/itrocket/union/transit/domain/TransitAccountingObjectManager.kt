@@ -63,7 +63,7 @@ class TransitAccountingObjectManager(
                     id = AccountingObjectStatus.TRANSIT.name,
                     enumType = EnumType.ACCOUNTING_OBJECT_STATUS
                 )
-                    .first()
+                    .firstOrNull()
 
             val accountingObjects = repository.getAccountingObjectsByIds(accountingObjectIds)
             accountingObjects.map {
@@ -86,7 +86,7 @@ class TransitAccountingObjectManager(
                     id = AccountingObjectStatus.AVAILABLE.name,
                     enumType = EnumType.ACCOUNTING_OBJECT_STATUS
                 )
-                    .first()
+                    .firstOrNull()
 
             val accountingObjects = repository.getAccountingObjectsByIds(accountingObjectIds)
             accountingObjects.map {
