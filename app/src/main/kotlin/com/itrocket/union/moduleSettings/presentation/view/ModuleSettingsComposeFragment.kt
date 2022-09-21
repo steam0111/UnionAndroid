@@ -53,10 +53,7 @@ class ModuleSettingsComposeFragment :
                 },
                 onDropdownOpenClickListener = {
                     accept(ModuleSettingsStore.Intent.OnDropdownOpenClicked)
-                },
-                onPowerChanged = { accept(ModuleSettingsStore.Intent.OnPowerChanged(it)) },
-                onArrowUpClickListener = { accept(ModuleSettingsStore.Intent.OnArrowUpClicked) },
-                onArrowDownClickListener = { accept(ModuleSettingsStore.Intent.OnArrowDownClicked) }
+                }
             )
         }
     }

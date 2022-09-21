@@ -55,7 +55,7 @@ class ChangeScanDataComposeFragment :
                     accept(ChangeScanDataStore.Intent.OnCancelClicked)
                 },
                 onReaderPowerClickListener = {
-                    accept(ChangeScanDataStore.Intent.OnPowerClicked)
+                    accept(ChangeScanDataStore.Intent.OnPowerClicked(it))
                 },
                 onScanDataTextChanged = {
                     accept(ChangeScanDataStore.Intent.OnScanDataChanged(it))

@@ -9,8 +9,6 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
-import com.itrocket.union.readerPower.domain.ReaderPowerInteractor
-import com.itrocket.union.readerPower.domain.ReaderPowerInteractor.Companion.MIN_READER_POWER
 import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -20,7 +18,6 @@ class ModuleSettingsStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val moduleSettingsInteractor: ModuleSettingsInteractor,
     private val errorInteractor: ErrorInteractor,
-    private val readerPowerInteractor: ReaderPowerInteractor
 ) {
     fun create(): ModuleSettingsStore =
         object : ModuleSettingsStore,
@@ -50,9 +47,6 @@ class ModuleSettingsStoreFactory(
                 Result.KeyCode(
                     moduleSettingsInteractor.getKeyCode() ?: 0
                 )
-            )
-            dispatch(
-                Result.ReaderPower(moduleSettingsInteractor.getReaderPower())
             )
         }
 
@@ -102,25 +96,6 @@ class ModuleSettingsStoreFactory(
                         intent.service
                     )
                 )
-                is ModuleSettingsStore.Intent.OnPowerChanged -> {
-                    val power = intent.newPowerText.toIntOrNull()
-                    val newPower = if (power != null) {
-                        readerPowerInteractor.validateNewPower(power = power)
-                    } else {
-                        power
-                    }
-                    dispatch(Result.ReaderPower(newPower))
-                }
-                ModuleSettingsStore.Intent.OnArrowDownClicked -> {
-                    val readerPower = getState().readerPower ?: MIN_READER_POWER
-                    val newPower = readerPowerInteractor.increasePower(readerPower)
-                    dispatch(Result.ReaderPower(newPower))
-                }
-                ModuleSettingsStore.Intent.OnArrowUpClicked -> {
-                    val readerPower = getState().readerPower ?: MIN_READER_POWER
-                    val newPower = readerPowerInteractor.decreasePower(readerPower)
-                    dispatch(Result.ReaderPower(newPower))
-                }
             }
         }
 
@@ -142,7 +117,6 @@ class ModuleSettingsStoreFactory(
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class KeyCode(val keyCode: Int) : Result()
-        data class ReaderPower(val readerPower: Int?) : Result()
         data class WaitDefine(val waitDefine: Boolean) : Result()
         data class Service(val service: String) : Result()
         data class Services(val services: List<String>) : Result()
@@ -158,7 +132,6 @@ class ModuleSettingsStoreFactory(
                 is Result.Service -> copy(defaultService = result.service)
                 is Result.Services -> copy(services = result.services)
                 is Result.DropdownExpanded -> copy(dropdownExpanded = result.dropdownExpanded)
-                is Result.ReaderPower -> copy(readerPower = result.readerPower)
             }
     }
 

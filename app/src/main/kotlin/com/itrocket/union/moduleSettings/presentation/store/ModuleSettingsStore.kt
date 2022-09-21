@@ -17,9 +17,6 @@ interface ModuleSettingsStore :
         data class OnServicesHandled(val services: List<String>) : Intent()
         data class OnDefaultServiceHandled(val service: String) : Intent()
         data class OnCursorDefined(val keyCode: Int) : Intent()
-        object OnArrowUpClicked : Intent()
-        object OnArrowDownClicked : Intent()
-        data class OnPowerChanged(val newPowerText: String) : Intent()
     }
 
     data class State(

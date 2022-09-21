@@ -30,6 +30,7 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BottomSheetDivider
 import com.itrocket.union.ui.ImageButton
+import com.itrocket.union.ui.ReaderPowerSelector
 import com.itrocket.union.ui.ReadingModeTabs
 import com.itrocket.union.ui.white
 
@@ -40,7 +41,8 @@ fun ReadingModeScreen(
     onCameraClickListener: () -> Unit,
     onSettingsClickListener: () -> Unit,
     onManualInputClickListener: () -> Unit,
-    onReadingModeTabClickListener: (ReadingModeTab) -> Unit
+    onReadingModeTabClickListener: (ReadingModeTab) -> Unit,
+    onReaderPowerClickListener: (Int) -> Unit
 ) {
     AppTheme {
         Box(
@@ -82,7 +84,9 @@ fun ReadingModeScreen(
                     onCameraClickListener = onCameraClickListener,
                     onSettingsClickListener = onSettingsClickListener,
                     onManualInputClickListener = onManualInputClickListener,
-                    selectedTab = state.selectedTab
+                    selectedTab = state.selectedTab,
+                    readerPower = state.readerPower,
+                    onReaderPowerClickListener = onReaderPowerClickListener
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -96,21 +100,31 @@ private fun BottomBar(
     onCameraClickListener: () -> Unit,
     onSettingsClickListener: () -> Unit,
     onManualInputClickListener: () -> Unit,
-    selectedTab: ReadingModeTab
+    selectedTab: ReadingModeTab,
+    readerPower: Int,
+    onReaderPowerClickListener: (Int) -> Unit
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         ImageButton(
             imageId = R.drawable.ic_settings,
             paddings = PaddingValues(12.dp),
             onClick = onSettingsClickListener,
-            isEnabled = selectedTab == ReadingModeTab.RFID
         )
         Spacer(modifier = Modifier.width(16.dp))
-        BaseButton(
-            text = stringResource(id = R.string.reading_mode_manual_input),
-            onClick = onManualInputClickListener,
-            modifier = Modifier.weight(1f)
-        )
+        if (selectedTab == ReadingModeTab.RFID) {
+            Spacer(modifier = Modifier.weight(1f))
+            ReaderPowerSelector(
+                power = readerPower,
+                onClickListener = onReaderPowerClickListener
+            )
+            Spacer(modifier = Modifier.weight(1f))
+        } else {
+            BaseButton(
+                text = stringResource(id = R.string.reading_mode_manual_input),
+                onClick = onManualInputClickListener,
+                modifier = Modifier.weight(1f)
+            )
+        }
         Spacer(modifier = Modifier.width(16.dp))
         ImageButton(
             imageId = R.drawable.ic_camera,
@@ -138,5 +152,5 @@ fun ReadingModeScreenPreview() {
     ReadingModeScreen(ReadingModeStore.State(
         selectedTab = ReadingModeTab.RFID,
         tabs = ReadingModeTab.values().toList()
-    ), AppInsets(), {}, {}, {}, {})
+    ), AppInsets(), {}, {}, {}, {}, {})
 }

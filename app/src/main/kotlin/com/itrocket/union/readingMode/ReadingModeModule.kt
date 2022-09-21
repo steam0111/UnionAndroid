@@ -32,6 +32,7 @@ object ReadingModeModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
+                get(),
                 get()
             ).create()
         }

@@ -40,9 +40,6 @@ fun ModuleSettingsScreen(
     onDropdownDismiss: () -> Unit,
     onDropdownItemClickListener: (String) -> Unit,
     onDropdownOpenClickListener: () -> Unit,
-    onArrowDownClickListener: () -> Unit,
-    onArrowUpClickListener: () -> Unit,
-    onPowerChanged: (String) -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -65,10 +62,7 @@ fun ModuleSettingsScreen(
                     paddingValues = it,
                     onDropdownDismiss = onDropdownDismiss,
                     onDropdownItemClickListener = onDropdownItemClickListener,
-                    onDropdownOpenClickListener = onDropdownOpenClickListener,
-                    onArrowDownClickListener = onArrowDownClickListener,
-                    onArrowUpClickListener = onArrowUpClickListener,
-                    onPowerChanged = onPowerChanged
+                    onDropdownOpenClickListener = onDropdownOpenClickListener
                 )
             }
         )
@@ -92,9 +86,6 @@ private fun Content(
     onDropdownItemClickListener: (String) -> Unit,
     onDropdownOpenClickListener: () -> Unit,
     paddingValues: PaddingValues,
-    onArrowDownClickListener: () -> Unit,
-    onArrowUpClickListener: () -> Unit,
-    onPowerChanged: (String) -> Unit
 ) {
     Column(modifier = Modifier.padding(paddingValues)) {
         Spacer(modifier = Modifier.height(24.dp))
@@ -103,13 +94,6 @@ private fun Content(
             modifier = Modifier.padding(horizontal = 16.dp),
             style = AppTheme.typography.body1,
             fontWeight = FontWeight.Medium,
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        ReaderPowerPicker(
-            power = state.readerPower ?: ReaderPowerInteractor.MIN_READER_POWER,
-            onPowerChanged = onPowerChanged,
-            onArrowDownClickListener = onArrowDownClickListener,
-            onArrowUpClickListener = onArrowUpClickListener
         )
         Spacer(modifier = Modifier.height(24.dp))
         DefineCursorComponent(
@@ -252,8 +236,5 @@ fun ModuleSettingsScreenPreview() {
         {},
         {},
         {},
-        {},
-        {},
-        {}
     )
 }

@@ -31,48 +31,7 @@ class ReaderPowerInteractor(
         }
     }
 
-    fun changePower(power: Int?): Int? {
-        val newPower = if (power != null) {
-            validateNewPower(power = power)
-        } else {
-            power
-        }
-        return newPower
-    }
-
-    fun validateNewPower(power: Int): Int {
-        return when {
-            power > MAX_READER_POWER -> {
-                MAX_READER_POWER
-            }
-            power < MIN_READER_POWER -> {
-                MIN_READER_POWER
-            }
-            else -> {
-                power
-            }
-        }
-    }
-
-    fun increasePower(power: Int): Int {
-        return if (power + 1 <= MAX_READER_POWER) {
-            power + 1
-        } else {
-            MIN_READER_POWER
-        }
-    }
-
-    fun decreasePower(power: Int): Int {
-        return if (power - 1 >= MIN_READER_POWER) {
-            power - 1
-        } else {
-            MAX_READER_POWER
-        }
-    }
-
     companion object {
-        const val READER_POWER_FACTOR = 10
-        const val MIN_READER_POWER = 1
-        const val MAX_READER_POWER = 10
+        const val READER_POWER_FACTOR = 20
     }
 }

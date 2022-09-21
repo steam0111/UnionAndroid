@@ -38,6 +38,9 @@ class ReadingModeComposeFragment :
                 },
                 onReadingModeTabClickListener = {
                     accept(ReadingModeStore.Intent.OnReadingModeSelected(it))
+                },
+                onReaderPowerClickListener = {
+                    accept(ReadingModeStore.Intent.OnReaderPowerClicked(it))
                 }
             )
         }

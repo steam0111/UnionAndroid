@@ -47,6 +47,7 @@ import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.ImageButton
 import com.itrocket.union.ui.MediumSpacer
+import com.itrocket.union.ui.ReaderPowerSelector
 import com.itrocket.union.ui.TextButton
 import com.itrocket.union.ui.brightGray
 import com.itrocket.union.ui.burntSienna
@@ -63,7 +64,7 @@ fun ChangeScanDataScreen(
     onBackClickListener: () -> Unit,
     onApplyClickListener: () -> Unit,
     onCancelClickListener: () -> Unit,
-    onReaderPowerClickListener: () -> Unit,
+    onReaderPowerClickListener: (Int) -> Unit,
     onScanDataTextChanged: (String) -> Unit
 ) {
     AppTheme {
@@ -106,7 +107,8 @@ fun ChangeScanDataScreen(
                     onApplyClickListener = onApplyClickListener,
                     onCancelClickListener = onCancelClickListener,
                     onReaderPowerClickListener = onReaderPowerClickListener,
-                    isRfid = state.changeScanType == ChangeScanType.RFID
+                    isRfid = state.changeScanType == ChangeScanType.RFID,
+                    power = state.readerPower
                 )
             }
         }
@@ -301,7 +303,8 @@ private fun BottomBar(
     isApplyEnabled: Boolean,
     onApplyClickListener: () -> Unit,
     onCancelClickListener: () -> Unit,
-    onReaderPowerClickListener: () -> Unit,
+    onReaderPowerClickListener: (Int) -> Unit,
+    power: Int,
     isRfid: Boolean
 ) {
     Row(
@@ -311,11 +314,7 @@ private fun BottomBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (isRfid) {
-            ImageButton(
-                imageId = R.drawable.ic_settings,
-                paddings = PaddingValues(12.dp),
-                onClick = onReaderPowerClickListener,
-            )
+            ReaderPowerSelector(power = power, onClickListener = onReaderPowerClickListener)
         }
         Spacer(modifier = Modifier.weight(1f))
         TextButton(
