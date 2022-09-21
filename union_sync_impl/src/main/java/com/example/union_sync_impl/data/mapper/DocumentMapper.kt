@@ -53,7 +53,8 @@ fun DocumentDb.toActionDtoV2(): ActionDtoV2 {
         deleted = false,
         userInserted = userInserted,
         userUpdated = userUpdated,
-        molReceivingId = molId.orEmpty()
+        molReceivingId = molId.orEmpty(),
+        dateInsert = getStringDateFromMillis(insertDate)
     )
 }
 

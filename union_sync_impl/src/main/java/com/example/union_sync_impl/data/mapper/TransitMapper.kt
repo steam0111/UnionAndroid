@@ -29,7 +29,8 @@ fun TransitDb.toTransitDtoV2() = TransitDtoV2(
     code = code,
     deleted = false,
     userUpdated = userUpdated,
-    userInserted = userInserted
+    userInserted = userInserted,
+    dateInsert = getStringDateFromMillis(insertDate)
 )
 
 fun TransitDtoV2.toTransitDb() = TransitDb(

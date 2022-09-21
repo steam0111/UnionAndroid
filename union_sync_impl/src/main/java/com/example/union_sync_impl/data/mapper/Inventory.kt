@@ -39,7 +39,8 @@ fun InventoryDb.toInventoryDtoV2(): InventoryDtoV2 {
         id = id,
         deleted = false,
         userInserted = userInserted,
-        userUpdated = userUpdated
+        userUpdated = userUpdated,
+        dateInsert = getStringDateFromMillis(insertDate)
     )
 }
 

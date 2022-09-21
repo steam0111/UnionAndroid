@@ -201,6 +201,8 @@ fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObject
             userInserted = accountingObjectDb.userInserted,
             userUpdated = accountingObjectDb.userUpdated,
             deleted = false,
+            dateInsert = getStringDateFromMillis(accountingObjectDb.insertDate)
+
         )
     }
 }
