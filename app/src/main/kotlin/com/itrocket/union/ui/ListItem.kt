@@ -84,7 +84,8 @@ fun AccountingObjectItem(
             modifier = Modifier
                 .fillMaxWidth(0.7f)
         ) {
-            HeaderText(accountingObject.title)
+            val headerText = accountingObject.title.ifEmpty { stringResource(id = R.string.value_not_defined) }
+            HeaderText(headerText)
             Spacer(modifier = Modifier.height(4.dp))
             accountingObject.listMainInfo.take(MAX_LIST_INFO).forEach {
                 Text(
