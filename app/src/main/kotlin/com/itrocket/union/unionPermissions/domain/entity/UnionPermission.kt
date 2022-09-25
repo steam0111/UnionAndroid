@@ -21,4 +21,5 @@ enum class Action(val action: String) {
     WRITE("WRITE"),
     CREATE("CREATE"),
     READ("READ"),
+    COMPLETE_WITHOUT_NFC("COMPLETE_WITHOUT_NFC")
 }

@@ -27,6 +27,8 @@ import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.transit.domain.TransitAccountingObjectManager
 import com.itrocket.union.transit.domain.TransitRemainsManager
 import com.itrocket.union.transit.domain.TransitTypeDomain
+import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
+import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 
 class TransitStoreFactory(
     private val storeFactory: StoreFactory,
@@ -36,7 +38,10 @@ class TransitStoreFactory(
     private val errorInteractor: ErrorInteractor,
     private val filterInteractor: FilterInteractor,
     private val documentCreateInteractor: DocumentCreateInteractor,
-    private val selectParamsInteractor: SelectParamsInteractor
+    private val selectParamsInteractor: SelectParamsInteractor,
+    private val transitAccountingObjectManager: TransitAccountingObjectManager,
+    private val transitReservesManager: TransitRemainsManager,
+    private val unionPermissionsInteractor: UnionPermissionsInteractor
 ) {
     fun create(): TransitStore =
         object : TransitStore,
@@ -232,18 +237,27 @@ class TransitStoreFactory(
             if (getState().confirmDialogType == DocumentConfirmAlertType.SAVE) {
                 saveDocument(getState)
             } else if (getState().confirmDialogType == DocumentConfirmAlertType.CONDUCT) {
+                onConductClicked(getState())
+            }
+            dispatch(Result.ConfirmDialogType(DocumentConfirmAlertType.NONE))
+        }
+
+        private suspend fun onConductClicked(state: TransitStore.State) {
+            val conductPermission = UnionPermission.ALL_DOCUMENTS
+            if (unionPermissionsInteractor.canConductDocument(conductPermission)) {
+                conductDocument(state)
+            } else {
                 publish(
                     TransitStore.Label.ShowNfcReader(
                         documentCreateInteractor.completeDocument(
-                            document = getState().transit,
-                            accountingObjects = getState().accountingObjects,
-                            reserves = getState().reserves,
-                            params = getState().params
+                            document = state.transit,
+                            accountingObjects = state.accountingObjects,
+                            reserves = state.reserves,
+                            params = state.params
                         )
                     )
                 )
             }
-            dispatch(Result.ConfirmDialogType(DocumentConfirmAlertType.NONE))
         }
 
         private suspend fun handleBarcodeAccountingObjects(
@@ -273,6 +287,44 @@ class TransitStoreFactory(
         ) {
             dispatch(Result.Params(params))
         }
+
+        private suspend fun conductDocument(state: TransitStore.State) {
+            val transitId = transitInteractor.createOrUpdateDocument(
+                transit = state.transit,
+                accountingObjects = state.accountingObjects,
+                params = state.params,
+                reserves = state.reserves,
+                status = DocumentStatus.COMPLETED,
+                transitTypeDomain = state.transit.transitType ?: TransitTypeDomain.TRANSIT_SENDING
+            )
+            transitAccountingObjectManager.changeAccountingObjectsAfterConduct(
+                transitTypeDomain = state.transit.transitType ?: TransitTypeDomain.TRANSIT_SENDING,
+                accountingObjects = state.accountingObjects,
+                params = state.params
+            )
+            transitReservesManager.conductReserve(
+                reserves = state.reserves,
+                params = state.params,
+                transitTypeDomain = state.transit.transitType ?: TransitTypeDomain.TRANSIT_SENDING
+            )
+            dispatch(Result.Transit(state.transit.copy(documentStatus = DocumentStatus.COMPLETED)))
+            if (state.transit.transitType != TransitTypeDomain.TRANSIT_RECEPTION) {
+                createReceptionTransit(transitId)
+            }
+        }
+
+        private suspend fun createReceptionTransit(transitId: String) {
+            val transit = transitInteractor.getTransitById(transitId)
+            transitInteractor.createOrUpdateDocument(
+                transitTypeDomain = TransitTypeDomain.TRANSIT_RECEPTION,
+                accountingObjects = transit.accountingObjects,
+                reserves = transit.reserves,
+                params = transit.params,
+                status = DocumentStatus.CREATED,
+                transit = transit.copy(id = null)
+            )
+        }
+
 
         private suspend fun saveDocument(getState: () -> TransitStore.State) {
             transitInteractor.createOrUpdateDocument(

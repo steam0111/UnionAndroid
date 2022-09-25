@@ -36,6 +36,19 @@ class UnionPermissionsInteractor(private val authMainRepository: AuthMainReposit
         return actions.map { it.action }.contains(permission.action)
     }
 
+    suspend fun canConductDocument(unionPermission: UnionPermission): Boolean {
+        val config = authMainRepository.getMyPreferencesConfig()
+
+        if (checkConstantCondition(unionPermission, config)) {
+            return true
+        }
+
+        val permissions = config.permissions ?: return false
+        val permission = permissions.find { it.model == unionPermission.model } ?: return false
+
+        return permission.action == Action.COMPLETE_WITHOUT_NFC.action
+    }
+
     private fun checkConstantCondition(
         unionPermission: UnionPermission,
         config: MyConfigDomain
