@@ -75,7 +75,6 @@ fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
         mol = mol?.toSyncEntity(),
         structuralSyncEntities = structuralSyncEntities,
         categorySyncEntity = categorySyncEntity,
-        categorySyncEntity = categorySyncEntity,
         balanceUnitSyncEntities = balanceUnitSyncEntities
     )
 }

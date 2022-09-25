@@ -105,9 +105,9 @@ private fun Content(
             }
         }
         items(state.accountingObjectDomain.listMainInfo) { item ->
-            val valueRes = item.valueRes?.let { stringResource(id = it) }.orEmpty()
+            val valueRes = stringResource(id = R.string.value_not_defined)
             ExpandedInfoField(
-                label = item.name ?: item.title?.let { stringResource(id = it) }.orEmpty(),
+                label = stringResource(id = item.title),
                 value = item.value.ifBlankOrNull { valueRes },
                 modifier = Modifier.fillMaxWidth()
             )
