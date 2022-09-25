@@ -5,6 +5,7 @@ import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
+import com.example.union_sync_api.entity.EnumSyncEntity
 import com.example.union_sync_api.entity.EnumType
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.StructuralSyncEntity
@@ -64,7 +65,8 @@ fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
     balanceUnitSyncEntities: List<StructuralSyncEntity>?,
     structuralSyncEntities: List<StructuralSyncEntity>?,
     simpleAdditionalFields: List<AccountingObjectAdditionalFieldSyncEntity>?,
-    vocabularyAdditionalFields: List<AccountingObjectAdditionalFieldSyncEntity>?
+    vocabularyAdditionalFields: List<AccountingObjectAdditionalFieldSyncEntity>?,
+    categorySyncEntity: EnumSyncEntity?
 ): AccountingObjectDetailSyncEntity {
     return AccountingObjectDetailSyncEntity(
         accountingObject = accountingObjectDb.toSyncEntity(locationSyncEntity),
@@ -75,7 +77,7 @@ fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
         provider = provider?.toSyncEntity(),
         mol = mol?.toSyncEntity(),
         structuralSyncEntities = structuralSyncEntities,
-        categorySyncEntity = categoryDb?.toSyncEntity(),
+        categorySyncEntity = categorySyncEntity,
         balanceUnitSyncEntities = balanceUnitSyncEntities,
         simpleAdditionalFields = simpleAdditionalFields,
         vocabularyAdditionalFields = vocabularyAdditionalFields

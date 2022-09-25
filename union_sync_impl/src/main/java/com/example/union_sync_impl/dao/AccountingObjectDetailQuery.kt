@@ -72,11 +72,7 @@ private fun getMainQuery(): String {
             "" +
             "providers.id AS provider_id, " +
             "providers.catalogItemName AS provider_catalogItemName, " +
-            "providers.name AS provider_name, " +
-            "" +
-            "enums.id AS category_id, " +
-            "enums.name AS category_name, " +
-            "enums.enumType AS category_enumType " +
+            "providers.name AS provider_name " +
             "" +
             "FROM accounting_objects " +
             "LEFT JOIN providers ON accounting_objects.producerId = providers.id " +
@@ -85,6 +81,5 @@ private fun getMainQuery(): String {
             "LEFT JOIN location ON accounting_objects.locationId = location.id " +
             "LEFT JOIN employees molEmployees ON accounting_objects.molId = molEmployees.id " +
             "LEFT JOIN structural ON accounting_objects.structuralId = structural.id " +
-            "LEFT JOIN employees exploitingEmployees ON accounting_objects.exploitingId = exploitingEmployees.id " +
-            "LEFT JOIN enums ON accounting_objects.accountingObjectCategoryId = enums.id "
+            "LEFT JOIN employees exploitingEmployees ON accounting_objects.exploitingId = exploitingEmployees.id "
 }

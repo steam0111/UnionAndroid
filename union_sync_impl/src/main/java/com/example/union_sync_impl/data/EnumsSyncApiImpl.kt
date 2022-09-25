@@ -18,4 +18,8 @@ class EnumsSyncApiImpl(
         return dao.getAll(sqlEnumsQuery(enumType = enumType.name, name = textQuery, id = id))
             .map { it.toSyncEntity() }
     }
+
+    override suspend fun getByCompoundId(enumType: EnumType, id: String?): EnumSyncEntity? {
+        return dao.getByCompoundId(id, enumType.name)?.toSyncEntity()
+    }
 }

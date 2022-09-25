@@ -55,10 +55,10 @@ class EmployeeSyncApiImpl(
         val balanceUnitIndex = structurals.indexOfLast { it.balanceUnit }.takeIf { it >= 0 } ?: 0
         val balanceUnits = structurals.subList(0, balanceUnitIndex)
 
-        val employeeStatus = enumSyncApi.getAllByType(
+        val employeeStatus = enumSyncApi.getByCompoundId(
             enumType = EnumType.EMPLOYEE_STATUS,
             id = fullEmployee.employeeDb.statusId
-        ).firstOrNull()
+        )
 
         return fullEmployee.toDetailSyncEntity(
             balanceUnits = balanceUnits,

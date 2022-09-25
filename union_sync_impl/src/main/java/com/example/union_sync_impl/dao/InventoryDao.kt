@@ -23,10 +23,6 @@ interface InventoryDao {
                 "structural.name AS structural_name, " +
                 "structural.parentId AS structural_parentId, " +
                 "" +
-                "enums.id AS inventory_base_id, " +
-                "enums.name AS inventory_base_name, " +
-                "enums.enumType AS inventory_base_enumType, " +
-                "" +
                 "employees.id AS employees_id, " +
                 "employees.catalogItemName AS employees_catalogItemName, " +
                 "employees.firstname AS employees_firstname, " +
@@ -38,7 +34,6 @@ interface InventoryDao {
                 "FROM inventories " +
                 "LEFT JOIN employees ON inventories.employeeId = employees.id " +
                 "LEFT JOIN structural ON inventories.structuralId = structural.id " +
-                "LEFT JOIN enums ON inventories.inventoryBaseId = enums.id " +
                 "WHERE inventories.id = :id LIMIT 1 "
     )
     suspend fun getInventoryById(id: String): FullInventory

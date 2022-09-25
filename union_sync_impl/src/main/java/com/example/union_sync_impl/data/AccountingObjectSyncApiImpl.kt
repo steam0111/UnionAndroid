@@ -2,21 +2,20 @@ package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.AccountingObjectAdditionalFieldsSyncApi
 import com.example.union_sync_api.data.AccountingObjectSyncApi
+import com.example.union_sync_api.data.EnumsSyncApi
 import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
-import com.example.union_sync_api.entity.AccountingObjectAdditionalFieldSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
+import com.example.union_sync_api.entity.EnumType
 import com.example.union_sync_impl.dao.AccountingObjectDao
-import com.example.union_sync_impl.dao.StructuralDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectDetailQuery
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDetailSyncEntity
 import com.example.union_sync_impl.data.mapper.toAccountingObjectScanningUpdate
 import com.example.union_sync_impl.data.mapper.toAccountingObjectUpdate
-import com.example.union_sync_impl.data.mapper.toStructuralSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -25,7 +24,8 @@ class AccountingObjectSyncApiImpl(
     private val accountingObjectsDao: AccountingObjectDao,
     private val locationSyncApi: LocationSyncApi,
     private val structuralSyncApi: StructuralSyncApi,
-    private val accountingObjectAdditionalFieldsSyncApi: AccountingObjectAdditionalFieldsSyncApi
+    private val accountingObjectAdditionalFieldsSyncApi: AccountingObjectAdditionalFieldsSyncApi,
+    private val enumsApi: EnumsSyncApi
 ) : AccountingObjectSyncApi {
 
     override suspend fun getAccountingObjects(
@@ -112,6 +112,10 @@ class AccountingObjectSyncApiImpl(
             ).orEmpty()
         val balanceUnitIndex = structurals.indexOfLast { it.balanceUnit }.takeIf { it >= 0 } ?: 0
         val balanceUnit = structurals.subList(0, balanceUnitIndex)
+        val categorySyncEntity = enumsApi.getByCompoundId(
+            enumType = EnumType.ACCOUNTING_CATEGORY,
+            id = fullAccountingObjectDb.accountingObjectDb.accountingObjectCategoryId
+        )
 
         return fullAccountingObjectDb.toAccountingObjectDetailSyncEntity(
             location,
@@ -122,7 +126,8 @@ class AccountingObjectSyncApiImpl(
             ),
             vocabularyAdditionalFields = accountingObjectAdditionalFieldsSyncApi.getVocabularyAdditionalFields(
                 fullAccountingObjectDb.accountingObjectDb.id
-            )
+            ),
+            categorySyncEntity = categorySyncEntity
         )
     }
 
@@ -150,6 +155,11 @@ class AccountingObjectSyncApiImpl(
         val balanceUnitIndex = structurals.indexOfLast { it.balanceUnit }
         val balanceUnit = structurals.subList(0, balanceUnitIndex + 1)
 
+        val categorySyncEntity = enumsApi.getByCompoundId(
+            enumType = EnumType.ACCOUNTING_CATEGORY,
+            id = fullAccountingObject.accountingObjectDb.accountingObjectCategoryId
+        )
+
         return fullAccountingObject.toAccountingObjectDetailSyncEntity(
             location,
             balanceUnit,
@@ -159,7 +169,8 @@ class AccountingObjectSyncApiImpl(
             ),
             vocabularyAdditionalFields = accountingObjectAdditionalFieldsSyncApi.getVocabularyAdditionalFields(
                 fullAccountingObject.accountingObjectDb.id
-            )
+            ),
+            categorySyncEntity = categorySyncEntity
         )
     }
 
@@ -174,6 +185,11 @@ class AccountingObjectSyncApiImpl(
             val balanceUnitIndex = structurals.indexOfLast { it.balanceUnit }
             val balanceUnit = structurals.subList(0, balanceUnitIndex + 1)
 
+            val categorySyncEntity = enumsApi.getByCompoundId(
+                enumType = EnumType.ACCOUNTING_CATEGORY,
+                id = it.accountingObjectDb.accountingObjectCategoryId
+            )
+
             it.toAccountingObjectDetailSyncEntity(
                 location,
                 balanceUnit,
@@ -183,7 +199,8 @@ class AccountingObjectSyncApiImpl(
                 ),
                 vocabularyAdditionalFields = accountingObjectAdditionalFieldsSyncApi.getVocabularyAdditionalFields(
                     it.accountingObjectDb.id
-                )
+                ),
+                categorySyncEntity = categorySyncEntity
             )
         }
     }
