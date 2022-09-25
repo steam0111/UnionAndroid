@@ -52,6 +52,9 @@ class ServerConnectComposeFragment :
             is ServerConnectStore.Label.ChangeEnable -> (parentFragment as? AuthContainer)?.isButtonEnable(
                 label.enabled
             )
+            is ServerConnectStore.Label.ParentLoading -> (parentFragment as? AuthContainer)?.isLoading(
+                label.isLoading
+            )
         }
     }
 }

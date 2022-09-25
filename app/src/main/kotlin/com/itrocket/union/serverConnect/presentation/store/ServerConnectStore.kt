@@ -22,6 +22,7 @@ interface ServerConnectStore :
     sealed class Label {
         data class ChangeEnable(val enabled: Boolean) : Label()
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
+        data class ParentLoading(val isLoading: Boolean) : Label()
         object NextFinish : Label()
     }
 }
