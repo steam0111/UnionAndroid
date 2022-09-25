@@ -44,7 +44,14 @@ interface InventoryStore :
             StructuralParamDomain(manualType = ManualType.BALANCE_UNIT, clickable = false),
             ParamDomain(id = "", value = "", type = ManualType.MOL_IN_STRUCTURAL),
             LocationParamDomain(manualType = ManualType.LOCATION_INVENTORY),
-            ParamDomain(id = "", value = "", type = ManualType.INVENTORY_BASE)
+            ParamDomain(id = "", value = "", type = ManualType.INVENTORY_BASE),
+            ParamDomain(
+                id = "",
+                value = "",
+                type = ManualType.INVENTORY_CHECKER,
+                isClickable = false,
+                isFilter = false
+            )
         ),
         val isCanCreateInventory: Boolean = true,
         val inventoryCreateDomain: InventoryCreateDomain?

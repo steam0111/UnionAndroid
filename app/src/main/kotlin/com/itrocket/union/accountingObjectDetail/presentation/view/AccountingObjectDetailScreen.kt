@@ -43,6 +43,7 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.ExpandedInfoField
 import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.white
+import com.itrocket.union.utils.ifBlankOrNull
 import com.itrocket.utils.clickableUnbounded
 
 @OptIn(ExperimentalPagerApi::class)
@@ -92,18 +93,21 @@ private fun Content(
 ) {
     LazyColumn(Modifier.padding(top = paddingValues.calculateTopPadding())) {
         item {
-            Text(
-                text = state.accountingObjectDomain.title,
-                fontWeight = FontWeight.Bold,
-                style = AppTheme.typography.h6,
-                fontSize = 19.sp,
-                modifier = Modifier.padding(16.dp)
-            )
+            if (state.accountingObjectDomain.title.isNotEmpty()) {
+                Text(
+                    text = state.accountingObjectDomain.title,
+                    fontWeight = FontWeight.Bold,
+                    style = AppTheme.typography.h6,
+                    fontSize = 19.sp,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
         }
-        items(state.accountingObjectDomain.listMainInfo) {
+        items(state.accountingObjectDomain.listMainInfo) { item ->
+            val valueRes = item.valueRes?.let { stringResource(id = it) }.orEmpty()
             ExpandedInfoField(
-                label = it.name ?: it.title?.let { stringResource(id = it) }.orEmpty(),
-                value = it.value ?: it.valueRes?.let { stringResource(id = it) }.orEmpty(),
+                label = item.name ?: item.title?.let { stringResource(id = it) }.orEmpty(),
+                value = item.value.ifBlankOrNull { valueRes },
                 modifier = Modifier.fillMaxWidth()
             )
         }
