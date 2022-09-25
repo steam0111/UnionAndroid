@@ -27,7 +27,8 @@ class ReaderPowerInteractor(
 
     suspend fun getReaderPower(): Int {
         return withContext(coreDispatchers.io) {
-            (moduleSettingsRepository.getReaderPower().firstOrNull() ?: 0) / READER_POWER_FACTOR
+            (moduleSettingsRepository.getReaderPower().firstOrNull()
+                ?: DEFAULT_READER_POWER_VALUE) / READER_POWER_FACTOR
         }
     }
 
@@ -74,5 +75,6 @@ class ReaderPowerInteractor(
         const val READER_POWER_FACTOR = 10
         const val MIN_READER_POWER = 1
         const val MAX_READER_POWER = 10
+        private const val DEFAULT_READER_POWER_VALUE = 100
     }
 }
