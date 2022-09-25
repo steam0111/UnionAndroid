@@ -1,6 +1,7 @@
 package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.DocumentSyncApi
+import com.example.union_sync_api.data.EnumsSyncApi
 import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
@@ -9,6 +10,7 @@ import com.example.union_sync_api.entity.ReserveCountSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateReservesSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
+import com.example.union_sync_api.entity.EnumType
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
@@ -38,7 +40,8 @@ class DocumentSyncApiImpl(
     private val reserveDao: ReserveDao,
     private val locationSyncApi: LocationSyncApi,
     private val actionRecordDao: ActionRecordDao,
-    private val actionRemainsRecordDao: ActionRemainsRecordDao
+    private val actionRemainsRecordDao: ActionRemainsRecordDao,
+    private val enumsApi: EnumsSyncApi
 ) : DocumentSyncApi {
     override suspend fun createDocument(documentCreateSyncEntity: DocumentCreateSyncEntity): String {
         val documentId = UUID.randomUUID().toString()
@@ -173,6 +176,11 @@ class DocumentSyncApiImpl(
         val balanceUnitToFullPath =
             structuralSyncApi.getStructuralFullPath(balanceUnitTo?.id, mutableListOf())
 
+        val actionBase = enumsApi.getByCompoundId(
+            enumType = EnumType.ACTION_BASE,
+            id = fullDocument.documentDb.actionBaseId
+        )
+
         return fullDocument.documentDb.toDocumentSyncEntity(
             mol = fullDocument.molDb?.toSyncEntity(),
             exploiting = fullDocument.exploitingDb?.toSyncEntity(),
@@ -182,7 +190,7 @@ class DocumentSyncApiImpl(
             locationTo = locationSyncApi.getLocationFullPath(fullDocument.documentDb.locationToId),
             structuralToSyncEntity = structuralToIds,
             structuralFromSyncEntity = structuralFromIds,
-            actionBase = fullDocument.actionBaseDb?.toSyncEntity(),
+            actionBase = actionBase,
             balanceUnitFrom = balanceUnitFromFullPath,
             balanceUnitTo = balanceUnitToFullPath
         )

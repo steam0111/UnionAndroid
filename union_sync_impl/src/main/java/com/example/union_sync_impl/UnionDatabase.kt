@@ -84,7 +84,7 @@ import com.example.union_sync_impl.utils.Converters
         TransitAccountingObjectRecordDb::class,
         TransitRemainsRecordDb::class,
         EnumDb::class
-    ], version = 100
+    ], version = 108
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {

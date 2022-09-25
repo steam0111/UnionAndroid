@@ -70,11 +70,11 @@ class DocumentAccountingObjectManager(
     ): List<AccountingObjectSyncEntity> {
         return withContext(coreDispatchers.io) {
             val accountingObjects = repository.getAccountingObjectsByIds(accountingObjectIds)
-            val newStatus = enumsSyncApi.getAllByType(
+            val newStatus = enumsSyncApi.getByCompoundId(
                 id = AccountingObjectStatus.GIVEN.name,
                 enumType = EnumType.ACCOUNTING_OBJECT_STATUS
             )
-                .firstOrNull()
+
             accountingObjects.map {
                 it.copy(
                     exploitingEmployeeId = exploitingId,
@@ -95,16 +95,15 @@ class DocumentAccountingObjectManager(
         return withContext(coreDispatchers.io) {
             val accountingObjects = repository.getAccountingObjectsByIds(accountingObjectIds)
             val newStatus =
-                enumsSyncApi.getAllByType(
+                enumsSyncApi.getByCompoundId(
                     id = AccountingObjectStatus.AVAILABLE.name,
                     enumType = EnumType.ACCOUNTING_OBJECT_STATUS
                 )
-                    .first()
             accountingObjects.map {
                 it.copy(
                     exploitingEmployeeId = null,
                     status = newStatus,
-                    statusId = newStatus.id,
+                    statusId = newStatus?.id,
                     locationId = locationToId ?: it.locationId,
                     structuralId = structuralId ?: it.structuralId
                 )

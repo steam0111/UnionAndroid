@@ -4,6 +4,7 @@ import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
+import com.example.union_sync_api.entity.EnumSyncEntity
 import com.example.union_sync_api.entity.EnumType
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.StructuralSyncEntity
@@ -61,7 +62,8 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
 fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
     locationSyncEntity: List<LocationSyncEntity>?,
     balanceUnitSyncEntities: List<StructuralSyncEntity>?,
-    structuralSyncEntities: List<StructuralSyncEntity>?
+    structuralSyncEntities: List<StructuralSyncEntity>?,
+    categorySyncEntity: EnumSyncEntity?
 ): AccountingObjectDetailSyncEntity {
     return AccountingObjectDetailSyncEntity(
         accountingObject = accountingObjectDb.toSyncEntity(locationSyncEntity),
@@ -72,7 +74,8 @@ fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
         provider = provider?.toSyncEntity(),
         mol = mol?.toSyncEntity(),
         structuralSyncEntities = structuralSyncEntities,
-        categorySyncEntity = categoryDb?.toSyncEntity(),
+        categorySyncEntity = categorySyncEntity,
+        categorySyncEntity = categorySyncEntity,
         balanceUnitSyncEntities = balanceUnitSyncEntities
     )
 }

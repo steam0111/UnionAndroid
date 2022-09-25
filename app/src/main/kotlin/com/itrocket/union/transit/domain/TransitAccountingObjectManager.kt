@@ -59,11 +59,10 @@ class TransitAccountingObjectManager(
     ): List<AccountingObjectSyncEntity> {
         return withContext(coreDispatchers.io) {
             val status =
-                enumsSyncApi.getAllByType(
+                enumsSyncApi.getByCompoundId(
                     id = AccountingObjectStatus.TRANSIT.name,
                     enumType = EnumType.ACCOUNTING_OBJECT_STATUS
                 )
-                    .first()
 
             val accountingObjects = repository.getAccountingObjectsByIds(accountingObjectIds)
             accountingObjects.map {
@@ -82,11 +81,10 @@ class TransitAccountingObjectManager(
     ): List<AccountingObjectSyncEntity> {
         return withContext(coreDispatchers.io) {
             val status =
-                enumsSyncApi.getAllByType(
+                enumsSyncApi.getByCompoundId(
                     id = AccountingObjectStatus.AVAILABLE.name,
                     enumType = EnumType.ACCOUNTING_OBJECT_STATUS
                 )
-                    .first()
 
             val accountingObjects = repository.getAccountingObjectsByIds(accountingObjectIds)
             accountingObjects.map {

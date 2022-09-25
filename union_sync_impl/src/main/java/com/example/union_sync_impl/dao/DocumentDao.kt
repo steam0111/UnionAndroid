@@ -32,17 +32,11 @@ interface DocumentDao {
                 "exploitingEmployees.lastname AS exploiting_lastname, " +
                 "exploitingEmployees.patronymic AS exploiting_patronymic, " +
                 "exploitingEmployees.number AS exploiting_number, " +
-                "exploitingEmployees.nfc AS exploiting_nfc, " +
-                "" +
-                "enums.id AS action_bases_id, " +
-                "enums.name AS action_bases_name, " +
-                "enums.enumType AS action_bases_enumType, " +
-                "enums.updateDate AS action_bases_updateDate " +
+                "exploitingEmployees.nfc AS exploiting_nfc " +
                 "" +
                 "FROM documents " +
                 "LEFT JOIN employees molEmployees ON documents.molId = molEmployees.id " +
                 "LEFT JOIN employees exploitingEmployees ON documents.exploitingId = exploitingEmployees.id " +
-                "LEFT JOIN enums ON documents.actionBaseId = enums.id " +
                 "WHERE documents.documentType = :type"
     )
     fun getDocumentsByType(type: String): Flow<List<FullDocument>>
@@ -64,17 +58,11 @@ interface DocumentDao {
                 "exploitingEmployees.lastname AS exploiting_lastname, " +
                 "exploitingEmployees.patronymic AS exploiting_patronymic, " +
                 "exploitingEmployees.number AS exploiting_number, " +
-                "exploitingEmployees.nfc AS exploiting_nfc, " +
-                "" +
-                "enums.id AS action_bases_id, " +
-                "enums.name AS action_bases_name, " +
-                "enums.enumType AS action_bases_enumType, " +
-                "enums.updateDate AS action_bases_updateDate " +
+                "exploitingEmployees.nfc AS exploiting_nfc " +
                 "" +
                 "FROM documents " +
                 "LEFT JOIN employees molEmployees ON documents.molId = molEmployees.id " +
                 "LEFT JOIN employees exploitingEmployees ON documents.exploitingId = exploitingEmployees.id " +
-                "LEFT JOIN enums ON documents.actionBaseId = enums.id " +
                 "WHERE documents.id = :id LIMIT 1 "
     )
     suspend fun getDocumentById(id: String): FullDocument

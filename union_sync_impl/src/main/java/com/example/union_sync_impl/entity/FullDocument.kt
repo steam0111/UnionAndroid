@@ -8,7 +8,5 @@ class FullDocument(
     @Embedded(prefix = "mol_")
     val molDb: EmployeeDb?,
     @Embedded(prefix = "exploiting_")
-    val exploitingDb: EmployeeDb? = null,
-    @Embedded(prefix = "action_bases_")
-    val actionBaseDb: EnumDb? = null
+    val exploitingDb: EmployeeDb? = null
 )

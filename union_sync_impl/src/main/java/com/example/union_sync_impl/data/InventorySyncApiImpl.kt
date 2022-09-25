@@ -1,15 +1,18 @@
 package com.example.union_sync_impl.data
 
+import com.example.union_sync_api.data.EnumsSyncApi
 import com.example.union_sync_api.data.InventorySyncApi
 import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
 import com.example.union_sync_api.entity.AccountingObjectInfoSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
+import com.example.union_sync_api.entity.EnumType
 import com.example.union_sync_api.entity.InventoryCreateSyncEntity
 import com.example.union_sync_api.entity.InventorySyncEntity
 import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
+import com.example.union_sync_impl.dao.EnumsDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.InventoryRecordDao
 import com.example.union_sync_impl.dao.LocationDao
@@ -35,7 +38,8 @@ class InventorySyncApiImpl(
     private val structuralSyncApi: StructuralSyncApi,
     private val accountingObjectDao: AccountingObjectDao,
     private val inventoryRecordDao: InventoryRecordDao,
-    private val locationSyncApi: LocationSyncApi
+    private val locationSyncApi: LocationSyncApi,
+    private val enumsApi: EnumsSyncApi
 ) : InventorySyncApi {
     override suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): String {
         val inventoryId = UUID.randomUUID().toString()
@@ -67,12 +71,17 @@ class InventorySyncApiImpl(
                 val balanceUnit = structurals.lastOrNull { it.balanceUnit }
                 val balanceUnitFullPath =
                     structuralSyncApi.getStructuralFullPath(balanceUnit?.id, mutableListOf())
+                val inventoryBase = enumsApi.getByCompoundId(
+                    enumType = EnumType.INVENTORY_BASE,
+                    id = it.inventoryDb.inventoryBaseId
+                )
+
                 it.inventoryDb.toInventorySyncEntity(
                     structuralSyncEntities = structurals,
                     mol = it.employeeDb?.toSyncEntity(),
                     locationSyncEntities = it.getLocations(),
                     accountingObjects = listOf(),
-                    inventoryBaseSyncEntity = it.inventoryBaseDb?.toSyncEntity(),
+                    inventoryBaseSyncEntity = inventoryBase,
                     balanceUnit = balanceUnitFullPath.orEmpty()
                 )
             }
@@ -125,13 +134,17 @@ class InventorySyncApiImpl(
         val balanceUnit = structurals.lastOrNull { it.balanceUnit }
         val balanceUnitFullPath =
             structuralSyncApi.getStructuralFullPath(balanceUnit?.id, mutableListOf())
+        val inventoryBase = enumsApi.getByCompoundId(
+            enumType = EnumType.INVENTORY_BASE,
+            id = fullInventory.inventoryDb.inventoryBaseId
+        )
 
         return fullInventory.inventoryDb.toInventorySyncEntity(
             structuralSyncEntities = structurals,
             mol = fullInventory.employeeDb?.toSyncEntity(),
             locationSyncEntities = locations,
             accountingObjects = getAccountingObjects(fullInventory.inventoryDb),
-            inventoryBaseSyncEntity = fullInventory.inventoryBaseDb?.toSyncEntity(),
+            inventoryBaseSyncEntity = inventoryBase,
             balanceUnitFullPath.orEmpty()
         ).apply {
             Timber.tag(INVENTORY_TAG)
