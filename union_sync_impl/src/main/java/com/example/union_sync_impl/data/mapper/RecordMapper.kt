@@ -34,7 +34,8 @@ fun ActionRecordDb.toActionRecordDtoV2() = ActionRecordDtoV2(
     deleted = false,
     dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
     userInserted = userInserted,
-    userUpdated = userUpdated
+    userUpdated = userUpdated,
+    dateInsert = getStringDateFromMillis(insertDate)
 )
 
 fun ActionRemainsRecordDtoV2.toActionRemainsRecordDb() = ActionRemainsRecordDb(
@@ -56,7 +57,8 @@ fun ActionRemainsRecordDb.toActionRemainsRecordDtoV2() = ActionRemainsRecordDtoV
     count = count,
     dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
     userInserted = userInserted,
-    userUpdated = userUpdated
+    userUpdated = userUpdated,
+    dateInsert = getStringDateFromMillis(insertDate)
 )
 
 fun InventoryRecordDtoV2.toInventoryRecordDb() = InventoryRecordDb(
@@ -99,7 +101,8 @@ fun InventoryRecordDb.toInventoryRecordDtoV2() = InventoryRecordDtoV2(
     inventoryRecordStatusId = inventoryStatus,
     dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
     userInserted = userInserted,
-    userUpdated = userUpdated
+    userUpdated = userUpdated,
+    dateInsert = getStringDateFromMillis(insertDate)
 )
 
 fun TransitRemainsRecordDtoV2.toTransitRemainsDb() = TransitRemainsRecordDb(

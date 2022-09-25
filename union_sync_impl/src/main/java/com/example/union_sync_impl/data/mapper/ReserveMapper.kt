@@ -55,7 +55,8 @@ fun ReserveDb.toRemainsDtoV2(): RemainsDtoV2 {
         unitPrice = unitPrice,
         deleted = false,
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        dateInsert = getStringDateFromMillis(insertDate)
     )
 }
 
