@@ -9,7 +9,5 @@ class FullInventory(
     @Embedded(prefix = "employees_")
     val employeeDb: EmployeeDb?,
     @Embedded(prefix = "structural_")
-    val structuralDb: StructuralDb?,
-    @Embedded(prefix = "inventory_base_")
-    val inventoryBaseDb: EnumDb?
+    val structuralDb: StructuralDb?
 )

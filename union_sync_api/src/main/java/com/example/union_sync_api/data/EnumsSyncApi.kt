@@ -9,4 +9,9 @@ interface EnumsSyncApi {
         textQuery: String? = null,
         id: String? = null
     ): List<EnumSyncEntity>
+
+    suspend fun getByCompoundId(
+        enumType: EnumType,
+        id: String? = null
+    ): EnumSyncEntity?
 }

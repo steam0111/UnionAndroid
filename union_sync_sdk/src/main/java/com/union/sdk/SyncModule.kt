@@ -75,7 +75,8 @@ object SyncModule {
                 accountingObjectsDao = get(),
                 locationSyncApi = get(),
                 structuralSyncApi = get(),
-                accountingObjectAdditionalFieldsSyncApi = get()
+                accountingObjectAdditionalFieldsSyncApi = get(),
+                enumsApi = get()
             )
         }
         factory<InventorySyncApi> {
@@ -86,7 +87,8 @@ object SyncModule {
                 inventoryRecordDao = get(),
                 locationSyncApi = get(),
                 structuralSyncApi = get(),
-                checkerSyncApi = get()
+                checkerSyncApi = get(),
+                enumsApi = get()
             )
         }
         factory<DocumentSyncApi> {
@@ -97,7 +99,8 @@ object SyncModule {
                 actionRecordDao = get(),
                 actionRemainsRecordDao = get(),
                 locationSyncApi = get(),
-                structuralSyncApi = get()
+                structuralSyncApi = get(),
+                enumsApi = get()
             )
         }
         factory<StructuralSyncApi> {

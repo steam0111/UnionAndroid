@@ -20,7 +20,5 @@ class FullAccountingObject(
     @Embedded(prefix = "provider_")
     val provider: ProviderDb?,
     @Embedded(prefix = "structural_")
-    val structuralDb: StructuralDb?,
-    @Embedded(prefix = "category_")
-    val categoryDb: EnumDb?
+    val structuralDb: StructuralDb?
 )

@@ -98,12 +98,10 @@ class AccountingObjectRepositoryImpl(
 
     override suspend fun getAvailableStatus(): ParamDomain {
         return withContext(coreDispatchers.io) {
-            enumsSyncApi.getAllByType(
+            enumsSyncApi.getByCompoundId(
                 id = AccountingObjectStatus.AVAILABLE.name,
                 enumType = EnumType.ACCOUNTING_OBJECT_STATUS
-            )
-                .map { it.toParam(ManualType.STATUS) }
-                .firstOrNull() ?: ParamDomain(type = ManualType.STATUS, value = "")
-        }
+            )?.toParam(ManualType.STATUS)
+        } ?: ParamDomain(type = ManualType.STATUS, value = "")
     }
 }
