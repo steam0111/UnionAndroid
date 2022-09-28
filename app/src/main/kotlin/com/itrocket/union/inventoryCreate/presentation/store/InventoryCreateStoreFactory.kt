@@ -15,6 +15,7 @@ import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
+import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
@@ -144,6 +145,30 @@ class InventoryCreateStoreFactory(
                         intent.readingModeTab
                     )
                 )
+                is InventoryCreateStore.Intent.OnManualInput -> onManualInput(
+                    readingModeResult = intent.readingModeResult,
+                    getState = getState
+                )
+            }
+        }
+
+        private suspend fun onManualInput(
+            readingModeResult: ReadingModeResult,
+            getState: () -> InventoryCreateStore.State
+        ) {
+            when (readingModeResult.readingModeTab) {
+                ReadingModeTab.RFID, ReadingModeTab.SN -> {
+                    //no-op
+                }
+                ReadingModeTab.BARCODE -> {
+                    handleNewAccountingObjectBarcode(
+                        accountingObjects = getState().inventoryDocument.accountingObjects,
+                        newAccountingObjects = getState().newAccountingObjects.toList(),
+                        barcode = readingModeResult.scanData,
+                        inventoryStatus = getState().inventoryDocument.inventoryStatus,
+                        isAddNew = getState().isAddNew
+                    )
+                }
             }
         }
 

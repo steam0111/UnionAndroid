@@ -6,6 +6,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjectDetail.domain.AccountingObjectDetailInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.changeScanData.data.mapper.toChangeScanType
+import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -79,7 +80,19 @@ class AccountingObjectDetailStoreFactory(
                 AccountingObjectDetailStore.Intent.OnMarkingClosed -> publish(
                     AccountingObjectDetailStore.Label.ChangeSubscribeScanData(true)
                 )
+                is AccountingObjectDetailStore.Intent.OnManualInput -> onManualInput(
+                    readingModeResult = intent.readingModeResult,
+                    getState = getState
+                )
             }
+        }
+
+        private fun onManualInput(
+            readingModeResult: ReadingModeResult,
+            getState: () -> AccountingObjectDetailStore.State
+        ) {
+            dispatch(Result.ReadingMode(readingModeResult.readingModeTab))
+            onScanHandled(getState = getState, scanData = readingModeResult.scanData)
         }
 
         private fun onScanHandled(

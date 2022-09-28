@@ -9,6 +9,7 @@ import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
@@ -22,6 +23,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         object OnDropClicked : Intent()
         data class OnSelectPage(val selectedPage: Int) : Intent()
         object OnBackClicked : Intent()
+        data class OnManualInput(val readingModeResult: ReadingModeResult) : Intent()
 
         data class OnItemClicked(val accountingObject: AccountingObjectDomain) : Intent()
         data class OnDeleteFromSelectActionWithValuesBottomMenu(val accountingObjects: List<AccountingObjectDomain>) :
