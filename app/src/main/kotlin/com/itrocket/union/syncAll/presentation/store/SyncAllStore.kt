@@ -2,6 +2,7 @@ package com.itrocket.union.syncAll.presentation.store
 
 import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
+import com.example.union_sync_api.entity.SyncEvent
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
@@ -18,7 +19,8 @@ interface SyncAllStore : Store<SyncAllStore.Intent, SyncAllStore.State, SyncAllS
     }
 
     data class State(
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        val syncEvents: List<SyncEvent> = mutableListOf()
     )
 
     sealed class Label {

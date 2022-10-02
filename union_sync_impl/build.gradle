@@ -40,6 +40,7 @@ dependencies {
     implementation(libs.bundles.itrocket)
     implementation(libs.database.runtime)
     implementation(libs.logger)
+    implementation(libs.bundles.koin.android)
     kapt(libs.database.compiler)
 
     testImplementation(libs.junit)
