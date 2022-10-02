@@ -21,6 +21,7 @@ import com.example.union_sync_api.data.ProducerSyncApi
 import com.example.union_sync_api.data.ReceptionItemCategorySyncApi
 import com.example.union_sync_api.data.ReserveSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
+import com.example.union_sync_api.data.SyncEventsApi
 import com.example.union_sync_api.data.TransitSyncApi
 import com.example.union_sync_impl.UnionDatabase
 import com.example.union_sync_impl.data.AccountingObjectSyncApiImpl
@@ -44,6 +45,7 @@ import com.example.union_sync_impl.data.ReceptionCategoryItemSyncApiImpl
 import com.example.union_sync_impl.data.ReserveSyncApiImpl
 import com.example.union_sync_impl.data.StructuralSyncApiImpl
 import com.example.union_sync_impl.data.TransitSyncApiImpl
+import com.example.union_sync_impl.data.logging.SyncEventsImpl
 import com.example.union_sync_impl.sync.SyncRepository
 import org.koin.dsl.module
 
@@ -160,8 +162,12 @@ object SyncModule {
                 structuralSyncApi = get()
             )
         }
+        single<SyncEventsApi> {
+            SyncEventsImpl()
+        }
         factory<AllSyncApi> {
             AllSyncImpl(
+                get(),
                 get(),
                 get(),
                 get(),

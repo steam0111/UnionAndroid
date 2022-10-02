@@ -23,6 +23,7 @@ object SyncAllModule {
             SyncAllRepositoryImpl(
                 get(),
                 get(),
+                get(),
                 get()
             )
         }
