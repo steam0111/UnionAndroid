@@ -5,4 +5,4 @@ import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ReadingModeResult(val readingModeTab: ReadingModeTab) : Parcelable
+data class ReadingModeResult(val readingModeTab: ReadingModeTab, val scanData: String) : Parcelable

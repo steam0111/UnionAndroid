@@ -12,6 +12,7 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
 import com.itrocket.union.newAccountingObject.presentation.view.NewAccountingObjectComposeFragment
+import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
@@ -46,6 +47,7 @@ interface InventoryCreateStore :
         object OnDismissConfirmDialog : Intent()
         object OnConfirmActionClick : Intent()
         data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
+        data class OnManualInput(val readingModeResult: ReadingModeResult) : Intent()
     }
 
     data class State(

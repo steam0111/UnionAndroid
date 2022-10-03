@@ -7,6 +7,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.manualInput.presentation.store.ManualInputType
 import com.itrocket.union.readingMode.domain.ReadingModeInteractor
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.toReaderMode
@@ -58,15 +59,28 @@ class ReadingModeStoreFactory(
                 ReadingModeStore.Intent.OnCameraClicked -> {
                     //no-op
                 }
-                ReadingModeStore.Intent.OnManualInputClicked -> {
-                    //no-op
-                }
+                ReadingModeStore.Intent.OnManualInputClicked -> publish(
+                    ReadingModeStore.Label.ManualInput(
+                        when (getState().selectedTab) {
+                            ReadingModeTab.SN -> ManualInputType.SN
+                            else -> ManualInputType.BARCODE
+                        }
+                    )
+                )
                 is ReadingModeStore.Intent.OnReadingModeSelected -> {
                     readingModeInteractor.changeScanMode(intent.readingMode.toReaderMode())
                     dispatch(Result.ReadingModeSelected(intent.readingMode))
                     publish(ReadingModeStore.Label.ResultReadingTab(intent.readingMode))
                 }
                 ReadingModeStore.Intent.OnSettingsClicked -> publish(ReadingModeStore.Label.ReaderPower)
+                is ReadingModeStore.Intent.OnManualInput -> publish(
+                    ReadingModeStore.Label.GoBack(
+                        ReadingModeResult(
+                            readingModeTab = getState().selectedTab,
+                            scanData = intent.text
+                        )
+                    )
+                )
             }
         }
     }

@@ -6,7 +6,10 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeBottomSheet
+import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.R
+import com.itrocket.union.manualInput.presentation.store.ManualInputResult
+import com.itrocket.union.manualInput.presentation.view.ManualInputComposeFragment
 import com.itrocket.union.readingMode.ReadingModeModule.READINGMODE_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.readingMode.presentation.store.ReadingModeStore
 
@@ -17,6 +20,19 @@ class ReadingModeComposeFragment :
 
     override val backgroundColor: Int
         get() = ContextCompat.getColor(requireContext(), R.color.bottom_sheet_background)
+
+    override val fragmentResultList: List<FragmentResult>
+        get() = listOf(
+            FragmentResult(
+                resultLabel = ManualInputComposeFragment.MANUAL_INPUT_RESULT,
+                resultCode = ManualInputComposeFragment.MANUAL_INPUT_CODE,
+                resultAction = {
+                    (it as ManualInputResult?)?.let {
+                        accept(ReadingModeStore.Intent.OnManualInput(it.text))
+                    }
+                }
+            )
+        )
 
     override fun renderState(
         state: ReadingModeStore.State,
@@ -57,5 +73,8 @@ class ReadingModeComposeFragment :
     companion object {
         const val READING_MODE_TAB_RESULT_LABEL = "reading mode tab result label"
         const val READING_MODE_TAB_RESULT_CODE = "reading mode tab result code"
+
+        const val READING_MODE_MANUAL_RESULT_LABEL = "reading mode manual result label"
+        const val READING_MODE_MANUAL_RESULT_CODE = "reading mode manual result code"
     }
 }

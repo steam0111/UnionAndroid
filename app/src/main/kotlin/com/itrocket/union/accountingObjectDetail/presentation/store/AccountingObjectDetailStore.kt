@@ -13,6 +13,7 @@ import com.itrocket.union.changeScanData.domain.entity.ChangeScanType
 import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataArguments
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment.Companion.CHANGE_SCAN_DATA_ARGS
+import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 
@@ -28,6 +29,7 @@ interface AccountingObjectDetailStore :
         object OnMarkingClosed : Intent()
         data class OnScanHandled(val scanData: String) : Intent()
         data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
+        data class OnManualInput(val readingModeResult: ReadingModeResult) : Intent()
     }
 
     data class State(

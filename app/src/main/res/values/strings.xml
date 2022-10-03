@@ -101,7 +101,7 @@
     <string name="counterparties">Контрагенты</string>
     <string name="equipment_types">Типы оборуд.</string>
     <string name="sync">Синхронизация</string>
-    <string name="reception_category">Приеная категория</string>
+    <string name="reception_category">Приемная категория</string>
     <string name="count">Количество</string>
     <string name="save">Сохранение</string>
     <string name="create_inventory">Создание инв.</string>
@@ -367,4 +367,9 @@
     <!-- ReaderPower -->
     <string name="reader_power_title">Мощность считывателя</string>
     <string name="reader_power_hint">Введите или выберите мощность считывателя</string>
+
+    <!-- ManualInput -->
+    <string name="manual_input_title">Ручной ввод</string>
+    <string name="manual_input_barcode_hint">Введите штрихкод</string>
+    <string name="manual_input_sn_hint">Введите серийный номер</string>
 </resources>

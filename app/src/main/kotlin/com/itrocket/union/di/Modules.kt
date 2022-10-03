@@ -55,6 +55,7 @@ import com.itrocket.union.transit.TransitModule
 import com.itrocket.union.nfcReader.NfcReaderModule
 import com.itrocket.union.splash.SplashModule
 import com.itrocket.union.readerPower.ReaderPowerModule
+import com.itrocket.union.manualInput.ManualInputModule
 
 object Modules {
 
@@ -121,6 +122,7 @@ object Modules {
         TransitModule.module,
         SplashModule.module,
         NfcReaderModule.module,
-        ReaderPowerModule.module
+        ReaderPowerModule.module,
+        ManualInputModule.module
     )
 }

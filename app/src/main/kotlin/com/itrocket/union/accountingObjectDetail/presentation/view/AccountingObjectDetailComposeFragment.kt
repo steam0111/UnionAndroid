@@ -11,6 +11,7 @@ import com.itrocket.union.accountingObjectDetail.AccountingObjectDetailModule.AC
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailStore
 import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataResult
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment
+import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import kotlinx.coroutines.Dispatchers
@@ -59,7 +60,18 @@ class AccountingObjectDetailComposeFragment :
                         accept(AccountingObjectDetailStore.Intent.OnMarkingClosed)
                     }
                 }
-            )
+            ),
+            FragmentResult(
+                resultCode = ReadingModeComposeFragment.READING_MODE_MANUAL_RESULT_CODE,
+                resultLabel = ReadingModeComposeFragment.READING_MODE_MANUAL_RESULT_LABEL,
+                resultAction = {
+                    (it as ReadingModeResult?)?.let {
+                        accept(
+                            AccountingObjectDetailStore.Intent.OnManualInput(it)
+                        )
+                    }
+                }
+            ),
         )
 
     override fun renderState(
