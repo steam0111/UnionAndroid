@@ -48,7 +48,7 @@ class ReservesInteractor(
                 offset = offset,
                 limit = limit
             ).filter {
-                !selectedReservesIds.contains(it.id) && it.itemsCount != 0L
+                !selectedReservesIds.contains(it.id)
             }
             reserves
         }
