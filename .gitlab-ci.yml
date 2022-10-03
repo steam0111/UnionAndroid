@@ -27,4 +27,4 @@ build develop when merge_requests:
     refs:
       - merge_requests
     variables:
-      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
