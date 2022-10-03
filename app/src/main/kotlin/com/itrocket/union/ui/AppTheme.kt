@@ -10,6 +10,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.itrocket.union.theme.domain.entity.ColorSettings
@@ -76,10 +77,15 @@ private val LocalAppDimens = staticCompositionLocalOf {
 
 @Composable
 fun AppTheme(
-    colors: ColorSettings = get(),
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
+    val isPreview = LocalInspectionMode.current
+    val colors: ColorSettings = if (isPreview) {
+        ColorSettings()
+    } else {
+        get()
+    }
     val paletteColor = if (darkTheme) {
         darkColors(primary = colors.mainColor)
     } else {
