@@ -374,9 +374,18 @@ class DocumentCreateStoreFactory(
         }
 
         private suspend fun onChooseReserveClicked(getState: () -> DocumentCreateStore.State) {
+            val filters = when (getState().document.documentType) {
+                DocumentTypeDomain.GIVE -> listOf(
+                    ParamDomain(
+                        id = UNMARKED_TMC_ID,
+                        type = ManualType.RECEPTION_CATEGORY,
+                    )
+                )
+                else -> listOf()
+            }
             publish(
                 DocumentCreateStore.Label.ShowReserves(
-                    listOf(),
+                    filters,
                     documentCreateInteractor.getReservesIds(getState().reserves)
                 )
             )
@@ -409,5 +418,9 @@ class DocumentCreateStoreFactory(
                 is Result.Document -> copy(document = result.document)
                 is Result.ConfirmDialogType -> copy(confirmDialogType = result.type)
             }
+    }
+
+    companion object {
+        private const val UNMARKED_TMC_ID = "UNMARKED_TMC"
     }
 }
