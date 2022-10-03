@@ -1,4 +1,4 @@
-image: jangrewe/gitlab-ci-android:30
+image: jangrewe/gitlab-ci-android:33
 
 # Для перевода ключа подписи в строку (сразу копируется в буфер)
 # base64 release.jks | pbcopy
@@ -16,6 +16,15 @@ stages:
   #- testCoverage
   #- incrementVersionCode
   #- deploy
+
+before_script:
+  - export GRADLE_USER_HOME=$(pwd)/.gradle
+  - chmod +x ./gradlew
+
+cache:
+  key: ${CI_PROJECT_ID}
+  paths:
+    - .gradle/
 
 build develop when merge_requests:
   stage: buildMR
