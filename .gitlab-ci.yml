@@ -1,4 +1,4 @@
-image: jangrewe/gitlab-ci-android:30
+image: jangrewe/gitlab-ci-android:31
 
 # Для перевода ключа подписи в строку (сразу копируется в буфер)
 # base64 release.jks | pbcopy
@@ -9,12 +9,25 @@ image: jangrewe/gitlab-ci-android:30
 variables:
   GIT_DEPTH: 1
 
-  #stages:
+stages:
+   - buildMR
   #- printCertificates
   #- buildAndTest
   #- testCoverage
   #- incrementVersionCode
   #- deploy
+
+build develop when merge_requests:
+  stage: buildMR
+  tags:
+    - Android
+  script:
+    - ./gradlew app:assembleDebug
+  only:
+    refs:
+      - merge_requests
+    variables:
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"
 
 # Тригериться только на ручной запуск
 print certificates:
