@@ -19,8 +19,6 @@ stages:
 
 build develop when merge_requests:
   stage: buildMR
-  tags:
-    - Android
   script:
     - ./gradlew app:assembleDebug
   only:
