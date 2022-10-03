@@ -124,7 +124,7 @@ class InventoryCreateInteractor(
     fun disableBalanceUnit(params: List<ParamDomain>): List<ParamDomain> {
         val mutableParams = params.toMutableList()
         val index = params.indexOfFirst { it.type == ManualType.BALANCE_UNIT }
-        if(index >= 0){
+        if (index >= 0) {
             mutableParams[index] = mutableParams[index].copy(isClickable = false)
         }
         return mutableParams
@@ -173,6 +173,24 @@ class InventoryCreateInteractor(
         val accountingObject = accountingObjects[index]
         accountingObjects[index] =
             accountingObject.copy(inventoryStatus = InventoryAccountingObjectStatus.FOUND)
+    }
+
+    suspend fun searchAccountingObjects(
+        searchText: String,
+        accountingObjects: List<AccountingObjectDomain>,
+        newAccountingObject: List<AccountingObjectDomain>
+    ): List<AccountingObjectDomain> {
+        return withContext(coreDispatchers.io) {
+            val allAccountingObjects = newAccountingObject + accountingObjects
+            val resultList = allAccountingObjects.filter {
+                val title = it.title.lowercase().replace(" ", "")
+                val searchTitle = searchText.lowercase().replace(" ", "")
+                val inventoryNumber = it.inventoryNumber.orEmpty().lowercase().replace(" ", "")
+
+                title.contains(searchTitle) || inventoryNumber.contains(searchText) || searchText.isEmpty()
+            }
+            resultList
+        }
     }
 
 

@@ -18,6 +18,7 @@ import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingOb
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
+import com.itrocket.union.search.SearchManager
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 import com.itrocket.union.utils.ifBlankOrNull
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
@@ -28,7 +29,8 @@ class InventoryCreateStoreFactory(
     private val inventoryCreateInteractor: InventoryCreateInteractor,
     private val inventoryCreateArguments: InventoryCreateArguments,
     private val errorInteractor: ErrorInteractor,
-    private val serviceEntryManager: ServiceEntryManager
+    private val serviceEntryManager: ServiceEntryManager,
+    private val searchManager: SearchManager,
 ) {
     fun create(): InventoryCreateStore =
         object : InventoryCreateStore,
@@ -65,6 +67,13 @@ class InventoryCreateStoreFactory(
                 )
             }
             dispatch(Result.Loading(false))
+            searchManager.listenSearch {
+                listenAccountingObjects(
+                    searchText = it,
+                    accountingObjects = getState().inventoryDocument.accountingObjects,
+                    newAccountingObjects = getState().newAccountingObjects.toList()
+                )
+            }
         }
 
         override suspend fun executeIntent(
@@ -72,7 +81,7 @@ class InventoryCreateStoreFactory(
             getState: () -> InventoryCreateStore.State
         ) {
             when (intent) {
-                InventoryCreateStore.Intent.OnBackClicked -> publish(InventoryCreateStore.Label.GoBack)
+                InventoryCreateStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
                 is InventoryCreateStore.Intent.OnAccountingObjectClicked -> handleAccountingObjectClicked(
                     accountingObjects = getState().inventoryDocument.accountingObjects,
                     accountingObject = intent.accountingObject
@@ -100,18 +109,16 @@ class InventoryCreateStoreFactory(
                             newAccountingObjects = getState().newAccountingObjects.toList(),
                             barcode = intent.barcode,
                             inventoryStatus = inventoryStatus,
-                            isAddNew = getState().isAddNew
+                            isAddNew = getState().isAddNew,
+                            isShowSearch = getState().isShowSearch,
+                            searchText = getState().searchText
                         )
                     }
                 }
                 is InventoryCreateStore.Intent.OnAccountingObjectStatusChanged -> {
-                    dispatch(
-                        Result.AccountingObjects(
-                            inventoryCreateInteractor.changeAccountingObjectInventoryStatus(
-                                getState().inventoryDocument.accountingObjects,
-                                intent.switcherResult.result
-                            )
-                        )
+                    changeAccountingObjectsStatus(
+                        getState = getState,
+                        switcherResult = intent.switcherResult.result
                     )
                 }
                 is InventoryCreateStore.Intent.OnNewAccountingObjectRfidHandled -> {
@@ -122,7 +129,9 @@ class InventoryCreateStoreFactory(
                             newAccountingObjects = getState().newAccountingObjects.toList(),
                             handledAccountingObjectId = intent.handledAccountingObjectId,
                             inventoryStatus = inventoryStatus,
-                            isAddNew = getState().isAddNew
+                            isAddNew = getState().isAddNew,
+                            isShowSearch = getState().isShowSearch,
+                            searchText = getState().searchText
                         )
                     }
                 }
@@ -149,6 +158,53 @@ class InventoryCreateStoreFactory(
                     readingModeResult = intent.readingModeResult,
                     getState = getState
                 )
+                InventoryCreateStore.Intent.OnSearchClicked -> {
+                    dispatch(Result.IsShowSearch(true))
+                    listenAccountingObjects(
+                        searchText = "",
+                        accountingObjects = getState().inventoryDocument.accountingObjects,
+                        newAccountingObjects = getState().newAccountingObjects.toList()
+                    )
+                }
+                is InventoryCreateStore.Intent.OnSearchTextChanged -> {
+                    dispatch(Result.SearchText(intent.searchText))
+                    searchManager.emit(intent.searchText)
+                }
+            }
+        }
+
+        private suspend fun changeAccountingObjectsStatus(
+            getState: () -> InventoryCreateStore.State,
+            switcherResult: SwitcherDomain
+        ) {
+            dispatch(
+                Result.AccountingObjects(
+                    inventoryCreateInteractor.changeAccountingObjectInventoryStatus(
+                        getState().inventoryDocument.accountingObjects,
+                        switcherResult
+                    )
+                )
+            )
+            if (getState().isShowSearch) {
+                dispatch(
+                    Result.SearchAccountingObjects(
+                        inventoryCreateInteractor.changeAccountingObjectInventoryStatus(
+                            getState().searchAccountingObjects,
+                            switcherResult
+                        )
+                    )
+                )
+            }
+        }
+
+        private suspend fun onBackClicked(isShowSearch: Boolean) {
+            if (isShowSearch) {
+                dispatch(Result.IsShowSearch(false))
+                dispatch(Result.SearchText(""))
+                dispatch(Result.SearchAccountingObjects(listOf()))
+                searchManager.emit("")
+            } else {
+                publish(InventoryCreateStore.Label.GoBack)
             }
         }
 
@@ -166,7 +222,9 @@ class InventoryCreateStoreFactory(
                         newAccountingObjects = getState().newAccountingObjects.toList(),
                         barcode = readingModeResult.scanData,
                         inventoryStatus = getState().inventoryDocument.inventoryStatus,
-                        isAddNew = getState().isAddNew
+                        isAddNew = getState().isAddNew,
+                        isShowSearch = getState().isShowSearch,
+                        searchText = getState().searchText
                     )
                 }
             }
@@ -190,7 +248,9 @@ class InventoryCreateStoreFactory(
             handledAccountingObjectId: String,
             newAccountingObjects: List<AccountingObjectDomain>,
             inventoryStatus: InventoryStatus,
-            isAddNew: Boolean
+            isAddNew: Boolean,
+            isShowSearch: Boolean,
+            searchText: String
         ) {
             dispatch(Result.Loading(true))
             catchException {
@@ -203,9 +263,18 @@ class InventoryCreateStoreFactory(
                         existNewAccountingObjects = newAccountingObjects
                     )
                 dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
+                val newInventoryAccountingObjects =
+                    newAccountingObjects + inventoryAccountingObjects.newAccountingObjects
                 dispatch(
-                    Result.NewAccountingObjects((newAccountingObjects + inventoryAccountingObjects.newAccountingObjects).toSet())
+                    Result.NewAccountingObjects((newInventoryAccountingObjects).toSet())
                 )
+                if (isShowSearch) {
+                    listenAccountingObjects(
+                        searchText = searchText,
+                        accountingObjects = inventoryAccountingObjects.createdAccountingObjects,
+                        newAccountingObjects = newInventoryAccountingObjects
+                    )
+                }
             }
             dispatch(Result.Loading(true))
         }
@@ -215,7 +284,9 @@ class InventoryCreateStoreFactory(
             barcode: String,
             newAccountingObjects: List<AccountingObjectDomain>,
             inventoryStatus: InventoryStatus,
-            isAddNew: Boolean
+            isAddNew: Boolean,
+            isShowSearch: Boolean,
+            searchText: String
         ) {
             dispatch(Result.Loading(true))
             catchException {
@@ -228,9 +299,18 @@ class InventoryCreateStoreFactory(
                         existNewAccountingObjects = newAccountingObjects
                     )
                 dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
+                val newInventoryAccountingObjects =
+                    newAccountingObjects + inventoryAccountingObjects.newAccountingObjects
                 dispatch(
-                    Result.NewAccountingObjects((newAccountingObjects + inventoryAccountingObjects.newAccountingObjects).toSet())
+                    Result.NewAccountingObjects((newInventoryAccountingObjects).toSet())
                 )
+                if (isShowSearch) {
+                    listenAccountingObjects(
+                        searchText = searchText,
+                        accountingObjects = inventoryAccountingObjects.createdAccountingObjects,
+                        newAccountingObjects = newInventoryAccountingObjects
+                    )
+                }
             }
             dispatch(Result.Loading(true))
         }
@@ -292,8 +372,33 @@ class InventoryCreateStoreFactory(
                     )
                 )
             )
+            dispatch(
+                Result.SearchAccountingObjects(
+                    inventoryCreateInteractor.dropAccountingObjects(state.searchAccountingObjects)
+                )
+            )
             dispatch(Result.AddNew(false))
             dispatch(Result.HideFoundedAccountingObjects(false))
+        }
+
+        private suspend fun listenAccountingObjects(
+            searchText: String,
+            accountingObjects: List<AccountingObjectDomain>,
+            newAccountingObjects: List<AccountingObjectDomain>
+        ) {
+            dispatch(Result.Loading(true))
+            catchException {
+                dispatch(
+                    Result.SearchAccountingObjects(
+                        inventoryCreateInteractor.searchAccountingObjects(
+                            searchText = searchText,
+                            accountingObjects = accountingObjects,
+                            newAccountingObject = newAccountingObjects
+                        )
+                    )
+                )
+            }
+            dispatch(Result.Loading(false))
         }
 
         override fun handleError(throwable: Throwable) {
@@ -314,6 +419,10 @@ class InventoryCreateStoreFactory(
 
         data class ConfirmDialogVisibility(val isVisible: Boolean) : Result()
         data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
+        data class SearchText(val searchText: String) : Result()
+        data class IsShowSearch(val isShowSearch: Boolean) : Result()
+        data class SearchAccountingObjects(val searchAccountingObjects: List<AccountingObjectDomain>) :
+            Result()
     }
 
     private object ReducerImpl : Reducer<InventoryCreateStore.State, Result> {
@@ -331,6 +440,9 @@ class InventoryCreateStoreFactory(
                 is Result.Inventory -> copy(inventoryDocument = result.inventory)
                 is Result.ConfirmDialogVisibility -> copy(isConfirmDialogVisible = result.isVisible)
                 is Result.ReadingMode -> copy(readingModeTab = result.readingModeTab)
+                is Result.SearchText -> copy(searchText = result.searchText)
+                is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
+                is Result.SearchAccountingObjects -> copy(searchAccountingObjects = result.searchAccountingObjects)
             }
     }
 }

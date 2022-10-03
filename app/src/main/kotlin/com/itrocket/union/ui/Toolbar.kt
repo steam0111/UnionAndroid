@@ -76,7 +76,8 @@ fun SearchToolbar(
     onFilterClickListener: (() -> Unit)? = null,
     onSearchTextChanged: ((String) -> Unit),
     searchText: String,
-    isShowSearch: Boolean
+    isShowSearch: Boolean,
+    content: @Composable () -> Unit = {}
 ) {
     var underlineColor by remember {
         mutableStateOf(graphite2)
@@ -171,6 +172,7 @@ fun SearchToolbar(
                         modifier = Modifier.clickableUnbounded(onClick = onFilterClickListener)
                     )
                 }
+                content()
             }
         }
     }
