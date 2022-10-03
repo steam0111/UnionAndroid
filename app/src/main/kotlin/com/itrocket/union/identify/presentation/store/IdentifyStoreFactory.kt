@@ -1,16 +1,18 @@
 package com.itrocket.union.identify.presentation.store
 
-import com.arkivanov.mvikotlin.core.store.*
+import com.arkivanov.mvikotlin.core.store.Executor
+import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
+import com.arkivanov.mvikotlin.core.store.Store
+import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.container.domain.ScannerManager
-import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import com.itrocket.union.identify.domain.IdentifyInteractor
+import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
-import kotlinx.coroutines.flow.collect
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class IdentifyStoreFactory(
@@ -87,7 +89,32 @@ class IdentifyStoreFactory(
                 is IdentifyStore.Intent.OnDeleteFromSelectActionWithValuesBottomMenu -> {
                     dispatch(Result.AccountingObjects(intent.accountingObjects))
                 }
-                is IdentifyStore.Intent.OnReadingModeTabChanged -> dispatch(Result.ReadingMode(intent.readingModeTab))
+                is IdentifyStore.Intent.OnReadingModeTabChanged -> dispatch(
+                    Result.ReadingMode(
+                        intent.readingModeTab
+                    )
+                )
+                is IdentifyStore.Intent.OnManualInput -> onManualInput(
+                    readingModeResult = intent.readingModeResult,
+                    getState = getState
+                )
+            }
+        }
+
+        private suspend fun onManualInput(
+            readingModeResult: ReadingModeResult,
+            getState: () -> IdentifyStore.State
+        ) {
+            when (readingModeResult.readingModeTab) {
+                ReadingModeTab.RFID, ReadingModeTab.SN -> {
+                    //no-op
+                }
+                ReadingModeTab.BARCODE -> {
+                    handleBarcodeAccountingObjects(
+                        barcode = readingModeResult.scanData,
+                        accountingObjects = getState().accountingObjects
+                    )
+                }
             }
         }
 

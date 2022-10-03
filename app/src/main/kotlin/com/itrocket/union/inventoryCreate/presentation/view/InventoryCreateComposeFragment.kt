@@ -9,6 +9,7 @@ import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.inventoryCreate.InventoryCreateModule.INVENTORYCREATE_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
+import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.switcher.presentation.store.SwitcherResult
@@ -53,6 +54,17 @@ class InventoryCreateComposeFragment :
                     (it as ReadingModeTab?)?.let {
                         accept(
                             InventoryCreateStore.Intent.OnReadingModeTabChanged(it)
+                        )
+                    }
+                }
+            ),
+            FragmentResult(
+                resultCode = ReadingModeComposeFragment.READING_MODE_MANUAL_RESULT_CODE,
+                resultLabel = ReadingModeComposeFragment.READING_MODE_MANUAL_RESULT_LABEL,
+                resultAction = {
+                    (it as ReadingModeResult?)?.let {
+                        accept(
+                            InventoryCreateStore.Intent.OnManualInput(it)
                         )
                     }
                 }

@@ -1,7 +1,6 @@
 package com.itrocket.union.identify.presentation.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -10,9 +9,9 @@ import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectResult
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
-import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
 import com.itrocket.union.identify.IdentifyModule.IDENTIFY_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.identify.presentation.store.IdentifyStore
+import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuResult
@@ -62,6 +61,17 @@ class IdentifyComposeFragment :
                     (it as ReadingModeTab?)?.let {
                         accept(
                             IdentifyStore.Intent.OnReadingModeTabChanged(it)
+                        )
+                    }
+                }
+            ),
+            FragmentResult(
+                resultCode = ReadingModeComposeFragment.READING_MODE_MANUAL_RESULT_CODE,
+                resultLabel = ReadingModeComposeFragment.READING_MODE_MANUAL_RESULT_LABEL,
+                resultAction = {
+                    (it as ReadingModeResult?)?.let {
+                        accept(
+                            IdentifyStore.Intent.OnManualInput(it)
                         )
                     }
                 }

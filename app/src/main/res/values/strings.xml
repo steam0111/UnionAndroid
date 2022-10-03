@@ -367,4 +367,9 @@
     <!-- ReaderPower -->
     <string name="reader_power_title">Мощность считывателя</string>
     <string name="reader_power_hint">Введите или выберите мощность считывателя</string>
+
+    <!-- ManualInput -->
+    <string name="manual_input_title">Ручной ввод</string>
+    <string name="manual_input_barcode_hint">Введите штрихкод</string>
+    <string name="manual_input_sn_hint">Введите серийный номер</string>
 </resources>

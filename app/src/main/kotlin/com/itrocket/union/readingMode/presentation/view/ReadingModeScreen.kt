@@ -109,7 +109,8 @@ private fun BottomBar(
         BaseButton(
             text = stringResource(id = R.string.reading_mode_manual_input),
             onClick = onManualInputClickListener,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            enabled = selectedTab != ReadingModeTab.RFID
         )
         Spacer(modifier = Modifier.width(16.dp))
         ImageButton(
