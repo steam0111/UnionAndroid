@@ -10,7 +10,7 @@ import com.example.union_sync_api.entity.ReceptionItemCategorySyncEntity
 
 fun EmployeeSyncEntity.toParam(type: ManualType) = ParamDomain(
     id = id,
-    value = "$firstname $lastname $patronymic",
+    value = "$lastname $firstname $patronymic",
     type = type
 )
 
