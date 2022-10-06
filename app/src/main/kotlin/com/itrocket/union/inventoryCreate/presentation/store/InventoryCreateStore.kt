@@ -42,10 +42,11 @@ interface InventoryCreateStore :
         object OnAddNewClicked : Intent()
         object OnSaveClicked : Intent()
         object OnReadingClicked : Intent()
-        object OnInWorkClicked : Intent()
         object OnCompleteClicked : Intent()
         object OnDismissConfirmDialog : Intent()
         object OnConfirmActionClick : Intent()
+        object OnSearchClicked : Intent()
+        data class OnSearchTextChanged(val searchText: String) : Intent()
         data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
         data class OnManualInput(val readingModeResult: ReadingModeResult) : Intent()
     }
@@ -57,7 +58,10 @@ interface InventoryCreateStore :
         val isAddNew: Boolean = false,
         val isLoading: Boolean = false,
         val isConfirmDialogVisible: Boolean = false,
-        val readingModeTab: ReadingModeTab
+        val readingModeTab: ReadingModeTab,
+        val searchText: String = "",
+        val isShowSearch: Boolean = false,
+        val searchAccountingObjects: List<AccountingObjectDomain> = listOf()
     )
 
     sealed class Label {

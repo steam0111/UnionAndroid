@@ -49,6 +49,7 @@ import com.itrocket.union.ui.ConfirmAlertDialog
 import com.itrocket.union.ui.InventoryDocumentItem
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.ReadingModeBottomBar
+import com.itrocket.union.ui.SearchToolbar
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.white
 
@@ -63,10 +64,11 @@ fun InventoryCreateScreen(
     onAddNewChanged: () -> Unit,
     onHideFoundAccountingObjectChanged: () -> Unit,
     onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit,
-    onInWorkClickListener: () -> Unit,
     onFinishClickListener: () -> Unit,
     onConfirmActionClick: () -> Unit,
-    onDismissConfirmDialog: () -> Unit
+    onDismissConfirmDialog: () -> Unit,
+    onSearchTextChanged: (String) -> Unit,
+    onSearchClickListener: () -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -74,7 +76,11 @@ fun InventoryCreateScreen(
                 Toolbar(
                     onDropClickListener = onDropClickListener,
                     onBackClickListener = onBackClickListener,
-                    inventoryStatus = state.inventoryDocument.inventoryStatus
+                    inventoryStatus = state.inventoryDocument.inventoryStatus,
+                    onSearchClickListener = onSearchClickListener,
+                    onSearchTextChanged = onSearchTextChanged,
+                    searchText = state.searchText,
+                    isShowSearch = state.isShowSearch,
                 )
             },
             bottomBar = {
@@ -90,10 +96,8 @@ fun InventoryCreateScreen(
                     onAddNewChanged = onAddNewChanged,
                     onHideFoundAccountingObjectChanged = onHideFoundAccountingObjectChanged,
                     onAccountingObjectClickListener = onAccountingObjectClickListener,
-                    onInWorkClickListener = onInWorkClickListener,
                     onFinishClickListener = onFinishClickListener,
                     onSaveClickListener = onSaveClickListener,
-                    onReadingClickListener = onReadingClickListener
                 )
             },
             modifier = Modifier.padding(
@@ -112,6 +116,18 @@ fun InventoryCreateScreen(
     }
 }
 
+private fun getAccountingObjects(state: InventoryCreateStore.State): List<AccountingObjectDomain> {
+    return when {
+        state.isShowSearch -> state.searchAccountingObjects
+        state.isHideFoundAccountingObjects -> {
+            val list =
+                state.newAccountingObjects.toList() + state.inventoryDocument.accountingObjects
+            list.filter { it.inventoryStatus != InventoryAccountingObjectStatus.FOUND }
+        }
+        else -> state.newAccountingObjects.toList() + state.inventoryDocument.accountingObjects
+    }
+}
+
 @Composable
 private fun Content(
     state: InventoryCreateStore.State,
@@ -119,17 +135,10 @@ private fun Content(
     onAddNewChanged: () -> Unit,
     onHideFoundAccountingObjectChanged: () -> Unit,
     onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit,
-    onInWorkClickListener: () -> Unit,
     onFinishClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
-    onReadingClickListener: () -> Unit,
 ) {
-    var accountingObjectList =
-        state.newAccountingObjects.toList() + state.inventoryDocument.accountingObjects
-    if (state.isHideFoundAccountingObjects) {
-        accountingObjectList =
-            accountingObjectList.filter { it.inventoryStatus != InventoryAccountingObjectStatus.FOUND }
-    }
+    val accountingObjectList = getAccountingObjects(state)
 
     Column(
         Modifier
@@ -141,7 +150,6 @@ private fun Content(
                 if (state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED) {
                     InventoryBottomBar(
                         onSaveClickListener = onSaveClickListener,
-                        onInWorkClickListener = onInWorkClickListener,
                         onFinishClickListener = onFinishClickListener,
                         inventoryStatus = state.inventoryDocument.inventoryStatus
                     )
@@ -226,7 +234,7 @@ fun SettingsBar(
 @Composable
 fun InventoryBottomBar(
     onSaveClickListener: () -> Unit,
-    onInWorkClickListener: () -> Unit,
+    onInWorkClickListener: () -> Unit = {},
     onFinishClickListener: () -> Unit,
     inventoryStatus: InventoryStatus
 ) {
@@ -270,13 +278,21 @@ fun InventoryBottomBar(
 private fun Toolbar(
     onBackClickListener: () -> Unit,
     onDropClickListener: () -> Unit,
+    onSearchClickListener: (() -> Unit),
+    onSearchTextChanged: ((String) -> Unit),
+    searchText: String,
+    isShowSearch: Boolean,
     inventoryStatus: InventoryStatus
 ) {
-    BaseToolbar(
+    SearchToolbar(
         title = stringResource(id = R.string.inventory_ao_title),
-        onStartImageClickListener = onBackClickListener,
-        startImageId = R.drawable.ic_arrow_back,
+        onBackClickListener = onBackClickListener,
+        onSearchTextChanged = onSearchTextChanged,
+        onSearchClickListener = onSearchClickListener,
+        searchText = searchText,
+        isShowSearch = isShowSearch,
         content = {
+            Spacer(modifier = Modifier.width(28.dp))
             Text(
                 text = stringResource(R.string.common_drop),
                 style = AppTheme.typography.body2,
@@ -362,5 +378,5 @@ fun InventoryCreateScreenPreview() {
         ),
         isConfirmDialogVisible = false,
         readingModeTab = ReadingModeTab.RFID
-    ), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
+    ), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 }

@@ -111,14 +111,17 @@ class InventoryCreateComposeFragment :
                 onFinishClickListener = {
                     accept(InventoryCreateStore.Intent.OnCompleteClicked)
                 },
-                onInWorkClickListener = {
-                    accept(InventoryCreateStore.Intent.OnInWorkClicked)
-                },
                 onDismissConfirmDialog = {
                     accept(InventoryCreateStore.Intent.OnDismissConfirmDialog)
                 },
                 onConfirmActionClick = {
                     accept(InventoryCreateStore.Intent.OnConfirmActionClick)
+                },
+                onSearchTextChanged = {
+                    accept(InventoryCreateStore.Intent.OnSearchTextChanged(it))
+                },
+                onSearchClickListener = {
+                    accept(InventoryCreateStore.Intent.OnSearchClicked)
                 }
             )
         }

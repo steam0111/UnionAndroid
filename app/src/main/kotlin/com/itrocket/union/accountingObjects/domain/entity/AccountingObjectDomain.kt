@@ -16,7 +16,8 @@ data class AccountingObjectDomain(
     val barcodeValue: String?,
     val factoryNumber: String?,
     val listMainInfo: List<ObjectInfoDomain>,
-    val listAdditionallyInfo: List<ObjectInfoDomain>
+    val listAdditionallyInfo: List<ObjectInfoDomain>,
+    val inventoryNumber: String? = null
 ) : Parcelable
 
 @Parcelize
