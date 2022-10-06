@@ -150,7 +150,7 @@ class InventoryCreateInteractor(
         accountingObjects: List<AccountingObjectDomain>,
         newAccountingObject: AccountingObjectDomain
     ): Boolean {
-        return !accountingObjects.contains(newAccountingObject)
+        return !accountingObjects.contains(newAccountingObject) || newAccountingObject.inventoryStatus == InventoryAccountingObjectStatus.NEW
     }
 
     private suspend fun getHandlesAccountingObjectByRfid(rfids: List<String>): List<AccountingObjectDomain> {
