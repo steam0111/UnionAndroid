@@ -25,9 +25,10 @@ class LocationRepositoryImpl(
             locationSyncApi.getLocationById(locationId)
         }
 
-    override suspend fun getAllLocationsIdsByParent(parentId: String?): List<String?> {
-        return locationSyncApi.getAllLocationsIdsByParentId(parentId)
-    }
+    override suspend fun getAllLocationsIdsByParent(parentId: String?): List<String?> =
+        withContext(coreDispatchers.io) {
+            locationSyncApi.getAllLocationsIdsByParentId(parentId)
+        }
 
     private suspend fun getLocations(
         selectedPlace: LocationDomain?,
