@@ -102,7 +102,7 @@ import com.example.union_sync_impl.utils.Converters
         SimpleAdditionalFieldDb::class,
         VocabularyAdditionalFieldDb::class,
         VocabularyAdditionalFieldValueDb::class
-    ], version = 108
+    ], version = 110
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {
