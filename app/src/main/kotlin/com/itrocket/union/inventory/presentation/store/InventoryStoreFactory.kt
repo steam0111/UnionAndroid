@@ -66,12 +66,12 @@ class InventoryStoreFactory(
                     requireNotNull(it.id)
                 )
             }
+            dispatch(Result.CanCreateInventory(permissionsInteractor.canCreate(UnionPermission.INVENTORY)))
             if (inventory != null) {
                 dispatch(Result.InventoryCreate(inventory))
                 dispatch(Result.Params(inventoryCreateInteractor.disableBalanceUnit(inventory.documentInfo)))
                 observeAccountingObjects(getState().params)
             } else {
-                dispatch(Result.CanCreateInventory(permissionsInteractor.canCreate(UnionPermission.INVENTORY)))
                 dispatch(Result.Params(selectParamsInteractor.getInitialDocumentParams(getState().params)))
                 observeAccountingObjects(getState().params)
             }

@@ -151,7 +151,7 @@ fun ButtonWithLoader(
     modifier: Modifier,
     isEnabled: Boolean,
     isLoading: Boolean,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     ButtonWithContent(
         onClick = onClick,

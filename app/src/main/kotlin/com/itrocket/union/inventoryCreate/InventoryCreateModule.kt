@@ -39,6 +39,7 @@ object InventoryCreateModule {
                 args,
                 get(),
                 get(),
+                get(),
                 get()
             ).create()
         }

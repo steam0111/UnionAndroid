@@ -35,7 +35,8 @@ fun DocumentCreateScreen(
     onConductClickListener: () -> Unit,
     onReserveClickListener: (ReservesDomain) -> Unit,
     onConfirmActionClick: () -> Unit,
-    onDismissConfirmDialog: () -> Unit
+    onDismissConfirmDialog: () -> Unit,
+    isCanUpdate: Boolean
 ) {
     DocumentCreateBaseScreen(
         confirmDialogType = state.confirmDialogType,
@@ -59,7 +60,8 @@ fun DocumentCreateScreen(
         onConductClickListener = onConductClickListener,
         onReserveClickListener = onReserveClickListener,
         onConfirmActionClick = onConfirmActionClick,
-        onDismissConfirmDialog = onDismissConfirmDialog
+        onDismissConfirmDialog = onDismissConfirmDialog,
+        isCanUpdate = isCanUpdate
     )
 }
 
@@ -129,7 +131,9 @@ fun DocumentCreateScreenPreview() {
         {},
         {},
         {},
-        {})
+        {},
+        isCanUpdate = false
+    )
 }
 
 enum class DocumentConfirmAlertType {

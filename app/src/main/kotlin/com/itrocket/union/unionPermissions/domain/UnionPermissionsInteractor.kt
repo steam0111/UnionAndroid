@@ -5,6 +5,7 @@ import com.itrocket.union.authMain.domain.entity.MyConfigDomain
 import com.itrocket.union.unionPermissions.domain.entity.Action
 import com.itrocket.union.unionPermissions.domain.entity.Action.READ
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
+import com.itrocket.union.unionPermissions.domain.entity.customPermissionToListUnionPermissions
 
 class UnionPermissionsInteractor(private val authMainRepository: AuthMainRepository) {
 
@@ -14,10 +15,18 @@ class UnionPermissionsInteractor(private val authMainRepository: AuthMainReposit
         if (checkConstantCondition(unionPermission, config)) {
             return true
         }
-
-        val permissions = config.permissions ?: return false
-        val permission = permissions.find { it.model == unionPermission.model } ?: return false
-        return Action.values().map { it.action }.contains(permission.action)
+        val customPermissions = unionPermission.customPermissionToListUnionPermissions()
+        val configPermissions = config.permissions ?: return false
+        return if (customPermissions.isNotEmpty()) {
+            val models = customPermissions.map { it.model }
+            val permissions =
+                configPermissions.filter { models.contains(it.model) }.map { it.action }
+            Action.values().map { it.action }.find { permissions.contains(it) } != null
+        } else {
+            val permission =
+                configPermissions.find { it.model == unionPermission.model } ?: return false
+            Action.values().map { it.action }.contains(permission.action)
+        }
     }
 
     suspend fun canCreate(unionPermission: UnionPermission): Boolean {
