@@ -22,7 +22,8 @@ import androidx.room.PrimaryKey
     tableName = "structuralPath"
 )
 data class StructuralPathDb(
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
+    var primaryKey: Int = 0,
     var descendantStructuralId: String,
     var ancestorStructuralId: String? = null
 )
