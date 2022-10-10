@@ -53,7 +53,8 @@ fun TransitScreen(
     onConductClickListener: () -> Unit,
     onReserveClickListener: (ReservesDomain) -> Unit,
     onConfirmActionClick: () -> Unit,
-    onDismissConfirmDialog: () -> Unit
+    onDismissConfirmDialog: () -> Unit,
+    isCanUpdate: Boolean
 ) {
     DocumentCreateBaseScreen(
         params = state.params,
@@ -77,7 +78,8 @@ fun TransitScreen(
         onReserveClickListener = onReserveClickListener,
         onConfirmActionClick = onConfirmActionClick,
         onDismissConfirmDialog = onDismissConfirmDialog,
-        confirmDialogType = state.confirmDialogType
+        confirmDialogType = state.confirmDialogType,
+        isCanUpdate = isCanUpdate
     )
 }
 

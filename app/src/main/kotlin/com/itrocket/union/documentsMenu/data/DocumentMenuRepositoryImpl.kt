@@ -43,7 +43,7 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
                     DocumentMenuDomain(
                         titleId = R.string.main_transit,
                         iconId = R.drawable.ic_moved,
-                        unionPermission = UnionPermission.ALL_DOCUMENTS,
+                        unionPermission = UnionPermission.TRANSIT,
                     )
                     //TODO: Пока попросили скрыть
                     /*DocumentMenuDomain(
@@ -116,7 +116,7 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
                     DocumentMenuDomain(
                         titleId = R.string.main_operations,
                         iconId = R.drawable.ic_inventory,
-                        unionPermission = UnionPermission.NO_NEED
+                        unionPermission = UnionPermission.OPERATIONS
                     ),
                     DocumentMenuDomain(
                         titleId = R.string.main_books,

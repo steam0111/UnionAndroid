@@ -80,6 +80,7 @@ interface DocumentCreateStore :
         val selectedPage: Int = 0,
         val departureLocation: List<LocationDomain> = emptyList(),
         val confirmDialogType: DocumentConfirmAlertType = DocumentConfirmAlertType.NONE,
+        val isCanUpdate: Boolean = false
     )
 
     sealed class Label {

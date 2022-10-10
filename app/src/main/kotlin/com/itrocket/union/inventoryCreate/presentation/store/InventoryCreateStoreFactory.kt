@@ -20,6 +20,8 @@ import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
 import com.itrocket.union.search.SearchManager
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
+import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
+import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 import com.itrocket.union.utils.ifBlankOrNull
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
@@ -31,6 +33,7 @@ class InventoryCreateStoreFactory(
     private val errorInteractor: ErrorInteractor,
     private val serviceEntryManager: ServiceEntryManager,
     private val searchManager: SearchManager,
+    private val unionPermissionsInteractor: UnionPermissionsInteractor,
 ) {
     fun create(): InventoryCreateStore =
         object : InventoryCreateStore,
@@ -57,6 +60,7 @@ class InventoryCreateStoreFactory(
             getState: () -> InventoryCreateStore.State
         ) {
             dispatch(Result.Loading(true))
+            dispatch(Result.IsCanUpdate(unionPermissionsInteractor.canCreate(UnionPermission.INVENTORY)))
             catchException {
                 dispatch(
                     Result.Inventory(
@@ -103,7 +107,7 @@ class InventoryCreateStoreFactory(
                 }
                 is InventoryCreateStore.Intent.OnNewAccountingObjectBarcodeHandled -> {
                     val inventoryStatus = getState().inventoryDocument.inventoryStatus
-                    if (inventoryStatus != InventoryStatus.COMPLETED) {
+                    if (inventoryStatus != InventoryStatus.COMPLETED && getState().isCanUpdate) {
                         handleNewAccountingObjectBarcode(
                             accountingObjects = getState().inventoryDocument.accountingObjects,
                             newAccountingObjects = getState().newAccountingObjects.toList(),
@@ -123,7 +127,7 @@ class InventoryCreateStoreFactory(
                 }
                 is InventoryCreateStore.Intent.OnNewAccountingObjectRfidHandled -> {
                     val inventoryStatus = getState().inventoryDocument.inventoryStatus
-                    if (inventoryStatus != InventoryStatus.COMPLETED) {
+                    if (inventoryStatus != InventoryStatus.COMPLETED && getState().isCanUpdate) {
                         handleNewAccountingObjectRfids(
                             accountingObjects = getState().inventoryDocument.accountingObjects,
                             newAccountingObjects = getState().newAccountingObjects.toList(),
@@ -212,20 +216,22 @@ class InventoryCreateStoreFactory(
             readingModeResult: ReadingModeResult,
             getState: () -> InventoryCreateStore.State
         ) {
-            when (readingModeResult.readingModeTab) {
-                ReadingModeTab.RFID, ReadingModeTab.SN -> {
-                    //no-op
-                }
-                ReadingModeTab.BARCODE -> {
-                    handleNewAccountingObjectBarcode(
-                        accountingObjects = getState().inventoryDocument.accountingObjects,
-                        newAccountingObjects = getState().newAccountingObjects.toList(),
-                        barcode = readingModeResult.scanData,
-                        inventoryStatus = getState().inventoryDocument.inventoryStatus,
-                        isAddNew = getState().isAddNew,
+            val inventoryStatus = getState().inventoryDocument.inventoryStatus
+            if (inventoryStatus != InventoryStatus.COMPLETED && getState().isCanUpdate) {
+                when (readingModeResult.readingModeTab) {
+                    ReadingModeTab.RFID, ReadingModeTab.SN -> {
+                        //no-op
+                    }
+                    ReadingModeTab.BARCODE -> {
+                        handleNewAccountingObjectBarcode(
+                            accountingObjects = getState().inventoryDocument.accountingObjects,
+                            newAccountingObjects = getState().newAccountingObjects.toList(),
+                            barcode = readingModeResult.scanData,
+                            inventoryStatus = getState().inventoryDocument.inventoryStatus,
+                            isAddNew = getState().isAddNew,
                         isShowSearch = getState().isShowSearch,
-                        searchText = getState().searchText
-                    )
+                        searchText = getState().searchText)
+                    }
                 }
             }
         }
@@ -423,6 +429,7 @@ class InventoryCreateStoreFactory(
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
         data class SearchAccountingObjects(val searchAccountingObjects: List<AccountingObjectDomain>) :
             Result()
+        data class IsCanUpdate(val isCanUpdate: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryCreateStore.State, Result> {
@@ -443,6 +450,7 @@ class InventoryCreateStoreFactory(
                 is Result.SearchText -> copy(searchText = result.searchText)
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchAccountingObjects -> copy(searchAccountingObjects = result.searchAccountingObjects)
+                is Result.IsCanUpdate -> copy(isCanUpdate = result.isCanUpdate)
             }
     }
 }

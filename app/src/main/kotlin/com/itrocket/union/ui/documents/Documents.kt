@@ -79,6 +79,7 @@ fun DocumentCreateBaseScreen(
     isLoading: Boolean,
     reserves: List<ReservesDomain>,
     documentType: DocumentTypeDomain,
+    isCanUpdate: Boolean,
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
     onDropClickListener: () -> Unit,
@@ -110,7 +111,8 @@ fun DocumentCreateBaseScreen(
         onChooseReserveClickListener = onChooseReserveClickListener,
         onConductClickListener = onConductClickListener,
         onReserveClickListener = onReserveClickListener,
-        documentType = documentType
+        documentType = documentType,
+        isCanUpdate = isCanUpdate
     )
 
     AppTheme {
@@ -119,7 +121,8 @@ fun DocumentCreateBaseScreen(
                 DocumentToolbar(
                     documentType = documentType,
                     onDropClickListener = onDropClickListener,
-                    onBackClickListener = onBackClickListener
+                    onBackClickListener = onBackClickListener,
+                    isCanUpdate = isCanUpdate
                 )
             },
             content = {
@@ -200,6 +203,7 @@ fun DocumentContent(
 @Composable
 fun DocumentParamContent(
     params: List<ParamDomain>,
+    isCanUpdate: Boolean,
     onConductClickListener: () -> Unit,
     documentStatus: DocumentStatus,
     onParamClickListener: (ParamDomain) -> Unit,
@@ -210,7 +214,8 @@ fun DocumentParamContent(
         DocumentParamBottomBar(
             onSaveClickListener = onSaveClickListener,
             onConductClickListener = onConductClickListener,
-            documentStatus = documentStatus
+            documentStatus = documentStatus,
+            isCanUpdate = isCanUpdate
         )
     }, content = {
         LazyColumn(
@@ -225,11 +230,11 @@ fun DocumentParamContent(
                     SelectedBaseField(
                         label = stringResource(it.type.titleId),
                         value = it.value,
-                        clickable = it.isClickable,
+                        clickable = it.isClickable && isCanUpdate,
                         onFieldClickListener = {
                             onParamClickListener(it)
                         },
-                        isCrossVisible = it.isClickable,
+                        isCrossVisible = it.isClickable && isCanUpdate,
                         onCrossClickListener = {
                             onCrossClickListener(it)
                         }
@@ -237,7 +242,7 @@ fun DocumentParamContent(
                 } else {
                     UnselectedBaseField(
                         label = stringResource(it.type.titleId),
-                        clickable = it.isClickable,
+                        clickable = it.isClickable && isCanUpdate,
                         onFieldClickListener = {
                             onParamClickListener(it)
                         })
@@ -258,6 +263,7 @@ fun DocumentAccountingObjectScreen(
     onChooseClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
     documentStatus: DocumentStatus,
+    isCanUpdate: Boolean
 ) {
     Scaffold(
         bottomBar = {
@@ -267,7 +273,8 @@ fun DocumentAccountingObjectScreen(
                 onSaveClickListener = onSaveClickListener,
                 onChooseClickListener = onChooseClickListener,
                 onConductClickListener = onConductClickListener,
-                documentStatus = documentStatus
+                documentStatus = documentStatus,
+                isCanUpdate = isCanUpdate
             )
         }, content = {
             when {
@@ -311,6 +318,7 @@ fun DocumentReservesScreen(
     onChooseClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
     documentStatus: DocumentStatus,
+    isCanUpdate: Boolean,
 ) {
     Scaffold(
         bottomBar = {
@@ -320,7 +328,8 @@ fun DocumentReservesScreen(
                 onSaveClickListener = onSaveClickListener,
                 onChooseClickListener = onChooseClickListener,
                 onConductClickListener = onConductClickListener,
-                documentStatus = documentStatus
+                documentStatus = documentStatus,
+                isCanUpdate = isCanUpdate
             )
         }, content = {
             when {
@@ -344,7 +353,7 @@ fun DocumentReservesScreen(
                                 reserves = item,
                                 onReservesListener = onReservesClickListener,
                                 isShowBottomLine = isShowBottomLine,
-                                clickable = documentStatus != DocumentStatus.COMPLETED
+                                clickable = documentStatus != DocumentStatus.COMPLETED && isCanUpdate
                             )
                         }
                     }
@@ -358,6 +367,7 @@ fun DocumentToolbar(
     documentType: DocumentTypeDomain,
     onBackClickListener: () -> Unit,
     onDropClickListener: () -> Unit,
+    isCanUpdate: Boolean
 ) {
     BaseToolbar(
         title = stringResource(id = documentType.titleId),
@@ -368,7 +378,7 @@ fun DocumentToolbar(
                 text = stringResource(R.string.common_drop),
                 style = AppTheme.typography.body2,
                 color = AppTheme.colors.mainColor,
-                modifier = Modifier.clickable(onClick = onDropClickListener)
+                modifier = Modifier.clickable(onClick = onDropClickListener, enabled = isCanUpdate)
             )
         }
     )
@@ -405,21 +415,22 @@ fun DocumentEmpty(paddingValues: PaddingValues) {
 fun DocumentParamBottomBar(
     onSaveClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
-    documentStatus: DocumentStatus
+    documentStatus: DocumentStatus,
+    isCanUpdate: Boolean,
 ) {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
         BaseButton(
             text = stringResource(id = R.string.common_save),
             onClick = onSaveClickListener,
             modifier = Modifier.weight(1f),
-            enabled = documentStatus != DocumentStatus.COMPLETED
+            enabled = documentStatus != DocumentStatus.COMPLETED && isCanUpdate
         )
         Spacer(modifier = Modifier.width(16.dp))
         BaseButton(
             text = stringResource(R.string.common_conduct),
             onClick = onConductClickListener,
             modifier = Modifier.weight(1f),
-            enabled = documentStatus != DocumentStatus.COMPLETED
+            enabled = documentStatus != DocumentStatus.COMPLETED && isCanUpdate
         )
     }
 }
@@ -432,7 +443,8 @@ fun DocumentListBottomBar(
     onSaveClickListener: () -> Unit,
     onChooseClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
-    documentStatus: DocumentStatus
+    documentStatus: DocumentStatus,
+    isCanUpdate: Boolean,
 ) {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
         if (isAccountingObject) {
@@ -440,7 +452,7 @@ fun DocumentListBottomBar(
                 imageId = R.drawable.ic_settings,
                 paddings = PaddingValues(12.dp),
                 onClick = onSettingsClickListener,
-                isEnabled = documentStatus != DocumentStatus.COMPLETED
+                isEnabled = documentStatus != DocumentStatus.COMPLETED && isCanUpdate
             )
             Spacer(modifier = Modifier.width(8.dp))
         }
@@ -448,21 +460,21 @@ fun DocumentListBottomBar(
             text = stringResource(R.string.common_choose),
             onClick = onChooseClickListener,
             modifier = Modifier.weight(1f),
-            enabled = documentStatus != DocumentStatus.COMPLETED
+            enabled = documentStatus != DocumentStatus.COMPLETED && isCanUpdate
         )
         Spacer(modifier = Modifier.width(8.dp))
         BaseButton(
             text = stringResource(R.string.common_conduct),
             onClick = onConductClickListener,
             modifier = Modifier.weight(1f),
-            enabled = documentStatus != DocumentStatus.COMPLETED
+            enabled = documentStatus != DocumentStatus.COMPLETED && isCanUpdate
         )
         Spacer(modifier = Modifier.width(8.dp))
         ImageButton(
             imageId = R.drawable.ic_save,
             paddings = PaddingValues(12.dp),
             onClick = onSaveClickListener,
-            isEnabled = documentStatus != DocumentStatus.COMPLETED
+            isEnabled = documentStatus != DocumentStatus.COMPLETED && isCanUpdate
         )
     }
 }
@@ -475,6 +487,7 @@ private fun getTabList(
     isLoading: Boolean,
     reserves: List<ReservesDomain>,
     documentType: DocumentTypeDomain,
+    isCanUpdate: Boolean,
     onSaveClickListener: () -> Unit,
     onParamClickListener: (ParamDomain) -> Unit,
     onParamCrossClickListener: (ParamDomain) -> Unit,
@@ -494,7 +507,8 @@ private fun getTabList(
                     onCrossClickListener = onParamCrossClickListener,
                     onSaveClickListener = onSaveClickListener,
                     documentStatus = documentStatus,
-                    onConductClickListener = onConductClickListener
+                    onConductClickListener = onConductClickListener,
+                    isCanUpdate = isCanUpdate
                 )
             }
         ),
@@ -509,7 +523,8 @@ private fun getTabList(
                     onSettingsClickListener = onSettingsClickListener,
                     onChooseClickListener = onChooseAccountingObjectClickListener,
                     documentStatus = documentStatus,
-                    onConductClickListener = onConductClickListener
+                    onConductClickListener = onConductClickListener,
+                    isCanUpdate = isCanUpdate
                 )
             }
         )
@@ -527,7 +542,8 @@ private fun getTabList(
                         onSettingsClickListener = onSettingsClickListener,
                         onChooseClickListener = onChooseReserveClickListener,
                         documentStatus = documentStatus,
-                        onConductClickListener = onConductClickListener
+                        onConductClickListener = onConductClickListener,
+                        isCanUpdate = isCanUpdate
                     )
                 }
             ))
@@ -589,6 +605,7 @@ fun DocumentCreateBaseScreenPreview() {
         onReserveClickListener = {},
         confirmDialogType = DocumentConfirmAlertType.NONE,
         onConfirmActionClick = {},
-        onDismissConfirmDialog = {}
+        onDismissConfirmDialog = {},
+        isCanUpdate = false
     )
 }

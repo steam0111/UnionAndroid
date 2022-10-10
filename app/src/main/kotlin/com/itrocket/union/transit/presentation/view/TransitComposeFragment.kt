@@ -174,7 +174,8 @@ class TransitComposeFragment :
                 },
                 onReserveClickListener = {
                     accept(TransitStore.Intent.OnReserveClicked(it))
-                }
+                },
+                isCanUpdate = state.isCanUpdate
             )
         }
     }

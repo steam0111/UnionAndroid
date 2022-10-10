@@ -79,7 +79,8 @@ fun InventoryScreen(
             topBar = {
                 Toolbar(
                     onDropClickListener = onDropClickListener,
-                    onBackClickListener = onBackClickListener
+                    onBackClickListener = onBackClickListener,
+                    isCanUpdate = state.isCanCreateInventory
                 )
             },
             bottomBar = {
@@ -89,7 +90,8 @@ fun InventoryScreen(
                             onSaveClickListener = onSaveClickListener,
                             onInWorkClickListener = onInWorkClickListener,
                             onFinishClickListener = { },
-                            inventoryStatus = state.inventoryCreateDomain.inventoryStatus
+                            inventoryStatus = state.inventoryCreateDomain.inventoryStatus,
+                            isCanUpdate = state.isCanCreateInventory
                         )
                     }
                     state.isCanCreateInventory -> {
@@ -146,7 +148,8 @@ private fun Content(
                 ParamContent(
                     onParamClickListener = onParamClickListener,
                     params = state.params,
-                    onCrossClickListener = onParamCrossClickListener
+                    onCrossClickListener = onParamCrossClickListener,
+                    isCanUpdate = state.isCanCreateInventory
                 )
             }
         ),
@@ -195,7 +198,8 @@ private fun Content(
 private fun ParamContent(
     params: List<ParamDomain>,
     onParamClickListener: (ParamDomain) -> Unit,
-    onCrossClickListener: (ParamDomain) -> Unit
+    onCrossClickListener: (ParamDomain) -> Unit,
+    isCanUpdate: Boolean,
 ) {
     LazyColumn(modifier = Modifier.fillMaxHeight()) {
         items(params, key = {
@@ -205,11 +209,11 @@ private fun ParamContent(
                 SelectedBaseField(
                     label = stringResource(it.type.titleId),
                     value = it.value,
-                    clickable = it.isClickable,
+                    clickable = it.isClickable && isCanUpdate,
                     onFieldClickListener = {
                         onParamClickListener(it)
                     },
-                    isCrossVisible = it.isClickable,
+                    isCrossVisible = it.isClickable && isCanUpdate,
                     onCrossClickListener = {
                         onCrossClickListener(it)
                     }
@@ -217,7 +221,7 @@ private fun ParamContent(
             } else {
                 UnselectedBaseField(
                     label = stringResource(it.type.titleId),
-                    clickable = it.isClickable,
+                    clickable = it.isClickable && isCanUpdate,
                     onFieldClickListener = {
                         onParamClickListener(it)
                     })
@@ -261,6 +265,7 @@ private fun AccountingObjectScreen(
 private fun Toolbar(
     onBackClickListener: () -> Unit,
     onDropClickListener: () -> Unit,
+    isCanUpdate: Boolean
 ) {
     BaseToolbar(
         title = stringResource(id = R.string.inventory_ao_title),
@@ -271,7 +276,7 @@ private fun Toolbar(
                 text = stringResource(R.string.common_drop),
                 style = AppTheme.typography.body2,
                 color = AppTheme.colors.mainColor,
-                modifier = Modifier.clickable(onClick = onDropClickListener)
+                modifier = Modifier.clickable(onClick = onDropClickListener, enabled = isCanUpdate)
             )
         }
     )

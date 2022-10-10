@@ -78,7 +78,8 @@ interface TransitStore : Store<TransitStore.Intent, TransitStore.State, TransitS
         val params: List<ParamDomain>,
         val isLoading: Boolean = false,
         val selectedPage: Int = 0,
-        val confirmDialogType: DocumentConfirmAlertType = DocumentConfirmAlertType.NONE
+        val confirmDialogType: DocumentConfirmAlertType = DocumentConfirmAlertType.NONE,
+        val isCanUpdate: Boolean = false
     )
 
     sealed class Label {
