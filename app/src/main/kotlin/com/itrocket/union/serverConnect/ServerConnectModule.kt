@@ -7,8 +7,11 @@ import com.itrocket.core.utils.getExternalStateSaver
 import com.itrocket.core.utils.getSavedState
 import com.itrocket.union.authContainer.AuthContainerModule
 import com.itrocket.union.serverConnect.data.ServerConnectRepositoryImpl
+import com.itrocket.union.serverConnect.data.StyleRepositoryImpl
 import com.itrocket.union.serverConnect.domain.ServerConnectInteractor
+import com.itrocket.union.serverConnect.domain.StyleInteractor
 import com.itrocket.union.serverConnect.domain.dependencies.ServerConnectRepository
+import com.itrocket.union.serverConnect.domain.dependencies.StyleRepository
 import com.itrocket.union.serverConnect.presentation.store.ServerConnectStore
 import com.itrocket.union.serverConnect.presentation.store.ServerConnectStoreFactory
 import org.koin.android.ext.koin.androidContext
@@ -32,6 +35,10 @@ object ServerConnectModule {
             )
         }
 
+        factory<StyleRepository> {
+            StyleRepositoryImpl(applicationContext = androidContext())
+        }
+
         single<ServerConnectRepository> {
             ServerConnectRepositoryImpl(
                 baseUrlPreferencesKey = get(BASE_URL_PREFERENCE_KEY),
@@ -39,12 +46,15 @@ object ServerConnectModule {
                 dataStore = get(),
                 coreDispatchers = get(),
                 manageSyncDataApi = get(),
-                applicationContext = androidContext()
             )
         }
 
         factory {
             ServerConnectInteractor(get(), get())
+        }
+
+        factory {
+            StyleInteractor(get(), get())
         }
 
         factory {

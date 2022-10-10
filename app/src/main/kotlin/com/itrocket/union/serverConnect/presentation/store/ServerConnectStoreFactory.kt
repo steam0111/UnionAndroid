@@ -1,6 +1,5 @@
 package com.itrocket.union.serverConnect.presentation.store
 
-import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -10,10 +9,13 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.serverConnect.domain.ServerConnectInteractor
+import com.itrocket.union.serverConnect.domain.StyleInteractor
 import com.itrocket.union.theme.domain.ColorInteractor
 import com.itrocket.union.theme.domain.MediaInteractor
 import com.itrocket.union.theme.domain.entity.Medias
 import com.itrocket.union.utils.ifBlankOrNull
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class ServerConnectStoreFactory(
     private val storeFactory: StoreFactory,
@@ -23,7 +25,7 @@ class ServerConnectStoreFactory(
     private val colorInteractor: ColorInteractor,
     private val mediaInteractor: MediaInteractor,
     private val errorInteractor: ErrorInteractor
-) {
+) : KoinComponent {
     fun create(): ServerConnectStore =
         object : ServerConnectStore,
             Store<ServerConnectStore.Intent, ServerConnectStore.State, ServerConnectStore.Label> by storeFactory.create(
@@ -117,9 +119,10 @@ class ServerConnectStoreFactory(
         }
 
         private suspend fun loadSettings() {
-            val colors = serverConnectInteractor.getStyleSettings()
-            val logoFile = serverConnectInteractor.getLogoFile()
-            val headerFile = serverConnectInteractor.getHeaderFile()
+            val styleInteractor by inject<StyleInteractor>()
+            val colors = styleInteractor.getStyleSettings()
+            val logoFile = styleInteractor.getLogoFile()
+            val headerFile = styleInteractor.getHeaderFile()
             colorInteractor.saveColorSettings(
                 mainColor = colors.mainColor,
                 mainTextColor = colors.mainTextColor,
