@@ -14,8 +14,8 @@ android {
         applicationId "com.itrocket.union"
         minSdk libs.versions.minSdk.get().toInteger()
         targetSdk libs.versions.targetSdk.get().toInteger()
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2.0"
 
         testInstrumentationRunner "com.karumi.shot.ShotTestRunner"
     }
@@ -46,8 +46,7 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all {
-            def formattedDate = new Date().format('HH_mm_dd_MM_yyyy')
-            outputFileName = "union_${variant.versionName}_" + "${formattedDate}.apk"
+            outputFileName = "union_version_${variant.versionName}.apk"
         }
     }
 }
