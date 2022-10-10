@@ -1,5 +1,6 @@
 package com.itrocket.union.unionPermissions.domain
 
+import android.util.Log
 import com.itrocket.union.authMain.domain.dependencies.AuthMainRepository
 import com.itrocket.union.authMain.domain.entity.MyConfigDomain
 import com.itrocket.union.unionPermissions.domain.entity.Action
@@ -23,9 +24,9 @@ class UnionPermissionsInteractor(private val authMainRepository: AuthMainReposit
                 configPermissions.filter { models.contains(it.model) }.map { it.action }
             Action.values().map { it.action }.find { permissions.contains(it) } != null
         } else {
-            val permission =
-                configPermissions.find { it.model == unionPermission.model } ?: return false
-            Action.values().map { it.action }.contains(permission.action)
+            val permissions =
+                configPermissions.filter { it.model == unionPermission.model }.map { it.action }
+            Action.values().map { it.action }.find { permissions.contains(it) } != null
         }
     }
 
@@ -36,13 +37,13 @@ class UnionPermissionsInteractor(private val authMainRepository: AuthMainReposit
             return true
         }
 
-        val permissions = config.permissions ?: return false
-        val permission = permissions.find { it.model == unionPermission.model } ?: return false
+        val configPermissions = config.permissions ?: return false
+        val permissions = configPermissions.filter { it.model == unionPermission.model }.map { it.action }
 
         val actions = Action.values().toMutableList()
         actions.remove(READ)
 
-        return actions.map { it.action }.contains(permission.action)
+        return actions.map { it.action }.find { permissions.contains(it) } != null
     }
 
     suspend fun canConductDocument(unionPermission: UnionPermission): Boolean {
