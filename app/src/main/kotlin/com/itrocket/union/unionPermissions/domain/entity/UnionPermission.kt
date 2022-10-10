@@ -19,6 +19,7 @@ enum class UnionPermission(val model: String) {
 enum class Action(val action: String) {
     DELETE("DELETE"),
     WRITE("WRITE"),
+    UPDATE("UPDATE"),
     CREATE("CREATE"),
     READ("READ"),
     COMPLETE_WITHOUT_NFC("COMPLETE_WITHOUT_NFC")

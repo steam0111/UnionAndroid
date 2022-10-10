@@ -44,9 +44,9 @@ class UnionPermissionsInteractor(private val authMainRepository: AuthMainReposit
         }
 
         val permissions = config.permissions ?: return false
-        val permission = permissions.find { it.model == unionPermission.model } ?: return false
+        val permission = permissions.filter { it.model == unionPermission.model }.map { it.action }
 
-        return permission.action == Action.COMPLETE_WITHOUT_NFC.action
+        return permission.contains(Action.COMPLETE_WITHOUT_NFC.action)
     }
 
     private fun checkConstantCondition(
