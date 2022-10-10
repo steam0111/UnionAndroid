@@ -19,10 +19,4 @@ interface ServerConnectRepository {
     fun getReadyServerUrl(): String
 
     suspend fun clearAllSyncDataIfNeeded(newServerAddress: String, newPort: String)
-
-    suspend fun getStyleSettings(): ColorDomain
-
-    suspend fun getLogoFile(): File
-
-    suspend fun getHeaderFile(): File
 }

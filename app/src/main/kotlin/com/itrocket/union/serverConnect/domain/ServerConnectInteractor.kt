@@ -42,18 +42,6 @@ class ServerConnectInteractor(
             repository.clearAllSyncDataIfNeeded(newServerAddress, newPort)
         }
 
-    suspend fun getStyleSettings(): ColorDomain {
-        return withContext(coreDispatchers.io) { repository.getStyleSettings() }
-    }
-
-    suspend fun getLogoFile(): File {
-        return withContext(coreDispatchers.io) { repository.getLogoFile() }
-    }
-
-    suspend fun getHeaderFile(): File {
-        return withContext(coreDispatchers.io) { repository.getHeaderFile() }
-    }
-
     companion object {
         const val MAX_PORT_LENGTH = 5
     }
