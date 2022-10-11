@@ -54,11 +54,12 @@ class SyncAllStoreFactory(
             getState: () -> SyncAllStore.State
         ) {
             when (intent) {
-                SyncAllStore.Intent.OnBackClicked -> publish(SyncAllStore.Label.GoBack)
+                SyncAllStore.Intent.OnBackClicked -> publish(SyncAllStore.Label.ShowMenu)
                 SyncAllStore.Intent.OnSyncButtonClicked -> {
                     dispatch(Loading(true))
                     dispatch(ClearSyncEvents)
                     catchException {
+                        syncAllInteractor.updateMyConfig()
                         syncAllInteractor.syncAll()
                     }
                     dispatch(Loading(false))
