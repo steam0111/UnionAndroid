@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -37,7 +36,7 @@ import com.itrocket.union.ui.white
 fun ReadingModeScreen(
     state: ReadingModeStore.State,
     appInsets: AppInsets,
-    onCameraClickListener: () -> Unit,
+    onRestartClickListener: () -> Unit,
     onSettingsClickListener: () -> Unit,
     onManualInputClickListener: () -> Unit,
     onReadingModeTabClickListener: (ReadingModeTab) -> Unit
@@ -79,7 +78,7 @@ fun ReadingModeScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 BottomBar(
-                    onCameraClickListener = onCameraClickListener,
+                    onRestartClickListener = onRestartClickListener,
                     onSettingsClickListener = onSettingsClickListener,
                     onManualInputClickListener = onManualInputClickListener,
                     selectedTab = state.selectedTab
@@ -87,13 +86,12 @@ fun ReadingModeScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
-
     }
 }
 
 @Composable
 private fun BottomBar(
-    onCameraClickListener: () -> Unit,
+    onRestartClickListener: () -> Unit,
     onSettingsClickListener: () -> Unit,
     onManualInputClickListener: () -> Unit,
     selectedTab: ReadingModeTab
@@ -114,9 +112,9 @@ private fun BottomBar(
         )
         Spacer(modifier = Modifier.width(16.dp))
         ImageButton(
-            imageId = R.drawable.ic_camera,
+            imageId = R.drawable.ic_restart,
             paddings = PaddingValues(12.dp),
-            onClick = onCameraClickListener
+            onClick = onRestartClickListener
         )
     }
 }

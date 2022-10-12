@@ -43,8 +43,8 @@ class ReadingModeComposeFragment :
             ReadingModeScreen(
                 state = state,
                 appInsets = appInsets,
-                onCameraClickListener = {
-                    accept(ReadingModeStore.Intent.OnCameraClicked)
+                onRestartClickListener = {
+                    accept(ReadingModeStore.Intent.OnRestartClicked)
                 },
                 onManualInputClickListener = {
                     accept(ReadingModeStore.Intent.OnManualInputClicked)
