@@ -25,7 +25,8 @@ data class ObjectInfoDomain(
     val title: Int? = null,
     val value: String? = null,
     val valueRes: Int? = null,
-    val name: String? = null
+    val name: String? = null,
+    val filedType: ObjectInfoType = ObjectInfoType.OTHER
 ) : Parcelable
 
 fun AccountingObjectDomain.toAccountingObjectIdSyncEntity() =

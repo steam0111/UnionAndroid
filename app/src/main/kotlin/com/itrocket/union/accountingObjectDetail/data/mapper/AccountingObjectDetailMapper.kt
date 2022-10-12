@@ -6,6 +6,7 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.data.mapper.toDomainStatus
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
+import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoType
 import com.itrocket.union.utils.getStringDateFromMillis
 import com.itrocket.union.utils.getTextDateFromStringDate
 
@@ -201,7 +202,8 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
                 ObjectInfoDomain(
                     name = it.name,
                     value = it.value,
-                    valueRes = R.string.value_not_defined
+                    valueRes = R.string.value_not_defined,
+                    filedType = ObjectInfoType.SIMPLE_ADDITIONAL_FIELD
                 )
             )
         }
@@ -211,7 +213,8 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
                 ObjectInfoDomain(
                     name = it.name,
                     value = it.value,
-                    valueRes = R.string.value_not_defined
+                    valueRes = R.string.value_not_defined,
+                    filedType = ObjectInfoType.VOCABULARY_ADDITIONAL_FIELD
                 )
             )
         }

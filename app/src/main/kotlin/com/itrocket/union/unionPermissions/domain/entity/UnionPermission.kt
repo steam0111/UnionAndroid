@@ -14,7 +14,8 @@ enum class UnionPermission(val model: String) {
     TRANSIT("transit"),
     STRUCTURAL_UNIT("structuralUnit"),
     NO_NEED("NO_NEED"),
-
+    ACCOUNTING_OBJECT_SIMPLE_ADDITIONAL_FIELD("accountingObjectSimpleAdditionalFieldValue"),
+    ACCOUNTING_OBJECT_VOCABULARY_ADDITIONAL_FIELD("accountingObjectVocabularyAdditionalFieldValue"),
     //Custom Permissions
     OPERATIONS("Operations")
 }
