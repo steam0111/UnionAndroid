@@ -117,7 +117,7 @@ fun ImageButton(
             .background(backgroundColor, RoundedCornerShape(8.dp))
             .clickable(onClick = onClick, interactionSource = remember {
                 MutableInteractionSource()
-            }, indication = rememberRipple())
+            }, indication = rememberRipple(), enabled = isEnabled)
             .clip(RoundedCornerShape(8.dp))
             .padding(paddings)
 
