@@ -29,7 +29,7 @@ object SyncAllModule {
         }
 
         factory {
-            SyncAllInteractor(get(), get())
+            SyncAllInteractor(get(), get(), get())
         }
 
         factory {
