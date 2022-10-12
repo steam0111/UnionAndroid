@@ -14,4 +14,8 @@ class ReadingModeInteractor(
     fun changeScanMode(readingMode: ReaderMode) {
         serviceEntryManager.changeScanMode(readingMode)
     }
+
+    fun restartService() {
+        serviceEntryManager.restartService()
+    }
 }

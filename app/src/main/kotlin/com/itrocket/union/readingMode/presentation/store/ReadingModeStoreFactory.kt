@@ -56,8 +56,8 @@ class ReadingModeStoreFactory(
             getState: () -> ReadingModeStore.State
         ) {
             when (intent) {
-                ReadingModeStore.Intent.OnCameraClicked -> {
-                    //no-op
+                ReadingModeStore.Intent.OnRestartClicked -> {
+                    readingModeInteractor.restartService()
                 }
                 ReadingModeStore.Intent.OnManualInputClicked -> publish(
                     ReadingModeStore.Label.ManualInput(

@@ -23,7 +23,7 @@ interface ReadingModeStore :
 
     sealed class Intent {
         data class OnReadingModeSelected(val readingMode: ReadingModeTab) : Intent()
-        object OnCameraClicked : Intent()
+        object OnRestartClicked : Intent()
         object OnSettingsClicked : Intent()
         object OnManualInputClicked : Intent()
         data class OnManualInput(val text: String) : Intent()
