@@ -31,7 +31,6 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
@@ -44,7 +43,6 @@ import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseCheckbox
-import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ConfirmAlertDialog
 import com.itrocket.union.ui.InventoryDocumentItem
 import com.itrocket.union.ui.MediumSpacer
@@ -129,6 +127,21 @@ private fun getAccountingObjects(state: InventoryCreateStore.State): List<Accoun
     }
 }
 
+private fun getAllAccountingObjectsSize(state: InventoryCreateStore.State): Int {
+    return (state.newAccountingObjects.toList() + state.inventoryDocument.accountingObjects).size
+}
+
+private fun getFindAccountingObjectsSize(state: InventoryCreateStore.State): Int {
+    val list =
+        state.newAccountingObjects.toList() + state.inventoryDocument.accountingObjects
+    return list.filter { it.inventoryStatus == InventoryAccountingObjectStatus.FOUND }.size
+
+}
+
+private fun getNotFindAccountingObjectsSize(state: InventoryCreateStore.State): Int {
+    return (getAllAccountingObjectsSize(state) - getFindAccountingObjectsSize(state))
+}
+
 @Composable
 private fun Content(
     state: InventoryCreateStore.State,
@@ -158,6 +171,12 @@ private fun Content(
                 }
                 InventoryDocumentItem(item = state.inventoryDocument, isShowStatus = false)
                 MediumSpacer()
+                CountBar(
+                    totalAo = getAllAccountingObjectsSize(state),
+                    findAo = getFindAccountingObjectsSize(state),
+                    notFindAo = getNotFindAccountingObjectsSize(state)
+                )
+                MediumSpacer()
                 SettingsBar(
                     isHideFoundAccountingObjects = state.isHideFoundAccountingObjects,
                     isAddNew = state.isAddNew,
@@ -182,6 +201,49 @@ private fun Content(
             item {
                 Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
             }
+        }
+    }
+}
+
+@Composable
+fun CountBar(
+    totalAo: Int,
+    findAo: Int,
+    notFindAo: Int
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(white)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(R.string.inventory_create_total_ao, totalAo),
+                style = AppTheme.typography.body2
+            )
+        }
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(R.string.inventory_create_find_ao, findAo),
+                style = AppTheme.typography.body2
+            )
+        }
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(R.string.inventory_create_not_find_ao, notFindAo),
+                style = AppTheme.typography.body2
+            )
         }
     }
 }
