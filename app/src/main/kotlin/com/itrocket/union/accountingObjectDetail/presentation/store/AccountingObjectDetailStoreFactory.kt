@@ -8,21 +8,25 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.changeScanData.data.mapper.toChangeScanType
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
+import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class AccountingObjectDetailStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val interactor: AccountingObjectDetailInteractor,
-    private val accountingObjectDetailArguments: AccountingObjectDetailArguments
+    private val accountingObjectDetailArguments: AccountingObjectDetailArguments,
+    private val serviceEntryManager: ServiceEntryManager,
 ) {
     fun create(): AccountingObjectDetailStore =
         object : AccountingObjectDetailStore,
             Store<AccountingObjectDetailStore.Intent, AccountingObjectDetailStore.State, AccountingObjectDetailStore.Label> by storeFactory.create(
                 name = "AccountingObjectDetailStore",
                 initialState = AccountingObjectDetailStore.State(
-                    accountingObjectDomain = accountingObjectDetailArguments.argument
+                    accountingObjectDomain = accountingObjectDetailArguments.argument,
+                    readingMode = serviceEntryManager.currentMode.toReadingModeTab()
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
