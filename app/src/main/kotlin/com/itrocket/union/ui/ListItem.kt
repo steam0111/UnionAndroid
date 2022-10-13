@@ -37,7 +37,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.itrocket.union.App
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectStatus
@@ -50,9 +49,9 @@ import com.itrocket.union.documents.domain.entity.DocumentDateType
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.presentation.view.DocumentView
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
@@ -616,8 +615,8 @@ fun AccountingObjectItemPreview() {
         ), onAccountingObjectListener = {}, isShowBottomLine = true,
         status = ObjectStatusType(
             "",
-            AppTheme.colors.secondaryColor,
-            AppTheme.colors.secondaryColor,
+            AppTheme.colors.secondaryColor.value.toString(),
+            AppTheme.colors.secondaryColor.value.toString(),
             ""
         )
     )

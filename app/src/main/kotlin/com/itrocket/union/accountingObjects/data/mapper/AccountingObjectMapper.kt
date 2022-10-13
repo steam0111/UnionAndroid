@@ -3,7 +3,11 @@ package com.itrocket.union.accountingObjects.data.mapper
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.EnumSyncEntity
 import com.itrocket.union.R
-import com.itrocket.union.accountingObjects.domain.entity.*
+import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.ui.blue6
 import com.itrocket.union.ui.burntSienna
@@ -85,6 +89,6 @@ fun EnumSyncEntity.toObjectStatusType(): ObjectStatusType {
             textColor = graphite6
         }
     }
-    return ObjectStatusType(id, backgroundColor, textColor, name)
+    return ObjectStatusType(id, backgroundColor.value.toString(), textColor.value.toString(), name)
 }
 
