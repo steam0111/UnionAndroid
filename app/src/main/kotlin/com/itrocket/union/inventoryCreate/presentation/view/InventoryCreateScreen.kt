@@ -174,7 +174,8 @@ private fun Content(
                 CountBar(
                     totalAo = getAllAccountingObjectsSize(state),
                     findAo = getFindAccountingObjectsSize(state),
-                    notFindAo = getNotFindAccountingObjectsSize(state)
+                    notFindAo = getNotFindAccountingObjectsSize(state),
+                    newAo = state.newAccountingObjects.size
                 )
                 MediumSpacer()
                 SettingsBar(
@@ -209,7 +210,8 @@ private fun Content(
 fun CountBar(
     totalAo: Int,
     findAo: Int,
-    notFindAo: Int
+    notFindAo: Int,
+    newAo: Int
 ) {
     Row(
         modifier = Modifier
@@ -233,6 +235,23 @@ fun CountBar(
         ) {
             Text(
                 text = stringResource(R.string.inventory_create_find_ao, findAo),
+                style = AppTheme.typography.body2
+            )
+        }
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(white)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(R.string.inventory_create_new_ao, newAo),
                 style = AppTheme.typography.body2
             )
         }
