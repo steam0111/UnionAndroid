@@ -44,7 +44,7 @@ interface DocumentStore : Store<DocumentStore.Intent, DocumentStore.State, Docum
         val isShowSearch: Boolean = false,
         val searchText: String = "",
         val params: List<ParamDomain>? = null,
-        val isCanCreateDocument: Boolean = true
+        val canCreateDocument: Boolean = true
     )
 
     sealed class Label {

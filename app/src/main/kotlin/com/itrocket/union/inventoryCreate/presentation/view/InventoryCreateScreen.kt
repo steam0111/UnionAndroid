@@ -81,7 +81,7 @@ fun InventoryCreateScreen(
                     onSearchTextChanged = onSearchTextChanged,
                     searchText = state.searchText,
                     isShowSearch = state.isShowSearch,
-                    isCanUpdate = state.isCanUpdate,
+                    canUpdate = state.canUpdate,
                 )
             },
             bottomBar = {
@@ -148,12 +148,12 @@ private fun Content(
     ) {
         LazyColumn {
             item {
-                if (state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED && state.isCanUpdate) {
+                if (state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED && state.canUpdate) {
                     InventoryBottomBar(
                         onSaveClickListener = onSaveClickListener,
                         onFinishClickListener = onFinishClickListener,
                         inventoryStatus = state.inventoryDocument.inventoryStatus,
-                        isCanUpdate = state.isCanUpdate
+                        canUpdate = state.canUpdate
                     )
                 }
                 InventoryDocumentItem(item = state.inventoryDocument, isShowStatus = false)
@@ -163,7 +163,7 @@ private fun Content(
                     isAddNew = state.isAddNew,
                     onAddNewChanged = onAddNewChanged,
                     onHideFoundAccountingObjectChanged = onHideFoundAccountingObjectChanged,
-                    isCanUpdate = state.isCanUpdate
+                    canUpdate = state.canUpdate
                 )
                 MediumSpacer()
             }
@@ -176,7 +176,7 @@ private fun Content(
                     onAccountingObjectListener = onAccountingObjectClickListener,
                     isShowBottomLine = isShowBottomLine,
                     status = item.inventoryStatus,
-                    isEnabled = state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED && state.isCanUpdate
+                    isEnabled = state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED && state.canUpdate
                 )
             }
             item {
@@ -192,7 +192,7 @@ fun SettingsBar(
     isAddNew: Boolean,
     onAddNewChanged: () -> Unit,
     onHideFoundAccountingObjectChanged: () -> Unit,
-    isCanUpdate: Boolean
+    canUpdate: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -209,7 +209,7 @@ fun SettingsBar(
             BaseCheckbox(
                 isChecked = isHideFoundAccountingObjects,
                 onCheckClickListener = onHideFoundAccountingObjectChanged,
-                enabled = isCanUpdate
+                enabled = canUpdate
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
@@ -226,7 +226,7 @@ fun SettingsBar(
             BaseCheckbox(
                 isChecked = isAddNew,
                 onCheckClickListener = onAddNewChanged,
-                enabled = isCanUpdate
+                enabled = canUpdate
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
@@ -243,7 +243,7 @@ fun InventoryBottomBar(
     onInWorkClickListener: () -> Unit = {},
     onFinishClickListener: () -> Unit,
     inventoryStatus: InventoryStatus,
-    isCanUpdate: Boolean
+    canUpdate: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -251,7 +251,7 @@ fun InventoryBottomBar(
             .padding(16.dp)
     ) {
         BaseButton(
-            enabled = inventoryStatus != InventoryStatus.COMPLETED && isCanUpdate,
+            enabled = inventoryStatus != InventoryStatus.COMPLETED && canUpdate,
             text = stringResource(R.string.common_save),
             onClick = onSaveClickListener,
             modifier = Modifier.weight(1f),
@@ -263,7 +263,9 @@ fun InventoryBottomBar(
                 BaseButton(
                     text = stringResource(R.string.common_in_work),
                     onClick = onInWorkClickListener,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    enabled = canUpdate,
+                    disabledBackgroundColor = AppTheme.colors.secondaryColor
                 )
             }
             InventoryStatus.IN_PROGRESS -> {
@@ -271,7 +273,9 @@ fun InventoryBottomBar(
                 BaseButton(
                     text = stringResource(R.string.common_complete),
                     onClick = onFinishClickListener,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    enabled = canUpdate,
+                    disabledBackgroundColor = AppTheme.colors.secondaryColor
                 )
             }
             InventoryStatus.COMPLETED -> {
@@ -290,7 +294,7 @@ private fun Toolbar(
     searchText: String,
     isShowSearch: Boolean,
     inventoryStatus: InventoryStatus,
-    isCanUpdate: Boolean
+    canUpdate: Boolean
 ) {
     SearchToolbar(
         title = stringResource(id = R.string.inventory_ao_title),
@@ -307,7 +311,7 @@ private fun Toolbar(
                 color = AppTheme.colors.mainColor,
                 modifier = Modifier.clickable(
                     onClick = onDropClickListener,
-                    enabled = inventoryStatus == InventoryStatus.CREATED && isCanUpdate
+                    enabled = inventoryStatus == InventoryStatus.CREATED && canUpdate
                 )
             )
         }

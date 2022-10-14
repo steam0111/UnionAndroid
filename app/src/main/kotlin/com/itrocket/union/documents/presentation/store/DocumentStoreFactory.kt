@@ -191,7 +191,7 @@ class DocumentStoreFactory(
         data class SearchText(val searchText: String) : Result()
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
         data class FilterParams(val params: List<ParamDomain>) : Result()
-        data class CanCreateDocument(val isCanCreateDocument: Boolean) : Result()
+        data class CanCreateDocument(val canCreateDocument: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<DocumentStore.State, Result> {
@@ -204,7 +204,7 @@ class DocumentStoreFactory(
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchText -> copy(searchText = result.searchText)
                 is Result.FilterParams -> copy(params = result.params)
-                is Result.CanCreateDocument -> copy(isCanCreateDocument = result.isCanCreateDocument)
+                is Result.CanCreateDocument -> copy(canCreateDocument = result.canCreateDocument)
             }
     }
 }

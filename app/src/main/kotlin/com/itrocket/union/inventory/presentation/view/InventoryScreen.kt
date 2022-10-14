@@ -35,7 +35,6 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.inventory.presentation.store.InventoryStore
 import com.itrocket.union.inventoryCreate.presentation.view.InventoryBottomBar
 import com.itrocket.union.manual.ManualType
@@ -73,6 +72,11 @@ fun InventoryScreen(
 ) {
     val pagerState = rememberPagerState(state.selectedPage)
     val coroutineScope = rememberCoroutineScope()
+    val isInventoryChangePermitted = if (state.inventoryCreateDomain != null) {
+        state.canUpdateInventory
+    } else {
+        state.canCreateInventory
+    }
 
     AppTheme {
         Scaffold(
@@ -80,21 +84,21 @@ fun InventoryScreen(
                 Toolbar(
                     onDropClickListener = onDropClickListener,
                     onBackClickListener = onBackClickListener,
-                    isCanUpdate = state.isCanCreateInventory
+                    isInventoryChangePermitted = isInventoryChangePermitted
                 )
             },
             bottomBar = {
                 when {
-                    state.isCanCreateInventory && state.inventoryCreateDomain != null -> {
+                    state.inventoryCreateDomain != null -> {
                         InventoryBottomBar(
                             onSaveClickListener = onSaveClickListener,
                             onInWorkClickListener = onInWorkClickListener,
                             onFinishClickListener = { },
                             inventoryStatus = state.inventoryCreateDomain.inventoryStatus,
-                            isCanUpdate = state.isCanCreateInventory
+                            canUpdate = state.canUpdateInventory
                         )
                     }
-                    state.isCanCreateInventory -> {
+                    state.canCreateInventory -> {
                         ButtonBottomBar(
                             onClick = onInventoryCreateClickListener,
                             text = stringResource(R.string.common_create),
@@ -112,7 +116,8 @@ fun InventoryScreen(
                     onParamCrossClickListener = onParamCrossClickListener,
                     onParamClickListener = onParamClickListener,
                     paddingValues = it,
-                    state = state
+                    state = state,
+                    isInventoryChangePermitted = isInventoryChangePermitted
                 )
             },
             modifier = Modifier.padding(
@@ -139,7 +144,8 @@ private fun Content(
     coroutineScope: CoroutineScope,
     selectedPage: Int,
     pagerState: PagerState,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    isInventoryChangePermitted: Boolean
 ) {
     val tabs = listOf(
         BaseTab(
@@ -149,7 +155,7 @@ private fun Content(
                     onParamClickListener = onParamClickListener,
                     params = state.params,
                     onCrossClickListener = onParamCrossClickListener,
-                    isCanUpdate = state.isCanCreateInventory
+                    isInventoryChangePermitted = isInventoryChangePermitted
                 )
             }
         ),
@@ -199,7 +205,7 @@ private fun ParamContent(
     params: List<ParamDomain>,
     onParamClickListener: (ParamDomain) -> Unit,
     onCrossClickListener: (ParamDomain) -> Unit,
-    isCanUpdate: Boolean,
+    isInventoryChangePermitted: Boolean,
 ) {
     LazyColumn(modifier = Modifier.fillMaxHeight()) {
         items(params, key = {
@@ -209,11 +215,11 @@ private fun ParamContent(
                 SelectedBaseField(
                     label = stringResource(it.type.titleId),
                     value = it.value,
-                    clickable = it.isClickable && isCanUpdate,
+                    clickable = it.isClickable && isInventoryChangePermitted,
                     onFieldClickListener = {
                         onParamClickListener(it)
                     },
-                    isCrossVisible = it.isClickable && isCanUpdate,
+                    isCrossVisible = it.isClickable && isInventoryChangePermitted,
                     onCrossClickListener = {
                         onCrossClickListener(it)
                     }
@@ -221,7 +227,7 @@ private fun ParamContent(
             } else {
                 UnselectedBaseField(
                     label = stringResource(it.type.titleId),
-                    clickable = it.isClickable && isCanUpdate,
+                    clickable = it.isClickable && isInventoryChangePermitted,
                     onFieldClickListener = {
                         onParamClickListener(it)
                     })
@@ -265,7 +271,7 @@ private fun AccountingObjectScreen(
 private fun Toolbar(
     onBackClickListener: () -> Unit,
     onDropClickListener: () -> Unit,
-    isCanUpdate: Boolean
+    isInventoryChangePermitted: Boolean
 ) {
     BaseToolbar(
         title = stringResource(id = R.string.inventory_ao_title),
@@ -276,7 +282,10 @@ private fun Toolbar(
                 text = stringResource(R.string.common_drop),
                 style = AppTheme.typography.body2,
                 color = AppTheme.colors.mainColor,
-                modifier = Modifier.clickable(onClick = onDropClickListener, enabled = isCanUpdate)
+                modifier = Modifier.clickable(
+                    onClick = onDropClickListener,
+                    enabled = isInventoryChangePermitted
+                )
             )
         }
     )

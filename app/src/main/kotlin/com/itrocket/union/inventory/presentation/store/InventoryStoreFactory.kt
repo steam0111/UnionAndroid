@@ -25,8 +25,6 @@ import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 import com.itrocket.union.utils.ifBlankOrNull
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 
 class InventoryStoreFactory(
     private val storeFactory: StoreFactory,
@@ -67,6 +65,7 @@ class InventoryStoreFactory(
                 )
             }
             dispatch(Result.CanCreateInventory(permissionsInteractor.canCreate(UnionPermission.INVENTORY)))
+            dispatch(Result.CanUpdateInventory(permissionsInteractor.canUpdate(UnionPermission.INVENTORY)))
             if (inventory != null) {
                 dispatch(Result.InventoryCreate(inventory))
                 dispatch(Result.Params(inventoryCreateInteractor.disableBalanceUnit(inventory.documentInfo)))
@@ -229,7 +228,11 @@ class InventoryStoreFactory(
                 dispatch(Result.IsAccountingObjectsLoading(false))
                 dispatch(
                     Result.AccountingObjects(
-                        accountingObjectInteractor.getAccountingObjects(ManualType.LOCATION_INVENTORY,"", params)
+                        accountingObjectInteractor.getAccountingObjects(
+                            ManualType.LOCATION_INVENTORY,
+                            "",
+                            params
+                        )
                     )
                 )
                 dispatch(Result.IsAccountingObjectsLoading(false))
@@ -243,7 +246,8 @@ class InventoryStoreFactory(
         data class Params(val params: List<ParamDomain>) : Result()
         data class SelectPage(val page: Int) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
-        data class CanCreateInventory(val isCanCreateInventory: Boolean) : Result()
+        data class CanCreateInventory(val canCreateInventory: Boolean) : Result()
+        data class CanUpdateInventory(val canUpdateInventory: Boolean) : Result()
         data class InventoryCreate(val inventoryCreateDomain: InventoryCreateDomain) : Result()
     }
 
@@ -255,8 +259,9 @@ class InventoryStoreFactory(
                 is Result.SelectPage -> copy(selectedPage = result.page)
                 is Result.AccountingObjects -> copy(accountingObjectList = result.accountingObjects)
                 is Result.IsCreateInventoryLoading -> copy(isCreateInventoryLoading = result.isLoading)
-                is Result.CanCreateInventory -> copy(isCanCreateInventory = result.isCanCreateInventory)
+                is Result.CanCreateInventory -> copy(canCreateInventory = result.canCreateInventory)
                 is Result.InventoryCreate -> copy(inventoryCreateDomain = result.inventoryCreateDomain)
+                is Result.CanUpdateInventory -> copy(canUpdateInventory = result.canUpdateInventory)
             }
     }
 }

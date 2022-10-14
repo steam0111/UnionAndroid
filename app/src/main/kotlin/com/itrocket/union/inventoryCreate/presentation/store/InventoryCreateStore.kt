@@ -59,7 +59,7 @@ interface InventoryCreateStore :
         val isLoading: Boolean = false,
         val isConfirmDialogVisible: Boolean = false,
         val readingModeTab: ReadingModeTab,
-        val isCanUpdate: Boolean = false,
+        val canUpdate: Boolean = false,
         val searchText: String = "",
         val isShowSearch: Boolean = false,
         val searchAccountingObjects: List<AccountingObjectDomain> = listOf()

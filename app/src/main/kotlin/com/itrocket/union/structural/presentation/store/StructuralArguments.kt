@@ -8,6 +8,6 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class StructuralArguments(
     val structural: StructuralParamDomain = StructuralParamDomain(manualType = ManualType.STRUCTURAL),
-    val isCanEdit: Boolean
+    val canEdit: Boolean
 ) :
     Parcelable

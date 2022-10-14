@@ -68,7 +68,7 @@ fun DocumentScreen(
                 )
             },
             bottomBar = {
-                if (state.isCanCreateDocument) {
+                if (state.canCreateDocument) {
                     ButtonLoaderBottomBar(
                         text = stringResource(id = R.string.documents_create_issue),
                         onClick = onCreateRequestClickListener,

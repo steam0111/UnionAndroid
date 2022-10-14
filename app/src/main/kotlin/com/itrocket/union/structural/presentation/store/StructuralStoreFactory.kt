@@ -28,7 +28,7 @@ class StructuralStoreFactory(
         object : StructuralStore,
             Store<StructuralStore.Intent, StructuralStore.State, StructuralStore.Label> by storeFactory.create(
                 name = "StructuralStore",
-                initialState = StructuralStore.State(isCanEdit = structuralArguments.isCanEdit),
+                initialState = StructuralStore.State(canEdit = structuralArguments.canEdit),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl

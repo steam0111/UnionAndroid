@@ -79,7 +79,8 @@ interface TransitStore : Store<TransitStore.Intent, TransitStore.State, TransitS
         val isLoading: Boolean = false,
         val selectedPage: Int = 0,
         val confirmDialogType: DocumentConfirmAlertType = DocumentConfirmAlertType.NONE,
-        val isCanUpdate: Boolean = false
+        val canUpdate: Boolean = false,
+        val canCreate: Boolean = false
     )
 
     sealed class Label {
@@ -98,7 +99,7 @@ interface TransitStore : Store<TransitStore.Intent, TransitStore.State, TransitS
             ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = TransitComposeFragmentDirections.toStructural(
-                    StructuralArguments(structural = structural, isCanEdit = true)
+                    StructuralArguments(structural = structural, canEdit = true)
                 )
         }
 

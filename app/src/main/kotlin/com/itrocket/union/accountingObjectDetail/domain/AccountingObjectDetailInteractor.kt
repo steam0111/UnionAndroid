@@ -42,15 +42,15 @@ class AccountingObjectDetailInteractor(
 
     private suspend fun checkAdditionalListPermissions(listInfo: List<ObjectInfoDomain>): List<ObjectInfoDomain> {
         var mainInfo = listInfo
-        val isCanShowSimpleFields =
+        val canShowSimpleFields =
             unionPermissionsInteractor.canRead(UnionPermission.ACCOUNTING_OBJECT_SIMPLE_ADDITIONAL_FIELD)
-        val isCanShowVocabularyFields =
+        val canShowVocabularyFields =
             unionPermissionsInteractor.canRead(UnionPermission.ACCOUNTING_OBJECT_VOCABULARY_ADDITIONAL_FIELD)
-        if (!isCanShowSimpleFields) {
+        if (!canShowSimpleFields) {
             mainInfo =
                 mainInfo.filter { it.filedType != ObjectInfoType.SIMPLE_ADDITIONAL_FIELD }
         }
-        if (!isCanShowVocabularyFields) {
+        if (!canShowVocabularyFields) {
             mainInfo =
                 mainInfo.filter { it.filedType != ObjectInfoType.VOCABULARY_ADDITIONAL_FIELD }
         }

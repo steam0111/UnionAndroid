@@ -70,7 +70,8 @@ class TransitStoreFactory(
             getState: () -> TransitStore.State
         ) {
             dispatch(Result.Loading(true))
-            dispatch(Result.IsCanUpdate(unionPermissionsInteractor.canCreate(UnionPermission.TRANSIT)))
+            dispatch(Result.CanUpdate(unionPermissionsInteractor.canUpdate(UnionPermission.TRANSIT)))
+            dispatch(Result.CanCreate(unionPermissionsInteractor.canCreate(UnionPermission.TRANSIT)))
             catchException {
                 val transitArgument = transitArguments.transit
                 val transit = if (transitArgument.isDocumentExists) {
@@ -396,7 +397,8 @@ class TransitStoreFactory(
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
         data class Reserves(val reserves: List<ReservesDomain>) : Result()
         data class ConfirmDialogType(val type: DocumentConfirmAlertType) : Result()
-        data class IsCanUpdate(val isCanUpdate: Boolean) : Result()
+        data class CanUpdate(val canUpdate: Boolean) : Result()
+        data class CanCreate(val canCreate: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<TransitStore.State, Result> {
@@ -409,7 +411,8 @@ class TransitStoreFactory(
                 is Result.SelectPage -> copy(selectedPage = result.page)
                 is Result.Transit -> copy(transit = result.transit)
                 is Result.ConfirmDialogType -> copy(confirmDialogType = result.type)
-                is Result.IsCanUpdate -> copy(isCanUpdate = result.isCanUpdate)
+                is Result.CanUpdate -> copy(canUpdate = result.canUpdate)
+                is Result.CanCreate -> copy(canCreate = result.canCreate)
             }
     }
 }

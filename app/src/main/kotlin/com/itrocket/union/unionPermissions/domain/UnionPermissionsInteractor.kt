@@ -1,8 +1,8 @@
 package com.itrocket.union.unionPermissions.domain
 
-import android.util.Log
 import com.itrocket.union.authMain.domain.dependencies.AuthMainRepository
 import com.itrocket.union.authMain.domain.entity.MyConfigDomain
+import com.itrocket.union.authMain.domain.entity.MyConfigPermission
 import com.itrocket.union.unionPermissions.domain.entity.Action
 import com.itrocket.union.unionPermissions.domain.entity.Action.READ
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
@@ -20,17 +20,33 @@ class UnionPermissionsInteractor(private val authMainRepository: AuthMainReposit
         val configPermissions = config.permissions ?: return false
         return if (customPermissions.isNotEmpty()) {
             val models = customPermissions.map { it.model }
-            val permissions =
-                configPermissions.filter { models.contains(it.model) }.map { it.action }
-            Action.values().map { it.action }.find { permissions.contains(it) } != null
+            isAnyPermissionActionKeep(
+                models = models,
+                configPermissions = configPermissions,
+                action = READ.action
+            )
         } else {
-            val permissions =
-                configPermissions.filter { it.model == unionPermission.model }.map { it.action }
-            Action.values().map { it.action }.find { permissions.contains(it) } != null
+            isPermissionActionKeep(
+                configPermissions = configPermissions,
+                checkPermission = unionPermission,
+                checkAction = READ.action
+            )
         }
     }
 
     suspend fun canCreate(unionPermission: UnionPermission): Boolean {
+        return canMakeAction(unionPermission = unionPermission, action = Action.CREATE.action)
+    }
+
+    suspend fun canUpdate(unionPermission: UnionPermission): Boolean {
+        return canMakeAction(unionPermission = unionPermission, action = Action.UPDATE.action)
+    }
+
+    suspend fun canConductDocument(unionPermission: UnionPermission): Boolean {
+        return canMakeAction(unionPermission = unionPermission, action = Action.COMPLETE_WITHOUT_NFC.action)
+    }
+
+    suspend fun canMakeAction(unionPermission: UnionPermission, action: String): Boolean {
         val config = authMainRepository.getMyPreferencesConfig()
 
         if (checkConstantCondition(unionPermission, config)) {
@@ -38,25 +54,43 @@ class UnionPermissionsInteractor(private val authMainRepository: AuthMainReposit
         }
 
         val configPermissions = config.permissions ?: return false
-        val permissions = configPermissions.filter { it.model == unionPermission.model }.map { it.action }
-
-        val actions = Action.values().toMutableList()
-        actions.remove(READ)
-
-        return actions.map { it.action }.find { permissions.contains(it) } != null
+        return isPermissionActionKeep(
+            configPermissions = configPermissions,
+            checkPermission = unionPermission,
+            checkAction = action
+        )
     }
 
-    suspend fun canConductDocument(unionPermission: UnionPermission): Boolean {
-        val config = authMainRepository.getMyPreferencesConfig()
+    /**
+     * @param configPermissions - Все разрешения пользователя
+     * @param checkPermission - Проверяемое на наличие разрешение
+     * @param checkAction - Проверяемое на наличие действие по пермишену
+     * Метод для проверки наличия конкретного разрешения
+     */
+    private fun isPermissionActionKeep(
+        configPermissions: List<MyConfigPermission>,
+        checkPermission: UnionPermission,
+        checkAction: String
+    ): Boolean {
+        val permissions =
+            configPermissions.filter { it.model == checkPermission.model }.map { it.action }
+        return permissions.contains(checkAction)
+    }
 
-        if (checkConstantCondition(unionPermission, config)) {
-            return true
-        }
-
-        val permissions = config.permissions ?: return false
-        val permission = permissions.filter { it.model == unionPermission.model }.map { it.action }
-
-        return permission.contains(Action.COMPLETE_WITHOUT_NFC.action)
+    /**
+     * @param models - Список моделей на проверку наличия их разрешений
+     * @param checkPermission - Проверяемое на наличие разрешение
+     * @param checkAction - Проверяемое на наличие действие по пермишену
+     * Метод для проверки наличия разрешения хотя бы у одной из списка моделей
+     */
+    private fun isAnyPermissionActionKeep(
+        models: List<String>,
+        configPermissions: List<MyConfigPermission>,
+        action: String
+    ): Boolean {
+        val permissions =
+            configPermissions.filter { models.contains(it.model) }.map { it.action }
+        return permissions.contains(action)
     }
 
     private fun checkConstantCondition(
