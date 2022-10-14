@@ -42,7 +42,8 @@ class AccountingObjectSyncApiImpl(
         locationIds: List<String?>?,
         structuralId: List<String?>?,
         offset: Long?,
-        limit: Long?
+        limit: Long?,
+        serialNumber: String?
     ): List<AccountingObjectSyncEntity> {
         return accountingObjectsDao.getAll(
             sqlAccountingObjectQuery(

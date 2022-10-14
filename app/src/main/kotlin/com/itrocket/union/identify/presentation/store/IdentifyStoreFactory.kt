@@ -73,7 +73,8 @@ class IdentifyStoreFactory(
                 is IdentifyStore.Intent.OnNewAccountingObjectBarcodeHandled -> {
                     handleBarcodeAccountingObjects(
                         intent.barcode,
-                        getState().accountingObjects
+                        getState().accountingObjects,
+                        getState().readingModeTab
                     )
                 }
                 is IdentifyStore.Intent.OnAccountingObjectSelected -> {
@@ -106,13 +107,14 @@ class IdentifyStoreFactory(
             getState: () -> IdentifyStore.State
         ) {
             when (readingModeResult.readingModeTab) {
-                ReadingModeTab.RFID, ReadingModeTab.SN -> {
-                    //no-op
+                ReadingModeTab.RFID -> {
+                   //no-op
                 }
-                ReadingModeTab.BARCODE -> {
+                ReadingModeTab.BARCODE, ReadingModeTab.SN -> {
                     handleBarcodeAccountingObjects(
                         barcode = readingModeResult.scanData,
-                        accountingObjects = getState().accountingObjects
+                        accountingObjects = getState().accountingObjects,
+                        readingModeTab = getState().readingModeTab
                     )
                 }
             }
@@ -131,11 +133,13 @@ class IdentifyStoreFactory(
 
         private suspend fun handleBarcodeAccountingObjects(
             barcode: String,
-            accountingObjects: List<AccountingObjectDomain>
+            accountingObjects: List<AccountingObjectDomain>,
+            readingModeTab: ReadingModeTab
         ) {
             val newAccountingObjects = identifyInteractor.handleNewAccountingObjectBarcode(
                 accountingObjects = accountingObjects,
-                barcode = barcode
+                barcode = barcode,
+                isSerialNumber = readingModeTab == ReadingModeTab.SN
             )
             dispatch(Result.AccountingObjects(newAccountingObjects))
         }

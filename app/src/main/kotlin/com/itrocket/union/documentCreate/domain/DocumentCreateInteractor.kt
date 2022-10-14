@@ -249,14 +249,30 @@ class DocumentCreateInteractor(
     suspend fun handleNewAccountingObjectBarcode(
         accountingObjects: List<AccountingObjectDomain>,
         barcode: String,
+        isSerialNumber: Boolean
     ): List<AccountingObjectDomain> {
         return withContext(coreDispatchers.io) {
             val newAccountingObjectBarcode = mutableListOf<AccountingObjectDomain>()
 
-            val index = accountingObjects.indexOfFirst { it.barcodeValue == barcode }
+            val index = accountingObjects.indexOfFirst {
+                if (isSerialNumber) {
+                    it.factoryNumber == barcode
+                } else {
+                    it.barcodeValue == barcode
+                }
+            }
             if (index == NO_POSITION) {
-                val barcodeAccountingObject =
-                    accountingObjectRepository.getAccountingObjectsByBarcode(barcode)
+                val barcodeAccountingObject = if (isSerialNumber) {
+                    accountingObjectRepository.getAccountingObjectsByBarcode(
+                        barcode = null,
+                        serialNumber = barcode
+                    )
+                } else {
+                    accountingObjectRepository.getAccountingObjectsByBarcode(
+                        barcode = barcode,
+                        serialNumber = null
+                    )
+                }
                 barcodeAccountingObject?.let {
                     newAccountingObjectBarcode.add(it)
                 }

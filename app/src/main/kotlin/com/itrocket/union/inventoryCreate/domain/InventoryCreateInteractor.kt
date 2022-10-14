@@ -84,17 +84,28 @@ class InventoryCreateInteractor(
         barcode: String,
         inventoryStatus: InventoryStatus,
         isAddNew: Boolean,
-        existNewAccountingObjects: List<AccountingObjectDomain>
+        existNewAccountingObjects: List<AccountingObjectDomain>,
+        isSerialNumber: Boolean
     ): InventoryAccountingObjectsDomain {
         return withContext(coreDispatchers.io) {
             val barcodeAccountingObjects = mutableListOf<AccountingObjectDomain>()
             val mutableAccountingObjects = accountingObjects.toMutableList()
 
             val accountingObjectIndex = mutableAccountingObjects.indexOfFirst {
-                it.barcodeValue == barcode
+                if (isSerialNumber) {
+                    it.factoryNumber == barcode
+                } else {
+                    it.barcodeValue == barcode
+                }
             }
             val isRfidNewExist =
-                existNewAccountingObjects.indexOfFirst { it.barcodeValue == barcode } != NO_INDEX
+                existNewAccountingObjects.indexOfFirst {
+                    if (isSerialNumber) {
+                        it.factoryNumber == barcode
+                    } else {
+                        it.barcodeValue == barcode
+                    }
+                } != NO_INDEX
             val isNewExist = if (accountingObjectIndex != NO_INDEX) {
                 mutableAccountingObjects[accountingObjectIndex].inventoryStatus == InventoryAccountingObjectStatus.NEW
             } else {
@@ -107,7 +118,10 @@ class InventoryCreateInteractor(
                     accountingObjectIndex
                 )
                 accountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew && !isRfidNewExist -> {
-                    val accountingObjectDomain = getHandleAccountingObjectByBarcode(barcode)
+                    val accountingObjectDomain = getHandleAccountingObjectByBarcode(
+                        barcode = barcode,
+                        isSerialNumber = isSerialNumber
+                    )
                     if (accountingObjectDomain != null) {
                         barcodeAccountingObjects.add(accountingObjectDomain)
                     }
@@ -160,9 +174,21 @@ class InventoryCreateInteractor(
             }
     }
 
-    private suspend fun getHandleAccountingObjectByBarcode(barcode: String): AccountingObjectDomain? {
-        return accountingObjectRepository.getAccountingObjectsByBarcode(barcode)
-            ?.copy(inventoryStatus = InventoryAccountingObjectStatus.NEW)
+    private suspend fun getHandleAccountingObjectByBarcode(
+        barcode: String,
+        isSerialNumber: Boolean
+    ): AccountingObjectDomain? {
+        return if (isSerialNumber) {
+            accountingObjectRepository.getAccountingObjectsByBarcode(
+                barcode = null,
+                serialNumber = barcode
+            )
+        } else {
+            accountingObjectRepository.getAccountingObjectsByBarcode(
+                barcode = barcode,
+                serialNumber = null
+            )
+        }?.copy(inventoryStatus = InventoryAccountingObjectStatus.NEW)
 
     }
 

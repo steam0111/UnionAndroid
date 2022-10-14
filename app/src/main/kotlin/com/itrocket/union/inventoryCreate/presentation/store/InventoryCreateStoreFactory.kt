@@ -115,7 +115,9 @@ class InventoryCreateStoreFactory(
                             inventoryStatus = inventoryStatus,
                             isAddNew = getState().isAddNew,
                             isShowSearch = getState().isShowSearch,
-                            searchText = getState().searchText
+                            searchText = getState().searchText,
+                            readingModeTab = getState().readingModeTab,
+                            getState = getState
                         )
                     }
                 }
@@ -135,7 +137,8 @@ class InventoryCreateStoreFactory(
                             inventoryStatus = inventoryStatus,
                             isAddNew = getState().isAddNew,
                             isShowSearch = getState().isShowSearch,
-                            searchText = getState().searchText
+                            searchText = getState().searchText,
+                            getState = getState
                         )
                     }
                 }
@@ -174,6 +177,12 @@ class InventoryCreateStoreFactory(
                     dispatch(Result.SearchText(intent.searchText))
                     searchManager.emit(intent.searchText)
                 }
+            }
+        }
+
+        private fun canEditInventory(state: InventoryCreateStore.State): Boolean {
+            return with(state) {
+                canUpdate && inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED
             }
         }
 
@@ -216,22 +225,22 @@ class InventoryCreateStoreFactory(
             readingModeResult: ReadingModeResult,
             getState: () -> InventoryCreateStore.State
         ) {
-            val inventoryStatus = getState().inventoryDocument.inventoryStatus
-            if (inventoryStatus != InventoryStatus.COMPLETED && getState().canUpdate) {
-                when (readingModeResult.readingModeTab) {
-                    ReadingModeTab.RFID, ReadingModeTab.SN -> {
-                        //no-op
-                    }
-                    ReadingModeTab.BARCODE -> {
-                        handleNewAccountingObjectBarcode(
-                            accountingObjects = getState().inventoryDocument.accountingObjects,
-                            newAccountingObjects = getState().newAccountingObjects.toList(),
-                            barcode = readingModeResult.scanData,
-                            inventoryStatus = getState().inventoryDocument.inventoryStatus,
-                            isAddNew = getState().isAddNew,
+            when (readingModeResult.readingModeTab) {
+                ReadingModeTab.RFID -> {
+                    //no-op
+                }
+                ReadingModeTab.SN, ReadingModeTab.BARCODE -> {
+                    handleNewAccountingObjectBarcode(
+                        accountingObjects = getState().inventoryDocument.accountingObjects,
+                        newAccountingObjects = getState().newAccountingObjects.toList(),
+                        barcode = readingModeResult.scanData,
+                        inventoryStatus = getState().inventoryDocument.inventoryStatus,
+                        isAddNew = getState().isAddNew,
                         isShowSearch = getState().isShowSearch,
-                        searchText = getState().searchText)
-                    }
+                        searchText = getState().searchText,
+                        readingModeTab = getState().readingModeTab,
+                        getState = getState
+                    )
                 }
             }
         }
@@ -256,33 +265,36 @@ class InventoryCreateStoreFactory(
             inventoryStatus: InventoryStatus,
             isAddNew: Boolean,
             isShowSearch: Boolean,
-            searchText: String
+            searchText: String,
+            getState: () -> InventoryCreateStore.State
         ) {
-            dispatch(Result.Loading(true))
-            catchException {
-                val inventoryAccountingObjects =
-                    inventoryCreateInteractor.handleNewAccountingObjectRfids(
-                        accountingObjects = accountingObjects,
-                        handledAccountingObjectId = handledAccountingObjectId,
-                        inventoryStatus = inventoryStatus,
-                        isAddNew = isAddNew,
-                        existNewAccountingObjects = newAccountingObjects
+            if (canEditInventory(getState())) {
+                dispatch(Result.Loading(true))
+                catchException {
+                    val inventoryAccountingObjects =
+                        inventoryCreateInteractor.handleNewAccountingObjectRfids(
+                            accountingObjects = accountingObjects,
+                            handledAccountingObjectId = handledAccountingObjectId,
+                            inventoryStatus = inventoryStatus,
+                            isAddNew = isAddNew,
+                            existNewAccountingObjects = newAccountingObjects
+                        )
+                    dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
+                    val newInventoryAccountingObjects =
+                        newAccountingObjects + inventoryAccountingObjects.newAccountingObjects
+                    dispatch(
+                        Result.NewAccountingObjects((newInventoryAccountingObjects).toSet())
                     )
-                dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
-                val newInventoryAccountingObjects =
-                    newAccountingObjects + inventoryAccountingObjects.newAccountingObjects
-                dispatch(
-                    Result.NewAccountingObjects((newInventoryAccountingObjects).toSet())
-                )
-                if (isShowSearch) {
-                    listenAccountingObjects(
-                        searchText = searchText,
-                        accountingObjects = inventoryAccountingObjects.createdAccountingObjects,
-                        newAccountingObjects = newInventoryAccountingObjects
-                    )
+                    if (isShowSearch) {
+                        listenAccountingObjects(
+                            searchText = searchText,
+                            accountingObjects = inventoryAccountingObjects.createdAccountingObjects,
+                            newAccountingObjects = newInventoryAccountingObjects
+                        )
+                    }
                 }
+                dispatch(Result.Loading(true))
             }
-            dispatch(Result.Loading(true))
         }
 
         private suspend fun handleNewAccountingObjectBarcode(
@@ -292,33 +304,38 @@ class InventoryCreateStoreFactory(
             inventoryStatus: InventoryStatus,
             isAddNew: Boolean,
             isShowSearch: Boolean,
-            searchText: String
+            searchText: String,
+            readingModeTab: ReadingModeTab,
+            getState: () -> InventoryCreateStore.State
         ) {
-            dispatch(Result.Loading(true))
-            catchException {
-                val inventoryAccountingObjects =
-                    inventoryCreateInteractor.handleNewAccountingObjectBarcode(
-                        accountingObjects = accountingObjects,
-                        barcode = barcode,
-                        inventoryStatus = inventoryStatus,
-                        isAddNew = isAddNew,
-                        existNewAccountingObjects = newAccountingObjects
+            if (canEditInventory(getState())) {
+                dispatch(Result.Loading(true))
+                catchException {
+                    val inventoryAccountingObjects =
+                        inventoryCreateInteractor.handleNewAccountingObjectBarcode(
+                            accountingObjects = accountingObjects,
+                            barcode = barcode,
+                            inventoryStatus = inventoryStatus,
+                            isAddNew = isAddNew,
+                            existNewAccountingObjects = newAccountingObjects,
+                            isSerialNumber = readingModeTab == ReadingModeTab.SN
+                        )
+                    dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
+                    val newInventoryAccountingObjects =
+                        newAccountingObjects + inventoryAccountingObjects.newAccountingObjects
+                    dispatch(
+                        Result.NewAccountingObjects((newInventoryAccountingObjects).toSet())
                     )
-                dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
-                val newInventoryAccountingObjects =
-                    newAccountingObjects + inventoryAccountingObjects.newAccountingObjects
-                dispatch(
-                    Result.NewAccountingObjects((newInventoryAccountingObjects).toSet())
-                )
-                if (isShowSearch) {
-                    listenAccountingObjects(
-                        searchText = searchText,
-                        accountingObjects = inventoryAccountingObjects.createdAccountingObjects,
-                        newAccountingObjects = newInventoryAccountingObjects
-                    )
+                    if (isShowSearch) {
+                        listenAccountingObjects(
+                            searchText = searchText,
+                            accountingObjects = inventoryAccountingObjects.createdAccountingObjects,
+                            newAccountingObjects = newInventoryAccountingObjects
+                        )
+                    }
                 }
+                dispatch(Result.Loading(true))
             }
-            dispatch(Result.Loading(true))
         }
 
         private fun handleAccountingObjectClicked(
@@ -429,6 +446,7 @@ class InventoryCreateStoreFactory(
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
         data class SearchAccountingObjects(val searchAccountingObjects: List<AccountingObjectDomain>) :
             Result()
+
         data class CanUpdate(val canUpdate: Boolean) : Result()
     }
 

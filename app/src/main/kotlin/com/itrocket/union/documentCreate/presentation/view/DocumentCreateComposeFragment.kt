@@ -11,10 +11,14 @@ import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectR
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
 import com.itrocket.union.documentCreate.DocumentCreateModule.DOCUMENTCREATE_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
+import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.location.presentation.view.LocationComposeFragment
 import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
 import com.itrocket.union.nfcReader.presentation.view.NfcReaderComposeFragment
+import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
+import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.reserves.presentation.store.ReservesResult
 import com.itrocket.union.reserves.presentation.view.ReservesComposeFragment
 import com.itrocket.union.selectCount.presentation.store.SelectCountResult
@@ -29,6 +33,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import ru.interid.scannerclient.domain.reader.ReaderMode
+import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
@@ -37,7 +42,7 @@ class DocumentCreateComposeFragment :
         DOCUMENTCREATE_VIEW_MODEL_QUALIFIER
     ) {
     override val navArgs by navArgs<DocumentCreateComposeFragmentArgs>()
-    
+
     override val fragmentResultList: List<FragmentResult>
         get() = listOf(
             FragmentResult(
@@ -116,7 +121,29 @@ class DocumentCreateComposeFragment :
                         )
                     }
                 }
-            )
+            ),
+            FragmentResult(
+                resultCode = ReadingModeComposeFragment.READING_MODE_TAB_RESULT_CODE,
+                resultLabel = ReadingModeComposeFragment.READING_MODE_TAB_RESULT_LABEL,
+                resultAction = {
+                    (it as ReadingModeTab?)?.let {
+                        accept(
+                            DocumentCreateStore.Intent.OnReadingModeTabChanged(it)
+                        )
+                    }
+                }
+            ),
+            FragmentResult(
+                resultCode = ReadingModeComposeFragment.READING_MODE_MANUAL_RESULT_CODE,
+                resultLabel = ReadingModeComposeFragment.READING_MODE_MANUAL_RESULT_LABEL,
+                resultAction = {
+                    (it as ReadingModeResult?)?.let {
+                        accept(
+                            DocumentCreateStore.Intent.OnManualInput(it)
+                        )
+                    }
+                }
+            ),
         )
 
     private val serviceEntryManager: ServiceEntryManager by inject()
@@ -212,14 +239,14 @@ class DocumentCreateComposeFragment :
         serviceEntryManager.triggerPressFlow.collect {
             when (it) {
                 TriggerEvent.Pressed -> {
-                    if (serviceEntryManager.currentMode == ReaderMode.RFID) {
+                    if (serviceEntryManager.currentMode == ReadingMode.RFID) {
                         serviceEntryManager.epcInventory()
                     } else {
                         serviceEntryManager.startBarcodeScan()
                     }
                 }
                 TriggerEvent.Released -> {
-                    if (serviceEntryManager.currentMode == ReaderMode.RFID) {
+                    if (serviceEntryManager.currentMode == ReadingMode.RFID) {
                         serviceEntryManager.stopRfidOperation()
                     } else {
                         serviceEntryManager.stopBarcodeScan()

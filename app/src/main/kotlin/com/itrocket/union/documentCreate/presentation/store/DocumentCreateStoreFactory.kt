@@ -24,11 +24,15 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
+import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
+import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 import com.itrocket.union.utils.ifBlankOrNull
+import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class DocumentCreateStoreFactory(
     private val storeFactory: StoreFactory,
@@ -41,6 +45,7 @@ class DocumentCreateStoreFactory(
     private val documentAccountingObjectManager: DocumentAccountingObjectManager,
     private val documentReservesManager: DocumentReservesManager,
     private val unionPermissionsInteractor: UnionPermissionsInteractor,
+    private val serviceEntryManager: ServiceEntryManager
 ) {
     fun create(): DocumentCreateStore =
         object : DocumentCreateStore,
@@ -51,6 +56,7 @@ class DocumentCreateStoreFactory(
                     accountingObjects = documentCreateArguments.document.accountingObjects,
                     params = documentCreateArguments.document.params,
                     reserves = documentCreateArguments.document.reserves,
+                    readingModeTab = serviceEntryManager.currentMode.toReadingModeTab()
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
@@ -174,12 +180,15 @@ class DocumentCreateStoreFactory(
                     )
                 }
                 is DocumentCreateStore.Intent.OnNewAccountingObjectBarcodeHandled -> handleBarcodeAccountingObjects(
-                    intent.barcode,
-                    getState().accountingObjects
+                    barcode = intent.barcode,
+                    accountingObjects = getState().accountingObjects,
+                    readingModeTab = getState().readingModeTab,
+                    getState = getState
                 )
                 is DocumentCreateStore.Intent.OnNewAccountingObjectRfidHandled -> handleRfidsAccountingObjects(
-                    intent.rfid,
-                    getState().accountingObjects
+                    rfid = intent.rfid,
+                    accountingObjects = getState().accountingObjects,
+                    getState = getState
                 )
                 is DocumentCreateStore.Intent.OnReserveSelected -> onReserveSelected(
                     reserves = getState().reserves,
@@ -211,6 +220,40 @@ class DocumentCreateStoreFactory(
                 }
                 is DocumentCreateStore.Intent.OnNfcReaderClose -> {
                     onNfcReaderClose(intent.nfcReaderResult)
+                }
+                is DocumentCreateStore.Intent.OnReadingModeTabChanged -> dispatch(
+                    Result.ReadingMode(
+                        intent.readingModeTab
+                    )
+                )
+                is DocumentCreateStore.Intent.OnManualInput -> onManualInput(
+                    readingModeResult = intent.readingModeResult,
+                    getState = getState
+                )
+            }
+        }
+
+        private fun canEditDocument(state: DocumentCreateStore.State): Boolean {
+            return with(state) {
+                (document.isDocumentExists && canUpdate || !document.isDocumentExists && canCreate) && document.documentStatus != DocumentStatus.COMPLETED
+            }
+        }
+
+        private suspend fun onManualInput(
+            readingModeResult: ReadingModeResult,
+            getState: () -> DocumentCreateStore.State
+        ) {
+            when (readingModeResult.readingModeTab) {
+                ReadingModeTab.RFID -> {
+                    //no-op
+                }
+                ReadingModeTab.SN, ReadingModeTab.BARCODE -> {
+                    handleBarcodeAccountingObjects(
+                        accountingObjects = getState().accountingObjects,
+                        barcode = readingModeResult.scanData,
+                        readingModeTab = getState().readingModeTab,
+                        getState = getState
+                    )
                 }
             }
         }
@@ -295,24 +338,33 @@ class DocumentCreateStoreFactory(
 
         private suspend fun handleBarcodeAccountingObjects(
             barcode: String,
-            accountingObjects: List<AccountingObjectDomain>
+            accountingObjects: List<AccountingObjectDomain>,
+            readingModeTab: ReadingModeTab,
+            getState: () -> DocumentCreateStore.State
         ) {
-            val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectBarcode(
-                accountingObjects = accountingObjects,
-                barcode = barcode
-            )
-            dispatch(Result.AccountingObjects(newAccountingObjects))
+            if (canEditDocument(getState())) {
+                val newAccountingObjects =
+                    documentCreateInteractor.handleNewAccountingObjectBarcode(
+                        accountingObjects = accountingObjects,
+                        barcode = barcode,
+                        isSerialNumber = readingModeTab == ReadingModeTab.SN
+                    )
+                dispatch(Result.AccountingObjects(newAccountingObjects))
+            }
         }
 
         private suspend fun handleRfidsAccountingObjects(
             rfid: String,
-            accountingObjects: List<AccountingObjectDomain>
+            accountingObjects: List<AccountingObjectDomain>,
+            getState: () -> DocumentCreateStore.State
         ) {
-            val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectRfids(
-                accountingObjects = accountingObjects,
-                handledAccountingObjectRfid = rfid
-            )
-            dispatch(Result.AccountingObjects(newAccountingObjects))
+            if (canEditDocument(getState())) {
+                val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectRfids(
+                    accountingObjects = accountingObjects,
+                    handledAccountingObjectRfid = rfid
+                )
+                dispatch(Result.AccountingObjects(newAccountingObjects))
+            }
         }
 
         private suspend fun changeParams(
@@ -409,6 +461,7 @@ class DocumentCreateStoreFactory(
         data class ConfirmDialogType(val type: DocumentConfirmAlertType) : Result()
         data class CanUpdate(val canUpdate: Boolean) : Result()
         data class CanCreate(val canCreate: Boolean) : Result()
+        data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
     }
 
     private object ReducerImpl : Reducer<DocumentCreateStore.State, Result> {
@@ -423,6 +476,7 @@ class DocumentCreateStoreFactory(
                 is Result.ConfirmDialogType -> copy(confirmDialogType = result.type)
                 is Result.CanUpdate -> copy(canUpdate = result.canUpdate)
                 is Result.CanCreate -> copy(canCreate = result.canCreate)
+                is Result.ReadingMode -> copy(readingModeTab = result.readingModeTab)
             }
     }
 

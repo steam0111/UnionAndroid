@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import ru.interid.scannerclient.domain.reader.ReaderMode
+import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
@@ -119,14 +120,14 @@ class IdentifyComposeFragment :
         serviceEntryManager.triggerPressFlow.collect {
             when (it) {
                 TriggerEvent.Pressed -> {
-                    if (serviceEntryManager.currentMode == ReaderMode.RFID) {
+                    if (serviceEntryManager.currentMode == ReadingMode.RFID) {
                         serviceEntryManager.epcInventory()
                     } else {
                         serviceEntryManager.startBarcodeScan()
                     }
                 }
                 TriggerEvent.Released -> {
-                    if (serviceEntryManager.currentMode == ReaderMode.RFID) {
+                    if (serviceEntryManager.currentMode == ReadingMode.RFID) {
                         serviceEntryManager.stopRfidOperation()
                     } else {
                         serviceEntryManager.stopBarcodeScan()

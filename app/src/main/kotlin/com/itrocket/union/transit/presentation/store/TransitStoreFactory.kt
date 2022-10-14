@@ -5,9 +5,8 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.itrocket.union.transit.domain.TransitInteractor
-import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.core.base.BaseExecutor
+import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import com.itrocket.union.documentCreate.presentation.view.DocumentConfirmAlertType
@@ -22,13 +21,18 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
+import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
+import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.transit.domain.TransitAccountingObjectManager
+import com.itrocket.union.transit.domain.TransitInteractor
 import com.itrocket.union.transit.domain.TransitRemainsManager
 import com.itrocket.union.transit.domain.TransitTypeDomain
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
+import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 import com.itrocket.union.utils.ifBlankOrNull
 
 class TransitStoreFactory(
@@ -42,7 +46,8 @@ class TransitStoreFactory(
     private val selectParamsInteractor: SelectParamsInteractor,
     private val transitAccountingObjectManager: TransitAccountingObjectManager,
     private val transitReservesManager: TransitRemainsManager,
-    private val unionPermissionsInteractor: UnionPermissionsInteractor
+    private val unionPermissionsInteractor: UnionPermissionsInteractor,
+    private val serviceEntryManager: ServiceEntryManager,
 ) {
     fun create(): TransitStore =
         object : TransitStore,
@@ -53,6 +58,7 @@ class TransitStoreFactory(
                     accountingObjects = transitArguments.transit.accountingObjects,
                     params = transitArguments.transit.params,
                     reserves = transitArguments.transit.reserves,
+                    readingModeTab = serviceEntryManager.currentMode.toReadingModeTab()
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
@@ -154,12 +160,15 @@ class TransitStoreFactory(
                     )
                 }
                 is TransitStore.Intent.OnNewAccountingObjectBarcodeHandled -> handleBarcodeAccountingObjects(
-                    intent.barcode,
-                    getState().accountingObjects
+                    barcode = intent.barcode,
+                    accountingObjects = getState().accountingObjects,
+                    readingModeTab = getState().readingModeTab,
+                    getState = getState
                 )
                 is TransitStore.Intent.OnNewAccountingObjectRfidHandled -> handleRfidsAccountingObjects(
-                    intent.rfid,
-                    getState().accountingObjects
+                    rfid = intent.rfid,
+                    accountingObjects = getState().accountingObjects,
+                    getState = getState
                 )
                 is TransitStore.Intent.OnReserveSelected -> onReserveSelected(
                     reserves = getState().reserves,
@@ -202,6 +211,36 @@ class TransitStoreFactory(
                 }
                 is TransitStore.Intent.OnNfcReaderClose -> {
                     onNfcReaderClose(intent.nfcReaderResult)
+                }
+                is TransitStore.Intent.OnReadingModeTabChanged -> dispatch(Result.ReadingMode(intent.readingModeTab))
+                is TransitStore.Intent.OnManualInput -> onManualInput(
+                    readingModeResult = intent.readingModeResult,
+                    getState = getState
+                )
+            }
+        }
+
+        private fun canEditTransit(state: TransitStore.State): Boolean {
+            return with(state) {
+                (transit.isDocumentExists && canUpdate || !transit.isDocumentExists && canCreate) && transit.documentStatus != DocumentStatus.COMPLETED
+            }
+        }
+
+        private suspend fun onManualInput(
+            readingModeResult: ReadingModeResult,
+            getState: () -> TransitStore.State
+        ) {
+            when (readingModeResult.readingModeTab) {
+                ReadingModeTab.RFID -> {
+                    //no-op
+                }
+                ReadingModeTab.SN, ReadingModeTab.BARCODE -> {
+                    handleBarcodeAccountingObjects(
+                        accountingObjects = getState().accountingObjects,
+                        barcode = readingModeResult.scanData,
+                        readingModeTab = getState().readingModeTab,
+                        getState = getState
+                    )
                 }
             }
         }
@@ -265,24 +304,33 @@ class TransitStoreFactory(
 
         private suspend fun handleBarcodeAccountingObjects(
             barcode: String,
-            accountingObjects: List<AccountingObjectDomain>
+            accountingObjects: List<AccountingObjectDomain>,
+            readingModeTab: ReadingModeTab,
+            getState: () -> TransitStore.State
         ) {
-            val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectBarcode(
-                accountingObjects = accountingObjects,
-                barcode = barcode
-            )
-            dispatch(Result.AccountingObjects(newAccountingObjects))
+            if (canEditTransit(getState())) {
+                val newAccountingObjects =
+                    documentCreateInteractor.handleNewAccountingObjectBarcode(
+                        accountingObjects = accountingObjects,
+                        barcode = barcode,
+                        isSerialNumber = readingModeTab == ReadingModeTab.SN
+                    )
+                dispatch(Result.AccountingObjects(newAccountingObjects))
+            }
         }
 
         private suspend fun handleRfidsAccountingObjects(
             rfid: String,
-            accountingObjects: List<AccountingObjectDomain>
+            accountingObjects: List<AccountingObjectDomain>,
+            getState: () -> TransitStore.State
         ) {
-            val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectRfids(
-                accountingObjects = accountingObjects,
-                handledAccountingObjectRfid = rfid
-            )
-            dispatch(Result.AccountingObjects(newAccountingObjects))
+            if (canEditTransit(getState())) {
+                val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectRfids(
+                    accountingObjects = accountingObjects,
+                    handledAccountingObjectRfid = rfid
+                )
+                dispatch(Result.AccountingObjects(newAccountingObjects))
+            }
         }
 
         private fun changeParams(
@@ -400,6 +448,7 @@ class TransitStoreFactory(
         data class ConfirmDialogType(val type: DocumentConfirmAlertType) : Result()
         data class CanUpdate(val canUpdate: Boolean) : Result()
         data class CanCreate(val canCreate: Boolean) : Result()
+        data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
     }
 
     private object ReducerImpl : Reducer<TransitStore.State, Result> {
@@ -414,6 +463,7 @@ class TransitStoreFactory(
                 is Result.ConfirmDialogType -> copy(confirmDialogType = result.type)
                 is Result.CanUpdate -> copy(canUpdate = result.canUpdate)
                 is Result.CanCreate -> copy(canCreate = result.canCreate)
+                is Result.ReadingMode -> copy(readingModeTab = result.readingModeTab)
             }
     }
 }

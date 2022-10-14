@@ -3,6 +3,7 @@ package com.itrocket.union.readingMode.domain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.readingMode.domain.dependencies.ReadingModeRepository
 import ru.interid.scannerclient.domain.reader.ReaderMode
+import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class ReadingModeInteractor(
@@ -11,7 +12,7 @@ class ReadingModeInteractor(
     private val serviceEntryManager: ServiceEntryManager
 ) {
 
-    fun changeScanMode(readingMode: ReaderMode) {
+    fun changeScanMode(readingMode: ReadingMode) {
         serviceEntryManager.changeScanMode(readingMode)
     }
 
