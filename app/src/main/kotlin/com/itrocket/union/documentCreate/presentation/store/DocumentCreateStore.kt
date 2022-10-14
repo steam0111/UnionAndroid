@@ -80,7 +80,8 @@ interface DocumentCreateStore :
         val selectedPage: Int = 0,
         val departureLocation: List<LocationDomain> = emptyList(),
         val confirmDialogType: DocumentConfirmAlertType = DocumentConfirmAlertType.NONE,
-        val isCanUpdate: Boolean = false
+        val canUpdate: Boolean = false,
+        val canCreate: Boolean = false
     )
 
     sealed class Label {
@@ -99,7 +100,7 @@ interface DocumentCreateStore :
             ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = DocumentCreateComposeFragmentDirections.toStructural(
-                    StructuralArguments(structural = structural, isCanEdit = true)
+                    StructuralArguments(structural = structural, canEdit = true)
                 )
         }
 

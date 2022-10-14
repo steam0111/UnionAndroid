@@ -7,6 +7,7 @@ import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 import com.itrocket.union.employeeDetail.domain.EmployeeDetailInteractor
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor.Companion.PERMISSION_TAG
+import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -20,18 +21,35 @@ class DocumentMenuInteractor(
 
     suspend fun getDocuments(currentDocument: DocumentMenuDomain? = null) =
         withContext(coreDispatchers.io) {
-            filterByReadPermission(repository.getDocuments(currentDocument))
+            filterByPermission(repository.getDocuments(currentDocument))
         }
 
-    private suspend fun filterByReadPermission(documents: List<DocumentMenuDomain>): List<DocumentMenuDomain> {
+    private suspend fun filterByPermission(documents: List<DocumentMenuDomain>): List<DocumentMenuDomain> {
         Timber.tag(PERMISSION_TAG)
             .d("documents $documents")
 
         return documents.filter { documentMenuDomain ->
-            val canRead = permissionsInteractor.canRead(documentMenuDomain.unionPermission)
+            val isPermitted = isDocumentMenuPermitted(documentMenuDomain)
             Timber.tag(PERMISSION_TAG)
-                .d("permission ${documentMenuDomain.unionPermission} : $canRead")
-            return@filter canRead
+                .d("permission ${documentMenuDomain.unionPermission} : $isPermitted")
+            return@filter isPermitted
+        }
+    }
+
+    private suspend fun isDocumentMenuPermitted(documentMenuDomain: DocumentMenuDomain): Boolean {
+        return when {
+            documentMenuDomain.customAction != null -> {
+                permissionsInteractor.canMakeAction(
+                    unionPermission = documentMenuDomain.unionPermission,
+                    action = documentMenuDomain.customAction
+                )
+            }
+            documentMenuDomain.unionPermission == UnionPermission.INVENTORY -> {
+                permissionsInteractor.canRead(documentMenuDomain.unionPermission) || permissionsInteractor.canCreate(
+                    documentMenuDomain.unionPermission
+                )
+            }
+            else -> permissionsInteractor.canRead(documentMenuDomain.unionPermission)
         }
     }
 

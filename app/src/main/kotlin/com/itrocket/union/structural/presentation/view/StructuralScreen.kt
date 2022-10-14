@@ -80,7 +80,7 @@ fun StructuralScreen(
                     startImageId = R.drawable.ic_cross,
                     onStartImageClickListener = onCrossClickListener,
                     content = {
-                        if (state.isCanEdit) {
+                        if (state.canEdit) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Image(
                                     painter = painterResource(id = R.drawable.ic_accept),
@@ -93,7 +93,7 @@ fun StructuralScreen(
                     }
                 )
             }, bottomBar = {
-                if (state.isCanEdit) {
+                if (state.canEdit) {
                     BottomBar(onFinishClickListener = onFinishClickListener)
                 }
             }, content = {
@@ -316,5 +316,5 @@ private fun ArrowBackButton(enabled: Boolean, onClick: () -> Unit) {
 @Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
 @Composable
 fun StructuralScreenPreview() {
-    StructuralScreen(StructuralStore.State(isCanEdit = true), AppInsets(), {}, {}, {}, {}, {}, {})
+    StructuralScreen(StructuralStore.State(canEdit = true), AppInsets(), {}, {}, {}, {}, {}, {})
 }

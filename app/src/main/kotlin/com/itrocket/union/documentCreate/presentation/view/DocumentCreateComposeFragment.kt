@@ -173,8 +173,7 @@ class DocumentCreateComposeFragment :
                 },
                 onConfirmActionClick = {
                     accept(DocumentCreateStore.Intent.OnConfirmActionClick)
-                },
-                isCanUpdate = state.isCanUpdate
+                }
             )
         }
     }

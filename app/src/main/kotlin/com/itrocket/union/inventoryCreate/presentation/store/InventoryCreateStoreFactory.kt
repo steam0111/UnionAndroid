@@ -60,7 +60,7 @@ class InventoryCreateStoreFactory(
             getState: () -> InventoryCreateStore.State
         ) {
             dispatch(Result.Loading(true))
-            dispatch(Result.IsCanUpdate(unionPermissionsInteractor.canCreate(UnionPermission.INVENTORY)))
+            dispatch(Result.CanUpdate(unionPermissionsInteractor.canUpdate(UnionPermission.INVENTORY)))
             catchException {
                 dispatch(
                     Result.Inventory(
@@ -107,7 +107,7 @@ class InventoryCreateStoreFactory(
                 }
                 is InventoryCreateStore.Intent.OnNewAccountingObjectBarcodeHandled -> {
                     val inventoryStatus = getState().inventoryDocument.inventoryStatus
-                    if (inventoryStatus != InventoryStatus.COMPLETED && getState().isCanUpdate) {
+                    if (inventoryStatus != InventoryStatus.COMPLETED && getState().canUpdate) {
                         handleNewAccountingObjectBarcode(
                             accountingObjects = getState().inventoryDocument.accountingObjects,
                             newAccountingObjects = getState().newAccountingObjects.toList(),
@@ -127,7 +127,7 @@ class InventoryCreateStoreFactory(
                 }
                 is InventoryCreateStore.Intent.OnNewAccountingObjectRfidHandled -> {
                     val inventoryStatus = getState().inventoryDocument.inventoryStatus
-                    if (inventoryStatus != InventoryStatus.COMPLETED && getState().isCanUpdate) {
+                    if (inventoryStatus != InventoryStatus.COMPLETED && getState().canUpdate) {
                         handleNewAccountingObjectRfids(
                             accountingObjects = getState().inventoryDocument.accountingObjects,
                             newAccountingObjects = getState().newAccountingObjects.toList(),
@@ -217,7 +217,7 @@ class InventoryCreateStoreFactory(
             getState: () -> InventoryCreateStore.State
         ) {
             val inventoryStatus = getState().inventoryDocument.inventoryStatus
-            if (inventoryStatus != InventoryStatus.COMPLETED && getState().isCanUpdate) {
+            if (inventoryStatus != InventoryStatus.COMPLETED && getState().canUpdate) {
                 when (readingModeResult.readingModeTab) {
                     ReadingModeTab.RFID, ReadingModeTab.SN -> {
                         //no-op
@@ -429,7 +429,7 @@ class InventoryCreateStoreFactory(
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
         data class SearchAccountingObjects(val searchAccountingObjects: List<AccountingObjectDomain>) :
             Result()
-        data class IsCanUpdate(val isCanUpdate: Boolean) : Result()
+        data class CanUpdate(val canUpdate: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryCreateStore.State, Result> {
@@ -450,7 +450,7 @@ class InventoryCreateStoreFactory(
                 is Result.SearchText -> copy(searchText = result.searchText)
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchAccountingObjects -> copy(searchAccountingObjects = result.searchAccountingObjects)
-                is Result.IsCanUpdate -> copy(isCanUpdate = result.isCanUpdate)
+                is Result.CanUpdate -> copy(canUpdate = result.canUpdate)
             }
     }
 }

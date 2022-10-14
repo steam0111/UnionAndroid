@@ -53,7 +53,8 @@ interface InventoryStore :
                 isFilter = false
             )
         ),
-        val isCanCreateInventory: Boolean = true,
+        val canCreateInventory: Boolean = false,
+        val canUpdateInventory: Boolean = false,
         val inventoryCreateDomain: InventoryCreateDomain?
     )
 
@@ -67,7 +68,7 @@ interface InventoryStore :
             ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = InventoryContainerComposeFragmentDirections.toStructural(
-                    StructuralArguments(structural = structural, isCanEdit = true)
+                    StructuralArguments(structural = structural, canEdit = true)
                 )
         }
 

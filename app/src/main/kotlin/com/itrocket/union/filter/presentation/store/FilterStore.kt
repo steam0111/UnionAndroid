@@ -72,7 +72,7 @@ interface FilterStore : Store<FilterStore.Intent, FilterStore.State, FilterStore
             ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = FilterComposeFragmentDirections.toStructural(
-                    StructuralArguments(structural = structural, isCanEdit = true)
+                    StructuralArguments(structural = structural, canEdit = true)
                 )
         }
 

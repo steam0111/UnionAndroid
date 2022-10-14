@@ -3,6 +3,7 @@ package com.itrocket.union.documentsMenu.data
 import com.itrocket.union.R
 import com.itrocket.union.documentsMenu.domain.dependencies.DocumentMenuRepository
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
+import com.itrocket.union.unionPermissions.domain.entity.Action
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 
 class DocumentMenuRepositoryImpl : DocumentMenuRepository {
@@ -97,12 +98,14 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
                     DocumentMenuDomain(
                         titleId = R.string.inventories,
                         iconId = R.drawable.ic_inventory,
-                        unionPermission = UnionPermission.INVENTORY
+                        unionPermission = UnionPermission.INVENTORY,
+                        customAction = Action.READ.action
                     ),
                     DocumentMenuDomain(
                         titleId = R.string.create_inventory,
                         iconId = R.drawable.ic_inventory,
-                        unionPermission = UnionPermission.INVENTORY
+                        unionPermission = UnionPermission.INVENTORY,
+                        customAction = Action.CREATE.action
                     ),
                 )
             }
@@ -111,22 +114,22 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
                     DocumentMenuDomain(
                         titleId = R.string.main_property,
                         iconId = R.drawable.ic_reserves,
-                        unionPermission = UnionPermission.NO_NEED
+                        unionPermission = UnionPermission.PROPERTY
                     ),
                     DocumentMenuDomain(
                         titleId = R.string.main_operations,
                         iconId = R.drawable.ic_inventory,
-                        unionPermission = UnionPermission.OPERATIONS
+                        unionPermission = UnionPermission.ALL_DOCUMENTS
                     ),
                     DocumentMenuDomain(
                         titleId = R.string.main_books,
                         iconId = R.drawable.ic_inventory,
-                        unionPermission = UnionPermission.NO_NEED
+                        unionPermission = UnionPermission.REFERENCES
                     ),
                     DocumentMenuDomain(
                         titleId = R.string.main_inventory,
                         iconId = R.drawable.ic_inventory,
-                        unionPermission = UnionPermission.NO_NEED
+                        unionPermission = UnionPermission.INVENTORY
                     ),
                     DocumentMenuDomain(
                         titleId = R.string.main_identification,

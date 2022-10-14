@@ -9,5 +9,6 @@ data class DocumentMenuDomain(
     @DrawableRes val iconId: Int,
     val isEnabled: Boolean = false,
     val paddings: Int = 18,
-    val unionPermission: UnionPermission = UnionPermission.NO_NEED
+    val unionPermission: UnionPermission = UnionPermission.NO_NEED,
+    val customAction: String? = null
 )

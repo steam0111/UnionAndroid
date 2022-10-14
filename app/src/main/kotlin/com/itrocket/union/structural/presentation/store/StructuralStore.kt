@@ -24,7 +24,7 @@ interface StructuralStore :
         val searchText: String = "",
         val isLevelHintShow: Boolean = false,
         val structuralValues: List<StructuralDomain> = listOf(),
-        val isCanEdit: Boolean
+        val canEdit: Boolean
     )
 
     sealed class Label {

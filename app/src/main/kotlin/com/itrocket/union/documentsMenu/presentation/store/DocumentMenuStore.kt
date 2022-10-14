@@ -94,7 +94,7 @@ interface DocumentMenuStore :
                     R.string.equipment_types -> DocumentMenuComposeFragmentDirections.toEquipmentTypes()
                     R.string.sync -> DocumentMenuComposeFragmentDirections.toSync()
                     R.string.manual_structural -> DocumentMenuComposeFragmentDirections.toStructural(
-                        StructuralArguments(isCanEdit = false)
+                        StructuralArguments(canEdit = false)
                     )
                     else -> null
                 }

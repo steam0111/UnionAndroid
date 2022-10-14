@@ -5,17 +5,17 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import com.itrocket.core.base.AppInsets
-import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
+import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
+import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.reserves.domain.entity.ReservesDomain
-import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.manual.StructuralParamDomain
+import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.ui.documents.DocumentCreateBaseScreen
 
 @OptIn(ExperimentalPagerApi::class)
@@ -36,7 +36,6 @@ fun DocumentCreateScreen(
     onReserveClickListener: (ReservesDomain) -> Unit,
     onConfirmActionClick: () -> Unit,
     onDismissConfirmDialog: () -> Unit,
-    isCanUpdate: Boolean
 ) {
     DocumentCreateBaseScreen(
         confirmDialogType = state.confirmDialogType,
@@ -61,7 +60,12 @@ fun DocumentCreateScreen(
         onReserveClickListener = onReserveClickListener,
         onConfirmActionClick = onConfirmActionClick,
         onDismissConfirmDialog = onDismissConfirmDialog,
-        isCanUpdate = isCanUpdate
+        isDocumentExist = state.document.isDocumentExists,
+        isDocumentChangePermitted = if (state.document.isDocumentExists) {
+            state.canUpdate
+        } else {
+            state.canCreate
+        }
     )
 }
 
@@ -132,7 +136,6 @@ fun DocumentCreateScreenPreview() {
         {},
         {},
         {},
-        isCanUpdate = false
     )
 }
 

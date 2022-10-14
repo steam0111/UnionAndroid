@@ -69,7 +69,8 @@ class DocumentCreateStoreFactory(
             getState: () -> DocumentCreateStore.State
         ) {
             dispatch(Result.Loading(true))
-            dispatch(Result.IsCanUpdate(unionPermissionsInteractor.canCreate(UnionPermission.ALL_DOCUMENTS)))
+            dispatch(Result.CanUpdate(unionPermissionsInteractor.canUpdate(UnionPermission.ALL_DOCUMENTS)))
+            dispatch(Result.CanCreate(unionPermissionsInteractor.canCreate(UnionPermission.ALL_DOCUMENTS)))
             catchException {
                 val docArgument = documentCreateArguments.document
                 val document = if (docArgument.isDocumentExists) {
@@ -406,7 +407,8 @@ class DocumentCreateStoreFactory(
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
         data class Reserves(val reserves: List<ReservesDomain>) : Result()
         data class ConfirmDialogType(val type: DocumentConfirmAlertType) : Result()
-        data class IsCanUpdate(val isCanUpdate: Boolean) : Result()
+        data class CanUpdate(val canUpdate: Boolean) : Result()
+        data class CanCreate(val canCreate: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<DocumentCreateStore.State, Result> {
@@ -419,7 +421,8 @@ class DocumentCreateStoreFactory(
                 is Result.SelectPage -> copy(selectedPage = result.page)
                 is Result.Document -> copy(document = result.document)
                 is Result.ConfirmDialogType -> copy(confirmDialogType = result.type)
-                is Result.IsCanUpdate -> copy(isCanUpdate = result.isCanUpdate)
+                is Result.CanUpdate -> copy(canUpdate = result.canUpdate)
+                is Result.CanCreate -> copy(canCreate = result.canCreate)
             }
     }
 
