@@ -24,7 +24,7 @@ fun sqlAccountingObjectQuery(
     limit: Long? = null,
     offset: Long? = null,
     locationIds: List<String?>? = null,
-    structuralIds: List<String?>? = null
+    structuralIds: List<String?>? = null,
 ): SimpleSQLiteQuery {
     val mainQuery = if (isFilterCount) {
         "SELECT COUNT(*) FROM accounting_objects"

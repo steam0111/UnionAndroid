@@ -3,7 +3,6 @@ package com.itrocket.union.identify.domain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import kotlinx.coroutines.withContext
 
 class IdentifyInteractor(
@@ -40,14 +39,31 @@ class IdentifyInteractor(
     suspend fun handleNewAccountingObjectBarcode(
         accountingObjects: List<AccountingObjectDomain>,
         barcode: String,
+        isSerialNumber: Boolean
     ): List<AccountingObjectDomain> {
         return withContext(coreDispatchers.io) {
             val newAccountingObjectBarcode = mutableListOf<AccountingObjectDomain>()
 
-            val index = accountingObjects.indexOfFirst { it.barcodeValue == barcode }
+            val index = accountingObjects.indexOfFirst {
+                if (isSerialNumber) {
+                    it.factoryNumber == barcode
+                } else {
+                    it.barcodeValue == barcode
+                }
+            }
             if (index == NO_POSITION) {
                 val barcodeAccountingObject =
-                    accountingObjectRepository.getAccountingObjectsByBarcode(barcode)
+                    if (isSerialNumber) {
+                        accountingObjectRepository.getAccountingObjectsByBarcode(
+                            barcode = null,
+                            serialNumber = barcode
+                        )
+                    } else {
+                        accountingObjectRepository.getAccountingObjectsByBarcode(
+                            barcode = barcode,
+                            serialNumber = null
+                        )
+                    }
                 barcodeAccountingObject?.let {
                     newAccountingObjectBarcode.add(it)
                 }

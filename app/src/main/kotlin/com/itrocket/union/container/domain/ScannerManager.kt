@@ -7,6 +7,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import ru.interid.scannerclient.domain.reader.ReaderMode
+import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.platform.entry.ServiceEntry
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
@@ -22,7 +23,7 @@ class ScannerManager(
     init {
         coroutineScope.launch {
             serviceEntry.initialize()
-            serviceEntryManager.changeScanMode(ReaderMode.RFID)
+            serviceEntryManager.changeScanMode(ReadingMode.RFID)
             serviceEntryManager.checkKeyCode()
 
             launch {

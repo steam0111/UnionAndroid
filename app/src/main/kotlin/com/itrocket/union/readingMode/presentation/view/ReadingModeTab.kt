@@ -4,7 +4,7 @@ import android.os.Parcelable
 import androidx.annotation.StringRes
 import com.itrocket.union.R
 import kotlinx.parcelize.Parcelize
-import ru.interid.scannerclient.domain.reader.ReaderMode
+import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 
 @Parcelize
 enum class ReadingModeTab(@StringRes val textId: Int) : Parcelable {
@@ -13,13 +13,15 @@ enum class ReadingModeTab(@StringRes val textId: Int) : Parcelable {
     SN(textId = R.string.reading_mode_sn),
 }
 
-fun ReadingModeTab.toReaderMode() = when (this) {
-    ReadingModeTab.RFID -> ReaderMode.RFID
-    ReadingModeTab.BARCODE -> ReaderMode.BARCODE
-    ReadingModeTab.SN -> ReaderMode.NONE
+fun ReadingModeTab.toReadingMode() = when (this) {
+    ReadingModeTab.RFID -> ReadingMode.RFID
+    ReadingModeTab.BARCODE -> ReadingMode.BARCODE
+    ReadingModeTab.SN -> ReadingMode.SN
 }
 
-fun ReaderMode.toReadingModeTab() = when(this){
-    ReaderMode.BARCODE -> ReadingModeTab.BARCODE
-    ReaderMode.NONE, ReaderMode.RFID -> ReadingModeTab.RFID
+fun ReadingMode.toReadingModeTab() = when (this) {
+    ReadingMode.BARCODE -> ReadingModeTab.BARCODE
+    ReadingMode.RFID -> ReadingModeTab.RFID
+    ReadingMode.SN -> ReadingModeTab.SN
+    ReadingMode.NONE -> ReadingModeTab.RFID
 }

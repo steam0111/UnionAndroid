@@ -25,7 +25,9 @@ import com.itrocket.union.nfcReader.domain.entity.NfcReaderType
 import com.itrocket.union.nfcReader.presentation.store.NfcReaderArguments
 import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
 import com.itrocket.union.nfcReader.presentation.view.NfcReaderComposeFragment
+import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.reserves.presentation.store.ReservesArguments
 import com.itrocket.union.selectCount.presentation.store.SelectCountArguments
@@ -67,6 +69,8 @@ interface DocumentCreateStore :
         data class OnStructuralChanged(val structural: StructuralResult) : Intent()
         data class OnReserveClicked(val reserve: ReservesDomain) : Intent()
         data class OnNfcReaderClose(val nfcReaderResult: NfcReaderResult) : Intent()
+        data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
+        data class OnManualInput(val readingModeResult: ReadingModeResult) : Intent()
         object OnDismissConfirmDialog : Intent()
         object OnConfirmActionClick : Intent()
     }
@@ -81,7 +85,8 @@ interface DocumentCreateStore :
         val departureLocation: List<LocationDomain> = emptyList(),
         val confirmDialogType: DocumentConfirmAlertType = DocumentConfirmAlertType.NONE,
         val canUpdate: Boolean = false,
-        val canCreate: Boolean = false
+        val canCreate: Boolean = false,
+        val readingModeTab: ReadingModeTab
     )
 
     sealed class Label {

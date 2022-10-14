@@ -84,9 +84,13 @@ class AccountingObjectRepositoryImpl(
         }
     }
 
-    override suspend fun getAccountingObjectsByBarcode(barcode: String): AccountingObjectDomain? {
+    override suspend fun getAccountingObjectsByBarcode(
+        barcode: String?,
+        serialNumber: String?
+    ): AccountingObjectDomain? {
         return withContext(coreDispatchers.io) {
-            syncApi.getAccountingObjects(barcode = barcode).firstOrNull()?.map()
+            syncApi.getAccountingObjects(barcode = barcode, serialNumber = serialNumber)
+                .firstOrNull()?.map()
         }
     }
 

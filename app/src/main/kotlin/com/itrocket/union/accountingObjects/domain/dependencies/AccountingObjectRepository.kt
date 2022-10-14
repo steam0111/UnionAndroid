@@ -27,7 +27,10 @@ interface AccountingObjectRepository {
 
     suspend fun getAccountingObjectsByRfids(rfids: List<String>): List<AccountingObjectDomain>
 
-    suspend fun getAccountingObjectsByBarcode(barcode: String): AccountingObjectDomain?
+    suspend fun getAccountingObjectsByBarcode(
+        barcode: String?,
+        serialNumber: String?
+    ): AccountingObjectDomain?
 
     suspend fun updateAccountingObjects(accountingObjects: List<AccountingObjectUpdateSyncEntity>)
 

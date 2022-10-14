@@ -10,7 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.manualInput.presentation.store.ManualInputType
 import com.itrocket.union.readingMode.domain.ReadingModeInteractor
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
-import com.itrocket.union.readingMode.presentation.view.toReaderMode
+import com.itrocket.union.readingMode.presentation.view.toReadingMode
 import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
@@ -48,7 +48,7 @@ class ReadingModeStoreFactory(
             getState: () -> ReadingModeStore.State
         ) {
             dispatch(Result.ReadingModeSelected(serviceEntryManager.currentMode.toReadingModeTab()))
-            readingModeInteractor.changeScanMode(getState().selectedTab.toReaderMode())
+            readingModeInteractor.changeScanMode(getState().selectedTab.toReadingMode())
         }
 
         override suspend fun executeIntent(
@@ -68,7 +68,7 @@ class ReadingModeStoreFactory(
                     )
                 )
                 is ReadingModeStore.Intent.OnReadingModeSelected -> {
-                    readingModeInteractor.changeScanMode(intent.readingMode.toReaderMode())
+                    readingModeInteractor.changeScanMode(intent.readingMode.toReadingMode())
                     dispatch(Result.ReadingModeSelected(intent.readingMode))
                     publish(ReadingModeStore.Label.ResultReadingTab(intent.readingMode))
                 }

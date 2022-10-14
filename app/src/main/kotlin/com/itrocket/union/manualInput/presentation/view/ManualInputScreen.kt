@@ -110,7 +110,6 @@ fun ManualInputScreen(
                     hintStyle = AppTheme.typography.body1,
                     hintColor = AppTheme.colors.secondaryColor,
                     textStyle = AppTheme.typography.body1,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     onFocusChanged = {
                         underlineColor = if (it.hasFocus) {
                             mainColor

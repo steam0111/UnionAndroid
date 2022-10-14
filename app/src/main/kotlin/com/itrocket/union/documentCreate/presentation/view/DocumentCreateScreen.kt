@@ -16,6 +16,7 @@ import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.documents.DocumentCreateBaseScreen
 
 @OptIn(ExperimentalPagerApi::class)
@@ -121,6 +122,7 @@ fun DocumentCreateScreenPreview() {
                     type = ManualType.LOCATION
                 ),
             ),
+            readingModeTab = ReadingModeTab.SN
         ),
         AppInsets(topInset = previewTopInsetDp),
         {},
