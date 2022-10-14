@@ -7,14 +7,17 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.nomenclatureDetail.domain.NomenclatureDetailInteractor
 import com.itrocket.union.nomenclatureDetail.domain.entity.NomenclatureDetailDomain
+import com.itrocket.union.utils.ifBlankOrNull
 
 class NomenclatureDetailStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val interactor: NomenclatureDetailInteractor,
-    private val args: NomenclatureDetailArguments
+    private val args: NomenclatureDetailArguments,
+    private val errorInteractor: ErrorInteractor
 ) {
 
     fun create(): NomenclatureDetailStore =
@@ -53,7 +56,7 @@ class NomenclatureDetailStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(NomenclatureDetailStore.Label.Error(throwable.message.orEmpty()))
+            publish(NomenclatureDetailStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
         override suspend fun executeIntent(

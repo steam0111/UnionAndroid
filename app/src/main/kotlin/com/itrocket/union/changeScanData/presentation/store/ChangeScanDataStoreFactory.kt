@@ -9,7 +9,9 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.changeScanData.domain.ChangeScanDataInteractor
 import com.itrocket.union.changeScanData.domain.entity.ChangeScanType
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.search.TextFieldManager
+import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.collect
 
 class ChangeScanDataStoreFactory(
@@ -17,7 +19,8 @@ class ChangeScanDataStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val changeScanDataInteractor: ChangeScanDataInteractor,
     private val changeScanDataArguments: ChangeScanDataArguments,
-    private val textFieldManager: TextFieldManager
+    private val textFieldManager: TextFieldManager,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): ChangeScanDataStore =
         object : ChangeScanDataStore,
@@ -109,7 +112,7 @@ class ChangeScanDataStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(ChangeScanDataStore.Label.Error(throwable.message.orEmpty()))
+            publish(ChangeScanDataStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 

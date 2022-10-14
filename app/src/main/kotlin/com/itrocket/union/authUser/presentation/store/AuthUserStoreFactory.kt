@@ -114,7 +114,7 @@ class AuthUserStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(AuthUserStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(AuthUserStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 

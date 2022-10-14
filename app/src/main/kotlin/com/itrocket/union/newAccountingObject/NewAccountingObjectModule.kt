@@ -27,7 +27,8 @@ object NewAccountingObjectModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args
+                args,
+                get()
             ).create()
         }
     }

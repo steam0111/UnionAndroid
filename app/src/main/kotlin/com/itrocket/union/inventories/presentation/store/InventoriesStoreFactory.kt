@@ -109,7 +109,7 @@ class InventoriesStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(InventoriesStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(InventoriesStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 

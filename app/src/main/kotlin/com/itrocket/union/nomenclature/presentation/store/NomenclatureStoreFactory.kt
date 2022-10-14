@@ -126,7 +126,7 @@ class NomenclatureStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(NomenclatureStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(NomenclatureStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
         private suspend fun getNomenclatures(

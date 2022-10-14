@@ -113,7 +113,7 @@ class EquipmentTypeStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(EquipmentTypeStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(EquipmentTypeStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
         private suspend fun reset() {

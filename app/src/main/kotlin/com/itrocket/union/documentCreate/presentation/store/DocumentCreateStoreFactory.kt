@@ -395,7 +395,7 @@ class DocumentCreateStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(DocumentCreateStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(DocumentCreateStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 

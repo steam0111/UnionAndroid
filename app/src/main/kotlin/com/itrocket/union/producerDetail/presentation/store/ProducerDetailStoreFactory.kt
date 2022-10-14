@@ -3,14 +3,17 @@ package com.itrocket.union.producerDetail.presentation.store
 import com.arkivanov.mvikotlin.core.store.*
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.producerDetail.domain.ProducerDetailInteractor
 import com.itrocket.union.producerDetail.domain.entity.ProducerDetailDomain
+import com.itrocket.union.utils.ifBlankOrNull
 
 class ProducerDetailStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val interactor: ProducerDetailInteractor,
-    private val args: ProducerDetailArguments
+    private val args: ProducerDetailArguments,
+    private val errorInteractor: ErrorInteractor
 ) {
 
     fun create(): ProducerDetailStore =
@@ -49,7 +52,7 @@ class ProducerDetailStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(ProducerDetailStore.Label.Error(throwable.message.orEmpty()))
+            publish(ProducerDetailStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
         override suspend fun executeIntent(

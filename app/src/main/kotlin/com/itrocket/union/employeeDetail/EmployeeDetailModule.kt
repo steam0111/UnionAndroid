@@ -36,7 +36,8 @@ object EmployeeDetailModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args.employeeDetailComposeFragmentArgs
+                args.employeeDetailComposeFragmentArgs,
+                get()
             ).create()
         }
     }

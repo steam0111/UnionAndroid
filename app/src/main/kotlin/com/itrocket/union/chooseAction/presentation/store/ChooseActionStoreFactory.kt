@@ -5,13 +5,15 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.core.base.BaseExecutor
+import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.documents.domain.entity.ObjectType
+import com.itrocket.union.error.ErrorInteractor
 
 class ChooseActionStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): ChooseActionStore =
         object : ChooseActionStore,
@@ -52,7 +54,7 @@ class ChooseActionStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(ChooseActionStore.Label.Error(throwable.message.orEmpty()))
+            publish(ChooseActionStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 

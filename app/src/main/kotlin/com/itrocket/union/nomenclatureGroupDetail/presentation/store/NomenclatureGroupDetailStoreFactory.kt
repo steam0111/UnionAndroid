@@ -3,14 +3,17 @@ package com.itrocket.union.nomenclatureGroupDetail.presentation.store
 import com.arkivanov.mvikotlin.core.store.*
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.nomenclatureGroupDetail.domain.NomenclatureGroupDetailInteractor
 import com.itrocket.union.nomenclatureGroupDetail.domain.entity.NomenclatureGroupDetailDomain
+import com.itrocket.union.utils.ifBlankOrNull
 
 class NomenclatureGroupDetailStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val interactor: NomenclatureGroupDetailInteractor,
-    private val args: NomenclatureGroupDetailArguments
+    private val args: NomenclatureGroupDetailArguments,
+    private val errorInteractor: ErrorInteractor
 ) {
 
     fun create(): NomenclatureGroupDetailStore =
@@ -49,7 +52,7 @@ class NomenclatureGroupDetailStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(NomenclatureGroupDetailStore.Label.Error(throwable.message.orEmpty()))
+            publish(NomenclatureGroupDetailStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
         override suspend fun executeIntent(

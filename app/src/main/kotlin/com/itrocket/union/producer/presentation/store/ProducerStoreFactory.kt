@@ -115,7 +115,7 @@ class ProducerStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(ProducerStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(ProducerStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
         private suspend fun reset() {

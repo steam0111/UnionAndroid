@@ -37,7 +37,8 @@ object ProducerDetailModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args.producerDetailComposeFragmentArgs
+                args.producerDetailComposeFragmentArgs,
+                get()
             ).create()
         }
     }

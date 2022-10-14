@@ -8,13 +8,16 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.documents.domain.entity.ActionsWithIdentifyObjects
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.selectActionWithValuesBottomMenu.domain.SelectActionWithValuesBottomMenuInteractor
+import com.itrocket.union.utils.ifBlankOrNull
 
 class SelectActionWithValuesBottomMenuStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val selectActionWithValuesBottomMenuArguments: SelectActionWithValuesBottomMenuArguments,
-    private val selectActionWithValuesBottomMenuInteractor: SelectActionWithValuesBottomMenuInteractor
+    private val selectActionWithValuesBottomMenuInteractor: SelectActionWithValuesBottomMenuInteractor,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): SelectActionWithValuesBottomMenuStore =
         object : SelectActionWithValuesBottomMenuStore,
@@ -78,7 +81,7 @@ class SelectActionWithValuesBottomMenuStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(SelectActionWithValuesBottomMenuStore.Label.Error(throwable.message.orEmpty()))
+            publish(SelectActionWithValuesBottomMenuStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 

@@ -39,6 +39,7 @@ object ChangeScanDataModule {
                 get(),
                 get(),
                 args,
+                get(),
                 get()
             ).create()
         }

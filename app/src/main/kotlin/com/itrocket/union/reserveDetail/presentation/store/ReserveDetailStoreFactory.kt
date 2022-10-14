@@ -76,7 +76,7 @@ class ReserveDetailStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(ReserveDetailStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(ReserveDetailStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 

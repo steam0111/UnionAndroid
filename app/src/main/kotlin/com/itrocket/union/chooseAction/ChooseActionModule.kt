@@ -20,6 +20,7 @@ object ChooseActionModule {
             ChooseActionStoreFactory(
                 DefaultStoreFactory,
                 get(),
+                get()
             ).create()
         }
     }

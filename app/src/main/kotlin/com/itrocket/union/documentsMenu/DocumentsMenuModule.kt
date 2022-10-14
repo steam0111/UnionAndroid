@@ -32,6 +32,7 @@ object DocumentMenuModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
+                get(),
                 get()
             ).create()
         }

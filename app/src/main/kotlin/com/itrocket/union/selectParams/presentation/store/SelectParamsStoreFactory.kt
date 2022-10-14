@@ -221,7 +221,7 @@ class SelectParamsStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(SelectParamsStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(SelectParamsStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 
