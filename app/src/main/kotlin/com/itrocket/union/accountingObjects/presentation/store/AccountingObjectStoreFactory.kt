@@ -77,7 +77,7 @@ class AccountingObjectStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(AccountingObjectStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(AccountingObjectStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
         override suspend fun executeIntent(

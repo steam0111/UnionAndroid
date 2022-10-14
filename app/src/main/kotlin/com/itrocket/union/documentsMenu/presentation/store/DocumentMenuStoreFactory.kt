@@ -7,12 +7,15 @@ import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.documentsMenu.domain.DocumentMenuInteractor
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 import com.itrocket.union.employeeDetail.domain.EmployeeDetailInteractor
+import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.utils.ifBlankOrNull
 
 class DocumentMenuStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val documentMenuInteractor: DocumentMenuInteractor,
     private val authMainInteractor: AuthMainInteractor,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): DocumentMenuStore =
         object : DocumentMenuStore,
@@ -72,7 +75,7 @@ class DocumentMenuStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(DocumentMenuStore.Label.Error(throwable.message.orEmpty()))
+            publish(DocumentMenuStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
         private suspend fun getUsername() {

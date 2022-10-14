@@ -5,12 +5,15 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.conterpartyDetail.domain.CounterpartyDetailInteractor
 import com.itrocket.union.conterpartyDetail.domain.entity.CounterpartyDetailDomain
+import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.utils.ifBlankOrNull
 
 class CounterpartyDetailStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val interactor: CounterpartyDetailInteractor,
-    private val args: CounterpartyDetailArguments
+    private val args: CounterpartyDetailArguments,
+    private val errorInteractor: ErrorInteractor
 ) {
 
     fun create(): CounterpartyDetailStore =
@@ -47,7 +50,7 @@ class CounterpartyDetailStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(CounterpartyDetailStore.Label.Error(throwable.message.orEmpty()))
+            publish(CounterpartyDetailStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
         override suspend fun executeIntent(

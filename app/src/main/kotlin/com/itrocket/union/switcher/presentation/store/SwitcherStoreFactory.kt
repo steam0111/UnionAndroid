@@ -10,12 +10,15 @@ import com.itrocket.union.switcher.domain.SwitcherInteractor
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.core.base.BaseExecutor
+import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.utils.ifBlankOrNull
 
 class SwitcherStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val switcherInteractor: SwitcherInteractor,
-    private val switcherArguments: SwitcherArguments
+    private val switcherArguments: SwitcherArguments,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): SwitcherStore =
         object : SwitcherStore,
@@ -64,7 +67,7 @@ class SwitcherStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(SwitcherStore.Label.Error(throwable.message.orEmpty()))
+            publish(SwitcherStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 

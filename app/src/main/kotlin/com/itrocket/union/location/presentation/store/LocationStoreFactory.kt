@@ -181,7 +181,7 @@ class LocationStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(LocationStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(LocationStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 

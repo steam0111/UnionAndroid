@@ -6,6 +6,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjectDetail.domain.AccountingObjectDetailInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.changeScanData.data.mapper.toChangeScanType
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
@@ -18,6 +19,7 @@ class AccountingObjectDetailStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val interactor: AccountingObjectDetailInteractor,
     private val accountingObjectDetailArguments: AccountingObjectDetailArguments,
+    private val errorInteractor: ErrorInteractor,
     private val serviceEntryManager: ServiceEntryManager,
 ) {
     fun create(): AccountingObjectDetailStore =
@@ -49,7 +51,7 @@ class AccountingObjectDetailStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(AccountingObjectDetailStore.Label.Error(throwable.message.orEmpty()))
+            publish(AccountingObjectDetailStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
         override suspend fun executeIntent(

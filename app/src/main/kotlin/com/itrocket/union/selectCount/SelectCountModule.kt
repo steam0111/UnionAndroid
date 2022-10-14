@@ -26,7 +26,8 @@ object SelectCountModule {
             SelectCountStoreFactory(
                 DefaultStoreFactory,
                 get(),
-                args
+                args,
+                get()
             ).create()
         }
     }

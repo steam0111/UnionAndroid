@@ -135,7 +135,7 @@ class ModuleSettingsStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(ModuleSettingsStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(ModuleSettingsStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 

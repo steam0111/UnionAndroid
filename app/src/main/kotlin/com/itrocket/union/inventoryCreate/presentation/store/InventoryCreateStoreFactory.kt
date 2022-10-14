@@ -408,7 +408,7 @@ class InventoryCreateStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(InventoryCreateStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(InventoryCreateStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 

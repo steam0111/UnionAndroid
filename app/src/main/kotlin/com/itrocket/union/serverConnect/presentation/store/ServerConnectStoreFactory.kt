@@ -135,7 +135,7 @@ class ServerConnectStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(ServerConnectStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(ServerConnectStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
     }

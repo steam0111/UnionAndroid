@@ -5,12 +5,15 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.equipmentTypeDetail.domain.EquipmentTypeDetailInteractor
 import com.itrocket.union.equipmentTypeDetail.domain.entity.EquipmentTypeDetailDomain
+import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.utils.ifBlankOrNull
 
 class EquipmentTypeDetailStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val interactor: EquipmentTypeDetailInteractor,
-    private val args: EquipmentTypeDetailArguments
+    private val args: EquipmentTypeDetailArguments,
+    private val errorInteractor: ErrorInteractor
 ) {
 
     fun create(): EquipmentTypeDetailStore =
@@ -49,7 +52,7 @@ class EquipmentTypeDetailStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(EquipmentTypeDetailStore.Label.Error(throwable.message.orEmpty()))
+            publish(EquipmentTypeDetailStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
         override suspend fun executeIntent(

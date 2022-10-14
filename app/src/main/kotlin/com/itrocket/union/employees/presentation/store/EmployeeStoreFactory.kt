@@ -105,7 +105,7 @@ class EmployeeStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(EmployeeStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(EmployeeStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
         private suspend fun onBackClicked(isShowSearch: Boolean) {

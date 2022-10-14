@@ -36,7 +36,8 @@ object CounterpartyDetailModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args.counterpartyDetailComposeFragmentArgs
+                args.counterpartyDetailComposeFragmentArgs,
+                get()
             ).create()
         }
     }

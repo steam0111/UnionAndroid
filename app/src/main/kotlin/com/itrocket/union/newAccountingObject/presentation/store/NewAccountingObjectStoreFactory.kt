@@ -9,12 +9,15 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjectDetail.domain.AccountingObjectDetailInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.utils.ifBlankOrNull
 
 class NewAccountingObjectStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val accountingObjectDetailInteractor: AccountingObjectDetailInteractor,
-    private val newAccountingObjectArguments: NewAccountingObjectArguments
+    private val newAccountingObjectArguments: NewAccountingObjectArguments,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): NewAccountingObjectStore =
         object : NewAccountingObjectStore,
@@ -57,7 +60,7 @@ class NewAccountingObjectStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(NewAccountingObjectStore.Label.Error(throwable.message.orEmpty()))
+            publish(NewAccountingObjectStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 

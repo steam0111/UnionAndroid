@@ -37,7 +37,8 @@ object EquipmentTypeDetailModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args.equipmentTypeDetailComposeFragmentArgs
+                args.equipmentTypeDetailComposeFragmentArgs,
+                get()
             ).create()
         }
     }

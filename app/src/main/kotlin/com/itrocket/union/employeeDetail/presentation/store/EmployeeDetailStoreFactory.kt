@@ -9,12 +9,15 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjectDetail.domain.entity.EmployeeDetailDomain
 import com.itrocket.union.employeeDetail.domain.EmployeeDetailInteractor
+import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.utils.ifBlankOrNull
 
 class EmployeeDetailStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val interactor: EmployeeDetailInteractor,
-    private val args: EmployeeDetailArguments
+    private val args: EmployeeDetailArguments,
+    private val errorInteractor: ErrorInteractor
 ) {
 
     fun create(): EmployeeDetailStore =
@@ -51,7 +54,7 @@ class EmployeeDetailStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(EmployeeDetailStore.Label.Error(throwable.message.orEmpty()))
+            publish(EmployeeDetailStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
         override suspend fun executeIntent(

@@ -9,7 +9,9 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.counterparties.domain.CounterpartyInteractor
 import com.itrocket.union.counterparties.domain.entity.CounterpartyDomain
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.search.SearchManager
+import com.itrocket.union.utils.ifBlankOrNull
 import com.itrocket.utils.paging.Paginator
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -19,6 +21,7 @@ class CounterpartyStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val counterpartyInteractor: CounterpartyInteractor,
     private val searchManager: SearchManager,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): CounterpartyStore =
         object : CounterpartyStore,
@@ -113,7 +116,7 @@ class CounterpartyStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(CounterpartyStore.Label.Error(throwable.message.orEmpty()))
+            publish(CounterpartyStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
         private suspend fun reset() {

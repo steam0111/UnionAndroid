@@ -115,7 +115,7 @@ class NomenclatureGroupStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(NomenclatureGroupStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(NomenclatureGroupStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
         private suspend fun reset() {

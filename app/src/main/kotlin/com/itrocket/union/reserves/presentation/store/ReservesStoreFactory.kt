@@ -155,7 +155,7 @@ class ReservesStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(ReservesStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(ReservesStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
         private suspend fun reset() {

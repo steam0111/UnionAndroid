@@ -177,7 +177,7 @@ class StructuralStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(StructuralStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(StructuralStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 

@@ -29,6 +29,7 @@ import com.itrocket.union.transit.domain.TransitRemainsManager
 import com.itrocket.union.transit.domain.TransitTypeDomain
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
+import com.itrocket.union.utils.ifBlankOrNull
 
 class TransitStoreFactory(
     private val storeFactory: StoreFactory,
@@ -385,7 +386,7 @@ class TransitStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(TransitStore.Label.Error(throwable.message.orEmpty()))
+            publish(TransitStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 

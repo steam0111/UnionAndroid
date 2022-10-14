@@ -7,11 +7,14 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.utils.ifBlankOrNull
 
 class SelectCountStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val selectCountArguments: SelectCountArguments
+    private val selectCountArguments: SelectCountArguments,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): SelectCountStore =
         object : SelectCountStore,
@@ -59,7 +62,7 @@ class SelectCountStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(SelectCountStore.Label.Error(throwable.message.orEmpty()))
+            publish(SelectCountStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 

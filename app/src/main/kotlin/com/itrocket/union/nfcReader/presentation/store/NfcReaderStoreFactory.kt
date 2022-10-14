@@ -17,6 +17,7 @@ import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import com.itrocket.union.documentCreate.domain.DocumentReservesManager
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.employeeDetail.domain.EmployeeDetailInteractor
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.intentHandler.IntentHandler
 import com.itrocket.union.nfcReader.domain.entity.NfcReaderState
 import com.itrocket.union.nfcReader.domain.entity.NfcReaderType
@@ -26,6 +27,7 @@ import com.itrocket.union.transit.domain.TransitRemainsManager
 import com.itrocket.union.transit.domain.TransitTypeDomain
 import com.itrocket.union.transit.presentation.store.TransitStore
 import com.itrocket.union.transit.presentation.store.TransitStoreFactory
+import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.flow.collect
 
 class NfcReaderStoreFactory(
@@ -42,7 +44,8 @@ class NfcReaderStoreFactory(
     private val transitAccountingObjectManager: TransitAccountingObjectManager,
     private val transitReservesManager: TransitRemainsManager,
     private val transitInteractor: TransitInteractor,
-    private val intentHandler: IntentHandler
+    private val intentHandler: IntentHandler,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): NfcReaderStore =
         object : NfcReaderStore,
@@ -178,7 +181,7 @@ class NfcReaderStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(NfcReaderStore.Label.Error(throwable.message.orEmpty()))
+            publish(NfcReaderStore.Label.Error(errorInteractor.getTextMessage(throwable)))
             dispatch(Result.Loading(false))
         }
     }

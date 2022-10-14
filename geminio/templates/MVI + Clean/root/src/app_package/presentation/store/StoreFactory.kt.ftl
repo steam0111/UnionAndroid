@@ -10,12 +10,15 @@ import ${packageName}.${featurePackageName}.domain.${featureName}Interactor
 import ${packageName}.${featurePackageName}.domain.entity.${featureName}Domain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.core.base.BaseExecutor
+import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.utils.ifBlankOrNull
 
 class ${featureName}StoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val ${featureName?uncap_first}Interactor: ${featureName}Interactor,
-    private val ${featureName?uncap_first}Arguments: ${featureName}Arguments
+    private val ${featureName?uncap_first}Arguments: ${featureName}Arguments,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): ${featureName}Store =
         object : ${featureName}Store,
@@ -50,7 +53,7 @@ class ${featureName}StoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(${featureName}Store.Label.Error(throwable.message.orEmpty()))
+            publish(${featureName}Store.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 

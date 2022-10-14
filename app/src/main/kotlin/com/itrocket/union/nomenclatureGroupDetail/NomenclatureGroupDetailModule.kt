@@ -37,7 +37,8 @@ object NomenclatureGroupDetailModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args.nomenclatureGroupDetailComposeFragmentArgs
+                args.nomenclatureGroupDetailComposeFragmentArgs,
+                get()
             ).create()
         }
     }

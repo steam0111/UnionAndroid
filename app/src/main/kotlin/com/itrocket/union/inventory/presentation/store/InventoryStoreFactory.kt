@@ -136,7 +136,7 @@ class InventoryStoreFactory(
         }
 
         override fun handleError(throwable: Throwable) {
-            publish(InventoryStore.Label.Error(throwable.message.ifBlankOrNull { errorInteractor.getDefaultError() }))
+            publish(InventoryStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
         private suspend fun changeParams(params: List<ParamDomain>) {

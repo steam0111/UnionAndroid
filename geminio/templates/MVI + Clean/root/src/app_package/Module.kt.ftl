@@ -36,7 +36,8 @@ object ${featureName}Module {
                 DefaultStoreFactory,
                 get(),
                 get(),
-                args.${featureName?uncap_first}Arguments
+                args.${featureName?uncap_first}Arguments,
+                get()
             ).create()
         }
     }

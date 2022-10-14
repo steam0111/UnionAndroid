@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.StringRes
 import com.itrocket.union.R
 import com.itrocket.union.network.HttpException
+import com.itrocket.union.utils.ifBlankOrNull
 
 class ErrorInteractor(val context: Context) {
 
@@ -12,13 +13,15 @@ class ErrorInteractor(val context: Context) {
     fun getTextMessage(throwable: Throwable): String {
         return when (throwable) {
             is HttpException -> {
-                throwable.getFormattedMessage() ?: getDefaultError()
+                throwable.getFormattedMessage().ifBlankOrNull {
+                    getDefaultError()
+                }
             }
-            else -> getDefaultError()
+            else -> throwable.message.ifBlankOrNull { getDefaultError() }
         }
     }
 
-    fun getExceptionMessageByResId(@StringRes messageId: Int): String{
+    fun getExceptionMessageByResId(@StringRes messageId: Int): String {
         return context.getString(messageId)
     }
 }
