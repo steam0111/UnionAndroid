@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -55,10 +56,10 @@ private fun BaseLabel(
     Text(
         text = text ?: status.textId?.let { stringResource(it) } ?: status.text.orEmpty(),
         style = textStyle,
-        color = status.textColor,
+        color = Color(status.textColor.toULong()),
         modifier = Modifier
             .background(
-                status.backgroundColor,
+                Color(status.backgroundColor.toULong()),
                 RoundedCornerShape(111.dp)
             )
             .padding(vertical = verticalPadding, horizontal = horizontalPadding)
@@ -72,8 +73,8 @@ private fun PreviewLabels() {
         SmallStatusLabel(
             ObjectStatusType(
                 "",
-                AppTheme.colors.secondaryColor,
-                AppTheme.colors.secondaryColor,
+                AppTheme.colors.secondaryColor.value.toString(),
+                AppTheme.colors.secondaryColor.value.toString(),
                 ""
             ), "available"
         )
@@ -81,8 +82,8 @@ private fun PreviewLabels() {
         MediumStatusLabel(
             ObjectStatusType(
                 "",
-                AppTheme.colors.secondaryColor,
-                AppTheme.colors.secondaryColor,
+                AppTheme.colors.secondaryColor.value.toString(),
+                AppTheme.colors.secondaryColor.value.toString(),
                 ""
             ), "available"
         )
