@@ -35,9 +35,7 @@ class LocationSyncApiImpl(
     override suspend fun getAllLocationsIdsByParentId(parentId: String?): List<String?> {
         return buildList {
             add(parentId)
-            addAll(
-                locationDao.getLocationsByParentId(sqlLocationsQuery(parentId = parentId))
-                    .map { it.id })
+            addAll(locationDao.getAllLocationsByParentId(parentId).map { it.id })
         }
     }
 
