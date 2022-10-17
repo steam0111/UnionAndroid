@@ -58,36 +58,38 @@ class InventorySyncApiImpl(
         textQuery: String?,
         structuralId: String?,
         molId: String?,
-        inventoryBaseId: String?
-    ): Flow<List<InventorySyncEntity>> {
+        inventoryBaseId: String?,
+        offset: Long,
+        limit: Long?
+    ): List<InventorySyncEntity> {
         return inventoryDao.getAll(
             sqlInventoryQuery(
                 textQuery = textQuery,
                 structuralId = structuralId,
                 molId = molId,
-                inventoryBaseId = inventoryBaseId
+                inventoryBaseId = inventoryBaseId,
+                offset = offset,
+                limit = limit
             )
         ).map {
-            it.map {
-                val structurals = listOfNotNull(it.structuralDb?.toStructuralSyncEntity())
-                val balanceUnit = structurals.lastOrNull { it.balanceUnit }
-                val balanceUnitFullPath =
-                    structuralSyncApi.getStructuralFullPath(balanceUnit?.id, mutableListOf())
-                val inventoryBase = enumsApi.getByCompoundId(
-                    enumType = EnumType.INVENTORY_BASE,
-                    id = it.inventoryDb.inventoryBaseId
-                )
+            val structurals = listOfNotNull(it.structuralDb?.toStructuralSyncEntity())
+            val balanceUnit = structurals.lastOrNull { it.balanceUnit }
+            val balanceUnitFullPath =
+                structuralSyncApi.getStructuralFullPath(balanceUnit?.id, mutableListOf())
+            val inventoryBase = enumsApi.getByCompoundId(
+                enumType = EnumType.INVENTORY_BASE,
+                id = it.inventoryDb.inventoryBaseId
+            )
 
-                it.inventoryDb.toInventorySyncEntity(
-                    structuralSyncEntities = structurals,
-                    mol = it.employeeDb?.toSyncEntity(),
-                    locationSyncEntities = it.getLocations(),
-                    accountingObjects = listOf(),
-                    inventoryBaseSyncEntity = inventoryBase,
-                    balanceUnit = balanceUnitFullPath.orEmpty(),
-                    checkers = checkerSyncApi.getCheckers(it.inventoryDb.id)
-                )
-            }
+            it.inventoryDb.toInventorySyncEntity(
+                structuralSyncEntities = structurals,
+                mol = it.employeeDb?.toSyncEntity(),
+                locationSyncEntities = it.getLocations(),
+                accountingObjects = listOf(),
+                inventoryBaseSyncEntity = inventoryBase,
+                balanceUnit = balanceUnitFullPath.orEmpty(),
+                checkers = checkerSyncApi.getCheckers(it.inventoryDb.id)
+            )
         }
     }
 

@@ -11,8 +11,10 @@ interface InventorySyncApi {
         textQuery: String? = null,
         structuralId: String? = null,
         molId: String? = null,
-        inventoryBaseId: String? = null
-    ): Flow<List<InventorySyncEntity>>
+        inventoryBaseId: String? = null,
+        offset: Long,
+        limit: Long?
+    ): List<InventorySyncEntity>
 
     suspend fun getInventoriesCount(
         textQuery: String? = null,

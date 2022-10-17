@@ -15,9 +15,16 @@ class InventoriesInteractor(
 ) {
     suspend fun getInventories(
         searchQuery: String = "",
-        params: List<ParamDomain>?
-    ): Flow<List<InventoryCreateDomain>> = withContext(coreDispatchers.io) {
-        repository.getInventories(textQuery = searchQuery, params = params)
+        params: List<ParamDomain>?,
+        offset: Long,
+        limit: Long? = null
+    ): List<InventoryCreateDomain> = withContext(coreDispatchers.io) {
+        repository.getInventories(
+            textQuery = searchQuery,
+            params = params,
+            offset = offset,
+            limit = limit
+        )
     }
 
     fun getFilters(): List<ParamDomain> {

@@ -13,9 +13,6 @@ import com.itrocket.union.manual.getFilterInventoryBaseId
 import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.manual.getMolId
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 
 class InventoryRepositoryImpl(
     private val coreDispatchers: CoreDispatchers,
@@ -39,17 +36,19 @@ class InventoryRepositoryImpl(
 
     override suspend fun getInventories(
         textQuery: String?,
-        params: List<ParamDomain>?
-    ): Flow<List<InventoryCreateDomain>> =
+        params: List<ParamDomain>?,
+        offset: Long,
+        limit: Long?
+    ): List<InventoryCreateDomain> =
         withContext(coreDispatchers.io) {
             inventorySyncApi.getInventories(
                 textQuery = textQuery,
                 structuralId = params?.getFilterStructuralLastId(ManualType.STRUCTURAL),
                 molId = params?.getMolId(),
-                inventoryBaseId = params?.getFilterInventoryBaseId()
-            ).map {
-                it.map()
-            }.flowOn(coreDispatchers.io)
+                inventoryBaseId = params?.getFilterInventoryBaseId(),
+                offset = offset,
+                limit = limit
+            ).map { it.map() }
         }
 
     override suspend fun getInventoriesCount(textQuery: String?, params: List<ParamDomain>?): Long =

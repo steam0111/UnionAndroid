@@ -107,7 +107,7 @@ class InventoryComposeFragment :
     override fun handleLabel(label: InventoryStore.Label) {
         super.handleLabel(label)
         when (label) {
-            InventoryStore.Label.GoBack -> (parentFragment as? ChildBackPressedHandler)?.onChildBackPressed()
+            is InventoryStore.Label.GoBack -> (parentFragment as? ChildBackPressedHandler)?.onChildBackPressed()
             is InventoryStore.Label.ShowCreateInventory -> (parentFragment as? InventoryCreateClickHandler)?.onInventoryCreateClicked(
                 label.inventoryCreate
             )
@@ -117,5 +117,7 @@ class InventoryComposeFragment :
 
     companion object {
         const val INVENTORY_ARGUMENT = "inventory argument"
+        const val INVENTORY_RESULT_CODE = "inventory result code"
+        const val INVENTORY_RESULT_LABEL = "inventory result label"
     }
 }

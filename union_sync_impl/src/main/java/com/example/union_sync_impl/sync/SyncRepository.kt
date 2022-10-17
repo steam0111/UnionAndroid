@@ -362,7 +362,7 @@ class SyncRepository(
                             offset = offset,
                             updateDate = getLastSyncTime()
                         )
-                    ).firstOrNull().orEmpty()
+                    )
                 },
                 localToNetworkMapper = { localObjects ->
                     localObjects.map { it.inventoryDb.toInventoryDtoV2() }

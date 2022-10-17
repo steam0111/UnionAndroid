@@ -12,8 +12,10 @@ interface InventoryRepository {
     suspend fun getInventoryById(id: String): InventoryCreateDomain
     suspend fun getInventories(
         textQuery: String? = null,
-        params: List<ParamDomain>?
-    ): Flow<List<InventoryCreateDomain>>
+        params: List<ParamDomain>?,
+        offset: Long,
+        limit: Long?
+    ): List<InventoryCreateDomain>
 
     suspend fun getInventoriesCount(
         textQuery: String? = null,
