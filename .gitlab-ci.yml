@@ -33,6 +33,7 @@ build release apk:
   stage: buildRelease
   script:
     #- ./gradlew app:assembleDebug
+    - cd app/build/outputs/apk/debug
     - ls
     #- curl --location --request POST 'https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID' --form 'document=@"app/build/outputs/apk/debug/*.apk"'
   when: manual
