@@ -14,8 +14,7 @@ import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.search.SearchManager
 import com.itrocket.union.utils.ifBlankOrNull
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
+import com.itrocket.utils.paging.Paginator
 
 class InventoriesStoreFactory(
     private val storeFactory: StoreFactory,
@@ -41,12 +40,32 @@ class InventoriesStoreFactory(
         BaseExecutor<InventoriesStore.Intent, Unit, InventoriesStore.State, Result, InventoriesStore.Label>(
             context = coreDispatchers.ui
         ) {
+
+        private val paginator = Paginator<InventoryCreateDomain>(
+            onError = {
+                handleError(it)
+            },
+            onLoadUpdate = {
+                dispatch(Result.Loading(it))
+            },
+            onSuccess = {
+                dispatch(Result.Inventories(it))
+            }
+        )
+
         override suspend fun executeAction(
             action: Unit,
             getState: () -> InventoriesStore.State
         ) {
-            searchManager.listenSearch {
-                listenInventories(searchQuery = it, params = getState().params)
+            searchManager.listenSearch { searchText ->
+                reset()
+                paginator.onLoadNext {
+                    getInventories(
+                        searchQuery = searchText,
+                        params = getState().params,
+                        offset = it
+                    )
+                }
             }
         }
 
@@ -63,7 +82,14 @@ class InventoriesStoreFactory(
                 )
                 is InventoriesStore.Intent.OnFilterResult -> {
                     dispatch(Result.FilterParams(intent.params))
-                    listenInventories(params = getState().params, searchQuery = "")
+                    reset()
+                    paginator.onLoadNext {
+                        getInventories(
+                            params = getState().params,
+                            searchQuery = getState().searchText,
+                            offset = it
+                        )
+                    }
                 }
                 is InventoriesStore.Intent.OnInventoryClicked -> publish(
                     InventoriesStore.Label.ShowInventoryDetail(
@@ -75,6 +101,25 @@ class InventoriesStoreFactory(
                 is InventoriesStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
                     searchManager.emit(intent.searchText)
+                }
+                is InventoriesStore.Intent.OnLoadNext -> paginator.onLoadNext {
+                    getInventories(
+                        params = getState().params,
+                        searchQuery = getState().searchText,
+                        offset = it
+                    )
+                }
+                is InventoriesStore.Intent.OnInventoryResult -> {
+                    if (intent.changed) {
+                        reset()
+                        paginator.onLoadNext {
+                            getInventories(
+                                params = getState().params,
+                                searchQuery = getState().searchText,
+                                offset = it
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -89,22 +134,28 @@ class InventoriesStoreFactory(
             }
         }
 
-        private suspend fun listenInventories(
+        private suspend fun getInventories(
             searchQuery: String = "",
-            params: List<ParamDomain>?
-        ) {
-            catchException {
-                dispatch(Result.Loading(true))
-                inventoriesInteractor.getInventories(searchQuery = searchQuery, params = params)
-                    .catch {
-                        handleError(it)
-                    }.collect {
-                        dispatch(Result.Inventories(it))
-                        dispatch(Result.Loading(false))
-                    }
-                dispatch(Result.Loading(false))
+            params: List<ParamDomain>?,
+            offset: Long
+        ) = runCatching {
+            val inventories = inventoriesInteractor.getInventories(
+                searchQuery = searchQuery,
+                params = params,
+                offset = offset,
+                limit = Paginator.PAGE_SIZE
+            )
 
+            if (inventories.isEmpty()) {
+                dispatch(Result.IsListEndReached(true))
             }
+            inventories
+        }
+
+        private suspend fun reset() {
+            paginator.reset()
+            dispatch(Result.IsListEndReached(false))
+            dispatch(Result.Inventories(listOf()))
         }
 
         override fun handleError(throwable: Throwable) {
@@ -119,6 +170,7 @@ class InventoriesStoreFactory(
         data class SearchText(val searchText: String) : Result()
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
         data class FilterParams(val params: List<ParamDomain>) : Result()
+        data class IsListEndReached(val isListEndReached: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoriesStore.State, Result> {
@@ -129,6 +181,7 @@ class InventoriesStoreFactory(
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchText -> copy(searchText = result.searchText)
                 is Result.FilterParams -> copy(params = result.params)
+                is Result.IsListEndReached -> copy(isListEndReached = result.isListEndReached)
             }
     }
 }

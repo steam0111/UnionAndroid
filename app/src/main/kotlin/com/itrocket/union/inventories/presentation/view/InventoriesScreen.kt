@@ -2,14 +2,20 @@ package com.itrocket.union.inventories.presentation.view
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
@@ -28,6 +34,7 @@ import com.itrocket.union.ui.BottomLine
 import com.itrocket.union.ui.InventoryDocumentItem
 import com.itrocket.union.ui.LoadingContent
 import com.itrocket.union.ui.SearchToolbar
+import com.itrocket.utils.paging.subscribePagingListIndex
 
 @Composable
 fun InventoriesScreen(
@@ -37,7 +44,8 @@ fun InventoriesScreen(
     onSearchClickListener: () -> Unit,
     onFilterClickListener: () -> Unit,
     onInventoryClickListener: (InventoryCreateDomain) -> Unit,
-    onSearchTextChanged: (String) -> Unit
+    onSearchTextChanged: (String) -> Unit,
+    onLoadNext: () -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -55,13 +63,14 @@ fun InventoriesScreen(
                 )
             },
             content = {
-                LoadingContent(isLoading = state.isLoading) {
-                    Content(
-                        contentPadding = it,
-                        inventories = state.inventories,
-                        onInventoryClickListener = onInventoryClickListener
-                    )
-                }
+                Content(
+                    contentPadding = it,
+                    inventories = state.inventories,
+                    onInventoryClickListener = onInventoryClickListener,
+                    onLoadNext = onLoadNext,
+                    isLoading = state.isLoading,
+                    isEndReached = state.isListEndReached
+                )
             },
             modifier = Modifier
                 .fillMaxSize()
@@ -75,8 +84,13 @@ private fun Content(
     contentPadding: PaddingValues,
     inventories: List<InventoryCreateDomain>,
     onInventoryClickListener: (InventoryCreateDomain) -> Unit,
+    isLoading: Boolean,
+    isEndReached: Boolean,
+    onLoadNext: () -> Unit
 ) {
+    val listState = rememberLazyListState()
     LazyColumn(
+        state = listState,
         modifier = Modifier
             .fillMaxSize()
             .padding(contentPadding)
@@ -96,6 +110,27 @@ private fun Content(
                 }
             }
         }
+        if (isLoading) {
+            item {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp)
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+        }
+    }
+    LaunchedEffect(listState.firstVisibleItemIndex) {
+        subscribePagingListIndex(
+            listState = listState,
+            listSize = inventories.size,
+            isListEndReached = isEndReached,
+            isLoading = isLoading,
+            onLoadNext = onLoadNext
+        )
     }
 }
 
@@ -167,5 +202,6 @@ fun InventoriesScreenPreview() {
         {},
         {},
         {},
+        {}
     )
 }

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface InventoryDao {
 
     @RawQuery(observedEntities = [FullInventory::class])
-    fun getAll(query: SupportSQLiteQuery): Flow<List<FullInventory>>
+    suspend fun getAll(query: SupportSQLiteQuery): List<FullInventory>
 
     @RawQuery
     suspend fun getCount(query: SupportSQLiteQuery): Long
