@@ -32,7 +32,8 @@ build develop when merge_requests:
 build release apk:
   stage: buildRelease
   script:
-    - ./gradlew app:assembleDebug
-    - curl --location --request POST 'https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID' --form 'document=@"app/build/outputs/apk/debug/*.apk"'
+    #- ./gradlew app:assembleDebug
+    - ls
+    #- curl --location --request POST 'https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID' --form 'document=@"app/build/outputs/apk/debug/*.apk"'
   when: manual
 
