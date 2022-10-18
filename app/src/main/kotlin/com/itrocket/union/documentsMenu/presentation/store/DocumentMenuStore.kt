@@ -96,6 +96,7 @@ interface DocumentMenuStore :
                     R.string.manual_structural -> DocumentMenuComposeFragmentDirections.toStructural(
                         StructuralArguments(canEdit = false)
                     )
+                    R.string.main_data_collect -> DocumentMenuComposeFragmentDirections.toDataCollect()
                     else -> null
                 }
         }

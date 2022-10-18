@@ -83,7 +83,8 @@ fun AccountingObjectItem(
             modifier = Modifier
                 .fillMaxWidth(0.7f)
         ) {
-            val headerText = accountingObject.title.ifEmpty { stringResource(id = R.string.value_not_defined) }
+            val headerText =
+                accountingObject.title.ifEmpty { stringResource(id = R.string.value_not_defined) }
             HeaderText(headerText)
             Spacer(modifier = Modifier.height(4.dp))
             accountingObject.listMainInfo.take(MAX_LIST_INFO).forEach {
@@ -740,4 +741,24 @@ private fun HeaderText(text: String) {
         fontSize = 19.sp,
         color = AppTheme.colors.mainTextColor
     )
+}
+
+@Composable
+fun ScanningObjectItem(
+    scanningObject: String
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp, horizontal = 16.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = scanningObject
+            )
+        }
+    }
 }

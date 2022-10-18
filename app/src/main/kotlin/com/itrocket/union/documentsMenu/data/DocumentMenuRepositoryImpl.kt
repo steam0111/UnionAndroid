@@ -136,7 +136,11 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
                         iconId = R.drawable.ic_inventory,
                         unionPermission = UnionPermission.NO_NEED
                     ),
-
+                    DocumentMenuDomain(
+                        titleId = R.string.main_data_collect,
+                        iconId = R.drawable.ic_inventory,
+                        unionPermission = UnionPermission.NO_NEED
+                    ),
                     DocumentMenuDomain(
                         titleId = R.string.sync,
                         iconId = R.drawable.ic_inventory,
