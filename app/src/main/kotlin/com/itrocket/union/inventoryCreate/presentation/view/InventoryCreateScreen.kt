@@ -79,7 +79,7 @@ fun InventoryCreateScreen(
                     onSearchTextChanged = onSearchTextChanged,
                     searchText = state.searchText,
                     isShowSearch = state.isShowSearch,
-                    isCanUpdate = state.isCanUpdate,
+                    canUpdate = state.isCanUpdate
                 )
             },
             bottomBar = {
@@ -96,7 +96,7 @@ fun InventoryCreateScreen(
                     onHideFoundAccountingObjectChanged = onHideFoundAccountingObjectChanged,
                     onAccountingObjectClickListener = onAccountingObjectClickListener,
                     onFinishClickListener = onFinishClickListener,
-                    onSaveClickListener = onSaveClickListener,
+                    onSaveClickListener = onSaveClickListener
                 )
             },
             modifier = Modifier.padding(
@@ -135,11 +135,18 @@ private fun getFindAccountingObjectsSize(state: InventoryCreateStore.State): Int
     val list =
         state.newAccountingObjects.toList() + state.inventoryDocument.accountingObjects
     return list.filter { it.inventoryStatus == InventoryAccountingObjectStatus.FOUND }.size
-
 }
 
 private fun getNotFindAccountingObjectsSize(state: InventoryCreateStore.State): Int {
-    return (getAllAccountingObjectsSize(state) - getFindAccountingObjectsSize(state))
+    return (state.inventoryDocument.accountingObjects).filter {
+        it.inventoryStatus == InventoryAccountingObjectStatus.NOT_FOUND
+    }.size
+}
+
+private fun getNewAccountingObjectsSize(state: InventoryCreateStore.State): Int {
+    return ((state.inventoryDocument.accountingObjects).filter {
+        it.inventoryStatus == InventoryAccountingObjectStatus.NEW
+    }.size + state.newAccountingObjects.size)
 }
 
 @Composable
@@ -150,10 +157,9 @@ private fun Content(
     onHideFoundAccountingObjectChanged: () -> Unit,
     onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit,
     onFinishClickListener: () -> Unit,
-    onSaveClickListener: () -> Unit,
+    onSaveClickListener: () -> Unit
 ) {
     val accountingObjectList = getAccountingObjects(state)
-
     Column(
         Modifier
             .fillMaxSize()
@@ -166,16 +172,16 @@ private fun Content(
                         onSaveClickListener = onSaveClickListener,
                         onFinishClickListener = onFinishClickListener,
                         inventoryStatus = state.inventoryDocument.inventoryStatus,
-                        isCanUpdate = state.isCanUpdate
+                        canUpdate = state.isCanUpdate
                     )
                 }
                 InventoryDocumentItem(item = state.inventoryDocument, isShowStatus = false)
                 MediumSpacer()
                 CountBar(
-                    totalAo = getAllAccountingObjectsSize(state),
-                    findAo = getFindAccountingObjectsSize(state),
-                    notFindAo = getNotFindAccountingObjectsSize(state),
-                    newAo = state.newAccountingObjects.size
+                    allAccountingObjects = getAllAccountingObjectsSize(state),
+                    findAccountingObjects = getFindAccountingObjectsSize(state),
+                    notFindAccountingObjects = getNotFindAccountingObjectsSize(state),
+                    newAccountingObjects = getNewAccountingObjectsSize(state)
                 )
                 MediumSpacer()
                 SettingsBar(
@@ -183,7 +189,7 @@ private fun Content(
                     isAddNew = state.isAddNew,
                     onAddNewChanged = onAddNewChanged,
                     onHideFoundAccountingObjectChanged = onHideFoundAccountingObjectChanged,
-                    isCanUpdate = state.isCanUpdate
+                    canUpdate = state.isCanUpdate
                 )
                 MediumSpacer()
             }
@@ -208,10 +214,10 @@ private fun Content(
 
 @Composable
 fun CountBar(
-    totalAo: Int,
-    findAo: Int,
-    notFindAo: Int,
-    newAo: Int
+    allAccountingObjects: Int,
+    findAccountingObjects: Int,
+    notFindAccountingObjects: Int,
+    newAccountingObjects: Int
 ) {
     Row(
         modifier = Modifier
@@ -225,7 +231,7 @@ fun CountBar(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = stringResource(R.string.inventory_create_total_ao, totalAo),
+                text = stringResource(R.string.inventory_create_total_ao, allAccountingObjects),
                 style = AppTheme.typography.body2
             )
         }
@@ -234,7 +240,7 @@ fun CountBar(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = stringResource(R.string.inventory_create_find_ao, findAo),
+                text = stringResource(R.string.inventory_create_find_ao, findAccountingObjects),
                 style = AppTheme.typography.body2
             )
         }
@@ -251,7 +257,7 @@ fun CountBar(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = stringResource(R.string.inventory_create_new_ao, newAo),
+                text = stringResource(R.string.inventory_create_new_ao, newAccountingObjects),
                 style = AppTheme.typography.body2
             )
         }
@@ -260,7 +266,10 @@ fun CountBar(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = stringResource(R.string.inventory_create_not_find_ao, notFindAo),
+                text = stringResource(
+                    R.string.inventory_create_not_find_ao,
+                    notFindAccountingObjects
+                ),
                 style = AppTheme.typography.body2
             )
         }
@@ -273,7 +282,7 @@ fun SettingsBar(
     isAddNew: Boolean,
     onAddNewChanged: () -> Unit,
     onHideFoundAccountingObjectChanged: () -> Unit,
-    isCanUpdate: Boolean
+    canUpdate: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -290,7 +299,7 @@ fun SettingsBar(
             BaseCheckbox(
                 isChecked = isHideFoundAccountingObjects,
                 onCheckClickListener = onHideFoundAccountingObjectChanged,
-                enabled = isCanUpdate
+                enabled = canUpdate
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
@@ -307,7 +316,7 @@ fun SettingsBar(
             BaseCheckbox(
                 isChecked = isAddNew,
                 onCheckClickListener = onAddNewChanged,
-                enabled = isCanUpdate
+                enabled = canUpdate
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
@@ -324,7 +333,7 @@ fun InventoryBottomBar(
     onInWorkClickListener: () -> Unit = {},
     onFinishClickListener: () -> Unit,
     inventoryStatus: InventoryStatus,
-    isCanUpdate: Boolean
+    canUpdate: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -332,7 +341,7 @@ fun InventoryBottomBar(
             .padding(16.dp)
     ) {
         BaseButton(
-            enabled = inventoryStatus != InventoryStatus.COMPLETED && isCanUpdate,
+            enabled = inventoryStatus != InventoryStatus.COMPLETED && canUpdate,
             text = stringResource(R.string.common_save),
             onClick = onSaveClickListener,
             modifier = Modifier.weight(1f),
@@ -344,7 +353,9 @@ fun InventoryBottomBar(
                 BaseButton(
                     text = stringResource(R.string.common_in_work),
                     onClick = onInWorkClickListener,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    enabled = canUpdate,
+                    disabledBackgroundColor = AppTheme.colors.secondaryColor
                 )
             }
             InventoryStatus.IN_PROGRESS -> {
@@ -352,7 +363,9 @@ fun InventoryBottomBar(
                 BaseButton(
                     text = stringResource(R.string.common_complete),
                     onClick = onFinishClickListener,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    enabled = canUpdate,
+                    disabledBackgroundColor = AppTheme.colors.secondaryColor
                 )
             }
             InventoryStatus.COMPLETED -> {
@@ -371,7 +384,7 @@ private fun Toolbar(
     searchText: String,
     isShowSearch: Boolean,
     inventoryStatus: InventoryStatus,
-    isCanUpdate: Boolean
+    canUpdate: Boolean
 ) {
     SearchToolbar(
         title = stringResource(id = R.string.inventory_ao_title),
@@ -388,7 +401,7 @@ private fun Toolbar(
                 color = AppTheme.colors.mainColor,
                 modifier = Modifier.clickable(
                     onClick = onDropClickListener,
-                    enabled = inventoryStatus == InventoryStatus.CREATED && isCanUpdate
+                    enabled = inventoryStatus == InventoryStatus.CREATED && canUpdate
                 )
             )
         }
