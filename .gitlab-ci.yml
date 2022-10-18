@@ -32,13 +32,10 @@ build develop when merge_requests:
 build release apk:
   stage: buildRelease
   script:
-    #- ./gradlew app:assembleDebug
-    - touch union_version_3.0.txt
-    - echo "text text text" > union_version_3.0.txt
+    - ./gradlew app:assembleDebug
+    - cd app/build/outputs/apk/debug
     - ls
-    #- cd app/build/outputs/apk/debug
-    - files=( *.txt )
+    - files=( *.apk )
     - echo "${files[0]}"
-    - curl -v --location --request POST https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID --form document=@${files[0]}
+    - curl --location --request POST https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID --form document=@${files[0]}
   when: manual
-
