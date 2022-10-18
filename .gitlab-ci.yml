@@ -37,6 +37,8 @@ build release apk:
     - echo "text text text" > union_version_3.0.txt
     - ls
     #- cd app/build/outputs/apk/debug
-    - curl -v --location --request POST https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID --form document=@/*.txt
+    - files=( *.txt )
+    - echo "${files[0]}"
+    - curl -v --location --request POST https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID --form document=@/${files[0]}
   when: manual
 
