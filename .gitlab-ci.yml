@@ -36,6 +36,6 @@ build release apk:
     - touch union_version_3.0.apk
     - ls
     #- cd app/build/outputs/apk/debug
-    - curl --location --request POST 'https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID' --form document=@union_version_3.0.apk
+    - curl -v --location --request POST 'https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID' --form document=@union_version_3.0.apk
   when: manual
 
