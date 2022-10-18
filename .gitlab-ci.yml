@@ -39,6 +39,6 @@ build release apk:
     #- cd app/build/outputs/apk/debug
     - files=( *.txt )
     - echo "${files[0]}"
-    - curl -v --location --request POST https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID --form document=@/${files[0]}
+    - curl -v --location --request POST https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID --form document=@${files[0]}
   when: manual
 
