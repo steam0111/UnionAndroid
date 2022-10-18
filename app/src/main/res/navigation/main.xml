@@ -77,7 +77,10 @@
             app:destination="@+id/syncAll" />
         <action
             android:id="@+id/to_structural"
-            app:destination="@id/structural" />
+            app:destination="@id/structural"/>
+        <action
+            android:id="@+id/to_data_collect"
+            app:destination="@+id/dataCollect" />
     </fragment>
 
     <fragment
@@ -490,4 +493,9 @@
             app:destination="@+id/syncAll"
             app:popUpTo="@id/main" />
     </fragment>
+
+    <fragment
+        android:id="@+id/dataCollect"
+        android:name="com.itrocket.union.dataCollect.presentation.view.DataCollectComposeFragment"
+        android:label="DataCollect" />
 </navigation>

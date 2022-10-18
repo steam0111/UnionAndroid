@@ -83,7 +83,8 @@
     <string name="main_operations">Операции</string>
     <string name="main_books">Справочники</string>
     <string name="main_inventory">Инвентариз.</string>
-    <string name="main_identification">Идентификац.</string>
+    <string name="main_identification">Идентификация</string>
+    <string name="main_data_collect">Сбор данных</string>
     <string name="main_accounting_object">Объекты уч.</string>
     <string name="main_reserves">Запасы</string>
     <string name="main_commissioning">Ввод в экспл.</string>
@@ -328,6 +329,11 @@
 
     <!-- Identify -->
     <string name="os_tab_title">ОС (%s)</string>
+
+    <!-- DataCollect -->
+    <string name="data_collect_title">Сбор данных</string>
+    <string name="text_begin_scanning">Для начала считывания нажмите курок или выберите из списка</string>
+    <string name="data_collect_item_text">%s : %s</string>
 
     <!-- ChangeScanData -->
     <string name="change_scan_data_rfid_title">Изменение RFID</string>
