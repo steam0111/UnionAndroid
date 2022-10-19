@@ -6,7 +6,7 @@ import android.content.Intent
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.nfc.Tag
-import java.lang.Exception
+import kotlin.experimental.and
 
 class NfcManager {
 
@@ -65,10 +65,10 @@ class NfcManager {
             intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)?.map {
                 it as NdefMessage
             }
-        val message = rawMessages?.firstOrNull()
+        val message = rawMessages?.lastOrNull()
         val record = message?.records?.firstOrNull()
         val payload = requireNotNull(record?.payload)
-        return String(payload)
+        return ndefPayloadToString(payload)
     }
 
     private fun handleTagDiscovered(intent: Intent): String {
@@ -80,5 +80,21 @@ class NfcManager {
 
     private fun ByteArray.toHexString() = joinToString("") {
         String.format("%02x", it)
+    }
+
+    /**
+     * https://stackoverflow.com/a/64345509
+     * Решение сделано, потому что у ndefMessage есть конфликт с современными кодировками. Решает проблему " en" в начале данных из метки
+     */
+    private fun ndefPayloadToString(payload: ByteArray): String {
+        val textEncoding = if (payload[0] and 128.toByte() == 0.toByte()) "UTF-8" else "UTF-16"
+        val langCodeLength = payload[0] and 63.toByte()
+        return String(
+            payload,
+            langCodeLength + 1,
+            payload.count() - langCodeLength - 1,
+            charset(textEncoding)
+        )
+
     }
 }
