@@ -1,6 +1,10 @@
 package com.itrocket.union.accountingObjectDetail.presentation.store
 
-import com.arkivanov.mvikotlin.core.store.*
+import com.arkivanov.mvikotlin.core.store.Executor
+import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
+import com.arkivanov.mvikotlin.core.store.Store
+import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjectDetail.domain.AccountingObjectDetailInteractor
@@ -10,6 +14,8 @@ import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
+import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
+import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
@@ -21,6 +27,7 @@ class AccountingObjectDetailStoreFactory(
     private val accountingObjectDetailArguments: AccountingObjectDetailArguments,
     private val errorInteractor: ErrorInteractor,
     private val serviceEntryManager: ServiceEntryManager,
+    private val unionPermissionsInteractor: UnionPermissionsInteractor
 ) {
     fun create(): AccountingObjectDetailStore =
         object : AccountingObjectDetailStore,
@@ -46,6 +53,7 @@ class AccountingObjectDetailStoreFactory(
             action: Unit,
             getState: () -> AccountingObjectDetailStore.State
         ) {
+            dispatch(Result.CanUpdate(unionPermissionsInteractor.canUpdate(UnionPermission.ACCOUNTING_OBJECT)))
             listenAccountingObject()
         }
 
@@ -105,19 +113,21 @@ class AccountingObjectDetailStoreFactory(
             getState: () -> AccountingObjectDetailStore.State,
             scanData: String
         ) {
-            publish(AccountingObjectDetailStore.Label.ChangeSubscribeScanData(false))
-            publish(
-                AccountingObjectDetailStore.Label.ShowChangeScanData(
-                    entityId = getState().accountingObjectDomain.id,
-                    scanValue = when (getState().readingMode) {
-                        ReadingModeTab.RFID -> getState().accountingObjectDomain.rfidValue
-                        ReadingModeTab.BARCODE -> getState().accountingObjectDomain.barcodeValue
-                        ReadingModeTab.SN -> getState().accountingObjectDomain.factoryNumber
-                    },
-                    changeScanType = getState().readingMode.toChangeScanType(),
-                    newScanValue = scanData
+            if (getState().canUpdate) {
+                publish(AccountingObjectDetailStore.Label.ChangeSubscribeScanData(false))
+                publish(
+                    AccountingObjectDetailStore.Label.ShowChangeScanData(
+                        entityId = getState().accountingObjectDomain.id,
+                        scanValue = when (getState().readingMode) {
+                            ReadingModeTab.RFID -> getState().accountingObjectDomain.rfidValue
+                            ReadingModeTab.BARCODE -> getState().accountingObjectDomain.barcodeValue
+                            ReadingModeTab.SN -> getState().accountingObjectDomain.factoryNumber
+                        },
+                        changeScanType = getState().readingMode.toChangeScanType(),
+                        newScanValue = scanData
+                    )
                 )
-            )
+            }
         }
 
         private suspend fun listenAccountingObject() {
@@ -139,6 +149,7 @@ class AccountingObjectDetailStoreFactory(
         data class Loading(val isLoading: Boolean) : Result()
         data class AccountingObject(val obj: AccountingObjectDomain) : Result()
         data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
+        data class CanUpdate(val canUpdate: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<AccountingObjectDetailStore.State, Result> {
@@ -148,6 +159,7 @@ class AccountingObjectDetailStoreFactory(
                 is Result.NewPage -> copy(selectedPage = result.page)
                 is Result.AccountingObject -> copy(accountingObjectDomain = result.obj)
                 is Result.ReadingMode -> copy(readingMode = result.readingModeTab)
+                is Result.CanUpdate -> copy(canUpdate = result.canUpdate)
             }
     }
 }

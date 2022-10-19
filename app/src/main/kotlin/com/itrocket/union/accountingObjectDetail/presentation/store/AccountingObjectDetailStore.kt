@@ -36,7 +36,8 @@ interface AccountingObjectDetailStore :
         val accountingObjectDomain: AccountingObjectDomain,
         val isLoading: Boolean = false,
         val readingMode: ReadingModeTab = ReadingModeTab.RFID,
-        val selectedPage: Int = 0
+        val selectedPage: Int = 0,
+        val canUpdate: Boolean = false
     )
 
     sealed class Label {
