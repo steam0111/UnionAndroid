@@ -1,3 +1,5 @@
+import java.util.regex.Pattern
+
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
@@ -14,7 +16,7 @@ android {
         applicationId "com.itrocket.union"
         minSdk libs.versions.minSdk.get().toInteger()
         targetSdk libs.versions.targetSdk.get().toInteger()
-        versionCode 3
+        versionCode libs.versions.versionCode.get().toInteger()
         versionName "3.0"
 
         testInstrumentationRunner "com.karumi.shot.ShotTestRunner"
@@ -88,4 +90,17 @@ dependencies {
 
     androidTestImplementation(libs.androidx.compose.junit4)
     debugImplementation(libs.androidx.compose.manifest)
+}
+
+task incrementVersionCode() {
+    doLast {
+        def file = new File(project.rootDir.absolutePath + "/gradle/libs.versions.toml")
+        def libsFileText = file.text
+        def versionCodeTemplate = "versionCode = \""
+        def versionIndex = libsFileText.indexOf(versionCodeTemplate)
+        def updatedVersionCode = libsFileText.substring(versionIndex + versionCodeTemplate.length(), versionIndex + versionCodeTemplate.length() + 1).toInteger() + 1
+        def updatedLibsFileText = libsFileText.replaceFirst(Pattern.compile("versionCode = \".\""), "versionCode = \"$updatedVersionCode\"")
+        file.write(updatedLibsFileText)
+        println updatedVersionCode
+    }
 }
