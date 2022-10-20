@@ -19,7 +19,7 @@ class CounterpartySyncApiImpl(
         offset: Long?,
         limit: Long?
     ): List<CounterpartySyncEntity> {
-        return counterpartyDao.getAll(sqlCounterpartyQuery(textQuery, offset, limit))
+        return counterpartyDao.getAll(sqlCounterpartyQuery(textQuery = textQuery, offset = offset, limit = limit))
             .map { it.toSyncEntity() }
     }
 

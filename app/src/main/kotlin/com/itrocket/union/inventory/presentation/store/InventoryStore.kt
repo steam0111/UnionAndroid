@@ -4,7 +4,10 @@ import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
+import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_CODE
+import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_LABEL
 import com.itrocket.union.inventoryContainer.presentation.view.InventoryContainerComposeFragmentDirections
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.location.presentation.store.LocationArguments
@@ -59,7 +62,11 @@ interface InventoryStore :
     )
 
     sealed class Label {
-        object GoBack : Label()
+        class GoBack(override val result: InventoryResult) : Label(), GoBackNavigationLabel {
+            override val resultCode: String = INVENTORY_RESULT_CODE
+            override val resultLabel: String = INVENTORY_RESULT_LABEL
+        }
+
         data class ShowCreateInventory(
             val inventoryCreate: InventoryCreateDomain
         ) : Label()

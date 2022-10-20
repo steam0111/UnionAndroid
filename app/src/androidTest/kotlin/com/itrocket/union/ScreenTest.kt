@@ -10,6 +10,7 @@ import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectSc
 import com.itrocket.union.authUser.presentation.view.AuthUserScreenPreview
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataScreenPreview
 import com.itrocket.union.conterpartyDetail.presentation.view.CounterpartyDetailScreenPreview
+import com.itrocket.union.dataCollect.presentation.view.DataCollectScreenPreview
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateScreenPreview
 import com.itrocket.union.documents.presentation.view.DocumentScreenPreview
 import com.itrocket.union.documentsMenu.presentation.view.DocumentMenuScreenPreview
@@ -267,7 +268,13 @@ class ScreensTest : ScreenshotTest {
     }
 
     @Test
-    fun `ChangeScanData`() {
+    fun `DataCollect`() {
+        takeScreenShot {
+            DataCollectScreenPreview()
+        }
+    }
+
+    fun `ChangeScanData`(){
         takeScreenShot {
             ChangeScanDataScreenPreview()
         }

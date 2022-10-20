@@ -8,6 +8,9 @@ import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.filter.presentation.view.FilterComposeFragment
 import com.itrocket.union.inventories.InventoriesModule.INVENTORIES_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.inventories.presentation.store.InventoriesStore
+import com.itrocket.union.inventory.presentation.store.InventoryResult
+import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_CODE
+import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_LABEL
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 
 class InventoriesComposeFragment :
@@ -31,6 +34,15 @@ class InventoriesComposeFragment :
                 resultAction = {
                     (it as SelectParamsResult?)?.params?.let {
                         accept(InventoriesStore.Intent.OnFilterResult(it))
+                    }
+                }
+            ),
+            FragmentResult(
+                resultCode = INVENTORY_RESULT_CODE,
+                resultLabel = INVENTORY_RESULT_LABEL,
+                resultAction = {
+                    (it as InventoryResult?)?.let {
+                        accept(InventoriesStore.Intent.OnInventoryResult(it.dataChanged))
                     }
                 }
             )
@@ -60,6 +72,9 @@ class InventoriesComposeFragment :
                 onSearchTextChanged = {
                     accept(InventoriesStore.Intent.OnSearchTextChanged(it))
                 },
+                onLoadNext = {
+                    accept(InventoriesStore.Intent.OnLoadNext)
+                }
             )
         }
     }

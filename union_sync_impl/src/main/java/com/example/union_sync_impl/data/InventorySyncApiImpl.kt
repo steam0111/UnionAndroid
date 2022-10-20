@@ -13,7 +13,6 @@ import com.example.union_sync_api.entity.InventorySyncEntity
 import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
-import com.example.union_sync_impl.dao.EnumsDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.InventoryRecordDao
 import com.example.union_sync_impl.dao.LocationDao
@@ -29,8 +28,6 @@ import com.example.union_sync_impl.entity.FullInventory
 import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.entity.InventoryRecordDb
 import java.util.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
 class InventorySyncApiImpl(
@@ -58,36 +55,38 @@ class InventorySyncApiImpl(
         textQuery: String?,
         structuralId: String?,
         molId: String?,
-        inventoryBaseId: String?
-    ): Flow<List<InventorySyncEntity>> {
+        inventoryBaseId: String?,
+        offset: Long,
+        limit: Long?
+    ): List<InventorySyncEntity> {
         return inventoryDao.getAll(
             sqlInventoryQuery(
                 textQuery = textQuery,
                 structuralId = structuralId,
                 molId = molId,
-                inventoryBaseId = inventoryBaseId
+                inventoryBaseId = inventoryBaseId,
+                offset = offset,
+                limit = limit
             )
         ).map {
-            it.map {
-                val structurals = listOfNotNull(it.structuralDb?.toStructuralSyncEntity())
-                val balanceUnit = structurals.lastOrNull { it.balanceUnit }
-                val balanceUnitFullPath =
-                    structuralSyncApi.getStructuralFullPath(balanceUnit?.id, mutableListOf())
-                val inventoryBase = enumsApi.getByCompoundId(
-                    enumType = EnumType.INVENTORY_BASE,
-                    id = it.inventoryDb.inventoryBaseId
-                )
+            val structurals = listOfNotNull(it.structuralDb?.toStructuralSyncEntity())
+            val balanceUnit = structurals.lastOrNull { it.balanceUnit }
+            val balanceUnitFullPath =
+                structuralSyncApi.getStructuralFullPath(balanceUnit?.id, mutableListOf())
+            val inventoryBase = enumsApi.getByCompoundId(
+                enumType = EnumType.INVENTORY_BASE,
+                id = it.inventoryDb.inventoryBaseId
+            )
 
-                it.inventoryDb.toInventorySyncEntity(
-                    structuralSyncEntities = structurals,
-                    mol = it.employeeDb?.toSyncEntity(),
-                    locationSyncEntities = it.getLocations(),
-                    accountingObjects = listOf(),
-                    inventoryBaseSyncEntity = inventoryBase,
-                    balanceUnit = balanceUnitFullPath.orEmpty(),
-                    checkers = checkerSyncApi.getCheckers(it.inventoryDb.id)
-                )
-            }
+            it.inventoryDb.toInventorySyncEntity(
+                structuralSyncEntities = structurals,
+                mol = it.employeeDb?.toSyncEntity(),
+                locationSyncEntities = it.getLocations(),
+                accountingObjects = listOf(),
+                inventoryBaseSyncEntity = inventoryBase,
+                balanceUnit = balanceUnitFullPath.orEmpty(),
+                checkers = checkerSyncApi.getCheckers(it.inventoryDb.id)
+            )
         }
     }
 
@@ -207,12 +206,17 @@ class InventorySyncApiImpl(
         )
         val newRecords = accountingObjectIds.map { info ->
             val existRecord = existRecords.find { it.accountingObjectId == info.id }
+            val updateDate = if (existRecord?.inventoryStatus == info.status) {
+                existRecord.updateDate
+            } else {
+                System.currentTimeMillis()
+            }
             InventoryRecordDb(
                 id = existRecord?.id ?: UUID.randomUUID().toString(),
                 accountingObjectId = info.id,
                 inventoryStatus = info.status,
                 inventoryId = inventoryId,
-                updateDate = System.currentTimeMillis(),
+                updateDate = updateDate,
                 insertDate = existRecord?.insertDate,
                 userUpdated = userUpdated,
                 userInserted = userUpdated

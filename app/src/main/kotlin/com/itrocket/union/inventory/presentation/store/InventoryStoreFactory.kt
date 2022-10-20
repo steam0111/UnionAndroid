@@ -81,7 +81,11 @@ class InventoryStoreFactory(
             getState: () -> InventoryStore.State
         ) {
             when (intent) {
-                InventoryStore.Intent.OnBackClicked -> publish(InventoryStore.Label.GoBack)
+                InventoryStore.Intent.OnBackClicked -> publish(
+                    InventoryStore.Label.GoBack(
+                        InventoryResult(false)
+                    )
+                )
                 InventoryStore.Intent.OnCreateDocumentClicked -> createInventory(
                     getState().accountingObjectList,
                     getState().params
@@ -182,7 +186,7 @@ class InventoryStoreFactory(
                     inventoryDocument.copy(documentInfo = params),
                     accountingObjects
                 )
-                publish(InventoryStore.Label.GoBack)
+                publish(InventoryStore.Label.GoBack(InventoryResult(true)))
             }
             dispatch(Result.IsAccountingObjectsLoading(false))
         }

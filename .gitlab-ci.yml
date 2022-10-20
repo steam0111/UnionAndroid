@@ -11,6 +11,7 @@ variables:
 
 stages:
    - buildMR
+   - buildRelease
   #- printCertificates
   #- buildAndTest
   #- testCoverage
@@ -26,3 +27,15 @@ build develop when merge_requests:
       - merge_requests
     variables:
       - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
+
+# Тригериться только на ручной запуск
+build release apk:
+  stage: buildRelease
+  script:
+    - ./gradlew app:assembleDebug
+    - cd app/build/outputs/apk/debug
+    - ls
+    - files=( *.apk )
+    - echo "${files[0]}"
+    - curl --location --request POST https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID --form document=@${files[0]}
+  when: manual

@@ -24,6 +24,8 @@ interface InventoriesStore :
         object OnFilterClicked : Intent()
         data class OnInventoryClicked(val inventory: InventoryCreateDomain) : Intent()
         data class OnSearchTextChanged(val searchText: String) : Intent()
+        object OnLoadNext : Intent()
+        class OnInventoryResult(val changed: Boolean) : Intent()
     }
 
     data class State(
@@ -31,12 +33,16 @@ interface InventoriesStore :
         val inventories: List<InventoryCreateDomain> = listOf(),
         val isShowSearch: Boolean = false,
         val searchText: String = "",
-        val params: List<ParamDomain>? = null
+        val params: List<ParamDomain>? = null,
+        val isListEndReached: Boolean = false
     )
 
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
-        data class ShowInventoryDetail(val inventory: InventoryCreateDomain, val type: InventoryContainerType) : Label(),
+        data class ShowInventoryDetail(
+            val inventory: InventoryCreateDomain,
+            val type: InventoryContainerType
+        ) : Label(),
             ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = InventoriesComposeFragmentDirections.toInventoryContainer(
