@@ -98,9 +98,17 @@ task incrementVersionCode() {
         def libsFileText = file.text
         def versionCodeTemplate = "versionCode = \""
         def versionIndex = libsFileText.indexOf(versionCodeTemplate)
-        def updatedVersionCode = libsFileText.substring(versionIndex + versionCodeTemplate.length(), versionIndex + versionCodeTemplate.length() + 1).toInteger() + 1
-        def updatedLibsFileText = libsFileText.replaceFirst(Pattern.compile("versionCode = \".\""), "versionCode = \"$updatedVersionCode\"")
+
+        def currentVersionCode = libsFileText.substring(
+                versionIndex + versionCodeTemplate.length(),
+                libsFileText.indexOf("\"", versionIndex + versionCodeTemplate.length())
+        )
+
+        def updatedVersionCode = currentVersionCode.toInteger() + 1
+        def updatedLibsFileText = libsFileText.replaceFirst(Pattern.compile("versionCode = \"[0-9]+\""), "versionCode = \"$updatedVersionCode\"")
+
         file.write(updatedLibsFileText)
+
         println updatedVersionCode
     }
 }
