@@ -4,7 +4,7 @@ minSdk = "21"
 targetSdk = "30"
 java = "11"
 
-versionCode = "19"
+versionCode = "20"
 
 kotlin = "1.6.10"
 agp = "7.3.0"
