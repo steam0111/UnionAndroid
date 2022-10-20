@@ -50,6 +50,9 @@ class CounterpartyStoreFactory(
             },
             onSuccess = {
                 dispatch(Result.Counterparties(it))
+            },
+            onEndReached = {
+                dispatch(Result.IsListEndReached(true))
             }
         )
 
@@ -107,10 +110,6 @@ class CounterpartyStoreFactory(
                     offset = offset,
                     limit = Paginator.PAGE_SIZE
                 )
-
-                if (counterparties.isEmpty()) {
-                    dispatch(Result.IsListEndReached(true))
-                }
                 counterparties
             }
 

@@ -38,7 +38,7 @@ datastore = "1.0.0"
 
 core = "1.1.7"
 ui = "1.0.2"
-utils = "1.0.1"
+utils = "1.0.4"
 
 database = "2.4.2"
 

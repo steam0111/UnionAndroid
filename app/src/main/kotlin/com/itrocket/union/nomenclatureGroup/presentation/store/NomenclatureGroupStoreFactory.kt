@@ -49,6 +49,9 @@ class NomenclatureGroupStoreFactory(
             },
             onSuccess = {
                 dispatch(Result.NomenclatureGroups(it))
+            },
+            onEndReached = {
+                dispatch(Result.IsListEndReached(true))
             }
         )
 
@@ -96,10 +99,6 @@ class NomenclatureGroupStoreFactory(
                     offset = offset,
                     limit = Paginator.PAGE_SIZE
                 )
-
-                if (nomenclatureGroups.isEmpty()) {
-                    dispatch(Result.IsListEndReached(true))
-                }
                 nomenclatureGroups
             }
 

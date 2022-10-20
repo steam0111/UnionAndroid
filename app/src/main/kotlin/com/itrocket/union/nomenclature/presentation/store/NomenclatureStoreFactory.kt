@@ -55,6 +55,9 @@ class NomenclatureStoreFactory(
             },
             onSuccess = {
                 dispatch(Result.Nomenclatures(it))
+            },
+            onEndReached = {
+                dispatch(Result.IsListEndReached(true))
             }
         )
 
@@ -140,10 +143,6 @@ class NomenclatureStoreFactory(
                 offset = offset,
                 limit = Paginator.PAGE_SIZE
             )
-
-            if (nomenclatures.isEmpty()) {
-                dispatch(Result.IsListEndReached(true))
-            }
             nomenclatures
         }
 

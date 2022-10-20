@@ -48,6 +48,9 @@ class ProducerStoreFactory(
             },
             onSuccess = {
                 dispatch(Result.Producers(it))
+            },
+            onEndReached = {
+                dispatch(Result.IsListEndReached(true))
             }
         )
 
@@ -95,12 +98,7 @@ class ProducerStoreFactory(
                     offset = offset,
                     limit = Paginator.PAGE_SIZE
                 )
-
-                if (producers.isEmpty()) {
-                    dispatch(Result.IsListEndReached(true))
-                }
                 producers
-
             }
 
         private suspend fun onBackClicked(isShowSearch: Boolean) {
