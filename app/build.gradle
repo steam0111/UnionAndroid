@@ -48,7 +48,7 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "union_version_${variant.versionName}.apk"
+            outputFileName = "union_version_${variant.versionCode}.apk"
         }
     }
 }
