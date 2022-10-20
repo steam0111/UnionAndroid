@@ -41,9 +41,10 @@ build release apk:
     - eval $(ssh-agent -s)
 
     # Копируем приватный ключ из переменной CI в id_rsa
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-    - ssh-add ~/.ssh/id_rsa
-
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    
     # Записываем в ssh конфиг инфу о том чтобы он не проверял host, по другому на CI работать не будет
     - echo -e "Host *\nStrictHostKeyChecking no" > ~/.ssh/config
 
