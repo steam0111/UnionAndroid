@@ -58,7 +58,7 @@ build release apk:
     - git checkout -B increment_version_code
     - versionCode="$(./gradlew -Pci --console=plain -q incrementVersionCode)"
     - git add .
-    - git commit -m "CI increment version code to ${versionCode}"
+    - git commit -m "CI increment version code"
     - git push origin increment_version_code:master
      
     # Билд и отправка apk в телеграмм
