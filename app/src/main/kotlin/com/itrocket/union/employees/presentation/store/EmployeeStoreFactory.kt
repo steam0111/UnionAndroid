@@ -52,6 +52,9 @@ class EmployeeStoreFactory(
             },
             onSuccess = {
                 dispatch(Result.Employees(it))
+            },
+            onEndReached = {
+                dispatch(Result.IsListEndReached(true))
             }
         )
 
@@ -130,9 +133,6 @@ class EmployeeStoreFactory(
                 limit = Paginator.PAGE_SIZE
             )
 
-            if (employees.isEmpty()) {
-                dispatch(Result.IsListEndReached(true))
-            }
             employees
         }
 

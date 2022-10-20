@@ -53,6 +53,9 @@ class ReservesStoreFactory(
             },
             onSuccess = {
                 dispatch(Result.Reserves(it))
+            },
+            onEndReached = {
+                dispatch(Result.IsListEndReached(true))
             }
         )
 
@@ -137,9 +140,6 @@ class ReservesStoreFactory(
                 offset = offset,
                 limit = Paginator.PAGE_SIZE
             )
-            if (reserves.isEmpty()) {
-                dispatch(Result.IsListEndReached(true))
-            }
             reserves
         }
 

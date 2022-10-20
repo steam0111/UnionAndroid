@@ -50,6 +50,9 @@ class EquipmentTypeStoreFactory(
             },
             onSuccess = {
                 dispatch(Result.Types(it))
+            },
+            onEndReached = {
+                dispatch(Result.IsListEndReached(true))
             }
         )
 
@@ -95,9 +98,6 @@ class EquipmentTypeStoreFactory(
                     offset = offset,
                     limit = Paginator.PAGE_SIZE
                 )
-                if (types.isEmpty()) {
-                    dispatch(Result.IsListEndReached(true))
-                }
                 types
             }
 

@@ -52,6 +52,9 @@ class AccountingObjectStoreFactory(
             },
             onSuccess = {
                 dispatch(Result.AccountingObjects(it))
+            },
+            onEndReached = {
+                dispatch(Result.IsListEndReached(true))
             }
         )
 
@@ -141,9 +144,6 @@ class AccountingObjectStoreFactory(
                 offset = offset,
                 limit = Paginator.PAGE_SIZE
             )
-            if (accountingObjects.isEmpty()) {
-                dispatch(Result.IsListEndReached(true))
-            }
             accountingObjects
         }
 

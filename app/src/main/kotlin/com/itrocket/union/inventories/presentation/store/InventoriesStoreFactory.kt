@@ -50,6 +50,9 @@ class InventoriesStoreFactory(
             },
             onSuccess = {
                 dispatch(Result.Inventories(it))
+            },
+            onEndReached = {
+                dispatch(Result.IsListEndReached(true))
             }
         )
 
@@ -145,10 +148,6 @@ class InventoriesStoreFactory(
                 offset = offset,
                 limit = Paginator.PAGE_SIZE
             )
-
-            if (inventories.isEmpty()) {
-                dispatch(Result.IsListEndReached(true))
-            }
             inventories
         }
 
