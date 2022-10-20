@@ -32,6 +32,36 @@ build develop when merge_requests:
 build release apk:
   stage: buildRelease
   script:
+    - git config --global user.email "gitlab@itrokcet.com"
+    - git config --global user.name "Gitlab CI"
+    
+    # Установка ssh агента если он еще не установлен
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+    # Запуск  shh агента
+    - eval $(ssh-agent -s)
+
+    # Копируем приватный ключ из переменной CI в id_rsa
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+    - ssh-add ~/.ssh/id_rsa
+
+    # Записываем в ssh конфиг инфу о том чтобы он не проверял host, по другому на CI работать не будет
+    - echo -e "Host *\nStrictHostKeyChecking no" > ~/.ssh/config
+
+    # Удаляем текущие файлы
+    - cd ..
+    - rm -rf unionandroid
+
+    - git clone -b master --single-branch --depth 1 git@gitlab.com:StanislavKosyakov/unionandroid.git
+    - cd unionandroid
+    - git checkout -B increment_version_code
+    - versionCode="$(./gradlew -Pci --console=plain -q incrementVersionCode)"
+    - git add .
+    - git commit -m "CI increment version code to ${versionCode}"
+    - git push origin increment_version_code:master
+     
+    # Билд и отправка apk в телеграмм
     - ./gradlew app:assembleDebug
     - cd app/build/outputs/apk/debug
     - ls
