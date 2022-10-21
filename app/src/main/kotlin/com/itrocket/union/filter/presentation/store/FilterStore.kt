@@ -28,6 +28,7 @@ interface FilterStore : Store<FilterStore.Intent, FilterStore.State, FilterStore
         data class OnFilterChanged(val filters: List<ParamDomain>) : Intent()
         data class OnFilterLocationChanged(val locationResult: LocationResult) : Intent()
         data class OnStructuralChanged(val structural: StructuralResult) : Intent()
+        data class OnShowUtilizedClick(val checked: Boolean) : Intent()
         object OnShowClicked : Intent()
         object OnCrossClicked : Intent()
         object OnDropClicked : Intent()

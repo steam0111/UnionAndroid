@@ -22,6 +22,7 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
 import com.itrocket.union.filter.presentation.store.FilterStore
+import com.itrocket.union.manual.CheckBoxParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
@@ -29,6 +30,7 @@ import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
+import com.itrocket.union.ui.CheckBoxField
 import com.itrocket.union.ui.SelectedBaseField
 import com.itrocket.union.ui.UnselectedBaseField
 import com.itrocket.union.ui.graphite2
@@ -40,7 +42,8 @@ fun FilterScreen(
     onBackClickListener: () -> Unit,
     onDropClickListener: () -> Unit,
     onFieldClickListener: (ParamDomain) -> Unit,
-    onShowClickListener: () -> Unit
+    onShowClickListener: () -> Unit,
+    onShowUtilizedClick: (Boolean) -> Unit
 ) {
     val resources = LocalContext.current.resources
     AppTheme {
@@ -54,7 +57,8 @@ fun FilterScreen(
             content = {
                 FilterContent(
                     filters = state.params.paramList,
-                    onFieldClickListener = onFieldClickListener
+                    onFieldClickListener = onFieldClickListener,
+                    onCheckBoxClickListener = onShowUtilizedClick
                 )
             },
             bottomBar = {
@@ -90,11 +94,18 @@ private fun FilterToolbar(onCrossClickListener: () -> Unit, onDropClickListener:
 @Composable
 private fun FilterContent(
     filters: List<ParamDomain>,
-    onFieldClickListener: (ParamDomain) -> Unit
+    onFieldClickListener: (ParamDomain) -> Unit,
+    onCheckBoxClickListener: (Boolean) -> Unit
 ) {
     LazyColumn {
         items(filters) {
-            if (it.value.isEmpty()) {
+            if (it is CheckBoxParamDomain) {
+                CheckBoxField(
+                    isSelected = it.isChecked,
+                    label = stringResource(id = it.type.titleId),
+                    onFieldClickListener = { onCheckBoxClickListener(!it.isChecked) }
+                )
+            } else if (it.value.isEmpty()) {
                 UnselectedBaseField(
                     label = stringResource(it.type.titleId),
                     onFieldClickListener = {
@@ -155,5 +166,5 @@ fun FilterScreenPreview() {
                     )
                 )
             )
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {})
 }

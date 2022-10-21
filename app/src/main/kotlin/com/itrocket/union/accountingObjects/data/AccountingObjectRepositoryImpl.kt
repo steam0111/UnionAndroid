@@ -34,7 +34,8 @@ class AccountingObjectRepositoryImpl(
         selectedLocationIds: List<String?>?,
         structuralIds: List<String?>?,
         offset: Long?,
-        limit: Long?
+        limit: Long?,
+        showUtilized: Boolean
     ): List<AccountingObjectDomain> =
         withContext(coreDispatchers.io) {
             syncApi.getAccountingObjects(
@@ -48,7 +49,8 @@ class AccountingObjectRepositoryImpl(
                 locationIds = selectedLocationIds,
                 structuralId = structuralIds,
                 offset = offset,
-                limit = limit
+                limit = limit,
+                isShowUtilised = showUtilized
             ).map { it.map() }
         }
 
@@ -56,7 +58,8 @@ class AccountingObjectRepositoryImpl(
         textQuery: String?,
         params: List<ParamDomain>,
         selectedLocationIds: List<String?>?,
-        structuralIds: List<String?>?
+        structuralIds: List<String?>?,
+        showUtilized: Boolean
     ): Long =
         withContext(coreDispatchers.io) {
             syncApi.getAccountingObjectsCount(
@@ -68,7 +71,8 @@ class AccountingObjectRepositoryImpl(
                 providerId = params.getProviderId(),
                 statusId = params.getStatusId(),
                 locationIds = selectedLocationIds,
-                structuralIds = structuralIds
+                structuralIds = structuralIds,
+                showUtilized = showUtilized
             )
         }
 

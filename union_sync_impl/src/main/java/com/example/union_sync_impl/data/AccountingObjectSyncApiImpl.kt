@@ -43,7 +43,8 @@ class AccountingObjectSyncApiImpl(
         structuralId: List<String?>?,
         offset: Long?,
         limit: Long?,
-        serialNumber: String?
+        serialNumber: String?,
+        isShowUtilised: Boolean
     ): List<AccountingObjectSyncEntity> {
         return accountingObjectsDao.getAll(
             sqlAccountingObjectQuery(
@@ -60,7 +61,8 @@ class AccountingObjectSyncApiImpl(
                 locationIds = locationIds,
                 structuralIds = structuralId,
                 offset = offset,
-                limit = limit
+                limit = limit,
+                isShowUtilised = isShowUtilised
             )
         ).map {
             val location = locationSyncApi.getLocationById(it.accountingObjectDb.locationId)
@@ -80,7 +82,8 @@ class AccountingObjectSyncApiImpl(
         textQuery: String?,
         accountingObjectsIds: List<String>?,
         locationIds: List<String?>?,
-        structuralIds: List<String?>?
+        structuralIds: List<String?>?,
+        showUtilized: Boolean
     ): Long {
         return accountingObjectsDao.getCount(
             sqlAccountingObjectQuery(
@@ -96,7 +99,8 @@ class AccountingObjectSyncApiImpl(
                 textQuery = textQuery,
                 isFilterCount = true,
                 locationIds = locationIds,
-                structuralIds = structuralIds
+                structuralIds = structuralIds,
+                isShowUtilised = showUtilized
             )
         )
     }

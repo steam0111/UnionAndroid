@@ -8,12 +8,14 @@ import com.itrocket.union.filter.domain.dependencies.FilterRepository
 import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.location.domain.dependencies.LocationRepository
+import com.itrocket.union.manual.CheckBoxParamDomain
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.manual.getFilterLocationLastId
+import com.itrocket.union.manual.getFilterShowUtilizedAccountingObjects
 import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.nomenclature.domain.dependencies.NomenclatureRepository
 import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
@@ -60,6 +62,18 @@ class FilterInteractor(
         return mutableFilters
     }
 
+    fun changeIsShowUtilisedFilter(
+        filters: List<ParamDomain>,
+        isChecked: Boolean
+    ): List<ParamDomain> {
+        val checkBoxIndex = filters.indexOfFirst { it.type == ManualType.CHECKBOX_SHOW_UTILIZED }
+        if (checkBoxIndex < 0) return filters
+        val newFilters = filters.toMutableList()
+        newFilters[checkBoxIndex] = CheckBoxParamDomain(isChecked = isChecked)
+        return newFilters
+    }
+
+
     suspend fun changeLocationFilter(
         filters: List<ParamDomain>,
         location: LocationParamDomain
@@ -95,7 +109,8 @@ class FilterInteractor(
                 accountingObjectRepository.getAccountingObjectsCount(
                     params = params,
                     selectedLocationIds = params.getFilterLocationIds(),
-                    structuralIds = params.getFilterStructuralIds()
+                    structuralIds = params.getFilterStructuralIds(),
+                    showUtilized = params.getFilterShowUtilizedAccountingObjects()
                 )
             }
             CatalogType.Employees -> {

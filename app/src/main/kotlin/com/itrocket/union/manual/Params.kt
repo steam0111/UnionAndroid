@@ -15,7 +15,8 @@ data class Params(val paramList: List<ParamDomain>) {
             ManualType.STRUCTURAL,
             ManualType.TRANSIT,
             ManualType.BALANCE_UNIT_FROM,
-            ManualType.BALANCE_UNIT_TO
+            ManualType.BALANCE_UNIT_TO,
+            ManualType.CHECKBOX_SHOW_UTILIZED
         )
     }
 

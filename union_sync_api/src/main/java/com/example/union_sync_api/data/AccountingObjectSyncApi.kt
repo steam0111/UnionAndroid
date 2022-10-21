@@ -22,7 +22,8 @@ interface AccountingObjectSyncApi {
         structuralId: List<String?>? = null,
         offset: Long? = null,
         limit: Long? = null,
-        serialNumber: String? = null
+        serialNumber: String? = null,
+        isShowUtilised: Boolean = true
     ): List<AccountingObjectSyncEntity>
 
     suspend fun getAccountingObjectsCount(
@@ -37,7 +38,8 @@ interface AccountingObjectSyncApi {
         textQuery: String? = null,
         accountingObjectsIds: List<String>? = null,
         locationIds: List<String?>? = null,
-        structuralIds: List<String?>?
+        structuralIds: List<String?>?,
+        showUtilized: Boolean = true
     ): Long
 
     suspend fun getAccountingObjectDetailById(id: String): AccountingObjectDetailSyncEntity

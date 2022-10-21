@@ -73,6 +73,8 @@ class FilterComposeFragment :
                 accept(FilterStore.Intent.OnFieldClicked(filter))
             }, onShowClickListener = {
                 accept(FilterStore.Intent.OnShowClicked)
+            }, onShowUtilizedClick = {
+                accept(FilterStore.Intent.OnShowUtilizedClick(it))
             })
         }
     }

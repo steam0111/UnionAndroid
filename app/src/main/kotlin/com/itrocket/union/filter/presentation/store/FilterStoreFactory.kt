@@ -9,6 +9,7 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
+import com.itrocket.union.manual.CheckBoxParamDomain
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
@@ -64,6 +65,11 @@ class FilterStoreFactory(
         ) {
             when (intent) {
                 is FilterStore.Intent.OnFieldClicked -> showFilters(intent.filter, getState)
+                is FilterStore.Intent.OnShowUtilizedClick ->  {
+                    val newFilters = filterInteractor.changeIsShowUtilisedFilter(getState().params.paramList, intent.checked)
+                    dispatch(Result.Filters(newFilters))
+                    dispatch(Result.Count(getResultCount(newFilters, getState())))
+                }
                 is FilterStore.Intent.OnShowClicked -> {
                     publish(
                         FilterStore.Label.GoBack(
