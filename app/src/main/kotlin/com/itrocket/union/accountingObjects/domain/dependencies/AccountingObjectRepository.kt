@@ -13,14 +13,16 @@ interface AccountingObjectRepository {
         selectedLocationIds: List<String?>?,
         structuralIds: List<String?>?,
         offset: Long?,
-        limit: Long?
+        limit: Long?,
+        showUtilized: Boolean
     ): List<AccountingObjectDomain>
 
     suspend fun getAccountingObjectsCount(
         textQuery: String? = null,
         params: List<ParamDomain>,
         selectedLocationIds: List<String?>?,
-        structuralIds: List<String?>?
+        structuralIds: List<String?>?,
+        showUtilized: Boolean
     ): Long
 
     suspend fun getAccountingObjectsByIds(ids: List<String>): List<AccountingObjectSyncEntity>

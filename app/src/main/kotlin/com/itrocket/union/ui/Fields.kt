@@ -162,6 +162,48 @@ fun UnselectedBaseField(
     }
 }
 
+
+@Composable
+fun CheckBoxField(
+    isShowBottomLine: Boolean = true,
+    label: String,
+    onFieldClickListener: () -> Unit,
+    isSelected: Boolean
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onFieldClickListener()
+            }
+            .padding(start = 16.dp, top = 16.dp, end = 16.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            BaseCheckbox(
+                isChecked = isSelected,
+                onCheckClickListener = onFieldClickListener
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(text = label, style = AppTheme.typography.body2, color = graphite5)
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        if (isShowBottomLine) {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(brightGray)
+            )
+        }
+    }
+}
+
+
 @Composable
 fun RadioButtonField(
     isShowBottomLine: Boolean = true,

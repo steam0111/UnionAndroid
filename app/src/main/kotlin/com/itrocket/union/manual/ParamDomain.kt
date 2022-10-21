@@ -105,6 +105,11 @@ fun List<ParamDomain>.filterNotEmpty(): List<ParamDomain> {
     return filterNot { it.id.isNullOrBlank() }
 }
 
+fun List<ParamDomain>.getFilterShowUtilizedAccountingObjects(): Boolean {
+    return (firstOrNull { it.type == ManualType.CHECKBOX_SHOW_UTILIZED } as? CheckBoxParamDomain)
+        ?.isChecked ?: true
+}
+
 @Parcelize
 data class LocationParamDomain(
     val filtered: Boolean = true,
@@ -140,5 +145,20 @@ data class StructuralParamDomain(
 
     override fun toInitialState(): StructuralParamDomain {
         return StructuralParamDomain(manualType = manualType)
+    }
+}
+
+@Parcelize
+data class CheckBoxParamDomain(
+    val isChecked: Boolean
+) : Parcelable,
+    ParamDomain(
+        type = ManualType.CHECKBOX_SHOW_UTILIZED,
+        isFilter = false,
+        isClickable = true
+    ) {
+
+    override fun toInitialState(): CheckBoxParamDomain {
+        return CheckBoxParamDomain(isChecked = false)
     }
 }

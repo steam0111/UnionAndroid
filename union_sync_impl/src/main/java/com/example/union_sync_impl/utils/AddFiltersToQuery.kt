@@ -35,6 +35,9 @@ fun String.addFilters(
             is SqlFilter.More -> {
                 filters.add("${sqlTableFilters.tableName}.${sqlFilter.name} > \'${sqlFilter.value}\'")
             }
+            is SqlFilter.NotEquals -> {
+                filters.add("${sqlTableFilters.tableName}.${sqlFilter.name} != \'${sqlFilter.value}\'")
+            }
         }
     }
 
@@ -59,10 +62,12 @@ sealed class SqlFilter {
     data class Contains(val name: String, val value: String) : SqlFilter()
     data class ContainsInList(val names: List<String>, val value: String) : SqlFilter()
     data class More(val name: String, val value: Long) : SqlFilter()
+    data class NotEquals(val name: String, val value: String?) : SqlFilter()
 }
 
 infix fun String.isEquals(value: String?): SqlFilter = SqlFilter.Field(this, value)
 infix fun String.isEquals(values: List<String?>): SqlFilter = SqlFilter.Fields(this, values)
+infix fun String.isNotEquals(value: String?): SqlFilter = SqlFilter.NotEquals(this, value)
 infix fun String.contains(value: String): SqlFilter = SqlFilter.Contains(this, value)
 infix fun List<String>.contains(value: String): SqlFilter = SqlFilter.ContainsInList(this, value)
 infix fun String.more(value: Long): SqlFilter = SqlFilter.More(this, value)

@@ -6,6 +6,7 @@ import com.example.union_sync_impl.utils.addFilters
 import com.example.union_sync_impl.utils.addPagination
 import com.example.union_sync_impl.utils.contains
 import com.example.union_sync_impl.utils.isEquals
+import com.example.union_sync_impl.utils.isNotEquals
 import com.example.union_sync_impl.utils.more
 
 fun sqlAccountingObjectQuery(
@@ -25,6 +26,7 @@ fun sqlAccountingObjectQuery(
     offset: Long? = null,
     locationIds: List<String?>? = null,
     structuralIds: List<String?>? = null,
+    isShowUtilised: Boolean = true
 ): SimpleSQLiteQuery {
     val mainQuery = if (isFilterCount) {
         "SELECT COUNT(*) FROM accounting_objects"
@@ -60,7 +62,8 @@ fun sqlAccountingObjectQuery(
         accountingObjectsIds = accountingObjectsIds,
         textQuery = textQuery,
         updateDate = updateDate,
-        locationIds = locationIds
+        locationIds = locationIds,
+        isShowUtilised = isShowUtilised
     ).addPagination(
         limit,
         offset
@@ -82,7 +85,8 @@ private fun String.getAccountingObjectsFilterPartQuery(
     accountingObjectsIds: List<String>? = null,
     updateDate: Long? = null,
     locationIds: List<String?>? = null,
-    structuralIds: List<String?>? = null
+    structuralIds: List<String?>? = null,
+    isShowUtilised: Boolean = true
 ): String = addFilters(
     sqlTableFilters = SqlTableFilters(
         tableName = "accounting_objects",
@@ -125,6 +129,9 @@ private fun String.getAccountingObjectsFilterPartQuery(
             }
             structuralIds?.let {
                 add("structuralId" isEquals structuralIds)
+            }
+            if (!isShowUtilised && statusId == null) {
+                add("statusId" isNotEquals "WRITTEN_OFF")
             }
         }
     )

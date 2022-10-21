@@ -4,11 +4,13 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.location.domain.dependencies.LocationRepository
+import com.itrocket.union.manual.CheckBoxParamDomain
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.manual.getFilterLocationLastId
+import com.itrocket.union.manual.getFilterShowUtilizedAccountingObjects
 import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.structural.domain.dependencies.StructuralRepository
 import kotlinx.coroutines.withContext
@@ -49,43 +51,61 @@ class AccountingObjectInteractor(
                 filterLocationIds,
                 filterStructuralIds,
                 offset = offset,
-                limit = limit
+                limit = limit,
+                showUtilized = params.getFilterShowUtilizedAccountingObjects()
             ).filter {
                 !selectedAccountingObjectIds.contains(it.id)
             }
         }
 
     suspend fun getFilters(isFromDocument: Boolean): List<ParamDomain> {
-        return listOf(
-            getStatusFilter(isFromDocument),
-            StructuralParamDomain(
-                structurals = listOf(),
-                manualType = ManualType.STRUCTURAL
-            ),
-            ParamDomain(
-                type = ManualType.MOL,
-                value = ""
-            ),
-            ParamDomain(
-                type = ManualType.EXPLOITING,
-                value = ""
-            ),
-            LocationParamDomain(
-                locations = listOf()
-            ),
-            ParamDomain(
-                type = ManualType.PROVIDER,
-                value = ""
-            ),
-            ParamDomain(
-                type = ManualType.PRODUCER,
-                value = ""
-            ),
-            ParamDomain(
-                type = ManualType.EQUIPMENT_TYPE,
-                value = ""
+        return buildList {
+            add(getStatusFilter(isFromDocument))
+            add(
+                StructuralParamDomain(
+                    structurals = listOf(),
+                    manualType = ManualType.STRUCTURAL
+                )
             )
-        )
+            add(
+                ParamDomain(
+                    type = ManualType.MOL,
+                    value = ""
+                )
+            )
+            add(
+                ParamDomain(
+                    type = ManualType.EXPLOITING,
+                    value = ""
+                )
+            )
+            add(
+                LocationParamDomain(
+                    locations = listOf()
+                )
+            )
+            add(
+                ParamDomain(
+                    type = ManualType.PROVIDER,
+                    value = ""
+                )
+            )
+            add(
+                ParamDomain(
+                    type = ManualType.PRODUCER,
+                    value = ""
+                )
+            )
+            add(
+                ParamDomain(
+                    type = ManualType.EQUIPMENT_TYPE,
+                    value = ""
+                )
+            )
+            if (isFromDocument) {
+                add(CheckBoxParamDomain(isChecked = false))
+            }
+        }
     }
 
     private suspend fun getStatusFilter(isFromDocument: Boolean): ParamDomain {
