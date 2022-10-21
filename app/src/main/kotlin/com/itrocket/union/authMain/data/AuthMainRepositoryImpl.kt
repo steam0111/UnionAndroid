@@ -17,6 +17,7 @@ import com.itrocket.union.network.InvalidNetworkDataException
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import java.lang.reflect.Type
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
@@ -26,7 +27,6 @@ import org.openapitools.client.apis.ExtractMyUserInformationControllerApi
 import org.openapitools.client.apis.JwtAuthControllerApi
 import org.openapitools.client.custom_api.AuthApi
 import org.openapitools.client.models.RefreshJwtRequest
-import java.lang.reflect.Type
 
 class AuthMainRepositoryImpl(
     private val api: AuthApi,
@@ -35,7 +35,7 @@ class AuthMainRepositoryImpl(
     private val accessTokenPreferencesKey: Preferences.Key<String>,
     private val refreshTokenPreferencesKey: Preferences.Key<String>,
     private val loginPreferencesKey: Preferences.Key<String>,
-    private val myEmployeePreferencesKey: Preferences.Key<String>,
+    private val myEmployeePreferencesKey: Preferences.Key<String?>,
     private val myPermissionsPreferencesKey: Preferences.Key<String>,
     private val mySuperUserPreferencesKey: Preferences.Key<Boolean>,
     private val moshi: Moshi
@@ -112,9 +112,7 @@ class AuthMainRepositoryImpl(
 
     override suspend fun saveMyConfig(config: MyConfigDomain?) {
         dataStore.edit { preferences ->
-            config?.employeeId?.let {
-                preferences[myEmployeePreferencesKey] = it
-            }
+            preferences[myEmployeePreferencesKey] = config?.employeeId
             config?.permissions?.let {
                 val type: Type =
                     Types.newParameterizedType(List::class.java, MyConfigPermission::class.java)
@@ -123,9 +121,7 @@ class AuthMainRepositoryImpl(
                 val permissionsString = jsonAdapter.toJson(it)
                 preferences[myPermissionsPreferencesKey] = permissionsString
             }
-            config?.isSuperUser?.let {
-                preferences[mySuperUserPreferencesKey] = it
-            }
+            preferences[mySuperUserPreferencesKey] = config?.isSuperUser ?: false
         }
     }
 
