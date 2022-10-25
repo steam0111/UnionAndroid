@@ -62,7 +62,8 @@ class AccountingObjectSyncApiImpl(
                 structuralIds = structuralId,
                 offset = offset,
                 limit = limit,
-                isShowUtilised = isShowUtilised
+                isShowUtilised = isShowUtilised,
+                serialNumber = serialNumber
             )
         ).map {
             val location = locationSyncApi.getLocationById(it.accountingObjectDb.locationId)
