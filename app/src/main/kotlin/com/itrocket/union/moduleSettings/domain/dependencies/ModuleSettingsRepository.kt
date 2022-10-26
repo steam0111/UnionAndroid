@@ -11,4 +11,8 @@ interface ModuleSettingsRepository {
     suspend fun getReaderPower(): Flow<Int?>
 
     suspend fun saveReaderPower(readerPower: Int)
+
+    suspend fun changeDynamicSaveInventory(isDynamicChangeInventory: Boolean)
+
+    suspend fun getDynamicSaveInventory(): Boolean
 }

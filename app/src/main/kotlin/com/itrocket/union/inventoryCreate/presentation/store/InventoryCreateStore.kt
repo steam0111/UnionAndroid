@@ -62,7 +62,8 @@ interface InventoryCreateStore :
         val canUpdate: Boolean = false,
         val searchText: String = "",
         val isShowSearch: Boolean = false,
-        val searchAccountingObjects: List<AccountingObjectDomain> = listOf()
+        val searchAccountingObjects: List<AccountingObjectDomain> = listOf(),
+        val isDynamicSaveInventory: Boolean = false,
     )
 
     sealed class Label {

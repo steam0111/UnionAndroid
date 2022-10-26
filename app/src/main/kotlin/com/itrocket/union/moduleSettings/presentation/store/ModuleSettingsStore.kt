@@ -1,8 +1,8 @@
 package com.itrocket.union.moduleSettings.presentation.store
 
-import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
+import com.itrocket.core.navigation.GoBackNavigationLabel
 
 interface ModuleSettingsStore :
     Store<ModuleSettingsStore.Intent, ModuleSettingsStore.State, ModuleSettingsStore.Label> {
@@ -19,6 +19,7 @@ interface ModuleSettingsStore :
         data class OnCursorDefined(val keyCode: Int) : Intent()
         object OnArrowUpClicked : Intent()
         object OnArrowDownClicked : Intent()
+        data class OnDynamicSaveInventoryClicked(val isDynamicSaveInventory: Boolean) : Intent()
         data class OnPowerChanged(val newPowerText: String) : Intent()
     }
 
@@ -29,7 +30,8 @@ interface ModuleSettingsStore :
         val services: List<String> = listOf(),
         val keyCode: Int = 0,
         val dropdownExpanded: Boolean = false,
-        val readerPower: Int? = null
+        val readerPower: Int? = null,
+        val isDynamicSaveInventory: Boolean = false
     )
 
     sealed class Label {

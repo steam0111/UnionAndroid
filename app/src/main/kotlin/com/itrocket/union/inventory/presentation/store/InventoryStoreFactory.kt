@@ -14,6 +14,7 @@ import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventory.domain.InventoryInteractor
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
+import com.itrocket.union.inventoryCreate.domain.InventoryDynamicSaveManager
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
@@ -21,10 +22,10 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.Params
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.manual.filterNotEmpty
+import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
-import com.itrocket.union.utils.ifBlankOrNull
 
 class InventoryStoreFactory(
     private val storeFactory: StoreFactory,
@@ -36,7 +37,9 @@ class InventoryStoreFactory(
     private val filterInteractor: FilterInteractor,
     private val permissionsInteractor: UnionPermissionsInteractor,
     private val inventoryCreateDomain: InventoryCreateDomain?,
-    private val inventoryCreateInteractor: InventoryCreateInteractor
+    private val inventoryCreateInteractor: InventoryCreateInteractor,
+    private val inventoryDynamicSaveManager: InventoryDynamicSaveManager,
+    private val moduleSettingsInteractor: ModuleSettingsInteractor
 ) {
     fun create(): InventoryStore =
         object : InventoryStore,
@@ -66,13 +69,21 @@ class InventoryStoreFactory(
             }
             dispatch(Result.CanCreateInventory(permissionsInteractor.canCreate(UnionPermission.INVENTORY)))
             dispatch(Result.CanUpdateInventory(permissionsInteractor.canUpdate(UnionPermission.INVENTORY)))
+
+            val isDynamicSaveInventory = moduleSettingsInteractor.getDynamicSaveInventory()
+            dispatch(Result.IsDynamicSaveInventory(isDynamicSaveInventory))
+
             if (inventory != null) {
                 dispatch(Result.InventoryCreate(inventory))
                 dispatch(Result.Params(inventoryCreateInteractor.disableBalanceUnit(inventory.documentInfo)))
-                observeAccountingObjects(getState().params)
+                observeAccountingObjects(getState, getState().params)
+
+                if (getState().isDynamicSaveInventory) {
+                    inventoryDynamicSaveManager.subscribeInventorySave()
+                }
             } else {
                 dispatch(Result.Params(selectParamsInteractor.getInitialDocumentParams(getState().params)))
-                observeAccountingObjects(getState().params)
+                observeAccountingObjects(getState, getState().params)
             }
         }
 
@@ -87,12 +98,13 @@ class InventoryStoreFactory(
                     )
                 )
                 InventoryStore.Intent.OnCreateDocumentClicked -> createInventory(
-                    getState().accountingObjectList,
-                    getState().params
+                    isDynamicSaveInventory = getState().isDynamicSaveInventory,
+                    accountingObjects = getState().accountingObjectList,
+                    params = getState().params
                 )
                 InventoryStore.Intent.OnDropClicked -> {
                     val params = inventoryInteractor.clearParams(getState().params)
-                    changeParams(params)
+                    changeParams(getState, params)
                 }
                 is InventoryStore.Intent.OnParamClicked -> showParams(
                     params = getState().params,
@@ -103,11 +115,11 @@ class InventoryStoreFactory(
                         getState().params,
                         intent.param
                     )
-                    changeParams(params)
+                    changeParams(getState, params)
                 }
                 is InventoryStore.Intent.OnParamsChanged -> {
                     val params = inventoryInteractor.changeParams(getState().params, intent.params)
-                    changeParams(params)
+                    changeParams(getState, params)
                 }
                 is InventoryStore.Intent.OnSelectPage -> dispatch(Result.SelectPage(intent.selectedPage))
                 is InventoryStore.Intent.OnLocationChanged -> {
@@ -115,7 +127,7 @@ class InventoryStoreFactory(
                         getState().params,
                         intent.locationResult.location
                     )
-                    changeParams(params)
+                    changeParams(getState, params)
                 }
                 is InventoryStore.Intent.OnStructuralChanged -> {
                     val params = inventoryInteractor.changeStructural(
@@ -123,6 +135,7 @@ class InventoryStoreFactory(
                         intent.structural.structural
                     )
                     changeParams(
+                        getState = getState,
                         params = params
                     )
                 }
@@ -143,9 +156,26 @@ class InventoryStoreFactory(
             publish(InventoryStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
-        private suspend fun changeParams(params: List<ParamDomain>) {
+        private suspend fun changeParams(
+            getState: () -> InventoryStore.State,
+            params: List<ParamDomain>
+        ) {
             dispatch(Result.Params(params))
-            observeAccountingObjects(params.filterNotEmpty())
+            observeAccountingObjects(getState, params.filterNotEmpty())
+        }
+
+        private fun tryDynamicSendInventorySave(
+            getState: () -> InventoryStore.State
+        ) {
+            val inventory = getState().inventoryCreateDomain
+            if (getState().isDynamicSaveInventory && inventory != null) {
+                inventoryDynamicSaveManager.sendInventoryDomain(
+                    inventory.copy(
+                        documentInfo = getState().params,
+                        accountingObjects = getState().accountingObjectList
+                    )
+                )
+            }
         }
 
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
@@ -206,6 +236,7 @@ class InventoryStoreFactory(
                 inventoryCreate = inventory,
                 accountingObjects = accountingObjects
             )
+            inventoryDynamicSaveManager.cancel()
             publish(
                 InventoryStore.Label.ShowCreateInventory(
                     inventoryCreate = inventory
@@ -214,6 +245,7 @@ class InventoryStoreFactory(
         }
 
         private suspend fun createInventory(
+            isDynamicSaveInventory: Boolean,
             accountingObjects: List<AccountingObjectDomain>,
             params: List<ParamDomain>
         ) {
@@ -223,10 +255,16 @@ class InventoryStoreFactory(
                     inventoryInteractor.createInventory(accountingObjects, params)
                 dispatch(Result.InventoryCreate(inventoryCreate))
             }
+            if (isDynamicSaveInventory) {
+                inventoryDynamicSaveManager.subscribeInventorySave()
+            }
             dispatch(Result.IsAccountingObjectsLoading(false))
         }
 
-        private suspend fun observeAccountingObjects(params: List<ParamDomain> = listOf()) {
+        private suspend fun observeAccountingObjects(
+            getState: () -> InventoryStore.State,
+            params: List<ParamDomain> = listOf()
+        ) {
             dispatch(Result.IsAccountingObjectsLoading(true))
             catchException {
                 dispatch(Result.IsAccountingObjectsLoading(false))
@@ -239,8 +277,9 @@ class InventoryStoreFactory(
                         )
                     )
                 )
-                dispatch(Result.IsAccountingObjectsLoading(false))
+                tryDynamicSendInventorySave(getState)
             }
+            dispatch(Result.IsAccountingObjectsLoading(false))
         }
     }
 
@@ -253,6 +292,7 @@ class InventoryStoreFactory(
         data class CanCreateInventory(val canCreateInventory: Boolean) : Result()
         data class CanUpdateInventory(val canUpdateInventory: Boolean) : Result()
         data class InventoryCreate(val inventoryCreateDomain: InventoryCreateDomain) : Result()
+        data class IsDynamicSaveInventory(val isDynamicSaveInventory: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryStore.State, Result> {
@@ -266,6 +306,7 @@ class InventoryStoreFactory(
                 is Result.CanCreateInventory -> copy(canCreateInventory = result.canCreateInventory)
                 is Result.InventoryCreate -> copy(inventoryCreateDomain = result.inventoryCreateDomain)
                 is Result.CanUpdateInventory -> copy(canUpdateInventory = result.canUpdateInventory)
+                is Result.IsDynamicSaveInventory -> copy(isDynamicSaveInventory = result.isDynamicSaveInventory)
             }
     }
 }

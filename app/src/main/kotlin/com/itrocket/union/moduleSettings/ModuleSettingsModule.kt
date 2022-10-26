@@ -1,23 +1,23 @@
 package com.itrocket.union.moduleSettings
 
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.qualifier.named
-import org.koin.dsl.module
-import org.koin.core.parameter.parametersOf
+import com.itrocket.core.base.BaseViewModel
 import com.itrocket.union.moduleSettings.data.ModuleSettingsRepositoryImpl
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.moduleSettings.domain.dependencies.ModuleSettingsRepository
 import com.itrocket.union.moduleSettings.presentation.store.ModuleSettingsStore
 import com.itrocket.union.moduleSettings.presentation.store.ModuleSettingsStoreFactory
-import com.itrocket.core.base.BaseViewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 
 object ModuleSettingsModule {
     val MODULESETTINGS_VIEW_MODEL_QUALIFIER = named("MODULESETTINGS_VIEW_MODEL")
     private val KEY_CODE_PREFERENCE_KEY = named("KEY_CODE_PREFERENCE_KEY")
     private val READER_POWER_PREFERENCE_KEY = named("READER_POWER_PREFERENCE_KEY")
+    private val DYNAMIC_SAVE_INVENTORY_PREFERENCE_KEY = named("DYNAMIC_SAVE_INVENTORY_PREFERENCE_KEY")
 
     val module = module {
         viewModel(MODULESETTINGS_VIEW_MODEL_QUALIFIER) {
@@ -28,7 +28,8 @@ object ModuleSettingsModule {
             ModuleSettingsRepositoryImpl(
                 dataStore = get(),
                 keyCodePreferencesKey = get(KEY_CODE_PREFERENCE_KEY),
-                readerPowerPreferencesKey = get(READER_POWER_PREFERENCE_KEY)
+                readerPowerPreferencesKey = get(READER_POWER_PREFERENCE_KEY),
+                dynamicSaveInventoryPreferencesKey = get(DYNAMIC_SAVE_INVENTORY_PREFERENCE_KEY)
             )
         }
 
@@ -52,6 +53,9 @@ object ModuleSettingsModule {
 
         single(qualifier = READER_POWER_PREFERENCE_KEY) {
             intPreferencesKey(READER_POWER_PREFERENCE_KEY.value)
+        }
+        single(qualifier = DYNAMIC_SAVE_INVENTORY_PREFERENCE_KEY) {
+            booleanPreferencesKey(DYNAMIC_SAVE_INVENTORY_PREFERENCE_KEY.value)
         }
     }
 }

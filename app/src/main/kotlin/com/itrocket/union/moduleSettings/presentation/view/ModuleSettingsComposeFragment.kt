@@ -56,7 +56,14 @@ class ModuleSettingsComposeFragment :
                 },
                 onPowerChanged = { accept(ModuleSettingsStore.Intent.OnPowerChanged(it)) },
                 onArrowUpClickListener = { accept(ModuleSettingsStore.Intent.OnArrowUpClicked) },
-                onArrowDownClickListener = { accept(ModuleSettingsStore.Intent.OnArrowDownClicked) }
+                onArrowDownClickListener = { accept(ModuleSettingsStore.Intent.OnArrowDownClicked) },
+                onDynamicSaveInventoryChanged = {
+                    accept(
+                        ModuleSettingsStore.Intent.OnDynamicSaveInventoryClicked(
+                            it
+                        )
+                    )
+                }
             )
         }
     }

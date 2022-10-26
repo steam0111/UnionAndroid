@@ -58,7 +58,8 @@ interface InventoryStore :
         ),
         val canCreateInventory: Boolean = false,
         val canUpdateInventory: Boolean = false,
-        val inventoryCreateDomain: InventoryCreateDomain?
+        val inventoryCreateDomain: InventoryCreateDomain?,
+        val isDynamicSaveInventory: Boolean = false,
     )
 
     sealed class Label {
