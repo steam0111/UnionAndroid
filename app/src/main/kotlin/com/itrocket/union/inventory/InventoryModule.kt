@@ -50,6 +50,8 @@ object InventoryModule {
                 get(),
                 get(),
                 arguments.inventoryCreateDomain,
+                get(),
+                get(),
                 get()
             ).create()
         }

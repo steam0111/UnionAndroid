@@ -51,4 +51,16 @@ class ModuleSettingsInteractor(
             serviceEntryManager.checkInstalledServices()
         }
     }
+
+    suspend fun changeDynamicSaveInventory(isDynamicChangeInventory: Boolean) {
+        withContext(coreDispatchers.io) {
+            repository.changeDynamicSaveInventory(isDynamicChangeInventory)
+        }
+    }
+
+    suspend fun getDynamicSaveInventory(): Boolean {
+        return withContext(coreDispatchers.io) {
+            repository.getDynamicSaveInventory()
+        }
+    }
 }

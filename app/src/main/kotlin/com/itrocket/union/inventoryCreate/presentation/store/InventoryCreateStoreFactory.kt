@@ -12,8 +12,10 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
+import com.itrocket.union.inventoryCreate.domain.InventoryDynamicSaveManager
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
+import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -22,7 +24,6 @@ import com.itrocket.union.search.SearchManager
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
-import com.itrocket.union.utils.ifBlankOrNull
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class InventoryCreateStoreFactory(
@@ -34,6 +35,8 @@ class InventoryCreateStoreFactory(
     private val serviceEntryManager: ServiceEntryManager,
     private val searchManager: SearchManager,
     private val unionPermissionsInteractor: UnionPermissionsInteractor,
+    private val inventoryDynamicSaveManager: InventoryDynamicSaveManager,
+    private val moduleSettingsInteractor: ModuleSettingsInteractor
 ) {
     fun create(): InventoryCreateStore =
         object : InventoryCreateStore,
@@ -69,8 +72,13 @@ class InventoryCreateStoreFactory(
                         )
                     )
                 )
+                val isDynamicSaveInventory = moduleSettingsInteractor.getDynamicSaveInventory()
+                dispatch(Result.IsDynamicSaveInventory(isDynamicSaveInventory))
             }
             dispatch(Result.Loading(false))
+            if (getState().isDynamicSaveInventory && getState().inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED) {
+                inventoryDynamicSaveManager.subscribeInventorySave()
+            }
             searchManager.listenSearch {
                 listenAccountingObjects(
                     searchText = it,
@@ -94,7 +102,7 @@ class InventoryCreateStoreFactory(
                     dispatch(Result.AddNew(!getState().isAddNew))
                 }
                 InventoryCreateStore.Intent.OnDropClicked -> {
-                    drop(getState())
+                    drop(getState)
                 }
                 InventoryCreateStore.Intent.OnHideFoundAccountingObjectClicked -> {
                     dispatch(Result.HideFoundedAccountingObjects(!getState().isHideFoundAccountingObjects))
@@ -208,6 +216,22 @@ class InventoryCreateStoreFactory(
                     )
                 )
             }
+            tryDynamicSendInventorySave(
+                getState = getState,
+                newAccountingObjects = getState().newAccountingObjects.toList(),
+                accountingObjects = getState().inventoryDocument.accountingObjects
+            )
+        }
+
+        private fun tryDynamicSendInventorySave(
+            getState: () -> InventoryCreateStore.State,
+            newAccountingObjects: List<AccountingObjectDomain>,
+            accountingObjects: List<AccountingObjectDomain>
+        ) {
+            if (getState().isDynamicSaveInventory) {
+                val inventory = getState().inventoryDocument
+                inventoryDynamicSaveManager.sendInventoryDomain(inventory.copy(accountingObjects = newAccountingObjects + accountingObjects))
+            }
         }
 
         private suspend fun onBackClicked(isShowSearch: Boolean) {
@@ -249,12 +273,14 @@ class InventoryCreateStoreFactory(
             inventoryDomain: InventoryCreateDomain,
             newAccountingObjects: List<AccountingObjectDomain>
         ) {
+            inventoryDynamicSaveManager.cancel()
             val inventory = inventoryDomain.copy(
                 inventoryStatus = InventoryStatus.COMPLETED,
                 accountingObjects = newAccountingObjects + inventoryDomain.accountingObjects
             )
             dispatch(Result.NewAccountingObjects(setOf()))
             dispatch(Result.Inventory(inventory))
+            dispatch(Result.IsDynamicSaveInventory(false))
             inventoryCreateInteractor.saveInventoryDocument(inventory, inventory.accountingObjects)
         }
 
@@ -292,6 +318,11 @@ class InventoryCreateStoreFactory(
                             newAccountingObjects = newInventoryAccountingObjects
                         )
                     }
+                    tryDynamicSendInventorySave(
+                        getState = getState,
+                        newAccountingObjects = newInventoryAccountingObjects,
+                        accountingObjects = getState().inventoryDocument.accountingObjects
+                    )
                 }
                 dispatch(Result.Loading(true))
             }
@@ -333,8 +364,13 @@ class InventoryCreateStoreFactory(
                             newAccountingObjects = newInventoryAccountingObjects
                         )
                     }
+                    tryDynamicSendInventorySave(
+                        getState = getState,
+                        newAccountingObjects = newInventoryAccountingObjects,
+                        accountingObjects = getState().inventoryDocument.accountingObjects
+                    )
                 }
-                dispatch(Result.Loading(true))
+                dispatch(Result.Loading(false))
             }
         }
 
@@ -386,22 +422,27 @@ class InventoryCreateStoreFactory(
             dispatch(Result.Loading(false))
         }
 
-        private fun drop(state: InventoryCreateStore.State) {
+        private fun drop(getState: () -> InventoryCreateStore.State) {
             dispatch(Result.NewAccountingObjects(setOf()))
             dispatch(
                 Result.AccountingObjects(
                     inventoryCreateInteractor.dropAccountingObjects(
-                        state.inventoryDocument.accountingObjects
+                        getState().inventoryDocument.accountingObjects
                     )
                 )
             )
             dispatch(
                 Result.SearchAccountingObjects(
-                    inventoryCreateInteractor.dropAccountingObjects(state.searchAccountingObjects)
+                    inventoryCreateInteractor.dropAccountingObjects(getState().searchAccountingObjects)
                 )
             )
             dispatch(Result.AddNew(false))
             dispatch(Result.HideFoundedAccountingObjects(false))
+            tryDynamicSendInventorySave(
+                getState = getState,
+                newAccountingObjects = listOf(),
+                accountingObjects = getState().inventoryDocument.accountingObjects
+            )
         }
 
         private suspend fun listenAccountingObjects(
@@ -447,6 +488,7 @@ class InventoryCreateStoreFactory(
         data class SearchAccountingObjects(val searchAccountingObjects: List<AccountingObjectDomain>) :
             Result()
 
+        data class IsDynamicSaveInventory(val isDynamicSaveInventory: Boolean) : Result()
         data class CanUpdate(val canUpdate: Boolean) : Result()
     }
 
@@ -469,6 +511,7 @@ class InventoryCreateStoreFactory(
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchAccountingObjects -> copy(searchAccountingObjects = result.searchAccountingObjects)
                 is Result.CanUpdate -> copy(canUpdate = result.canUpdate)
+                is Result.IsDynamicSaveInventory -> copy(isDynamicSaveInventory = result.isDynamicSaveInventory)
             }
     }
 }

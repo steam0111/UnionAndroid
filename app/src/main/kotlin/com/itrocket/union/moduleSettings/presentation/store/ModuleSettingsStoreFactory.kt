@@ -11,7 +11,6 @@ import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.readerPower.domain.ReaderPowerInteractor
 import com.itrocket.union.readerPower.domain.ReaderPowerInteractor.Companion.MIN_READER_POWER
-import com.itrocket.union.utils.ifBlankOrNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -54,6 +53,7 @@ class ModuleSettingsStoreFactory(
             dispatch(
                 Result.ReaderPower(moduleSettingsInteractor.getReaderPower())
             )
+            dispatch(Result.IsDynamicSaveInventory(moduleSettingsInteractor.getDynamicSaveInventory()))
         }
 
         override suspend fun executeIntent(
@@ -71,14 +71,7 @@ class ModuleSettingsStoreFactory(
                     moduleSettingsInteractor.changeWaitingKeyCode(true)
                     dispatch(Result.WaitDefine(true))
                 }
-                ModuleSettingsStore.Intent.OnSaveClicked -> {
-                    moduleSettingsInteractor.applyChanges(
-                        defaultService = getState().defaultService,
-                        keyCode = getState().keyCode,
-                        readerPower = getState().readerPower
-                    )
-                    publish(ModuleSettingsStore.Label.GoBack)
-                }
+                ModuleSettingsStore.Intent.OnSaveClicked -> onSaveClicked(getState)
                 is ModuleSettingsStore.Intent.OnServicesHandled -> onServicesHandled(
                     services = intent.services,
                     defaultService = getState().defaultService
@@ -121,7 +114,22 @@ class ModuleSettingsStoreFactory(
                     val newPower = readerPowerInteractor.decreasePower(readerPower)
                     dispatch(Result.ReaderPower(newPower))
                 }
+                is ModuleSettingsStore.Intent.OnDynamicSaveInventoryClicked -> dispatch(
+                    Result.IsDynamicSaveInventory(
+                        intent.isDynamicSaveInventory
+                    )
+                )
             }
+        }
+
+        private suspend fun onSaveClicked(getState: () -> ModuleSettingsStore.State) {
+            moduleSettingsInteractor.applyChanges(
+                defaultService = getState().defaultService,
+                keyCode = getState().keyCode,
+                readerPower = getState().readerPower
+            )
+            moduleSettingsInteractor.changeDynamicSaveInventory(getState().isDynamicSaveInventory)
+            publish(ModuleSettingsStore.Label.GoBack)
         }
 
         private fun onServicesHandled(services: List<String>, defaultService: String) {
@@ -147,6 +155,7 @@ class ModuleSettingsStoreFactory(
         data class Service(val service: String) : Result()
         data class Services(val services: List<String>) : Result()
         data class DropdownExpanded(val dropdownExpanded: Boolean) : Result()
+        data class IsDynamicSaveInventory(val isDynamicSaveInventory: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<ModuleSettingsStore.State, Result> {
@@ -159,6 +168,7 @@ class ModuleSettingsStoreFactory(
                 is Result.Services -> copy(services = result.services)
                 is Result.DropdownExpanded -> copy(dropdownExpanded = result.dropdownExpanded)
                 is Result.ReaderPower -> copy(readerPower = result.readerPower)
+                is Result.IsDynamicSaveInventory -> copy(isDynamicSaveInventory = result.isDynamicSaveInventory)
             }
     }
 

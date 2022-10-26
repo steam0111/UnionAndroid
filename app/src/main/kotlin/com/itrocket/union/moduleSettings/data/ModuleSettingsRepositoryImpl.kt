@@ -5,10 +5,12 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.itrocket.union.moduleSettings.domain.dependencies.ModuleSettingsRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
 class ModuleSettingsRepositoryImpl(
     private val dataStore: DataStore<Preferences>,
+    private val dynamicSaveInventoryPreferencesKey: Preferences.Key<Boolean>,
     private val keyCodePreferencesKey: Preferences.Key<Int>,
     private val readerPowerPreferencesKey: Preferences.Key<Int>,
 ) : ModuleSettingsRepository {
@@ -26,5 +28,13 @@ class ModuleSettingsRepositoryImpl(
 
     override suspend fun saveReaderPower(readerPower: Int) {
         dataStore.edit { it[readerPowerPreferencesKey] = readerPower }
+    }
+
+    override suspend fun changeDynamicSaveInventory(isDynamicChangeInventory: Boolean) {
+        dataStore.edit { it[dynamicSaveInventoryPreferencesKey] = isDynamicChangeInventory }
+    }
+
+    override suspend fun getDynamicSaveInventory(): Boolean {
+        return dataStore.data.map { it[dynamicSaveInventoryPreferencesKey] }.firstOrNull() ?: false
     }
 }

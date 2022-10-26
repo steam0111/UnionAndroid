@@ -10,6 +10,7 @@ import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStoreFactory
 import com.itrocket.core.base.BaseViewModel
+import com.itrocket.union.inventoryCreate.domain.InventoryDynamicSaveManager
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateArguments
 import com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateComposeFragment
 
@@ -31,12 +32,18 @@ object InventoryCreateModule {
             InventoryCreateInteractor(get(), get(), get(), get())
         }
 
+        factory {
+            InventoryDynamicSaveManager(get())
+        }
+
         factory { (args: InventoryCreateArguments) ->
             InventoryCreateStoreFactory(
                 DefaultStoreFactory,
                 get(),
                 get(),
                 args,
+                get(),
+                get(),
                 get(),
                 get(),
                 get(),

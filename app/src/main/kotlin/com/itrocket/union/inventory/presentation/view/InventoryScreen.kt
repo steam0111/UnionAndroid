@@ -95,7 +95,8 @@ fun InventoryScreen(
                             onInWorkClickListener = onInWorkClickListener,
                             onFinishClickListener = { },
                             inventoryStatus = state.inventoryCreateDomain.inventoryStatus,
-                            canUpdate = state.canUpdateInventory
+                            canUpdate = state.canUpdateInventory,
+                            isDynamicSaveInventory = state.isDynamicSaveInventory,
                         )
                     }
                     state.canCreateInventory -> {

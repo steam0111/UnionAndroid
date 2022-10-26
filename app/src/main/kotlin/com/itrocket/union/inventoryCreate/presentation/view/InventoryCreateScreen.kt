@@ -31,7 +31,6 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
@@ -44,7 +43,6 @@ import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseCheckbox
-import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ConfirmAlertDialog
 import com.itrocket.union.ui.InventoryDocumentItem
 import com.itrocket.union.ui.MediumSpacer
@@ -153,7 +151,8 @@ private fun Content(
                         onSaveClickListener = onSaveClickListener,
                         onFinishClickListener = onFinishClickListener,
                         inventoryStatus = state.inventoryDocument.inventoryStatus,
-                        canUpdate = state.canUpdate
+                        canUpdate = state.canUpdate,
+                        isDynamicSaveInventory = state.isDynamicSaveInventory
                     )
                 }
                 InventoryDocumentItem(item = state.inventoryDocument, isShowStatus = false)
@@ -243,23 +242,26 @@ fun InventoryBottomBar(
     onInWorkClickListener: () -> Unit = {},
     onFinishClickListener: () -> Unit,
     inventoryStatus: InventoryStatus,
-    canUpdate: Boolean
+    canUpdate: Boolean,
+    isDynamicSaveInventory: Boolean
 ) {
     Row(
         modifier = Modifier
             .background(graphite2)
             .padding(16.dp)
     ) {
-        BaseButton(
-            enabled = inventoryStatus != InventoryStatus.COMPLETED && canUpdate,
-            text = stringResource(R.string.common_save),
-            onClick = onSaveClickListener,
-            modifier = Modifier.weight(1f),
-            disabledBackgroundColor = AppTheme.colors.secondaryColor
-        )
+        if (!isDynamicSaveInventory) {
+            BaseButton(
+                enabled = inventoryStatus != InventoryStatus.COMPLETED && canUpdate,
+                text = stringResource(R.string.common_save),
+                onClick = onSaveClickListener,
+                modifier = Modifier.weight(1f),
+                disabledBackgroundColor = AppTheme.colors.secondaryColor
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+        }
         when (inventoryStatus) {
             InventoryStatus.CREATED -> {
-                Spacer(modifier = Modifier.width(16.dp))
                 BaseButton(
                     text = stringResource(R.string.common_in_work),
                     onClick = onInWorkClickListener,
@@ -269,7 +271,6 @@ fun InventoryBottomBar(
                 )
             }
             InventoryStatus.IN_PROGRESS -> {
-                Spacer(modifier = Modifier.width(16.dp))
                 BaseButton(
                     text = stringResource(R.string.common_complete),
                     onClick = onFinishClickListener,

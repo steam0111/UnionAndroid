@@ -6,11 +6,22 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Switch
+import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,7 +39,14 @@ import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
 import com.itrocket.union.moduleSettings.presentation.store.ModuleSettingsStore
 import com.itrocket.union.readerPower.domain.ReaderPowerInteractor
-import com.itrocket.union.ui.*
+import com.itrocket.union.ui.AppTheme
+import com.itrocket.union.ui.BaseToolbar
+import com.itrocket.union.ui.ButtonBottomBar
+import com.itrocket.union.ui.ReaderPowerPicker
+import com.itrocket.union.ui.graphite2
+import com.itrocket.union.ui.graphite4
+import com.itrocket.union.ui.graphite6
+import com.itrocket.union.ui.white
 
 @Composable
 fun ModuleSettingsScreen(
@@ -42,7 +60,8 @@ fun ModuleSettingsScreen(
     onDropdownOpenClickListener: () -> Unit,
     onArrowDownClickListener: () -> Unit,
     onArrowUpClickListener: () -> Unit,
-    onPowerChanged: (String) -> Unit
+    onPowerChanged: (String) -> Unit,
+    onDynamicSaveInventoryChanged: (Boolean) -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -68,7 +87,8 @@ fun ModuleSettingsScreen(
                     onDropdownOpenClickListener = onDropdownOpenClickListener,
                     onArrowDownClickListener = onArrowDownClickListener,
                     onArrowUpClickListener = onArrowUpClickListener,
-                    onPowerChanged = onPowerChanged
+                    onPowerChanged = onPowerChanged,
+                    onDynamicSaveInventoryChanged = onDynamicSaveInventoryChanged
                 )
             }
         )
@@ -94,7 +114,8 @@ private fun Content(
     paddingValues: PaddingValues,
     onArrowDownClickListener: () -> Unit,
     onArrowUpClickListener: () -> Unit,
-    onPowerChanged: (String) -> Unit
+    onPowerChanged: (String) -> Unit,
+    onDynamicSaveInventoryChanged: (Boolean) -> Unit
 ) {
     Column(modifier = Modifier.padding(paddingValues)) {
         Spacer(modifier = Modifier.height(24.dp))
@@ -124,10 +145,39 @@ private fun Content(
             onDropdownDismiss = onDropdownDismiss,
             onDropdownItemClickListener = onDropdownItemClickListener
         )
-
+        Spacer(modifier = Modifier.height(24.dp))
+        DynamicSaveInventoryComponent(
+            isDynamicSaveInventory = state.isDynamicSaveInventory,
+            onDynamicSaveInventoryChanged = onDynamicSaveInventoryChanged
+        )
     }
 }
 
+@Composable
+private fun DynamicSaveInventoryComponent(
+    isDynamicSaveInventory: Boolean,
+    onDynamicSaveInventoryChanged: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    )
+    {
+        Text(text = stringResource(id = R.string.module_settings_dynamic_save_inventory))
+        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.width(16.dp))
+        Switch(
+            checked = isDynamicSaveInventory,
+            onCheckedChange = onDynamicSaveInventoryChanged,
+            colors = SwitchDefaults.colors(
+                checkedTrackColor = AppTheme.colors.mainColor,
+                checkedThumbColor = white,
+            )
+        )
+    }
+}
 
 @Composable
 private fun DefineCursorComponent(
@@ -246,6 +296,7 @@ fun ModuleSettingsScreenPreview() {
     ModuleSettingsScreen(
         ModuleSettingsStore.State(),
         AppInsets(topInset = previewTopInsetDp),
+        {},
         {},
         {},
         {},
