@@ -24,7 +24,6 @@ import com.itrocket.union.employeeDetail.presentation.store.EmployeeDetailStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ExpandedInfoField
-import com.itrocket.union.ui.white
 
 @Composable
 fun EmployeeDetailScreen(
@@ -95,7 +94,9 @@ fun EmployeeDetailScreenPreview() {
         EmployeeDetailStore.State(
             item = EmployeeDetailDomain(
                 id = "",
-                name = "",
+                firstName = "",
+                lastName = "",
+                patronymic = "",
                 listInfo =
                 listOf(
                     ObjectInfoDomain(

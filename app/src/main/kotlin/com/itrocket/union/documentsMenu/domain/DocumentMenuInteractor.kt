@@ -55,9 +55,10 @@ class DocumentMenuInteractor(
 
     suspend fun getUsername(currentEmployeeId: String?) = kotlin.runCatching {
         if (currentEmployeeId != null) {
-            employeeDetailInteractor.getEmployeeDetail(currentEmployeeId).name
+            employeeDetailInteractor.getEmployeeDetail(currentEmployeeId)
         } else {
             authMainInteractor.getLogin()
-        }.orEmpty()
-    }.getOrDefault("")
+            null
+        }
+    }.getOrNull()
 }

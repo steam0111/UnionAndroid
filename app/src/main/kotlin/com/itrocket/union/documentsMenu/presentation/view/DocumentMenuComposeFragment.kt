@@ -13,7 +13,6 @@ class DocumentMenuComposeFragment :
         DOCUMENTMENU_VIEW_MODEL_QUALIFIER
     ) {
 
-    @OptIn(ExperimentalFoundationApi::class)
     override fun renderState(
         state: DocumentMenuStore.State,
         composeView: ComposeView,
@@ -46,11 +45,8 @@ class DocumentMenuComposeFragment :
                 onDocumentItemClick = {
                     accept(DocumentMenuStore.Intent.OnDocumentClicked(it))
                 },
-                onLogoutClickListener = {
-                    accept(DocumentMenuStore.Intent.OnLogoutClicked)
-                },
-                onSettingsClickListener = {
-                    accept(DocumentMenuStore.Intent.OnSettingsClicked)
+                onDrawerDestinationClicked = {
+                    accept(DocumentMenuStore.Intent.OnDrawerDestinationClick(it))
                 }
             )
         }

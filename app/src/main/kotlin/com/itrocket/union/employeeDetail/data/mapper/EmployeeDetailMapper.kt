@@ -42,5 +42,12 @@ fun EmployeeDetailSyncEntity.toEmployeeDetailDomain(): EmployeeDetailDomain {
         listInfo.add(ObjectInfoDomain(R.string.common_user_update, it))
     }
 
-    return EmployeeDetailDomain(id = employee.id, name = employee.fullName, listInfo = listInfo, nfc = employee.nfc)
+    return EmployeeDetailDomain(
+        id = employee.id,
+        listInfo = listInfo,
+        nfc = employee.nfc,
+        firstName = employee.firstname,
+        lastName = employee.lastname,
+        patronymic = employee.patronymic
+    )
 }

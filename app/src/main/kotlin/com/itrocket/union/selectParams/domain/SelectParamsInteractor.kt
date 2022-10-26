@@ -141,7 +141,7 @@ class SelectParamsInteractor(
                 it.type == ManualType.MOL_IN_STRUCTURAL
             }
             if (index >= 0 && mutableParams[index].value.isEmpty()) {
-                mutableParams[index] = mutableParams[index].copy(value = it.name, id = it.id)
+                mutableParams[index] = mutableParams[index].copy(value = it.fullName, id = it.id)
             }
         }
         return mutableParams

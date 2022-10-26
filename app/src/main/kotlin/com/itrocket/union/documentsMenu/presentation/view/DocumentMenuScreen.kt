@@ -5,19 +5,21 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.DrawerValue
+import androidx.compose.material.ModalDrawer
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
@@ -26,10 +28,14 @@ import androidx.compose.ui.unit.dp
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
+import com.itrocket.union.common.Drawer
+import com.itrocket.union.common.DrawerScreenType
+import com.itrocket.union.common.DrawerScreens
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 import com.itrocket.union.documentsMenu.presentation.store.DocumentMenuStore
 import com.itrocket.union.ui.*
 import com.itrocket.utils.clickableUnbounded
+import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @Composable
@@ -38,48 +44,64 @@ fun DocumentMenuScreen(
     appInsets: AppInsets,
     onDocumentItemClick: (DocumentMenuDomain) -> Unit,
     onBackClickListener: () -> Unit,
-    onLogoutClickListener: () -> Unit,
-    onSettingsClickListener: () -> Unit
+    onDrawerDestinationClicked: (type: DrawerScreenType) -> Unit
 ) {
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+    val onDrawerClickListener: () -> Unit = {
+        scope.launch {
+            if (drawerState.isOpen) {
+                drawerState.close()
+            } else {
+                drawerState.open()
+            }
+        }
+    }
     AppTheme {
-        Scaffold(topBar = {
-            BaseToolbar(
-                onStartImageClickListener = onBackClickListener,
-                startImageId = if (state.isBackButtonVisible) R.drawable.ic_arrow_back else null,
-                title = state.userName,
-                backgroundColor = white,
-                textColor = AppTheme.colors.mainTextColor
-            ) {
-                Spacer(modifier = Modifier.width(16.dp))
-                Image(
-                    painter = painterResource(R.drawable.ic_settings),
-                    colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
-                    contentDescription = null,
-                    modifier = Modifier.clickableUnbounded(onClick = onSettingsClickListener)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(
-                    text = stringResource(R.string.common_exit),
-                    style = AppTheme.typography.body2,
-                    color = AppTheme.colors.mainColor,
-                    modifier = Modifier.clickable(onClick = onLogoutClickListener)
+        ModalDrawer(
+            drawerState = drawerState,
+            gesturesEnabled = drawerState.isOpen,
+            drawerContent = {
+                Drawer(
+                    firstName = state.firstName,
+                    lastName = state.lastName,
+                    patronimic = state.patronymic,
+                    onDestinationClicked = { type ->
+                        scope.launch {
+                            drawerState.close()
+                            onDrawerDestinationClicked(type)
+                        }
+                    },
+                    screens = listOf(
+                        DrawerScreens.Account,
+                        DrawerScreens.Logout
+                    )
                 )
             }
-        }, content = {
-            if (state.documents.isNotEmpty()) {
-                DocumentList(
-                    documents = state.documents,
-                    onDocumentItemClick = onDocumentItemClick,
-                    contentPadding = it
+        ) {
+            Scaffold(topBar = {
+                BaseToolbar(
+                    onStartImageClickListener = if (state.isBackButtonVisible) onBackClickListener else onDrawerClickListener,
+                    startImageId = if (state.isBackButtonVisible) R.drawable.ic_arrow_back else R.drawable.ic_burger,
+                    backgroundColor = white,
+                    textColor = AppTheme.colors.mainTextColor
                 )
-            }
-            if (state.loading) {
-                Loading(it)
-            }
-        }, modifier = Modifier
-            .background(white)
-            .padding(top = appInsets.topInset.dp, bottom = appInsets.bottomInset.dp)
-        )
+            }, content = {
+                if (state.documents.isNotEmpty()) {
+                    DocumentList(
+                        documents = state.documents,
+                        onDocumentItemClick = onDocumentItemClick,
+                        contentPadding = it
+                    )
+                }
+                if (state.loading) {
+                    Loading(it)
+                }
+            }, modifier = Modifier
+                .background(white)
+                .padding(top = appInsets.topInset.dp, bottom = appInsets.bottomInset.dp)
+            )
+        }
     }
 }
 
@@ -212,5 +234,5 @@ fun DocumentMenuScreenPreview() {
                     iconId = R.drawable.ic_inventory
                 ),
             )
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {})
 }

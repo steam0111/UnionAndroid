@@ -4,7 +4,12 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 
 data class EmployeeDetailDomain(
     val id: String,
-    val name: String,
+    val firstName: String,
+    val lastName: String,
+    val patronymic: String,
     val nfc: String?,
     val listInfo: List<ObjectInfoDomain> = emptyList()
-)
+) {
+    val fullName: String
+        get() = "$lastName $firstName $patronymic"
+}
