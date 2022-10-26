@@ -79,10 +79,7 @@ fun AccountingObjectItem(
             }, enabled = isEnabled)
             .padding(vertical = 12.dp, horizontal = 16.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-        ) {
+        Column(modifier = Modifier.fillMaxWidth(0.7f)) {
             val headerText =
                 accountingObject.title.ifEmpty { stringResource(id = R.string.value_not_defined) }
             HeaderText(headerText)
@@ -100,30 +97,34 @@ fun AccountingObjectItem(
         }
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             status?.let { SmallStatusLabel(status = it, statusText) }
-            if (status is ObjectStatusType && isShowScanInfo) {
+            if (status is ObjectStatusType && isShowScanInfo
+                && (accountingObject.hasBarcode || accountingObject.hasRfid)
+            ) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.End
                 ) {
-                    Text(
-                        text = stringResource(R.string.common_barcode),
-                        style = AppTheme.typography.caption,
-                        color = AppTheme.colors.secondaryColor,
-                        modifier = Modifier.padding(end = 4.dp)
-                    )
-                    RadioButton(
-                        selected = accountingObject.isBarcode,
-                        onClick = null,
-                        colors = RadioButtonDefaults.colors(
-                            selectedColor = AppTheme.colors.secondaryColor,
-                            unselectedColor = graphite3
+                    if (accountingObject.hasBarcode) {
+                        Text(
+                            text = stringResource(R.string.common_barcode),
+                            style = AppTheme.typography.caption,
+                            color = AppTheme.colors.secondaryColor,
+                            modifier = Modifier.padding(end = 4.dp)
                         )
-                    )
+                        RadioButton(
+                            selected = accountingObject.isBarcode,
+                            onClick = null,
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = AppTheme.colors.secondaryColor,
+                                unselectedColor = graphite3
+                            )
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
                 }
-                if (accountingObject.status?.type?.type == AccountingObjectStatus.AVAILABLE.name && isShowScanInfo) {
-                    Spacer(modifier = Modifier.height(8.dp))
+                if (accountingObject.status?.type?.type == AccountingObjectStatus.AVAILABLE.name && accountingObject.hasRfid) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,

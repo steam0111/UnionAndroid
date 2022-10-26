@@ -18,7 +18,13 @@ data class AccountingObjectDomain(
     val listMainInfo: List<ObjectInfoDomain>,
     val listAdditionallyInfo: List<ObjectInfoDomain>,
     val inventoryNumber: String? = null
-) : Parcelable
+) : Parcelable {
+    val hasBarcode: Boolean
+        get() = !barcodeValue.isNullOrEmpty()
+
+    val hasRfid: Boolean
+        get() = !rfidValue.isNullOrEmpty()
+}
 
 @Parcelize
 data class ObjectInfoDomain(
