@@ -9,6 +9,7 @@ import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.inventoryCreate.domain.entity.AccountingObjectCounter
 import com.itrocket.union.inventory.presentation.store.InventoryResult
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_CODE
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_LABEL
@@ -65,8 +66,9 @@ interface InventoryCreateStore :
         val canUpdate: Boolean = false,
         val searchText: String = "",
         val isShowSearch: Boolean = false,
-        val searchAccountingObjects: List<AccountingObjectDomain> = listOf(),
         val isDynamicSaveInventory: Boolean = false,
+        val searchAccountingObjects: List<AccountingObjectDomain> = listOf(),
+        val accountingObjectCounter: AccountingObjectCounter = AccountingObjectCounter()
     )
 
     sealed class Label {
