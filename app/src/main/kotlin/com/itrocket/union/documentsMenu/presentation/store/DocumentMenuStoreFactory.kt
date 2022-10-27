@@ -4,11 +4,10 @@ import com.arkivanov.mvikotlin.core.store.*
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.authMain.domain.AuthMainInteractor
+import com.itrocket.union.common.DrawerScreenType
 import com.itrocket.union.documentsMenu.domain.DocumentMenuInteractor
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
-import com.itrocket.union.employeeDetail.domain.EmployeeDetailInteractor
 import com.itrocket.union.error.ErrorInteractor
-import com.itrocket.union.utils.ifBlankOrNull
 
 class DocumentMenuStoreFactory(
     private val storeFactory: StoreFactory,
@@ -55,15 +54,21 @@ class DocumentMenuStoreFactory(
                         dispatch(Result.Documents(newDocuments, getState().menuDeepLevel + 1))
                     }
                 }
-                DocumentMenuStore.Intent.OnLogoutClicked -> {
-                    dispatch(Result.Loading(true))
-                    catchException {
-                        authMainInteractor.logout()
-                        publish(DocumentMenuStore.Label.ShowAuth)
+                is DocumentMenuStore.Intent.OnDrawerDestinationClick -> {
+                    when (intent.type) {
+                        DrawerScreenType.SETTINGS -> {
+                            publish(DocumentMenuStore.Label.ShowSettings)
+                        }
+                        DrawerScreenType.LOGOUT -> {
+                            dispatch(Result.Loading(true))
+                            catchException {
+                                authMainInteractor.logout()
+                                publish(DocumentMenuStore.Label.ShowAuth)
+                            }
+                            dispatch(Result.Loading(false))
+                        }
                     }
-                    dispatch(Result.Loading(false))
                 }
-                DocumentMenuStore.Intent.OnSettingsClicked -> publish(DocumentMenuStore.Label.ShowSettings)
                 DocumentMenuStore.Intent.OnBackClicked -> {
                     if (getState().menuDeepLevel == 1) {
                         dispatch(Result.Documents(documentMenuInteractor.getDocuments(), 0))
@@ -80,8 +85,16 @@ class DocumentMenuStoreFactory(
 
         private suspend fun getUsername() {
             val currentEmployeeId = authMainInteractor.getMyConfig().employeeId
-            val username = documentMenuInteractor.getUsername(currentEmployeeId)
-            dispatch(Result.Username(username))
+            val user = documentMenuInteractor.getUsername(currentEmployeeId)
+            user?.let {
+                dispatch(
+                    Result.Username(
+                        firstName = it.firstName,
+                        secondName = it.lastName,
+                        patronimic = it.patronymic
+                    )
+                )
+            }
         }
     }
 
@@ -89,7 +102,12 @@ class DocumentMenuStoreFactory(
         data class Documents(val documents: List<DocumentMenuDomain>, val menuDeepLevel: Int) :
             Result()
 
-        data class Username(val username: String) : Result()
+        data class Username(
+            val firstName: String,
+            val secondName: String,
+            val patronimic: String
+        ) : Result()
+
         data class Loading(val loading: Boolean) : Result()
     }
 
@@ -101,7 +119,11 @@ class DocumentMenuStoreFactory(
                     menuDeepLevel = result.menuDeepLevel
                 )
                 is Result.Loading -> copy(loading = result.loading)
-                is Result.Username -> copy(userName = result.username)
+                is Result.Username -> copy(
+                    firstName = result.firstName,
+                    lastName = result.secondName,
+                    patronymic = result.patronimic
+                )
             }
     }
 }

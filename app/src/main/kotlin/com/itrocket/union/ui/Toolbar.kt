@@ -42,7 +42,7 @@ import com.itrocket.utils.clickableUnbounded
 
 @Composable
 fun BaseToolbar(
-    title: String,
+    title: String = "",
     @DrawableRes startImageId: Int? = null,
     onStartImageClickListener: (() -> Unit)? = null,
     backgroundColor: Color = AppTheme.colors.appBarBackgroundColor,

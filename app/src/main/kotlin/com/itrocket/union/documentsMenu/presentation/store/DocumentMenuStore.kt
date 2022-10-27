@@ -7,6 +7,7 @@ import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.authContainer.presentation.view.AuthContainerArguments
+import com.itrocket.union.common.DrawerScreenType
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.presentation.store.DocumentArguments
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
@@ -22,15 +23,16 @@ interface DocumentMenuStore :
 
     sealed class Intent {
         data class OnDocumentClicked(val item: DocumentMenuDomain) : Intent()
-        object OnLogoutClicked : Intent()
-        object OnSettingsClicked : Intent()
+        class OnDrawerDestinationClick(val type: DrawerScreenType) : Intent()
         object OnBackClicked : Intent()
     }
 
     data class State(
         val documents: List<DocumentMenuDomain> = listOf(),
         val menuDeepLevel: Int = 0,
-        val userName: String = "",
+        val firstName: String = "",
+        val lastName: String = "",
+        val patronymic: String = "",
         val loading: Boolean = false,
     ) {
         val isBackButtonVisible: Boolean
