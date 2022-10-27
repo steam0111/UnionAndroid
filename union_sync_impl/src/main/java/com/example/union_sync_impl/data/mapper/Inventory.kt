@@ -23,7 +23,8 @@ fun InventoryDtoV2.toInventoryDb(): InventoryDb {
         userUpdated = userUpdated,
         userInserted = userInserted,
         structuralId = structuralUnitId,
-        inventoryBaseId = inventoryBaseId
+        inventoryBaseId = inventoryBaseId,
+        cancel = deleted
     )
 }
 
@@ -37,7 +38,7 @@ fun InventoryDb.toInventoryDtoV2(): InventoryDtoV2 {
         creationDate = getStringDateFromMillis(creationDate),
         dateUpdate = getStringDateFromMillis(updateDate),
         id = id,
-        deleted = false,
+        deleted = cancel ?: false,
         userInserted = userInserted,
         userUpdated = userUpdated,
         dateInsert = getStringDateFromMillis(insertDate)
@@ -57,7 +58,8 @@ fun InventoryCreateSyncEntity.toInventoryDb(id: String): InventoryDb {
         userUpdated = userUpdated,
         userInserted = userInserted,
         structuralId = structuralId,
-        inventoryBaseId = inventoryBaseId
+        inventoryBaseId = inventoryBaseId,
+        cancel = false
     )
 }
 
@@ -74,7 +76,8 @@ fun InventoryUpdateSyncEntity.toInventoryDb(): InventoryDb {
         userUpdated = userUpdated,
         userInserted = userInserted,
         structuralId = structuralId,
-        inventoryBaseId = inventoryBaseId
+        inventoryBaseId = inventoryBaseId,
+        cancel = false
     )
 }
 

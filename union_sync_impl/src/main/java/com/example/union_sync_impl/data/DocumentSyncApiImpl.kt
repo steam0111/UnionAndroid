@@ -6,12 +6,12 @@ import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
-import com.example.union_sync_api.entity.ReserveCountSyncEntity
 import com.example.union_sync_api.entity.DocumentSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateReservesSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
 import com.example.union_sync_api.entity.EnumType
 import com.example.union_sync_api.entity.LocationSyncEntity
+import com.example.union_sync_api.entity.ReserveCountSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.ActionRecordDao
@@ -29,9 +29,9 @@ import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
+import java.util.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.util.*
 
 class DocumentSyncApiImpl(
     private val documentDao: DocumentDao,
@@ -223,25 +223,28 @@ class DocumentSyncApiImpl(
         actionId: String,
         userUpdated: String?
     ) {
-        val existRecords = actionRecordDao.getAll(
-            sqlActionRecordQuery(
-                actionId = actionId,
-                accountingObjectIds = accountingObjectIds
-            )
-        )
+        val records =
+            actionRecordDao.getAll(sqlActionRecordQuery(actionId = actionId)).map {
+                it.copy(cancel = !accountingObjectIds.contains(it.accountingObjectId))
+            }
+        val existRecords = records.filter { accountingObjectIds.contains(it.accountingObjectId) }
         val newRecords = accountingObjectIds.map { accountingObjectId ->
             val existRecord = existRecords.find { it.accountingObjectId == accountingObjectId }
             ActionRecordDb(
                 id = existRecord?.id ?: UUID.randomUUID().toString(),
                 accountingObjectId = accountingObjectId,
                 actionId = actionId,
-                insertDate = existRecord?.insertDate,
+                insertDate = existRecord?.insertDate ?: System.currentTimeMillis(),
                 updateDate = System.currentTimeMillis(),
                 userInserted = existRecord?.userInserted ?: userUpdated,
-                userUpdated = userUpdated
+                userUpdated = userUpdated,
+                cancel = false
             )
         }
         actionRecordDao.insertAll(newRecords)
+
+        val removedAccountingObjects = records.filter { it.cancel == true }
+        actionRecordDao.insertAll(removedAccountingObjects)
     }
 
     private suspend fun updateRemainsActionRecords(
@@ -249,12 +252,12 @@ class DocumentSyncApiImpl(
         actionId: String,
         userUpdated: String?
     ) {
-        val existRecords = actionRemainsRecordDao.getAll(
-            sqlActionRemainsRecordQuery(
-                actionId = actionId,
-                remainIds = remainIds.map { it.id }
-            )
-        )
+        val mappedRemainIds = remainIds.map { it.id }
+        val records =
+            actionRemainsRecordDao.getAll(sqlActionRemainsRecordQuery(actionId = actionId)).map {
+                it.copy(cancel = !mappedRemainIds.contains(it.remainId))
+            }
+        val existRecords = records.filter { mappedRemainIds.contains(it.remainId) }
         val newRecords = remainIds.map { remain ->
             val existRecord = existRecords.find { it.remainId == remain.id }
             ActionRemainsRecordDb(
@@ -262,13 +265,17 @@ class DocumentSyncApiImpl(
                 remainId = remain.id,
                 actionId = actionId,
                 updateDate = System.currentTimeMillis(),
-                insertDate = existRecord?.insertDate,
+                insertDate = existRecord?.insertDate ?: System.currentTimeMillis(),
                 count = remain.count,
                 userUpdated = userUpdated,
-                userInserted = existRecord?.userInserted ?: userUpdated
+                userInserted = existRecord?.userInserted ?: userUpdated,
+                cancel = false
             )
         }
         actionRemainsRecordDao.insertAll(newRecords)
+
+        val removedRecords = records.filter { it.cancel == true }
+        actionRemainsRecordDao.insertAll(removedRecords)
     }
 
     private suspend fun List<String?>?.getLocations(): List<LocationSyncEntity> {

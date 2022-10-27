@@ -6,6 +6,7 @@ import com.example.union_sync_impl.entity.core.CatalogItemDb
 @Entity(tableName = "vocabularyAdditionalFieldValue")
 class VocabularyAdditionalFieldValueDb(
     id: String,
+    cancel: Boolean? = false,
     insertDate: Long?,
     updateDate: Long?,
     userUpdated: String?,
@@ -14,6 +15,7 @@ class VocabularyAdditionalFieldValueDb(
     val value: String?
 ) : CatalogItemDb(
     id = id,
+    cancel = cancel,
     insertDate = insertDate,
     updateDate = updateDate,
     userUpdated = userUpdated,

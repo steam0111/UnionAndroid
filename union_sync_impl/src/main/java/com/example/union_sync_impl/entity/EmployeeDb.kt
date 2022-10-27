@@ -8,6 +8,7 @@ import com.example.union_sync_impl.entity.core.CatalogItemDb
 @Entity(tableName = "employees")
 class EmployeeDb(
     id: String,
+    cancel: Boolean? = false,
     override var catalogItemName: String,
     val firstname: String,
     val lastname: String,
@@ -23,6 +24,7 @@ class EmployeeDb(
     userUpdated: String?,
 ) : CatalogItemDb(
     id = id,
+    cancel = cancel,
     insertDate = insertDate,
     updateDate = updateDate,
     userUpdated = userUpdated,

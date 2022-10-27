@@ -7,6 +7,7 @@ import com.squareup.moshi.Json
 @Entity(tableName = "inventories")
 class InventoryDb(
     id: String = "",
+    cancel: Boolean? = false,
     val employeeId: String?,
     val locationIds: List<String>?,
     val structuralId: String?,
@@ -20,6 +21,7 @@ class InventoryDb(
     userUpdated: String?,
 ) : SyncItemDb(
     id = id,
+    cancel = cancel,
     insertDate = creationDate,
     updateDate = updateDate,
     userUpdated = userUpdated,

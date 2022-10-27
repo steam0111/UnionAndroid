@@ -281,6 +281,30 @@ class DocumentCreateInteractor(
         }
     }
 
+    fun deleteAccountingObject(
+        accountingObjectId: String,
+        accountingObjectList: List<AccountingObjectDomain>
+    ): List<AccountingObjectDomain> {
+        val mutableList = accountingObjectList.toMutableList()
+        val accountingObjectIndex = mutableList.indexOfFirst { it.id == accountingObjectId }
+        if (accountingObjectIndex >= 0) {
+            mutableList.removeAt(accountingObjectIndex)
+        }
+        return mutableList
+    }
+
+    fun deleteReserve(
+        reserveId: String,
+        reserveList: List<ReservesDomain>
+    ): List<ReservesDomain> {
+        val mutableList = reserveList.toMutableList()
+        val reserveIndex = mutableList.indexOfFirst { it.id == reserveId }
+        if (reserveIndex >= 0) {
+            mutableList.removeAt(reserveIndex)
+        }
+        return mutableList
+    }
+
     fun completeDocument(
         params: List<ParamDomain>,
         accountingObjects: List<AccountingObjectDomain>,

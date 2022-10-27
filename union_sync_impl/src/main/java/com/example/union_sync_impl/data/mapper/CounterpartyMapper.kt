@@ -18,7 +18,8 @@ fun CounterpartyDtoV2.toCounterpartyDb(): CounterpartyDb {
         updateDate = getMillisDateFromServerFormat(dateUpdate),
         insertDate = getMillisDateFromServerFormat(dateInsert),
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        cancel = deleted
     )
 }
 

@@ -9,6 +9,7 @@ import com.example.union_sync_impl.entity.core.SyncItemDb
 @Entity(tableName = "inventory_record")
 class InventoryRecordDb(
     id: String,
+    cancel: Boolean? = false,
     val inventoryId: String,
     val accountingObjectId: String,
     val inventoryStatus: String,
@@ -18,6 +19,7 @@ class InventoryRecordDb(
     userUpdated: String?,
 ) : SyncItemDb(
     id = id,
+    cancel = cancel,
     insertDate = insertDate,
     updateDate = updateDate,
     userUpdated = userUpdated,

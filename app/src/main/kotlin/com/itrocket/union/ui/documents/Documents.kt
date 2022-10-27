@@ -82,6 +82,7 @@ fun DocumentCreateBaseScreen(
     isDocumentChangePermitted: Boolean,
     isDocumentExist: Boolean,
     appInsets: AppInsets,
+    canDelete: Boolean,
     onBackClickListener: () -> Unit,
     onDropClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
@@ -94,7 +95,9 @@ fun DocumentCreateBaseScreen(
     onConductClickListener: () -> Unit,
     onReserveClickListener: (ReservesDomain) -> Unit,
     onConfirmActionClick: () -> Unit,
-    onDismissConfirmDialog: () -> Unit
+    onDismissConfirmDialog: () -> Unit,
+    onDeleteAccountingObjectClickListener: (String) -> Unit,
+    onDeleteReserveClickListener: (String) -> Unit,
 ) {
     val pagerState = rememberPagerState(selectedPage)
     val coroutineScope = rememberCoroutineScope()
@@ -114,7 +117,10 @@ fun DocumentCreateBaseScreen(
         onReserveClickListener = onReserveClickListener,
         documentType = documentType,
         isDocumentExist = isDocumentExist,
-        isDocumentChangePermitted = isDocumentChangePermitted
+        isDocumentChangePermitted = isDocumentChangePermitted,
+        onDeleteReserveClickListener = onDeleteReserveClickListener,
+        onDeleteAccountingObjectClickListener = onDeleteAccountingObjectClickListener,
+        canDelete = canDelete
     )
 
     AppTheme {
@@ -266,9 +272,11 @@ fun DocumentAccountingObjectScreen(
     onSaveClickListener: () -> Unit,
     onChooseClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
+    onDeleteAccountingObjectClickListener: (String) -> Unit,
     documentStatus: DocumentStatus,
     isDocumentChangePermitted: Boolean,
-    isDocumentExist: Boolean
+    isDocumentExist: Boolean,
+    canDelete: Boolean,
 ) {
     Scaffold(
         bottomBar = {
@@ -304,7 +312,9 @@ fun DocumentAccountingObjectScreen(
                                 accountingObject = item,
                                 onAccountingObjectListener = onAccountingObjectClickListener,
                                 isShowBottomLine = isShowBottomLine,
-                                status = item.status?.type
+                                status = item.status?.type,
+                                canDelete = documentStatus != DocumentStatus.COMPLETED && canDelete,
+                                onDeleteClickListener = onDeleteAccountingObjectClickListener,
                             )
                         }
                     }
@@ -322,9 +332,11 @@ fun DocumentReservesScreen(
     onSaveClickListener: () -> Unit,
     onChooseClickListener: () -> Unit,
     onConductClickListener: () -> Unit,
+    onDeleteReserveClickListener: (String) -> Unit,
     documentStatus: DocumentStatus,
     isDocumentChangePermitted: Boolean,
-    isDocumentExist: Boolean
+    isDocumentExist: Boolean,
+    canDelete: Boolean,
 ) {
     Scaffold(
         bottomBar = {
@@ -360,7 +372,9 @@ fun DocumentReservesScreen(
                                 reserves = item,
                                 onReservesListener = onReservesClickListener,
                                 isShowBottomLine = isShowBottomLine,
-                                clickable = documentStatus != DocumentStatus.COMPLETED && isDocumentChangePermitted
+                                clickable = documentStatus != DocumentStatus.COMPLETED && isDocumentChangePermitted,
+                                canDelete = documentStatus != DocumentStatus.COMPLETED && canDelete,
+                                onDeleteClickListener = onDeleteReserveClickListener
                             )
                         }
                     }
@@ -385,7 +399,10 @@ fun DocumentToolbar(
                 text = stringResource(R.string.common_drop),
                 style = AppTheme.typography.body2,
                 color = AppTheme.colors.mainColor,
-                modifier = Modifier.clickable(onClick = onDropClickListener, enabled = isDocumentChangePermitted)
+                modifier = Modifier.clickable(
+                    onClick = onDropClickListener,
+                    enabled = isDocumentChangePermitted
+                )
             )
         }
     )
@@ -478,7 +495,7 @@ fun DocumentListBottomBar(
             modifier = Modifier.weight(1f),
             enabled = documentStatus != DocumentStatus.COMPLETED && isDocumentChangePermitted
         )
-        if(isDocumentExist) {
+        if (isDocumentExist) {
             Spacer(modifier = Modifier.width(8.dp))
             BaseButton(
                 text = stringResource(R.string.common_conduct),
@@ -515,6 +532,9 @@ private fun getTabList(
     onConductClickListener: () -> Unit,
     onReserveClickListener: (ReservesDomain) -> Unit,
     isDocumentExist: Boolean,
+    canDelete: Boolean,
+    onDeleteAccountingObjectClickListener: (String) -> Unit,
+    onDeleteReserveClickListener: (String) -> Unit
 ): List<BaseTab> {
     val baseTabs = mutableListOf(
         BaseTab(
@@ -545,7 +565,9 @@ private fun getTabList(
                     documentStatus = documentStatus,
                     onConductClickListener = onConductClickListener,
                     isDocumentChangePermitted = isDocumentChangePermitted,
-                    isDocumentExist = isDocumentExist
+                    isDocumentExist = isDocumentExist,
+                    canDelete = canDelete,
+                    onDeleteAccountingObjectClickListener = onDeleteAccountingObjectClickListener
                 )
             }
         )
@@ -565,7 +587,9 @@ private fun getTabList(
                         documentStatus = documentStatus,
                         onConductClickListener = onConductClickListener,
                         isDocumentChangePermitted = isDocumentChangePermitted,
-                        isDocumentExist = isDocumentExist
+                        isDocumentExist = isDocumentExist,
+                        onDeleteReserveClickListener = onDeleteReserveClickListener,
+                        canDelete = canDelete
                     )
                 }
             ))
@@ -629,6 +653,9 @@ fun DocumentCreateBaseScreenPreview() {
         onConfirmActionClick = {},
         onDismissConfirmDialog = {},
         isDocumentChangePermitted = false,
-        isDocumentExist = false
+        isDocumentExist = false,
+        canDelete = true,
+        onDeleteReserveClickListener = {},
+        onDeleteAccountingObjectClickListener = {}
     )
 }

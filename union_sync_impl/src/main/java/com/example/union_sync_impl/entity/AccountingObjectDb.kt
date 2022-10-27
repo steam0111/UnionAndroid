@@ -40,6 +40,7 @@ import com.example.union_sync_impl.entity.location.LocationDb
 )
 class AccountingObjectDb(
     id: String,
+    cancel: Boolean? = false,
     override var catalogItemName: String,
     val locationId: String?,
     val providerId: String?,
@@ -79,6 +80,7 @@ class AccountingObjectDb(
     insertDate: Long?
 ) : CatalogItemDb(
     id = id,
+    cancel = cancel,
     insertDate = insertDate,
     updateDate = updateDate,
     userUpdated = userUpdated,

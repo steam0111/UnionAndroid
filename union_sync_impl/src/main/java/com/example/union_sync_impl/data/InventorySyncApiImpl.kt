@@ -219,7 +219,8 @@ class InventorySyncApiImpl(
                 updateDate = updateDate,
                 insertDate = existRecord?.insertDate,
                 userUpdated = userUpdated,
-                userInserted = userUpdated
+                userInserted = userUpdated,
+                cancel = false
             )
         }
 

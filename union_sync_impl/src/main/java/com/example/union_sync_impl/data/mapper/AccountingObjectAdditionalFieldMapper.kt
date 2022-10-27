@@ -25,7 +25,8 @@ fun AccountingObjectSimpleAdditionalFieldValueDtoV2.toDb() =
         catalogItemName = catalogItemName.orEmpty(),
         value = value,
         accountingObjectId = accountingObjectId,
-        simpleAdditionalFieldId = simpleAdditionalFieldId
+        simpleAdditionalFieldId = simpleAdditionalFieldId,
+        cancel = deleted
     )
 
 
@@ -39,7 +40,8 @@ fun AccountingObjectVocabularyAdditionalFieldValueDtoV2.toDb() =
         catalogItemName = catalogItemName.orEmpty(),
         accountingObjectId = accountingObjectId,
         vocabularyAdditionalFieldValueId = vocabularyAdditionalFieldValueId,
-        vocabularyAdditionalFieldId = vocabularyAdditionalFieldId
+        vocabularyAdditionalFieldId = vocabularyAdditionalFieldId,
+        cancel = deleted
     )
 
 
@@ -50,7 +52,8 @@ fun SimpleAdditionalFieldDtoV2.toDb() = SimpleAdditionalFieldDb(
     userUpdated = userUpdated,
     userInserted = userInserted,
     catalogItemName = catalogItemName.orEmpty(),
-    name = name
+    name = name,
+    cancel = deleted
 )
 
 
@@ -61,7 +64,8 @@ fun VocabularyAdditionalFieldDtoV2.toDb() = VocabularyAdditionalFieldDb(
     userUpdated = userUpdated,
     userInserted = userInserted,
     catalogItemName = catalogItemName.orEmpty(),
-    name = name
+    name = name,
+    cancel = deleted
 )
 
 
@@ -72,7 +76,8 @@ fun VocabularyAdditionalFieldValueDtoV2.toDb() = VocabularyAdditionalFieldValueD
     userUpdated = userUpdated,
     userInserted = userInserted,
     catalogItemName = catalogItemName.orEmpty(),
-    value = value
+    value = value,
+    cancel = deleted
 )
 
 fun FullAccountingObjectSimpleAdditionalFieldDb.toSyncEntity() =

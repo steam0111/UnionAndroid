@@ -24,7 +24,8 @@ fun EmployeeDtoV2.toEmployeeDb(): EmployeeDb {
         updateDate = getMillisDateFromServerFormat(dateUpdate),
         insertDate = getMillisDateFromServerFormat(dateInsert),
         userInserted = userInserted,
-        userUpdated = userUpdated
+        userUpdated = userUpdated,
+        cancel = deleted
     )
 }
 

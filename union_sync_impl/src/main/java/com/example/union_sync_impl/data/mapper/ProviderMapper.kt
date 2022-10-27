@@ -14,7 +14,8 @@ fun CounterpartyDtoV2.toProviderDb(): ProviderDb {
         updateDate = getMillisDateFromServerFormat(dateUpdate),
         insertDate = getMillisDateFromServerFormat(dateInsert),
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        cancel = deleted
     )
 }
 

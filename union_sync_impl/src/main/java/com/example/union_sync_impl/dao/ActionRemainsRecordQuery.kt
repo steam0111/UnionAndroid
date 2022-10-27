@@ -5,6 +5,7 @@ import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
 import com.example.union_sync_impl.utils.addPagination
 import com.example.union_sync_impl.utils.isEquals
+import com.example.union_sync_impl.utils.isNotEquals
 import com.example.union_sync_impl.utils.more
 
 fun sqlActionRemainsRecordQuery(
@@ -29,6 +30,7 @@ fun sqlActionRemainsRecordQuery(
                 updateDate?.let {
                     add("updateDate" more updateDate)
                 }
+                add("cancel" isNotEquals "1")
             }
         )
     ).addPagination(

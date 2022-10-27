@@ -6,6 +6,7 @@ import com.example.union_sync_impl.entity.core.CatalogItemDb
 @Entity(tableName = "structural")
 class StructuralDb(
     id: String,
+    cancel: Boolean? = false,
     override var catalogItemName: String,
     var parentId: String? = null,
     val name: String,
@@ -19,6 +20,7 @@ class StructuralDb(
     userUpdated: String?,
 ) : CatalogItemDb(
     id = id,
+    cancel = cancel,
     insertDate = insertDate,
     updateDate = updateDate,
     userUpdated = userUpdated,

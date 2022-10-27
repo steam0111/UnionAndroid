@@ -28,7 +28,8 @@ fun StructuralUnitDtoV2.toStructuralDb(): StructuralDb {
         updateDate = getMillisDateFromServerFormat(dateUpdate),
         insertDate = getMillisDateFromServerFormat(dateInsert),
         userInserted = userInserted,
-        userUpdated = userUpdated
+        userUpdated = userUpdated,
+        cancel = deleted
     )
 }
 

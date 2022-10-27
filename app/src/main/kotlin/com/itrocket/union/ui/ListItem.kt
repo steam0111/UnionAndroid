@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -65,48 +66,60 @@ private const val DATE_ITEM_ROTATION_DURATION = 200
 fun AccountingObjectItem(
     accountingObject: AccountingObjectDomain,
     onAccountingObjectListener: (AccountingObjectDomain) -> Unit,
+    onDeleteClickListener: (String) -> Unit = {},
     status: Status?,
     isShowBottomLine: Boolean,
     statusText: String? = null,
     isEnabled: Boolean = true,
-    isShowScanInfo: Boolean = true
+    isShowScanInfo: Boolean = true,
+    canDelete: Boolean = false,
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = {
-                onAccountingObjectListener(accountingObject)
-            }, enabled = isEnabled)
-            .padding(vertical = 12.dp, horizontal = 16.dp)
+            .background(white)
+            .clickable(
+                onClick = {
+                    onAccountingObjectListener(accountingObject)
+                },
+                enabled = isEnabled
+            ),
+        horizontalAlignment = Alignment.End,
+        verticalArrangement = Arrangement.Bottom
     ) {
-        Column(modifier = Modifier.fillMaxWidth(0.7f)) {
-            val headerText =
-                accountingObject.title.ifEmpty { stringResource(id = R.string.value_not_defined) }
-            HeaderText(headerText)
-            Spacer(modifier = Modifier.height(4.dp))
-            accountingObject.listMainInfo.take(MAX_LIST_INFO).forEach {
-                Text(
-                    text = stringResource(
-                        R.string.common_two_dots,
-                        it.title?.let { stringResource(id = it) }.orEmpty(),
-                        it.value.orEmpty()
-                    ),
-                    style = AppTheme.typography.subtitle1
-                )
-            }
-        }
-        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
-            status?.let { SmallStatusLabel(status = it, statusText) }
-            if (status is ObjectStatusType && isShowScanInfo
-                && (accountingObject.hasBarcode || accountingObject.hasRfid)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp, start = 16.dp, end = 16.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
             ) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    if (accountingObject.hasBarcode) {
+                val headerText =
+                    accountingObject.title.ifEmpty { stringResource(id = R.string.value_not_defined) }
+                HeaderText(headerText)
+                Spacer(modifier = Modifier.height(4.dp))
+                accountingObject.listMainInfo.take(MAX_LIST_INFO).forEach {
+                    Text(
+                        text = stringResource(
+                            R.string.common_two_dots,
+                            it.title?.let { stringResource(id = it) }.orEmpty(),
+                            it.value.orEmpty()
+                        ),
+                        style = AppTheme.typography.subtitle1
+                    )
+                }
+            }
+            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
+                status?.let { SmallStatusLabel(status = it, statusText) }
+                if (status is ObjectStatusType && isShowScanInfo&& (accountingObject.hasBarcode || accountingObject.hasRfid)) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {if (accountingObject.hasBarcode) {
                         Text(
                             text = stringResource(R.string.common_barcode),
                             style = AppTheme.typography.caption,
@@ -121,32 +134,48 @@ fun AccountingObjectItem(
                                 unselectedColor = graphite3
                             )
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
-                }
-                if (accountingObject.status?.type?.type == AccountingObjectStatus.AVAILABLE.name && accountingObject.hasRfid) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Text(
-                            text = stringResource(R.string.common_rfid),
-                            style = AppTheme.typography.caption,
-                            color = AppTheme.colors.secondaryColor,
-                            modifier = Modifier.padding(end = 4.dp)
-                        )
-                        RadioButton(
-                            selected = accountingObject.isBarcode,
-                            onClick = null,
-                            colors = RadioButtonDefaults.colors(
-                                selectedColor = AppTheme.colors.secondaryColor,
-                                unselectedColor = graphite3
+                    Spacer(modifier = Modifier.height(8.dp))
+                    }}
+                    if (accountingObject.status?.type?.type == AccountingObjectStatus.AVAILABLE.name && accountingObject.hasRfid) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Text(
+                                text = stringResource(R.string.common_rfid),
+                                style = AppTheme.typography.caption,
+                                color = AppTheme.colors.secondaryColor,
+                                modifier = Modifier.padding(end = 4.dp)
                             )
-                        )
+                            RadioButton(
+                                selected = accountingObject.isBarcode,
+                                onClick = null,
+                                colors = RadioButtonDefaults.colors(
+                                    selectedColor = AppTheme.colors.secondaryColor,
+                                    unselectedColor = graphite3
+                                )
+                            )
+                        }
                     }
                 }
             }
+        }
+        if (canDelete) {
+            Image(
+                painter = painterResource(R.drawable.ic_delete),
+                colorFilter = ColorFilter.tint(red5),
+                contentDescription = null,
+                modifier = Modifier
+                    .clickableUnbounded(
+                        onClick = {
+                            onDeleteClickListener(accountingObject.id)
+                        }
+                    )
+                    .padding(vertical = 12.dp, horizontal = 16.dp)
+            )
+        } else {
+            Spacer(modifier = Modifier.height(12.dp))
         }
     }
     if (isShowBottomLine) {
@@ -158,63 +187,67 @@ fun AccountingObjectItem(
 fun ReservesItem(
     reserves: ReservesDomain,
     onReservesListener: (ReservesDomain) -> Unit,
+    onDeleteClickListener: (String) -> Unit = {},
     isShowBottomLine: Boolean,
-    clickable: Boolean = true
+    clickable: Boolean = true,
+    canDelete: Boolean = false
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
+            .background(white)
             .clickable(onClick = {
                 onReservesListener(reserves)
-            }, enabled = clickable)
-            .padding(vertical = 12.dp, horizontal = 16.dp)
+            }, enabled = clickable),
+        horizontalAlignment = Alignment.End,
+        verticalArrangement = Arrangement.Bottom
     ) {
-        Column(
+        Row(
             modifier = Modifier
-                .fillMaxWidth(0.7f)
+                .fillMaxWidth()
+                .padding(start = 16.dp, top = 12.dp, end = 16.dp)
         ) {
-            HeaderText(reserves.title)
-            Spacer(modifier = Modifier.height(4.dp))
-            reserves.listInfo.take(MAX_LIST_INFO).forEach {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+            ) {
+                HeaderText(reserves.title)
+                Spacer(modifier = Modifier.height(4.dp))
+                reserves.listInfo.take(MAX_LIST_INFO).forEach {
+                    Text(
+                        text = stringResource(
+                            R.string.common_two_dots,
+                            it.title?.let { stringResource(id = it) }.orEmpty(),
+                            it.value.orEmpty()
+                        ),
+                        style = AppTheme.typography.subtitle1
+                    )
+                }
+            }
+            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
                 Text(
-                    text = stringResource(
-                        R.string.common_two_dots,
-                        it.title?.let { stringResource(id = it) }.orEmpty(),
-                        it.value.orEmpty()
-                    ),
-                    style = AppTheme.typography.subtitle1
+                    text = reserves.itemsCount.toString(),
+                    color = AppTheme.colors.mainTextColor,
+                    style = AppTheme.typography.body2,
+                    fontWeight = FontWeight.Medium
                 )
             }
         }
-        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
-            Text(
-                text = reserves.itemsCount.toString(),
-                color = AppTheme.colors.mainTextColor,
-                style = AppTheme.typography.body2,
-                fontWeight = FontWeight.Medium
-            )
-            // Пока нет шк не нужно его отображать
-            /*Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                Text(
-                    text = stringResource(R.string.common_barcode),
-                    style = AppTheme.typography.caption,
-                    color = psb3,
-                    modifier = Modifier.padding(end = 4.dp)
-                )
-                RadioButton(
-                    selected = reserves.isBarcode,
-                    onClick = null,
-                    colors = RadioButtonDefaults.colors(
-                        selectedColor = psb3,
-                        unselectedColor = graphite3
+        if (canDelete) {
+            Image(
+                painter = painterResource(R.drawable.ic_delete),
+                colorFilter = ColorFilter.tint(red5),
+                contentDescription = null,
+                modifier = Modifier
+                    .clickableUnbounded(
+                        onClick = {
+                            onDeleteClickListener(reserves.id)
+                        }
                     )
-                )
-            }*/
+                    .padding(vertical = 12.dp, horizontal = 16.dp)
+            )
+        } else {
+            Spacer(modifier = Modifier.height(12.dp))
         }
     }
     if (isShowBottomLine) {
@@ -578,6 +611,7 @@ fun ReservesItemPreview() {
                 )
             ), itemsCount = 1200L
         ), onReservesListener = {},
+        canDelete = true,
         isShowBottomLine = true
     )
 }
@@ -620,7 +654,8 @@ fun AccountingObjectItemPreview() {
             AppTheme.colors.secondaryColor.value.toString(),
             AppTheme.colors.secondaryColor.value.toString(),
             ""
-        )
+        ),
+        canDelete = true
     )
 }
 

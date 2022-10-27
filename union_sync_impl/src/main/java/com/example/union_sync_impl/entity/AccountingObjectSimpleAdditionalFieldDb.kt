@@ -6,6 +6,7 @@ import com.example.union_sync_impl.entity.core.CatalogItemDb
 @Entity(tableName = "accountingObjectSimpleAdditionalFieldValue")
 class AccountingObjectSimpleAdditionalFieldDb(
     id: String,
+    cancel: Boolean? = false,
     insertDate: Long?,
     updateDate: Long?,
     userUpdated: String?,
@@ -16,6 +17,7 @@ class AccountingObjectSimpleAdditionalFieldDb(
     val accountingObjectId: String?
 ) : CatalogItemDb(
     id = id,
+    cancel = cancel,
     insertDate = insertDate,
     updateDate = updateDate,
     userUpdated = userUpdated,

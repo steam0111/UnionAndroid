@@ -21,7 +21,8 @@ fun LocationDtoV2.toLocationDb(): LocationDb {
         updateDate = getMillisDateFromServerFormat(dateUpdate),
         insertDate = getMillisDateFromServerFormat(dateInsert),
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        cancel = deleted
     )
 }
 
@@ -30,7 +31,8 @@ fun LocationsTypeDtoV2.toLocationTypeDb(): LocationTypeDb {
         id = id,
         catalogItemName = catalogItemName.orEmpty(),
         parentId = parentId,
-        name = name
+        name = name,
+        cancel = false
     )
 }
 

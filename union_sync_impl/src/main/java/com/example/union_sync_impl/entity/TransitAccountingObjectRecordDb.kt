@@ -6,6 +6,7 @@ import com.example.union_sync_impl.entity.core.SyncItemDb
 @Entity(tableName = "transit_record")
 class TransitAccountingObjectRecordDb(
     id: String,
+    cancel: Boolean? = false,
     val transitId: String?,
     val accountingObjectId: String?,
     insertDate: Long?,
@@ -14,6 +15,7 @@ class TransitAccountingObjectRecordDb(
     userUpdated: String?,
 ) : SyncItemDb(
     id = id,
+    cancel = cancel,
     insertDate = insertDate,
     updateDate = updateDate,
     userUpdated = userUpdated,

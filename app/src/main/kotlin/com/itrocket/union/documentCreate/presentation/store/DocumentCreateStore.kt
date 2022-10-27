@@ -71,6 +71,8 @@ interface DocumentCreateStore :
         data class OnNfcReaderClose(val nfcReaderResult: NfcReaderResult) : Intent()
         data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
         data class OnManualInput(val readingModeResult: ReadingModeResult) : Intent()
+        data class OnDeleteAccountingObjectClicked(val accountingObjectId: String) : Intent()
+        data class OnDeleteReserveClicked(val reserveId: String) : Intent()
         object OnDismissConfirmDialog : Intent()
         object OnConfirmActionClick : Intent()
     }
@@ -86,7 +88,8 @@ interface DocumentCreateStore :
         val confirmDialogType: DocumentConfirmAlertType = DocumentConfirmAlertType.NONE,
         val canUpdate: Boolean = false,
         val canCreate: Boolean = false,
-        val readingModeTab: ReadingModeTab
+        val readingModeTab: ReadingModeTab,
+        val canDelete: Boolean = false,
     )
 
     sealed class Label {

@@ -3,7 +3,6 @@ package com.example.union_sync_impl.entity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import com.example.union_sync_impl.entity.core.CatalogItemDb
-import com.example.union_sync_impl.entity.core.SyncItemDb
 
 @Entity(
     foreignKeys = [
@@ -18,6 +17,7 @@ import com.example.union_sync_impl.entity.core.SyncItemDb
 )
 class NomenclatureDb(
     id: String,
+    cancel: Boolean? = false,
     override var catalogItemName: String,
     var number: String,
     val nomenclatureGroupId: String?,
@@ -28,6 +28,7 @@ class NomenclatureDb(
     userUpdated: String?,
 ) : CatalogItemDb(
     id = id,
+    cancel = cancel,
     insertDate = insertDate,
     updateDate = updateDate,
     userUpdated = userUpdated,
