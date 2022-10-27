@@ -11,6 +11,7 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
+import com.itrocket.union.inventory.presentation.store.InventoryResult
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
 import com.itrocket.union.inventoryCreate.domain.InventoryDynamicSaveManager
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
@@ -241,7 +242,7 @@ class InventoryCreateStoreFactory(
                 dispatch(Result.SearchAccountingObjects(listOf()))
                 searchManager.emit("")
             } else {
-                publish(InventoryCreateStore.Label.GoBack)
+                publish(InventoryCreateStore.Label.GoBack(InventoryResult(true)))
             }
         }
 
@@ -417,7 +418,7 @@ class InventoryCreateStoreFactory(
                     inventoryDocument,
                     accountingObjects
                 )
-                publish(InventoryCreateStore.Label.GoBack)
+                publish(InventoryCreateStore.Label.GoBack(InventoryResult(true)))
             }
             dispatch(Result.Loading(false))
         }
