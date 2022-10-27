@@ -13,7 +13,7 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectArguments
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
-import com.itrocket.union.documentCreate.presentation.view.DocumentConfirmAlertType
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragmentDirections
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.location.presentation.store.LocationArguments
@@ -82,7 +82,7 @@ interface TransitStore : Store<TransitStore.Intent, TransitStore.State, TransitS
         val params: List<ParamDomain>,
         val isLoading: Boolean = false,
         val selectedPage: Int = 0,
-        val confirmDialogType: DocumentConfirmAlertType = DocumentConfirmAlertType.NONE,
+        val confirmDialogType: AlertType = AlertType.NONE,
         val canUpdate: Boolean = false,
         val canCreate: Boolean = false,
         val readingModeTab: ReadingModeTab

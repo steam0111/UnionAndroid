@@ -6,6 +6,7 @@ import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.R
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.authContainer.presentation.view.AuthContainerArguments
 import com.itrocket.union.common.DrawerScreenType
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
@@ -17,6 +18,7 @@ import com.itrocket.union.inventoryContainer.presentation.store.InventoryContain
 import com.itrocket.union.nomenclature.presentation.store.NomenclatureArguments
 import com.itrocket.union.nomenclatureGroup.presentation.store.NomenclatureGroupArguments
 import com.itrocket.union.structural.presentation.store.StructuralArguments
+import com.itrocket.union.syncAll.presentation.store.SyncAllArguments
 
 interface DocumentMenuStore :
     Store<DocumentMenuStore.Intent, DocumentMenuStore.State, DocumentMenuStore.Label> {
@@ -25,6 +27,10 @@ interface DocumentMenuStore :
         data class OnDocumentClicked(val item: DocumentMenuDomain) : Intent()
         class OnDrawerDestinationClick(val type: DrawerScreenType) : Intent()
         object OnBackClicked : Intent()
+        object OnConfirmSyncClicked : Intent()
+        object OnDismissSyncClicked : Intent()
+        object OnConfirmLogoutClicked : Intent()
+        object OnDismissLogoutClicked : Intent()
     }
 
     data class State(
@@ -34,6 +40,7 @@ interface DocumentMenuStore :
         val lastName: String = "",
         val patronymic: String = "",
         val loading: Boolean = false,
+        val dialogType: AlertType = AlertType.NONE
     ) {
         val isBackButtonVisible: Boolean
             get() = menuDeepLevel > 0
@@ -52,12 +59,22 @@ interface DocumentMenuStore :
                 get() = DocumentMenuComposeFragmentDirections.toModuleSettings()
         }
 
+        object ShowSync : Label(), ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = DocumentMenuComposeFragmentDirections.toSync(SyncAllArguments(true))
+        }
+
+
         data class ShowDocumentDetail(val item: DocumentMenuDomain) : Label(),
             ForwardNavigationLabel {
             override val directions: NavDirections?
                 get() = when (item.titleId) {
-                    R.string.main_accounting_object -> DocumentMenuComposeFragmentDirections.toAccountingObjects(null)
-                    R.string.main_identification -> DocumentMenuComposeFragmentDirections.toIdentify(null)
+                    R.string.main_accounting_object -> DocumentMenuComposeFragmentDirections.toAccountingObjects(
+                        null
+                    )
+                    R.string.main_identification -> DocumentMenuComposeFragmentDirections.toIdentify(
+                        null
+                    )
                     R.string.main_reserves -> DocumentMenuComposeFragmentDirections.toReserves(null)
                     R.string.main_documents -> DocumentMenuComposeFragmentDirections.toDocuments(
                         DocumentArguments(DocumentTypeDomain.ALL)
@@ -94,7 +111,7 @@ interface DocumentMenuStore :
                     R.string.counterparties -> DocumentMenuComposeFragmentDirections.toCounterparty()
                     R.string.producer -> DocumentMenuComposeFragmentDirections.toProducer()
                     R.string.equipment_types -> DocumentMenuComposeFragmentDirections.toEquipmentTypes()
-                    R.string.sync -> DocumentMenuComposeFragmentDirections.toSync()
+                    R.string.sync -> DocumentMenuComposeFragmentDirections.toSync(SyncAllArguments((false)))
                     R.string.manual_structural -> DocumentMenuComposeFragmentDirections.toStructural(
                         StructuralArguments(canEdit = false)
                     )

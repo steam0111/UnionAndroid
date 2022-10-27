@@ -1,19 +1,26 @@
 package com.itrocket.union.documentsMenu.presentation.store
 
-import com.arkivanov.mvikotlin.core.store.*
+import com.arkivanov.mvikotlin.core.store.Executor
+import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
+import com.arkivanov.mvikotlin.core.store.Store
+import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.common.DrawerScreenType
 import com.itrocket.union.documentsMenu.domain.DocumentMenuInteractor
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.syncAll.domain.SyncAllInteractor
 
 class DocumentMenuStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val documentMenuInteractor: DocumentMenuInteractor,
     private val authMainInteractor: AuthMainInteractor,
+    private val syncAllInteractor: SyncAllInteractor,
     private val errorInteractor: ErrorInteractor
 ) {
     fun create(): DocumentMenuStore =
@@ -59,14 +66,7 @@ class DocumentMenuStoreFactory(
                         DrawerScreenType.SETTINGS -> {
                             publish(DocumentMenuStore.Label.ShowSettings)
                         }
-                        DrawerScreenType.LOGOUT -> {
-                            dispatch(Result.Loading(true))
-                            catchException {
-                                authMainInteractor.logout()
-                                publish(DocumentMenuStore.Label.ShowAuth)
-                            }
-                            dispatch(Result.Loading(false))
-                        }
+                        DrawerScreenType.LOGOUT -> dispatch(Result.DialogType(AlertType.SYNC))
                     }
                 }
                 DocumentMenuStore.Intent.OnBackClicked -> {
@@ -76,7 +76,31 @@ class DocumentMenuStoreFactory(
                         publish(DocumentMenuStore.Label.GoBack)
                     }
                 }
+                DocumentMenuStore.Intent.OnConfirmLogoutClicked -> logout()
+                DocumentMenuStore.Intent.OnConfirmSyncClicked -> {
+                    dispatch(Result.DialogType(AlertType.NONE))
+                    publish(DocumentMenuStore.Label.ShowSync)
+                }
+                DocumentMenuStore.Intent.OnDismissLogoutClicked -> dispatch(
+                    Result.DialogType(
+                        AlertType.NONE
+                    )
+                )
+                DocumentMenuStore.Intent.OnDismissSyncClicked -> dispatch(
+                    Result.DialogType(
+                        AlertType.LOGOUT
+                    )
+                )
             }
+        }
+
+        private suspend fun logout() {
+            dispatch(Result.Loading(true))
+            catchException {
+                syncAllInteractor.clearAll()
+                authMainInteractor.logout()
+            }
+            dispatch(Result.Loading(false))
         }
 
         override fun handleError(throwable: Throwable) {
@@ -109,6 +133,7 @@ class DocumentMenuStoreFactory(
         ) : Result()
 
         data class Loading(val loading: Boolean) : Result()
+        data class DialogType(val dialogType: AlertType) : Result()
     }
 
     private object ReducerImpl : Reducer<DocumentMenuStore.State, Result> {
@@ -124,6 +149,7 @@ class DocumentMenuStoreFactory(
                     lastName = result.secondName,
                     patronymic = result.patronimic
                 )
+                is Result.DialogType -> copy(dialogType = result.dialogType)
             }
     }
 }

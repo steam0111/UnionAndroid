@@ -1,6 +1,7 @@
 package com.itrocket.union.syncAll.presentation.view
 
 import androidx.compose.ui.platform.ComposeView
+import androidx.navigation.fragment.navArgs
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.union.syncAll.SyncAllModule.SYNCALL_VIEW_MODEL_QUALIFIER
@@ -10,6 +11,9 @@ class SyncAllComposeFragment :
     BaseComposeFragment<SyncAllStore.Intent, SyncAllStore.State, SyncAllStore.Label>(
         SYNCALL_VIEW_MODEL_QUALIFIER
     ) {
+
+    override val navArgs by navArgs<SyncAllComposeFragmentArgs>()
+
     override fun renderState(
         state: SyncAllStore.State,
         composeView: ComposeView,

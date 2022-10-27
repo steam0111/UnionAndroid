@@ -42,7 +42,7 @@ import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.ui.BaseTab
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.documentCreate.presentation.view.DocumentConfirmAlertType
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.manual.ManualType
@@ -71,7 +71,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun DocumentCreateBaseScreen(
-    confirmDialogType: DocumentConfirmAlertType,
+    confirmDialogType: AlertType,
     params: List<ParamDomain>,
     selectedPage: Int,
     documentStatus: DocumentStatus,
@@ -154,13 +154,13 @@ fun DocumentCreateBaseScreen(
     }
 
     // todo сделать через side effect
-    if (confirmDialogType == DocumentConfirmAlertType.SAVE) {
+    if (confirmDialogType == AlertType.SAVE) {
         ConfirmAlertDialog(
             onDismiss = onDismissConfirmDialog,
             onConfirmClick = onConfirmActionClick,
             textRes = R.string.common_confirm_save_text
         )
-    } else if (confirmDialogType == DocumentConfirmAlertType.CONDUCT) {
+    } else if (confirmDialogType == AlertType.CONDUCT) {
         ConfirmAlertDialog(
             onDismiss = onDismissConfirmDialog,
             onConfirmClick = onConfirmActionClick,
@@ -649,7 +649,7 @@ fun DocumentCreateBaseScreenPreview() {
         onChooseReserveClickListener = {},
         onConductClickListener = {},
         onReserveClickListener = {},
-        confirmDialogType = DocumentConfirmAlertType.NONE,
+        confirmDialogType = AlertType.NONE,
         onConfirmActionClick = {},
         onDismissConfirmDialog = {},
         isDocumentChangePermitted = false,

@@ -5,6 +5,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.union.authContainer.presentation.view.AuthContainerArguments
 import com.itrocket.union.splash.presentation.view.SplashComposeFragmentDirections
+import com.itrocket.union.syncAll.presentation.store.SyncAllArguments
 import com.itrocket.union.theme.domain.entity.Medias
 
 interface SplashStore : Store<SplashStore.Intent, SplashStore.State, SplashStore.Label> {
@@ -21,11 +22,13 @@ interface SplashStore : Store<SplashStore.Intent, SplashStore.State, SplashStore
                 get() = SplashComposeFragmentDirections.toAuth(AuthContainerArguments(false))
 
         }
+
         object ShowSyncAll : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
-                get() = SplashComposeFragmentDirections.toSyncAll()
+                get() = SplashComposeFragmentDirections.toSyncAll(SyncAllArguments(false))
 
         }
+
         object ShowDocumentsMenu : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = SplashComposeFragmentDirections.toDocumentsMenu()

@@ -5,11 +5,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +26,8 @@ import com.itrocket.union.R
 fun ConfirmAlertDialog(
     onDismiss: () -> Unit,
     onConfirmClick: () -> Unit,
+    confirmTextRes: Int = R.string.common_ok,
+    dismissTextRes: Int = R.string.common_cancel,
     textRes: Int
 ) {
     Dialog(onDismissRequest = onDismiss) {
@@ -38,14 +38,26 @@ fun ConfirmAlertDialog(
             Box(
                 contentAlignment = Alignment.Center
             ) {
-                Content(textRes = textRes, onConfirmClick = onConfirmClick, onDismiss = onDismiss)
+                Content(
+                    textRes = textRes,
+                    confirmTextRes = confirmTextRes,
+                    dismissTextRes = dismissTextRes,
+                    onConfirmClick = onConfirmClick,
+                    onDismiss = onDismiss
+                )
             }
         }
     }
 }
 
 @Composable
-private fun Content(textRes: Int, onDismiss: () -> Unit, onConfirmClick: () -> Unit) {
+private fun Content(
+    textRes: Int,
+    confirmTextRes: Int,
+    dismissTextRes: Int,
+    onDismiss: () -> Unit,
+    onConfirmClick: () -> Unit
+) {
     Box(
         contentAlignment = Alignment.Center
     ) {
@@ -63,16 +75,13 @@ private fun Content(textRes: Int, onDismiss: () -> Unit, onConfirmClick: () -> U
                 horizontalArrangement = Arrangement.End
             ) {
                 TextButton(
-                    text = stringResource(R.string.common_cancel),
+                    text = stringResource(dismissTextRes),
                     onClick = onDismiss,
                     isTextUpperCased = false
                 )
                 TextButton(
-                    text = stringResource(R.string.common_ok),
-                    onClick = {
-                        onConfirmClick()
-                        onDismiss()
-                    },
+                    text = stringResource(confirmTextRes),
+                    onClick = onConfirmClick,
                     isTextUpperCased = false
                 )
             }
@@ -87,6 +96,12 @@ fun ConfirmAlertDialogContentPreview() {
         modifier = Modifier.background(Color.White, RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center,
     ) {
-        Content(R.string.common_confirm_save_text, {}, {})
+        Content(
+            textRes = R.string.common_confirm_save_text,
+            onConfirmClick = {},
+            onDismiss = {},
+            confirmTextRes = R.string.common_ok,
+            dismissTextRes = R.string.common_cancel
+        )
     }
 }

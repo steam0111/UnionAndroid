@@ -9,7 +9,7 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
-import com.itrocket.union.documentCreate.presentation.view.DocumentConfirmAlertType
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.documents.data.mapper.getTransitParams
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
@@ -137,7 +137,7 @@ class TransitStoreFactory(
                 }
                 TransitStore.Intent.OnSaveClicked -> dispatch(
                     Result.ConfirmDialogType(
-                        DocumentConfirmAlertType.SAVE
+                        AlertType.SAVE
                     )
                 )
                 is TransitStore.Intent.OnSelectPage -> dispatch(Result.SelectPage(intent.selectedPage))
@@ -176,7 +176,7 @@ class TransitStoreFactory(
                 )
                 TransitStore.Intent.OnCompleteClicked -> dispatch(
                     Result.ConfirmDialogType(
-                        DocumentConfirmAlertType.CONDUCT
+                        AlertType.CONDUCT
                     )
                 )
                 is TransitStore.Intent.OnReserveCountSelected -> dispatch(
@@ -204,7 +204,7 @@ class TransitStoreFactory(
                     )
                 }
                 is TransitStore.Intent.OnDismissConfirmDialog -> {
-                    dispatch(Result.ConfirmDialogType(DocumentConfirmAlertType.NONE))
+                    dispatch(Result.ConfirmDialogType(AlertType.NONE))
                 }
                 is TransitStore.Intent.OnConfirmActionClick -> {
                     handleOnConfirmActionClick(getState)
@@ -276,12 +276,12 @@ class TransitStoreFactory(
         }
 
         private suspend fun handleOnConfirmActionClick(getState: () -> TransitStore.State) {
-            if (getState().confirmDialogType == DocumentConfirmAlertType.SAVE) {
+            if (getState().confirmDialogType == AlertType.SAVE) {
                 saveDocument(getState)
-            } else if (getState().confirmDialogType == DocumentConfirmAlertType.CONDUCT) {
+            } else if (getState().confirmDialogType == AlertType.CONDUCT) {
                 onConductClicked(getState())
             }
-            dispatch(Result.ConfirmDialogType(DocumentConfirmAlertType.NONE))
+            dispatch(Result.ConfirmDialogType(AlertType.NONE))
         }
 
         private suspend fun onConductClicked(state: TransitStore.State) {
@@ -445,7 +445,7 @@ class TransitStoreFactory(
         data class SelectPage(val page: Int) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
         data class Reserves(val reserves: List<ReservesDomain>) : Result()
-        data class ConfirmDialogType(val type: DocumentConfirmAlertType) : Result()
+        data class ConfirmDialogType(val type: AlertType) : Result()
         data class CanUpdate(val canUpdate: Boolean) : Result()
         data class CanCreate(val canCreate: Boolean) : Result()
         data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
