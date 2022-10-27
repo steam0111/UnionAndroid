@@ -6,10 +6,7 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectsDomain
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
-import com.itrocket.union.inventoryCreate.domain.entity.toUpdateSyncEntity
+import com.itrocket.union.inventoryCreate.domain.entity.*
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
@@ -223,6 +220,26 @@ class InventoryCreateInteractor(
         }
     }
 
+    fun getAccountingObjectCount(
+        accountingObjects: List<AccountingObjectDomain>,
+        newAccountingObjects: List<AccountingObjectDomain>
+    ): AccountingObjectCounter {
+        return AccountingObjectCounter(
+            total = accountingObjects.filter {
+                it.inventoryStatus == InventoryAccountingObjectStatus.FOUND ||
+                        it.inventoryStatus == InventoryAccountingObjectStatus.NOT_FOUND
+            }.size,
+            found = accountingObjects.filter {
+                it.inventoryStatus == InventoryAccountingObjectStatus.FOUND
+            }.size,
+            notFound = accountingObjects.filter {
+                it.inventoryStatus == InventoryAccountingObjectStatus.NOT_FOUND
+            }.size,
+            new = accountingObjects.filter {
+                it.inventoryStatus == InventoryAccountingObjectStatus.NEW
+            }.size + newAccountingObjects.size
+        )
+    }
 
     companion object {
         private const val NO_INDEX = -1

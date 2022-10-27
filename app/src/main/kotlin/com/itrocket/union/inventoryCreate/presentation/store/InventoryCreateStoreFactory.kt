@@ -14,6 +14,7 @@ import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventory.presentation.store.InventoryResult
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
 import com.itrocket.union.inventoryCreate.domain.InventoryDynamicSaveManager
+import com.itrocket.union.inventoryCreate.domain.entity.AccountingObjectCounter
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
@@ -84,7 +85,8 @@ class InventoryCreateStoreFactory(
                 listenAccountingObjects(
                     searchText = it,
                     accountingObjects = getState().inventoryDocument.accountingObjects,
-                    newAccountingObjects = getState().newAccountingObjects.toList()
+                    newAccountingObjects = getState().newAccountingObjects.toList(),
+                    getState
                 )
             }
         }
@@ -179,7 +181,8 @@ class InventoryCreateStoreFactory(
                     listenAccountingObjects(
                         searchText = "",
                         accountingObjects = getState().inventoryDocument.accountingObjects,
-                        newAccountingObjects = getState().newAccountingObjects.toList()
+                        newAccountingObjects = getState().newAccountingObjects.toList(),
+                        getState = getState
                     )
                 }
                 is InventoryCreateStore.Intent.OnSearchTextChanged -> {
@@ -213,10 +216,11 @@ class InventoryCreateStoreFactory(
                         inventoryCreateInteractor.changeAccountingObjectInventoryStatus(
                             getState().searchAccountingObjects,
                             switcherResult
-                        )
+                        ),
                     )
                 )
             }
+            updateAccountingObjectCounter(getState)
             tryDynamicSendInventorySave(
                 getState = getState,
                 newAccountingObjects = getState().newAccountingObjects.toList(),
@@ -316,9 +320,11 @@ class InventoryCreateStoreFactory(
                         listenAccountingObjects(
                             searchText = searchText,
                             accountingObjects = inventoryAccountingObjects.createdAccountingObjects,
-                            newAccountingObjects = newInventoryAccountingObjects
+                            newAccountingObjects = newInventoryAccountingObjects,
+                            getState = getState
                         )
                     }
+                    updateAccountingObjectCounter(getState)
                     tryDynamicSendInventorySave(
                         getState = getState,
                         newAccountingObjects = newInventoryAccountingObjects,
@@ -362,9 +368,11 @@ class InventoryCreateStoreFactory(
                         listenAccountingObjects(
                             searchText = searchText,
                             accountingObjects = inventoryAccountingObjects.createdAccountingObjects,
-                            newAccountingObjects = newInventoryAccountingObjects
+                            newAccountingObjects = newInventoryAccountingObjects,
+                            getState = getState
                         )
                     }
+                    updateAccountingObjectCounter(getState)
                     tryDynamicSendInventorySave(
                         getState = getState,
                         newAccountingObjects = newInventoryAccountingObjects,
@@ -449,7 +457,8 @@ class InventoryCreateStoreFactory(
         private suspend fun listenAccountingObjects(
             searchText: String,
             accountingObjects: List<AccountingObjectDomain>,
-            newAccountingObjects: List<AccountingObjectDomain>
+            newAccountingObjects: List<AccountingObjectDomain>,
+            getState: () -> InventoryCreateStore.State
         ) {
             dispatch(Result.Loading(true))
             catchException {
@@ -463,7 +472,22 @@ class InventoryCreateStoreFactory(
                     )
                 )
             }
+            updateAccountingObjectCounter(getState)
             dispatch(Result.Loading(false))
+        }
+
+        private fun updateAccountingObjectCounter(getState: () -> InventoryCreateStore.State) {
+            val accountingObjects = getState().inventoryDocument.accountingObjects
+            val newAccountingObjects = getState().newAccountingObjects.toList()
+
+            dispatch(
+                Result.CountOfAccountingObjects(
+                    accountingObjectCounter = inventoryCreateInteractor.getAccountingObjectCount(
+                        accountingObjects,
+                        newAccountingObjects
+                    )
+                )
+            )
         }
 
         override fun handleError(throwable: Throwable) {
@@ -491,6 +515,9 @@ class InventoryCreateStoreFactory(
 
         data class IsDynamicSaveInventory(val isDynamicSaveInventory: Boolean) : Result()
         data class CanUpdate(val canUpdate: Boolean) : Result()
+        data class CountOfAccountingObjects(
+            val accountingObjectCounter: AccountingObjectCounter
+        ) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryCreateStore.State, Result> {
@@ -513,6 +540,7 @@ class InventoryCreateStoreFactory(
                 is Result.SearchAccountingObjects -> copy(searchAccountingObjects = result.searchAccountingObjects)
                 is Result.CanUpdate -> copy(canUpdate = result.canUpdate)
                 is Result.IsDynamicSaveInventory -> copy(isDynamicSaveInventory = result.isDynamicSaveInventory)
+                is Result.CountOfAccountingObjects -> copy(accountingObjectCounter = result.accountingObjectCounter)
             }
     }
 }

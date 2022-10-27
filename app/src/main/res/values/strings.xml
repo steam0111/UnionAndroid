@@ -250,6 +250,10 @@
 
     <!-- InventoryCreate -->
     <string name="inventory_create_hide_found_ao">Скрывать найденные ОС</string>
+    <string name="inventory_create_total_ao">Всего ОС: %s</string>
+    <string name="inventory_create_find_ao">Найдено ОС: %s</string>
+    <string name="inventory_create_not_find_ao">Не найдено ОС: %s</string>
+    <string name="inventory_create_new_ao">Новых ОС: %s</string>
     <string name="inventory_create_add_new">Добавлять новое</string>
     <string name="inventory_create_new">Новый</string>
     <string name="inventory_create_found">Найден</string>

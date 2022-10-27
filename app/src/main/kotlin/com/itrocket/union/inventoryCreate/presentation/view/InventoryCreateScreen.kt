@@ -138,7 +138,6 @@ private fun Content(
     onSaveClickListener: () -> Unit,
 ) {
     val accountingObjectList = getAccountingObjects(state)
-
     Column(
         Modifier
             .fillMaxSize()
@@ -156,6 +155,13 @@ private fun Content(
                     )
                 }
                 InventoryDocumentItem(item = state.inventoryDocument, isShowStatus = false)
+                MediumSpacer()
+                CountBar(
+                    allAccountingObjects = state.accountingObjectCounter.total,
+                    findAccountingObjects = state.accountingObjectCounter.found,
+                    notFindAccountingObjects = state.accountingObjectCounter.notFound,
+                    newAccountingObjects = state.accountingObjectCounter.new
+                )
                 MediumSpacer()
                 SettingsBar(
                     isHideFoundAccountingObjects = state.isHideFoundAccountingObjects,
@@ -181,6 +187,70 @@ private fun Content(
             item {
                 Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
             }
+        }
+    }
+}
+
+@Composable
+fun CountBar(
+    allAccountingObjects: Int,
+    findAccountingObjects: Int,
+    notFindAccountingObjects: Int,
+    newAccountingObjects: Int
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(white)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(R.string.inventory_create_total_ao, allAccountingObjects),
+                style = AppTheme.typography.body2
+            )
+        }
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(R.string.inventory_create_find_ao, findAccountingObjects),
+                style = AppTheme.typography.body2
+            )
+        }
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(white)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(R.string.inventory_create_new_ao, newAccountingObjects),
+                style = AppTheme.typography.body2
+            )
+        }
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(
+                    R.string.inventory_create_not_find_ao,
+                    notFindAccountingObjects
+                ),
+                style = AppTheme.typography.body2
+            )
         }
     }
 }
@@ -393,3 +463,4 @@ fun InventoryCreateScreenPreview() {
         readingModeTab = ReadingModeTab.RFID
     ), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 }
+
