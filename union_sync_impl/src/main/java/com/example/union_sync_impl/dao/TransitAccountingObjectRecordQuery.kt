@@ -3,6 +3,7 @@ package com.example.union_sync_impl.dao
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
+import com.example.union_sync_impl.utils.addNonCancelFilter
 import com.example.union_sync_impl.utils.addPagination
 import com.example.union_sync_impl.utils.isEquals
 import com.example.union_sync_impl.utils.more
@@ -20,6 +21,7 @@ fun sqlTransitRecordQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "transit_record",
             filter = buildList {
+                addNonCancelFilter()
                 transitId?.let {
                     add("transitId" isEquals transitId)
                 }

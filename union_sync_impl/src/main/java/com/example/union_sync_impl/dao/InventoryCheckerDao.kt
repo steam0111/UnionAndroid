@@ -23,7 +23,7 @@ interface InventoryCheckerDao {
                 "" +
                 "FROM inventory_checker " +
                 "LEFT JOIN employees checker ON inventory_checker.employeeId = checker.id " +
-                "WHERE inventoryId = :inventoryId"
+                "WHERE inventoryId = :inventoryId AND cancel != 1"
     )
     fun getAll(inventoryId: String): List<FullInventoryCheckerDb>
 

@@ -11,7 +11,7 @@ import com.example.union_sync_impl.entity.structural.StructuralDb
 @Dao
 interface StructuralDao {
 
-    @Query("SELECT * FROM structural WHERE parentId is :parentId")
+    @Query("SELECT * FROM structural WHERE parentId is :parentId AND cancel != 1")
     suspend fun getAll(parentId: String?): List<StructuralDb>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -35,7 +35,7 @@ interface StructuralDao {
             SELECT * FROM `structural` `structural` 
                 JOIN structuralPath `closure`
                 ON `structural`.`id` = `closure`.`descendantStructuralId` 
-            WHERE `closure`.`ancestorStructuralId` is :parentId
+            WHERE `closure`.`ancestorStructuralId` is :parentId AND `structural`.cancel != 1
             """
     )
     suspend fun getAllStructuralsByParentId(parentId: String?): List<StructuralDb>

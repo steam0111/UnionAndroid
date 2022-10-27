@@ -4,6 +4,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
+import com.example.union_sync_impl.utils.addNonCancelFilter
 import com.example.union_sync_impl.utils.addPagination
 import com.example.union_sync_impl.utils.contains
 import com.example.union_sync_impl.utils.isEquals
@@ -50,6 +51,7 @@ fun sqlReserveQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "reserves",
             filter = buildList {
+                addNonCancelFilter()
                 structuralIds?.let {
                     add("structuralId" isEquals structuralIds)
                 }

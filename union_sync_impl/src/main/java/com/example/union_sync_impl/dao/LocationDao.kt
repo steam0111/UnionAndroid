@@ -11,7 +11,7 @@ import com.example.union_sync_impl.entity.location.LocationTypeDb
 
 @Dao
 interface LocationDao {
-    @Query("SELECT * FROM location WHERE parentId is :parentId")
+    @Query("SELECT * FROM location WHERE parentId is :parentId AND cancel != 1")
     suspend fun getAll(parentId: String?): List<LocationDb>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

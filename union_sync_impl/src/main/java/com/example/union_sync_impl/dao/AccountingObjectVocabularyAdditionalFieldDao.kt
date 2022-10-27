@@ -26,7 +26,7 @@ interface AccountingObjectVocabularyAdditionalFieldDao {
                 "FROM accountingObjectVocabularyAdditionalField " +
                 "LEFT JOIN vocabularyAdditionalField nameField ON accountingObjectVocabularyAdditionalField.vocabularyAdditionalFieldId = nameField.id " +
                 "LEFT JOIN vocabularyAdditionalFieldValue valueField ON accountingObjectVocabularyAdditionalField.vocabularyAdditionalFieldValueId = valueField.id " +
-                "WHERE accountingObjectId = :accountingObjectId"
+                "WHERE accountingObjectId = :accountingObjectId AND accountingObjectVocabularyAdditionalField.cancel != 1"
     )
     suspend fun getAll(accountingObjectId: String): List<FullAccountingObjectVocabularyAdditionalFieldDb>
 

@@ -19,7 +19,7 @@ interface AccountingObjectSimpleAdditionalFieldDao {
                 "" +
                 "FROM accountingObjectSimpleAdditionalFieldValue " +
                 "LEFT JOIN simpleAdditionalField nameField ON accountingObjectSimpleAdditionalFieldValue.simpleAdditionalFieldId = nameField.id " +
-                "WHERE accountingObjectId = :accountingObjectId"
+                "WHERE accountingObjectId = :accountingObjectId AND accountingObjectSimpleAdditionalFieldValue.cancel != 1"
     )
     suspend fun getAll(accountingObjectId: String): List<FullAccountingObjectSimpleAdditionalFieldDb>
 
