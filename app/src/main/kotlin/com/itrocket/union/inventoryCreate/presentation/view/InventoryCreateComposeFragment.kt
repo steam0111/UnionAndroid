@@ -182,7 +182,7 @@ class InventoryCreateComposeFragment :
     override fun handleLabel(label: InventoryCreateStore.Label) {
         super.handleLabel(label)
         when (label) {
-            InventoryCreateStore.Label.GoBack -> (parentFragment as? ChildBackPressedHandler)?.onChildBackPressed()
+            is InventoryCreateStore.Label.GoBack -> (parentFragment as? ChildBackPressedHandler)?.onChildBackPressed()
         }
 
     }

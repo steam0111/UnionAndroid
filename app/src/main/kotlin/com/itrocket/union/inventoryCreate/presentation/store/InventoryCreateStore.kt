@@ -9,6 +9,9 @@ import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.inventory.presentation.store.InventoryResult
+import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_CODE
+import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_LABEL
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
 import com.itrocket.union.newAccountingObject.presentation.view.NewAccountingObjectComposeFragment
@@ -67,7 +70,10 @@ interface InventoryCreateStore :
     )
 
     sealed class Label {
-        object GoBack : Label()
+        data class GoBack(override val result: InventoryResult) : Label(), GoBackNavigationLabel {
+            override val resultCode: String = INVENTORY_RESULT_CODE
+            override val resultLabel: String = INVENTORY_RESULT_LABEL
+        }
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
         data class ShowChangeStatus(val switcherData: SwitcherDomain) : Label(),
             ShowBottomSheetNavigationLabel {

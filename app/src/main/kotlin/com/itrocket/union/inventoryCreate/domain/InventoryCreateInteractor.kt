@@ -12,6 +12,7 @@ import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.inventoryCreate.domain.entity.toUpdateSyncEntity
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 import kotlinx.coroutines.withContext
 
@@ -139,7 +140,8 @@ class InventoryCreateInteractor(
         val mutableParams = params.toMutableList()
         val index = params.indexOfFirst { it.type == ManualType.BALANCE_UNIT }
         if (index >= 0) {
-            mutableParams[index] = mutableParams[index].copy(isClickable = false)
+            mutableParams[index] =
+                (mutableParams[index] as StructuralParamDomain).copy(clickable = false)
         }
         return mutableParams
     }
