@@ -3,6 +3,7 @@ package com.example.union_sync_impl.dao
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
+import com.example.union_sync_impl.utils.addNonCancelFilter
 import com.example.union_sync_impl.utils.addPagination
 import com.example.union_sync_impl.utils.isEquals
 import com.example.union_sync_impl.utils.isNotEquals
@@ -21,6 +22,7 @@ fun sqlActionRemainsRecordQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "action_remains_record",
             filter = buildList {
+                addNonCancelFilter()
                 actionId?.let {
                     add("actionId" isEquals actionId)
                 }

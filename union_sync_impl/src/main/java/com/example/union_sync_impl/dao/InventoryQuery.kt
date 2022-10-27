@@ -82,6 +82,7 @@ fun String.getInventoriesFilterPartQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "inventories",
             filter = buildList {
+                addNonCancelFilter()
                 textQuery?.let {
                     add("id" contains textQuery)
                 }

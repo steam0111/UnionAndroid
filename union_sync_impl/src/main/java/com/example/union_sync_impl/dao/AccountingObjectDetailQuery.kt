@@ -3,6 +3,7 @@ package com.example.union_sync_impl.dao
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
+import com.example.union_sync_impl.utils.addNonCancelFilter
 import com.example.union_sync_impl.utils.isEquals
 
 fun sqlAccountingObjectDetailQuery(
@@ -16,6 +17,7 @@ fun sqlAccountingObjectDetailQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "accounting_objects",
             filter = buildList {
+                addNonCancelFilter()
                 rfid?.let {
                     add("rfidValue" isEquals rfid)
                 }
