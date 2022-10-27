@@ -45,6 +45,18 @@ class DocumentMenuComposeFragment :
                 onDocumentItemClick = {
                     accept(DocumentMenuStore.Intent.OnDocumentClicked(it))
                 },
+                onConfirmLogoutClickListener = {
+                    accept(DocumentMenuStore.Intent.OnConfirmLogoutClicked)
+                },
+                onConfirmSyncClickListener = {
+                    accept(DocumentMenuStore.Intent.OnConfirmSyncClicked)
+                },
+                onDismissLogoutClickListener = {
+                    accept(DocumentMenuStore.Intent.OnDismissLogoutClicked)
+                },
+                onDismissSyncClickListener = {
+                    accept(DocumentMenuStore.Intent.OnDismissSyncClicked)
+                },
                 onDrawerDestinationClicked = {
                     accept(DocumentMenuStore.Intent.OnDrawerDestinationClick(it))
                 }

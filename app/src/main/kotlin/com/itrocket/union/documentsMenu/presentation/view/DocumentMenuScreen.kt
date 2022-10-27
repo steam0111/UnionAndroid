@@ -5,7 +5,15 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -28,12 +36,16 @@ import androidx.compose.ui.unit.dp
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.common.Drawer
 import com.itrocket.union.common.DrawerScreenType
 import com.itrocket.union.common.DrawerScreens
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 import com.itrocket.union.documentsMenu.presentation.store.DocumentMenuStore
-import com.itrocket.union.ui.*
+import com.itrocket.union.ui.AppTheme
+import com.itrocket.union.ui.BaseToolbar
+import com.itrocket.union.ui.ConfirmAlertDialog
+import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
 import kotlinx.coroutines.launch
 
@@ -44,7 +56,11 @@ fun DocumentMenuScreen(
     appInsets: AppInsets,
     onDocumentItemClick: (DocumentMenuDomain) -> Unit,
     onBackClickListener: () -> Unit,
-    onDrawerDestinationClicked: (type: DrawerScreenType) -> Unit
+    onDrawerDestinationClicked: (type: DrawerScreenType) -> Unit,
+    onConfirmSyncClickListener: () -> Unit,
+    onDismissSyncClickListener: () -> Unit,
+    onConfirmLogoutClickListener: () -> Unit,
+    onDismissLogoutClickListener: () -> Unit,
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -101,6 +117,23 @@ fun DocumentMenuScreen(
                 .background(white)
                 .padding(top = appInsets.topInset.dp, bottom = appInsets.bottomInset.dp)
             )
+
+            when (state.dialogType) {
+                AlertType.SYNC -> ConfirmAlertDialog(
+                    onDismiss = onDismissSyncClickListener,
+                    onConfirmClick = onConfirmSyncClickListener,
+                    textRes = R.string.document_menu_dialog_sync_title,
+                    confirmTextRes = R.string.common_yes,
+                    dismissTextRes = R.string.common_no
+                )
+                AlertType.LOGOUT -> ConfirmAlertDialog(
+                    onDismiss = onDismissLogoutClickListener,
+                    onConfirmClick = onConfirmLogoutClickListener,
+                    textRes = R.string.document_menu_dialog_logout_title,
+                    confirmTextRes = R.string.common_yes,
+                    dismissTextRes = R.string.common_no
+                )
+            }
         }
     }
 }
@@ -234,5 +267,5 @@ fun DocumentMenuScreenPreview() {
                     iconId = R.drawable.ic_inventory
                 ),
             )
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {})
 }

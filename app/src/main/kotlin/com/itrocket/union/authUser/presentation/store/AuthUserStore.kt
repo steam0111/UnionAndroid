@@ -5,6 +5,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.union.authContainer.presentation.view.AuthContainerComposeFragmentDirections
+import com.itrocket.union.syncAll.presentation.store.SyncAllArguments
 import com.itrocket.union.theme.domain.entity.Medias
 
 interface AuthUserStore : Store<AuthUserStore.Intent, AuthUserStore.State, AuthUserStore.Label> {
@@ -39,7 +40,7 @@ interface AuthUserStore : Store<AuthUserStore.Intent, AuthUserStore.State, AuthU
 
         object ShowDbSync : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
-                get() = AuthContainerComposeFragmentDirections.toSyncAll()
+                get() = AuthContainerComposeFragmentDirections.toSyncAll(SyncAllArguments(false))
 
         }
     }

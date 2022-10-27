@@ -140,9 +140,3 @@ fun DocumentCreateScreenPreview() {
         {},
     )
 }
-
-enum class DocumentConfirmAlertType {
-    CONDUCT,
-    SAVE,
-    NONE
-}

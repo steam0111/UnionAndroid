@@ -5,6 +5,7 @@ import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.documentsMenu.domain.dependencies.DocumentMenuRepository
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 import com.itrocket.union.employeeDetail.domain.EmployeeDetailInteractor
+import com.itrocket.union.syncAll.domain.SyncAllInteractor
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor.Companion.PERMISSION_TAG
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
@@ -16,7 +17,7 @@ class DocumentMenuInteractor(
     private val coreDispatchers: CoreDispatchers,
     private val permissionsInteractor: UnionPermissionsInteractor,
     private val authMainInteractor: AuthMainInteractor,
-    private val employeeDetailInteractor: EmployeeDetailInteractor
+    private val employeeDetailInteractor: EmployeeDetailInteractor,
 ) {
 
     suspend fun getDocuments(currentDocument: DocumentMenuDomain? = null) =

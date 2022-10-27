@@ -13,11 +13,14 @@ import com.itrocket.union.syncAll.domain.SyncAllInteractor
 import com.itrocket.union.syncAll.presentation.store.SyncAllStoreFactory.Result.ClearSyncEvents
 import com.itrocket.union.syncAll.presentation.store.SyncAllStoreFactory.Result.Loading
 import com.itrocket.union.syncAll.presentation.store.SyncAllStoreFactory.Result.NewSyncEvent
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class SyncAllStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
+    private val arguments: SyncAllArguments,
     private val syncAllInteractor: SyncAllInteractor,
     private val errorInteractor: ErrorInteractor,
 ) {
@@ -42,11 +45,20 @@ class SyncAllStoreFactory(
             action: Unit,
             getState: () -> SyncAllStore.State
         ) {
-            syncAllInteractor
-                .subscribeSyncEvents()
-                .collect {
-                    dispatch(NewSyncEvent(it))
+            coroutineScope {
+                launch {
+                    syncAllInteractor
+                        .subscribeSyncEvents()
+                        .collect {
+                            dispatch(NewSyncEvent(it))
+                        }
                 }
+                launch {
+                    if (arguments.isInstantSync) {
+                        syncAll()
+                    }
+                }
+            }
         }
 
         override suspend fun executeIntent(
@@ -55,15 +67,7 @@ class SyncAllStoreFactory(
         ) {
             when (intent) {
                 SyncAllStore.Intent.OnBackClicked -> publish(SyncAllStore.Label.ShowMenu)
-                SyncAllStore.Intent.OnSyncButtonClicked -> {
-                    dispatch(Loading(true))
-                    dispatch(ClearSyncEvents)
-                    catchException {
-                        syncAllInteractor.updateMyConfig()
-                        syncAllInteractor.syncAll()
-                    }
-                    dispatch(Loading(false))
-                }
+                SyncAllStore.Intent.OnSyncButtonClicked -> syncAll()
                 SyncAllStore.Intent.OnClearButtonClicked -> {
                     catchException {
                         syncAllInteractor.clearAll()
@@ -74,6 +78,16 @@ class SyncAllStoreFactory(
                     publish(SyncAllStore.Label.ShowAuth)
                 }
             }
+        }
+
+        private suspend fun syncAll() {
+            dispatch(Loading(true))
+            dispatch(ClearSyncEvents)
+            catchException {
+                syncAllInteractor.updateMyConfig()
+                syncAllInteractor.syncAll()
+            }
+            dispatch(Loading(false))
         }
 
         override fun handleError(throwable: Throwable) {

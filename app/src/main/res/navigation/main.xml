@@ -77,7 +77,7 @@
             app:destination="@+id/syncAll" />
         <action
             android:id="@+id/to_structural"
-            app:destination="@id/structural"/>
+            app:destination="@id/structural" />
         <action
             android:id="@+id/to_data_collect"
             app:destination="@+id/dataCollect" />
@@ -400,7 +400,10 @@
         android:id="@+id/syncAll"
         android:name="com.itrocket.union.syncAll.presentation.view.SyncAllComposeFragment"
         android:label="SyncAll">
-
+        <argument
+            android:name="SyncAllComposeFragmentArgs"
+            app:argType="com.itrocket.union.syncAll.presentation.store.SyncAllArguments"
+            app:nullable="false"/>
         <action
             android:id="@+id/to_documentsMenu"
             app:destination="@id/documentsMenu"
@@ -483,11 +486,11 @@
         <action
             android:id="@+id/to_auth"
             app:destination="@id/auth"
-            app:popUpTo="@id/main"/>
+            app:popUpTo="@id/main" />
         <action
             android:id="@id/to_documentsMenu"
             app:destination="@id/documentsMenu"
-            app:popUpTo="@id/main"/>
+            app:popUpTo="@id/main" />
         <action
             android:id="@+id/to_SyncAll"
             app:destination="@+id/syncAll"
