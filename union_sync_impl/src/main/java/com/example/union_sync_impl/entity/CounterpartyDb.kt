@@ -6,6 +6,7 @@ import com.example.union_sync_impl.entity.core.CatalogItemDb
 @Entity(tableName = "counterparty")
 class CounterpartyDb(
     id: String,
+    cancel: Boolean? = false,
     override var catalogItemName: String,
     val name: String?,
     val actualAddress: String?,
@@ -19,6 +20,7 @@ class CounterpartyDb(
     userUpdated: String?,
 ) : CatalogItemDb(
     id = id,
+    cancel = cancel,
     insertDate = insertDate,
     updateDate = updateDate,
     userUpdated = userUpdated,

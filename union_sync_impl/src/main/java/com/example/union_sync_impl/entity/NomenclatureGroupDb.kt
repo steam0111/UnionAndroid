@@ -10,6 +10,7 @@ class NomenclatureGroupDb(
     override var catalogItemName: String,
     val name: String,
     val code: String?,
+    cancel: Boolean? = false,
     insertDate: Long?,
     updateDate: Long?,
     userInserted: String?,
@@ -19,5 +20,6 @@ class NomenclatureGroupDb(
     insertDate = insertDate,
     updateDate = updateDate,
     userUpdated = userUpdated,
-    userInserted = userInserted
+    userInserted = userInserted,
+    cancel = cancel
 )

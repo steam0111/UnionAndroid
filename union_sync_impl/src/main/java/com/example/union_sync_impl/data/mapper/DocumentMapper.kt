@@ -33,6 +33,7 @@ fun ActionDtoV2.toDocumentDb(): DocumentDb {
         code = code,
         userUpdated = userUpdated,
         userInserted = userInserted,
+        cancel = deleted
     )
 }
 
@@ -50,7 +51,7 @@ fun DocumentDb.toActionDtoV2(): ActionDtoV2 {
         creationDate = getStringDateFromMillis(creationDate),
         dateUpdate = getStringDateFromMillis(updateDate),
         id = id,
-        deleted = false,
+        deleted = cancel ?: false,
         userInserted = userInserted,
         userUpdated = userUpdated,
         molReceivingId = molId.orEmpty(),
@@ -76,6 +77,7 @@ fun DocumentCreateSyncEntity.toDocumentDb(id: String): DocumentDb {
         userInserted = userInserted,
         structuralFromId = structuralFromId,
         structuralToId = structuralToId,
+        cancel = false
     )
 }
 
@@ -98,6 +100,7 @@ fun DocumentUpdateSyncEntity.toDocumentDb(): DocumentDb {
         userInserted = userInserted,
         structuralFromId = structuralFromId,
         structuralToId = structuralToId,
+        cancel = false
     )
 }
 

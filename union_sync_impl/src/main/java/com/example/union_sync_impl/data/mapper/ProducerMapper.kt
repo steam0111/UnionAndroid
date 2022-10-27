@@ -14,7 +14,8 @@ fun ProducerDtoV2.toProducerDb(): ProducerDb {
         updateDate = getMillisDateFromServerFormat(dateUpdate),
         insertDate = getMillisDateFromServerFormat(dateInsert),
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        cancel = deleted
     )
 }
 

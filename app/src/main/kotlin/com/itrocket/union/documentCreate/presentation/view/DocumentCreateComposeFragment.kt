@@ -11,7 +11,6 @@ import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectR
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
 import com.itrocket.union.documentCreate.DocumentCreateModule.DOCUMENTCREATE_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
-import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.location.presentation.view.LocationComposeFragment
 import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
@@ -32,7 +31,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import ru.interid.scannerclient.domain.reader.ReaderMode
 import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
@@ -200,6 +198,12 @@ class DocumentCreateComposeFragment :
                 },
                 onConfirmActionClick = {
                     accept(DocumentCreateStore.Intent.OnConfirmActionClick)
+                },
+                onDeleteReserveClickListener = {
+                    accept(DocumentCreateStore.Intent.OnDeleteReserveClicked(it))
+                },
+                onDeleteAccountingObjectClickListener = {
+                    accept(DocumentCreateStore.Intent.OnDeleteAccountingObjectClicked(it))
                 }
             )
         }

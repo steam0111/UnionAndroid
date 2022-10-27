@@ -58,7 +58,10 @@ fun TransitScreen(
             state.canUpdate
         } else {
             state.canCreate
-        }
+        },
+        canDelete = false,
+        onDeleteAccountingObjectClickListener = {},
+        onDeleteReserveClickListener = {}
     )
 }
 

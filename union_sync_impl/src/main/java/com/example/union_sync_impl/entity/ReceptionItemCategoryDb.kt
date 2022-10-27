@@ -1,11 +1,10 @@
 package com.example.union_sync_impl.entity
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
+import com.example.union_sync_impl.entity.core.DatabaseItemDb
 
 @Entity(tableName = "reception_item_category")
 class ReceptionItemCategoryDb(
-    @PrimaryKey(autoGenerate = false)
-    val id: String,
+    id: String,
     val name: String
-)
+) : DatabaseItemDb(id)

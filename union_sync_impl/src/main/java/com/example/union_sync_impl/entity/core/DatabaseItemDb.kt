@@ -7,8 +7,6 @@ import androidx.room.PrimaryKey
 @Entity
 open class DatabaseItemDb(
     @PrimaryKey(autoGenerate = false)
-    val id: String
-) {
-    @Ignore
-    var isDeleted: Boolean = false
-}
+    val id: String,
+    var cancel: Boolean? = false,
+)

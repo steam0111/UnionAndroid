@@ -8,7 +8,8 @@ import com.example.union_sync_impl.entity.core.CatalogItemDb
 )
 class LocationTypeDb(
     id: String,
+    cancel: Boolean? = false,
     override var catalogItemName: String,
     val parentId: String? = null,
     val name: String
-) : CatalogItemDb(id = id)
+) : CatalogItemDb(id = id, cancel = cancel)

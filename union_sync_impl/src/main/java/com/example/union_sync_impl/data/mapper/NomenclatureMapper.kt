@@ -17,7 +17,8 @@ fun NomenclatureDtoV2.toNomenclatureDb(): NomenclatureDb {
         updateDate = getMillisDateFromServerFormat(dateUpdate),
         insertDate = getMillisDateFromServerFormat(dateInsert),
         userUpdated = userUpdated,
-        userInserted = userInserted
+        userInserted = userInserted,
+        cancel = deleted
     )
 }
 

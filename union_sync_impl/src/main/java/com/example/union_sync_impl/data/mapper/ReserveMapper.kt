@@ -34,7 +34,8 @@ fun RemainsDtoV2.toReserveDb(): ReserveDb {
         structuralId = structuralUnitId,
         invoiceNumber = invoiceNumber,
         subName = subName,
-        traceable = traceable ?: false
+        traceable = traceable ?: false,
+        cancel = deleted
     )
 }
 
@@ -53,7 +54,7 @@ fun ReserveDb.toRemainsDtoV2(): RemainsDtoV2 {
         receptionItemCategoryId = receptionItemCategoryId,
         receptionDocumentNumber = receptionDocumentNumber,
         unitPrice = unitPrice,
-        deleted = false,
+        deleted = cancel ?: false,
         userUpdated = userUpdated,
         userInserted = userInserted,
         dateInsert = getStringDateFromMillis(insertDate)
@@ -82,7 +83,8 @@ fun ReserveSyncEntity.toReserveDb(): ReserveDb {
         userInserted = userInserted,
         invoiceNumber = invoiceNumber,
         subName = subName,
-        traceable = traceable
+        traceable = traceable,
+        cancel = false
     )
 }
 

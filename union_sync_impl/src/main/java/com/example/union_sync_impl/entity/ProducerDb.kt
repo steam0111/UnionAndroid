@@ -7,6 +7,7 @@ import com.example.union_sync_impl.entity.core.SyncItemDb
 @Entity(tableName = "producer")
 class ProducerDb(
     id: String,
+    cancel: Boolean? = false,
     override var catalogItemName: String,
     val name: String?,
     val code: String?,
@@ -16,6 +17,7 @@ class ProducerDb(
     userUpdated: String?,
 ) : CatalogItemDb(
     id = id,
+    cancel = cancel,
     insertDate = insertDate,
     updateDate = updateDate,
     userUpdated = userUpdated,

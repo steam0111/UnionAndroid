@@ -56,7 +56,8 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
         accountingObjectCategoryId = accountingObjectCategoryId,
         invoiceNumber = invoiceNumber,
         nfc = nfcValue,
-        traceable = traceable ?: false
+        traceable = traceable ?: false,
+        cancel = deleted
     )
 }
 
@@ -202,7 +203,7 @@ fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObject
             nomenclatureGroupId = accountingObjectDb.nomenclatureGroupId,
             userInserted = accountingObjectDb.userInserted,
             userUpdated = accountingObjectDb.userUpdated,
-            deleted = false,
+            deleted = accountingObjectDb.cancel ?: false,
             dateInsert = getStringDateFromMillis(accountingObjectDb.insertDate)
 
         )

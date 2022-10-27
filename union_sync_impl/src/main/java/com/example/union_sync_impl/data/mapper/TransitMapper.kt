@@ -27,7 +27,7 @@ fun TransitDb.toTransitDtoV2() = TransitDtoV2(
     typeId = transitType,
     statusId = transitStatusId,
     code = code,
-    deleted = false,
+    deleted = cancel ?: false,
     userUpdated = userUpdated,
     userInserted = userInserted,
     dateInsert = getStringDateFromMillis(insertDate)
@@ -49,7 +49,8 @@ fun TransitDtoV2.toTransitDb() = TransitDb(
     transitStatusId = statusId.orEmpty(),
     code = code,
     userUpdated = userUpdated,
-    userInserted = userInserted
+    userInserted = userInserted,
+    cancel = deleted
 )
 
 fun TransitCreateSyncEntity.toTransitDb(id: String) = TransitDb(
@@ -68,7 +69,8 @@ fun TransitCreateSyncEntity.toTransitDb(id: String) = TransitDb(
     transitStatusId = transitStatusId,
     code = code,
     userUpdated = userUpdated,
-    userInserted = userInserted
+    userInserted = userInserted,
+    cancel = false
 )
 
 fun TransitUpdateSyncEntity.toTransitDb() = TransitDb(
@@ -87,7 +89,8 @@ fun TransitUpdateSyncEntity.toTransitDb() = TransitDb(
     transitStatusId = transitStatusId,
     code = code,
     userUpdated = userUpdated,
-    userInserted = userInserted
+    userInserted = userInserted,
+    cancel = false
 )
 
 fun TransitDb.toTransitSyncEntity(

@@ -4,9 +4,9 @@ import com.example.union_sync_api.data.ActionRemainsRecordSyncApi
 import com.example.union_sync_api.data.DocumentSyncApi
 import com.example.union_sync_api.data.TransitSyncApi
 import com.example.union_sync_api.entity.DocumentCreateSyncEntity
-import com.example.union_sync_api.entity.ReserveCountSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateReservesSyncEntity
 import com.example.union_sync_api.entity.DocumentUpdateSyncEntity
+import com.example.union_sync_api.entity.ReserveCountSyncEntity
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.documents.data.mapper.map
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository

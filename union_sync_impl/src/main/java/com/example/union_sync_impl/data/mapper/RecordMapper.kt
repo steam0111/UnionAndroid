@@ -24,15 +24,16 @@ fun ActionRecordDtoV2.toActionRecordDb() = ActionRecordDb(
     insertDate = getMillisDateFromServerFormat(dateInsert),
     updateDate = getMillisDateFromServerFormat(dateUpdate),
     userUpdated = userUpdated,
-    userInserted = userInserted
+    userInserted = userInserted,
+    cancel = deleted
 )
 
 fun ActionRecordDb.toActionRecordDtoV2() = ActionRecordDtoV2(
     id = id,
     accountingObjectId = accountingObjectId,
     actionId = actionId,
-    deleted = false,
-    dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
+    deleted = cancel ?: false,
+    dateUpdate = getStringDateFromMillis(updateDate),
     userInserted = userInserted,
     userUpdated = userUpdated,
     dateInsert = getStringDateFromMillis(insertDate)
@@ -46,16 +47,17 @@ fun ActionRemainsRecordDtoV2.toActionRemainsRecordDb() = ActionRemainsRecordDb(
     insertDate = getMillisDateFromServerFormat(dateInsert),
     count = count,
     userUpdated = userUpdated,
-    userInserted = userInserted
+    userInserted = userInserted,
+    cancel = deleted
 )
 
 fun ActionRemainsRecordDb.toActionRemainsRecordDtoV2() = ActionRemainsRecordDtoV2(
     id = id,
     remainsId = remainId,
     actionId = actionId,
-    deleted = false,
+    deleted = cancel ?: false,
     count = count,
-    dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
+    dateUpdate = getStringDateFromMillis(updateDate),
     userInserted = userInserted,
     userUpdated = userUpdated,
     dateInsert = getStringDateFromMillis(insertDate)
@@ -69,7 +71,8 @@ fun InventoryRecordDtoV2.toInventoryRecordDb() = InventoryRecordDb(
     insertDate = getMillisDateFromServerFormat(dateInsert),
     inventoryStatus = inventoryRecordStatusId.orEmpty(),
     userUpdated = userUpdated,
-    userInserted = userInserted
+    userInserted = userInserted,
+    cancel = deleted
 )
 
 fun ActionRecordDb.toSyncEntity() = ActionRecordSyncEntity(
@@ -97,7 +100,7 @@ fun InventoryRecordDb.toInventoryRecordDtoV2() = InventoryRecordDtoV2(
     id = id,
     accountingObjectId = accountingObjectId,
     inventoryId = inventoryId,
-    deleted = false,
+    deleted = cancel ?: false,
     inventoryRecordStatusId = inventoryStatus,
     dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
     userInserted = userInserted,
@@ -113,7 +116,8 @@ fun TransitRemainsRecordDtoV2.toTransitRemainsDb() = TransitRemainsRecordDb(
     updateDate = getMillisDateFromServerFormat(dateUpdate),
     userUpdated = userUpdated,
     userInserted = userInserted,
-    insertDate = getMillisDateFromServerFormat(dateInsert)
+    insertDate = getMillisDateFromServerFormat(dateInsert),
+    cancel = deleted
 )
 
 fun TransitAccountingObjectRecordDtoV2.toTransitAccountingObjectDb() =
@@ -124,7 +128,8 @@ fun TransitAccountingObjectRecordDtoV2.toTransitAccountingObjectDb() =
         updateDate = getMillisDateFromServerFormat(dateUpdate),
         userInserted = userInserted,
         userUpdated = userUpdated,
-        insertDate = getMillisDateFromServerFormat(dateInsert)
+        insertDate = getMillisDateFromServerFormat(dateInsert),
+        cancel = deleted
     )
 
 fun TransitRemainsRecordDb.toTransitRemainsDb() = TransitRemainsRecordDtoV2(
@@ -132,7 +137,7 @@ fun TransitRemainsRecordDb.toTransitRemainsDb() = TransitRemainsRecordDtoV2(
     transitId = transitId,
     remainsId = remainId,
     count = count,
-    deleted = false
+    deleted = cancel ?: false
 )
 
 fun TransitAccountingObjectRecordDb.toTransitAccountingObjectDb() =
@@ -140,5 +145,5 @@ fun TransitAccountingObjectRecordDb.toTransitAccountingObjectDb() =
         id = id,
         transitId = transitId,
         accountingObjectId = accountingObjectId,
-        deleted = false
+        deleted = cancel ?: false
     )

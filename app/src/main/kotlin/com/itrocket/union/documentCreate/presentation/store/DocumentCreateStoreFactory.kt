@@ -31,7 +31,6 @@ import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
-import com.itrocket.union.utils.ifBlankOrNull
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class DocumentCreateStoreFactory(
@@ -86,6 +85,7 @@ class DocumentCreateStoreFactory(
                 }
 
                 document?.let { dispatch(Result.Document(it)) }
+                dispatch(Result.CanDelete(getState().canUpdate && !getState().document.isStatusCompleted))
                 changeParams(
                     getState().document.params,
                     documentTypeDomain = getState().document.documentType
@@ -230,12 +230,46 @@ class DocumentCreateStoreFactory(
                     readingModeResult = intent.readingModeResult,
                     getState = getState
                 )
+                is DocumentCreateStore.Intent.OnDeleteAccountingObjectClicked -> deleteAccountingObject(
+                    accountingObjects = getState().accountingObjects,
+                    accountingObjectId = intent.accountingObjectId
+                )
+                is DocumentCreateStore.Intent.OnDeleteReserveClicked -> deleteReserve(
+                    reserves = getState().reserves,
+                    reserveId = intent.reserveId
+                )
             }
         }
 
         private fun canEditDocument(state: DocumentCreateStore.State): Boolean {
             return with(state) {
                 (document.isDocumentExists && canUpdate || !document.isDocumentExists && canCreate) && document.documentStatus != DocumentStatus.COMPLETED
+            }
+        }
+
+        private suspend fun deleteReserve(
+            reserveId: String,
+            reserves: List<ReservesDomain>
+        ) {
+            catchException {
+                val newReserves = documentCreateInteractor.deleteReserve(
+                    reserveId = reserveId,
+                    reserveList = reserves
+                )
+                dispatch(Result.Reserves(newReserves))
+            }
+        }
+
+        private suspend fun deleteAccountingObject(
+            accountingObjectId: String,
+            accountingObjects: List<AccountingObjectDomain>
+        ) {
+            catchException {
+                val newAccountingObjects = documentCreateInteractor.deleteAccountingObject(
+                    accountingObjectId = accountingObjectId,
+                    accountingObjectList = accountingObjects
+                )
+                dispatch(Result.AccountingObjects(newAccountingObjects))
             }
         }
 
@@ -461,6 +495,7 @@ class DocumentCreateStoreFactory(
         data class ConfirmDialogType(val type: DocumentConfirmAlertType) : Result()
         data class CanUpdate(val canUpdate: Boolean) : Result()
         data class CanCreate(val canCreate: Boolean) : Result()
+        data class CanDelete(val canDelete: Boolean) : Result()
         data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
     }
 
@@ -477,6 +512,7 @@ class DocumentCreateStoreFactory(
                 is Result.CanUpdate -> copy(canUpdate = result.canUpdate)
                 is Result.CanCreate -> copy(canCreate = result.canCreate)
                 is Result.ReadingMode -> copy(readingModeTab = result.readingModeTab)
+                is Result.CanDelete -> copy(canDelete = result.canDelete)
             }
     }
 

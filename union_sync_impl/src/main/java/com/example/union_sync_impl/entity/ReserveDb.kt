@@ -43,6 +43,7 @@ import java.math.BigDecimal
 )
 class ReserveDb(
     id: String,
+    cancel: Boolean? = false,
     override var catalogItemName: String,
     val locationId: String?,
     val locationTypeId: String?,
@@ -65,6 +66,7 @@ class ReserveDb(
     userUpdated: String?,
 ) : CatalogItemDb(
     id = id,
+    cancel = cancel,
     insertDate = insertDate,
     updateDate = updateDate,
     userUpdated = userUpdated,

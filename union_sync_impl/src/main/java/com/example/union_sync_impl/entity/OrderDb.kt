@@ -6,6 +6,7 @@ import com.example.union_sync_impl.entity.core.CatalogItemDb
 @Entity(tableName = "orders")
 class OrderDb(
     id: String,
+    cancel: Boolean? = false,
     override var catalogItemName: String,
     val number: String?,
     val summary: String?,
@@ -16,6 +17,7 @@ class OrderDb(
     userUpdated: String?,
 ) : CatalogItemDb(
     id = id,
+    cancel = cancel,
     insertDate = insertDate,
     updateDate = updateDate,
     userUpdated = userUpdated,
