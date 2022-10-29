@@ -13,7 +13,8 @@ fun sqlTransitRecordQuery(
     accountingObjectIds: List<String>? = null,
     updateDate: Long? = null,
     limit: Long? = null,
-    offset: Long? = null
+    offset: Long? = null,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT * FROM transit_record"
 
@@ -21,7 +22,9 @@ fun sqlTransitRecordQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "transit_record",
             filter = buildList {
-                addNonCancelFilter()
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
                 transitId?.let {
                     add("transitId" isEquals transitId)
                 }

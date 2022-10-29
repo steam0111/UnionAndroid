@@ -11,7 +11,8 @@ import com.example.union_sync_impl.utils.more
 fun sqlLocationsQuery(
     parentId: String? = null,
     textQuery: String? = null,
-    updateDate: Long? = null
+    updateDate: Long? = null,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery =   "SELECT * FROM location"
 
@@ -19,7 +20,9 @@ fun sqlLocationsQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "location",
             filter = buildList {
-                addNonCancelFilter()
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
                 add("parentId" isEquals  parentId)
                 textQuery?.let {
                     add("name" contains  textQuery)

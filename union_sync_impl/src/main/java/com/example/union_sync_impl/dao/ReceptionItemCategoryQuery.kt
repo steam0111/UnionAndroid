@@ -8,6 +8,7 @@ import com.example.union_sync_impl.utils.contains
 
 fun sqlReceptionItemCategoryQuery(
     textQuery: String? = null,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT * FROM reception_item_category"
 
@@ -15,7 +16,9 @@ fun sqlReceptionItemCategoryQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "reception_item_category",
             filter = buildList {
-                addNonCancelFilter()
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
                 textQuery?.let {
                     add("name" contains textQuery)
                 }

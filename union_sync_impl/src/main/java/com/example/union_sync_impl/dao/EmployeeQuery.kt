@@ -15,7 +15,8 @@ fun sqlEmployeeQuery(
     updateDate: Long? = null,
     isFilterCount: Boolean = false,
     offset: Long? = null,
-    limit: Long? = null
+    limit: Long? = null,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = if (isFilterCount) {
         "SELECT COUNT(*) FROM employees"
@@ -24,7 +25,7 @@ fun sqlEmployeeQuery(
     }
 
     val query = mainQuery.getEmployeesFilterPartQuery(
-        structuralId, textQuery, updateDate
+        structuralId, textQuery, updateDate, isNonCancel
     ).addPagination(limit = limit, offset = offset)
 
     return SimpleSQLiteQuery(query)
@@ -33,12 +34,15 @@ fun sqlEmployeeQuery(
 private fun String.getEmployeesFilterPartQuery(
     structuralId: String? = null,
     textQuery: String? = null,
-    updateDate: Long? = null
+    updateDate: Long? = null,
+    isNonCancel: Boolean = true
 ): String = addFilters(
     sqlTableFilters = SqlTableFilters(
         tableName = "employees",
         filter = buildList {
-            addNonCancelFilter()
+            if (isNonCancel) {
+                addNonCancelFilter()
+            }
             structuralId?.let {
                 add("structuralId" isEquals structuralId)
             }

@@ -19,7 +19,8 @@ fun sqlDocumentsQuery(
     limit: Long? = null,
     offset: Long? = null,
     isFilterCount: Boolean = false,
-    type: String? = null
+    type: String? = null,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = if (isFilterCount) {
         "SELECT COUNT(*) FROM documents"
@@ -51,7 +52,9 @@ fun sqlDocumentsQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "documents",
             filter = buildList {
-                addNonCancelFilter()
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
                 textQuery?.let {
                     add("id" contains textQuery)
                 }

@@ -14,7 +14,8 @@ fun sqlActionRemainsRecordQuery(
     remainIds: List<String>? = null,
     updateDate: Long? = null,
     limit: Long? = null,
-    offset: Long? = null
+    offset: Long? = null,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT * FROM action_remains_record"
 
@@ -22,7 +23,9 @@ fun sqlActionRemainsRecordQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "action_remains_record",
             filter = buildList {
-                addNonCancelFilter()
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
                 actionId?.let {
                     add("actionId" isEquals actionId)
                 }
@@ -32,7 +35,6 @@ fun sqlActionRemainsRecordQuery(
                 updateDate?.let {
                     add("updateDate" more updateDate)
                 }
-                add("cancel" isNotEquals "1")
             }
         )
     ).addPagination(

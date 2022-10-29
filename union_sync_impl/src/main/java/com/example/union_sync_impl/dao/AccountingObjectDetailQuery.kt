@@ -9,7 +9,8 @@ import com.example.union_sync_impl.utils.isEquals
 fun sqlAccountingObjectDetailQuery(
     rfid: String? = null,
     barcode: String? = null,
-    factoryNumber: String? = null
+    factoryNumber: String? = null,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = getMainQuery()
 
@@ -17,7 +18,9 @@ fun sqlAccountingObjectDetailQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "accounting_objects",
             filter = buildList {
-                addNonCancelFilter()
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
                 rfid?.let {
                     add("rfidValue" isEquals rfid)
                 }
