@@ -6,6 +6,7 @@ import com.example.union_sync_api.entity.SyncEvent
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.authContainer.presentation.view.AuthContainerArguments
 import com.itrocket.union.syncAll.presentation.view.SyncAllComposeFragmentDirections
 
@@ -16,11 +17,16 @@ interface SyncAllStore : Store<SyncAllStore.Intent, SyncAllStore.State, SyncAllS
         object OnSyncButtonClicked : Intent()
         object OnClearButtonClicked : Intent()
         object OnAuthButtonClicked : Intent()
+        object OnConfirmSyncClicked : Intent()
+        object OnDismissSyncClicked : Intent()
+        object OnConfirmLogoutClicked : Intent()
+        object OnDismissLogoutClicked : Intent()
     }
 
     data class State(
         val isLoading: Boolean = false,
-        val syncEvents: List<SyncEvent> = mutableListOf()
+        val syncEvents: List<SyncEvent> = mutableListOf(),
+        val dialogType: AlertType = AlertType.NONE
     )
 
     sealed class Label {

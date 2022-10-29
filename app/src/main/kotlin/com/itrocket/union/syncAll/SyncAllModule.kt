@@ -43,6 +43,7 @@ object SyncAllModule {
                 args.syncAllComposeFragmentArgs,
                 get(),
                 get(),
+                get()
             ).create()
         }
     }

@@ -8,6 +8,8 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.example.union_sync_api.entity.SyncEvent
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.alertType.AlertType
+import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.syncAll.domain.SyncAllInteractor
 import com.itrocket.union.syncAll.presentation.store.SyncAllStoreFactory.Result.ClearSyncEvents
@@ -23,6 +25,7 @@ class SyncAllStoreFactory(
     private val arguments: SyncAllArguments,
     private val syncAllInteractor: SyncAllInteractor,
     private val errorInteractor: ErrorInteractor,
+    private val authMainInteractor: AuthMainInteractor,
 ) {
     fun create(): SyncAllStore =
         object : SyncAllStore,
@@ -74,9 +77,29 @@ class SyncAllStoreFactory(
                         publish(SyncAllStore.Label.ShowMenu)
                     }
                 }
-                SyncAllStore.Intent.OnAuthButtonClicked -> {
-                    publish(SyncAllStore.Label.ShowAuth)
+                SyncAllStore.Intent.OnAuthButtonClicked -> dispatch(Result.DialogType(AlertType.SYNC))
+                SyncAllStore.Intent.OnConfirmLogoutClicked -> logout()
+                SyncAllStore.Intent.OnConfirmSyncClicked -> {
+                    dispatch(Result.DialogType(AlertType.NONE))
+                    syncAll()
                 }
+                SyncAllStore.Intent.OnDismissLogoutClicked -> dispatch(
+                    Result.DialogType(
+                        AlertType.NONE
+                    )
+                )
+                SyncAllStore.Intent.OnDismissSyncClicked -> dispatch(
+                    Result.DialogType(
+                        AlertType.LOGOUT
+                    )
+                )
+            }
+        }
+
+        private suspend fun logout() {
+            catchException {
+                syncAllInteractor.clearAll()
+                authMainInteractor.logout()
             }
         }
 
@@ -98,6 +121,7 @@ class SyncAllStoreFactory(
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
         data class NewSyncEvent(val newSyncEvent: SyncEvent) : Result()
+        data class DialogType(val dialogType: AlertType) : Result()
         object ClearSyncEvents : Result()
     }
 
@@ -107,6 +131,7 @@ class SyncAllStoreFactory(
                 is Loading -> copy(isLoading = result.isLoading)
                 is NewSyncEvent -> copy(syncEvents = syncEvents.plus(result.newSyncEvent))
                 ClearSyncEvents -> copy(syncEvents = emptyList())
+                is Result.DialogType -> copy(dialogType = result.dialogType)
             }
     }
 }
