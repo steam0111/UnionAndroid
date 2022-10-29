@@ -23,7 +23,8 @@ fun sqlReserveQuery(
     updateDate: Long? = null,
     locationIds: List<String?>? = null,
     limit: Long? = null,
-    offset: Long? = null
+    offset: Long? = null,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
 
     val mainQuery = if (isFilterCount) {
@@ -51,7 +52,9 @@ fun sqlReserveQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "reserves",
             filter = buildList {
-                addNonCancelFilter()
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
                 structuralIds?.let {
                     add("structuralId" isEquals structuralIds)
                 }

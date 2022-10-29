@@ -9,7 +9,8 @@ import com.example.union_sync_impl.utils.more
 
 fun sqlOrderQuery(
     textQuery: String? = null,
-    updateDate: Long? = null
+    updateDate: Long? = null,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT * FROM orders"
 
@@ -17,7 +18,9 @@ fun sqlOrderQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "orders",
             filter = buildList {
-                addNonCancelFilter()
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
                 textQuery?.let {
                     add("number" contains textQuery)
                 }

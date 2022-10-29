@@ -12,7 +12,8 @@ fun sqlProducerQuery(
     textQuery: String? = null,
     updateDate: Long? = null,
     offset: Long? = null,
-    limit: Long? = null
+    limit: Long? = null,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT * FROM producer"
 
@@ -20,7 +21,9 @@ fun sqlProducerQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "producer",
             filter = buildList {
-                addNonCancelFilter()
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
                 textQuery?.let {
                     add("name" contains textQuery)
                 }

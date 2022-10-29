@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.sync
 
+import android.util.Log
 import com.example.union_sync_api.entity.EnumType
 import com.example.union_sync_impl.dao.*
 import com.example.union_sync_impl.data.mapper.*
@@ -322,7 +323,8 @@ class SyncRepository(
                         sqlAccountingObjectQuery(
                             limit = limit,
                             offset = offset,
-                            updateDate = getLastSyncTime()
+                            updateDate = getLastSyncTime(),
+                            isNonCancel = false,
                         )
                     )
                 },
@@ -341,7 +343,8 @@ class SyncRepository(
                         sqlReserveQuery(
                             limit = limit,
                             offset = offset,
-                            updateDate = getLastSyncTime()
+                            updateDate = getLastSyncTime(),
+                            isNonCancel = false,
                         )
                     )
                 },
@@ -360,7 +363,8 @@ class SyncRepository(
                         sqlInventoryQuery(
                             limit = limit,
                             offset = offset,
-                            updateDate = getLastSyncTime()
+                            updateDate = getLastSyncTime(),
+                            isNonCancel = false,
                         )
                     )
                 },
@@ -379,7 +383,8 @@ class SyncRepository(
                         sqlDocumentsQuery(
                             limit = limit,
                             offset = offset,
-                            updateDate = getLastSyncTime()
+                            updateDate = getLastSyncTime(),
+                            isNonCancel = false,
                         )
                     ).firstOrNull().orEmpty()
                 },
@@ -400,7 +405,8 @@ class SyncRepository(
                         sqlTransitQuery(
                             limit = limit,
                             offset = offset,
-                            updateDate = getLastSyncTime()
+                            updateDate = getLastSyncTime(),
+                            isNonCancel = false,
                         )
                     ).firstOrNull().orEmpty()
                 },
@@ -421,7 +427,8 @@ class SyncRepository(
                         sqlTransitRemainsRecordQuery(
                             limit = limit,
                             offset = offset,
-                            updateDate = getLastSyncTime()
+                            updateDate = getLastSyncTime(),
+                            isNonCancel = false,
                         )
                     )
                 },
@@ -440,7 +447,8 @@ class SyncRepository(
                         sqlTransitRecordQuery(
                             limit = limit,
                             offset = offset,
-                            updateDate = getLastSyncTime()
+                            updateDate = getLastSyncTime(),
+                            isNonCancel = false,
                         )
                     )
                 },
@@ -459,7 +467,8 @@ class SyncRepository(
                         sqlActionRemainsRecordQuery(
                             limit = limit,
                             offset = offset,
-                            updateDate = getLastSyncTime()
+                            updateDate = getLastSyncTime(),
+                            isNonCancel = false,
                         )
                     )
                 },
@@ -478,7 +487,8 @@ class SyncRepository(
                         sqlInventoryRecordQuery(
                             limit = limit,
                             offset = offset,
-                            updateDate = getLastSyncTime()
+                            updateDate = getLastSyncTime(),
+                            isNonCancel = false,
                         )
                     )
                 },
@@ -497,7 +507,8 @@ class SyncRepository(
                         sqlActionRecordQuery(
                             limit = limit,
                             offset = offset,
-                            updateDate = getLastSyncTime()
+                            updateDate = getLastSyncTime(),
+                            isNonCancel = false,
                         )
                     )
                 },

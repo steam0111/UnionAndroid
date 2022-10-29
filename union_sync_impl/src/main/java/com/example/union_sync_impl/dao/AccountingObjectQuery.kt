@@ -28,7 +28,8 @@ fun sqlAccountingObjectQuery(
     locationIds: List<String?>? = null,
     structuralIds: List<String?>? = null,
     serialNumber: String? = null,
-    isShowUtilised: Boolean = true
+    isShowUtilised: Boolean = true,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = if (isFilterCount) {
         "SELECT COUNT(*) FROM accounting_objects"
@@ -66,7 +67,8 @@ fun sqlAccountingObjectQuery(
         updateDate = updateDate,
         locationIds = locationIds,
         isShowUtilised = isShowUtilised,
-        serialNumber = serialNumber
+        serialNumber = serialNumber,
+        isNonCancel = isNonCancel
     ).addPagination(
         limit,
         offset
@@ -90,12 +92,15 @@ private fun String.getAccountingObjectsFilterPartQuery(
     locationIds: List<String?>? = null,
     structuralIds: List<String?>? = null,
     isShowUtilised: Boolean = true,
-    serialNumber: String? = null
+    serialNumber: String? = null,
+    isNonCancel: Boolean = true
 ): String = addFilters(
     sqlTableFilters = SqlTableFilters(
         tableName = "accounting_objects",
         filter = buildList {
-            addNonCancelFilter()
+            if (isNonCancel) {
+                addNonCancelFilter()
+            }
             exploitingId?.let {
                 add("exploitingId" isEquals exploitingId)
             }

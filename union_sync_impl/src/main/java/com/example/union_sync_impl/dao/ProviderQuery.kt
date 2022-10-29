@@ -9,7 +9,8 @@ import com.example.union_sync_impl.utils.more
 
 fun sqlProviderQuery(
     textQuery: String? = null,
-    updateDate: Long? = null
+    updateDate: Long? = null,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT * FROM providers"
 
@@ -17,7 +18,9 @@ fun sqlProviderQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "providers",
             filter = buildList {
-                addNonCancelFilter()
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
                 textQuery?.let {
                     add("name" contains textQuery)
                 }

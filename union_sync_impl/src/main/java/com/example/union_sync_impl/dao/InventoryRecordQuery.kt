@@ -13,7 +13,8 @@ fun sqlInventoryRecordQuery(
     accountingObjectIds: List<String>? = null,
     updateDate: Long? = null,
     limit: Long? = null,
-    offset: Long? = null
+    offset: Long? = null,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT * FROM inventory_record"
 
@@ -21,7 +22,9 @@ fun sqlInventoryRecordQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "inventory_record",
             filter = buildList {
-                addNonCancelFilter()
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
                 inventoryId?.let {
                     add("inventoryId" isEquals inventoryId)
                 }

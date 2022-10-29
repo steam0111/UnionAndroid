@@ -18,7 +18,8 @@ fun sqlTransitQuery(
     updateDate: Long? = null,
     limit: Long? = null,
     offset: Long? = null,
-    isFilterCount: Boolean = false
+    isFilterCount: Boolean = false,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = if (isFilterCount) {
         "SELECT COUNT(*) FROM transit"
@@ -50,7 +51,9 @@ fun sqlTransitQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "transit",
             filter = buildList {
-                addNonCancelFilter()
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
                 textQuery?.let {
                     add("id" contains textQuery)
                 }

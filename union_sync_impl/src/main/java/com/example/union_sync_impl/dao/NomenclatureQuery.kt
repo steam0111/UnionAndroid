@@ -15,7 +15,8 @@ fun sqlNomenclatureQuery(
     updateDate: Long? = null,
     isFilterCount: Boolean = false,
     offset: Long? = null,
-    limit: Long? = null
+    limit: Long? = null,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = if (isFilterCount) {
         "SELECT COUNT(*) FROM nomenclature"
@@ -26,7 +27,8 @@ fun sqlNomenclatureQuery(
         mainQuery.getNomenclatureFilterPartQuery(
             nomenclatureGroupId,
             textQuery,
-            updateDate
+            updateDate,
+            isNonCancel,
         ).addPagination(limit = limit, offset = offset)
     )
 }
@@ -34,12 +36,15 @@ fun sqlNomenclatureQuery(
 private fun String.getNomenclatureFilterPartQuery(
     nomenclatureGroupId: String? = null,
     textQuery: String? = null,
-    updateDate: Long? = null
+    updateDate: Long? = null,
+    isNonCancel: Boolean = true
 ): String = addFilters(
     sqlTableFilters = SqlTableFilters(
         tableName = "nomenclature",
         filter = buildList {
-            addNonCancelFilter()
+            if (isNonCancel) {
+                addNonCancelFilter()
+            }
             nomenclatureGroupId?.let {
                 add("nomenclatureGroupId" isEquals nomenclatureGroupId)
             }

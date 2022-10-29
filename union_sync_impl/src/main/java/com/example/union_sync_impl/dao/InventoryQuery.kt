@@ -11,7 +11,8 @@ fun sqlInventoryQuery(
     updateDate: Long? = null,
     limit: Long? = null,
     offset: Long? = null,
-    isFilterCount: Boolean = false
+    isFilterCount: Boolean = false,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = if (isFilterCount) {
         "SELECT COUNT(*) FROM inventories"
@@ -44,7 +45,8 @@ fun sqlInventoryQuery(
             updateDate = updateDate,
             limit = limit,
             offset = offset,
-            inventoryBaseId = inventoryBaseId
+            inventoryBaseId = inventoryBaseId,
+            isNonCancel = isNonCancel
         )
     )
 }
@@ -76,13 +78,16 @@ fun String.getInventoriesFilterPartQuery(
     updateDate: Long? = null,
     limit: Long? = null,
     offset: Long? = null,
-    inventoryBaseId: String?
+    inventoryBaseId: String?,
+    isNonCancel: Boolean = true,
 ): String =
     addFilters(
         sqlTableFilters = SqlTableFilters(
             tableName = "inventories",
             filter = buildList {
-                addNonCancelFilter()
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
                 textQuery?.let {
                     add("id" contains textQuery)
                 }

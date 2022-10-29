@@ -12,7 +12,8 @@ fun sqlCounterpartyQuery(
     textQuery: String? = null,
     updateDate: Long? = null,
     offset: Long? = null,
-    limit: Long? = null
+    limit: Long? = null,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT * FROM counterparty"
 
@@ -20,7 +21,9 @@ fun sqlCounterpartyQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "counterparty",
             filter = buildList {
-                addNonCancelFilter()
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
                 textQuery?.let {
                     add("name" contains textQuery)
                 }

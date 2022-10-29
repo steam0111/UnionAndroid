@@ -14,7 +14,8 @@ fun sqlNomenclatureGroupQuery(
     textQuery: String? = null,
     updateDate: Long? = null,
     offset: Long? = null,
-    limit: Long? = null
+    limit: Long? = null,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT * FROM nomenclature_group"
 
@@ -22,7 +23,9 @@ fun sqlNomenclatureGroupQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "nomenclature_group",
             filter = buildList {
-                addNonCancelFilter()
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
                 textQuery?.let {
                     add("name" contains textQuery)
                 }

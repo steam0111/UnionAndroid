@@ -14,7 +14,8 @@ fun sqlActionRecordQuery(
     accountingObjectIds: List<String>? = null,
     updateDate: Long? = null,
     limit: Long? = null,
-    offset: Long? = null
+    offset: Long? = null,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT * FROM action_record"
 
@@ -22,7 +23,9 @@ fun sqlActionRecordQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "action_record",
             filter = buildList {
-                addNonCancelFilter()
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
                 actionId?.let {
                     add("actionId" isEquals actionId)
                 }
@@ -32,7 +35,6 @@ fun sqlActionRecordQuery(
                 updateDate?.let {
                     add("updateDate" more updateDate)
                 }
-                add("cancel" isNotEquals "1")
             }
         )
     ).addPagination(

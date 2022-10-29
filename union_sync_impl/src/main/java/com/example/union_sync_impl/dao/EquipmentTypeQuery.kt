@@ -10,7 +10,8 @@ import com.example.union_sync_impl.utils.contains
 fun sqlEquipmentTypeQuery(
     textQuery: String? = null,
     offset: Long? = null,
-    limit: Long? = null
+    limit: Long? = null,
+    isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = "SELECT * FROM equipment_types"
 
@@ -18,7 +19,9 @@ fun sqlEquipmentTypeQuery(
         sqlTableFilters = SqlTableFilters(
             tableName = "equipment_types",
             filter = buildList {
-                addNonCancelFilter()
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
                 textQuery?.let {
                     add("name" contains textQuery)
                 }
