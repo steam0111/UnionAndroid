@@ -14,13 +14,14 @@ import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragme
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.switcher.presentation.store.SwitcherResult
 import com.itrocket.union.switcher.presentation.view.SwitcherComposeFragment
+import com.itrocket.union.utils.flow.window
 import com.itrocket.union.utils.fragment.ChildBackPressedHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import ru.interid.scannerclient.domain.reader.ReaderMode
 import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
@@ -134,26 +135,32 @@ class InventoryCreateComposeFragment :
                 observeTriggerPress()
             }
             launch {
-                serviceEntryManager.barcodeScanDataFlow.collect {
-                    withContext(Dispatchers.Main) {
-                        accept(
-                            InventoryCreateStore.Intent.OnNewAccountingObjectBarcodeHandled(
-                                it.data
+                serviceEntryManager
+                    .barcodeScanDataFlow
+                    .collect {
+                        withContext(Dispatchers.Main) {
+                            accept(
+                                InventoryCreateStore.Intent.OnNewAccountingObjectBarcodeHandled(
+                                    it.data
+                                )
                             )
-                        )
+                        }
                     }
-                }
             }
             launch {
-                serviceEntryManager.epcInventoryDataFlow.collect {
-                    withContext(Dispatchers.Main) {
-                        accept(
-                            InventoryCreateStore.Intent.OnNewAccountingObjectRfidHandled(
-                                it
+                serviceEntryManager
+                    .epcInventoryDataFlow
+                    .distinctUntilChanged()
+                    .window(maxBufferSize = 20, maxMsWaitTime = 300, bufferOnlyUniqueValues = true)
+                    .collect { rfids ->
+                        withContext(Dispatchers.Main) {
+                            accept(
+                                InventoryCreateStore.Intent.OnNewAccountingObjectRfidHandled(
+                                    rfids
+                                )
                             )
-                        )
+                        }
                     }
-                }
             }
         }
     }

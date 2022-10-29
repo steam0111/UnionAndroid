@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Scaffold
@@ -117,7 +119,11 @@ private fun Content(
     onPowerChanged: (String) -> Unit,
     onDynamicSaveInventoryChanged: (Boolean) -> Unit
 ) {
-    Column(modifier = Modifier.padding(paddingValues)) {
+    Column(
+        modifier = Modifier
+            .padding(paddingValues)
+            .verticalScroll(rememberScrollState())
+    ) {
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = stringResource(id = R.string.choose_power_of_reader),
@@ -150,6 +156,7 @@ private fun Content(
             isDynamicSaveInventory = state.isDynamicSaveInventory,
             onDynamicSaveInventoryChanged = onDynamicSaveInventoryChanged
         )
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 

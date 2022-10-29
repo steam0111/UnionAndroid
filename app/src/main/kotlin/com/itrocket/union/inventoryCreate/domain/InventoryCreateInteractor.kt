@@ -6,7 +6,11 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
-import com.itrocket.union.inventoryCreate.domain.entity.*
+import com.itrocket.union.inventoryCreate.domain.entity.AccountingObjectCounter
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectsDomain
+import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
+import com.itrocket.union.inventoryCreate.domain.entity.toUpdateSyncEntity
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
@@ -39,7 +43,7 @@ class InventoryCreateInteractor(
 
     suspend fun handleNewAccountingObjectRfids(
         accountingObjects: List<AccountingObjectDomain>,
-        handledAccountingObjectId: String,
+        handledAccountingObjectIds: List<String>,
         inventoryStatus: InventoryStatus,
         isAddNew: Boolean,
         existNewAccountingObjects: List<AccountingObjectDomain>
@@ -48,24 +52,26 @@ class InventoryCreateInteractor(
             val newAccountingObjectRfids = mutableListOf<String>()
             val mutableAccountingObjects = accountingObjects.toMutableList()
 
-            val accountingObjectIndex = mutableAccountingObjects.indexOfFirst {
-                it.rfidValue == handledAccountingObjectId
-            }
-            val isRfidNewExist =
-                existNewAccountingObjects.indexOfFirst { it.rfidValue == handledAccountingObjectId } != NO_INDEX
-            val isNewExist = if (accountingObjectIndex != NO_INDEX) {
-                mutableAccountingObjects[accountingObjectIndex].inventoryStatus == InventoryAccountingObjectStatus.NEW
-            } else {
-                false
-            }
-            when {
-                accountingObjectIndex != NO_INDEX && !isNewExist && inventoryStatus != InventoryStatus.COMPLETED -> changeStatusByIndex(
-                    mutableAccountingObjects,
-                    accountingObjectIndex
-                )
-                accountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew && !isRfidNewExist -> newAccountingObjectRfids.add(
-                    handledAccountingObjectId
-                )
+            handledAccountingObjectIds.forEach { handledAccountingObjectId ->
+                val accountingObjectIndex = mutableAccountingObjects.indexOfFirst {
+                    it.rfidValue == handledAccountingObjectId
+                }
+                val isRfidNewExist =
+                    existNewAccountingObjects.indexOfFirst { it.rfidValue == handledAccountingObjectId } != NO_INDEX
+                val isNewExist = if (accountingObjectIndex != NO_INDEX) {
+                    mutableAccountingObjects[accountingObjectIndex].inventoryStatus == InventoryAccountingObjectStatus.NEW
+                } else {
+                    false
+                }
+                when {
+                    accountingObjectIndex != NO_INDEX && !isNewExist && inventoryStatus != InventoryStatus.COMPLETED -> changeStatusByIndex(
+                        mutableAccountingObjects,
+                        accountingObjectIndex
+                    )
+                    accountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew && !isRfidNewExist -> newAccountingObjectRfids.add(
+                        handledAccountingObjectId
+                    )
+                }
             }
 
             val handledAccountingObjects =
@@ -152,10 +158,17 @@ class InventoryCreateInteractor(
         switcherDomain: SwitcherDomain
     ): List<AccountingObjectDomain> {
         val mutableList = accountingObjects.toMutableList()
-        val newStatus = switcherDomain.currentValue
+        val newStatus = switcherDomain.currentValue as InventoryAccountingObjectStatus
         val index = accountingObjects.indexOfFirst { it.id == switcherDomain.entityId }
-        mutableList[index] =
-            mutableList[index].copy(inventoryStatus = newStatus as InventoryAccountingObjectStatus)
+
+        val accountingObject = mutableList[index]
+        if (newStatus == InventoryAccountingObjectStatus.FOUND) {
+            mutableList.removeAt(index)
+            mutableList.add(0, accountingObject.copy(inventoryStatus = newStatus))
+        } else {
+            mutableList[index] =
+                mutableList[index].copy(inventoryStatus = newStatus)
+        }
         return mutableList
     }
 
@@ -196,8 +209,11 @@ class InventoryCreateInteractor(
         index: Int
     ) {
         val accountingObject = accountingObjects[index]
-        accountingObjects[index] =
+        accountingObjects.removeAt(index)
+        accountingObjects.add(
+            0,
             accountingObject.copy(inventoryStatus = InventoryAccountingObjectStatus.FOUND)
+        )
     }
 
     suspend fun searchAccountingObjects(

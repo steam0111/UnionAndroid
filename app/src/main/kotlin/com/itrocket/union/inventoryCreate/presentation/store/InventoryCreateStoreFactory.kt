@@ -144,7 +144,7 @@ class InventoryCreateStoreFactory(
                         handleNewAccountingObjectRfids(
                             accountingObjects = getState().inventoryDocument.accountingObjects,
                             newAccountingObjects = getState().newAccountingObjects.toList(),
-                            handledAccountingObjectId = intent.handledAccountingObjectId,
+                            handledAccountingObjectIds = intent.handledAccountingObjectIds,
                             inventoryStatus = inventoryStatus,
                             isAddNew = getState().isAddNew,
                             isShowSearch = getState().isShowSearch,
@@ -291,7 +291,7 @@ class InventoryCreateStoreFactory(
 
         private suspend fun handleNewAccountingObjectRfids(
             accountingObjects: List<AccountingObjectDomain>,
-            handledAccountingObjectId: String,
+            handledAccountingObjectIds: List<String>,
             newAccountingObjects: List<AccountingObjectDomain>,
             inventoryStatus: InventoryStatus,
             isAddNew: Boolean,
@@ -305,7 +305,7 @@ class InventoryCreateStoreFactory(
                     val inventoryAccountingObjects =
                         inventoryCreateInteractor.handleNewAccountingObjectRfids(
                             accountingObjects = accountingObjects,
-                            handledAccountingObjectId = handledAccountingObjectId,
+                            handledAccountingObjectIds = handledAccountingObjectIds,
                             inventoryStatus = inventoryStatus,
                             isAddNew = isAddNew,
                             existNewAccountingObjects = newAccountingObjects
