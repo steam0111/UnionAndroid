@@ -4,6 +4,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.navArgs
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
+import com.itrocket.union.documentsMenu.presentation.store.DocumentMenuStore
 import com.itrocket.union.syncAll.SyncAllModule.SYNCALL_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.syncAll.presentation.store.SyncAllStore
 
@@ -33,8 +34,20 @@ class SyncAllComposeFragment :
                     accept(SyncAllStore.Intent.OnClearButtonClicked)
                 },
                 onAuthButtonClicked = {
-                    accept((SyncAllStore.Intent.OnAuthButtonClicked))
-                }
+                    accept(SyncAllStore.Intent.OnAuthButtonClicked)
+                },
+                onConfirmLogoutClickListener = {
+                    accept(SyncAllStore.Intent.OnConfirmLogoutClicked)
+                },
+                onConfirmSyncClickListener = {
+                    accept(SyncAllStore.Intent.OnConfirmSyncClicked)
+                },
+                onDismissLogoutClickListener = {
+                    accept(SyncAllStore.Intent.OnDismissLogoutClicked)
+                },
+                onDismissSyncClickListener = {
+                    accept(SyncAllStore.Intent.OnDismissSyncClicked)
+                },
             )
         }
     }

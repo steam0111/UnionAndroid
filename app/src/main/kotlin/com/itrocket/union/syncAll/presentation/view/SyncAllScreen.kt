@@ -24,11 +24,13 @@ import com.example.union_sync_api.entity.SyncEvent
 import com.example.union_sync_api.entity.SyncEvent.Measured
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.syncAll.presentation.store.SyncAllStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ButtonWithContent
 import com.itrocket.union.ui.ButtonWithLoader
+import com.itrocket.union.ui.ConfirmAlertDialog
 import com.itrocket.union.ui.grey2
 import com.itrocket.union.ui.white
 import kotlin.time.Duration.Companion.seconds
@@ -40,7 +42,11 @@ fun SyncAllScreen(
     onSyncButtonClicked: () -> Unit,
     onBackClickListener: () -> Unit,
     onClearButtonClicked: () -> Unit,
-    onAuthButtonClicked: () -> Unit
+    onAuthButtonClicked: () -> Unit,
+    onConfirmSyncClickListener: () -> Unit,
+    onDismissSyncClickListener: () -> Unit,
+    onConfirmLogoutClickListener: () -> Unit,
+    onDismissLogoutClickListener: () -> Unit,
 ) {
     AppTheme {
         Column(
@@ -100,6 +106,22 @@ fun SyncAllScreen(
                     SyncEvent(item)
                 }
             }
+        }
+        when (state.dialogType) {
+            AlertType.SYNC -> ConfirmAlertDialog(
+                onDismiss = onDismissSyncClickListener,
+                onConfirmClick = onConfirmSyncClickListener,
+                textRes = R.string.document_menu_dialog_sync_title,
+                confirmTextRes = R.string.common_yes,
+                dismissTextRes = R.string.common_no
+            )
+            AlertType.LOGOUT -> ConfirmAlertDialog(
+                onDismiss = onDismissLogoutClickListener,
+                onConfirmClick = onConfirmLogoutClickListener,
+                textRes = R.string.document_menu_dialog_logout_title,
+                confirmTextRes = R.string.common_yes,
+                dismissTextRes = R.string.common_no
+            )
         }
     }
 }
@@ -182,5 +204,5 @@ fun SyncAllScreenPreview() {
                 )
             )
         }
-    ), AppInsets(), {}, {}, {}, {})
+    ), AppInsets(), {}, {}, {}, {}, {}, {}, {}, {})
 }
