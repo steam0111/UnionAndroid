@@ -1,16 +1,20 @@
 package com.itrocket.union.accountingObjects.presentation.view
 
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.navArgs
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
+import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.FragmentResult
+import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.AccountingObjectModule.ACCOUNTING_OBJECT_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectStore
 import com.itrocket.union.filter.presentation.view.FilterComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
+import com.itrocket.union.utils.fragment.displayError
 
 class AccountingObjectComposeFragment :
     BaseComposeFragment<AccountingObjectStore.Intent, AccountingObjectStore.State, AccountingObjectStore.Label>(
@@ -69,6 +73,14 @@ class AccountingObjectComposeFragment :
                     accept(AccountingObjectStore.Intent.OnLoadNext)
                 }
             )
+        }
+    }
+
+    override fun handleLabel(label: AccountingObjectStore.Label) {
+        if (label is AccountingObjectStore.Label.ShowWarning) {
+            displayError(label.message)
+        } else {
+            super.handleLabel(label)
         }
     }
 

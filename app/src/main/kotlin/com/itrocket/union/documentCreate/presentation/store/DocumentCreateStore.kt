@@ -95,6 +95,7 @@ interface DocumentCreateStore :
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
+        data class ShowWarning(val message: Int) : Label()
 
         data class ShowLocation(val location: LocationParamDomain) : Label(),
             ForwardNavigationLabel {

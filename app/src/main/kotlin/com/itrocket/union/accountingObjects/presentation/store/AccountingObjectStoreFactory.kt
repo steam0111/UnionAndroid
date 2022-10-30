@@ -1,5 +1,6 @@
 package com.itrocket.union.accountingObjects.presentation.store
 
+import android.widget.Toast
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -7,8 +8,11 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectStatus
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
@@ -155,7 +159,11 @@ class AccountingObjectStoreFactory(
 
         private fun onItemClick(item: AccountingObjectDomain) {
             if (accountingObjectArguments?.isFromDocument == true) {
-                publish(AccountingObjectStore.Label.GoBack(AccountingObjectResult(item)))
+                if (item.isWrittenOff) {
+                    publish(AccountingObjectStore.Label.ShowWarning(R.string.restrict_use_written_off_ao))
+                } else {
+                    publish(AccountingObjectStore.Label.GoBack(AccountingObjectResult(item)))
+                }
             } else {
                 publish(
                     AccountingObjectStore.Label.ShowDetail(

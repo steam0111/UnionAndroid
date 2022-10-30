@@ -7,7 +7,9 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectStatus
 import com.itrocket.union.documentCreate.domain.DocumentAccountingObjectManager
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import com.itrocket.union.documentCreate.domain.DocumentReservesManager
@@ -332,6 +334,11 @@ class DocumentCreateStoreFactory(
         }
 
         private suspend fun onConductClicked(state: DocumentCreateStore.State) {
+            if (state.document.accountingObjects.firstOrNull { it.isWrittenOff } != null) {
+                publish(DocumentCreateStore.Label.ShowWarning(R.string.restrict_use_written_off_ao_for_conduct))
+                return
+            }
+
             val conductPermission = UnionPermission.ALL_DOCUMENTS
             if (unionPermissionsInteractor.canConductDocument(conductPermission)) {
                 conductDocument(state)

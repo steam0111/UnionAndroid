@@ -24,6 +24,9 @@ data class AccountingObjectDomain(
 
     val hasRfid: Boolean
         get() = !rfidValue.isNullOrEmpty()
+
+    val isWrittenOff: Boolean
+        get() = status?.type?.type == AccountingObjectStatus.WRITTEN_OFF.name
 }
 
 @Parcelize
