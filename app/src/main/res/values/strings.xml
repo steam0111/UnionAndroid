@@ -385,4 +385,7 @@
     <string name="manual_input_title">Ручной ввод</string>
     <string name="manual_input_barcode_hint">Введите штрихкод</string>
     <string name="manual_input_sn_hint">Введите серийный номер</string>
+
+    <string name="restrict_use_written_off_ao_for_conduct">Нельзя провести документ с объектами учета в статусе \"На утилизацию\"</string>
+    <string name="restrict_use_written_off_ao">Нельзя выбрать объект учета в статусе \"На утилизацию\"</string>
 </resources>

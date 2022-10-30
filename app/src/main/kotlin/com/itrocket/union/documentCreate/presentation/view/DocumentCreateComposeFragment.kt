@@ -1,12 +1,14 @@
 package com.itrocket.union.documentCreate.presentation.view
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
+import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectResult
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
 import com.itrocket.union.documentCreate.DocumentCreateModule.DOCUMENTCREATE_VIEW_MODEL_QUALIFIER
@@ -26,6 +28,7 @@ import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 import com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFragment
 import com.itrocket.union.structural.presentation.store.StructuralResult
 import com.itrocket.union.structural.presentation.view.StructuralComposeFragment
+import com.itrocket.union.utils.fragment.displayError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -206,6 +209,14 @@ class DocumentCreateComposeFragment :
                     accept(DocumentCreateStore.Intent.OnDeleteAccountingObjectClicked(it))
                 }
             )
+        }
+    }
+
+    override fun handleLabel(label: DocumentCreateStore.Label) {
+        if (label is DocumentCreateStore.Label.ShowWarning) {
+            displayError(label.message)
+        } else {
+            super.handleLabel(label)
         }
     }
 
