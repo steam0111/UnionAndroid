@@ -91,6 +91,8 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.junit4)
     debugImplementation(libs.androidx.compose.manifest)
     testImplementation libs.junit
+
+    //debugImplementation libs.canary
 }
 
 task incrementVersionCode() {
