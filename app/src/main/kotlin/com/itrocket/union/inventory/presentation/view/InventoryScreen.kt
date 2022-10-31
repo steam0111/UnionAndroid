@@ -35,6 +35,7 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.inventory.presentation.store.InventoryStore
 import com.itrocket.union.inventoryCreate.presentation.view.InventoryBottomBar
 import com.itrocket.union.manual.ManualType
@@ -44,6 +45,7 @@ import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ButtonBottomBar
+import com.itrocket.union.ui.ConfirmAlertDialog
 import com.itrocket.union.ui.DoubleTabRow
 import com.itrocket.union.ui.Loader
 import com.itrocket.union.ui.MediumSpacer
@@ -68,7 +70,11 @@ fun InventoryScreen(
     onParamClickListener: (ParamDomain) -> Unit,
     onParamCrossClickListener: (ParamDomain) -> Unit,
     onSaveClickListener: () -> Unit,
-    onInWorkClickListener: () -> Unit
+    onInWorkClickListener: () -> Unit,
+    onSaveConfirmClickListener: () -> Unit,
+    onSaveDismissClickListener: () -> Unit,
+    onInWorkConfirmClickListener: () -> Unit,
+    onInWorkDismissClickListener: () -> Unit,
 ) {
     val pagerState = rememberPagerState(state.selectedPage)
     val coroutineScope = rememberCoroutineScope()
@@ -104,6 +110,7 @@ fun InventoryScreen(
                             onClick = onInventoryCreateClickListener,
                             text = stringResource(R.string.common_create),
                             isLoading = state.isCreateInventoryLoading,
+                            isEnabled = !state.isCreateInventoryLoading
                         )
                     }
                 }
@@ -126,6 +133,22 @@ fun InventoryScreen(
                 bottom = appInsets.bottomInset.dp
             )
         )
+        when (state.dialogType) {
+            AlertType.SAVE -> {
+                ConfirmAlertDialog(
+                    onDismiss = onSaveDismissClickListener,
+                    onConfirmClick = onSaveConfirmClickListener,
+                    textRes = R.string.common_confirm_save_text
+                )
+            }
+            AlertType.IN_WORK -> {
+                ConfirmAlertDialog(
+                    onDismiss = onInWorkDismissClickListener,
+                    onConfirmClick = onInWorkConfirmClickListener,
+                    textRes = R.string.inventory_in_work_dialog
+                )
+            }
+        }
     }
 
     LaunchedEffect(pagerState) {
@@ -400,6 +423,10 @@ fun InventoryScreenPreview() {
             inventoryCreateDomain = null
         ),
         AppInsets(topInset = previewTopInsetDp),
+        {},
+        {},
+        {},
+        {},
         {},
         {},
         {},

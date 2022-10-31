@@ -5,5 +5,7 @@ enum class AlertType {
     LOGOUT,
     CONDUCT,
     SAVE,
+    IN_WORK,
+    COMPLETE,
     NONE
 }

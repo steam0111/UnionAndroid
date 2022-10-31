@@ -9,6 +9,7 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
@@ -139,16 +140,26 @@ class InventoryStoreFactory(
                         params = params
                     )
                 }
-                InventoryStore.Intent.OnInWorkClicked -> inWorkInventory(
-                    inventoryDomain = requireNotNull(getState().inventoryCreateDomain),
-                    accountingObjects = getState().accountingObjectList,
-                    params = getState().params
-                )
-                InventoryStore.Intent.OnSaveClicked -> saveInventory(
-                    inventoryDocument = requireNotNull(getState().inventoryCreateDomain),
-                    accountingObjects = getState().accountingObjectList,
-                    params = getState().params
-                )
+                InventoryStore.Intent.OnInWorkClicked -> dispatch(Result.DialogType(AlertType.IN_WORK))
+                InventoryStore.Intent.OnSaveClicked -> dispatch(Result.DialogType(AlertType.SAVE))
+                InventoryStore.Intent.OnInWorkConfirmed -> {
+                    inWorkInventory(
+                        inventoryDomain = requireNotNull(getState().inventoryCreateDomain),
+                        accountingObjects = getState().accountingObjectList,
+                        params = getState().params
+                    )
+                    dispatch(Result.DialogType(AlertType.NONE))
+                }
+                InventoryStore.Intent.OnInWorkDismissed -> dispatch(Result.DialogType(AlertType.NONE))
+                InventoryStore.Intent.OnSaveConfirmed -> {
+                    saveInventory(
+                        inventoryDocument = requireNotNull(getState().inventoryCreateDomain),
+                        accountingObjects = getState().accountingObjectList,
+                        params = getState().params
+                    )
+                    dispatch(Result.DialogType(AlertType.NONE))
+                }
+                InventoryStore.Intent.OnSaveDismissed -> dispatch(Result.DialogType(AlertType.NONE))
             }
         }
 
@@ -216,7 +227,6 @@ class InventoryStoreFactory(
                     inventoryDocument.copy(documentInfo = params),
                     accountingObjects
                 )
-                publish(InventoryStore.Label.GoBack(InventoryResult(true)))
             }
             dispatch(Result.IsAccountingObjectsLoading(false))
         }
@@ -249,7 +259,7 @@ class InventoryStoreFactory(
             accountingObjects: List<AccountingObjectDomain>,
             params: List<ParamDomain>
         ) {
-            dispatch(Result.IsAccountingObjectsLoading(true))
+            dispatch(Result.IsCreateInventoryLoading(true))
             catchException {
                 val inventoryCreate =
                     inventoryInteractor.createInventory(accountingObjects, params)
@@ -258,7 +268,7 @@ class InventoryStoreFactory(
             if (isDynamicSaveInventory) {
                 inventoryDynamicSaveManager.subscribeInventorySave()
             }
-            dispatch(Result.IsAccountingObjectsLoading(false))
+            dispatch(Result.IsCreateInventoryLoading(false))
         }
 
         private suspend fun observeAccountingObjects(
@@ -293,6 +303,7 @@ class InventoryStoreFactory(
         data class CanUpdateInventory(val canUpdateInventory: Boolean) : Result()
         data class InventoryCreate(val inventoryCreateDomain: InventoryCreateDomain) : Result()
         data class IsDynamicSaveInventory(val isDynamicSaveInventory: Boolean) : Result()
+        data class DialogType(val dialogType: AlertType) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryStore.State, Result> {
@@ -307,6 +318,7 @@ class InventoryStoreFactory(
                 is Result.InventoryCreate -> copy(inventoryCreateDomain = result.inventoryCreateDomain)
                 is Result.CanUpdateInventory -> copy(canUpdateInventory = result.canUpdateInventory)
                 is Result.IsDynamicSaveInventory -> copy(isDynamicSaveInventory = result.isDynamicSaveInventory)
+                is Result.DialogType -> copy(dialogType = result.dialogType)
             }
     }
 }

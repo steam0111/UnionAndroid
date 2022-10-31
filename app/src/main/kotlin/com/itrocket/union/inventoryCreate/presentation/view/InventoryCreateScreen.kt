@@ -31,6 +31,7 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
@@ -63,8 +64,10 @@ fun InventoryCreateScreen(
     onHideFoundAccountingObjectChanged: () -> Unit,
     onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit,
     onFinishClickListener: () -> Unit,
-    onConfirmActionClick: () -> Unit,
-    onDismissConfirmDialog: () -> Unit,
+    onSaveConfirmClickListener: () -> Unit,
+    onSaveDismissClickListener: () -> Unit,
+    onCompleteConfirmClickListener: () -> Unit,
+    onCompleteDismissClickListener: () -> Unit,
     onSearchTextChanged: (String) -> Unit,
     onSearchClickListener: () -> Unit
 ) {
@@ -104,12 +107,16 @@ fun InventoryCreateScreen(
                 bottom = appInsets.bottomInset.dp
             )
         )
-
-        if (state.isConfirmDialogVisible) {
-            ConfirmAlertDialog(
-                onDismiss = onDismissConfirmDialog,
-                onConfirmClick = onConfirmActionClick,
+        when (state.dialogType) {
+            AlertType.SAVE -> ConfirmAlertDialog(
+                onDismiss = onSaveDismissClickListener,
+                onConfirmClick = onSaveConfirmClickListener,
                 textRes = R.string.common_confirm_save_text
+            )
+            AlertType.COMPLETE -> ConfirmAlertDialog(
+                onDismiss = onCompleteDismissClickListener,
+                onConfirmClick = onCompleteConfirmClickListener,
+                textRes = R.string.inventory_complete_dialog
             )
         }
     }
@@ -459,8 +466,7 @@ fun InventoryCreateScreenPreview() {
             userInserted = "",
             userUpdated = ""
         ),
-        isConfirmDialogVisible = false,
         readingModeTab = ReadingModeTab.RFID
-    ), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
+    ), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 }
 

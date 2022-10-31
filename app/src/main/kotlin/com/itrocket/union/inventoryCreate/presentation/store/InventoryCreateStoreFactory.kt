@@ -9,6 +9,7 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventory.presentation.store.InventoryResult
@@ -113,9 +114,7 @@ class InventoryCreateStoreFactory(
                 InventoryCreateStore.Intent.OnReadingClicked -> {
                     publish(InventoryCreateStore.Label.ShowReadingMode)
                 }
-                InventoryCreateStore.Intent.OnSaveClicked -> {
-                    dispatch(Result.ConfirmDialogVisibility(true))
-                }
+                InventoryCreateStore.Intent.OnSaveClicked -> dispatch(Result.DialogType(AlertType.SAVE))
                 is InventoryCreateStore.Intent.OnNewAccountingObjectBarcodeHandled -> {
                     val inventoryStatus = getState().inventoryDocument.inventoryStatus
                     if (inventoryStatus != InventoryStatus.COMPLETED && getState().canUpdate) {
@@ -153,15 +152,18 @@ class InventoryCreateStoreFactory(
                         )
                     }
                 }
-                InventoryCreateStore.Intent.OnCompleteClicked -> completeInventory(
-                    inventoryDomain = getState().inventoryDocument,
-                    newAccountingObjects = getState().newAccountingObjects.toList()
+                InventoryCreateStore.Intent.OnCompleteClicked -> dispatch(
+                    Result.DialogType(
+                        AlertType.COMPLETE
+                    )
                 )
-                is InventoryCreateStore.Intent.OnDismissConfirmDialog -> {
-                    dispatch(Result.ConfirmDialogVisibility(false))
-                }
-                is InventoryCreateStore.Intent.OnConfirmActionClick -> {
-                    dispatch(Result.ConfirmDialogVisibility(false))
+                is InventoryCreateStore.Intent.OnSaveDismissed -> dispatch(
+                    Result.DialogType(
+                        AlertType.NONE
+                    )
+                )
+                is InventoryCreateStore.Intent.OnSaveConfirmed -> {
+                    dispatch(Result.DialogType(AlertType.NONE))
                     saveInventory(
                         inventoryDocument = getState().inventoryDocument,
                         accountingObjects = getState().inventoryDocument.accountingObjects + getState().newAccountingObjects
@@ -189,6 +191,18 @@ class InventoryCreateStoreFactory(
                     dispatch(Result.SearchText(intent.searchText))
                     searchManager.emit(intent.searchText)
                 }
+                InventoryCreateStore.Intent.OnCompleteConfirmed -> {
+                    dispatch(Result.DialogType(AlertType.NONE))
+                    completeInventory(
+                        inventoryDomain = getState().inventoryDocument,
+                        newAccountingObjects = getState().newAccountingObjects.toList()
+                    )
+                }
+                InventoryCreateStore.Intent.OnCompleteDismissed -> dispatch(
+                    Result.DialogType(
+                        AlertType.NONE
+                    )
+                )
             }
         }
 
@@ -426,7 +440,6 @@ class InventoryCreateStoreFactory(
                     inventoryDocument,
                     accountingObjects
                 )
-                publish(InventoryCreateStore.Label.GoBack(InventoryResult(true)))
             }
             dispatch(Result.Loading(false))
         }
@@ -506,7 +519,7 @@ class InventoryCreateStoreFactory(
         data class NewAccountingObjects(val newAccountingObjects: Set<AccountingObjectDomain>) :
             Result()
 
-        data class ConfirmDialogVisibility(val isVisible: Boolean) : Result()
+        data class DialogType(val dialogType: AlertType) : Result()
         data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
         data class SearchText(val searchText: String) : Result()
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
@@ -533,7 +546,6 @@ class InventoryCreateStoreFactory(
                 )
                 is Result.NewAccountingObjects -> copy(newAccountingObjects = result.newAccountingObjects)
                 is Result.Inventory -> copy(inventoryDocument = result.inventory)
-                is Result.ConfirmDialogVisibility -> copy(isConfirmDialogVisible = result.isVisible)
                 is Result.ReadingMode -> copy(readingModeTab = result.readingModeTab)
                 is Result.SearchText -> copy(searchText = result.searchText)
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
@@ -541,6 +553,7 @@ class InventoryCreateStoreFactory(
                 is Result.CanUpdate -> copy(canUpdate = result.canUpdate)
                 is Result.IsDynamicSaveInventory -> copy(isDynamicSaveInventory = result.isDynamicSaveInventory)
                 is Result.CountOfAccountingObjects -> copy(accountingObjectCounter = result.accountingObjectCounter)
+                is Result.DialogType -> copy(dialogType = result.dialogType)
             }
     }
 }
