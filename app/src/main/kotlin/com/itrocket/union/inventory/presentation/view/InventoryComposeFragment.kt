@@ -5,11 +5,9 @@ import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
-import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
 import com.itrocket.union.inventory.InventoryModule.INVENTORY_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.inventory.presentation.store.InventoryStore
 import com.itrocket.union.inventoryContainer.presentation.view.InventoryCreateClickHandler
-import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
 import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.location.presentation.view.LocationComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
@@ -99,6 +97,18 @@ class InventoryComposeFragment :
                 },
                 onInWorkClickListener = {
                     accept(InventoryStore.Intent.OnInWorkClicked)
+                },
+                onInWorkConfirmClickListener = {
+                    accept(InventoryStore.Intent.OnInWorkConfirmed)
+                },
+                onInWorkDismissClickListener = {
+                    accept(InventoryStore.Intent.OnInWorkDismissed)
+                },
+                onSaveConfirmClickListener = {
+                    accept(InventoryStore.Intent.OnSaveConfirmed)
+                },
+                onSaveDismissClickListener = {
+                    accept(InventoryStore.Intent.OnSaveDismissed)
                 }
             )
         }

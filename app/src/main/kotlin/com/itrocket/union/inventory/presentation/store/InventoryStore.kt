@@ -6,6 +6,7 @@ import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_CODE
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_LABEL
 import com.itrocket.union.inventoryContainer.presentation.view.InventoryContainerComposeFragmentDirections
@@ -29,6 +30,10 @@ interface InventoryStore :
         object OnCreateDocumentClicked : Intent()
         object OnInWorkClicked : Intent()
         object OnSaveClicked : Intent()
+        object OnSaveConfirmed : Intent()
+        object OnSaveDismissed : Intent()
+        object OnInWorkConfirmed : Intent()
+        object OnInWorkDismissed : Intent()
         data class OnSelectPage(val selectedPage: Int) : Intent()
         data class OnParamClicked(val param: ParamDomain) : Intent()
         data class OnParamCrossClicked(val param: ParamDomain) : Intent()
@@ -60,6 +65,7 @@ interface InventoryStore :
         val canUpdateInventory: Boolean = false,
         val inventoryCreateDomain: InventoryCreateDomain?,
         val isDynamicSaveInventory: Boolean = false,
+        val dialogType: AlertType = AlertType.NONE
     )
 
     sealed class Label {

@@ -9,10 +9,11 @@ import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.inventoryCreate.domain.entity.AccountingObjectCounter
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.inventory.presentation.store.InventoryResult
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_CODE
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_LABEL
+import com.itrocket.union.inventoryCreate.domain.entity.AccountingObjectCounter
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
 import com.itrocket.union.newAccountingObject.presentation.view.NewAccountingObjectComposeFragment
@@ -47,8 +48,10 @@ interface InventoryCreateStore :
         object OnSaveClicked : Intent()
         object OnReadingClicked : Intent()
         object OnCompleteClicked : Intent()
-        object OnDismissConfirmDialog : Intent()
-        object OnConfirmActionClick : Intent()
+        object OnSaveDismissed : Intent()
+        object OnSaveConfirmed : Intent()
+        object OnCompleteDismissed : Intent()
+        object OnCompleteConfirmed : Intent()
         object OnSearchClicked : Intent()
         data class OnSearchTextChanged(val searchText: String) : Intent()
         data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
@@ -61,7 +64,7 @@ interface InventoryCreateStore :
         val newAccountingObjects: Set<AccountingObjectDomain> = setOf(),
         val isAddNew: Boolean = false,
         val isLoading: Boolean = false,
-        val isConfirmDialogVisible: Boolean = false,
+        val dialogType: AlertType = AlertType.NONE,
         val readingModeTab: ReadingModeTab,
         val canUpdate: Boolean = false,
         val searchText: String = "",
@@ -76,6 +79,7 @@ interface InventoryCreateStore :
             override val resultCode: String = INVENTORY_RESULT_CODE
             override val resultLabel: String = INVENTORY_RESULT_LABEL
         }
+
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
         data class ShowChangeStatus(val switcherData: SwitcherDomain) : Label(),
             ShowBottomSheetNavigationLabel {
