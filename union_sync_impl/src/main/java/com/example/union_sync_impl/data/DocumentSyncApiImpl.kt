@@ -244,6 +244,7 @@ class DocumentSyncApiImpl(
         actionRecordDao.insertAll(newRecords)
 
         val removedAccountingObjects = records.filter { it.cancel == true }
+            .map { it.copy(updateDate = System.currentTimeMillis()) }
         actionRecordDao.insertAll(removedAccountingObjects)
     }
 
@@ -275,6 +276,7 @@ class DocumentSyncApiImpl(
         actionRemainsRecordDao.insertAll(newRecords)
 
         val removedRecords = records.filter { it.cancel == true }
+            .map { it.copy(updateDate = System.currentTimeMillis()) }
         actionRemainsRecordDao.insertAll(removedRecords)
     }
 
