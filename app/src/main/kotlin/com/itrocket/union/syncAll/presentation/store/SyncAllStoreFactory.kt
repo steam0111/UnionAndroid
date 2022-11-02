@@ -72,10 +72,11 @@ class SyncAllStoreFactory(
                 SyncAllStore.Intent.OnBackClicked -> publish(SyncAllStore.Label.ShowMenu)
                 SyncAllStore.Intent.OnSyncButtonClicked -> syncAll()
                 SyncAllStore.Intent.OnClearButtonClicked -> {
-                    catchException {
-                        syncAllInteractor.clearAll()
-                        publish(SyncAllStore.Label.ShowMenu)
-                    }
+                    dispatch(
+                        Result.DialogType(
+                            AlertType.CLEAR_DB
+                        )
+                    )
                 }
                 SyncAllStore.Intent.OnAuthButtonClicked -> dispatch(Result.DialogType(AlertType.SYNC))
                 SyncAllStore.Intent.OnConfirmLogoutClicked -> logout()
@@ -83,7 +84,8 @@ class SyncAllStoreFactory(
                     dispatch(Result.DialogType(AlertType.NONE))
                     syncAll()
                 }
-                SyncAllStore.Intent.OnDismissLogoutClicked -> dispatch(
+                SyncAllStore.Intent.OnDismissLogoutClicked,
+                SyncAllStore.Intent.OnDismissClearDbClicked -> dispatch(
                     Result.DialogType(
                         AlertType.NONE
                     )
@@ -93,6 +95,12 @@ class SyncAllStoreFactory(
                         AlertType.LOGOUT
                     )
                 )
+                SyncAllStore.Intent.OnConfirmClearDbClicked -> {
+                    catchException {
+                        syncAllInteractor.clearAll()
+                        publish(SyncAllStore.Label.ShowMenu)
+                    }
+                }
             }
         }
 

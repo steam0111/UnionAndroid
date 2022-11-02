@@ -108,6 +108,7 @@
     <string name="create_inventory">Создание инв.</string>
     <string name="document_menu_dialog_sync_title">В случае выхода не сохраненные изменения будут удалены без возможности восстановления. Хотите выполнить синхронизацию для сохранения и отправки изменений на сервер?</string>
     <string name="document_menu_dialog_logout_title">Вы уверены, что хотите выйти?</string>
+    <string name="document_menu_dialog_clear_db_title">При выполнении полной очистки базы данных вся информация будет удалена. Вы уверены?</string>
     <!-- Manual -->
     <string name="manual_organization">Организация</string>
     <string name="manual_mol">Мол/Ответственный</string>

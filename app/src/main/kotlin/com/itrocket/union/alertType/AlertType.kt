@@ -7,5 +7,6 @@ enum class AlertType {
     SAVE,
     IN_WORK,
     COMPLETE,
+    CLEAR_DB,
     NONE
 }
