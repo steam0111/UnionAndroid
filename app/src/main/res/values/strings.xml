@@ -248,7 +248,7 @@
     <string name="inventory_done">Завершена</string>
     <string name="identify_title">Идентификация</string>
     <string name="inventory_in_work_dialog">Вы хотите взять инв. ведомость в работу?</string>
-    <string name="inventory_complete_dialog">Вы уверены, что хотите провести инв. ведомость?</string>
+    <string name="inventory_complete_dialog">После завершения ведомости будет заблокирована возможность ее дальнейшего выполнения или изменения. Вы уверены?</string>
 
     <!-- InventoryCreate -->
     <string name="inventory_create_hide_found_ao">Скрывать найденные ОС</string>
