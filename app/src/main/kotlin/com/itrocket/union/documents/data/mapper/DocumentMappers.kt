@@ -218,11 +218,7 @@ private fun addEmployeeParam(
     manualTypes: List<ManualType>
 ) {
     if (manualTypes.contains(manualType)) {
-        val employeeValue = if (employee != null) {
-            "${employee.firstname} ${employee.lastname}"
-        } else {
-            ""
-        }
+        val employeeValue = employee?.fullName.orEmpty()
         params.add(
             ParamDomain(
                 id = employee?.id.orEmpty(),

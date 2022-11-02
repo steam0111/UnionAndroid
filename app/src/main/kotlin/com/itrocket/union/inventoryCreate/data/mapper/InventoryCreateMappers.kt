@@ -38,7 +38,7 @@ fun InventorySyncEntity.map(): InventoryCreateDomain =
             add(
                 ParamDomain(
                     id = mol?.id,
-                    value = mol?.let { "${it.firstname} ${it.lastname}" }.orEmpty(),
+                    value = mol?.fullName.orEmpty(),
                     type = ManualType.MOL_IN_STRUCTURAL
                 )
             )
