@@ -47,6 +47,8 @@ fun SyncAllScreen(
     onDismissSyncClickListener: () -> Unit,
     onConfirmLogoutClickListener: () -> Unit,
     onDismissLogoutClickListener: () -> Unit,
+    onDismissClearClickListener: () -> Unit,
+    onConfirmClearDbClickListener: () -> Unit,
 ) {
     AppTheme {
         Column(
@@ -119,6 +121,13 @@ fun SyncAllScreen(
                 onDismiss = onDismissLogoutClickListener,
                 onConfirmClick = onConfirmLogoutClickListener,
                 textRes = R.string.document_menu_dialog_logout_title,
+                confirmTextRes = R.string.common_yes,
+                dismissTextRes = R.string.common_no
+            )
+            AlertType.CLEAR_DB -> ConfirmAlertDialog(
+                onDismiss = onDismissClearClickListener,
+                onConfirmClick = onConfirmClearDbClickListener,
+                textRes = R.string.document_menu_dialog_clear_db_title,
                 confirmTextRes = R.string.common_yes,
                 dismissTextRes = R.string.common_no
             )
@@ -204,5 +213,5 @@ fun SyncAllScreenPreview() {
                 )
             )
         }
-    ), AppInsets(), {}, {}, {}, {}, {}, {}, {}, {})
+    ), AppInsets(), {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 }

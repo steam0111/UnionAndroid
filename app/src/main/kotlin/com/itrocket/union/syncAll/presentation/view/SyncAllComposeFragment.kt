@@ -48,6 +48,12 @@ class SyncAllComposeFragment :
                 onDismissSyncClickListener = {
                     accept(SyncAllStore.Intent.OnDismissSyncClicked)
                 },
+                onDismissClearClickListener = {
+                    accept(SyncAllStore.Intent.OnDismissClearDbClicked)
+                },
+                onConfirmClearDbClickListener = {
+                    accept(SyncAllStore.Intent.OnConfirmClearDbClicked)
+                }
             )
         }
     }

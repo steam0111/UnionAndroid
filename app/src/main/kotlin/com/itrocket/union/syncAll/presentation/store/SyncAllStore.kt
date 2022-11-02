@@ -21,6 +21,8 @@ interface SyncAllStore : Store<SyncAllStore.Intent, SyncAllStore.State, SyncAllS
         object OnDismissSyncClicked : Intent()
         object OnConfirmLogoutClicked : Intent()
         object OnDismissLogoutClicked : Intent()
+        object OnDismissClearDbClicked: Intent()
+        object OnConfirmClearDbClicked : Intent()
     }
 
     data class State(
