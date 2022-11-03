@@ -20,6 +20,8 @@ stages:
 
 build develop when merge_requests:
   stage: buildMR
+  tags:
+    - android
   script:
     - ./gradlew app:assembleDebug
   only:
@@ -30,6 +32,8 @@ build develop when merge_requests:
 
 # Тригериться только на ручной запуск
 build release apk:
+  tags:
+    - android
   stage: buildRelease
   script:
     - git config --global user.email "gitlab@itrokcet.com"
