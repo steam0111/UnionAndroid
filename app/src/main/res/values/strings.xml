@@ -251,6 +251,9 @@
     <string name="identify_title">Идентификация</string>
     <string name="inventory_in_work_dialog">Вы хотите взять инв. ведомость в работу?</string>
     <string name="inventory_complete_dialog">После завершения ведомости будет заблокирована возможность ее дальнейшего выполнения или изменения. Вы уверены?</string>
+    <string name="inventory_ao_wait">Формирование списка ОУ \nтребует немного времени.\nПожалуйста подождите…</string>
+    <string name="inventory_in_work_loading">Идет взятие инв. ведомости в работу. \nПожалуйста подождите…</string>
+    <string name="inventory_confirm_loading">Идет завершение инв. ведомости. \nПожалуйста подождите…</string>
 
     <!-- InventoryCreate -->
     <string name="inventory_create_hide_found_ao">Скрывать найденные ОС</string>

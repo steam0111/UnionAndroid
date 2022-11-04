@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface InventoryRepository {
     suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): String
     suspend fun updateInventory(inventoryUpdateSyncEntity: InventoryUpdateSyncEntity)
-    suspend fun getInventoryById(id: String): InventoryCreateDomain
+    suspend fun getInventoryById(id: String, isAccountingObjectLoad: Boolean): InventoryCreateDomain
     suspend fun getInventories(
         textQuery: String? = null,
         params: List<ParamDomain>?,

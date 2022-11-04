@@ -129,13 +129,14 @@ fun ButtonWithContent(
     content: @Composable () -> Unit,
     onClick: () -> Unit,
     modifier: Modifier,
-    isEnabled: Boolean
+    isEnabled: Boolean,
+    disabledBackgroundColor: Color = graphite3
 ) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             backgroundColor = AppTheme.colors.mainColor,
-            disabledBackgroundColor = graphite3
+            disabledBackgroundColor = disabledBackgroundColor
         ),
         shape = RoundedCornerShape(8.dp),
         enabled = isEnabled,
@@ -151,12 +152,14 @@ fun ButtonWithLoader(
     modifier: Modifier,
     isEnabled: Boolean,
     isLoading: Boolean,
+    disabledBackgroundColor: Color = graphite3,
     content: @Composable () -> Unit,
 ) {
     ButtonWithContent(
         onClick = onClick,
         modifier = modifier.height(48.dp),
         isEnabled = isEnabled,
+        disabledBackgroundColor = disabledBackgroundColor,
         content = {
             Column(
                 modifier = Modifier.fillMaxHeight(),

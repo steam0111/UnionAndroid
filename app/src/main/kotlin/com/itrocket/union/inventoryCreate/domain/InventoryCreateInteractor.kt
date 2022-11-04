@@ -15,10 +15,10 @@ import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
-import kotlinx.coroutines.withContext
-import timber.log.Timber
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class InventoryCreateInteractor(
     private val accountingObjectRepository: AccountingObjectRepository,
@@ -28,12 +28,15 @@ class InventoryCreateInteractor(
 ) {
 
     @OptIn(ExperimentalTime::class)
-    suspend fun getInventoryById(id: String) =
+    suspend fun getInventoryById(id: String, isAccountingObjectLoad: Boolean) =
         withContext(coreDispatchers.io) {
             val result = measureTimedValue {
                 Timber.d("inventoryRepository.getInventoryById($id)")
 
-                val inventory = inventoryRepository.getInventoryById(id)
+                val inventory = inventoryRepository.getInventoryById(
+                    id = id,
+                    isAccountingObjectLoad = isAccountingObjectLoad
+                )
                 val sortedAccountingObjects = inventory.accountingObjects.sortedBy {
                     it.inventoryStatus.priority
                 }

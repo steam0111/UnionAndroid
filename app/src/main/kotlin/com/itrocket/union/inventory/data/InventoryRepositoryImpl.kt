@@ -29,9 +29,15 @@ class InventoryRepositoryImpl(
             inventorySyncApi.updateInventory(inventoryUpdateSyncEntity)
         }
 
-    override suspend fun getInventoryById(id: String): InventoryCreateDomain =
+    override suspend fun getInventoryById(
+        id: String,
+        isAccountingObjectLoad: Boolean
+    ): InventoryCreateDomain =
         withContext(coreDispatchers.io) {
-            inventorySyncApi.getInventoryById(id).map()
+            inventorySyncApi.getInventoryById(
+                id = id,
+                isAccountingObjectLoad = isAccountingObjectLoad
+            ).map()
         }
 
     override suspend fun getInventories(

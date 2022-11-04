@@ -28,7 +28,8 @@ class InventoryInteractor(
 ) {
     suspend fun createInventory(
         accountingObjects: List<AccountingObjectDomain>,
-        params: List<ParamDomain>
+        params: List<ParamDomain>,
+        isAccountingObjectLoad: Boolean
     ): InventoryCreateDomain = withContext(coreDispatchers.io) {
         val structuralId = params.getFilterStructuralLastId(ManualType.STRUCTURAL)
         val molId = params.getMolInDepartmentId()
@@ -47,7 +48,7 @@ class InventoryInteractor(
                 inventoryBaseId = params.getFilterInventoryBaseId()
             )
         )
-        repository.getInventoryById(id)
+        repository.getInventoryById(id = id, isAccountingObjectLoad = isAccountingObjectLoad)
     }
 
     suspend fun changeParams(
