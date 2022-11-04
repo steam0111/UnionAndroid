@@ -1,5 +1,6 @@
 package com.itrocket.union.unionPermissions.domain
 
+import android.util.Log
 import com.itrocket.union.authMain.domain.dependencies.AuthMainRepository
 import com.itrocket.union.authMain.domain.entity.MyConfigDomain
 import com.itrocket.union.authMain.domain.entity.MyConfigPermission
@@ -43,7 +44,17 @@ class UnionPermissionsInteractor(private val authMainRepository: AuthMainReposit
     }
 
     suspend fun canConductDocument(unionPermission: UnionPermission): Boolean {
-        return canMakeAction(unionPermission = unionPermission, action = Action.COMPLETE_WITHOUT_NFC.action)
+        return canMakeAction(
+            unionPermission = unionPermission,
+            action = Action.COMPLETE_WITHOUT_NFC.action
+        )
+    }
+
+    suspend fun canCompleteInventory(unionPermission: UnionPermission): Boolean {
+        return canMakeAction(
+            unionPermission = unionPermission,
+            action = Action.COMPLETE_INVENTORY.action
+        )
     }
 
     suspend fun canMakeAction(unionPermission: UnionPermission, action: String): Boolean {
