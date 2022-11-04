@@ -65,6 +65,13 @@ class InventoryCreateStoreFactory(
         ) {
             dispatch(Result.Loading(true))
             dispatch(Result.CanUpdate(unionPermissionsInteractor.canUpdate(UnionPermission.INVENTORY)))
+            dispatch(
+                Result.CanComplete(
+                    unionPermissionsInteractor.canCompleteInventory(
+                        UnionPermission.INVENTORY
+                    )
+                )
+            )
             catchException {
                 dispatch(
                     Result.Inventory(
@@ -572,6 +579,7 @@ class InventoryCreateStoreFactory(
         data class DialogRemovedItemId(val accountingObjectId: String) : Result()
         data class IsDynamicSaveInventory(val isDynamicSaveInventory: Boolean) : Result()
         data class CanUpdate(val canUpdate: Boolean) : Result()
+        data class CanComplete(val canComplete: Boolean) : Result()
         data class CountOfAccountingObjects(
             val accountingObjectCounter: AccountingObjectCounter
         ) : Result()
@@ -599,6 +607,7 @@ class InventoryCreateStoreFactory(
                 is Result.CountOfAccountingObjects -> copy(accountingObjectCounter = result.accountingObjectCounter)
                 is Result.DialogType -> copy(dialogType = result.dialogType)
                 is Result.DialogRemovedItemId -> copy(dialogRemovedItemId = result.accountingObjectId)
+                is Result.CanComplete -> copy(canComplete = result.canComplete)
             }
     }
 }

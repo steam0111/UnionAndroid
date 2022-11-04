@@ -178,7 +178,8 @@ private fun Content(
                             onFinishClickListener = onFinishClickListener,
                             inventoryStatus = state.inventoryDocument.inventoryStatus,
                             canUpdate = state.canUpdate,
-                            isDynamicSaveInventory = state.isDynamicSaveInventory,
+                            canComplete = state.canComplete,
+                        isDynamicSaveInventory = state.isDynamicSaveInventory,
                             isAccountingObjectLoading = state.isLoading,
                             isCompleteLoading = state.isCompleteLoading
                         )
@@ -354,6 +355,7 @@ fun InventoryBottomBar(
     onFinishClickListener: () -> Unit,
     inventoryStatus: InventoryStatus,
     canUpdate: Boolean,
+    canComplete: Boolean = false,
     isDynamicSaveInventory: Boolean,
     isAccountingObjectLoading: Boolean,
     isCompleteLoading: Boolean,
@@ -384,13 +386,15 @@ fun InventoryBottomBar(
                 )
             }
             InventoryStatus.IN_PROGRESS -> {
-                BaseButton(
-                    text = stringResource(R.string.common_complete),
-                    onClick = onFinishClickListener,
-                    modifier = Modifier.weight(1f),
-                    enabled = canUpdate && !isAccountingObjectLoading && !isCompleteLoading,
-                    disabledBackgroundColor = AppTheme.colors.secondaryColor
-                )
+                if (canComplete) {
+                    BaseButton(
+                        text = stringResource(R.string.common_complete),
+                        onClick = onFinishClickListener,
+                        modifier = Modifier.weight(1f),
+                        enabled = canUpdate && !isAccountingObjectLoading && !isCompleteLoading,
+                        disabledBackgroundColor = AppTheme.colors.secondaryColor
+                    )
+                }
             }
             InventoryStatus.COMPLETED -> {
                 //Nothing

@@ -69,6 +69,7 @@ interface InventoryCreateStore :
         val dialogType: AlertType = AlertType.NONE,
         val readingModeTab: ReadingModeTab,
         val canUpdate: Boolean = false,
+        val canComplete: Boolean = false,
         val searchText: String = "",
         val isShowSearch: Boolean = false,
         val isDynamicSaveInventory: Boolean = false,
