@@ -27,6 +27,10 @@ import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 class InventoryStoreFactory(
     private val storeFactory: StoreFactory,
@@ -59,13 +63,17 @@ class InventoryStoreFactory(
         BaseExecutor<InventoryStore.Intent, Unit, InventoryStore.State, Result, InventoryStore.Label>(
             context = coreDispatchers.ui
         ) {
+
+        private var accountingObjectsJob: Job? = null
+
         override suspend fun executeAction(
             action: Unit,
             getState: () -> InventoryStore.State
         ) {
             val inventory = getState().inventoryCreateDomain?.let {
                 inventoryCreateInteractor.getInventoryById(
-                    requireNotNull(it.id)
+                    id = requireNotNull(it.id),
+                    isAccountingObjectLoad = false
                 )
             }
             dispatch(Result.CanCreateInventory(permissionsInteractor.canCreate(UnionPermission.INVENTORY)))
@@ -73,19 +81,17 @@ class InventoryStoreFactory(
 
             val isDynamicSaveInventory = moduleSettingsInteractor.getDynamicSaveInventory()
             dispatch(Result.IsDynamicSaveInventory(isDynamicSaveInventory))
-
             if (inventory != null) {
                 dispatch(Result.InventoryCreate(inventory))
                 dispatch(Result.Params(inventoryCreateInteractor.disableBalanceUnit(inventory.documentInfo)))
-                observeAccountingObjects(getState, getState().params)
 
                 if (getState().isDynamicSaveInventory) {
                     inventoryDynamicSaveManager.subscribeInventorySave()
                 }
             } else {
                 dispatch(Result.Params(selectParamsInteractor.getInitialDocumentParams(getState().params)))
-                observeAccountingObjects(getState, getState().params)
             }
+            observeAccountingObjects(getState().params)
         }
 
         override suspend fun executeIntent(
@@ -93,11 +99,15 @@ class InventoryStoreFactory(
             getState: () -> InventoryStore.State
         ) {
             when (intent) {
-                InventoryStore.Intent.OnBackClicked -> publish(
-                    InventoryStore.Label.GoBack(
-                        InventoryResult(false)
-                    )
-                )
+                InventoryStore.Intent.OnBackClicked -> {
+                    if (getState().dialogType != AlertType.LOADING) {
+                        publish(
+                            InventoryStore.Label.GoBack(
+                                InventoryResult(false)
+                            )
+                        )
+                    }
+                }
                 InventoryStore.Intent.OnCreateDocumentClicked -> createInventory(
                     isDynamicSaveInventory = getState().isDynamicSaveInventory,
                     accountingObjects = getState().accountingObjectList,
@@ -154,7 +164,6 @@ class InventoryStoreFactory(
                 InventoryStore.Intent.OnSaveConfirmed -> {
                     saveInventory(
                         inventoryDocument = requireNotNull(getState().inventoryCreateDomain),
-                        accountingObjects = getState().accountingObjectList,
                         params = getState().params
                     )
                     dispatch(Result.DialogType(AlertType.NONE))
@@ -172,12 +181,17 @@ class InventoryStoreFactory(
             publish(InventoryStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
 
+        private suspend fun isLoading(getState: () -> InventoryStore.State): Boolean {
+            return getState().isCreateInventoryLoading
+        }
+
         private suspend fun changeParams(
             getState: () -> InventoryStore.State,
             params: List<ParamDomain>
         ) {
             dispatch(Result.Params(params))
-            observeAccountingObjects(getState, params.filterNotEmpty())
+            tryDynamicSendInventorySave(getState)
+            observeAccountingObjects(params.filterNotEmpty())
         }
 
         private fun tryDynamicSendInventorySave(
@@ -223,14 +237,13 @@ class InventoryStoreFactory(
 
         private suspend fun saveInventory(
             inventoryDocument: InventoryCreateDomain,
-            accountingObjects: List<AccountingObjectDomain>,
             params: List<ParamDomain>
         ) {
             dispatch(Result.IsAccountingObjectsLoading(true))
             catchException {
                 inventoryCreateInteractor.saveInventoryDocument(
                     inventoryDocument.copy(documentInfo = params),
-                    accountingObjects
+                    listOf()
                 )
             }
             dispatch(Result.IsAccountingObjectsLoading(false))
@@ -241,6 +254,7 @@ class InventoryStoreFactory(
             accountingObjects: List<AccountingObjectDomain>,
             params: List<ParamDomain>
         ) {
+            dispatch(Result.DialogType(AlertType.LOADING))
             val inventory = inventoryDomain.copy(
                 inventoryStatus = InventoryStatus.IN_PROGRESS,
                 accountingObjects = accountingObjects,
@@ -252,6 +266,7 @@ class InventoryStoreFactory(
                 accountingObjects = accountingObjects
             )
             inventoryDynamicSaveManager.cancel()
+            dispatch(Result.DialogType(AlertType.NONE))
             publish(
                 InventoryStore.Label.ShowCreateInventory(
                     inventoryCreate = inventory
@@ -267,8 +282,13 @@ class InventoryStoreFactory(
             dispatch(Result.IsCreateInventoryLoading(true))
             catchException {
                 val inventoryCreate =
-                    inventoryInteractor.createInventory(accountingObjects, params)
+                    inventoryInteractor.createInventory(
+                        accountingObjects = listOf(),
+                        params = params,
+                        isAccountingObjectLoad = false
+                    )
                 dispatch(Result.InventoryCreate(inventoryCreate))
+                dispatch(Result.AccountingObjects(accountingObjects))
             }
             if (isDynamicSaveInventory) {
                 inventoryDynamicSaveManager.subscribeInventorySave()
@@ -277,24 +297,30 @@ class InventoryStoreFactory(
         }
 
         private suspend fun observeAccountingObjects(
-            getState: () -> InventoryStore.State,
             params: List<ParamDomain> = listOf()
         ) {
-            dispatch(Result.IsAccountingObjectsLoading(true))
-            catchException {
-                dispatch(Result.IsAccountingObjectsLoading(false))
-                dispatch(
-                    Result.AccountingObjects(
-                        accountingObjectInteractor.getAccountingObjects(
-                            ManualType.LOCATION_INVENTORY,
-                            "",
-                            params
+            coroutineScope {
+                accountingObjectsJob?.cancel()
+                accountingObjectsJob = launch {
+                    dispatch(Result.IsAccountingObjectsLoading(true))
+                    try {
+                        dispatch(
+                            Result.AccountingObjects(
+                                accountingObjectInteractor.getAccountingObjects(
+                                    ManualType.LOCATION_INVENTORY,
+                                    "",
+                                    params
+                                )
+                            )
                         )
-                    )
-                )
-                tryDynamicSendInventorySave(getState)
+                    } catch (t: Throwable) {
+                        if (isActive) {
+                            handleError(t)
+                        }
+                    }
+                    dispatch(Result.IsAccountingObjectsLoading(false))
+                }
             }
-            dispatch(Result.IsAccountingObjectsLoading(false))
         }
     }
 

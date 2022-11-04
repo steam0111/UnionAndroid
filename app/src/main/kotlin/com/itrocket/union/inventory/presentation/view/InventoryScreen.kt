@@ -6,21 +6,26 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,7 +52,7 @@ import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ButtonBottomBar
 import com.itrocket.union.ui.ConfirmAlertDialog
 import com.itrocket.union.ui.DoubleTabRow
-import com.itrocket.union.ui.Loader
+import com.itrocket.union.ui.LoadingDialog
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.SelectedBaseField
 import com.itrocket.union.ui.TabRowIndicator
@@ -104,6 +109,8 @@ fun InventoryScreen(
                             inventoryStatus = state.inventoryCreateDomain.inventoryStatus,
                             canUpdate = state.canUpdateInventory,
                             isDynamicSaveInventory = state.isDynamicSaveInventory,
+                            isAccountingObjectLoading = state.isAccountingObjectsLoading,
+                            isCompleteLoading = false
                         )
                     }
                     state.canCreateInventory -> {
@@ -149,6 +156,9 @@ fun InventoryScreen(
                     onConfirmClick = onInWorkConfirmClickListener,
                     textRes = R.string.inventory_in_work_dialog
                 )
+            }
+            AlertType.LOADING -> {
+                LoadingDialog(title = stringResource(R.string.inventory_in_work_loading))
             }
         }
     }
@@ -272,7 +282,18 @@ private fun AccountingObjectScreen(
     paddingValues: PaddingValues
 ) {
     if (isLoading) {
-        Loader(contentPadding = PaddingValues())
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(id = R.string.inventory_ao_wait),
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            CircularProgressIndicator()
+        }
     } else {
         LazyColumn(
             modifier = Modifier

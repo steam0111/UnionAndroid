@@ -69,7 +69,8 @@ class InventoryCreateStoreFactory(
                 dispatch(
                     Result.Inventory(
                         inventoryCreateInteractor.getInventoryById(
-                            inventoryCreateArguments.inventoryDocument.id.orEmpty()
+                            id = inventoryCreateArguments.inventoryDocument.id.orEmpty(),
+                            isAccountingObjectLoad = true
                         )
                     )
                 )
@@ -95,7 +96,10 @@ class InventoryCreateStoreFactory(
             getState: () -> InventoryCreateStore.State
         ) {
             when (intent) {
-                InventoryCreateStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
+                InventoryCreateStore.Intent.OnBackClicked -> onBackClicked(
+                    getState().isShowSearch,
+                    getState().dialogType
+                )
                 is InventoryCreateStore.Intent.OnAccountingObjectClicked -> publish(
                     InventoryCreateStore.Label.ShowAccountingObjectDetail(intent.accountingObject)
                 )
@@ -323,13 +327,13 @@ class InventoryCreateStoreFactory(
             }
         }
 
-        private suspend fun onBackClicked(isShowSearch: Boolean) {
+        private suspend fun onBackClicked(isShowSearch: Boolean, dialogType: AlertType) {
             if (isShowSearch) {
                 dispatch(Result.IsShowSearch(false))
                 dispatch(Result.SearchText(""))
                 dispatch(Result.SearchAccountingObjects(listOf()))
                 searchManager.emit("")
-            } else {
+            } else if (dialogType != AlertType.LOADING) {
                 publish(InventoryCreateStore.Label.GoBack(InventoryResult(true)))
             }
         }
@@ -362,6 +366,7 @@ class InventoryCreateStoreFactory(
             inventoryDomain: InventoryCreateDomain,
             newAccountingObjects: List<AccountingObjectDomain>
         ) {
+            dispatch(Result.DialogType(AlertType.LOADING))
             inventoryDynamicSaveManager.cancel()
             val inventory = inventoryDomain.copy(
                 inventoryStatus = InventoryStatus.COMPLETED,
@@ -371,6 +376,7 @@ class InventoryCreateStoreFactory(
             dispatch(Result.Inventory(inventory))
             dispatch(Result.IsDynamicSaveInventory(false))
             inventoryCreateInteractor.saveInventoryDocument(inventory, inventory.accountingObjects)
+            dispatch(Result.DialogType(AlertType.NONE))
         }
 
         private suspend fun handleNewAccountingObjectRfids(

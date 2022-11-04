@@ -5,6 +5,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,11 +17,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,9 +49,12 @@ import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseCheckbox
 import com.itrocket.union.ui.ConfirmAlertDialog
 import com.itrocket.union.ui.InventoryDocumentItem
+import com.itrocket.union.ui.LoadingDialog
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.SearchToolbar
+import com.itrocket.union.ui.black
+import com.itrocket.union.ui.black_50
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.white
 
@@ -122,6 +128,7 @@ fun InventoryCreateScreen(
                 onConfirmClick = onCompleteConfirmClickListener,
                 textRes = R.string.inventory_complete_dialog
             )
+            AlertType.LOADING -> LoadingDialog(title = stringResource(R.string.inventory_confirm_loading))
             AlertType.DELETE -> ConfirmAlertDialog(
                 onDismiss = onDeleteDismissClickListener,
                 onConfirmClick = onDeleteConfirmClickListener,
@@ -157,55 +164,69 @@ private fun Content(
     onStatusClickListener: (AccountingObjectDomain) -> Unit,
 ) {
     val accountingObjectList = getAccountingObjects(state)
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(top = paddingValues.calculateTopPadding())
-    ) {
-        LazyColumn {
-            item {
-                if (state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED && state.canUpdate) {
-                    InventoryBottomBar(
-                        onSaveClickListener = onSaveClickListener,
-                        onFinishClickListener = onFinishClickListener,
-                        inventoryStatus = state.inventoryDocument.inventoryStatus,
-                        canUpdate = state.canUpdate,
-                        isDynamicSaveInventory = state.isDynamicSaveInventory
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(top = paddingValues.calculateTopPadding())
+        ) {
+            LazyColumn {
+                item {
+                    if (state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED && state.canUpdate) {
+                        InventoryBottomBar(
+                            onSaveClickListener = onSaveClickListener,
+                            onFinishClickListener = onFinishClickListener,
+                            inventoryStatus = state.inventoryDocument.inventoryStatus,
+                            canUpdate = state.canUpdate,
+                            isDynamicSaveInventory = state.isDynamicSaveInventory,
+                            isAccountingObjectLoading = state.isLoading,
+                            isCompleteLoading = state.isCompleteLoading
+                        )
+                    }
+                    InventoryDocumentItem(item = state.inventoryDocument, isShowStatus = false)
+                    MediumSpacer()
+                    CountBar(
+                        allAccountingObjects = state.accountingObjectCounter.total,
+                        findAccountingObjects = state.accountingObjectCounter.found,
+                        notFindAccountingObjects = state.accountingObjectCounter.notFound,
+                        newAccountingObjects = state.accountingObjectCounter.new
+                    )
+                    MediumSpacer()
+                    SettingsBar(
+                        isHideFoundAccountingObjects = state.isHideFoundAccountingObjects,
+                        isAddNew = state.isAddNew,
+                        onAddNewChanged = onAddNewChanged,
+                        onHideFoundAccountingObjectChanged = onHideFoundAccountingObjectChanged,
+                        canUpdate = state.canUpdate
+                    )
+                    MediumSpacer()
+                }
+                itemsIndexed(items = accountingObjectList, key = { index, item ->
+                    item.id
+                }) { index, item ->
+                    val isShowBottomLine = accountingObjectList.lastIndex != index
+                    AccountingObjectItem(
+                        accountingObject = item,
+                        onAccountingObjectListener = onAccountingObjectClickListener,
+                        onStatusClickListener = { onStatusClickListener(item) },
+                        isShowBottomLine = isShowBottomLine,
+                        status = item.inventoryStatus,
+                        isEnabled = state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED && state.canUpdate
                     )
                 }
-                InventoryDocumentItem(item = state.inventoryDocument, isShowStatus = false)
-                MediumSpacer()
-                CountBar(
-                    allAccountingObjects = state.accountingObjectCounter.total,
-                    findAccountingObjects = state.accountingObjectCounter.found,
-                    notFindAccountingObjects = state.accountingObjectCounter.notFound,
-                    newAccountingObjects = state.accountingObjectCounter.new
-                )
-                MediumSpacer()
-                SettingsBar(
-                    isHideFoundAccountingObjects = state.isHideFoundAccountingObjects,
-                    isAddNew = state.isAddNew,
-                    onAddNewChanged = onAddNewChanged,
-                    onHideFoundAccountingObjectChanged = onHideFoundAccountingObjectChanged,
-                    canUpdate = state.canUpdate
-                )
-                MediumSpacer()
+                item {
+                    Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
+                }
             }
-            itemsIndexed(items = accountingObjectList, key = { index, item ->
-                item.id
-            }) { index, item ->
-                val isShowBottomLine = accountingObjectList.lastIndex != index
-                AccountingObjectItem(
-                    accountingObject = item,
-                    onAccountingObjectListener = onAccountingObjectClickListener,
-                    onStatusClickListener = { onStatusClickListener(item) },
-                    isShowBottomLine = isShowBottomLine,
-                    status = item.inventoryStatus,
-                    isEnabled = state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED && state.canUpdate
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
+        }
+        if (state.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(black_50),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
         }
     }
@@ -333,7 +354,9 @@ fun InventoryBottomBar(
     onFinishClickListener: () -> Unit,
     inventoryStatus: InventoryStatus,
     canUpdate: Boolean,
-    isDynamicSaveInventory: Boolean
+    isDynamicSaveInventory: Boolean,
+    isAccountingObjectLoading: Boolean,
+    isCompleteLoading: Boolean,
 ) {
     Row(
         modifier = Modifier
@@ -342,7 +365,7 @@ fun InventoryBottomBar(
     ) {
         if (!isDynamicSaveInventory) {
             BaseButton(
-                enabled = inventoryStatus != InventoryStatus.COMPLETED && canUpdate,
+                enabled = inventoryStatus != InventoryStatus.COMPLETED && canUpdate && !isAccountingObjectLoading,
                 text = stringResource(R.string.common_save),
                 onClick = onSaveClickListener,
                 modifier = Modifier.weight(1f),
@@ -353,11 +376,11 @@ fun InventoryBottomBar(
         when (inventoryStatus) {
             InventoryStatus.CREATED -> {
                 BaseButton(
-                    text = stringResource(R.string.common_in_work),
+                    enabled = canUpdate && !isAccountingObjectLoading,
                     onClick = onInWorkClickListener,
                     modifier = Modifier.weight(1f),
-                    enabled = canUpdate,
-                    disabledBackgroundColor = AppTheme.colors.secondaryColor
+                    disabledBackgroundColor = AppTheme.colors.secondaryColor,
+                    text = stringResource(R.string.common_in_work),
                 )
             }
             InventoryStatus.IN_PROGRESS -> {
@@ -365,7 +388,7 @@ fun InventoryBottomBar(
                     text = stringResource(R.string.common_complete),
                     onClick = onFinishClickListener,
                     modifier = Modifier.weight(1f),
-                    enabled = canUpdate,
+                    enabled = canUpdate && !isAccountingObjectLoading && !isCompleteLoading,
                     disabledBackgroundColor = AppTheme.colors.secondaryColor
                 )
             }
@@ -424,63 +447,64 @@ private fun Toolbar(
 @Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
 @Composable
 fun InventoryCreateScreenPreview() {
-    InventoryCreateScreen(InventoryCreateStore.State(
-        inventoryDocument = InventoryCreateDomain(
-            id = "",
-            number = "БП-00001374",
-            creationDate = System.currentTimeMillis(),
-            documentInfo = listOf(
-                StructuralParamDomain(manualType = ManualType.STRUCTURAL),
-                ParamDomain("2", "Систмный интегратор", ManualType.MOL),
-            ),
-            accountingObjects = listOf(
-                AccountingObjectDomain(
-                    id = "7",
-                    isBarcode = true,
-                    title = "Ширикоформатный жидкокристалический монитор Samsung2",
-                    status = ObjectStatus("Доступен"),
-                    listMainInfo = listOf(
-                        ObjectInfoDomain(
-                            R.string.auth_main_title,
-                            "таылватвлыавыалвыоалвыа"
-                        ),
-                        ObjectInfoDomain(
-                            R.string.auth_main_title,
-                            "таылватвлыавыалвыоалвыа"
-                        ),
-                    ),
-                    listAdditionallyInfo = listOf(),
-                    barcodeValue = "",
-                    rfidValue = "",
-                    factoryNumber = ""
+    InventoryCreateScreen(
+        InventoryCreateStore.State(
+            inventoryDocument = InventoryCreateDomain(
+                id = "",
+                number = "БП-00001374",
+                creationDate = System.currentTimeMillis(),
+                documentInfo = listOf(
+                    StructuralParamDomain(manualType = ManualType.STRUCTURAL),
+                    ParamDomain("2", "Систмный интегратор", ManualType.MOL),
                 ),
-                AccountingObjectDomain(
-                    id = "8",
-                    isBarcode = true,
-                    title = "Ширикоформатный жидкокристалический монитор Samsung2",
-                    status = ObjectStatus("Доступен"),
-                    listMainInfo = listOf(
-                        ObjectInfoDomain(
-                            R.string.auth_main_title,
-                            "таылватвлыавыалвыоалвыа"
+                accountingObjects = listOf(
+                    AccountingObjectDomain(
+                        id = "7",
+                        isBarcode = true,
+                        title = "Ширикоформатный жидкокристалический монитор Samsung2",
+                        status = ObjectStatus("Доступен"),
+                        listMainInfo = listOf(
+                            ObjectInfoDomain(
+                                R.string.auth_main_title,
+                                "таылватвлыавыалвыоалвыа"
+                            ),
+                            ObjectInfoDomain(
+                                R.string.auth_main_title,
+                                "таылватвлыавыалвыоалвыа"
+                            ),
                         ),
-                        ObjectInfoDomain(
-                            R.string.auth_main_title,
-                            "таылватвлыавыалвыоалвыа"
-                        ),
+                        listAdditionallyInfo = listOf(),
+                        barcodeValue = "",
+                        rfidValue = "",
+                        factoryNumber = ""
                     ),
-                    listAdditionallyInfo = listOf(),
-                    barcodeValue = "",
-                    rfidValue = "",
-                    factoryNumber = ""
+                    AccountingObjectDomain(
+                        id = "8",
+                        isBarcode = true,
+                        title = "Ширикоформатный жидкокристалический монитор Samsung2",
+                        status = ObjectStatus("Доступен"),
+                        listMainInfo = listOf(
+                            ObjectInfoDomain(
+                                R.string.auth_main_title,
+                                "таылватвлыавыалвыоалвыа"
+                            ),
+                            ObjectInfoDomain(
+                                R.string.auth_main_title,
+                                "таылватвлыавыалвыоалвыа"
+                            ),
+                        ),
+                        listAdditionallyInfo = listOf(),
+                        barcodeValue = "",
+                        rfidValue = "",
+                        factoryNumber = ""
+                    ),
                 ),
+                inventoryStatus = InventoryStatus.CREATED,
+                userInserted = "",
+                userUpdated = ""
             ),
-            inventoryStatus = InventoryStatus.CREATED,
-            userInserted = "",
-            userUpdated = ""
+            readingModeTab = ReadingModeTab.RFID
         ),
-        readingModeTab = ReadingModeTab.RFID
-    ),
         AppInsets(previewTopInsetDp),
         {},
         {},

@@ -5,7 +5,14 @@ import com.example.union_sync_api.data.InventoryCheckerSyncApi
 import com.example.union_sync_api.data.InventorySyncApi
 import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
-import com.example.union_sync_api.entity.*
+import com.example.union_sync_api.entity.AccountingObjectInfoSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectSyncEntity
+import com.example.union_sync_api.entity.EnumType
+import com.example.union_sync_api.entity.InventoryCreateSyncEntity
+import com.example.union_sync_api.entity.InventorySyncEntity
+import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
+import com.example.union_sync_api.entity.LocationSyncEntity
+import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.InventoryRecordDao
@@ -13,16 +20,19 @@ import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.dao.sqlInventoryQuery
 import com.example.union_sync_impl.dao.sqlInventoryRecordQuery
-import com.example.union_sync_impl.data.mapper.*
-import com.example.union_sync_impl.entity.FullAccountingObject
+import com.example.union_sync_impl.data.mapper.toInventoryDb
+import com.example.union_sync_impl.data.mapper.toInventorySyncEntity
+import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
+import com.example.union_sync_impl.data.mapper.toStructuralSyncEntity
+import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.entity.FullInventory
 import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.entity.InventoryRecordDb
 import com.itrocket.core.base.CoreDispatchers
+import java.util.*
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import java.util.*
 import timber.log.Timber
 
 class InventorySyncApiImpl(
@@ -110,7 +120,10 @@ class InventorySyncApiImpl(
         )
     }
 
-    override suspend fun getInventoryById(id: String): InventorySyncEntity = coroutineScope {
+    override suspend fun getInventoryById(
+        id: String,
+        isAccountingObjectLoad: Boolean
+    ): InventorySyncEntity = coroutineScope {
         val fullInventory = inventoryDao.getInventoryById(id)
 
         val structuralsAndBalanceUnitFullPath: Deferred<Pair<List<StructuralSyncEntity>, List<StructuralSyncEntity>>> =
@@ -134,7 +147,11 @@ class InventorySyncApiImpl(
         }
 
         val accountingObjectsDeferred = async(coreDispatchers.io) {
-            getAccountingObjects(fullInventory.inventoryDb)
+            if (isAccountingObjectLoad) {
+                getAccountingObjects(fullInventory.inventoryDb)
+            } else {
+                listOf()
+            }
         }
 
         val locationsDeferred = async(coreDispatchers.io) {

@@ -13,10 +13,7 @@ import com.example.union_sync_api.entity.EnumType
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectDetailQuery
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
-import com.example.union_sync_impl.data.mapper.toAccountingObjectDetailSyncEntity
-import com.example.union_sync_impl.data.mapper.toAccountingObjectScanningUpdate
-import com.example.union_sync_impl.data.mapper.toAccountingObjectUpdate
-import com.example.union_sync_impl.data.mapper.toSyncEntity
+import com.example.union_sync_impl.data.mapper.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -66,7 +63,7 @@ class AccountingObjectSyncApiImpl(
                 serialNumber = serialNumber
             )
         ).map {
-            val location = locationSyncApi.getLocationById(it.accountingObjectDb.locationId)
+            val location = it.locationDb?.toLocationSyncEntity(it.locationTypesDb)
             it.toSyncEntity(locationSyncEntity = listOfNotNull(location))
         }
     }
@@ -111,11 +108,9 @@ class AccountingObjectSyncApiImpl(
         val location =
             locationSyncApi.getLocationFullPath(fullAccountingObjectDb.accountingObjectDb.locationId)
 
-        val structurals =
-            structuralSyncApi.getStructuralFullPath(
-                fullAccountingObjectDb.structuralDb?.id,
-                mutableListOf()
-            ).orEmpty()
+        val structurals = structuralSyncApi.getStructuralFullPath(
+            fullAccountingObjectDb.structuralDb?.id, mutableListOf()
+        ).orEmpty()
         val balanceUnitIndex = structurals.indexOfLast { it.balanceUnit }.takeIf { it >= 0 } ?: 0
         val balanceUnit = structurals.subList(0, balanceUnitIndex)
         val categorySyncEntity = enumsApi.getByCompoundId(
@@ -138,26 +133,19 @@ class AccountingObjectSyncApiImpl(
     }
 
     override suspend fun getAccountingObjectDetailByParams(
-        rfid: String?,
-        barcode: String?,
-        factoryNumber: String?
+        rfid: String?, barcode: String?, factoryNumber: String?
     ): AccountingObjectDetailSyncEntity {
         val fullAccountingObject = accountingObjectsDao.getById(
             sqlAccountingObjectDetailQuery(
-                rfid = rfid,
-                barcode = barcode,
-                factoryNumber = factoryNumber
+                rfid = rfid, barcode = barcode, factoryNumber = factoryNumber
             )
         )
         val location =
             locationSyncApi.getLocationFullPath(fullAccountingObject.accountingObjectDb.locationId)
 
-        val structurals =
-            structuralSyncApi.getStructuralFullPath(
-                fullAccountingObject.structuralDb?.id,
-                mutableListOf()
-            )
-                .orEmpty()
+        val structurals = structuralSyncApi.getStructuralFullPath(
+            fullAccountingObject.structuralDb?.id, mutableListOf()
+        ).orEmpty()
         val balanceUnitIndex = structurals.indexOfLast { it.balanceUnit }
         val balanceUnit = structurals.subList(0, balanceUnitIndex + 1)
 
@@ -182,8 +170,7 @@ class AccountingObjectSyncApiImpl(
 
     override suspend fun getAccountingObjectDetailByIdFlow(id: String): Flow<AccountingObjectDetailSyncEntity> {
         return accountingObjectsDao.getByIdFlow(id).map {
-            val location =
-                locationSyncApi.getLocationFullPath(it.accountingObjectDb.locationId)
+            val location = locationSyncApi.getLocationFullPath(it.accountingObjectDb.locationId)
 
             val structurals =
                 structuralSyncApi.getStructuralFullPath(it.structuralDb?.id, mutableListOf())

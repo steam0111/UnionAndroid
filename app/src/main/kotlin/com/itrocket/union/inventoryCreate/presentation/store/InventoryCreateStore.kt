@@ -72,6 +72,7 @@ interface InventoryCreateStore :
         val searchText: String = "",
         val isShowSearch: Boolean = false,
         val isDynamicSaveInventory: Boolean = false,
+        val isCompleteLoading: Boolean = false,
         val dialogRemovedItemId: String = "",
         val searchAccountingObjects: List<AccountingObjectDomain> = listOf(),
         val accountingObjectCounter: AccountingObjectCounter = AccountingObjectCounter()

@@ -23,6 +23,6 @@ interface InventorySyncApi {
         inventoryBaseId: String? = null
     ): Long
 
-    suspend fun getInventoryById(id: String): InventorySyncEntity
+    suspend fun getInventoryById(id: String, isAccountingObjectLoad: Boolean): InventorySyncEntity
     suspend fun updateInventory(inventoryUpdateSyncEntity: InventoryUpdateSyncEntity)
 }
