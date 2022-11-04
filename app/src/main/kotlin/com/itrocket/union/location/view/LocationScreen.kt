@@ -1,4 +1,4 @@
-package com.itrocket.union.structural.presentation.view
+package com.itrocket.union.location.presentation.view
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
@@ -21,7 +21,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -45,79 +44,24 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.itrocket.core.base.AppInsets
 import com.itrocket.ui.EditText
 import com.itrocket.union.R
-import com.itrocket.union.structural.domain.entity.StructuralDomain
-import com.itrocket.union.structural.presentation.store.StructuralStore
+import com.itrocket.union.location.domain.entity.LocationDomain
+import com.itrocket.union.manual.LocationParamDomain
+import com.itrocket.union.selectParams.presentation.store.SelectParamsStore
 import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.ui.BaseButton
-import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.RadioButtonField
 import com.itrocket.union.ui.brightGray
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.psb4
 import com.itrocket.union.ui.white
-import com.itrocket.utils.clickableUnbounded
 
 @Composable
-fun StructuralScreen(
-    state: StructuralStore.State,
-    appInsets: AppInsets,
+fun LocationContent(
+    state: SelectParamsStore.State,
     onBackClickListener: () -> Unit,
-    onCrossClickListener: () -> Unit,
-    onAcceptClickListener: () -> Unit,
-    onFinishClickListener: () -> Unit,
-    onStructuralSelected: (StructuralDomain) -> Unit,
-    onSearchTextChanged: (String) -> Unit
-) {
-    AppTheme {
-        Scaffold(
-            topBar = {
-                BaseToolbar(
-                    title = stringResource(id = R.string.manual_structural),
-                    startImageId = R.drawable.ic_cross,
-                    onStartImageClickListener = onCrossClickListener,
-                    content = {
-                        if (state.canEdit) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.ic_accept),
-                                    contentDescription = null,
-                                    colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
-                                    modifier = Modifier.clickableUnbounded(onClick = onAcceptClickListener)
-                                )
-                            }
-                        }
-                    }
-                )
-            }, bottomBar = {
-                if (state.canEdit) {
-                    BottomBar(onFinishClickListener = onFinishClickListener)
-                }
-            }, content = {
-                Content(
-                    state = state,
-                    onBackClickListener = onBackClickListener,
-                    onStructuralSelected = onStructuralSelected,
-                    paddingValues = it,
-                    onSearchTextChanged = onSearchTextChanged
-                )
-            },
-            modifier = Modifier.padding(
-                top = appInsets.topInset.dp,
-                bottom = appInsets.bottomInset.dp
-            )
-        )
-    }
-}
-
-@Composable
-private fun Content(
-    state: StructuralStore.State,
-    onBackClickListener: () -> Unit,
-    onStructuralSelected: (StructuralDomain) -> Unit,
+    onPlaceSelected: (LocationDomain) -> Unit,
     onSearchTextChanged: (String) -> Unit,
     paddingValues: PaddingValues
 ) {
@@ -127,19 +71,19 @@ private fun Content(
     val focusRequest = remember {
         FocusRequester()
     }
+    val mainColor = AppTheme.colors.mainColor
     Column(Modifier.padding(paddingValues = paddingValues)) {
-        StructuralComponent(
-            selectedStructuralScheme = state.selectStructuralScheme,
+        PlaceComponent(
+            selectedPlaceScheme = (state.currentParam as LocationParamDomain).locations,
             onBackClickListener = onBackClickListener,
-            isLevelHintShow = state.isLevelHintShow
+            levelHint = state.levelHint
         )
-        val mainColor = AppTheme.colors.mainColor
         EditText(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, top = 20.dp, end = 16.dp, bottom = 4.dp),
             text = state.searchText,
-            hint = stringResource(id = R.string.structural_hint),
+            hint = stringResource(state.currentParam.type.titleId),
             textStyle = AppTheme.typography.body1,
             hintStyle = AppTheme.typography.body2,
             hintColor = AppTheme.colors.secondaryColor,
@@ -156,13 +100,13 @@ private fun Content(
         )
         MediumSpacer()
         LazyColumn {
-            items(state.structuralValues) {
+            items(state.locationValues) {
                 RadioButtonField(
                     label = it.value,
                     onFieldClickListener = {
-                        onStructuralSelected(it)
+                        onPlaceSelected(it)
                     },
-                    isSelected = state.selectStructuralScheme.contains(it),
+                    isSelected = state.currentParam.locations.contains(it),
                 )
             }
         }
@@ -170,25 +114,9 @@ private fun Content(
 }
 
 @Composable
-private fun BottomBar(onFinishClickListener: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(graphite2)
-            .padding(16.dp)
-    ) {
-        BaseButton(
-            text = stringResource(R.string.common_finish),
-            onClick = onFinishClickListener,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-}
-
-@Composable
-private fun StructuralComponent(
-    selectedStructuralScheme: List<StructuralDomain>,
-    isLevelHintShow: Boolean,
+private fun PlaceComponent(
+    selectedPlaceScheme: List<LocationDomain>,
+    levelHint: String,
     onBackClickListener: () -> Unit
 ) {
     Row(
@@ -199,37 +127,34 @@ private fun StructuralComponent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ArrowBackButton(
-            enabled = selectedStructuralScheme.isNotEmpty(),
+            enabled = selectedPlaceScheme.isNotEmpty(),
             onClick = onBackClickListener
         )
         Spacer(modifier = Modifier.width(24.dp))
         Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
             Text(
-                text = stringResource(id = R.string.structural_level),
+                text = stringResource(id = R.string.location_level),
                 style = AppTheme.typography.body2,
                 color = psb4
             )
             Spacer(modifier = Modifier.height(4.dp))
-            StructuralLevelComponent(selectedStructuralScheme, isLevelHintShow)
+            LocationLevelComponent(selectedPlaceScheme, levelHint)
         }
     }
 }
 
 @Composable
-private fun StructuralLevelComponent(
-    selectedStructuralScheme: List<StructuralDomain>,
-    isLevelHintShow: Boolean
-) {
+private fun LocationLevelComponent(selectedPlaceScheme: List<LocationDomain>, levelHint: String) {
     val annotatedString = buildAnnotatedString {
-        selectedStructuralScheme.forEachIndexed { index, locationDomain ->
+        selectedPlaceScheme.forEachIndexed { index, locationDomain ->
             val itemId = "item$index"
             val placeholderId = "[icon$index]"
             append(locationDomain.value)
-            if (isLevelHintShow || index < selectedStructuralScheme.lastIndex) {
+            if (levelHint.isNotBlank() || index < selectedPlaceScheme.lastIndex) {
                 appendInlineContent(itemId, placeholderId)
             }
         }
-        if (isLevelHintShow) {
+        if (levelHint.isNotBlank()) {
             withStyle(
                 SpanStyle(
                     color = AppTheme.colors.mainColor,
@@ -237,12 +162,12 @@ private fun StructuralLevelComponent(
                     fontWeight = FontWeight.Normal
                 )
             ) {
-                append(stringResource(id = R.string.structural_select_structural))
+                append(stringResource(id = R.string.location_select_place, levelHint.lowercase()))
             }
         }
     }
     val inlineContent = mutableMapOf<String, InlineTextContent>()
-    selectedStructuralScheme.forEachIndexed { index, _ ->
+    selectedPlaceScheme.forEachIndexed { index, _ ->
         val itemId = "item$index"
         val textInlineContent = InlineTextContent(
             Placeholder(
@@ -254,8 +179,7 @@ private fun StructuralLevelComponent(
             Image(
                 painter = painterResource(R.drawable.ic_arrow_right_small),
                 contentDescription = null,
-                modifier = Modifier.padding(horizontal = 12.dp),
-                colorFilter = ColorFilter.tint(AppTheme.colors.mainColor)
+                modifier = Modifier.padding(horizontal = 12.dp)
             )
         }
         inlineContent[itemId] = textInlineContent
@@ -315,6 +239,18 @@ private fun ArrowBackButton(enabled: Boolean, onClick: () -> Unit) {
 )
 @Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
 @Composable
-fun StructuralScreenPreview() {
-    StructuralScreen(StructuralStore.State(canEdit = true), AppInsets(), {}, {}, {}, {}, {}, {})
+fun LocationScreenPreview() {
+    LocationContent(SelectParamsStore.State(
+        locationValues = listOf(
+            LocationDomain("1", "1", "Стелаж", "A"),
+            LocationDomain("1", "1", "Стелаж", "Б"),
+            LocationDomain("1", "1", "Стелаж", "С"),
+            LocationDomain("1", "1", "Стелаж", "D")
+        ),
+        levelHint = "Стелаж",
+        allParams = listOf(),
+        currentParam = LocationParamDomain(),
+        currentStep = 0
+    ), {}, {}, {}, PaddingValues()
+    )
 }

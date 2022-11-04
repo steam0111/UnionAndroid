@@ -11,7 +11,7 @@ open class ParamDomain(
     open val value: String = "",
     open val type: ManualType,
     open val isFilter: Boolean = true,
-    open val isClickable: Boolean = true
+    open val isClickable: Boolean = true,
 ) : Parcelable {
     open fun copy(
         id: String? = this.id,
@@ -109,6 +109,14 @@ fun List<ParamDomain>.getFilterShowUtilizedAccountingObjects(): Boolean {
     return (firstOrNull { it.type == ManualType.CHECKBOX_SHOW_UTILIZED } as? CheckBoxParamDomain)
         ?.isChecked ?: true
 }
+
+fun List<ParamDomain>.getIndexByType(type: ManualType) = this.indexOfFirst { it.type == type }
+
+private val listNotDefaultParams by lazy {
+    listOf(ManualType.CHECKBOX_SHOW_UTILIZED)
+}
+
+fun ParamDomain.isDefaultParamType() = !listNotDefaultParams.contains(this.type)
 
 @Parcelize
 data class LocationParamDomain(

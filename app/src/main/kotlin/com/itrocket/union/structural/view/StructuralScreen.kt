@@ -1,4 +1,4 @@
-package com.itrocket.union.location.presentation.view
+package com.itrocket.union.structural.view
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
@@ -21,7 +21,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -45,76 +44,25 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.itrocket.core.base.AppInsets
-import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.ui.EditText
 import com.itrocket.union.R
-import com.itrocket.union.location.domain.entity.LocationDomain
-import com.itrocket.union.location.presentation.store.LocationStore
+import com.itrocket.union.manual.ManualType
+import com.itrocket.union.manual.StructuralParamDomain
+import com.itrocket.union.selectParams.presentation.store.SelectParamsStore
+import com.itrocket.union.structural.domain.entity.StructuralDomain
 import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.ui.BaseButton
-import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.RadioButtonField
 import com.itrocket.union.ui.brightGray
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.psb4
 import com.itrocket.union.ui.white
-import com.itrocket.utils.clickableUnbounded
 
 @Composable
-fun LocationScreen(
-    state: LocationStore.State,
-    appInsets: AppInsets,
+fun StructuralContent(
+    state: SelectParamsStore.State,
     onBackClickListener: () -> Unit,
-    onCrossClickListener: () -> Unit,
-    onAcceptClickListener: () -> Unit,
-    onFinishClickListener: () -> Unit,
-    onPlaceSelected: (LocationDomain) -> Unit,
-    onSearchTextChanged: (String) -> Unit
-) {
-    AppTheme {
-        Scaffold(
-            topBar = {
-                BaseToolbar(
-                    title = stringResource(id = R.string.manual_location),
-                    startImageId = R.drawable.ic_cross,
-                    onStartImageClickListener = onCrossClickListener,
-                    content = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_accept),
-                                contentDescription = null,
-                                colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
-                                modifier = Modifier.clickableUnbounded(onClick = onAcceptClickListener)
-                            )
-                        }
-                    }
-                )
-            }, bottomBar = {
-                BottomBar(onFinishClickListener = onFinishClickListener)
-            }, content = {
-                Content(
-                    state = state,
-                    onBackClickListener = onBackClickListener,
-                    onPlaceSelected = onPlaceSelected,
-                    paddingValues = it,
-                    onSearchTextChanged = onSearchTextChanged
-                )
-            },
-            modifier = Modifier.padding(
-                top = appInsets.topInset.dp,
-                bottom = appInsets.bottomInset.dp
-            )
-        )
-    }
-}
-
-@Composable
-private fun Content(
-    state: LocationStore.State,
-    onBackClickListener: () -> Unit,
-    onPlaceSelected: (LocationDomain) -> Unit,
+    onStructuralSelected: (StructuralDomain) -> Unit,
     onSearchTextChanged: (String) -> Unit,
     paddingValues: PaddingValues
 ) {
@@ -124,19 +72,19 @@ private fun Content(
     val focusRequest = remember {
         FocusRequester()
     }
-    val mainColor = AppTheme.colors.mainColor
     Column(Modifier.padding(paddingValues = paddingValues)) {
-        PlaceComponent(
-            selectedPlaceScheme = state.selectPlaceScheme,
+        StructuralComponent(
+            selectedStructuralScheme = (state.currentParam as StructuralParamDomain).structurals,
             onBackClickListener = onBackClickListener,
-            levelHint = state.levelHint
+            isLevelHintShow = state.isLevelHintShow
         )
+        val mainColor = AppTheme.colors.mainColor
         EditText(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, top = 20.dp, end = 16.dp, bottom = 4.dp),
             text = state.searchText,
-            hint = stringResource(id = R.string.location_hint),
+            hint = stringResource(state.currentParam.type.titleId),
             textStyle = AppTheme.typography.body1,
             hintStyle = AppTheme.typography.body2,
             hintColor = AppTheme.colors.secondaryColor,
@@ -153,65 +101,23 @@ private fun Content(
         )
         MediumSpacer()
         LazyColumn {
-            items(state.placeValues) {
+            items(state.structuralValues) {
                 RadioButtonField(
                     label = it.value,
                     onFieldClickListener = {
-                        onPlaceSelected(it)
+                        onStructuralSelected(it)
                     },
-                    isSelected = state.selectPlaceScheme.contains(it),
+                    isSelected = state.currentParam.structurals.contains(it),
                 )
             }
         }
     }
 }
 
-
 @Composable
-private fun Toolbar(
-    onCrossClickListener: () -> Unit,
-    onAcceptClickListener: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(R.drawable.ic_cross),
-            contentDescription = null,
-            modifier = Modifier.clickableUnbounded(onClick = onCrossClickListener)
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        Image(
-            painter = painterResource(R.drawable.ic_accept),
-            contentDescription = null,
-            modifier = Modifier.clickableUnbounded(onClick = onAcceptClickListener)
-        )
-    }
-}
-
-@Composable
-private fun BottomBar(onFinishClickListener: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(graphite2)
-            .padding(16.dp)
-    ) {
-        BaseButton(
-            text = stringResource(R.string.common_finish),
-            onClick = onFinishClickListener,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-}
-
-@Composable
-private fun PlaceComponent(
-    selectedPlaceScheme: List<LocationDomain>,
-    levelHint: String,
+private fun StructuralComponent(
+    selectedStructuralScheme: List<StructuralDomain>,
+    isLevelHintShow: Boolean,
     onBackClickListener: () -> Unit
 ) {
     Row(
@@ -222,34 +128,37 @@ private fun PlaceComponent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ArrowBackButton(
-            enabled = selectedPlaceScheme.isNotEmpty(),
+            enabled = selectedStructuralScheme.isNotEmpty(),
             onClick = onBackClickListener
         )
         Spacer(modifier = Modifier.width(24.dp))
         Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
             Text(
-                text = stringResource(id = R.string.location_level),
+                text = stringResource(id = R.string.structural_level),
                 style = AppTheme.typography.body2,
                 color = psb4
             )
             Spacer(modifier = Modifier.height(4.dp))
-            LocationLevelComponent(selectedPlaceScheme, levelHint)
+            StructuralLevelComponent(selectedStructuralScheme, isLevelHintShow)
         }
     }
 }
 
 @Composable
-private fun LocationLevelComponent(selectedPlaceScheme: List<LocationDomain>, levelHint: String) {
+private fun StructuralLevelComponent(
+    selectedStructuralScheme: List<StructuralDomain>,
+    isLevelHintShow: Boolean
+) {
     val annotatedString = buildAnnotatedString {
-        selectedPlaceScheme.forEachIndexed { index, locationDomain ->
+        selectedStructuralScheme.forEachIndexed { index, locationDomain ->
             val itemId = "item$index"
             val placeholderId = "[icon$index]"
             append(locationDomain.value)
-            if (levelHint.isNotBlank() || index < selectedPlaceScheme.lastIndex) {
+            if (isLevelHintShow || index < selectedStructuralScheme.lastIndex) {
                 appendInlineContent(itemId, placeholderId)
             }
         }
-        if (levelHint.isNotBlank()) {
+        if (isLevelHintShow) {
             withStyle(
                 SpanStyle(
                     color = AppTheme.colors.mainColor,
@@ -257,12 +166,12 @@ private fun LocationLevelComponent(selectedPlaceScheme: List<LocationDomain>, le
                     fontWeight = FontWeight.Normal
                 )
             ) {
-                append(stringResource(id = R.string.location_select_place, levelHint.lowercase()))
+                append(stringResource(id = R.string.structural_select_structural))
             }
         }
     }
     val inlineContent = mutableMapOf<String, InlineTextContent>()
-    selectedPlaceScheme.forEachIndexed { index, _ ->
+    selectedStructuralScheme.forEachIndexed { index, _ ->
         val itemId = "item$index"
         val textInlineContent = InlineTextContent(
             Placeholder(
@@ -274,7 +183,8 @@ private fun LocationLevelComponent(selectedPlaceScheme: List<LocationDomain>, le
             Image(
                 painter = painterResource(R.drawable.ic_arrow_right_small),
                 contentDescription = null,
-                modifier = Modifier.padding(horizontal = 12.dp)
+                modifier = Modifier.padding(horizontal = 12.dp),
+                colorFilter = ColorFilter.tint(AppTheme.colors.mainColor)
             )
         }
         inlineContent[itemId] = textInlineContent
@@ -334,20 +244,11 @@ private fun ArrowBackButton(enabled: Boolean, onClick: () -> Unit) {
 )
 @Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
 @Composable
-fun LocationScreenPreview() {
-    LocationScreen(LocationStore.State(
-        placeValues = listOf(
-            LocationDomain("1", "1", "Стелаж", "A"),
-            LocationDomain("1", "1", "Стелаж", "Б"),
-            LocationDomain("1", "1", "Стелаж", "С"),
-            LocationDomain("1", "1", "Стелаж", "D")
-        ),
-        levelHint = "Стелаж",
-        selectPlaceScheme = listOf(
-            LocationDomain("1", "1", "Склад", "ГО"),
-            LocationDomain("1", "1", "Суп", "авыаывавыаывавыа"),
-            LocationDomain("1", "1", "Склад", "ГО"),
-            LocationDomain("1", "1", "Склад", "ГО")
-        )
-    ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {})
+fun StructuralScreenPreview() {
+    StructuralContent(
+        SelectParamsStore.State(
+            currentStep = 0,
+            currentParam = StructuralParamDomain(manualType = ManualType.STRUCTURAL)
+        ), {}, {}, {}, PaddingValues()
+    )
 }

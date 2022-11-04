@@ -8,12 +8,8 @@ import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.inventory.InventoryModule.INVENTORY_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.inventory.presentation.store.InventoryStore
 import com.itrocket.union.inventoryContainer.presentation.view.InventoryCreateClickHandler
-import com.itrocket.union.location.presentation.store.LocationResult
-import com.itrocket.union.location.presentation.view.LocationComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 import com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFragment
-import com.itrocket.union.structural.presentation.store.StructuralResult
-import com.itrocket.union.structural.presentation.view.StructuralComposeFragment
 import com.itrocket.union.utils.fragment.ChildBackPressedHandler
 
 class InventoryComposeFragment :
@@ -37,28 +33,6 @@ class InventoryComposeFragment :
                     (it as SelectParamsResult?)?.params?.let {
                         accept(
                             InventoryStore.Intent.OnParamsChanged(it)
-                        )
-                    }
-                }
-            ),
-            FragmentResult(
-                resultCode = StructuralComposeFragment.STRUCTURAL_RESULT_CODE,
-                resultLabel = StructuralComposeFragment.STRUCTURAL_RESULT,
-                resultAction = {
-                    (it as StructuralResult?)?.let {
-                        accept(
-                            InventoryStore.Intent.OnStructuralChanged(it)
-                        )
-                    }
-                }
-            ),
-            FragmentResult(
-                resultCode = LocationComposeFragment.LOCATION_RESULT_CODE,
-                resultLabel = LocationComposeFragment.LOCATION_RESULT,
-                resultAction = {
-                    (it as LocationResult?)?.let {
-                        accept(
-                            InventoryStore.Intent.OnLocationChanged(it)
                         )
                     }
                 }

@@ -20,11 +20,8 @@ import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
-import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.Params
-import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -151,26 +148,6 @@ class DocumentCreateStoreFactory(
                 }
                 is DocumentCreateStore.Intent.OnSelectPage -> dispatch(Result.SelectPage(intent.selectedPage))
                 DocumentCreateStore.Intent.OnSettingsClicked -> publish(DocumentCreateStore.Label.ShowReadingMode)
-                is DocumentCreateStore.Intent.OnLocationChanged -> {
-                    val params = documentCreateInteractor.changeLocation(
-                        getState().params,
-                        intent.location.location
-                    )
-                    changeParams(
-                        params = params,
-                        documentTypeDomain = getState().document.documentType
-                    )
-                }
-                is DocumentCreateStore.Intent.OnStructuralChanged -> {
-                    val params = documentCreateInteractor.changeStructural(
-                        getState().params,
-                        intent.structural.structural
-                    )
-                    changeParams(
-                        params = params,
-                        documentTypeDomain = getState().document.documentType
-                    )
-                }
                 is DocumentCreateStore.Intent.OnAccountingObjectSelected -> {
                     dispatch(
                         Result.AccountingObjects(
@@ -433,29 +410,12 @@ class DocumentCreateStoreFactory(
         }
 
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
-            when (param.type) {
-                ManualType.LOCATION, ManualType.LOCATION_FROM,
-                ManualType.RELOCATION_LOCATION_TO, ManualType.LOCATION_TO -> publish(
-                    DocumentCreateStore.Label.ShowLocation(param as LocationParamDomain)
+            publish(
+                DocumentCreateStore.Label.ShowParamSteps(
+                    currentFilter = param,
+                    allParams = params
                 )
-                ManualType.STRUCTURAL_TO, ManualType.STRUCTURAL_FROM -> publish(
-                    DocumentCreateStore.Label.ShowStructural(
-                        param as StructuralParamDomain
-                    )
-                )
-                else -> {
-                    val defaultTypeParams =
-                        filterInteractor.getDefaultTypeParams(Params(params))
-                    val currentStep = defaultTypeParams.indexOf(param) + 1
-                    publish(
-                        DocumentCreateStore.Label.ShowParamSteps(
-                            currentStep = currentStep,
-                            params = defaultTypeParams,
-                            allParams = params
-                        )
-                    )
-                }
-            }
+            )
         }
 
 

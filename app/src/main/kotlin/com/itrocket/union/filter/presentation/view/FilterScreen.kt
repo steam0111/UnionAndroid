@@ -25,7 +25,6 @@ import com.itrocket.union.filter.presentation.store.FilterStore
 import com.itrocket.union.manual.CheckBoxParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.Params
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
@@ -56,7 +55,7 @@ fun FilterScreen(
             },
             content = {
                 FilterContent(
-                    filters = state.params.paramList,
+                    filters = state.params,
                     onFieldClickListener = onFieldClickListener,
                     onCheckBoxClickListener = onShowUtilizedClick
                 )
@@ -156,8 +155,7 @@ private fun FilterBottomBar(
 fun FilterScreenPreview() {
     FilterScreen(
         FilterStore.State(
-            params = Params(
-                listOf(
+            params = listOf(
                     StructuralParamDomain(manualType = ManualType.STRUCTURAL),
                     ParamDomain(
                         type = ManualType.LOCATION,
@@ -166,5 +164,5 @@ fun FilterScreenPreview() {
                     )
                 )
             )
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {})
+        , AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {})
 }

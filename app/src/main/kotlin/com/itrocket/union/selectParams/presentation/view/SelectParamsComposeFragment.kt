@@ -35,10 +35,22 @@ class SelectParamsComposeFragment :
                     accept(SelectParamsStore.Intent.OnAcceptClicked)
                 },
                 onItemSelected = {
-                    accept(SelectParamsStore.Intent.OnItemSelected(it))
+                    accept(SelectParamsStore.Intent.OnCommonItemSelected(it))
                 },
                 onSearchTextChanged = {
                     accept(SelectParamsStore.Intent.OnSearchTextChanged(it))
+                },
+                onLocationBackClick = {
+                    accept(SelectParamsStore.Intent.OnLocationBackClicked)
+                },
+                onStructuralBackClick = {
+                    accept(SelectParamsStore.Intent.OnStructuralBackClicked)
+                },
+                onLocationSelected = {
+                    accept(SelectParamsStore.Intent.OnLocationSelected(it))
+                },
+                onStructuralSelected = {
+                    accept(SelectParamsStore.Intent.OnStructuralSelected(it))
                 }
             )
         }

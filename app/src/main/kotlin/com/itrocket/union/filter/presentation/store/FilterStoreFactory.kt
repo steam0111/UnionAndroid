@@ -9,12 +9,8 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
-import com.itrocket.union.manual.CheckBoxParamDomain
-import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.Params
-import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 
 class FilterStoreFactory(
@@ -30,7 +26,7 @@ class FilterStoreFactory(
             Store<FilterStore.Intent, FilterStore.State, FilterStore.Label> by storeFactory.create(
                 name = "FilterStore",
                 initialState = FilterStore.State(
-                    params = Params(filterArgs.argument),
+                    params = filterArgs.argument,
                     from = filterArgs.from
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
@@ -65,15 +61,18 @@ class FilterStoreFactory(
         ) {
             when (intent) {
                 is FilterStore.Intent.OnFieldClicked -> showFilters(intent.filter, getState)
-                is FilterStore.Intent.OnShowUtilizedClick ->  {
-                    val newFilters = filterInteractor.changeIsShowUtilisedFilter(getState().params.paramList, intent.checked)
+                is FilterStore.Intent.OnShowUtilizedClick -> {
+                    val newFilters = filterInteractor.changeIsShowUtilisedFilter(
+                        getState().params,
+                        intent.checked
+                    )
                     dispatch(Result.Filters(newFilters))
                     dispatch(Result.Count(getResultCount(newFilters, getState())))
                 }
                 is FilterStore.Intent.OnShowClicked -> {
                     publish(
                         FilterStore.Label.GoBack(
-                            result = SelectParamsResult(getState().params.paramList)
+                            result = SelectParamsResult(getState().params)
                         )
                     )
                 }
@@ -82,33 +81,17 @@ class FilterStoreFactory(
                 }
                 FilterStore.Intent.OnDropClicked -> {
                     val droppedFilterFields =
-                        filterInteractor.dropFilterFields(getState().params.paramList)
+                        filterInteractor.dropFilterFields(getState().params)
                     dispatch(Result.Filters(droppedFilterFields))
                     dispatch(Result.Count(getResultCount(droppedFilterFields, getState())))
                 }
                 is FilterStore.Intent.OnFilterChanged -> {
                     val filterList = filterInteractor.changeFilters(
-                        filters = getState().params.paramList,
+                        filters = getState().params,
                         newFilters = intent.filters
                     )
                     dispatch(Result.Filters(filterList))
                     dispatch(Result.Count(getResultCount(filterList, getState())))
-                }
-                is FilterStore.Intent.OnFilterLocationChanged -> {
-                    val filters = filterInteractor.changeLocationFilter(
-                        filters = getState().params.paramList,
-                        location = intent.locationResult.location
-                    )
-                    dispatch(Result.Filters(filters))
-                    dispatch(Result.Count(getResultCount(filters, getState())))
-                }
-                is FilterStore.Intent.OnStructuralChanged -> {
-                    val filters = filterInteractor.changeStructuralFilter(
-                        filters = getState().params.paramList,
-                        structural = intent.structural.structural
-                    )
-                    dispatch(Result.Filters(filters))
-                    dispatch(Result.Count(getResultCount(filters, getState())))
                 }
             }
         }
@@ -122,25 +105,14 @@ class FilterStoreFactory(
 
         private fun showFilters(filter: ParamDomain, getState: () -> FilterStore.State) {
             when (filter.type) {
-                ManualType.LOCATION -> {
-                    publish(FilterStore.Label.ShowLocation(filter as LocationParamDomain))
-                }
                 ManualType.DATE -> {
                     //no-op
                 }
-                ManualType.STRUCTURAL,
-                ManualType.STRUCTURAL_TO,
-                ManualType.STRUCTURAL_FROM -> publish(FilterStore.Label.ShowStructural(filter as StructuralParamDomain))
-
                 else -> {
-                    val defaultTypeParams =
-                        filterInteractor.getDefaultTypeParams(getState().params)
-                    val currentStep = defaultTypeParams.indexOf(filter) + 1
                     publish(
                         FilterStore.Label.ShowFilters(
-                            currentStep = currentStep,
-                            filters = defaultTypeParams,
-                            allParams = getState().params.paramList
+                            currentFilter = filter,
+                            allParams = getState().params
                         )
                     )
                 }
@@ -160,7 +132,7 @@ class FilterStoreFactory(
     private object ReducerImpl : Reducer<FilterStore.State, Result> {
         override fun FilterStore.State.reduce(result: Result) =
             when (result) {
-                is Result.Filters -> copy(params = params.copy(result.filters))
+                is Result.Filters -> copy(params = result.filters)
                 is Result.Count -> copy(resultCount = result.count)
             }
     }

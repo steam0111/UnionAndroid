@@ -30,7 +30,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,10 +37,16 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.ui.EditText
 import com.itrocket.union.R
+import com.itrocket.union.location.domain.entity.LocationDomain
+import com.itrocket.union.location.presentation.view.LocationContent
+import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor.Companion.MIN_CURRENT_STEP
 import com.itrocket.union.selectParams.presentation.store.SelectParamsStore
+import com.itrocket.union.structural.domain.entity.StructuralDomain
+import com.itrocket.union.structural.view.StructuralContent
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ButtonWithContent
@@ -63,8 +68,12 @@ fun SelectParamsScreen(
     onAcceptClickListener: () -> Unit,
     onNextClickListener: () -> Unit,
     onPrevClickListener: () -> Unit,
-    onSearchTextChanged: (TextFieldValue) -> Unit,
-    onItemSelected: (ParamDomain) -> Unit
+    onSearchTextChanged: (String) -> Unit,
+    onItemSelected: (ParamDomain) -> Unit,
+    onLocationBackClick: () -> Unit,
+    onStructuralBackClick: () -> Unit,
+    onLocationSelected: (LocationDomain) -> Unit,
+    onStructuralSelected: (StructuralDomain) -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -74,35 +83,59 @@ fun SelectParamsScreen(
                     startImageId = R.drawable.ic_cross,
                     onStartImageClickListener = onCrossClickListener,
                     content = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_accept),
-                                contentDescription = null,
-                                colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
-                                modifier = Modifier.clickableUnbounded(onClick = onAcceptClickListener)
-                            )
+                        if (state.currentParam.isFilter) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_accept),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
+                                    modifier = Modifier.clickableUnbounded(onClick = onAcceptClickListener)
+                                )
+                            }
                         }
                     }
                 )
             },
             bottomBar = {
-                BottomBar(
-                    onNextClickListener = onNextClickListener,
-                    onPrevClickListener = onPrevClickListener,
-                    currentStep = state.currentStep,
-                    stepCount = state.params.size
-                )
+                if (state.currentParam.isFilter) {
+                    BottomBar(
+                        onNextClickListener = onNextClickListener,
+                        onPrevClickListener = onPrevClickListener,
+                        currentStep = state.currentStep + 1,
+                        stepCount = state.allParams.size
+                    )
+                }
             },
             content = {
-                Content(
-                    currentParam = state.params[state.currentStep - 1],
-                    currentParamValues = state.currentParamValues,
-                    paddingValues = it,
-                    onItemSelected = onItemSelected,
-                    onSearchTextChanged = onSearchTextChanged,
-                    searchText = state.searchText,
-                    isLoading = state.isLoading
-                )
+                when (state.currentParam) {
+                    is LocationParamDomain -> {
+                        LocationContent(
+                            state,
+                            onBackClickListener = onLocationBackClick,
+                            paddingValues = it,
+                            onPlaceSelected = onLocationSelected,
+                            onSearchTextChanged = onSearchTextChanged,
+                        )
+                    }
+                    is StructuralParamDomain -> {
+                        StructuralContent(
+                            state = state,
+                            onBackClickListener = onStructuralBackClick,
+                            onStructuralSelected = onStructuralSelected,
+                            paddingValues = it,
+                            onSearchTextChanged = onSearchTextChanged
+                        )
+                    }
+                    else -> {
+                        Content(
+                            state = state,
+                            paddingValues = it,
+                            onItemSelected = onItemSelected,
+                            onSearchTextChanged = onSearchTextChanged,
+                            isLoading = state.isLoading
+                        )
+                    }
+                }
             },
             modifier = Modifier.padding(
                 top = appInsets.topInset.dp,
@@ -114,12 +147,10 @@ fun SelectParamsScreen(
 
 @Composable
 private fun Content(
-    currentParam: ParamDomain,
-    currentParamValues: List<ParamDomain>,
+    state: SelectParamsStore.State,
     paddingValues: PaddingValues,
-    searchText: TextFieldValue,
     isLoading: Boolean,
-    onSearchTextChanged: (TextFieldValue) -> Unit,
+    onSearchTextChanged: (String) -> Unit,
     onItemSelected: (ParamDomain) -> Unit
 ) {
     var underlineColor by remember {
@@ -140,12 +171,12 @@ private fun Content(
                     .fillMaxWidth()
                     .background(white)
                     .padding(start = 16.dp, top = 20.dp, end = 16.dp, bottom = 4.dp),
-                textField = searchText,
-                hint = stringResource(currentParam.type.titleId),
+                text = state.searchText,
+                hint = stringResource(state.currentParam.type.titleId),
                 hintStyle = AppTheme.typography.body1,
                 hintColor = AppTheme.colors.secondaryColor,
                 textStyle = AppTheme.typography.body1,
-                onTextChanged = onSearchTextChanged,
+                onTextChanged = { onSearchTextChanged(it) },
                 focusRequester = focusRequester,
                 onFocusChanged = {
                     underlineColor = if (it.hasFocus) {
@@ -160,12 +191,12 @@ private fun Content(
         MediumSpacer()
         LoadingContent(isLoading = isLoading) {
             LazyColumn {
-                itemsIndexed(currentParamValues) { index, item ->
-                    val isShowBottomLine = index != currentParamValues.lastIndex
+                itemsIndexed(state.commonParamValues) { index, item ->
+                    val isShowBottomLine = index != state.commonParamValues.lastIndex
                     RadioButtonField(
                         label = item.value,
                         onFieldClickListener = { onItemSelected(item) },
-                        isSelected = item.id == currentParam.id,
+                        isSelected = item.id == state.currentParam.id,
                         isShowBottomLine = isShowBottomLine
                     )
                 }
@@ -180,7 +211,6 @@ private fun BottomBar(
     onPrevClickListener: () -> Unit,
     currentStep: Int,
     stepCount: Int
-
 ) {
     Row(
         modifier = Modifier
@@ -261,10 +291,10 @@ fun SelectParamsScreenPreview() {
     SelectParamsScreen(
         SelectParamsStore.State(
             currentStep = 1,
-            params = listOf(
+            allParams = listOf(
                 ParamDomain("2", "param", ManualType.MOL),
                 ParamDomain("3", "param", ManualType.LOCATION)
             ),
-            allParams = listOf()
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {})
+            currentParam = LocationParamDomain()
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 }

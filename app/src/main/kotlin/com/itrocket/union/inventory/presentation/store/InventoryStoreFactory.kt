@@ -17,11 +17,8 @@ import com.itrocket.union.inventory.domain.InventoryInteractor
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
 import com.itrocket.union.inventoryCreate.domain.InventoryDynamicSaveManager
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
-import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.Params
-import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.manual.filterNotEmpty
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
@@ -123,23 +120,6 @@ class InventoryStoreFactory(
                     changeParams(getState, params)
                 }
                 is InventoryStore.Intent.OnSelectPage -> dispatch(Result.SelectPage(intent.selectedPage))
-                is InventoryStore.Intent.OnLocationChanged -> {
-                    val params = inventoryInteractor.changeLocation(
-                        getState().params,
-                        intent.locationResult.location
-                    )
-                    changeParams(getState, params)
-                }
-                is InventoryStore.Intent.OnStructuralChanged -> {
-                    val params = inventoryInteractor.changeStructural(
-                        getState().params,
-                        intent.structural.structural
-                    )
-                    changeParams(
-                        getState = getState,
-                        params = params
-                    )
-                }
                 InventoryStore.Intent.OnInWorkClicked -> dispatch(Result.DialogType(AlertType.IN_WORK))
                 InventoryStore.Intent.OnSaveClicked -> dispatch(Result.DialogType(AlertType.SAVE))
                 InventoryStore.Intent.OnInWorkConfirmed -> {
@@ -195,30 +175,12 @@ class InventoryStoreFactory(
         }
 
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
-            when (param.type) {
-                ManualType.LOCATION_INVENTORY -> {
-                    publish(
-                        InventoryStore.Label.ShowLocation(param as LocationParamDomain)
-                    )
-                }
-                ManualType.STRUCTURAL -> {
-                    publish(
-                        InventoryStore.Label.ShowStructural(param as StructuralParamDomain)
-                    )
-                }
-                else -> {
-                    val defaultTypeParams =
-                        filterInteractor.getDefaultTypeParams(Params(params))
-                    val currentStep = defaultTypeParams.indexOf(param) + 1
-                    publish(
-                        InventoryStore.Label.ShowParamSteps(
-                            currentStep = currentStep,
-                            params = params.filter { it.type != ManualType.LOCATION_INVENTORY && it.type != ManualType.STRUCTURAL },
-                            allParams = params
-                        )
-                    )
-                }
-            }
+            publish(
+                InventoryStore.Label.ShowParamSteps(
+                    currentFilter = param,
+                    allParams = params
+                )
+            )
         }
 
         private suspend fun saveInventory(

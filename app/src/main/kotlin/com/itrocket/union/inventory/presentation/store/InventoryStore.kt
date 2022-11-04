@@ -12,15 +12,11 @@ import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.C
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_LABEL
 import com.itrocket.union.inventoryContainer.presentation.view.InventoryContainerComposeFragmentDirections
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
-import com.itrocket.union.location.presentation.store.LocationArguments
-import com.itrocket.union.location.presentation.store.LocationResult
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.selectParams.presentation.store.SelectParamsArguments
-import com.itrocket.union.structural.presentation.store.StructuralArguments
-import com.itrocket.union.structural.presentation.store.StructuralResult
 
 interface InventoryStore :
     Store<InventoryStore.Intent, InventoryStore.State, InventoryStore.Label> {
@@ -42,8 +38,6 @@ interface InventoryStore :
         data class OnParamClicked(val param: ParamDomain) : Intent()
         data class OnParamCrossClicked(val param: ParamDomain) : Intent()
         data class OnParamsChanged(val params: List<ParamDomain>) : Intent()
-        data class OnLocationChanged(val locationResult: LocationResult) : Intent()
-        data class OnStructuralChanged(val structural: StructuralResult) : Intent()
     }
 
     data class State(
@@ -61,8 +55,7 @@ interface InventoryStore :
                 id = "",
                 value = "",
                 type = ManualType.INVENTORY_CHECKER,
-                isClickable = false,
-                isFilter = false
+                isClickable = false
             )
         ),
         val canCreateInventory: Boolean = false,
@@ -82,19 +75,16 @@ interface InventoryStore :
             val inventoryCreate: InventoryCreateDomain
         ) : Label()
 
-        data class ShowStructural(val structural: StructuralParamDomain) : Label(),
-            ForwardNavigationLabel {
+        data class ShowParamSteps(
+            val currentFilter: ParamDomain,
+            val allParams: List<ParamDomain>
+        ) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
-                get() = InventoryContainerComposeFragmentDirections.toStructural(
-                    StructuralArguments(structural = structural, canEdit = true)
-                )
-        }
-
-        data class ShowLocation(val location: LocationParamDomain) : Label(),
-            ForwardNavigationLabel {
-            override val directions: NavDirections
-                get() = InventoryContainerComposeFragmentDirections.toLocation(
-                    LocationArguments(location = location)
+                get() = InventoryContainerComposeFragmentDirections.toSelectParams(
+                    SelectParamsArguments(
+                        currentFilter = currentFilter,
+                        allParams = allParams
+                    )
                 )
         }
 
@@ -103,21 +93,6 @@ interface InventoryStore :
             override val directions: NavDirections
                 get() = InventoryContainerComposeFragmentDirections.toAccountingObjectsDetails(
                     AccountingObjectDetailArguments(accountingObject)
-                )
-        }
-
-        data class ShowParamSteps(
-            val currentStep: Int,
-            val params: List<ParamDomain>,
-            val allParams: List<ParamDomain>
-        ) : Label(), ForwardNavigationLabel {
-            override val directions: NavDirections
-                get() = InventoryContainerComposeFragmentDirections.toSelectParams(
-                    SelectParamsArguments(
-                        params = params,
-                        currentStep = currentStep,
-                        allParams = allParams
-                    )
                 )
         }
 
