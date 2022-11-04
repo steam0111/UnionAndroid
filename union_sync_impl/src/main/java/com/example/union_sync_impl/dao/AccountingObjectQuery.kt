@@ -45,11 +45,17 @@ fun sqlAccountingObjectQuery(
                 "location.catalogItemName AS locations_catalogItemName, " +
                 "location.name AS locations_name, " +
                 "location.parentId AS locations_parentId, " +
-                "location.locationTypeId AS locations_locationTypeId " +
+                "location.locationTypeId AS locations_locationTypeId, " +
+                "" +
+                "locationTypes.id as locationTypes_id, " +
+                "locationTypes.parentId as locationTypes_parentId, " +
+                "locationTypes.name as locationTypes_name, " +
+                "locationTypes.catalogItemName as locationTypes_catalogItemName " +
                 "" +
                 "FROM accounting_objects " +
                 "LEFT JOIN location ON accounting_objects.locationId = location.id " +
-                "LEFT JOIN structural ON accounting_objects.structuralId = structural.id "
+                "LEFT JOIN structural ON accounting_objects.structuralId = structural.id " +
+                "LEFT JOIN locationTypes ON UPPER(locations_locationTypeId) LIKE UPPER(locationTypes.id) "
     }
 
     val query = mainQuery.getAccountingObjectsFilterPartQuery(

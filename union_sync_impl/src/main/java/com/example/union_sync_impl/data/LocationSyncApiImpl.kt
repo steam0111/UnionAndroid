@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.data
 
+import android.util.Log
 import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.StructuralSyncEntity
@@ -45,27 +46,27 @@ class LocationSyncApiImpl(
     ): List<LocationSyncEntity>? {
         val childLocation = locationDao.getLocationById(childId)
         val childLocationType =
-            locationDao.getLocationTypeById(childLocation?.locationTypeId ?: return locations)
+            locationDao.getLocationTypeById(
+                childLocation?.locationDb?.locationTypeId ?: return locations
+            )
         childLocation.let {
-            locations.add(it.toLocationSyncEntity(childLocationType))
+            locations.add(it.locationDb.toLocationSyncEntity(childLocationType))
         }
-        return if (childLocation.parentId == null) {
+        return if (childLocation.locationDb.parentId == null) {
             locations.reversed()
         } else {
-            getLocationFullPath(childLocation.parentId, locations)
+            getLocationFullPath(childLocation.locationDb.parentId, locations)
         }
     }
 
     override suspend fun getLocationById(locationId: String?): LocationSyncEntity? {
-        val locationDb = locationDao.getLocationById(locationId)
-        val locationType = locationDb?.locationTypeId?.let { locationDao.getLocationTypeById(it) }
-        return locationDao.getLocationById(locationId)?.toLocationSyncEntity(locationType)
+        val fullLocationDb = locationDao.getLocationById(locationId)
+        return fullLocationDb?.locationDb?.toLocationSyncEntity(fullLocationDb.locationTypeDb)
     }
 
-    override suspend fun getLocationsByIds(ids: List<String?>): List<LocationSyncEntity> {
-        return locationDao.getLocationsByIds(ids).map {
-            val locationType = locationDao.getLocationTypeById(requireNotNull(it.locationTypeId))
-            it.toLocationSyncEntity(locationType)
+    override suspend fun getLocationsByIds(ids: List<String>): List<LocationSyncEntity> {
+        return locationDao.getLocationsByIds(ids).map { fullLocationDb ->
+            fullLocationDb.locationDb.toLocationSyncEntity(fullLocationDb.locationTypeDb)
         }
     }
 }

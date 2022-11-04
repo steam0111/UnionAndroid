@@ -281,6 +281,6 @@ class DocumentSyncApiImpl(
     }
 
     private suspend fun List<String?>?.getLocations(): List<LocationSyncEntity> {
-        return this?.let { locationSyncApi.getLocationsByIds(it) }.orEmpty()
+        return this?.let { locationSyncApi.getLocationsByIds(it.filterNotNull()) }.orEmpty()
     }
 }

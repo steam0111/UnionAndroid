@@ -5,13 +5,7 @@ import com.example.union_sync_api.data.InventoryCheckerSyncApi
 import com.example.union_sync_api.data.InventorySyncApi
 import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
-import com.example.union_sync_api.entity.AccountingObjectInfoSyncEntity
-import com.example.union_sync_api.entity.AccountingObjectSyncEntity
-import com.example.union_sync_api.entity.EnumType
-import com.example.union_sync_api.entity.InventoryCreateSyncEntity
-import com.example.union_sync_api.entity.InventorySyncEntity
-import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
-import com.example.union_sync_api.entity.LocationSyncEntity
+import com.example.union_sync_api.entity.*
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.InventoryRecordDao
@@ -19,14 +13,15 @@ import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.dao.sqlInventoryQuery
 import com.example.union_sync_impl.dao.sqlInventoryRecordQuery
-import com.example.union_sync_impl.data.mapper.toInventoryDb
-import com.example.union_sync_impl.data.mapper.toInventorySyncEntity
-import com.example.union_sync_impl.data.mapper.toStructuralSyncEntity
-import com.example.union_sync_impl.data.mapper.toSyncEntity
+import com.example.union_sync_impl.data.mapper.*
 import com.example.union_sync_impl.entity.FullAccountingObject
 import com.example.union_sync_impl.entity.FullInventory
 import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.entity.InventoryRecordDb
+import com.itrocket.core.base.CoreDispatchers
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import java.util.*
 import timber.log.Timber
 
@@ -38,7 +33,8 @@ class InventorySyncApiImpl(
     private val inventoryRecordDao: InventoryRecordDao,
     private val locationSyncApi: LocationSyncApi,
     private val checkerSyncApi: InventoryCheckerSyncApi,
-    private val enumsApi: EnumsSyncApi
+    private val enumsApi: EnumsSyncApi,
+    private val coreDispatchers: CoreDispatchers
 ) : InventorySyncApi {
     override suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): String {
         val inventoryId = UUID.randomUUID().toString()
@@ -101,10 +97,7 @@ class InventorySyncApiImpl(
     }
 
     override suspend fun getInventoriesCount(
-        textQuery: String?,
-        structuralId: String?,
-        molId: String?,
-        inventoryBaseId: String?
+        textQuery: String?, structuralId: String?, molId: String?, inventoryBaseId: String?
     ): Long {
         return inventoryDao.getCount(
             sqlInventoryQuery(
@@ -117,66 +110,78 @@ class InventorySyncApiImpl(
         )
     }
 
-    override suspend fun getInventoryById(id: String): InventorySyncEntity {
-        Timber.tag(INVENTORY_TAG).d("getInventoryById id : $id")
-
+    override suspend fun getInventoryById(id: String): InventorySyncEntity = coroutineScope {
         val fullInventory = inventoryDao.getInventoryById(id)
 
-        Timber.tag(INVENTORY_TAG)
-            .d("getInventoryById status ${fullInventory.inventoryDb.inventoryStatus}")
+        val structuralsAndBalanceUnitFullPath: Deferred<Pair<List<StructuralSyncEntity>, List<StructuralSyncEntity>>> =
+            async(coreDispatchers.io) {
+                val structurals = structuralSyncApi.getStructuralFullPath(
+                    fullInventory.structuralDb?.id, mutableListOf()
+                ).orEmpty()
 
-        val locations = fullInventory.getLocations()
+                val balanceUnit = structurals.lastOrNull { it.balanceUnit }
+                val balanceUnitFullPath =
+                    structuralSyncApi.getStructuralFullPath(balanceUnit?.id, mutableListOf())
+                        .orEmpty()
 
-        val structurals =
-            structuralSyncApi.getStructuralFullPath(
-                fullInventory.structuralDb?.id,
-                mutableListOf()
-            ).orEmpty()
+                return@async structurals to balanceUnitFullPath
+            }
 
-        val balanceUnit = structurals.lastOrNull { it.balanceUnit }
-        val balanceUnitFullPath =
-            structuralSyncApi.getStructuralFullPath(balanceUnit?.id, mutableListOf())
-        val inventoryBase = enumsApi.getByCompoundId(
-            enumType = EnumType.INVENTORY_BASE,
-            id = fullInventory.inventoryDb.inventoryBaseId
-        )
+        val inventoryBaseDeferred = async(coreDispatchers.io) {
+            enumsApi.getByCompoundId(
+                enumType = EnumType.INVENTORY_BASE, id = fullInventory.inventoryDb.inventoryBaseId
+            )
+        }
 
-        return fullInventory.inventoryDb.toInventorySyncEntity(
+        val accountingObjectsDeferred = async(coreDispatchers.io) {
+            getAccountingObjects(fullInventory.inventoryDb)
+        }
+
+        val locationsDeferred = async(coreDispatchers.io) {
+            if (fullInventory.inventoryDb.locationIds != null) {
+                locationSyncApi.getLocationsByIds(fullInventory.inventoryDb.locationIds)
+            } else {
+                listOf()
+            }
+        }
+
+        val checkersDeferred = async(coreDispatchers.io) {
+            checkerSyncApi.getCheckers(fullInventory.inventoryDb.id)
+        }
+
+        val (structurals, balanceUnitFullPath) = structuralsAndBalanceUnitFullPath.await()
+
+        fullInventory.inventoryDb.toInventorySyncEntity(
             structuralSyncEntities = structurals,
             mol = fullInventory.employeeDb?.toSyncEntity(),
-            locationSyncEntities = locations,
-            accountingObjects = getAccountingObjects(fullInventory.inventoryDb),
-            inventoryBaseSyncEntity = inventoryBase,
-            balanceUnitFullPath.orEmpty(),
-
-            checkers = checkerSyncApi.getCheckers(fullInventory.inventoryDb.id)
-        ).apply {
-            Timber.tag(INVENTORY_TAG)
-                .d("InventorySyncEntity accountingObjectsIds : ${accountingObjects.map { it.id }}")
-        }
+            locationSyncEntities = locationsDeferred.await(),
+            accountingObjects = accountingObjectsDeferred.await(),
+            inventoryBaseSyncEntity = inventoryBaseDeferred.await(),
+            balanceUnit = balanceUnitFullPath,
+            checkers = checkersDeferred.await()
+        )
     }
 
     private suspend fun getAccountingObjects(
         inventoryDb: InventoryDb
     ): List<AccountingObjectSyncEntity> {
-        val inventoryRecords =
-            inventoryRecordDao.getAll(sqlInventoryRecordQuery(inventoryDb.id))
+        val inventoryRecords = inventoryRecordDao.getAll(sqlInventoryRecordQuery(inventoryDb.id))
 
-        val accountingObjectIds = inventoryRecords.map {
-            it.accountingObjectId
+        val accountingObjectsIdStatusMap = mutableMapOf<String, String>()
+
+        inventoryRecords.forEach {
+            accountingObjectsIdStatusMap[it.accountingObjectId] = it.inventoryStatus
         }
 
-        return accountingObjectDao.getAll(sqlAccountingObjectQuery(accountingObjectsIds = accountingObjectIds))
+        return accountingObjectDao.getAll(sqlAccountingObjectQuery(accountingObjectsIds = accountingObjectsIdStatusMap.keys.toList()))
             .map { fullAccountingObject ->
-                val inventoryStatus = getInventoryStatus(
-                    inventoryRecords = inventoryRecords,
-                    fullAccountingObject = fullAccountingObject
-                )
-                val location =
-                    locationSyncApi.getLocationById(fullAccountingObject.accountingObjectDb.locationId)
                 fullAccountingObject.toSyncEntity(
-                    inventoryStatus = inventoryStatus,
-                    locationSyncEntity = listOfNotNull(location)
+                    inventoryStatus = accountingObjectsIdStatusMap[fullAccountingObject.accountingObjectDb.id],
+                    locationSyncEntity = listOfNotNull(
+                        fullAccountingObject.locationDb?.toLocationSyncEntity(
+                            fullAccountingObject.locationTypesDb
+                        )
+                    )
                 )
             }
     }
@@ -225,23 +230,13 @@ class InventorySyncApiImpl(
             )
         }
 
-        Timber.tag(INVENTORY_TAG)
-            .d("updateRecords newRecords size : ${newRecords.size}")
+        Timber.tag(INVENTORY_TAG).d("updateRecords newRecords size : ${newRecords.size}")
 
         inventoryRecordDao.insertAll(newRecords)
 
         val removedAccountingObjects = records.filter { it.cancel == true }
             .map { it.copy(updateDate = System.currentTimeMillis()) }
         inventoryRecordDao.insertAll(removedAccountingObjects)
-    }
-
-    private fun getInventoryStatus(
-        inventoryRecords: List<InventoryRecordDb>,
-        fullAccountingObject: FullAccountingObject
-    ): String? {
-        return inventoryRecords.find {
-            fullAccountingObject.accountingObjectDb.id == it.accountingObjectId
-        }?.inventoryStatus
     }
 
     companion object {
