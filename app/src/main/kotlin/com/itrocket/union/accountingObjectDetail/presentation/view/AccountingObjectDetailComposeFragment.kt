@@ -1,6 +1,7 @@
 package com.itrocket.union.accountingObjectDetail.presentation.view
 
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -20,7 +21,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import ru.interid.scannerclient.domain.reader.ReaderMode
 import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
@@ -34,6 +34,13 @@ class AccountingObjectDetailComposeFragment :
     private val serviceEntryManager: ServiceEntryManager by inject()
 
     private var scanJob: Job? = null
+
+    override val onBackPressedCallback: OnBackPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                accept(AccountingObjectDetailStore.Intent.OnBackClicked)
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -168,5 +175,8 @@ class AccountingObjectDetailComposeFragment :
         }
     }
 
-
+    companion object {
+        const val ACCOUNTING_OBJECT_DETAIL_RESULT_CODE = "accounting object detail result code"
+        const val ACCOUNTING_OBJECT_DETAIL_RESULT_LABEL = "accounting object detail result label"
+    }
 }

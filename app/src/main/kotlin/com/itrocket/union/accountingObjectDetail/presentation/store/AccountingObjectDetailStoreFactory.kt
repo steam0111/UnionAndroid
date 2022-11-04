@@ -68,7 +68,7 @@ class AccountingObjectDetailStoreFactory(
         ) {
             when (intent) {
                 AccountingObjectDetailStore.Intent.OnBackClicked -> publish(
-                    AccountingObjectDetailStore.Label.GoBack
+                    AccountingObjectDetailStore.Label.GoBack(AccountingObjectDetailResult(getState().accountingObjectDomain))
                 )
                 AccountingObjectDetailStore.Intent.OnReadingModeClicked -> {
                     publish(AccountingObjectDetailStore.Label.ShowReadingMode(getState().readingMode))

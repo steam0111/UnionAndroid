@@ -75,6 +75,7 @@ fun InventoryScreen(
     onSaveDismissClickListener: () -> Unit,
     onInWorkConfirmClickListener: () -> Unit,
     onInWorkDismissClickListener: () -> Unit,
+    onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit,
 ) {
     val pagerState = rememberPagerState(state.selectedPage)
     val coroutineScope = rememberCoroutineScope()
@@ -125,7 +126,8 @@ fun InventoryScreen(
                     onParamClickListener = onParamClickListener,
                     paddingValues = it,
                     state = state,
-                    isInventoryChangePermitted = isInventoryChangePermitted
+                    isInventoryChangePermitted = isInventoryChangePermitted,
+                    onAccountingObjectClickListener = onAccountingObjectClickListener
                 )
             },
             modifier = Modifier.padding(
@@ -165,6 +167,7 @@ private fun Content(
     onTabClickListener: (Int) -> Unit,
     onParamClickListener: (ParamDomain) -> Unit,
     onParamCrossClickListener: (ParamDomain) -> Unit,
+    onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit,
     coroutineScope: CoroutineScope,
     selectedPage: Int,
     pagerState: PagerState,
@@ -189,7 +192,7 @@ private fun Content(
                 AccountingObjectScreen(
                     isLoading = state.isAccountingObjectsLoading,
                     accountingObjectList = state.accountingObjectList,
-                    onAccountingObjectClickListener = {},
+                    onAccountingObjectClickListener = onAccountingObjectClickListener,
                     paddingValues = paddingValues
                 )
             }
@@ -423,6 +426,7 @@ fun InventoryScreenPreview() {
             inventoryCreateDomain = null
         ),
         AppInsets(topInset = previewTopInsetDp),
+        {},
         {},
         {},
         {},

@@ -5,6 +5,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
+import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailArguments
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_CODE
@@ -34,6 +35,9 @@ interface InventoryStore :
         object OnSaveDismissed : Intent()
         object OnInWorkConfirmed : Intent()
         object OnInWorkDismissed : Intent()
+        data class OnAccountingObjectClicked(val accountingObject: AccountingObjectDomain) :
+            Intent()
+
         data class OnSelectPage(val selectedPage: Int) : Intent()
         data class OnParamClicked(val param: ParamDomain) : Intent()
         data class OnParamCrossClicked(val param: ParamDomain) : Intent()
@@ -91,6 +95,14 @@ interface InventoryStore :
             override val directions: NavDirections
                 get() = InventoryContainerComposeFragmentDirections.toLocation(
                     LocationArguments(location = location)
+                )
+        }
+
+        data class ShowAccountingObjectDetail(val accountingObject: AccountingObjectDomain) :
+            Label(), ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = InventoryContainerComposeFragmentDirections.toAccountingObjectsDetails(
+                    AccountingObjectDetailArguments(accountingObject)
                 )
         }
 

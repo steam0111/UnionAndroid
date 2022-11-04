@@ -160,6 +160,11 @@ class InventoryStoreFactory(
                     dispatch(Result.DialogType(AlertType.NONE))
                 }
                 InventoryStore.Intent.OnSaveDismissed -> dispatch(Result.DialogType(AlertType.NONE))
+                is InventoryStore.Intent.OnAccountingObjectClicked -> publish(
+                    InventoryStore.Label.ShowAccountingObjectDetail(
+                        intent.accountingObject
+                    )
+                )
             }
         }
 

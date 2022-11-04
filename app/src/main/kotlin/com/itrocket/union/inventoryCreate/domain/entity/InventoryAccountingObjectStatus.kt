@@ -14,18 +14,22 @@ enum class InventoryAccountingObjectStatus(
     @StringRes override val textId: Int,
     override val textColor: String = white.value.toString(),
     override val text: String? = null,
+    val priority: Int
 ) : Status {
     FOUND(
         backgroundColor = green7.value.toString(),
-        textId = R.string.inventory_create_found
+        textId = R.string.inventory_create_found,
+        priority = 1
     ),
     NOT_FOUND(
         backgroundColor = graphite2.value.toString(),
         textId = R.string.inventory_create_not_found,
-        textColor = grey.value.toString()
+        textColor = grey.value.toString(),
+        priority = 2
     ),
     NEW(
         backgroundColor = orange.value.toString(),
-        textId = R.string.inventory_create_new
+        textId = R.string.inventory_create_new,
+        priority = 0
     ),
 }

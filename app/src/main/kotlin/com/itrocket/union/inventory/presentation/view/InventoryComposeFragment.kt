@@ -109,6 +109,9 @@ class InventoryComposeFragment :
                 },
                 onSaveDismissClickListener = {
                     accept(InventoryStore.Intent.OnSaveDismissed)
+                },
+                onAccountingObjectClickListener = {
+                    accept(InventoryStore.Intent.OnAccountingObjectClicked(it))
                 }
             )
         }
