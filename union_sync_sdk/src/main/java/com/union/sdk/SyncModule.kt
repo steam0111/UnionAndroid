@@ -90,7 +90,8 @@ object SyncModule {
                 locationSyncApi = get(),
                 structuralSyncApi = get(),
                 checkerSyncApi = get(),
-                enumsApi = get()
+                enumsApi = get(),
+                coreDispatchers = get()
             )
         }
         factory<DocumentSyncApi> {

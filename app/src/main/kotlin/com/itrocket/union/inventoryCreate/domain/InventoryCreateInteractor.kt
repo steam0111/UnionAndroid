@@ -16,6 +16,9 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 import kotlinx.coroutines.withContext
+import timber.log.Timber
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 class InventoryCreateInteractor(
     private val accountingObjectRepository: AccountingObjectRepository,
@@ -24,13 +27,24 @@ class InventoryCreateInteractor(
     private val authMainInteractor: AuthMainInteractor
 ) {
 
+    @OptIn(ExperimentalTime::class)
     suspend fun getInventoryById(id: String) =
         withContext(coreDispatchers.io) {
-            val inventory = inventoryRepository.getInventoryById(id)
-            val sortedAccountingObjects = inventory.accountingObjects.sortedBy {
-                it.inventoryStatus.priority
+            val result = measureTimedValue {
+                Timber.d("inventoryRepository.getInventoryById($id)")
+
+                val inventory = inventoryRepository.getInventoryById(id)
+                val sortedAccountingObjects = inventory.accountingObjects.sortedBy {
+                    it.inventoryStatus.priority
+                }
+                inventory.copy(accountingObjects = sortedAccountingObjects)
             }
-            inventory.copy(accountingObjects = sortedAccountingObjects)
+            Timber.d(
+                "Запрос на инвентарную ведомость выполнился за " +
+                        "result ${result.duration.inWholeMilliseconds}"
+            )
+
+            return@withContext result.value
         }
 
     suspend fun saveInventoryDocument(

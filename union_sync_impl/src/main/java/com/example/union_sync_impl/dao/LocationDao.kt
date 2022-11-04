@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SupportSQLiteQuery
+import com.example.union_sync_impl.entity.FullLocation
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
 
@@ -29,11 +30,31 @@ interface LocationDao {
     @Query("SELECT * FROM locationTypes WHERE id is :id LIMIT 1")
     suspend fun getLocationTypeById(id: String): LocationTypeDb?
 
-    @Query("SELECT * FROM location WHERE id IN (:ids)")
-    suspend fun getLocationsByIds(ids: List<String?>): List<LocationDb>
+    @Query(
+        "SELECT location.*," +
+                "" +
+                "locationTypes.id as locationTypes_id, " +
+                "locationTypes.parentId as locationTypes_parentId, " +
+                "locationTypes.name as locationTypes_name, " +
+                "locationTypes.catalogItemName as locationTypes_catalogItemName " +
+                "FROM location " +
+                "LEFT JOIN locationTypes ON UPPER(location.locationTypeId) LIKE UPPER(locationTypes.id) " +
+                "WHERE location.id IN (:ids)"
+    )
+    suspend fun getLocationsByIds(ids: List<String>): List<FullLocation>
 
-    @Query("SELECT * FROM location WHERE id is :id LIMIT 1")
-    suspend fun getLocationById(id: String?): LocationDb?
+    @Query(
+        "SELECT location.*," +
+                "" +
+                "locationTypes.id as locationTypes_id, " +
+                "locationTypes.parentId as locationTypes_parentId, " +
+                "locationTypes.name as locationTypes_name, " +
+                "locationTypes.catalogItemName as locationTypes_catalogItemName " +
+                "FROM location " +
+                "LEFT JOIN locationTypes ON UPPER(location.locationTypeId) LIKE UPPER(locationTypes.id) " +
+                "WHERE location.id is :id LIMIT 1"
+    )
+    suspend fun getLocationById(id: String?): FullLocation?
 
     @Query("SELECT * FROM location WHERE locationTypeId is :locationTypeId")
     suspend fun getLocationsByType(locationTypeId: String): List<LocationDb>
