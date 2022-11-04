@@ -50,7 +50,7 @@ class InventoryInteractor(
         repository.getInventoryById(id)
     }
 
-    fun changeParams(
+    suspend fun changeParams(
         params: List<ParamDomain>,
         newParams: List<ParamDomain>
     ): List<ParamDomain> {
@@ -60,43 +60,30 @@ class InventoryInteractor(
             if (newParam != null) {
                 mutableParams[index] = newParam
             }
-        }
-
-        return mutableParams
-    }
-
-    fun changeLocation(
-        params: List<ParamDomain>,
-        location: LocationParamDomain
-    ): List<ParamDomain> {
-        val mutableParams = params.toMutableList()
-        val locationIndex = params.indexOfFirst { it.type == ManualType.LOCATION_INVENTORY }
-        mutableParams[locationIndex] = location
-        return mutableParams
-    }
-
-    suspend fun changeStructural(
-        params: List<ParamDomain>,
-        structural: StructuralParamDomain
-    ): List<ParamDomain> {
-        val mutableParams = params.toMutableList()
-        val structuralIndex = params.indexOfFirst { it.type == structural.manualType }
-        mutableParams[structuralIndex] = structural.copy(filtered = false)
-
-        if (structural.type == ManualType.STRUCTURAL) {
-            val index = mutableParams.indexOfFirst { it.type == ManualType.BALANCE_UNIT }
-            if (index >= 0) {
-                val oldBalanceUnit = mutableParams[index]
-                val newBalanceUnitPath = structuralRepository.getBalanceUnitFullPath(
-                    structural.id,
-                    mutableListOf()
-                )
-                mutableParams[index] =
-                    (oldBalanceUnit as StructuralParamDomain).copy(structurals = newBalanceUnitPath.orEmpty())
+            if (newParam is StructuralParamDomain) {
+                changeBalanceUnit(mutableParams, newParam)
             }
         }
 
         return mutableParams
+    }
+
+    private suspend fun changeBalanceUnit(
+        params: MutableList<ParamDomain>,
+        structural: StructuralParamDomain
+    ) {
+        if (structural.type == ManualType.STRUCTURAL) {
+            val index = params.indexOfFirst { it.type == ManualType.BALANCE_UNIT }
+            if (index >= 0) {
+                val oldBalanceUnit = params[index]
+                val newBalanceUnitPath = structuralRepository.getBalanceUnitFullPath(
+                    structural.id,
+                    mutableListOf()
+                )
+                params[index] =
+                    (oldBalanceUnit as StructuralParamDomain).copy(structurals = newBalanceUnitPath.orEmpty())
+            }
+        }
     }
 
     fun clearParam(list: List<ParamDomain>, param: ParamDomain): List<ParamDomain> {

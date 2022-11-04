@@ -43,7 +43,10 @@ class SelectParamsRepositoryImpl(
     override suspend fun getStatuses(textQuery: String?): Flow<List<ParamDomain>> {
         return flow {
             emit(
-                enumsSynApi.getAllByType(enumType = EnumType.ACCOUNTING_OBJECT_STATUS)
+                enumsSynApi.getAllByType(
+                    enumType = EnumType.ACCOUNTING_OBJECT_STATUS,
+                    textQuery = textQuery
+                )
                     .map { it.toParam(ManualType.STATUS) })
         }.flowOn(coreDispatchers.io)
     }

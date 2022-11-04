@@ -11,10 +11,6 @@ import androidx.navigation.fragment.navArgs
 import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectResult
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
-import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
-import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
-import com.itrocket.union.location.presentation.store.LocationResult
-import com.itrocket.union.location.presentation.view.LocationComposeFragment
 import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
 import com.itrocket.union.nfcReader.presentation.view.NfcReaderComposeFragment
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
@@ -26,14 +22,11 @@ import com.itrocket.union.selectCount.presentation.store.SelectCountResult
 import com.itrocket.union.selectCount.presentation.view.SelectCountComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 import com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFragment
-import com.itrocket.union.structural.presentation.store.StructuralResult
-import com.itrocket.union.structural.presentation.view.StructuralComposeFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import ru.interid.scannerclient.domain.reader.ReaderMode
 import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
@@ -80,34 +73,12 @@ class TransitComposeFragment :
                 }
             ),
             FragmentResult(
-                resultCode = LocationComposeFragment.LOCATION_RESULT_CODE,
-                resultLabel = LocationComposeFragment.LOCATION_RESULT,
-                resultAction = {
-                    (it as LocationResult?)?.let {
-                        accept(
-                            TransitStore.Intent.OnLocationChanged(it)
-                        )
-                    }
-                }
-            ),
-            FragmentResult(
                 resultCode = SelectCountComposeFragment.SELECT_COUNT_RESULT_CODE,
                 resultLabel = SelectCountComposeFragment.SELECT_COUNT_RESULT_LABEL,
                 resultAction = {
                     (it as SelectCountResult?)?.let {
                         accept(
                             TransitStore.Intent.OnReserveCountSelected(it)
-                        )
-                    }
-                }
-            ),
-            FragmentResult(
-                resultCode = StructuralComposeFragment.STRUCTURAL_RESULT_CODE,
-                resultLabel = StructuralComposeFragment.STRUCTURAL_RESULT,
-                resultAction = {
-                    (it as StructuralResult?)?.let {
-                        accept(
-                            TransitStore.Intent.OnStructuralChanged(it)
                         )
                     }
                 }

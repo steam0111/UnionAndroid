@@ -26,7 +26,6 @@ import com.itrocket.union.inventories.InventoriesModule
 import com.itrocket.union.inventory.InventoryModule
 import com.itrocket.union.inventoryContainer.InventoryContainerModule
 import com.itrocket.union.inventoryCreate.InventoryCreateModule
-import com.itrocket.union.location.LocationModule
 import com.itrocket.union.manualInput.ManualInputModule
 import com.itrocket.union.moduleSettings.ModuleSettingsModule
 import com.itrocket.union.network.NetworkModule
@@ -48,7 +47,6 @@ import com.itrocket.union.selectCount.SelectCountModule
 import com.itrocket.union.selectParams.SelectParamsModule
 import com.itrocket.union.serverConnect.ServerConnectModule
 import com.itrocket.union.splash.SplashModule
-import com.itrocket.union.structural.StructuralModule
 import com.itrocket.union.switcher.SwitcherModule
 import com.itrocket.union.syncAll.SyncAllModule
 import com.itrocket.union.theme.ThemeModule
@@ -100,7 +98,6 @@ object Modules {
         InventoryContainerModule.module,
         InventoryCreateModule.module,
         InventoryModule.module,
-        LocationModule.module,
         ModuleSettingsModule.module,
         NetworkModule.module,
         NomenclatureDetailModule.module,
@@ -113,7 +110,6 @@ object Modules {
         ChooseActionModule.module,
         SelectCountModule.module,
         UnionPermissionsModule.module,
-        StructuralModule.module,
         SelectActionWithValuesBottomMenuModule.module,
         IdentifyModule.module,
         ChangeScanDataModule.module,

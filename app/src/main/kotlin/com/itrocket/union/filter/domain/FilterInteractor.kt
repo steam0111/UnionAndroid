@@ -9,18 +9,14 @@ import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.location.domain.dependencies.LocationRepository
 import com.itrocket.union.manual.CheckBoxParamDomain
-import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.Params
-import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.manual.getFilterLocationLastId
 import com.itrocket.union.manual.getFilterShowUtilizedAccountingObjects
 import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.nomenclature.domain.dependencies.NomenclatureRepository
 import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
 import com.itrocket.union.structural.domain.dependencies.StructuralRepository
-import kotlinx.coroutines.withContext
 
 class FilterInteractor(
     private val repository: FilterRepository,
@@ -39,12 +35,6 @@ class FilterInteractor(
     fun dropFilterFields(filters: List<ParamDomain>): List<ParamDomain> {
         return filters.toMutableList().map {
             it.toInitialState()
-        }
-    }
-
-    fun getDefaultTypeParams(params: Params): List<ParamDomain> {
-        return params.paramList.filter {
-            params.isDefaultParamType(it)
         }
     }
 
@@ -72,36 +62,6 @@ class FilterInteractor(
         newFilters[checkBoxIndex] = CheckBoxParamDomain(isChecked = isChecked)
         return newFilters
     }
-
-
-    suspend fun changeLocationFilter(
-        filters: List<ParamDomain>,
-        location: LocationParamDomain
-    ): List<ParamDomain> {
-        return withContext(coreDispatchers.io) {
-            val mutableFilters = filters.toMutableList()
-            val locationIndex = filters.indexOfFirst { it.type == ManualType.LOCATION }
-            if (locationIndex != NO_POSITION) {
-                mutableFilters[locationIndex] = location
-            }
-            mutableFilters
-        }
-    }
-
-    suspend fun changeStructuralFilter(
-        filters: List<ParamDomain>,
-        structural: StructuralParamDomain
-    ): List<ParamDomain> {
-        return withContext(coreDispatchers.io) {
-            val mutableFilters = filters.toMutableList()
-            val structuralIndex = filters.indexOfFirst { it.type == structural.manualType }
-            if (structuralIndex != NO_POSITION) {
-                mutableFilters[structuralIndex] = structural
-            }
-            mutableFilters
-        }
-    }
-
 
     suspend fun getResultCount(from: CatalogType?, params: List<ParamDomain>): Long {
         return when (from) {

@@ -17,7 +17,6 @@ class SelectParamsInteractor(
 ) {
 
     suspend fun getParamValues(
-        params: List<ParamDomain>,
         allParams: List<ParamDomain>,
         type: ManualType,
         searchText: String
@@ -58,9 +57,9 @@ class SelectParamsInteractor(
         paramValue: ParamDomain
     ): List<ParamDomain> {
         val mutableParams = params.toMutableList()
-        val currentParamValue = mutableParams[currentStep - 1].id
-        mutableParams[currentStep - 1] =
-            mutableParams[currentStep - 1].copy(
+        val currentParamValue = mutableParams[currentStep].id
+        mutableParams[currentStep] =
+            mutableParams[currentStep].copy(
                 id = if (currentParamValue != paramValue.id) {
                     paramValue.id
                 } else {

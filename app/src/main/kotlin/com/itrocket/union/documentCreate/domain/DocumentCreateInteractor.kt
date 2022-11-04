@@ -78,11 +78,27 @@ class DocumentCreateInteractor(
         val mutableParams = params.toMutableList()
         mutableParams.forEachIndexed { index, paramDomain ->
             val newParam = newParams.find { it.type == paramDomain.type }
+
             if (newParam != null) {
                 mutableParams[index] = newParam
             }
+
+            if (newParam is StructuralParamDomain) {
+                changeBalanceUnit(mutableParams, newParam)
+                changeMolInStructural(mutableParams, newParam)
+            }
         }
 
+        changeStructuralIMolChanged(params, newParams, mutableParams)
+
+        return mutableParams
+    }
+
+    private suspend fun changeStructuralIMolChanged(
+        params: List<ParamDomain>,
+        newParams: List<ParamDomain>,
+        mutableParams: MutableList<ParamDomain>
+    ) {
         val oldEmployee = params.find { it.type == ManualType.MOL_IN_STRUCTURAL }
         val newEmployee = newParams.find { it.type == ManualType.MOL_IN_STRUCTURAL }
 
@@ -98,40 +114,21 @@ class DocumentCreateInteractor(
                     newStructuralTo ?: oldStructuralTo!!.toInitialState()
             }
         }
-
-        return mutableParams
     }
 
-    fun changeLocation(
-        params: List<ParamDomain>,
-        location: LocationParamDomain
-    ): List<ParamDomain> {
-        val mutableParams = params.toMutableList()
-        val locationIndex = params.indexOfFirst { it.type == location.manualType }
-        mutableParams[locationIndex] = location.copy(filtered = false)
-        return mutableParams
-    }
-
-    suspend fun changeStructural(
-        params: List<ParamDomain>,
+    suspend fun changeMolInStructural(
+        params: MutableList<ParamDomain>,
         structural: StructuralParamDomain
-    ): List<ParamDomain> {
-        val mutableParams = params.toMutableList()
-        val structuralIndex = params.indexOfFirst { it.type == structural.manualType }
-        mutableParams[structuralIndex] = structural.copy(filtered = false)
-
-        changeBalanceUnit(mutableParams, structural)
+    ) {
 
         if (structural.type == ManualType.STRUCTURAL_TO) {
             val indexOfMolInStructuralTo =
-                mutableParams.indexOfFirst { it.type == ManualType.MOL_IN_STRUCTURAL }
+                params.indexOfFirst { it.type == ManualType.MOL_IN_STRUCTURAL }
             if (indexOfMolInStructuralTo >= 0) {
-                mutableParams[indexOfMolInStructuralTo] =
-                    mutableParams[indexOfMolInStructuralTo].toInitialState()
+                params[indexOfMolInStructuralTo] =
+                    params[indexOfMolInStructuralTo].toInitialState()
             }
         }
-
-        return mutableParams
     }
 
     private suspend fun changeBalanceUnit(
@@ -316,10 +313,6 @@ class DocumentCreateInteractor(
             accountingObjects = accountingObjects,
             reserves = reserves
         )
-    }
-
-    suspend fun getFilterParams(params: List<ParamDomain>) = withContext(coreDispatchers.io) {
-        params.filter { it.isFilter }
     }
 
     companion object {

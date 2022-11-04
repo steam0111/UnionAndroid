@@ -5,4 +5,7 @@ import com.itrocket.union.manual.ParamDomain
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class SelectParamsArguments(val params: List<ParamDomain>, val currentStep: Int, val allParams: List<ParamDomain>) : Parcelable
+data class SelectParamsArguments(
+    val currentFilter: ParamDomain,
+    val allParams: List<ParamDomain>
+) : Parcelable

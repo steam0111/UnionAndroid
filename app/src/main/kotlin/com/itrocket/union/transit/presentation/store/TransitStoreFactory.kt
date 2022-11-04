@@ -15,11 +15,7 @@ import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
-import com.itrocket.union.manual.LocationParamDomain
-import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.Params
-import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -33,7 +29,6 @@ import com.itrocket.union.transit.domain.TransitTypeDomain
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
-import com.itrocket.union.utils.ifBlankOrNull
 
 class TransitStoreFactory(
     private val storeFactory: StoreFactory,
@@ -142,13 +137,6 @@ class TransitStoreFactory(
                 )
                 is TransitStore.Intent.OnSelectPage -> dispatch(Result.SelectPage(intent.selectedPage))
                 TransitStore.Intent.OnSettingsClicked -> publish(TransitStore.Label.ShowReadingMode)
-                is TransitStore.Intent.OnLocationChanged -> {
-                    val params = documentCreateInteractor.changeLocation(
-                        getState().params,
-                        intent.location.location
-                    )
-                    changeParams(params = params)
-                }
                 is TransitStore.Intent.OnAccountingObjectSelected -> {
                     dispatch(
                         Result.AccountingObjects(
@@ -194,15 +182,6 @@ class TransitStoreFactory(
                         count = intent.reserve.itemsCount
                     )
                 )
-                is TransitStore.Intent.OnStructuralChanged -> {
-                    val params = documentCreateInteractor.changeStructural(
-                        getState().params,
-                        intent.structural.structural
-                    )
-                    changeParams(
-                        params = params
-                    )
-                }
                 is TransitStore.Intent.OnDismissConfirmDialog -> {
                     dispatch(Result.ConfirmDialogType(AlertType.NONE))
                 }
@@ -390,29 +369,10 @@ class TransitStoreFactory(
         }
 
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
-            when (param.type) {
-                ManualType.LOCATION, ManualType.LOCATION_FROM,
-                ManualType.RELOCATION_LOCATION_TO, ManualType.LOCATION_TO, ManualType.TRANSIT -> publish(
-                    TransitStore.Label.ShowLocation(param as LocationParamDomain)
-                )
-                ManualType.STRUCTURAL_TO, ManualType.STRUCTURAL_FROM -> publish(
-                    TransitStore.Label.ShowStructural(
-                        param as StructuralParamDomain
-                    )
-                )
-                else -> {
-                    val defaultTypeParams =
-                        filterInteractor.getDefaultTypeParams(Params(params))
-                    val currentStep = defaultTypeParams.indexOf(param) + 1
-                    publish(
-                        TransitStore.Label.ShowParamSteps(
-                            currentStep = currentStep,
-                            params = defaultTypeParams,
-                            allParams = params
-                        )
-                    )
-                }
-            }
+            TransitStore.Label.ShowParamSteps(
+                currentFilter = param,
+                allParams = params
+            )
         }
 
         private suspend fun onChooseAccountingObjectClicked(getState: () -> TransitStore.State) {

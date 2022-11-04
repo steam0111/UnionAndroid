@@ -15,9 +15,11 @@ import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 import com.itrocket.union.documentsMenu.presentation.view.DocumentMenuComposeFragmentDirections
 import com.itrocket.union.inventoryContainer.domain.InventoryContainerType
 import com.itrocket.union.inventoryContainer.presentation.store.InventoryContainerArguments
+import com.itrocket.union.manual.ManualType
+import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.nomenclature.presentation.store.NomenclatureArguments
 import com.itrocket.union.nomenclatureGroup.presentation.store.NomenclatureGroupArguments
-import com.itrocket.union.structural.presentation.store.StructuralArguments
+import com.itrocket.union.selectParams.presentation.store.SelectParamsArguments
 import com.itrocket.union.syncAll.presentation.store.SyncAllArguments
 
 interface DocumentMenuStore :
@@ -112,9 +114,21 @@ interface DocumentMenuStore :
                     R.string.producer -> DocumentMenuComposeFragmentDirections.toProducer()
                     R.string.equipment_types -> DocumentMenuComposeFragmentDirections.toEquipmentTypes()
                     R.string.sync -> DocumentMenuComposeFragmentDirections.toSync(SyncAllArguments((false)))
-                    R.string.manual_structural -> DocumentMenuComposeFragmentDirections.toStructural(
-                        StructuralArguments(canEdit = false)
-                    )
+                    R.string.manual_structural -> {
+                        val params =
+                            listOf(
+                                StructuralParamDomain(
+                                    manualType = ManualType.STRUCTURAL,
+                                    filtered = false
+                                )
+                            )
+                        DocumentMenuComposeFragmentDirections.toSelectParams(
+                            SelectParamsArguments(
+                                currentFilter = params.first(),
+                                allParams = params
+                            )
+                        )
+                    }
                     R.string.main_data_collect -> DocumentMenuComposeFragmentDirections.toDataCollect()
                     else -> null
                 }

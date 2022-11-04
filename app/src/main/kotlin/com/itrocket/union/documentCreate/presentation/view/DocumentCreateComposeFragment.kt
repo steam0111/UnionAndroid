@@ -1,7 +1,6 @@
 package com.itrocket.union.documentCreate.presentation.view
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -13,8 +12,6 @@ import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectR
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
 import com.itrocket.union.documentCreate.DocumentCreateModule.DOCUMENTCREATE_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
-import com.itrocket.union.location.presentation.store.LocationResult
-import com.itrocket.union.location.presentation.view.LocationComposeFragment
 import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
 import com.itrocket.union.nfcReader.presentation.view.NfcReaderComposeFragment
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
@@ -26,8 +23,6 @@ import com.itrocket.union.selectCount.presentation.store.SelectCountResult
 import com.itrocket.union.selectCount.presentation.view.SelectCountComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 import com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFragment
-import com.itrocket.union.structural.presentation.store.StructuralResult
-import com.itrocket.union.structural.presentation.view.StructuralComposeFragment
 import com.itrocket.union.utils.fragment.displayError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -79,28 +74,7 @@ class DocumentCreateComposeFragment :
                     }
                 }
             ),
-            FragmentResult(
-                resultCode = LocationComposeFragment.LOCATION_RESULT_CODE,
-                resultLabel = LocationComposeFragment.LOCATION_RESULT,
-                resultAction = {
-                    (it as LocationResult?)?.let {
-                        accept(
-                            DocumentCreateStore.Intent.OnLocationChanged(it)
-                        )
-                    }
-                }
-            ),
-            FragmentResult(
-                resultCode = StructuralComposeFragment.STRUCTURAL_RESULT_CODE,
-                resultLabel = StructuralComposeFragment.STRUCTURAL_RESULT,
-                resultAction = {
-                    (it as StructuralResult?)?.let {
-                        accept(
-                            DocumentCreateStore.Intent.OnStructuralChanged(it)
-                        )
-                    }
-                }
-            ),
+
             FragmentResult(
                 resultCode = SelectCountComposeFragment.SELECT_COUNT_RESULT_CODE,
                 resultLabel = SelectCountComposeFragment.SELECT_COUNT_RESULT_LABEL,

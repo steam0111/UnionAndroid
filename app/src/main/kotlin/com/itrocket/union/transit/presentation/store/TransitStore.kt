@@ -12,15 +12,9 @@ import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectArguments
-import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
 import com.itrocket.union.alertType.AlertType
-import com.itrocket.union.documentCreate.presentation.view.DocumentCreateComposeFragmentDirections
 import com.itrocket.union.documents.domain.entity.DocumentDomain
-import com.itrocket.union.location.presentation.store.LocationArguments
-import com.itrocket.union.location.presentation.store.LocationResult
-import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ParamDomain
-import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.nfcReader.domain.entity.NfcReaderType
 import com.itrocket.union.nfcReader.presentation.store.NfcReaderArguments
 import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
@@ -34,8 +28,6 @@ import com.itrocket.union.selectCount.presentation.store.SelectCountArguments
 import com.itrocket.union.selectCount.presentation.store.SelectCountResult
 import com.itrocket.union.selectCount.presentation.view.SelectCountComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsArguments
-import com.itrocket.union.structural.presentation.store.StructuralArguments
-import com.itrocket.union.structural.presentation.store.StructuralResult
 import com.itrocket.union.transit.presentation.view.TransitComposeFragmentDirections
 
 interface TransitStore : Store<TransitStore.Intent, TransitStore.State, TransitStore.Label> {
@@ -65,9 +57,7 @@ interface TransitStore : Store<TransitStore.Intent, TransitStore.State, TransitS
         data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :
             Intent()
 
-        data class OnLocationChanged(val location: LocationResult) : Intent()
         data class OnReserveClicked(val reserve: ReservesDomain) : Intent()
-        data class OnStructuralChanged(val structural: StructuralResult) : Intent()
         data class OnNfcReaderClose(val nfcReaderResult: NfcReaderResult) : Intent()
         data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
         data class OnManualInput(val readingModeResult: ReadingModeResult) : Intent()
@@ -91,22 +81,6 @@ interface TransitStore : Store<TransitStore.Intent, TransitStore.State, TransitS
     sealed class Label {
         object GoBack : Label(), GoBackNavigationLabel
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
-
-        data class ShowLocation(val location: LocationParamDomain) : Label(),
-            ForwardNavigationLabel {
-            override val directions: NavDirections
-                get() = TransitComposeFragmentDirections.toLocation(
-                    LocationArguments(location = location)
-                )
-        }
-
-        data class ShowStructural(val structural: StructuralParamDomain) : Label(),
-            ForwardNavigationLabel {
-            override val directions: NavDirections
-                get() = TransitComposeFragmentDirections.toStructural(
-                    StructuralArguments(structural = structural, canEdit = true)
-                )
-        }
 
         data class ShowAccountingObjects(
             val params: List<ParamDomain>,
@@ -139,15 +113,13 @@ interface TransitStore : Store<TransitStore.Intent, TransitStore.State, TransitS
         }
 
         data class ShowParamSteps(
-            val currentStep: Int,
-            val params: List<ParamDomain>,
+            val currentFilter: ParamDomain,
             val allParams: List<ParamDomain>
         ) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = TransitComposeFragmentDirections.toSelectParams(
                     SelectParamsArguments(
-                        params = params,
-                        currentStep = currentStep,
+                        currentFilter = currentFilter,
                         allParams = allParams
                     )
                 )

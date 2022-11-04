@@ -150,9 +150,6 @@ private fun getAccountingObjectParams(
     addEmployeeParam(
         params = params,
         employee = exploiting,
-        isFilterExpression = {
-            type == DocumentTypeDomain.RETURN
-        },
         manualType = ManualType.EXPLOITING,
         manualTypes = type.manualTypes
     )
@@ -176,7 +173,6 @@ private fun addStructuralParam(
         val structuralParam = StructuralParamDomain(
             manualType = manualType,
             structurals = destinations?.map { it.toStructuralDomain() }.orEmpty(),
-            filtered = false,
             clickable = isClickable
         )
         params.add(structuralParam)
@@ -203,8 +199,7 @@ private fun addLocationParam(
     if (types.contains(manualType)) {
         val locationParam = LocationParamDomain(
             manualType = manualType,
-            locations = destinations?.map { it.toLocationDomain() }.orEmpty(),
-            filtered = false
+            locations = destinations?.map { it.toLocationDomain() }.orEmpty()
         )
         params.add(locationParam)
     }
@@ -214,7 +209,6 @@ private fun addEmployeeParam(
     params: MutableList<ParamDomain>,
     employee: EmployeeSyncEntity?,
     manualType: ManualType,
-    isFilterExpression: () -> Boolean = { false },
     manualTypes: List<ManualType>
 ) {
     if (manualTypes.contains(manualType)) {
@@ -223,8 +217,7 @@ private fun addEmployeeParam(
             ParamDomain(
                 id = employee?.id.orEmpty(),
                 value = employeeValue,
-                type = manualType,
-                isFilter = isFilterExpression()
+                type = manualType
             )
         )
     }
