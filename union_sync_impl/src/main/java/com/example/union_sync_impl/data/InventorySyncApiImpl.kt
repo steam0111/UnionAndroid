@@ -198,12 +198,13 @@ class InventorySyncApiImpl(
         inventoryId: String,
         userUpdated: String?
     ) {
-        val existRecords = inventoryRecordDao.getAll(
-            sqlInventoryRecordQuery(
-                inventoryId = inventoryId,
-                accountingObjectIds = accountingObjectIds.map { it.id }
-            )
-        )
+        val mappedIds = accountingObjectIds.map { it.id }
+        val records = inventoryRecordDao.getAll(
+            sqlInventoryRecordQuery(inventoryId = inventoryId)
+        ).map {
+            it.copy(cancel = !mappedIds.contains(it.accountingObjectId))
+        }
+        val existRecords = records.filter { mappedIds.contains(it.accountingObjectId) }
         val newRecords = accountingObjectIds.map { info ->
             val existRecord = existRecords.find { it.accountingObjectId == info.id }
             val updateDate = if (existRecord?.inventoryStatus == info.status) {
@@ -228,6 +229,10 @@ class InventorySyncApiImpl(
             .d("updateRecords newRecords size : ${newRecords.size}")
 
         inventoryRecordDao.insertAll(newRecords)
+
+        val removedAccountingObjects = records.filter { it.cancel == true }
+            .map { it.copy(updateDate = System.currentTimeMillis()) }
+        inventoryRecordDao.insertAll(removedAccountingObjects)
     }
 
     private fun getInventoryStatus(

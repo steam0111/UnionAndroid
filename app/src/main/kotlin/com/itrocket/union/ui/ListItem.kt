@@ -40,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectStatus
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
@@ -67,6 +66,7 @@ fun AccountingObjectItem(
     accountingObject: AccountingObjectDomain,
     onAccountingObjectListener: (AccountingObjectDomain) -> Unit,
     onDeleteClickListener: (String) -> Unit = {},
+    onStatusClickListener: () -> Unit = {},
     status: Status?,
     isShowBottomLine: Boolean,
     statusText: String? = null,
@@ -112,7 +112,13 @@ fun AccountingObjectItem(
                 }
             }
             Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
-                status?.let { SmallStatusLabel(status = it, statusText) }
+                status?.let {
+                    SmallStatusLabel(
+                        status = it,
+                        text = statusText,
+                        onClick = onStatusClickListener
+                    )
+                }
                 if (status is ObjectStatusType && isShowScanInfo && (accountingObject.hasBarcode || accountingObject.hasRfid)) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(

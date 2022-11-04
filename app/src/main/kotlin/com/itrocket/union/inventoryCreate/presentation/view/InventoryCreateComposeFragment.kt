@@ -7,6 +7,8 @@ import androidx.lifecycle.lifecycleScope
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
+import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailResult
+import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailComposeFragment
 import com.itrocket.union.inventoryCreate.InventoryCreateModule.INVENTORYCREATE_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
@@ -71,6 +73,17 @@ class InventoryCreateComposeFragment :
                     }
                 }
             ),
+            FragmentResult(
+                resultCode = AccountingObjectDetailComposeFragment.ACCOUNTING_OBJECT_DETAIL_RESULT_CODE,
+                resultLabel = AccountingObjectDetailComposeFragment.ACCOUNTING_OBJECT_DETAIL_RESULT_LABEL,
+                resultAction = {
+                    (it as AccountingObjectDetailResult?)?.let {
+                        accept(
+                            InventoryCreateStore.Intent.OnAccountingObjectChanged(it.accountingObject)
+                        )
+                    }
+                }
+            ),
         )
 
     private val serviceEntryManager: ServiceEntryManager by inject()
@@ -130,6 +143,15 @@ class InventoryCreateComposeFragment :
                 },
                 onSearchClickListener = {
                     accept(InventoryCreateStore.Intent.OnSearchClicked)
+                },
+                onDeleteConfirmClickListener = {
+                    accept(InventoryCreateStore.Intent.OnDeleteConfirmClicked)
+                },
+                onDeleteDismissClickListener = {
+                    accept(InventoryCreateStore.Intent.OnDeleteDismissClicked)
+                },
+                onStatusClickListener = {
+                    accept(InventoryCreateStore.Intent.OnStatusClicked(it))
                 }
             )
         }

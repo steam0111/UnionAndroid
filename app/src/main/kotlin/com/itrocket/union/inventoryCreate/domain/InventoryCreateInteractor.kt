@@ -26,7 +26,11 @@ class InventoryCreateInteractor(
 
     suspend fun getInventoryById(id: String) =
         withContext(coreDispatchers.io) {
-            inventoryRepository.getInventoryById(id)
+            val inventory = inventoryRepository.getInventoryById(id)
+            val sortedAccountingObjects = inventory.accountingObjects.sortedBy {
+                it.inventoryStatus.priority
+            }
+            inventory.copy(accountingObjects = sortedAccountingObjects)
         }
 
     suspend fun saveInventoryDocument(
@@ -39,6 +43,70 @@ class InventoryCreateInteractor(
                 userUpdated = authMainInteractor.getLogin()
             ).toUpdateSyncEntity()
         )
+    }
+
+    suspend fun removeAccountingObject(
+        accountingObjectId: String,
+        newAccountingObjects: List<AccountingObjectDomain>,
+        accountingObjects: List<AccountingObjectDomain>
+    ): InventoryAccountingObjectsDomain {
+        return withContext(coreDispatchers.io) {
+            val mutableAccountingObjects = accountingObjects.toMutableList()
+            val mutableNewAccountingObjects = newAccountingObjects.toMutableList()
+
+            val existAccountingObjectIndex =
+                mutableAccountingObjects.indexOfFirst { it.id == accountingObjectId }
+            val newAccountingObjectIndex =
+                mutableNewAccountingObjects.indexOfFirst { it.id == accountingObjectId }
+
+            if (existAccountingObjectIndex >= 0) {
+                mutableAccountingObjects.removeAt(existAccountingObjectIndex)
+            } else if (newAccountingObjectIndex >= 0) {
+                mutableNewAccountingObjects.removeAt(newAccountingObjectIndex)
+            }
+
+            InventoryAccountingObjectsDomain(
+                createdAccountingObjects = mutableAccountingObjects,
+                newAccountingObjects = mutableNewAccountingObjects
+            )
+        }
+    }
+
+    suspend fun changeAccountingObject(
+        accountingObjects: List<AccountingObjectDomain>,
+        newAccountingObjects: List<AccountingObjectDomain>,
+        accountingObject: AccountingObjectDomain
+    ): InventoryAccountingObjectsDomain {
+        return withContext(coreDispatchers.io) {
+            val mutableAccountingObjects = accountingObjects.toMutableList()
+            val mutableNewAccountingObjects = newAccountingObjects.toMutableList()
+
+            val existAccountingObjectIndex =
+                mutableAccountingObjects.indexOfFirst { it.id == accountingObject.id }
+            val newAccountingObjectIndex =
+                mutableNewAccountingObjects.indexOfFirst { it.id == accountingObject.id }
+
+            if (existAccountingObjectIndex >= 0) {
+                mutableAccountingObjects[existAccountingObjectIndex] =
+                    mutableAccountingObjects[existAccountingObjectIndex].copy(
+                        rfidValue = accountingObject.rfidValue,
+                        barcodeValue = accountingObject.barcodeValue,
+                        factoryNumber = accountingObject.factoryNumber
+                    )
+            } else if (newAccountingObjectIndex >= 0) {
+                mutableNewAccountingObjects[newAccountingObjectIndex] =
+                    mutableNewAccountingObjects[newAccountingObjectIndex].copy(
+                        rfidValue = accountingObject.rfidValue,
+                        barcodeValue = accountingObject.barcodeValue,
+                        factoryNumber = accountingObject.factoryNumber
+                    )
+            }
+
+            InventoryAccountingObjectsDomain(
+                createdAccountingObjects = mutableAccountingObjects,
+                newAccountingObjects = mutableNewAccountingObjects
+            )
+        }
     }
 
     suspend fun handleNewAccountingObjectRfids(
@@ -179,41 +247,26 @@ class InventoryCreateInteractor(
         return !accountingObjects.contains(newAccountingObject) || newAccountingObject.inventoryStatus == InventoryAccountingObjectStatus.NEW
     }
 
-    private suspend fun getHandlesAccountingObjectByRfid(rfids: List<String>): List<AccountingObjectDomain> {
-        return accountingObjectRepository.getAccountingObjectsByRfids(rfids)
-            .map {
-                it.copy(inventoryStatus = InventoryAccountingObjectStatus.NEW)
+    suspend fun changeStatus(
+        accountingObjects: List<AccountingObjectDomain>,
+        accountingObjectId: String
+    ): List<AccountingObjectDomain> {
+        return withContext(coreDispatchers.io) {
+            val mutableAccountingObjects = accountingObjects.toMutableList()
+            val index = mutableAccountingObjects.indexOfFirst { it.id == accountingObjectId }
+            if (index >= 0) {
+                val findAccountingObject = mutableAccountingObjects[index]
+                val newStatus =
+                    if (findAccountingObject.inventoryStatus == InventoryAccountingObjectStatus.FOUND) {
+                        InventoryAccountingObjectStatus.NOT_FOUND
+                    } else {
+                        InventoryAccountingObjectStatus.FOUND
+                    }
+                mutableAccountingObjects[index] =
+                    findAccountingObject.copy(inventoryStatus = newStatus)
             }
-    }
-
-    private suspend fun getHandleAccountingObjectByBarcode(
-        barcode: String,
-        isSerialNumber: Boolean
-    ): AccountingObjectDomain? {
-        return if (isSerialNumber) {
-            accountingObjectRepository.getAccountingObjectsByBarcode(
-                barcode = null,
-                serialNumber = barcode
-            )
-        } else {
-            accountingObjectRepository.getAccountingObjectsByBarcode(
-                barcode = barcode,
-                serialNumber = null
-            )
-        }?.copy(inventoryStatus = InventoryAccountingObjectStatus.NEW)
-
-    }
-
-    private fun changeStatusByIndex(
-        accountingObjects: MutableList<AccountingObjectDomain>,
-        index: Int
-    ) {
-        val accountingObject = accountingObjects[index]
-        accountingObjects.removeAt(index)
-        accountingObjects.add(
-            0,
-            accountingObject.copy(inventoryStatus = InventoryAccountingObjectStatus.FOUND)
-        )
+            mutableAccountingObjects
+        }
     }
 
     suspend fun searchAccountingObjects(
@@ -254,6 +307,43 @@ class InventoryCreateInteractor(
             new = accountingObjects.filter {
                 it.inventoryStatus == InventoryAccountingObjectStatus.NEW
             }.size + newAccountingObjects.size
+        )
+    }
+
+    private suspend fun getHandlesAccountingObjectByRfid(rfids: List<String>): List<AccountingObjectDomain> {
+        return accountingObjectRepository.getAccountingObjectsByRfids(rfids)
+            .map {
+                it.copy(inventoryStatus = InventoryAccountingObjectStatus.NEW)
+            }
+    }
+
+    private suspend fun getHandleAccountingObjectByBarcode(
+        barcode: String,
+        isSerialNumber: Boolean
+    ): AccountingObjectDomain? {
+        return if (isSerialNumber) {
+            accountingObjectRepository.getAccountingObjectsByBarcode(
+                barcode = null,
+                serialNumber = barcode
+            )
+        } else {
+            accountingObjectRepository.getAccountingObjectsByBarcode(
+                barcode = barcode,
+                serialNumber = null
+            )
+        }?.copy(inventoryStatus = InventoryAccountingObjectStatus.NEW)
+
+    }
+
+    private fun changeStatusByIndex(
+        accountingObjects: MutableList<AccountingObjectDomain>,
+        index: Int
+    ) {
+        val accountingObject = accountingObjects[index]
+        accountingObjects.removeAt(index)
+        accountingObjects.add(
+            0,
+            accountingObject.copy(inventoryStatus = InventoryAccountingObjectStatus.FOUND)
         )
     }
 

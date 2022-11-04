@@ -30,7 +30,6 @@ import com.itrocket.union.location.LocationModule
 import com.itrocket.union.manualInput.ManualInputModule
 import com.itrocket.union.moduleSettings.ModuleSettingsModule
 import com.itrocket.union.network.NetworkModule
-import com.itrocket.union.newAccountingObject.NewAccountingObjectModule
 import com.itrocket.union.nfcReader.NfcReaderModule
 import com.itrocket.union.nomenclature.NomenclatureModule
 import com.itrocket.union.nomenclatureDetail.NomenclatureDetailModule
@@ -84,7 +83,6 @@ object Modules {
         SyncModule.module,
         InventoryCreateModule.module,
         EmployeeModule.module,
-        NewAccountingObjectModule.module,
         SwitcherModule.module,
         InventoriesModule.module,
         DocumentCreateModule.module,
@@ -105,7 +103,6 @@ object Modules {
         LocationModule.module,
         ModuleSettingsModule.module,
         NetworkModule.module,
-        NewAccountingObjectModule.module,
         NomenclatureDetailModule.module,
         NomenclatureGroupDetailModule.module,
         SyncAllModule.module,

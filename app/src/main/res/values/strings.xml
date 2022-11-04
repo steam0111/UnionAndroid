@@ -43,6 +43,7 @@
     <string name="common_user_update">Пользователь обновил</string>
     <string name="common_sub_name">Доп. наименование</string>
     <string name="common_invoice_number">Номер накладной</string>
+    <string name="common_ao_delete">ОУ будет удален. Подтвердите действие</string>
     <string name="value_not_defined">Значение не задано</string>
 
     <!-- Splash -->

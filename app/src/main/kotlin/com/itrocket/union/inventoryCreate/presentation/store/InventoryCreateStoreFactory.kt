@@ -7,7 +7,6 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
-import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.error.ErrorInteractor
@@ -19,7 +18,6 @@ import com.itrocket.union.inventoryCreate.domain.entity.AccountingObjectCounter
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
-import com.itrocket.union.newAccountingObject.presentation.store.NewAccountingObjectArguments
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
@@ -98,9 +96,8 @@ class InventoryCreateStoreFactory(
         ) {
             when (intent) {
                 InventoryCreateStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
-                is InventoryCreateStore.Intent.OnAccountingObjectClicked -> handleAccountingObjectClicked(
-                    accountingObjects = getState().inventoryDocument.accountingObjects,
-                    accountingObject = intent.accountingObject
+                is InventoryCreateStore.Intent.OnAccountingObjectClicked -> publish(
+                    InventoryCreateStore.Label.ShowAccountingObjectDetail(intent.accountingObject)
                 )
                 InventoryCreateStore.Intent.OnAddNewClicked -> {
                     dispatch(Result.AddNew(!getState().isAddNew))
@@ -203,6 +200,79 @@ class InventoryCreateStoreFactory(
                         AlertType.NONE
                     )
                 )
+                InventoryCreateStore.Intent.OnDeleteConfirmClicked -> onDeleteConfirmed(getState)
+                InventoryCreateStore.Intent.OnDeleteDismissClicked -> dispatch(
+                    Result.DialogType(
+                        AlertType.NONE
+                    )
+                )
+                is InventoryCreateStore.Intent.OnStatusClicked -> onStatusClicked(
+                    getState = getState,
+                    accountingObject = intent.accountingObject
+                )
+                is InventoryCreateStore.Intent.OnAccountingObjectChanged -> {
+                    onAccountingObjectChanged(
+                        getState = getState,
+                        accountingObject = intent.accountingObject
+                    )
+                }
+            }
+        }
+
+        private suspend fun onAccountingObjectChanged(
+            getState: () -> InventoryCreateStore.State,
+            accountingObject: AccountingObjectDomain
+        ) {
+            val inventoryAccountingObjects = inventoryCreateInteractor.changeAccountingObject(
+                accountingObjects = getState().inventoryDocument.accountingObjects,
+                newAccountingObjects = getState().newAccountingObjects.toList(),
+                accountingObject = accountingObject
+            )
+            dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
+            dispatch(Result.NewAccountingObjects(inventoryAccountingObjects.newAccountingObjects.toSet()))
+        }
+
+        private suspend fun onDeleteConfirmed(getState: () -> InventoryCreateStore.State) {
+            dispatch(Result.DialogType(AlertType.NONE))
+
+            val inventoryAccountingObjects = inventoryCreateInteractor.removeAccountingObject(
+                accountingObjects = getState().inventoryDocument.accountingObjects,
+                newAccountingObjects = getState().newAccountingObjects.toList(),
+                accountingObjectId = getState().dialogRemovedItemId
+            )
+            dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
+            dispatch(Result.NewAccountingObjects(inventoryAccountingObjects.newAccountingObjects.toSet()))
+
+            dispatch(Result.DialogRemovedItemId(""))
+
+            tryDynamicSendInventorySave(
+                getState = getState,
+                accountingObjects = getState().inventoryDocument.accountingObjects,
+                newAccountingObjects = getState().newAccountingObjects.toList()
+            )
+        }
+
+        private suspend fun onStatusClicked(
+            getState: () -> InventoryCreateStore.State,
+            accountingObject: AccountingObjectDomain,
+        ) {
+            if (accountingObject.inventoryStatus != InventoryAccountingObjectStatus.NEW) {
+                dispatch(
+                    Result.AccountingObjects(
+                        inventoryCreateInteractor.changeStatus(
+                            accountingObjects = getState().inventoryDocument.accountingObjects,
+                            accountingObjectId = accountingObject.id
+                        )
+                    )
+                )
+                tryDynamicSendInventorySave(
+                    getState = getState,
+                    accountingObjects = getState().inventoryDocument.accountingObjects,
+                    newAccountingObjects = getState().newAccountingObjects.toList()
+                )
+            } else {
+                dispatch(Result.DialogRemovedItemId(accountingObject.id))
+                dispatch(Result.DialogType(AlertType.DELETE))
             }
         }
 
@@ -397,39 +467,6 @@ class InventoryCreateStoreFactory(
             }
         }
 
-        private fun handleAccountingObjectClicked(
-            accountingObjects: List<AccountingObjectDomain>,
-            accountingObject: AccountingObjectDomain
-        ) {
-            if (!inventoryCreateInteractor.isNewAccountingObject(
-                    accountingObjects = accountingObjects,
-                    newAccountingObject = accountingObject
-                )
-            ) {
-                publish(
-                    InventoryCreateStore.Label.ShowChangeStatus(
-                        SwitcherDomain(
-                            titleId = R.string.switcher_accounting_object_status,
-                            values = listOf(
-                                InventoryAccountingObjectStatus.NOT_FOUND,
-                                InventoryAccountingObjectStatus.FOUND
-                            ),
-                            currentValue = accountingObject.inventoryStatus,
-                            entityId = accountingObject.id
-                        )
-                    )
-                )
-            } else {
-                publish(
-                    InventoryCreateStore.Label.ShowNewAccountingObjectDetail(
-                        NewAccountingObjectArguments(
-                            accountingObject.id
-                        )
-                    )
-                )
-            }
-        }
-
         private suspend fun saveInventory(
             inventoryDocument: InventoryCreateDomain,
             accountingObjects: List<AccountingObjectDomain>
@@ -526,6 +563,7 @@ class InventoryCreateStoreFactory(
         data class SearchAccountingObjects(val searchAccountingObjects: List<AccountingObjectDomain>) :
             Result()
 
+        data class DialogRemovedItemId(val accountingObjectId: String) : Result()
         data class IsDynamicSaveInventory(val isDynamicSaveInventory: Boolean) : Result()
         data class CanUpdate(val canUpdate: Boolean) : Result()
         data class CountOfAccountingObjects(
@@ -554,6 +592,7 @@ class InventoryCreateStoreFactory(
                 is Result.IsDynamicSaveInventory -> copy(isDynamicSaveInventory = result.isDynamicSaveInventory)
                 is Result.CountOfAccountingObjects -> copy(accountingObjectCounter = result.accountingObjectCounter)
                 is Result.DialogType -> copy(dialogType = result.dialogType)
+                is Result.DialogRemovedItemId -> copy(dialogRemovedItemId = result.accountingObjectId)
             }
     }
 }

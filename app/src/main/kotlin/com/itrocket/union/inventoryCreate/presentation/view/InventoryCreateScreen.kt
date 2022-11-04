@@ -68,8 +68,11 @@ fun InventoryCreateScreen(
     onSaveDismissClickListener: () -> Unit,
     onCompleteConfirmClickListener: () -> Unit,
     onCompleteDismissClickListener: () -> Unit,
+    onDeleteConfirmClickListener: () -> Unit,
+    onDeleteDismissClickListener: () -> Unit,
     onSearchTextChanged: (String) -> Unit,
-    onSearchClickListener: () -> Unit
+    onSearchClickListener: () -> Unit,
+    onStatusClickListener: (AccountingObjectDomain) -> Unit,
 ) {
     AppTheme {
         Scaffold(
@@ -100,6 +103,7 @@ fun InventoryCreateScreen(
                     onAccountingObjectClickListener = onAccountingObjectClickListener,
                     onFinishClickListener = onFinishClickListener,
                     onSaveClickListener = onSaveClickListener,
+                    onStatusClickListener = onStatusClickListener
                 )
             },
             modifier = Modifier.padding(
@@ -117,6 +121,13 @@ fun InventoryCreateScreen(
                 onDismiss = onCompleteDismissClickListener,
                 onConfirmClick = onCompleteConfirmClickListener,
                 textRes = R.string.inventory_complete_dialog
+            )
+            AlertType.DELETE -> ConfirmAlertDialog(
+                onDismiss = onDeleteDismissClickListener,
+                onConfirmClick = onDeleteConfirmClickListener,
+                textRes = R.string.common_ao_delete,
+                confirmTextRes = R.string.common_yes,
+                dismissTextRes = R.string.common_no
             )
         }
     }
@@ -143,6 +154,7 @@ private fun Content(
     onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit,
     onFinishClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
+    onStatusClickListener: (AccountingObjectDomain) -> Unit,
 ) {
     val accountingObjectList = getAccountingObjects(state)
     Column(
@@ -186,6 +198,7 @@ private fun Content(
                 AccountingObjectItem(
                     accountingObject = item,
                     onAccountingObjectListener = onAccountingObjectClickListener,
+                    onStatusClickListener = { onStatusClickListener(item) },
                     isShowBottomLine = isShowBottomLine,
                     status = item.inventoryStatus,
                     isEnabled = state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED && state.canUpdate
@@ -467,6 +480,25 @@ fun InventoryCreateScreenPreview() {
             userUpdated = ""
         ),
         readingModeTab = ReadingModeTab.RFID
-    ), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
+    ),
+        AppInsets(previewTopInsetDp),
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+    )
 }
 

@@ -1,6 +1,8 @@
 package com.itrocket.union.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -19,13 +21,14 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.accountingObjects.domain.entity.Status
 
 @Composable
-fun SmallStatusLabel(status: Status, text: String?) {
+fun SmallStatusLabel(status: Status, text: String?, onClick: () -> Unit = {}) {
     BaseLabel(
         text = text,
         status = status,
         verticalPadding = 4.dp,
         horizontalPadding = 8.dp,
-        textStyle = AppTheme.typography.caption
+        textStyle = AppTheme.typography.caption,
+        onClick = onClick
     )
 }
 
@@ -51,7 +54,8 @@ private fun BaseLabel(
     text: String?,
     verticalPadding: Dp,
     horizontalPadding: Dp,
-    textStyle: TextStyle
+    textStyle: TextStyle,
+    onClick: () -> Unit = {},
 ) {
     Text(
         text = text ?: status.textId?.let { stringResource(it) } ?: status.text.orEmpty(),
@@ -61,6 +65,11 @@ private fun BaseLabel(
             .background(
                 Color(status.backgroundColor.toULong()),
                 RoundedCornerShape(111.dp)
+            )
+            .clickable(
+                interactionSource = MutableInteractionSource(),
+                indication = null,
+                onClick = onClick
             )
             .padding(vertical = verticalPadding, horizontal = horizontalPadding)
     )

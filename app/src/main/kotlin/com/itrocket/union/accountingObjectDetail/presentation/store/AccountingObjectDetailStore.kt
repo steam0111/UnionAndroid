@@ -8,14 +8,16 @@ import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
+import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailComposeFragment.Companion.ACCOUNTING_OBJECT_DETAIL_RESULT_CODE
+import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailComposeFragment.Companion.ACCOUNTING_OBJECT_DETAIL_RESULT_LABEL
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.changeScanData.domain.entity.ChangeScanType
 import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataArguments
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment.Companion.CHANGE_SCAN_DATA_ARGS
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
-import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 
 interface AccountingObjectDetailStore :
     Store<AccountingObjectDetailStore.Intent, AccountingObjectDetailStore.State, AccountingObjectDetailStore.Label> {
@@ -42,7 +44,16 @@ interface AccountingObjectDetailStore :
 
     sealed class Label {
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
-        object GoBack : Label(), GoBackNavigationLabel
+        data class GoBack(override val result: AccountingObjectDetailResult? = null) : Label(),
+            GoBackNavigationLabel {
+
+            override val resultCode: String
+                get() = ACCOUNTING_OBJECT_DETAIL_RESULT_CODE
+
+            override val resultLabel: String
+                get() = ACCOUNTING_OBJECT_DETAIL_RESULT_LABEL
+        }
+
         data class ShowReadingMode(val readingMode: ReadingModeTab) : Label(),
             ShowBottomSheetNavigationLabel {
 
