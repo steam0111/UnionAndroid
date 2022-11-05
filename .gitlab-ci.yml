@@ -24,7 +24,6 @@ testTrelloIntegration:
   tags:
     - android
   script:
-    - ls
     - java -jar Rocket_Bot/releaseJar/UnionTrelloIntegrate-1.0-SNAPSHOT.jar "$TRELLO_TOKEN" "$TRELLO_API_KEY" "тестовое сообщение" "$TRELLO_LIST_ID"
   when: manual
 
