@@ -34,7 +34,8 @@ class ReserveSyncApiImpl(
         textQuery: String?,
         locationIds: List<String?>?,
         offset: Long?,
-        limit: Long?
+        limit: Long?,
+        hideZeroReserves: Boolean
     ): List<ReserveSyncEntity> {
         return reserveDao.getAll(
             sqlReserveQuery(
@@ -49,7 +50,8 @@ class ReserveSyncApiImpl(
                 locationIds = locationIds,
                 reservesShorts = reservesShorts,
                 offset = offset,
-                limit = limit
+                limit = limit,
+                hideZeroReserves = hideZeroReserves
             )
         )
             .map { it.toSyncEntity(location = listOfNotNull(locationSyncApi.getLocationById(it.locationDb?.parentId))) }
@@ -78,7 +80,8 @@ class ReserveSyncApiImpl(
         nomenclatureGroupId: String?,
         orderId: String?,
         receptionItemCategoryId: String?,
-        locationIds: List<String?>?
+        locationIds: List<String?>?,
+        hideZeroReserves: Boolean
     ): Long {
         return reserveDao.getFilterCount(
             sqlReserveQuery(
@@ -88,7 +91,8 @@ class ReserveSyncApiImpl(
                 orderId = orderId,
                 receptionItemCategoryId = receptionItemCategoryId,
                 isFilterCount = true,
-                locationIds = locationIds
+                locationIds = locationIds,
+                hideZeroReserves = hideZeroReserves
             )
         )
     }

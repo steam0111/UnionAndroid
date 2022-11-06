@@ -61,10 +61,12 @@ class FilterStoreFactory(
         ) {
             when (intent) {
                 is FilterStore.Intent.OnFieldClicked -> showFilters(intent.filter, getState)
-                is FilterStore.Intent.OnShowUtilizedClick -> {
-                    val newFilters = filterInteractor.changeIsShowUtilisedFilter(
+                is FilterStore.Intent.OnCheckBoxClick -> {
+
+                    val newFilters = filterInteractor.changeCheckboxFilter(
                         getState().params,
-                        intent.checked
+                        intent.checked,
+                        intent.manualType
                     )
                     dispatch(Result.Filters(newFilters))
                     dispatch(Result.Count(getResultCount(newFilters, getState())))

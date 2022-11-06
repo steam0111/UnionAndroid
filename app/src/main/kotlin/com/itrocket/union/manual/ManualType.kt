@@ -30,5 +30,6 @@ enum class ManualType(@StringRes val titleId: Int) {
     BALANCE_UNIT_TO(R.string.balance_unit_to),
     BALANCE_UNIT(R.string.balance_unit),
     INVENTORY_CHECKER(R.string.inventory_checker_title),
-    CHECKBOX_SHOW_UTILIZED(R.string.show_utilized)
+    CHECKBOX_SHOW_UTILIZED(R.string.show_utilized),
+    CHECKBOX_HIDE_ZERO_RESERVES(R.string.hide_zero_values)
 }

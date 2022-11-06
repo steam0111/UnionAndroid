@@ -29,7 +29,9 @@ class ReservesStoreFactory(
             Store<ReservesStore.Intent, ReservesStore.State, ReservesStore.Label> by storeFactory.create(
                 name = "ReservesStore",
                 initialState = ReservesStore.State(
-                    params = reservesArguments?.params.orEmpty()
+                    params = reservesArguments?.params ?: reservesInteractor.getFilters(
+                        reservesArguments?.isFromDocument == true
+                    )
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
@@ -83,11 +85,7 @@ class ReservesStoreFactory(
                 ReservesStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
                 ReservesStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 ReservesStore.Intent.OnFilterClicked -> publish(
-                    ReservesStore.Label.ShowFilter(
-                        getState().params.ifEmpty {
-                            reservesInteractor.getFilters()
-                        }
-                    )
+                    ReservesStore.Label.ShowFilter(getState().params)
                 )
                 is ReservesStore.Intent.OnItemClicked -> onItemClicked(intent.item)
                 ReservesStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))

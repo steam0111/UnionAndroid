@@ -27,7 +27,8 @@ class ReservesRepositoryImpl(
         selectedLocationIds: List<String?>?,
         structuralIds: List<String?>?,
         offset: Long?,
-        limit: Long?
+        limit: Long?,
+        hideZeroReserves: Boolean
     ): List<ReservesDomain> =
         withContext(coreDispatchers.io) {
             syncApi.getAll(
@@ -39,7 +40,8 @@ class ReservesRepositoryImpl(
                 textQuery = textQuery,
                 locationIds = selectedLocationIds,
                 offset = offset,
-                limit = limit
+                limit = limit,
+                hideZeroReserves = hideZeroReserves
             ).map()
         }
 
@@ -47,13 +49,15 @@ class ReservesRepositoryImpl(
         params: List<ParamDomain>?,
         selectedLocationIds: List<String?>?,
         structuralIds: List<String?>?,
+        hideZeroReserves: Boolean
     ): Long {
         return syncApi.getReservesFilterCount(
             structuralIds = structuralIds,
             molId = params?.getMolId(),
             nomenclatureGroupId = params?.getNomenclatureGroupId(),
             receptionItemCategoryId = params?.getReceptionCategoryId(),
-            locationIds = selectedLocationIds
+            locationIds = selectedLocationIds,
+            hideZeroReserves = hideZeroReserves
         )
     }
 
@@ -62,11 +66,11 @@ class ReservesRepositoryImpl(
     }
 
     override suspend fun getReservesByIds(reservesIds: List<String>): List<ReserveSyncEntity> {
-        return syncApi.getAll(reservesIds = reservesIds)
+        return syncApi.getAll(reservesIds = reservesIds, hideZeroReserves = false)
     }
 
     override suspend fun getReservesByShorts(reservesShorts: List<ReserveShortSyncEntity>?): List<ReserveSyncEntity> {
-        return syncApi.getAll(reservesShorts = reservesShorts)
+        return syncApi.getAll(reservesShorts = reservesShorts, hideZeroReserves = false)
     }
 
     override suspend fun updateReserves(reserves: List<ReserveUpdateSyncEntity>) {

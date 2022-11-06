@@ -103,7 +103,12 @@ class AccountingObjectInteractor(
                 )
             )
             if (isFromDocument) {
-                add(CheckBoxParamDomain(isChecked = false))
+                add(
+                    CheckBoxParamDomain(
+                        isChecked = false,
+                        manualType = ManualType.CHECKBOX_SHOW_UTILIZED
+                    )
+                )
             }
         }
     }

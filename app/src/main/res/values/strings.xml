@@ -339,6 +339,7 @@
     <string name="open_card">Открыть карточку</string>
     <string name="delete_from_list">Удалить из списка</string>
     <string name="show_utilized">Показывать утилизированные</string>
+    <string name="hide_zero_values">Скрыть с нулевым значением</string>
 
     <!-- SelectCount -->
     <string name="select_count_title">Выберите количество</string>

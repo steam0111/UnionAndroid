@@ -18,7 +18,8 @@ interface ReserveSyncApi {
         textQuery: String? = null,
         locationIds: List<String?>? = null,
         offset: Long? = null,
-        limit: Long? = null
+        limit: Long? = null,
+        hideZeroReserves: Boolean
     ): List<ReserveSyncEntity>
 
     suspend fun getById(id: String): ReserveDetailSyncEntity
@@ -29,7 +30,8 @@ interface ReserveSyncApi {
         nomenclatureGroupId: String? = null,
         orderId: String? = null,
         receptionItemCategoryId: String? = null,
-        locationIds: List<String?>? = null
+        locationIds: List<String?>? = null,
+        hideZeroReserves: Boolean
     ): Long
 
     suspend fun updateReserves(reserves: List<ReserveUpdateSyncEntity>)

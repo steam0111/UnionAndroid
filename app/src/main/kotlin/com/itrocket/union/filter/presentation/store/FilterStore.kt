@@ -9,6 +9,7 @@ import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.filter.presentation.view.FilterComposeFragment
 import com.itrocket.union.filter.presentation.view.FilterComposeFragmentDirections
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.ManualType
 import com.itrocket.union.selectParams.presentation.store.SelectParamsArguments
 import com.itrocket.union.selectParams.presentation.store.SelectParamsResult
 
@@ -17,7 +18,7 @@ interface FilterStore : Store<FilterStore.Intent, FilterStore.State, FilterStore
     sealed class Intent {
         data class OnFieldClicked(val filter: ParamDomain) : Intent()
         data class OnFilterChanged(val filters: List<ParamDomain>) : Intent()
-        data class OnShowUtilizedClick(val checked: Boolean) : Intent()
+        data class OnCheckBoxClick(val checked: Boolean, val manualType: ManualType) : Intent()
         object OnShowClicked : Intent()
         object OnCrossClicked : Intent()
         object OnDropClicked : Intent()
