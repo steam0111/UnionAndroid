@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
@@ -105,6 +104,15 @@ class AccountingObjectDetailComposeFragment :
                 },
                 onPageChangeListener = {
                     accept(AccountingObjectDetailStore.Intent.OnPageSelected(it))
+                },
+                onGenerateRfidClickListener = {
+                    accept(AccountingObjectDetailStore.Intent.OnGenerateRfidClicked)
+                },
+                onWriteEpcTagClickListener = {
+                    accept(AccountingObjectDetailStore.Intent.OnWriteEpcClicked)
+                },
+                onWriteEpcDismiss = {
+                    accept(AccountingObjectDetailStore.Intent.OnDismissed)
                 }
             )
         }
@@ -151,24 +159,34 @@ class AccountingObjectDetailComposeFragment :
                     }
                 }
             }
+            launch {
+                serviceEntryManager.writeEpcFlow.collect { result ->
+                    withContext(Dispatchers.Main) {
+                        accept(AccountingObjectDetailStore.Intent.OnWriteEpcHandled(result))
+                        serviceEntryManager.stopRfidOperation()
+                    }
+                }
+            }
+            launch {
+                serviceEntryManager.rfidError.collect { result ->
+                    withContext(Dispatchers.Main) {
+                        accept(AccountingObjectDetailStore.Intent.OnWriteEpcError(result))
+                        serviceEntryManager.stopRfidOperation()
+                    }
+                }
+            }
         }
     }
 
     private suspend fun observeTriggerPress() {
         serviceEntryManager.triggerPressFlow.collect {
-            when (it) {
-                TriggerEvent.Pressed -> {
-                    if (serviceEntryManager.currentMode == ReadingMode.RFID) {
-                        serviceEntryManager.epcInventory()
-                    } else {
-                        serviceEntryManager.startBarcodeScan()
+            withContext(Dispatchers.Main) {
+                when (it) {
+                    TriggerEvent.Pressed -> {
+                        accept(AccountingObjectDetailStore.Intent.OnTriggerPressed)
                     }
-                }
-                TriggerEvent.Released -> {
-                    if (serviceEntryManager.currentMode == ReadingMode.RFID) {
-                        serviceEntryManager.stopRfidOperation()
-                    } else {
-                        serviceEntryManager.stopBarcodeScan()
+                    TriggerEvent.Released -> {
+                        accept(AccountingObjectDetailStore.Intent.OnTriggerReleased)
                     }
                 }
             }

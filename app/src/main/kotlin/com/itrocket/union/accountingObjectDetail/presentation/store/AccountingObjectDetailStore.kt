@@ -11,6 +11,7 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailComposeFragment.Companion.ACCOUNTING_OBJECT_DETAIL_RESULT_CODE
 import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailComposeFragment.Companion.ACCOUNTING_OBJECT_DETAIL_RESULT_LABEL
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.changeScanData.domain.entity.ChangeScanType
 import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataArguments
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment
@@ -29,6 +30,13 @@ interface AccountingObjectDetailStore :
         object OnDocumentSearchClicked : Intent()
         object OnDocumentAddClicked : Intent()
         object OnMarkingClosed : Intent()
+        object OnGenerateRfidClicked : Intent()
+        object OnWriteEpcClicked : Intent()
+        object OnDismissed : Intent()
+        object OnTriggerPressed : Intent()
+        object OnTriggerReleased : Intent()
+        data class OnWriteEpcHandled(val rfid: String) : Intent()
+        data class OnWriteEpcError(val error: String) : Intent()
         data class OnScanHandled(val scanData: String) : Intent()
         data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
         data class OnManualInput(val readingModeResult: ReadingModeResult) : Intent()
@@ -39,7 +47,9 @@ interface AccountingObjectDetailStore :
         val isLoading: Boolean = false,
         val readingMode: ReadingModeTab = ReadingModeTab.RFID,
         val selectedPage: Int = 0,
-        val canUpdate: Boolean = false
+        val canUpdate: Boolean = false,
+        val dialogType: AlertType = AlertType.NONE,
+        val rfidError: String = "",
     )
 
     sealed class Label {

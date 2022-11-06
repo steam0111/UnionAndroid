@@ -45,6 +45,9 @@
     <string name="common_invoice_number">Номер накладной</string>
     <string name="common_ao_delete">ОУ будет удален. Подтвердите действие</string>
     <string name="value_not_defined">Значение не задано</string>
+    <string name="common_generate_rfid">Сгенерировать RFID</string>
+    <string name="common_write_epc">Записать RFID в метку</string>
+    <string name="common_write_epc_dialog_title">Поднесите метку к считывателю и нажмите курок</string>
 
     <!-- Splash -->
     <string name="splash_description">ПРОГРАММНЫЙ КОМПЛЕКС ДЛЯ УЧЕТА ИМУЩЕСТВА ПРЕДПРИЯТИЯ</string>
