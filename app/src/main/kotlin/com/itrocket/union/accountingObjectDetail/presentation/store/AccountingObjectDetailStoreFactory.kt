@@ -9,6 +9,7 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjectDetail.domain.AccountingObjectDetailInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.changeScanData.data.mapper.toChangeScanType
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
@@ -18,6 +19,7 @@ import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class AccountingObjectDetailStoreFactory(
@@ -98,6 +100,53 @@ class AccountingObjectDetailStoreFactory(
                     readingModeResult = intent.readingModeResult,
                     getState = getState
                 )
+                AccountingObjectDetailStore.Intent.OnGenerateRfidClicked -> interactor.generateRfid(
+                    getState().accountingObjectDomain
+                )
+                AccountingObjectDetailStore.Intent.OnWriteEpcClicked -> dispatch(
+                    Result.DialogType(
+                        AlertType.WRITE_EPC
+                    )
+                )
+                AccountingObjectDetailStore.Intent.OnDismissed -> onDismissed()
+                AccountingObjectDetailStore.Intent.OnTriggerPressed -> onTriggerPressed(getState)
+                AccountingObjectDetailStore.Intent.OnTriggerReleased -> onTriggerRelease()
+                is AccountingObjectDetailStore.Intent.OnWriteEpcError -> onWriteEpcError(intent.error)
+                is AccountingObjectDetailStore.Intent.OnWriteEpcHandled -> onWriteEpcHandled()
+            }
+        }
+
+        private fun onDismissed() {
+            dispatch(Result.DialogType(AlertType.NONE))
+            dispatch(Result.RfidError(""))
+        }
+
+        private fun onWriteEpcError(error: String) {
+            dispatch(Result.RfidError(error))
+        }
+
+        private fun onWriteEpcHandled() {
+            dispatch(Result.RfidError(""))
+            dispatch(Result.DialogType(AlertType.NONE))
+        }
+
+        private fun onTriggerPressed(getState: () -> AccountingObjectDetailStore.State) {
+            when {
+                serviceEntryManager.currentMode == ReadingMode.RFID && getState().dialogType == AlertType.WRITE_EPC -> {
+                    serviceEntryManager.writeEpcTag(
+                        getState().accountingObjectDomain.rfidValue.orEmpty()
+                    )
+                }
+                serviceEntryManager.currentMode == ReadingMode.RFID -> serviceEntryManager.epcInventory()
+                else -> serviceEntryManager.startBarcodeScan()
+            }
+        }
+
+        private fun onTriggerRelease() {
+            if (serviceEntryManager.currentMode == ReadingMode.RFID) {
+                serviceEntryManager.stopRfidOperation()
+            } else {
+                serviceEntryManager.stopBarcodeScan()
             }
         }
 
@@ -113,7 +162,8 @@ class AccountingObjectDetailStoreFactory(
             getState: () -> AccountingObjectDetailStore.State,
             scanData: String
         ) {
-            if (getState().canUpdate) {
+            val canChangeScanData = getState().canUpdate && getState().dialogType != AlertType.WRITE_EPC
+            if (canChangeScanData) {
                 publish(AccountingObjectDetailStore.Label.ChangeSubscribeScanData(false))
                 publish(
                     AccountingObjectDetailStore.Label.ShowChangeScanData(
@@ -145,11 +195,13 @@ class AccountingObjectDetailStoreFactory(
     }
 
     private sealed class Result {
+        data class RfidError(val rfidError: String) : Result()
         data class NewPage(val page: Int) : Result()
         data class Loading(val isLoading: Boolean) : Result()
         data class AccountingObject(val obj: AccountingObjectDomain) : Result()
         data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
         data class CanUpdate(val canUpdate: Boolean) : Result()
+        data class DialogType(val dialogType: AlertType) : Result()
     }
 
     private object ReducerImpl : Reducer<AccountingObjectDetailStore.State, Result> {
@@ -160,6 +212,8 @@ class AccountingObjectDetailStoreFactory(
                 is Result.AccountingObject -> copy(accountingObjectDomain = result.obj)
                 is Result.ReadingMode -> copy(readingMode = result.readingModeTab)
                 is Result.CanUpdate -> copy(canUpdate = result.canUpdate)
+                is Result.DialogType -> copy(dialogType = result.dialogType)
+                is Result.RfidError -> copy(rfidError = result.rfidError)
             }
     }
 }

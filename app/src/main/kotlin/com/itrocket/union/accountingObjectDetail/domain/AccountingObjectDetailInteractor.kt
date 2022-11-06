@@ -1,12 +1,13 @@
 package com.itrocket.union.accountingObjectDetail.domain
 
-import com.itrocket.union.accountingObjectDetail.domain.dependencies.AccountingObjectDetailRepository
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.accountingObjectDetail.domain.dependencies.AccountingObjectDetailRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoType
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
+import java.util.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -61,4 +62,22 @@ class AccountingObjectDetailInteractor(
         withContext(coreDispatchers.io) {
             repository.updateScanningData(accountingObjectDomain)
         }
+
+    suspend fun generateRfid(
+        accountingObjectDomain: AccountingObjectDomain,
+    ) {
+        return withContext(coreDispatchers.io) {
+            val rawRfid = UUID.randomUUID().toString()
+            val rfid = rawRfid.toByteArray().toHexString().take(RFID_SIZE).uppercase()
+            repository.updateScanningData(accountingObjectDomain.copy(rfidValue = rfid))
+        }
+    }
+
+    private fun ByteArray.toHexString() = joinToString("") {
+        String.format("%02x", it)
+    }
+
+    companion object {
+        const val RFID_SIZE = 24
+    }
 }

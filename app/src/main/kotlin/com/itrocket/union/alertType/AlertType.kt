@@ -10,5 +10,6 @@ enum class AlertType {
     LOADING,
     DELETE,
     CLEAR_DB,
+    WRITE_EPC,
     NONE
 }

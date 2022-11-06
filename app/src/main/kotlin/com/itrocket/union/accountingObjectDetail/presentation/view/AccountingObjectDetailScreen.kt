@@ -37,10 +37,13 @@ import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingOb
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.AppTheme
+import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.ExpandedInfoField
+import com.itrocket.union.ui.InfoDialog
 import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.white
 import com.itrocket.union.utils.ifBlankOrNull
@@ -55,7 +58,10 @@ fun AccountingObjectDetailScreen(
     onReadingModeClickListener: () -> Unit,
     onDocumentSearchClickListener: () -> Unit,
     onDocumentAddClickListener: () -> Unit,
-    onPageChangeListener: (Int) -> Unit
+    onPageChangeListener: (Int) -> Unit,
+    onGenerateRfidClickListener: () -> Unit,
+    onWriteEpcTagClickListener: () -> Unit,
+    onWriteEpcDismiss: () -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -80,6 +86,16 @@ fun AccountingObjectDetailScreen(
             Content(
                 paddingValues = it,
                 state = state,
+                onGenerateRfidClickListener = onGenerateRfidClickListener,
+                onWriteEpcTagClickListener = onWriteEpcTagClickListener
+            )
+        }
+        when (state.dialogType) {
+            AlertType.WRITE_EPC -> InfoDialog(
+                title = state.rfidError.ifEmpty {
+                    stringResource(R.string.common_write_epc_dialog_title)
+                },
+                onDismiss = onWriteEpcDismiss
             )
         }
     }
@@ -89,7 +105,9 @@ fun AccountingObjectDetailScreen(
 @Composable
 private fun Content(
     paddingValues: PaddingValues,
-    state: AccountingObjectDetailStore.State
+    state: AccountingObjectDetailStore.State,
+    onGenerateRfidClickListener: () -> Unit,
+    onWriteEpcTagClickListener: () -> Unit
 ) {
     LazyColumn(Modifier.padding(top = paddingValues.calculateTopPadding())) {
         item {
@@ -109,6 +127,26 @@ private fun Content(
                 label = item.name ?: item.title?.let { stringResource(id = it) }.orEmpty(),
                 value = item.value.ifBlankOrNull { valueRes },
                 modifier = Modifier.fillMaxWidth()
+            )
+        }
+        item {
+            Spacer(modifier = Modifier.height(12.dp))
+            BaseButton(
+                text = stringResource(R.string.common_generate_rfid),
+                onClick = onGenerateRfidClickListener,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            )
+        }
+        item {
+            Spacer(modifier = Modifier.height(12.dp))
+            BaseButton(
+                text = stringResource(R.string.common_write_epc),
+                onClick = onWriteEpcTagClickListener,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             )
         }
         item {
@@ -219,5 +257,5 @@ fun AccountingObjectDetailScreenPreview() {
                 rfidValue = "",
                 factoryNumber = ""
             ),
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {})
 }
