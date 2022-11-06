@@ -268,6 +268,8 @@
     <string name="inventory_create_new">Новый</string>
     <string name="inventory_create_found">Найден</string>
     <string name="inventory_create_not_found">Не найден</string>
+    <string name="inventory_create_open_ao">Открыть карточку ОУ</string>
+    <string name="inventory_create_add_comment">Добавить комментарий</string>
 
     <!-- Switcher -->
     <string name="switcher_accounting_object_status">Статус ОС</string>
@@ -395,6 +397,10 @@
     <string name="manual_input_title">Ручной ввод</string>
     <string name="manual_input_barcode_hint">Введите штрихкод</string>
     <string name="manual_input_sn_hint">Введите серийный номер</string>
+
+    <!-- Comment -->
+    <string name="comment_title">Комментарий</string>
+    <string name="comment_hint">Введите комментарий</string>
 
     <string name="restrict_use_written_off_ao_for_conduct">Нельзя провести документ с объектами учета в статусе \"На утилизацию\"</string>
     <string name="restrict_use_written_off_ao">Нельзя выбрать объект учета в статусе \"На утилизацию\"</string>

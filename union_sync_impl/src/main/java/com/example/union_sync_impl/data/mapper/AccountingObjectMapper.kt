@@ -129,6 +129,8 @@ fun AccountingObjectDb.toSyncEntity(locationSyncEntity: List<LocationSyncEntity>
 
 fun FullAccountingObject.toSyncEntity(
     inventoryStatus: String? = null,
+    comment: String? = null,
+    manualInput: Boolean? = null,
     locationSyncEntity: List<LocationSyncEntity>?
 ) = AccountingObjectSyncEntity(
     id = accountingObjectDb.id,
@@ -169,7 +171,9 @@ fun FullAccountingObject.toSyncEntity(
     updateDate = accountingObjectDb.updateDate,
     dateInsert = accountingObjectDb.insertDate,
     userUpdated = accountingObjectDb.userUpdated,
-    userInserted = accountingObjectDb.userInserted
+    userInserted = accountingObjectDb.userInserted,
+    comment = comment,
+    manualInput = manualInput
 )
 
 fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObjectDtoV2> {

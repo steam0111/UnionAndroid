@@ -13,9 +13,17 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailArguments
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.alertType.AlertType
+import com.itrocket.union.comment.presentation.store.CommentArguments
+import com.itrocket.union.comment.presentation.store.CommentResult
+import com.itrocket.union.comment.presentation.view.CommentComposeFragment
+import com.itrocket.union.comment.presentation.view.CommentComposeFragment.Companion.COMMENT_ARGS
 import com.itrocket.union.inventory.presentation.store.InventoryResult
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_CODE
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_LABEL
+import com.itrocket.union.inventoryChoose.presentation.store.InventoryChooseArguments
+import com.itrocket.union.inventoryChoose.presentation.store.InventoryChooseResult
+import com.itrocket.union.inventoryChoose.presentation.view.InventoryChooseComposeFragment
+import com.itrocket.union.inventoryChoose.presentation.view.InventoryChooseComposeFragment.Companion.INVENTORY_CHOOSE_ARGUMENT
 import com.itrocket.union.inventoryContainer.presentation.view.InventoryContainerComposeFragmentDirections
 import com.itrocket.union.inventoryCreate.domain.entity.AccountingObjectCounter
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
@@ -30,6 +38,7 @@ interface InventoryCreateStore :
     sealed class Intent {
         data class OnAccountingObjectClicked(val accountingObject: AccountingObjectDomain) :
             Intent()
+
         data class OnAccountingObjectStatusChanged(val switcherResult: SwitcherResult) :
             Intent()
 
@@ -53,11 +62,17 @@ interface InventoryCreateStore :
         object OnSearchClicked : Intent()
         object OnDeleteConfirmClicked : Intent()
         object OnDeleteDismissClicked : Intent()
+        data class OnCommentResultHandled(val result: CommentResult) : Intent()
+        data class OnInventoryChooseResultHandled(val result: InventoryChooseResult) : Intent()
+        data class OnAccountingObjectLongClicked(val accountingObject: AccountingObjectDomain) :
+            Intent()
+
         data class OnStatusClicked(val accountingObject: AccountingObjectDomain) : Intent()
         data class OnSearchTextChanged(val searchText: String) : Intent()
         data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
         data class OnManualInput(val readingModeResult: ReadingModeResult) : Intent()
-        data class OnAccountingObjectChanged(val accountingObject: AccountingObjectDomain) : Intent()
+        data class OnAccountingObjectChanged(val accountingObject: AccountingObjectDomain) :
+            Intent()
     }
 
     data class State(
@@ -93,6 +108,35 @@ interface InventoryCreateStore :
                 get() = InventoryContainerComposeFragmentDirections.toAccountingObjectsDetails(
                     AccountingObjectDetailArguments(accountingObjectDomain)
                 )
+
+        }
+
+        data class ShowInventoryChoose(val accountingObject: AccountingObjectDomain) : Label(),
+            ShowBottomSheetNavigationLabel {
+            override val arguments: Bundle
+                get() = bundleOf(
+                    INVENTORY_CHOOSE_ARGUMENT to InventoryChooseArguments(
+                        accountingObject
+                    )
+                )
+            override val containerId: Int = R.id.mainActivityNavHostFragment
+            override val fragment: Fragment
+                get() = InventoryChooseComposeFragment()
+
+        }
+
+        data class ShowComment(val accountingObject: AccountingObjectDomain) : Label(),
+            ShowBottomSheetNavigationLabel {
+            override val arguments: Bundle
+                get() = bundleOf(
+                    COMMENT_ARGS to CommentArguments(
+                        entityId = accountingObject.id,
+                        comment = accountingObject.comment.orEmpty()
+                    )
+                )
+            override val containerId: Int = R.id.mainActivityNavHostFragment
+            override val fragment: Fragment
+                get() = CommentComposeFragment()
 
         }
 

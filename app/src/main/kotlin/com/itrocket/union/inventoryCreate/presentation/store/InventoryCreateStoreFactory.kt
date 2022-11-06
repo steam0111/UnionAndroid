@@ -9,9 +9,13 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.alertType.AlertType
+import com.itrocket.union.comment.domain.CommentInteractor
+import com.itrocket.union.comment.presentation.store.CommentResult
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventory.presentation.store.InventoryResult
+import com.itrocket.union.inventoryChoose.domain.InventoryChooseActionType
+import com.itrocket.union.inventoryChoose.presentation.store.InventoryChooseResult
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
 import com.itrocket.union.inventoryCreate.domain.InventoryDynamicSaveManager
 import com.itrocket.union.inventoryCreate.domain.entity.AccountingObjectCounter
@@ -37,7 +41,8 @@ class InventoryCreateStoreFactory(
     private val searchManager: SearchManager,
     private val unionPermissionsInteractor: UnionPermissionsInteractor,
     private val inventoryDynamicSaveManager: InventoryDynamicSaveManager,
-    private val moduleSettingsInteractor: ModuleSettingsInteractor
+    private val moduleSettingsInteractor: ModuleSettingsInteractor,
+    private val commentInteractor: CommentInteractor,
 ) {
     fun create(): InventoryCreateStore =
         object : InventoryCreateStore,
@@ -227,6 +232,52 @@ class InventoryCreateStoreFactory(
                         accountingObject = intent.accountingObject
                     )
                 }
+                is InventoryCreateStore.Intent.OnAccountingObjectLongClicked -> publish(
+                    InventoryCreateStore.Label.ShowInventoryChoose(intent.accountingObject)
+                )
+                is InventoryCreateStore.Intent.OnInventoryChooseResultHandled -> onInventoryChooseResultHandled(
+                    intent.result
+                )
+                is InventoryCreateStore.Intent.OnCommentResultHandled -> onCommentResultHandled(
+                    result = intent.result,
+                    getState = getState
+                )
+            }
+        }
+
+        private suspend fun onCommentResultHandled(
+            result: CommentResult,
+            getState: () -> InventoryCreateStore.State
+        ) {
+            val inventoryAccountingObjects = commentInteractor.changeAccountingObjectComment(
+                accountingObjectId = result.entityId,
+                comment = result.comment,
+                listAccountingObject = getState().inventoryDocument.accountingObjects,
+                newAccountingObjects = getState().newAccountingObjects.toList()
+            )
+
+            dispatch(Result.AccountingObjects(inventoryAccountingObjects.createdAccountingObjects))
+            dispatch(Result.NewAccountingObjects(inventoryAccountingObjects.newAccountingObjects.toSet()))
+            
+            tryDynamicSendInventorySave(
+                getState = getState,
+                newAccountingObjects = getState().newAccountingObjects.toList(),
+                accountingObjects = getState().inventoryDocument.accountingObjects
+            )
+        }
+
+        private fun onInventoryChooseResultHandled(result: InventoryChooseResult) {
+            when (result.type) {
+                InventoryChooseActionType.SHOW_AO -> publish(
+                    InventoryCreateStore.Label.ShowAccountingObjectDetail(
+                        result.accountingObject
+                    )
+                )
+                InventoryChooseActionType.ADD_COMMENT -> publish(
+                    InventoryCreateStore.Label.ShowComment(
+                        result.accountingObject
+                    )
+                )
             }
         }
 

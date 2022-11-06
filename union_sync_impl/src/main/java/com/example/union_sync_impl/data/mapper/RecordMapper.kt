@@ -72,7 +72,9 @@ fun InventoryRecordDtoV2.toInventoryRecordDb() = InventoryRecordDb(
     inventoryStatus = inventoryRecordStatusId.orEmpty(),
     userUpdated = userUpdated,
     userInserted = userInserted,
-    cancel = deleted
+    cancel = deleted,
+    comment = comment,
+    manualInput = manualInput,
 )
 
 fun ActionRecordDb.toSyncEntity() = ActionRecordSyncEntity(
@@ -105,7 +107,9 @@ fun InventoryRecordDb.toInventoryRecordDtoV2() = InventoryRecordDtoV2(
     dateUpdate = getStringDateFromMillis(System.currentTimeMillis()),
     userInserted = userInserted,
     userUpdated = userUpdated,
-    dateInsert = getStringDateFromMillis(insertDate)
+    dateInsert = getStringDateFromMillis(insertDate),
+    comment = comment,
+    manualInput = manualInput
 )
 
 fun TransitRemainsRecordDtoV2.toTransitRemainsDb() = TransitRemainsRecordDb(

@@ -9,6 +9,10 @@ import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailResult
 import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailComposeFragment
+import com.itrocket.union.comment.presentation.store.CommentResult
+import com.itrocket.union.comment.presentation.view.CommentComposeFragment
+import com.itrocket.union.inventoryChoose.presentation.store.InventoryChooseResult
+import com.itrocket.union.inventoryChoose.presentation.view.InventoryChooseComposeFragment
 import com.itrocket.union.inventoryCreate.InventoryCreateModule.INVENTORYCREATE_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
@@ -84,6 +88,28 @@ class InventoryCreateComposeFragment :
                     }
                 }
             ),
+            FragmentResult(
+                resultCode = InventoryChooseComposeFragment.INVENTORY_CHOOSE_RESULT_CODE,
+                resultLabel = InventoryChooseComposeFragment.INVENTORY_CHOOSE_RESULT_LABEL,
+                resultAction = {
+                    (it as InventoryChooseResult?)?.let {
+                        accept(
+                            InventoryCreateStore.Intent.OnInventoryChooseResultHandled(it)
+                        )
+                    }
+                }
+            ),
+            FragmentResult(
+                resultCode = CommentComposeFragment.COMMENT_RESULT_CODE,
+                resultLabel = CommentComposeFragment.COMMENT_RESULT_LABEL,
+                resultAction = {
+                    (it as CommentResult?)?.let {
+                        accept(
+                            InventoryCreateStore.Intent.OnCommentResultHandled(it)
+                        )
+                    }
+                }
+            ),
         )
 
     private val serviceEntryManager: ServiceEntryManager by inject()
@@ -152,6 +178,9 @@ class InventoryCreateComposeFragment :
                 },
                 onStatusClickListener = {
                     accept(InventoryCreateStore.Intent.OnStatusClicked(it))
+                },
+                onAccountingObjectLongClickListener = {
+                    accept(InventoryCreateStore.Intent.OnAccountingObjectLongClicked(it))
                 }
             )
         }

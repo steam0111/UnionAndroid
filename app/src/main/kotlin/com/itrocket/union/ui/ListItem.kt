@@ -3,9 +3,11 @@ package com.itrocket.union.ui
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -61,10 +63,12 @@ import com.itrocket.utils.clickableUnbounded
 private const val MAX_LIST_INFO = 3
 private const val DATE_ITEM_ROTATION_DURATION = 200
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AccountingObjectItem(
     accountingObject: AccountingObjectDomain,
     onAccountingObjectListener: (AccountingObjectDomain) -> Unit,
+    onAccountingObjectLongClickListener: (AccountingObjectDomain) -> Unit = {},
     onDeleteClickListener: (String) -> Unit = {},
     onStatusClickListener: () -> Unit = {},
     status: Status?,
@@ -78,10 +82,9 @@ fun AccountingObjectItem(
         modifier = Modifier
             .fillMaxWidth()
             .background(white)
-            .clickable(
-                onClick = {
-                    onAccountingObjectListener(accountingObject)
-                },
+            .combinedClickable(
+                onClick = { onAccountingObjectListener(accountingObject) },
+                onLongClick = { onAccountingObjectLongClickListener(accountingObject) },
                 enabled = isEnabled
             ),
         horizontalAlignment = Alignment.End,
@@ -656,7 +659,10 @@ fun AccountingObjectItemPreview() {
             barcodeValue = "",
             rfidValue = "",
             factoryNumber = ""
-        ), onAccountingObjectListener = {}, isShowBottomLine = true,
+        ),
+        onAccountingObjectListener = {},
+        onAccountingObjectLongClickListener = {},
+        isShowBottomLine = true,
         status = ObjectStatusType(
             "",
             AppTheme.colors.secondaryColor.value.toString(),

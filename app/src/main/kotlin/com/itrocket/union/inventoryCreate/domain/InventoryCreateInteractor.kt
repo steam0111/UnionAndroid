@@ -279,8 +279,16 @@ class InventoryCreateInteractor(
                     } else {
                         InventoryAccountingObjectStatus.FOUND
                     }
+                val manualInput = if (newStatus == InventoryAccountingObjectStatus.FOUND) {
+                    true
+                } else {
+                    null
+                }
                 mutableAccountingObjects[index] =
-                    findAccountingObject.copy(inventoryStatus = newStatus)
+                    findAccountingObject.copy(
+                        inventoryStatus = newStatus,
+                        manualInput = manualInput
+                    )
             }
             mutableAccountingObjects
         }
@@ -360,7 +368,7 @@ class InventoryCreateInteractor(
         accountingObjects.removeAt(index)
         accountingObjects.add(
             0,
-            accountingObject.copy(inventoryStatus = InventoryAccountingObjectStatus.FOUND)
+            accountingObject.copy(inventoryStatus = InventoryAccountingObjectStatus.FOUND, manualInput = false)
         )
     }
 

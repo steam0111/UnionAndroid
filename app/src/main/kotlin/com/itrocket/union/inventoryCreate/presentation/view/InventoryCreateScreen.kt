@@ -23,7 +23,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,7 +52,6 @@ import com.itrocket.union.ui.LoadingDialog
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.SearchToolbar
-import com.itrocket.union.ui.black
 import com.itrocket.union.ui.black_50
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.white
@@ -79,6 +77,7 @@ fun InventoryCreateScreen(
     onSearchTextChanged: (String) -> Unit,
     onSearchClickListener: () -> Unit,
     onStatusClickListener: (AccountingObjectDomain) -> Unit,
+    onAccountingObjectLongClickListener: (AccountingObjectDomain) -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -109,7 +108,8 @@ fun InventoryCreateScreen(
                     onAccountingObjectClickListener = onAccountingObjectClickListener,
                     onFinishClickListener = onFinishClickListener,
                     onSaveClickListener = onSaveClickListener,
-                    onStatusClickListener = onStatusClickListener
+                    onStatusClickListener = onStatusClickListener,
+                    onAccountingObjectLongClickListener = onAccountingObjectLongClickListener
                 )
             },
             modifier = Modifier.padding(
@@ -162,6 +162,7 @@ private fun Content(
     onFinishClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
     onStatusClickListener: (AccountingObjectDomain) -> Unit,
+    onAccountingObjectLongClickListener: (AccountingObjectDomain) -> Unit
 ) {
     val accountingObjectList = getAccountingObjects(state)
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -179,7 +180,7 @@ private fun Content(
                             inventoryStatus = state.inventoryDocument.inventoryStatus,
                             canUpdate = state.canUpdate,
                             canComplete = state.canComplete,
-                        isDynamicSaveInventory = state.isDynamicSaveInventory,
+                            isDynamicSaveInventory = state.isDynamicSaveInventory,
                             isAccountingObjectLoading = state.isLoading,
                             isCompleteLoading = state.isCompleteLoading
                         )
@@ -212,7 +213,8 @@ private fun Content(
                         onStatusClickListener = { onStatusClickListener(item) },
                         isShowBottomLine = isShowBottomLine,
                         status = item.inventoryStatus,
-                        isEnabled = state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED && state.canUpdate
+                        isEnabled = state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED && state.canUpdate,
+                        onAccountingObjectLongClickListener = onAccountingObjectLongClickListener
                     )
                 }
                 item {
@@ -510,6 +512,7 @@ fun InventoryCreateScreenPreview() {
             readingModeTab = ReadingModeTab.RFID
         ),
         AppInsets(previewTopInsetDp),
+        {},
         {},
         {},
         {},
