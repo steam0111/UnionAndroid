@@ -40,6 +40,8 @@ data class AccountingObjectSyncEntity(
     var userInserted: String?,
     val dateInsert: Long?,
     var updateDate: Long?,
+    val comment: String? = null,
+    val manualInput: Boolean? = null
 )
 
 fun AccountingObjectSyncEntity.toAccountingObjectUpdateSyncEntity(userUpdated: String?): AccountingObjectUpdateSyncEntity {

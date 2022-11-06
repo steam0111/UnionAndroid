@@ -52,14 +52,16 @@ fun AccountingObjectSyncEntity.map(): AccountingObjectDomain {
         barcodeValue = barcodeValue,
         rfidValue = rfidValue,
         factoryNumber = factoryNumber,
-        inventoryNumber = inventoryNumber
+        inventoryNumber = inventoryNumber,
+        comment = comment,
+        manualInput = manualInput
     )
 }
 
 fun EnumSyncEntity.toDomainStatus(): ObjectStatus {
     return ObjectStatus(
         text = name,
-        type =  this.toObjectStatusType()
+        type = this.toObjectStatusType()
     )
 }
 

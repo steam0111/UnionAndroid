@@ -184,16 +184,20 @@ class InventorySyncApiImpl(
     ): List<AccountingObjectSyncEntity> {
         val inventoryRecords = inventoryRecordDao.getAll(sqlInventoryRecordQuery(inventoryDb.id))
 
-        val accountingObjectsIdStatusMap = mutableMapOf<String, String>()
+        val accountingObjectsIdStatusMap = mutableMapOf<String, InventoryRecordDb>()
 
         inventoryRecords.forEach {
-            accountingObjectsIdStatusMap[it.accountingObjectId] = it.inventoryStatus
+            accountingObjectsIdStatusMap[it.accountingObjectId] = it
         }
 
         return accountingObjectDao.getAll(sqlAccountingObjectQuery(accountingObjectsIds = accountingObjectsIdStatusMap.keys.toList()))
             .map { fullAccountingObject ->
+                val record =
+                    accountingObjectsIdStatusMap[fullAccountingObject.accountingObjectDb.id]
                 fullAccountingObject.toSyncEntity(
-                    inventoryStatus = accountingObjectsIdStatusMap[fullAccountingObject.accountingObjectDb.id],
+                    inventoryStatus = record?.inventoryStatus,
+                    comment = record?.comment,
+                    manualInput = record?.manualInput,
                     locationSyncEntity = listOfNotNull(
                         fullAccountingObject.locationDb?.toLocationSyncEntity(
                             fullAccountingObject.locationTypesDb
@@ -229,8 +233,10 @@ class InventorySyncApiImpl(
         val existRecords = records.filter { mappedIds.contains(it.accountingObjectId) }
         val newRecords = accountingObjectIds.map { info ->
             val existRecord = existRecords.find { it.accountingObjectId == info.id }
-            val updateDate = if (existRecord?.inventoryStatus == info.status) {
-                existRecord.updateDate
+            val isRecordUpdated =
+                existRecord?.inventoryStatus != info.status || existRecord.comment != info.comment
+            val updateDate = if (!isRecordUpdated) {
+                existRecord?.updateDate
             } else {
                 System.currentTimeMillis()
             }
@@ -243,7 +249,9 @@ class InventorySyncApiImpl(
                 insertDate = existRecord?.insertDate,
                 userUpdated = userUpdated,
                 userInserted = userUpdated,
-                cancel = false
+                cancel = false,
+                manualInput = info.manualInput,
+                comment = info.comment
             )
         }
 

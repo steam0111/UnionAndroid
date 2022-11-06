@@ -7,6 +7,7 @@ import com.itrocket.union.authMain.AuthMainModule
 import com.itrocket.union.authUser.AuthUserModule
 import com.itrocket.union.changeScanData.ChangeScanDataModule
 import com.itrocket.union.chooseAction.ChooseActionModule
+import com.itrocket.union.comment.CommentModule
 import com.itrocket.union.container.ContainerModule
 import com.itrocket.union.conterpartyDetail.CounterpartyDetailModule
 import com.itrocket.union.core.CoreModule
@@ -24,6 +25,7 @@ import com.itrocket.union.filter.FilterModule
 import com.itrocket.union.identify.IdentifyModule
 import com.itrocket.union.inventories.InventoriesModule
 import com.itrocket.union.inventory.InventoryModule
+import com.itrocket.union.inventoryChoose.InventoryChooseModule
 import com.itrocket.union.inventoryContainer.InventoryContainerModule
 import com.itrocket.union.inventoryCreate.InventoryCreateModule
 import com.itrocket.union.manualInput.ManualInputModule
@@ -118,6 +120,8 @@ object Modules {
         NfcReaderModule.module,
         ReaderPowerModule.module,
         ManualInputModule.module,
-        DataCollectModule.module
+        DataCollectModule.module,
+        InventoryChooseModule.module,
+        CommentModule.module
     )
 }

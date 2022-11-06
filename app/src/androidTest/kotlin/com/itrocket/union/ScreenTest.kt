@@ -9,6 +9,7 @@ import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObj
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectScreenPreview
 import com.itrocket.union.authUser.presentation.view.AuthUserScreenPreview
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataScreenPreview
+import com.itrocket.union.comment.presentation.view.CommentScreenPreview
 import com.itrocket.union.conterpartyDetail.presentation.view.CounterpartyDetailScreenPreview
 import com.itrocket.union.dataCollect.presentation.view.DataCollectScreenPreview
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateScreenPreview
@@ -22,9 +23,9 @@ import com.itrocket.union.filter.presentation.view.FilterScreenPreview
 import com.itrocket.union.identify.presentation.view.IdentifyScreenPreview
 import com.itrocket.union.inventories.presentation.view.InventoriesScreenPreview
 import com.itrocket.union.inventory.presentation.view.InventoryScreenPreview
+import com.itrocket.union.inventoryChoose.presentation.view.InventoryChooseScreenPreview
 import com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateScreenPreview
 import com.itrocket.union.location.presentation.view.LocationScreenPreview
-import com.itrocket.union.newAccountingObject.presentation.view.NewAccountingObjectScreenPreview
 import com.itrocket.union.nomenclatureDetail.presentation.view.NomenclatureDetailScreenPreview
 import com.itrocket.union.nomenclatureGroupDetail.presentation.view.NomenclatureGroupDetailScreenPreview
 import com.itrocket.union.producer.presentation.view.ProducerScreenPreview
@@ -35,7 +36,7 @@ import com.itrocket.union.reserveDetail.presentation.view.ReserveDetailScreenPre
 import com.itrocket.union.reserves.presentation.view.ReservesScreenPreview
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuScreenPreview
 import com.itrocket.union.serverConnect.presentation.view.ServerConnectScreenPreview
-import com.itrocket.union.structural.presentation.view.StructuralScreenPreview
+import com.itrocket.union.structural.view.StructuralScreenPreview
 import com.itrocket.union.switcher.presentation.view.SwitcherScreenPreview
 import com.itrocket.union.ui.ConfirmAlertDialogContentPreview
 import com.karumi.shot.ScreenshotTest
@@ -163,13 +164,6 @@ class ScreensTest : ScreenshotTest {
     }
 
     @Test
-    fun `NewAccountingObject`() {
-        takeScreenShot {
-            NewAccountingObjectScreenPreview()
-        }
-    }
-
-    @Test
     fun `Switcher`() {
         takeScreenShot {
             SwitcherScreenPreview()
@@ -274,6 +268,7 @@ class ScreensTest : ScreenshotTest {
         }
     }
 
+    @Test
     fun `ChangeScanData`(){
         takeScreenShot {
             ChangeScanDataScreenPreview()
@@ -284,6 +279,20 @@ class ScreensTest : ScreenshotTest {
     fun `ReaderPower`() {
         takeScreenShot {
             ReaderPowerScreenPreview()
+        }
+    }
+
+    @Test
+    fun `Comment`(){
+        takeScreenShot {
+            CommentScreenPreview()
+        }
+    }
+
+    @Test
+    fun `InventoryChoose`() {
+        takeScreenShot {
+            InventoryChooseScreenPreview()
         }
     }
 }
