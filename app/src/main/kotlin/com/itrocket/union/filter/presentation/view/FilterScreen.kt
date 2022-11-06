@@ -1,10 +1,10 @@
 package com.itrocket.union.filter.presentation.view
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
-import android.content.res.Resources
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,7 +13,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,7 +31,6 @@ import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.CheckBoxField
 import com.itrocket.union.ui.SelectedBaseField
 import com.itrocket.union.ui.UnselectedBaseField
-import com.itrocket.union.ui.graphite2
 
 @Composable
 fun FilterScreen(
@@ -44,7 +42,6 @@ fun FilterScreen(
     onShowClickListener: () -> Unit,
     onShowUtilizedClick: (Boolean) -> Unit
 ) {
-    val resources = LocalContext.current.resources
     AppTheme {
         Scaffold(
             topBar = {
@@ -57,14 +54,14 @@ fun FilterScreen(
                 FilterContent(
                     filters = state.params,
                     onFieldClickListener = onFieldClickListener,
-                    onCheckBoxClickListener = onShowUtilizedClick
+                    onCheckBoxClickListener = onShowUtilizedClick,
+                    paddingValues = it
                 )
             },
             bottomBar = {
                 FilterBottomBar(
                     resultCount = state.resultCount,
-                    onBtnClickListener = onShowClickListener,
-                    resources = resources
+                    onShowResultButtonClickListener = onShowClickListener
                 )
             },
             modifier = Modifier.padding(
@@ -94,10 +91,17 @@ private fun FilterToolbar(onCrossClickListener: () -> Unit, onDropClickListener:
 private fun FilterContent(
     filters: List<ParamDomain>,
     onFieldClickListener: (ParamDomain) -> Unit,
-    onCheckBoxClickListener: (Boolean) -> Unit
+    onCheckBoxClickListener: (Boolean) -> Unit,
+    paddingValues: PaddingValues
 ) {
-    LazyColumn {
-        items(filters) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+    ) {
+        items(items = filters, key = { paramDomain ->
+            paramDomain.type
+        }) {
             if (it is CheckBoxParamDomain) {
                 CheckBoxField(
                     isSelected = it.isChecked,
@@ -126,20 +130,18 @@ private fun FilterContent(
 @Composable
 private fun FilterBottomBar(
     resultCount: Long,
-    onBtnClickListener: () -> Unit,
-    resources: Resources
+    onShowResultButtonClickListener: () -> Unit
 ) {
     Box(
         Modifier
             .fillMaxWidth()
-            .background(graphite2)
             .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)
     ) {
         BaseButton(
             text = stringResource(
                 R.string.filter_result_show, resultCount
             ),
-            onClick = onBtnClickListener,
+            onClick = onShowResultButtonClickListener,
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -156,13 +158,13 @@ fun FilterScreenPreview() {
     FilterScreen(
         FilterStore.State(
             params = listOf(
-                    StructuralParamDomain(manualType = ManualType.STRUCTURAL),
-                    ParamDomain(
-                        type = ManualType.LOCATION,
-                        id = "3",
-                        value = ""
-                    )
+                StructuralParamDomain(manualType = ManualType.STRUCTURAL),
+                ParamDomain(
+                    type = ManualType.LOCATION,
+                    id = "3",
+                    value = ""
                 )
             )
-        , AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {})
+        ),
+        appInsets = AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {})
 }
