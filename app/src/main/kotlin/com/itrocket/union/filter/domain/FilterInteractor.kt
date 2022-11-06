@@ -11,6 +11,7 @@ import com.itrocket.union.location.domain.dependencies.LocationRepository
 import com.itrocket.union.manual.CheckBoxParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.getFilterHideZeroReserves
 import com.itrocket.union.manual.getFilterLocationLastId
 import com.itrocket.union.manual.getFilterShowUtilizedAccountingObjects
 import com.itrocket.union.manual.getFilterStructuralLastId
@@ -52,14 +53,16 @@ class FilterInteractor(
         return mutableFilters
     }
 
-    fun changeIsShowUtilisedFilter(
+    fun changeCheckboxFilter(
         filters: List<ParamDomain>,
-        isChecked: Boolean
+        isChecked: Boolean,
+        manualType: ManualType
     ): List<ParamDomain> {
-        val checkBoxIndex = filters.indexOfFirst { it.type == ManualType.CHECKBOX_SHOW_UTILIZED }
+        val checkBoxIndex = filters.indexOfFirst { it.type == manualType }
         if (checkBoxIndex < 0) return filters
         val newFilters = filters.toMutableList()
-        newFilters[checkBoxIndex] = CheckBoxParamDomain(isChecked = isChecked)
+        newFilters[checkBoxIndex] =
+            CheckBoxParamDomain(isChecked = isChecked, manualType = manualType)
         return newFilters
     }
 
@@ -92,7 +95,8 @@ class FilterInteractor(
                 reservesRepository.getReservesFilterCount(
                     params = params,
                     selectedLocationIds = params.getFilterLocationIds(),
-                    structuralIds = params.getFilterStructuralIds()
+                    structuralIds = params.getFilterStructuralIds(),
+                    hideZeroReserves = params.getFilterHideZeroReserves()
                 )
             }
             else -> 0

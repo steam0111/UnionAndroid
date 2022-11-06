@@ -20,6 +20,7 @@ import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
+import com.itrocket.union.manual.CheckBoxParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
@@ -434,6 +435,10 @@ class DocumentCreateStoreFactory(
                     ParamDomain(
                         id = UNMARKED_TMC_ID,
                         type = ManualType.RECEPTION_CATEGORY,
+                    ),
+                    CheckBoxParamDomain(
+                        isChecked = false,
+                        manualType = ManualType.CHECKBOX_HIDE_ZERO_RESERVES
                     )
                 )
                 else -> listOf()

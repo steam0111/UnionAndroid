@@ -110,10 +110,15 @@ fun List<ParamDomain>.getFilterShowUtilizedAccountingObjects(): Boolean {
         ?.isChecked ?: true
 }
 
+fun List<ParamDomain>.getFilterHideZeroReserves(): Boolean {
+    return (firstOrNull { it.type == ManualType.CHECKBOX_HIDE_ZERO_RESERVES } as? CheckBoxParamDomain)
+        ?.isChecked ?: false
+}
+
 fun List<ParamDomain>.getIndexByType(type: ManualType) = this.indexOfFirst { it.type == type }
 
 private val listNotDefaultParams by lazy {
-    listOf(ManualType.CHECKBOX_SHOW_UTILIZED)
+    listOf(ManualType.CHECKBOX_SHOW_UTILIZED, ManualType.CHECKBOX_HIDE_ZERO_RESERVES)
 }
 
 fun ParamDomain.isDefaultParamType() = !listNotDefaultParams.contains(this.type)
@@ -158,15 +163,16 @@ data class StructuralParamDomain(
 
 @Parcelize
 data class CheckBoxParamDomain(
-    val isChecked: Boolean
+    val isChecked: Boolean,
+    val manualType: ManualType
 ) : Parcelable,
     ParamDomain(
-        type = ManualType.CHECKBOX_SHOW_UTILIZED,
+        type = manualType,
         isFilter = false,
         isClickable = true
     ) {
 
     override fun toInitialState(): CheckBoxParamDomain {
-        return CheckBoxParamDomain(isChecked = false)
+        return CheckBoxParamDomain(isChecked = false, manualType = manualType)
     }
 }

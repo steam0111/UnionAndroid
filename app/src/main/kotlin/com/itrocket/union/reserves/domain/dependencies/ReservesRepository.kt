@@ -16,7 +16,8 @@ interface ReservesRepository {
         selectedLocationIds: List<String?>?,
         structuralIds: List<String?>?,
         offset: Long?,
-        limit: Long?
+        limit: Long?,
+        hideZeroReserves: Boolean
     ): List<ReservesDomain>
 
     suspend fun getReservesByIds(
@@ -30,7 +31,8 @@ interface ReservesRepository {
     suspend fun getReservesFilterCount(
         params: List<ParamDomain>? = null,
         selectedLocationIds: List<String?>?,
-        structuralIds: List<String?>?
+        structuralIds: List<String?>?,
+        hideZeroReserves: Boolean
     ): Long
 
     suspend fun getReserveById(id: String): ReservesDomain

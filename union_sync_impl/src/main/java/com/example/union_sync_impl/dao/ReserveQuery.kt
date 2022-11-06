@@ -25,8 +25,9 @@ fun sqlReserveQuery(
     limit: Long? = null,
     offset: Long? = null,
     isNonCancel: Boolean = true,
+    hideZeroReserves: Boolean = false
 ): SimpleSQLiteQuery {
-
+    val name = textQuery?.ifEmpty { null }
     val mainQuery = if (isFilterCount) {
         "SELECT COUNT(*) FROM reserves"
     } else {
@@ -76,8 +77,8 @@ fun sqlReserveQuery(
                 locationIds?.let {
                     add("locationId" isEquals locationIds)
                 }
-                textQuery?.let {
-                    add("name" contains textQuery)
+                name?.let {
+                    add("name" contains name)
                 }
                 updateDate?.let {
                     add("updateDate" more updateDate)
@@ -92,6 +93,9 @@ fun sqlReserveQuery(
                     add("nomenclatureId" isEquals nomenclatureIds)
                     add("locationId" isEquals shortLocationIds)
                     add("orderId" isEquals orderIds)
+                }
+                if (hideZeroReserves) {
+                    add("count" more 0)
                 }
             }
         )

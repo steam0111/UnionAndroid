@@ -11,6 +11,8 @@ import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.structural.domain.dependencies.StructuralRepository
+import com.itrocket.union.manual.CheckBoxParamDomain
+import com.itrocket.union.manual.getFilterHideZeroReserves
 import kotlinx.coroutines.withContext
 
 class ReservesInteractor(
@@ -46,27 +48,42 @@ class ReservesInteractor(
                 selectedLocationIds = filterLocationIds,
                 structuralIds = filterStructuralIds,
                 offset = offset,
-                limit = limit
+                limit = limit,
+                hideZeroReserves = params.getFilterHideZeroReserves()
             ).filter {
                 !selectedReservesIds.contains(it.id)
             }
             reserves
         }
 
-    fun getFilters() = listOf(
-        StructuralParamDomain(manualType = ManualType.STRUCTURAL),
-        ParamDomain(
-            type = ManualType.MOL,
-            value = ""
-        ),
-        LocationParamDomain(),
-        ParamDomain(
-            type = ManualType.NOMENCLATURE_GROUP,
-            value = ""
-        ),
-        ParamDomain(
-            type = ManualType.RECEPTION_CATEGORY,
-            value = ""
-        ),
-    )
+    fun getFilters(isFromDocuments: Boolean) = buildList {
+        add(StructuralParamDomain(manualType = ManualType.STRUCTURAL))
+        add(
+            ParamDomain(
+                type = ManualType.MOL,
+                value = ""
+            )
+        )
+        add(LocationParamDomain())
+        add(
+            ParamDomain(
+                type = ManualType.NOMENCLATURE_GROUP,
+                value = ""
+            )
+        )
+        add(
+            ParamDomain(
+                type = ManualType.RECEPTION_CATEGORY,
+                value = ""
+            )
+        )
+        if (isFromDocuments) {
+            add(
+                CheckBoxParamDomain(
+                    isChecked = false,
+                    manualType = ManualType.CHECKBOX_HIDE_ZERO_RESERVES
+                )
+            )
+        }
+    }
 }

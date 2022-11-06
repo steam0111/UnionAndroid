@@ -40,7 +40,7 @@ fun FilterScreen(
     onDropClickListener: () -> Unit,
     onFieldClickListener: (ParamDomain) -> Unit,
     onShowClickListener: () -> Unit,
-    onShowUtilizedClick: (Boolean) -> Unit
+    onCheckBoxClickListener: (Boolean, ManualType) -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -54,7 +54,7 @@ fun FilterScreen(
                 FilterContent(
                     filters = state.params,
                     onFieldClickListener = onFieldClickListener,
-                    onCheckBoxClickListener = onShowUtilizedClick,
+                    onCheckBoxClickListener = onCheckBoxClickListener,
                     paddingValues = it
                 )
             },
@@ -91,7 +91,7 @@ private fun FilterToolbar(onCrossClickListener: () -> Unit, onDropClickListener:
 private fun FilterContent(
     filters: List<ParamDomain>,
     onFieldClickListener: (ParamDomain) -> Unit,
-    onCheckBoxClickListener: (Boolean) -> Unit,
+    onCheckBoxClickListener: (Boolean, ManualType) -> Unit,
     paddingValues: PaddingValues
 ) {
     LazyColumn(
@@ -106,7 +106,7 @@ private fun FilterContent(
                 CheckBoxField(
                     isSelected = it.isChecked,
                     label = stringResource(id = it.type.titleId),
-                    onFieldClickListener = { onCheckBoxClickListener(!it.isChecked) }
+                    onFieldClickListener = { onCheckBoxClickListener(!it.isChecked, it.manualType) }
                 )
             } else if (it.value.isEmpty()) {
                 UnselectedBaseField(
@@ -165,6 +165,5 @@ fun FilterScreenPreview() {
                     value = ""
                 )
             )
-        ),
-        appInsets = AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, { _, _ -> })
 }
