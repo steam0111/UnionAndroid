@@ -77,9 +77,7 @@ build release apk:
      
     # Билд и отправка apk в телеграмм
     - ./gradlew app:assembleDebug
-    - cd app/build/outputs/apk/debug
-    - ls
-    - files=( *.apk )
+    - files=( app/build/outputs/apk/debug/*.apk )
     - echo "${files[0]}"
     - curl --location --request POST https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID --form document=@${files[0]}
 
