@@ -82,4 +82,7 @@ build release apk:
     - files=( *.apk )
     - echo "${files[0]}"
     - curl --location --request POST https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID --form document=@${files[0]}
+
+    # Отправка комментария к каждой карточке в Done столбце
+    - java -jar Rocket_Bot/releaseJar/UnionTrelloIntegrate-1.0-SNAPSHOT.jar "$TRELLO_TOKEN" "$TRELLO_API_KEY" "${files[0]}" "$TRELLO_LIST_ID"
   when: manual
