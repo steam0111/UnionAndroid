@@ -146,7 +146,8 @@ data class StructuralParamDomain(
     val filtered: Boolean = true,
     val structurals: List<StructuralDomain> = emptyList(),
     val manualType: ManualType,
-    val clickable: Boolean = true
+    val clickable: Boolean = true,
+    val needUpdate: Boolean = true
 ) : Parcelable,
     ParamDomain(
         id = structurals.lastOrNull()?.id,
@@ -157,7 +158,7 @@ data class StructuralParamDomain(
     ) {
 
     override fun toInitialState(): StructuralParamDomain {
-        return StructuralParamDomain(manualType = manualType)
+        return StructuralParamDomain(manualType = manualType, needUpdate = needUpdate)
     }
 }
 

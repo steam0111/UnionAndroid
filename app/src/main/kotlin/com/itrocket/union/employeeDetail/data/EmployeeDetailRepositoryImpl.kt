@@ -11,16 +11,19 @@ class EmployeeDetailRepositoryImpl(
     private val syncApi: EmployeeSyncApi
 ) : EmployeeDetailRepository {
 
-    override suspend fun getEmployeeDetail(id: String): EmployeeDetailDomain {
-        return syncApi.getEmployeeDetail(id).toEmployeeDetailDomain()
+    override suspend fun getEmployeeDetail(id: String): EmployeeDetailDomain? {
+        return syncApi.getEmployeeDetail(id)?.toEmployeeDetailDomain()
     }
 
     override suspend fun getEmployeeStructuralById(
         employeeId: String,
-        structuralToParamDomain: StructuralParamDomain
+        structuralToParamDomain: StructuralParamDomain,
+        needUpdate: Boolean
     ): StructuralParamDomain {
         val employee = syncApi.getEmployeeDetail(employeeId)
-        return structuralToParamDomain.copy(structurals = employee.structuralSyncEntities?.map { it.toStructuralDomain() }
-            .orEmpty())
+        return structuralToParamDomain.copy(
+            needUpdate = needUpdate,
+            structurals = employee?.structuralSyncEntities?.map { it.toStructuralDomain() }
+                .orEmpty())
     }
 }

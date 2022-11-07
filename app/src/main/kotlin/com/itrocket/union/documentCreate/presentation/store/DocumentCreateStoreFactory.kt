@@ -86,9 +86,15 @@ class DocumentCreateStoreFactory(
 
                 document?.let { dispatch(Result.Document(it)) }
                 dispatch(Result.CanDelete(getState().canUpdate && !getState().document.isStatusCompleted))
-                changeParams(
-                    getState().document.params,
-                    documentTypeDomain = getState().document.documentType
+                changeParams(getState().document.params)
+                dispatch(
+                    Result.Params(
+                        documentCreateInteractor.changeParams(
+                            oldParams = getState().params,
+                            newParams = getState().params,
+                            documentType = getState().document.documentType
+                        )
+                    )
                 )
 
                 dispatch(Result.AccountingObjects(document?.accountingObjects ?: listOf()))
@@ -109,10 +115,7 @@ class DocumentCreateStoreFactory(
                 )
                 DocumentCreateStore.Intent.OnChooseReserveClicked -> onChooseReserveClicked(getState)
                 DocumentCreateStore.Intent.OnDropClicked -> {
-                    changeParams(
-                        getState().document.params,
-                        documentTypeDomain = getState().document.documentType
-                    )
+                    changeParams(getState().document.params)
                     dispatch(Result.AccountingObjects(getState().document.accountingObjects))
                     dispatch(Result.Reserves(getState().document.reserves))
                 }
@@ -127,22 +130,18 @@ class DocumentCreateStoreFactory(
                 is DocumentCreateStore.Intent.OnParamCrossClicked -> {
                     val params = documentCreateInteractor.clearParam(
                         getState().params,
-                        intent.param
+                        intent.param,
+                        getState().document.documentType
                     )
-                    changeParams(
-                        params = params,
-                        documentTypeDomain = getState().document.documentType
-                    )
+                    changeParams(params = params)
                 }
                 is DocumentCreateStore.Intent.OnParamsChanged -> {
                     val params = documentCreateInteractor.changeParams(
-                        getState().params,
-                        intent.params
+                        oldParams = getState().params,
+                        newParams = intent.params,
+                        documentType = getState().document.documentType
                     )
-                    changeParams(
-                        params = params,
-                        documentTypeDomain = getState().document.documentType
-                    )
+                    changeParams(params = params)
                 }
                 DocumentCreateStore.Intent.OnSaveClicked -> {
                     dispatch(Result.ConfirmDialogType(AlertType.SAVE))
@@ -387,8 +386,7 @@ class DocumentCreateStoreFactory(
         }
 
         private suspend fun changeParams(
-            params: List<ParamDomain>,
-            documentTypeDomain: DocumentTypeDomain
+            params: List<ParamDomain>
         ) {
             val filters = params.ifEmpty {
                 selectParamsInteractor.getInitialDocumentParams(

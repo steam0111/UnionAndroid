@@ -43,11 +43,9 @@ class EmployeeDetailStoreFactory(
         ) {
             catchException {
                 dispatch(Result.Loading(true))
-                dispatch(
-                    Result.EmployeeDetail(
-                        interactor.getEmployeeDetail(args.employeeId)
-                    )
-                )
+                interactor.getEmployeeDetail(args.employeeId)?.let {
+                    dispatch(Result.EmployeeDetail(it))
+                }
                 dispatch(Result.Loading(false))
             }
         }

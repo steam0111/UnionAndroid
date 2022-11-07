@@ -16,5 +16,5 @@ interface EmployeeSyncApi {
         structuralId: String? = null
     ): Long
 
-    suspend fun getEmployeeDetail(id: String): EmployeeDetailSyncEntity
+    suspend fun getEmployeeDetail(id: String): EmployeeDetailSyncEntity?
 }

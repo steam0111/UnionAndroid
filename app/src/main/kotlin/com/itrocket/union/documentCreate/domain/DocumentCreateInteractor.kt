@@ -7,10 +7,10 @@ import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.documents.domain.dependencies.DocumentRepository
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
+import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.toCreateSyncEntity
 import com.itrocket.union.documents.domain.entity.toUpdateSyncEntity
 import com.itrocket.union.employeeDetail.domain.EmployeeDetailInteractor
-import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
@@ -26,6 +26,8 @@ class DocumentCreateInteractor(
     private val structuralRepository: StructuralRepository,
     private val employeeInteractor: EmployeeDetailInteractor
 ) {
+
+    private suspend fun currentUserId(): String? = authMainInteractor.getMyConfig().employeeId
 
     suspend fun getDocumentById(
         id: String
@@ -72,120 +74,228 @@ class DocumentCreateInteractor(
     }
 
     suspend fun changeParams(
-        params: List<ParamDomain>,
-        newParams: List<ParamDomain>
-    ): List<ParamDomain> {
-        val mutableParams = params.toMutableList()
-        mutableParams.forEachIndexed { index, paramDomain ->
-            val newParam = newParams.find { it.type == paramDomain.type }
-
-            if (newParam != null) {
-                mutableParams[index] = newParam
-            }
-
-            if (newParam is StructuralParamDomain) {
-                changeBalanceUnit(mutableParams, newParam)
-                changeMolInStructural(mutableParams, newParam)
-            }
-        }
-
-        changeStructuralIMolChanged(params, newParams, mutableParams)
-
-        return mutableParams
-    }
-
-    private suspend fun changeStructuralIMolChanged(
-        params: List<ParamDomain>,
+        oldParams: List<ParamDomain>,
         newParams: List<ParamDomain>,
-        mutableParams: MutableList<ParamDomain>
-    ) {
-        val oldEmployee = params.find { it.type == ManualType.MOL_IN_STRUCTURAL }
-        val newEmployee = newParams.find { it.type == ManualType.MOL_IN_STRUCTURAL }
-
-        if (oldEmployee?.id != newEmployee?.id) {
-            val oldStructuralTo = mutableParams.firstOrNull { it.type == ManualType.STRUCTURAL_TO }
-            val indexOfStructuralTo = mutableParams.indexOf(oldStructuralTo)
-            if (indexOfStructuralTo >= 0) {
-                val newStructuralTo = (oldStructuralTo as? StructuralParamDomain)?.let {
-                    employeeInteractor.getEmployeeStructuralById(newEmployee?.id, it)
-                }
-
-                mutableParams[indexOfStructuralTo] =
-                    newStructuralTo ?: oldStructuralTo!!.toInitialState()
-            }
+        documentType: DocumentTypeDomain
+    ): List<ParamDomain> {
+        return when (documentType) {
+            DocumentTypeDomain.GIVE -> updateGiveFilter(oldParams, newParams)
+            DocumentTypeDomain.RETURN -> updateReturnFilter(oldParams, newParams)
+            DocumentTypeDomain.RELOCATION -> updateRelocationFilter(oldParams, newParams)
+            else -> updateOtherScreenParams(oldParams, newParams)
         }
     }
 
-    suspend fun changeMolInStructural(
-        params: MutableList<ParamDomain>,
-        structural: StructuralParamDomain
-    ) {
+    private suspend fun updateRelocationFilter(
+        oldParams: List<ParamDomain>,
+        newParams: List<ParamDomain>,
+    ): List<ParamDomain> {
+        val mutableParams: MutableMap<ManualType, ParamDomain> =
+            oldParams.associateBy { it.type }.toMutableMap()
 
-        if (structural.type == ManualType.STRUCTURAL_TO) {
-            val indexOfMolInStructuralTo =
-                params.indexOfFirst { it.type == ManualType.MOL_IN_STRUCTURAL }
-            if (indexOfMolInStructuralTo >= 0) {
-                params[indexOfMolInStructuralTo] =
-                    params[indexOfMolInStructuralTo].toInitialState()
+        val newParamsMap = newParams.associateBy { it.type }
+
+        mutableParams.forEach { (type, paramDomain) ->
+            val newParam = newParamsMap[paramDomain.type]
+            if (newParam != null) {
+                mutableParams[type] = newParam
+            }
+
+            if (newParam?.type == ManualType.STRUCTURAL_FROM) {
+                if ((paramDomain as StructuralParamDomain).needUpdate) {
+                    changeStructuralByEmployee(
+                        mutableParams = mutableParams,
+                        structuralType = ManualType.STRUCTURAL_FROM,
+                        employeeId = currentUserId(),
+                        needUpdate = false
+                    )
+                }
+            } else if (newParam?.type == ManualType.MOL_IN_STRUCTURAL) {
+                changeStructuralByEmployee(
+                    mutableParams = mutableParams,
+                    structuralType = ManualType.STRUCTURAL_TO,
+                    employeeId = newParam.id
+                )
+            }
+            updateBalanceUnits(mutableParams)
+        }
+        return mutableParams.values.toList()
+    }
+
+    private suspend fun updateReturnFilter(
+        oldParams: List<ParamDomain>,
+        newParams: List<ParamDomain>,
+    ): List<ParamDomain> {
+        val mutableParams: MutableMap<ManualType, ParamDomain> =
+            oldParams.associateBy { it.type }.toMutableMap()
+        val newParamsMap = newParams.associateBy { it.type }
+
+        mutableParams.forEach { (type, paramDomain) ->
+            val newParam = newParamsMap[paramDomain.type]
+            if (newParam != null) {
+                mutableParams[type] = newParam
+            }
+
+            if (newParam?.type == ManualType.STRUCTURAL_TO) {
+                if ((paramDomain as StructuralParamDomain).needUpdate) {
+                    changeStructuralByEmployee(
+                        mutableParams = mutableParams,
+                        structuralType = ManualType.STRUCTURAL_TO,
+                        employeeId = currentUserId(),
+                        needUpdate = false
+                    )
+                }
+            }
+            updateBalanceUnits(mutableParams)
+        }
+        return mutableParams.values.toList()
+    }
+
+    private suspend fun updateGiveFilter(
+        oldParams: List<ParamDomain>,
+        newParams: List<ParamDomain>,
+    ): List<ParamDomain> {
+        val mutableParams: MutableMap<ManualType, ParamDomain> =
+            oldParams.associateBy { it.type }.toMutableMap()
+
+        val newParamsMap = newParams.associateBy { it.type }
+
+        mutableParams.forEach { (type, paramDomain) ->
+            val newParam = newParamsMap[type]
+            if (newParam != null) {
+                mutableParams[type] = newParam
+            }
+
+            if (newParam?.type == ManualType.STRUCTURAL_FROM) {
+                if ((paramDomain as StructuralParamDomain).needUpdate) {
+                    changeStructuralByEmployee(
+                        mutableParams = mutableParams,
+                        structuralType = ManualType.STRUCTURAL_FROM,
+                        employeeId = currentUserId(),
+                        needUpdate = false
+                    )
+                }
+            } else if (newParam?.type == ManualType.EXPLOITING) {
+                changeStructuralByEmployee(
+                    mutableParams = mutableParams,
+                    structuralType = ManualType.STRUCTURAL_TO,
+                    employeeId = newParam.id
+                )
+            }
+            updateBalanceUnits(mutableParams)
+        }
+        return mutableParams.values.toList()
+    }
+
+    private fun updateOtherScreenParams(
+        oldParams: List<ParamDomain>,
+        newParams: List<ParamDomain>,
+    ): List<ParamDomain> {
+        val mutableParams: MutableMap<ManualType, ParamDomain> =
+            oldParams.associateBy { it.type }.toMutableMap()
+
+        val newParamsMap = newParams.associateBy { it.type }
+
+        mutableParams.forEach { (type, _) ->
+            val newParam = newParamsMap[type]
+            if (newParam != null) {
+                mutableParams[type] = newParam
             }
         }
+        return mutableParams.values.toList()
+    }
+
+    private suspend fun changeStructuralByEmployee(
+        mutableParams: MutableMap<ManualType, ParamDomain>,
+        structuralType: ManualType,
+        employeeId: String?,
+        needUpdate: Boolean = true
+    ) {
+        if (employeeId == null) return
+        val structural = mutableParams[structuralType] as? StructuralParamDomain ?: return
+        val newStructural = employeeInteractor.getEmployeeStructuralById(
+            employeeId,
+            structural,
+            needUpdate
+        )
+        mutableParams[structuralType] = newStructural
+    }
+
+    private suspend fun updateBalanceUnits(
+        mutableParams: MutableMap<ManualType, ParamDomain>
+    ) {
+        changeBalanceUnit(
+            mutableParams,
+            mutableParams[ManualType.STRUCTURAL_TO] as? StructuralParamDomain
+        )
+        changeBalanceUnit(
+            mutableParams,
+            mutableParams[ManualType.STRUCTURAL_FROM] as? StructuralParamDomain
+        )
     }
 
     private suspend fun changeBalanceUnit(
-        mutableParams: MutableList<ParamDomain>,
-        structural: StructuralParamDomain
+        mutableParams: MutableMap<ManualType, ParamDomain>,
+        structural: StructuralParamDomain?
     ) {
-        val balanceUnitType = if (structural.manualType == ManualType.STRUCTURAL_TO) {
-            ManualType.BALANCE_UNIT_TO
-        } else {
-            ManualType.BALANCE_UNIT_FROM
+        val balanceUnitType = when (structural?.manualType) {
+            ManualType.STRUCTURAL_TO -> ManualType.BALANCE_UNIT_TO
+            ManualType.STRUCTURAL_FROM -> ManualType.BALANCE_UNIT_FROM
+            else -> return
         }
-        val index = mutableParams.indexOfFirst { it.type == balanceUnitType }
-        if (index != NO_POSITION) {
-            val oldBalanceUnitTo = mutableParams[index]
-            val newBalanceUnitToPath = structuralRepository.getBalanceUnitFullPath(
-                structural.id,
-                mutableListOf()
-            )
-            mutableParams[index] =
-                (oldBalanceUnitTo as StructuralParamDomain).copy(structurals = newBalanceUnitToPath.orEmpty())
-        }
+
+        val oldBalanceUnitTo = mutableParams[balanceUnitType] ?: return
+        val newBalanceUnitToPath = structuralRepository.getBalanceUnitFullPath(
+            structural.id,
+            mutableListOf()
+        )
+        mutableParams[balanceUnitType] =
+            (oldBalanceUnitTo as StructuralParamDomain).copy(structurals = newBalanceUnitToPath.orEmpty())
     }
 
-    fun clearParam(list: List<ParamDomain>, param: ParamDomain): List<ParamDomain> {
-        val mutableList = list.toMutableList()
-        val currentIndex = mutableList.indexOfFirst { it.type == param.type }
-        mutableList[currentIndex] = mutableList[currentIndex].toInitialState()
+    suspend fun clearParam(
+        list: List<ParamDomain>,
+        param: ParamDomain,
+        documentType: DocumentTypeDomain
+    ): List<ParamDomain> {
+        val mutableParams: MutableMap<ManualType, ParamDomain> =
+            list.associateBy { it.type }.toMutableMap()
+        mutableParams[param.type] = mutableParams[param.type]?.toInitialState() ?: return list
 
         when (param.type) {
             ManualType.STRUCTURAL_TO -> {
-                val balanceUnitToIndex =
-                    mutableList.indexOfFirst { it.type == ManualType.BALANCE_UNIT_TO }
-                if (balanceUnitToIndex >= 0) {
-                    mutableList[balanceUnitToIndex] =
-                        mutableList[balanceUnitToIndex].toInitialState()
-                }
-
-                val molIndex = mutableList.indexOfFirst { it.type == ManualType.MOL_IN_STRUCTURAL }
-                if (molIndex >= 0) {
-                    mutableList[molIndex] = mutableList[molIndex].toInitialState()
+                if (documentType == DocumentTypeDomain.GIVE) {
+                    clearParamToInitialState(mutableParams, ManualType.EXPLOITING)
+                } else if (documentType == DocumentTypeDomain.RELOCATION) {
+                    clearParamToInitialState(mutableParams, ManualType.BALANCE_UNIT_TO)
+                    clearParamToInitialState(mutableParams, ManualType.MOL_IN_STRUCTURAL)
                 }
             }
             ManualType.STRUCTURAL_FROM -> {
-                val balanceUnitFromIndex =
-                    mutableList.indexOfFirst { it.type == ManualType.BALANCE_UNIT_FROM }
-                if (balanceUnitFromIndex >= 0) {
-                    mutableList[balanceUnitFromIndex] =
-                        mutableList[balanceUnitFromIndex].toInitialState()
+                clearParamToInitialState(mutableParams, ManualType.BALANCE_UNIT_FROM)
+            }
+            ManualType.EXPLOITING -> {
+                if (documentType == DocumentTypeDomain.GIVE) {
+                    clearParamToInitialState(mutableParams, ManualType.STRUCTURAL_TO)
+                }
+            }
+            ManualType.MOL_IN_STRUCTURAL -> {
+                if (documentType == DocumentTypeDomain.RELOCATION) {
+                    clearParamToInitialState(mutableParams, ManualType.STRUCTURAL_TO)
                 }
             }
         }
-        return mutableList
+        updateBalanceUnits(mutableParams)
+        return mutableParams.values.toList()
     }
 
-    fun clearParams(list: List<ParamDomain>): List<ParamDomain> {
-        return list.map {
-            it.toInitialState()
+    private fun clearParamToInitialState(
+        mutableParams: MutableMap<ManualType, ParamDomain>,
+        type: ManualType
+    ) {
+        val param = mutableParams[type]
+        if (param != null) {
+            mutableParams[type] = param.toInitialState()
         }
     }
 

@@ -29,7 +29,7 @@ interface EmployeeDao {
                 "LEFT JOIN structural ON employees.structuralId = structural.id " +
                 "WHERE employees.id = :id LIMIT 1"
     )
-    suspend fun getFullById(id: String): FullEmployeeDb
+    suspend fun getFullById(id: String): FullEmployeeDb?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(employees: List<EmployeeDb>)

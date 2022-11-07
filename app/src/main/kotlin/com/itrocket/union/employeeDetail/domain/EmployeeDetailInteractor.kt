@@ -11,16 +11,21 @@ class EmployeeDetailInteractor(
     private val coreDispatchers: CoreDispatchers
 ) {
 
-    suspend fun getEmployeeDetail(id: String): EmployeeDetailDomain =
+    suspend fun getEmployeeDetail(id: String): EmployeeDetailDomain? =
         withContext(coreDispatchers.io) {
             repository.getEmployeeDetail(id)
         }
 
     suspend fun getEmployeeStructuralById(
-        employeeId: String?,
-        structuralToParamDomain: StructuralParamDomain
+        employeeId: String,
+        structuralToParamDomain: StructuralParamDomain,
+        needUpdate: Boolean
     ) =
         withContext(coreDispatchers.io) {
-            employeeId?.let { repository.getEmployeeStructuralById(it, structuralToParamDomain) }
+            repository.getEmployeeStructuralById(
+                employeeId = employeeId,
+                structuralToParamDomain = structuralToParamDomain,
+                needUpdate = needUpdate
+            )
         }
 }
