@@ -10,6 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import com.itrocket.union.alertType.AlertType
+import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStoreFactory
 import com.itrocket.union.documents.data.mapper.getTransitParams
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
@@ -118,15 +119,17 @@ class TransitStoreFactory(
                 }
                 is TransitStore.Intent.OnParamCrossClicked -> {
                     val params = documentCreateInteractor.clearParam(
-                        getState().params,
-                        intent.param
+                        list = getState().params,
+                        param = intent.param,
+                        documentType = getState().transit.documentType
                     )
                     changeParams(params = params)
                 }
                 is TransitStore.Intent.OnParamsChanged -> {
                     val params = documentCreateInteractor.changeParams(
-                        getState().params,
-                        intent.params
+                        oldParams = getState().params,
+                        newParams = intent.params,
+                        documentType = getState().transit.documentType
                     )
                     changeParams(params = params)
                 }

@@ -45,11 +45,11 @@ class EmployeeSyncApiImpl(
         )
     }
 
-    override suspend fun getEmployeeDetail(id: String): EmployeeDetailSyncEntity {
+    override suspend fun getEmployeeDetail(id: String): EmployeeDetailSyncEntity? {
         val fullEmployee = employeeDao.getFullById(id)
         val structurals =
             structuralSyncApi.getStructuralFullPath(
-                fullEmployee.structural?.id,
+                fullEmployee?.structural?.id,
                 mutableListOf()
             ).orEmpty()
         val balanceUnitIndex = structurals.indexOfLast { it.balanceUnit }.takeIf { it >= 0 } ?: 0
@@ -57,10 +57,10 @@ class EmployeeSyncApiImpl(
 
         val employeeStatus = enumSyncApi.getByCompoundId(
             enumType = EnumType.EMPLOYEE_STATUS,
-            id = fullEmployee.employeeDb.statusId
+            id = fullEmployee?.employeeDb?.statusId
         )
 
-        return fullEmployee.toDetailSyncEntity(
+        return fullEmployee?.toDetailSyncEntity(
             balanceUnits = balanceUnits,
             structurals = structurals,
             employeeStatusSyncEntity = employeeStatus
