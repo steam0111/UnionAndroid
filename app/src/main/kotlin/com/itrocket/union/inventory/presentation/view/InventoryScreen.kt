@@ -2,15 +2,18 @@ package com.itrocket.union.inventory.presentation.view
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -41,13 +44,14 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.alertType.AlertType
+import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventory.presentation.store.InventoryStore
-import com.itrocket.union.inventoryCreate.presentation.view.InventoryBottomBar
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
+import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ButtonBottomBar
 import com.itrocket.union.ui.ConfirmAlertDialog
@@ -105,12 +109,10 @@ fun InventoryScreen(
                         InventoryBottomBar(
                             onSaveClickListener = onSaveClickListener,
                             onInWorkClickListener = onInWorkClickListener,
-                            onFinishClickListener = { },
                             inventoryStatus = state.inventoryCreateDomain.inventoryStatus,
                             canUpdate = state.canUpdateInventory,
                             isDynamicSaveInventory = state.isDynamicSaveInventory,
                             isAccountingObjectLoading = state.isAccountingObjectsLoading,
-                            isCompleteLoading = false
                         )
                     }
                     state.canCreateInventory -> {
@@ -337,6 +339,44 @@ private fun Toolbar(
             )
         }
     )
+}
+
+@Composable
+private fun InventoryBottomBar(
+    onSaveClickListener: () -> Unit,
+    onInWorkClickListener: () -> Unit = {},
+    inventoryStatus: InventoryStatus,
+    canUpdate: Boolean,
+    isDynamicSaveInventory: Boolean,
+    isAccountingObjectLoading: Boolean,
+) {
+    Row(
+        modifier = Modifier
+            .background(graphite2)
+            .padding(16.dp)
+    ) {
+        if (!isDynamicSaveInventory) {
+            BaseButton(
+                enabled = canUpdate,
+                text = stringResource(R.string.common_save),
+                onClick = onSaveClickListener,
+                modifier = Modifier.weight(1f),
+                disabledBackgroundColor = AppTheme.colors.secondaryColor
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+        }
+        when (inventoryStatus) {
+            InventoryStatus.CREATED -> {
+                BaseButton(
+                    enabled = canUpdate && !isAccountingObjectLoading,
+                    onClick = onInWorkClickListener,
+                    modifier = Modifier.weight(1f),
+                    disabledBackgroundColor = AppTheme.colors.secondaryColor,
+                    text = stringResource(R.string.common_in_work),
+                )
+            }
+        }
+    }
 }
 
 @Preview(

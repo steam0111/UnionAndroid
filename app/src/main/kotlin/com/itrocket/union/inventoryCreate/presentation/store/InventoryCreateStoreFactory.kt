@@ -479,7 +479,7 @@ class InventoryCreateStoreFactory(
                         accountingObjects = getState().inventoryDocument.accountingObjects
                     )
                 }
-                dispatch(Result.Loading(true))
+                dispatch(Result.Loading(false))
             }
         }
 
