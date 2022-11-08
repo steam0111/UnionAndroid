@@ -351,7 +351,7 @@ fun SettingsBar(
 }
 
 @Composable
-fun InventoryBottomBar(
+private fun InventoryBottomBar(
     onSaveClickListener: () -> Unit,
     onInWorkClickListener: () -> Unit = {},
     onFinishClickListener: () -> Unit,
