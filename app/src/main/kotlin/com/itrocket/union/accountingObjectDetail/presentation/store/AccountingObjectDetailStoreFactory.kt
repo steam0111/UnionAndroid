@@ -113,6 +113,24 @@ class AccountingObjectDetailStoreFactory(
                 AccountingObjectDetailStore.Intent.OnTriggerReleased -> onTriggerRelease()
                 is AccountingObjectDetailStore.Intent.OnWriteEpcError -> onWriteEpcError(intent.error)
                 is AccountingObjectDetailStore.Intent.OnWriteEpcHandled -> onWriteEpcHandled()
+                AccountingObjectDetailStore.Intent.OnRemoveBarcodeClicked -> onRemoveBarcodeClicked(
+                    getState().accountingObjectDomain
+                )
+                AccountingObjectDetailStore.Intent.OnRemoveRfidClicked -> onRemoveRfidClicked(
+                    getState().accountingObjectDomain
+                )
+            }
+        }
+
+        private suspend fun onRemoveBarcodeClicked(accountingObjectDomain: AccountingObjectDomain) {
+            catchException {
+                interactor.removeBarcode(accountingObjectDomain)
+            }
+        }
+
+        private suspend fun onRemoveRfidClicked(accountingObjectDomain: AccountingObjectDomain) {
+            catchException {
+                interactor.removeRfid(accountingObjectDomain)
             }
         }
 
@@ -162,7 +180,8 @@ class AccountingObjectDetailStoreFactory(
             getState: () -> AccountingObjectDetailStore.State,
             scanData: String
         ) {
-            val canChangeScanData = getState().canUpdate && getState().dialogType != AlertType.WRITE_EPC
+            val canChangeScanData =
+                getState().canUpdate && getState().dialogType != AlertType.WRITE_EPC
             if (canChangeScanData) {
                 publish(AccountingObjectDetailStore.Label.ChangeSubscribeScanData(false))
                 publish(

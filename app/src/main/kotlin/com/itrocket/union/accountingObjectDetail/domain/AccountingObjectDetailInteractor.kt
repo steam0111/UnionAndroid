@@ -63,6 +63,16 @@ class AccountingObjectDetailInteractor(
             repository.updateScanningData(accountingObjectDomain)
         }
 
+    suspend fun removeRfid(accountingObjectDomain: AccountingObjectDomain) =
+        withContext(coreDispatchers.io) {
+            repository.updateScanningData(accountingObjectDomain.copy(rfidValue = null))
+        }
+
+    suspend fun removeBarcode(accountingObjectDomain: AccountingObjectDomain) =
+        withContext(coreDispatchers.io) {
+            repository.updateScanningData(accountingObjectDomain.copy(barcodeValue = null))
+        }
+
     suspend fun generateRfid(
         accountingObjectDomain: AccountingObjectDomain,
     ) {

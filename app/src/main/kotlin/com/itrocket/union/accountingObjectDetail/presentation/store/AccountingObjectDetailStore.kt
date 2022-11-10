@@ -35,6 +35,8 @@ interface AccountingObjectDetailStore :
         object OnDismissed : Intent()
         object OnTriggerPressed : Intent()
         object OnTriggerReleased : Intent()
+        object OnRemoveBarcodeClicked : Intent()
+        object OnRemoveRfidClicked : Intent()
         data class OnWriteEpcHandled(val rfid: String) : Intent()
         data class OnWriteEpcError(val error: String) : Intent()
         data class OnScanHandled(val scanData: String) : Intent()

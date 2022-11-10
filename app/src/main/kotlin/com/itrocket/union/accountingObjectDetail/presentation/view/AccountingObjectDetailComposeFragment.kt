@@ -113,6 +113,12 @@ class AccountingObjectDetailComposeFragment :
                 },
                 onWriteEpcDismiss = {
                     accept(AccountingObjectDetailStore.Intent.OnDismissed)
+                },
+                onRemoveBarcodeClickListener = {
+                    accept(AccountingObjectDetailStore.Intent.OnRemoveBarcodeClicked)
+                },
+                onRemoveRfidClickListener = {
+                    accept(AccountingObjectDetailStore.Intent.OnRemoveRfidClicked)
                 }
             )
         }

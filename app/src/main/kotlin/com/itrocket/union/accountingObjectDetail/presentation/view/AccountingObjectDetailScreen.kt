@@ -61,7 +61,9 @@ fun AccountingObjectDetailScreen(
     onPageChangeListener: (Int) -> Unit,
     onGenerateRfidClickListener: () -> Unit,
     onWriteEpcTagClickListener: () -> Unit,
-    onWriteEpcDismiss: () -> Unit
+    onWriteEpcDismiss: () -> Unit,
+    onRemoveRfidClickListener: () -> Unit,
+    onRemoveBarcodeClickListener: () -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -87,7 +89,9 @@ fun AccountingObjectDetailScreen(
                 paddingValues = it,
                 state = state,
                 onGenerateRfidClickListener = onGenerateRfidClickListener,
-                onWriteEpcTagClickListener = onWriteEpcTagClickListener
+                onWriteEpcTagClickListener = onWriteEpcTagClickListener,
+                onRemoveRfidClickListener = onRemoveRfidClickListener,
+                onRemoveBarcodeClickListener = onRemoveBarcodeClickListener
             )
         }
         when (state.dialogType) {
@@ -107,7 +111,9 @@ private fun Content(
     paddingValues: PaddingValues,
     state: AccountingObjectDetailStore.State,
     onGenerateRfidClickListener: () -> Unit,
-    onWriteEpcTagClickListener: () -> Unit
+    onWriteEpcTagClickListener: () -> Unit,
+    onRemoveRfidClickListener: () -> Unit,
+    onRemoveBarcodeClickListener: () -> Unit
 ) {
     LazyColumn(Modifier.padding(top = paddingValues.calculateTopPadding())) {
         item {
@@ -148,6 +154,30 @@ private fun Content(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             )
+        }
+        if (state.accountingObjectDomain.rfidValue != null) {
+            item {
+                Spacer(modifier = Modifier.height(12.dp))
+                BaseButton(
+                    text = stringResource(R.string.common_remove_rfid),
+                    onClick = onRemoveRfidClickListener,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+            }
+        }
+        if (state.accountingObjectDomain.barcodeValue != null) {
+            item {
+                Spacer(modifier = Modifier.height(12.dp))
+                BaseButton(
+                    text = stringResource(R.string.common_remove_barcode),
+                    onClick = onRemoveBarcodeClickListener,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+            }
         }
         item {
             Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
@@ -257,5 +287,5 @@ fun AccountingObjectDetailScreenPreview() {
                 rfidValue = "",
                 factoryNumber = ""
             ),
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 }
