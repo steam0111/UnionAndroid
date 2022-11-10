@@ -35,9 +35,7 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
-import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
@@ -58,7 +56,7 @@ import com.itrocket.union.ui.white
 
 @Composable
 fun InventoryCreateScreen(
-    state: InventoryCreateStore.State,
+    state: InventoryCreateUiState,
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
     onDropClickListener: () -> Unit,
@@ -85,12 +83,11 @@ fun InventoryCreateScreen(
                 Toolbar(
                     onDropClickListener = onDropClickListener,
                     onBackClickListener = onBackClickListener,
-                    inventoryStatus = state.inventoryDocument.inventoryStatus,
                     onSearchClickListener = onSearchClickListener,
                     onSearchTextChanged = onSearchTextChanged,
                     searchText = state.searchText,
                     isShowSearch = state.isShowSearch,
-                    canUpdate = state.canUpdate,
+                    isDropEnabled = state.dropEnabled
                 )
             },
             bottomBar = {
@@ -140,21 +137,9 @@ fun InventoryCreateScreen(
     }
 }
 
-private fun getAccountingObjects(state: InventoryCreateStore.State): List<AccountingObjectDomain> {
-    return when {
-        state.isShowSearch -> state.searchAccountingObjects
-        state.isHideFoundAccountingObjects -> {
-            val list =
-                state.newAccountingObjects.toList() + state.inventoryDocument.accountingObjects
-            list.filter { it.inventoryStatus != InventoryAccountingObjectStatus.FOUND }
-        }
-        else -> state.newAccountingObjects.toList() + state.inventoryDocument.accountingObjects
-    }
-}
-
 @Composable
 private fun Content(
-    state: InventoryCreateStore.State,
+    state: InventoryCreateUiState,
     paddingValues: PaddingValues,
     onAddNewChanged: () -> Unit,
     onHideFoundAccountingObjectChanged: () -> Unit,
@@ -164,7 +149,6 @@ private fun Content(
     onStatusClickListener: (AccountingObjectDomain) -> Unit,
     onAccountingObjectLongClickListener: (AccountingObjectDomain) -> Unit
 ) {
-    val accountingObjectList = getAccountingObjects(state)
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(
             Modifier
@@ -173,16 +157,14 @@ private fun Content(
         ) {
             LazyColumn {
                 item {
-                    if (state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED && state.canUpdate) {
+                    if (state.canChangeInventory) {
                         InventoryBottomBar(
                             onSaveClickListener = onSaveClickListener,
                             onFinishClickListener = onFinishClickListener,
-                            inventoryStatus = state.inventoryDocument.inventoryStatus,
-                            canUpdate = state.canUpdate,
-                            canComplete = state.canComplete,
                             isDynamicSaveInventory = state.isDynamicSaveInventory,
-                            isAccountingObjectLoading = state.isLoading,
-                            isCompleteLoading = state.isCompleteLoading
+                            saveEnabled = state.saveEnabled,
+                            completeEnabled = state.completeEnabled,
+                            showComplete = state.showComplete
                         )
                     }
                     InventoryDocumentItem(item = state.inventoryDocument, isShowStatus = false)
@@ -203,17 +185,17 @@ private fun Content(
                     )
                     MediumSpacer()
                 }
-                itemsIndexed(items = accountingObjectList, key = { index, item ->
+                itemsIndexed(items = state.accountingObjects, key = { index, item ->
                     item.id
                 }) { index, item ->
-                    val isShowBottomLine = accountingObjectList.lastIndex != index
+                    val isShowBottomLine = state.accountingObjects.lastIndex != index
                     AccountingObjectItem(
                         accountingObject = item,
                         onAccountingObjectListener = onAccountingObjectClickListener,
                         onStatusClickListener = { onStatusClickListener(item) },
                         isShowBottomLine = isShowBottomLine,
                         status = item.inventoryStatus,
-                        isEnabled = state.inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED && state.canUpdate,
+                        isEnabled = state.canChangeInventory,
                         onAccountingObjectLongClickListener = onAccountingObjectLongClickListener
                     )
                 }
@@ -353,14 +335,11 @@ fun SettingsBar(
 @Composable
 private fun InventoryBottomBar(
     onSaveClickListener: () -> Unit,
-    onInWorkClickListener: () -> Unit = {},
     onFinishClickListener: () -> Unit,
-    inventoryStatus: InventoryStatus,
-    canUpdate: Boolean,
-    canComplete: Boolean = false,
+    showComplete: Boolean,
     isDynamicSaveInventory: Boolean,
-    isAccountingObjectLoading: Boolean,
-    isCompleteLoading: Boolean,
+    saveEnabled: Boolean,
+    completeEnabled: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -369,7 +348,7 @@ private fun InventoryBottomBar(
     ) {
         if (!isDynamicSaveInventory) {
             BaseButton(
-                enabled = inventoryStatus != InventoryStatus.COMPLETED && canUpdate && !isAccountingObjectLoading,
+                enabled = saveEnabled,
                 text = stringResource(R.string.common_save),
                 onClick = onSaveClickListener,
                 modifier = Modifier.weight(1f),
@@ -377,30 +356,14 @@ private fun InventoryBottomBar(
             )
             Spacer(modifier = Modifier.width(16.dp))
         }
-        when (inventoryStatus) {
-            InventoryStatus.CREATED -> {
-                BaseButton(
-                    enabled = canUpdate && !isAccountingObjectLoading,
-                    onClick = onInWorkClickListener,
-                    modifier = Modifier.weight(1f),
-                    disabledBackgroundColor = AppTheme.colors.secondaryColor,
-                    text = stringResource(R.string.common_in_work),
-                )
-            }
-            InventoryStatus.IN_PROGRESS -> {
-                if (canComplete) {
-                    BaseButton(
-                        text = stringResource(R.string.common_complete),
-                        onClick = onFinishClickListener,
-                        modifier = Modifier.weight(1f),
-                        enabled = canUpdate && !isAccountingObjectLoading && !isCompleteLoading,
-                        disabledBackgroundColor = AppTheme.colors.secondaryColor
-                    )
-                }
-            }
-            InventoryStatus.COMPLETED -> {
-                //Nothing
-            }
+        if (showComplete) {
+            BaseButton(
+                text = stringResource(R.string.common_complete),
+                onClick = onFinishClickListener,
+                modifier = Modifier.weight(1f),
+                enabled = completeEnabled,
+                disabledBackgroundColor = AppTheme.colors.secondaryColor
+            )
         }
     }
 }
@@ -413,8 +376,7 @@ private fun Toolbar(
     onSearchTextChanged: ((String) -> Unit),
     searchText: String,
     isShowSearch: Boolean,
-    inventoryStatus: InventoryStatus,
-    canUpdate: Boolean
+    isDropEnabled: Boolean
 ) {
     SearchToolbar(
         title = stringResource(id = R.string.inventory_ao_title),
@@ -431,7 +393,7 @@ private fun Toolbar(
                 color = AppTheme.colors.mainColor,
                 modifier = Modifier.clickable(
                     onClick = onDropClickListener,
-                    enabled = inventoryStatus == InventoryStatus.CREATED && canUpdate
+                    enabled = isDropEnabled
                 )
             )
         }
@@ -454,7 +416,7 @@ private fun Toolbar(
 @Composable
 fun InventoryCreateScreenPreview() {
     InventoryCreateScreen(
-        InventoryCreateStore.State(
+        InventoryCreateUiState(
             inventoryDocument = InventoryCreateDomain(
                 id = "",
                 number = "БП-00001374",

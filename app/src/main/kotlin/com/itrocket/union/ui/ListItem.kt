@@ -119,7 +119,9 @@ fun AccountingObjectItem(
                     SmallStatusLabel(
                         status = it,
                         text = statusText,
-                        onClick = onStatusClickListener
+                        onClick = onStatusClickListener,
+                        enabled = isEnabled
+
                     )
                 }
                 if (status is ObjectStatusType && isShowScanInfo && (accountingObject.hasBarcode || accountingObject.hasRfid)) {

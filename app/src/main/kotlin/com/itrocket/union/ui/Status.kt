@@ -21,14 +21,20 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
 import com.itrocket.union.accountingObjects.domain.entity.Status
 
 @Composable
-fun SmallStatusLabel(status: Status, text: String?, onClick: () -> Unit = {}) {
+fun SmallStatusLabel(
+    status: Status,
+    text: String?,
+    onClick: () -> Unit = {},
+    enabled: Boolean = true
+) {
     BaseLabel(
         text = text,
         status = status,
         verticalPadding = 4.dp,
         horizontalPadding = 8.dp,
         textStyle = AppTheme.typography.caption,
-        onClick = onClick
+        onClick = onClick,
+        enabled = enabled
     )
 }
 
@@ -56,6 +62,7 @@ private fun BaseLabel(
     horizontalPadding: Dp,
     textStyle: TextStyle,
     onClick: () -> Unit = {},
+    enabled: Boolean = true
 ) {
     Text(
         text = text ?: status.textId?.let { stringResource(it) } ?: status.text.orEmpty(),
@@ -69,7 +76,8 @@ private fun BaseLabel(
             .clickable(
                 interactionSource = MutableInteractionSource(),
                 indication = null,
-                onClick = onClick
+                onClick = onClick,
+                enabled = enabled
             )
             .padding(vertical = verticalPadding, horizontal = horizontalPadding)
     )
