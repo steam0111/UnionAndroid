@@ -5,8 +5,9 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manualInput.presentation.store.ManualInputType
 import com.itrocket.union.readingMode.domain.ReadingModeInteractor
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -18,7 +19,8 @@ class ReadingModeStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val readingModeInteractor: ReadingModeInteractor,
-    private val serviceEntryManager: ServiceEntryManager
+    private val serviceEntryManager: ServiceEntryManager,
+    private val errorInteractor: ErrorInteractor,
 ) {
     fun create(): ReadingModeStore =
         object : ReadingModeStore,
@@ -40,15 +42,17 @@ class ReadingModeStoreFactory(
         ReadingModeExecutor()
 
     private inner class ReadingModeExecutor :
-        SuspendExecutor<ReadingModeStore.Intent, Unit, ReadingModeStore.State, Result, ReadingModeStore.Label>(
-            mainContext = coreDispatchers.ui
+        BaseExecutor<ReadingModeStore.Intent, Unit, ReadingModeStore.State, Result, ReadingModeStore.Label>(
+            context = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
             action: Unit,
             getState: () -> ReadingModeStore.State
         ) {
-            dispatch(Result.ReadingModeSelected(serviceEntryManager.currentMode.toReadingModeTab()))
-            readingModeInteractor.changeScanMode(getState().selectedTab.toReadingMode())
+            catchException {
+                dispatch(Result.ReadingModeSelected(serviceEntryManager.currentMode.toReadingModeTab()))
+                readingModeInteractor.changeScanMode(getState().selectedTab.toReadingMode())
+            }
         }
 
         override suspend fun executeIntent(
@@ -57,7 +61,9 @@ class ReadingModeStoreFactory(
         ) {
             when (intent) {
                 ReadingModeStore.Intent.OnRestartClicked -> {
-                    readingModeInteractor.restartService()
+                    catchException {
+                        readingModeInteractor.restartService()
+                    }
                 }
                 ReadingModeStore.Intent.OnManualInputClicked -> publish(
                     ReadingModeStore.Label.ManualInput(
@@ -68,9 +74,11 @@ class ReadingModeStoreFactory(
                     )
                 )
                 is ReadingModeStore.Intent.OnReadingModeSelected -> {
-                    readingModeInteractor.changeScanMode(intent.readingMode.toReadingMode())
-                    dispatch(Result.ReadingModeSelected(intent.readingMode))
-                    publish(ReadingModeStore.Label.ResultReadingTab(intent.readingMode))
+                    catchException {
+                        readingModeInteractor.changeScanMode(intent.readingMode.toReadingMode())
+                        dispatch(Result.ReadingModeSelected(intent.readingMode))
+                        publish(ReadingModeStore.Label.ResultReadingTab(intent.readingMode))
+                    }
                 }
                 ReadingModeStore.Intent.OnSettingsClicked -> publish(ReadingModeStore.Label.ReaderPower)
                 is ReadingModeStore.Intent.OnManualInput -> publish(
@@ -82,6 +90,10 @@ class ReadingModeStoreFactory(
                     )
                 )
             }
+        }
+
+        override fun handleError(throwable: Throwable) {
+            publish(ReadingModeStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 
