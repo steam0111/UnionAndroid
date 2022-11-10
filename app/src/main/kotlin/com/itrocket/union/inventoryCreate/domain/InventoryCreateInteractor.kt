@@ -8,7 +8,6 @@ import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.inventoryCreate.domain.entity.AccountingObjectCounter
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
-import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectsDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.inventoryCreate.domain.entity.toUpdateSyncEntity
 import com.itrocket.union.manual.ManualType
@@ -64,44 +63,31 @@ class InventoryCreateInteractor(
 
     suspend fun removeAccountingObject(
         accountingObjectId: String,
-        newAccountingObjects: List<AccountingObjectDomain>,
         accountingObjects: List<AccountingObjectDomain>
-    ): InventoryAccountingObjectsDomain {
+    ): List<AccountingObjectDomain> {
         return withContext(coreDispatchers.io) {
             val mutableAccountingObjects = accountingObjects.toMutableList()
-            val mutableNewAccountingObjects = newAccountingObjects.toMutableList()
 
             val existAccountingObjectIndex =
                 mutableAccountingObjects.indexOfFirst { it.id == accountingObjectId }
-            val newAccountingObjectIndex =
-                mutableNewAccountingObjects.indexOfFirst { it.id == accountingObjectId }
 
             if (existAccountingObjectIndex >= 0) {
                 mutableAccountingObjects.removeAt(existAccountingObjectIndex)
-            } else if (newAccountingObjectIndex >= 0) {
-                mutableNewAccountingObjects.removeAt(newAccountingObjectIndex)
             }
 
-            InventoryAccountingObjectsDomain(
-                createdAccountingObjects = mutableAccountingObjects,
-                newAccountingObjects = mutableNewAccountingObjects
-            )
+            mutableAccountingObjects
         }
     }
 
     suspend fun changeAccountingObject(
         accountingObjects: List<AccountingObjectDomain>,
-        newAccountingObjects: List<AccountingObjectDomain>,
         accountingObject: AccountingObjectDomain
-    ): InventoryAccountingObjectsDomain {
+    ): List<AccountingObjectDomain> {
         return withContext(coreDispatchers.io) {
             val mutableAccountingObjects = accountingObjects.toMutableList()
-            val mutableNewAccountingObjects = newAccountingObjects.toMutableList()
 
             val existAccountingObjectIndex =
                 mutableAccountingObjects.indexOfFirst { it.id == accountingObject.id }
-            val newAccountingObjectIndex =
-                mutableNewAccountingObjects.indexOfFirst { it.id == accountingObject.id }
 
             if (existAccountingObjectIndex >= 0) {
                 mutableAccountingObjects[existAccountingObjectIndex] =
@@ -110,19 +96,9 @@ class InventoryCreateInteractor(
                         barcodeValue = accountingObject.barcodeValue,
                         factoryNumber = accountingObject.factoryNumber
                     )
-            } else if (newAccountingObjectIndex >= 0) {
-                mutableNewAccountingObjects[newAccountingObjectIndex] =
-                    mutableNewAccountingObjects[newAccountingObjectIndex].copy(
-                        rfidValue = accountingObject.rfidValue,
-                        barcodeValue = accountingObject.barcodeValue,
-                        factoryNumber = accountingObject.factoryNumber
-                    )
             }
 
-            InventoryAccountingObjectsDomain(
-                createdAccountingObjects = mutableAccountingObjects,
-                newAccountingObjects = mutableNewAccountingObjects
-            )
+            mutableAccountingObjects
         }
     }
 
@@ -131,8 +107,7 @@ class InventoryCreateInteractor(
         handledAccountingObjectIds: List<String>,
         inventoryStatus: InventoryStatus,
         isAddNew: Boolean,
-        existNewAccountingObjects: List<AccountingObjectDomain>
-    ): InventoryAccountingObjectsDomain {
+    ): List<AccountingObjectDomain> {
         return withContext(coreDispatchers.io) {
             val newAccountingObjectRfids = mutableListOf<String>()
             val mutableAccountingObjects = accountingObjects.toMutableList()
@@ -141,19 +116,17 @@ class InventoryCreateInteractor(
                 val accountingObjectIndex = mutableAccountingObjects.indexOfFirst {
                     it.rfidValue == handledAccountingObjectId
                 }
-                val isRfidNewExist =
-                    existNewAccountingObjects.indexOfFirst { it.rfidValue == handledAccountingObjectId } != NO_INDEX
-                val isNewExist = if (accountingObjectIndex != NO_INDEX) {
+                val isStatusNew = if (accountingObjectIndex != NO_INDEX) {
                     mutableAccountingObjects[accountingObjectIndex].inventoryStatus == InventoryAccountingObjectStatus.NEW
                 } else {
                     false
                 }
                 when {
-                    accountingObjectIndex != NO_INDEX && !isNewExist && inventoryStatus != InventoryStatus.COMPLETED -> changeStatusByIndex(
+                    accountingObjectIndex != NO_INDEX && !isStatusNew && inventoryStatus != InventoryStatus.COMPLETED -> changeStatusByIndex(
                         mutableAccountingObjects,
                         accountingObjectIndex
                     )
-                    accountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew && !isRfidNewExist -> newAccountingObjectRfids.add(
+                    accountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew -> newAccountingObjectRfids.add(
                         handledAccountingObjectId
                     )
                 }
@@ -161,10 +134,7 @@ class InventoryCreateInteractor(
 
             val handledAccountingObjects =
                 getHandlesAccountingObjectByRfid(newAccountingObjectRfids)
-            InventoryAccountingObjectsDomain(
-                newAccountingObjects = handledAccountingObjects,
-                createdAccountingObjects = mutableAccountingObjects
-            )
+            handledAccountingObjects + mutableAccountingObjects
         }
     }
 
@@ -173,9 +143,8 @@ class InventoryCreateInteractor(
         barcode: String,
         inventoryStatus: InventoryStatus,
         isAddNew: Boolean,
-        existNewAccountingObjects: List<AccountingObjectDomain>,
         isSerialNumber: Boolean
-    ): InventoryAccountingObjectsDomain {
+    ): List<AccountingObjectDomain> {
         return withContext(coreDispatchers.io) {
             val barcodeAccountingObjects = mutableListOf<AccountingObjectDomain>()
             val mutableAccountingObjects = accountingObjects.toMutableList()
@@ -187,26 +156,18 @@ class InventoryCreateInteractor(
                     it.barcodeValue == barcode
                 }
             }
-            val isRfidNewExist =
-                existNewAccountingObjects.indexOfFirst {
-                    if (isSerialNumber) {
-                        it.factoryNumber == barcode
-                    } else {
-                        it.barcodeValue == barcode
-                    }
-                } != NO_INDEX
-            val isNewExist = if (accountingObjectIndex != NO_INDEX) {
+            val isStatusNew = if (accountingObjectIndex != NO_INDEX) {
                 mutableAccountingObjects[accountingObjectIndex].inventoryStatus == InventoryAccountingObjectStatus.NEW
             } else {
                 false
             }
 
             when {
-                accountingObjectIndex != NO_INDEX && !isNewExist && inventoryStatus != InventoryStatus.COMPLETED -> changeStatusByIndex(
+                accountingObjectIndex != NO_INDEX && !isStatusNew && inventoryStatus != InventoryStatus.COMPLETED -> changeStatusByIndex(
                     mutableAccountingObjects,
                     accountingObjectIndex
                 )
-                accountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew && !isRfidNewExist -> {
+                accountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew -> {
                     val accountingObjectDomain = getHandleAccountingObjectByBarcode(
                         barcode = barcode,
                         isSerialNumber = isSerialNumber
@@ -217,10 +178,7 @@ class InventoryCreateInteractor(
                 }
             }
 
-            InventoryAccountingObjectsDomain(
-                newAccountingObjects = barcodeAccountingObjects,
-                createdAccountingObjects = mutableAccountingObjects
-            )
+            barcodeAccountingObjects + mutableAccountingObjects
         }
     }
 
@@ -232,36 +190,6 @@ class InventoryCreateInteractor(
                 (mutableParams[index] as StructuralParamDomain).copy(clickable = false)
         }
         return mutableParams
-    }
-
-    fun dropAccountingObjects(accountingObjects: List<AccountingObjectDomain>): List<AccountingObjectDomain> {
-        return accountingObjects.map { it.copy() }
-    }
-
-    fun changeAccountingObjectInventoryStatus(
-        accountingObjects: List<AccountingObjectDomain>,
-        switcherDomain: SwitcherDomain
-    ): List<AccountingObjectDomain> {
-        val mutableList = accountingObjects.toMutableList()
-        val newStatus = switcherDomain.currentValue as InventoryAccountingObjectStatus
-        val index = accountingObjects.indexOfFirst { it.id == switcherDomain.entityId }
-
-        val accountingObject = mutableList[index]
-        if (newStatus == InventoryAccountingObjectStatus.FOUND) {
-            mutableList.removeAt(index)
-            mutableList.add(0, accountingObject.copy(inventoryStatus = newStatus))
-        } else {
-            mutableList[index] =
-                mutableList[index].copy(inventoryStatus = newStatus)
-        }
-        return mutableList
-    }
-
-    fun isNewAccountingObject(
-        accountingObjects: List<AccountingObjectDomain>,
-        newAccountingObject: AccountingObjectDomain
-    ): Boolean {
-        return !accountingObjects.contains(newAccountingObject) || newAccountingObject.inventoryStatus == InventoryAccountingObjectStatus.NEW
     }
 
     suspend fun changeStatus(
@@ -297,11 +225,9 @@ class InventoryCreateInteractor(
     suspend fun searchAccountingObjects(
         searchText: String,
         accountingObjects: List<AccountingObjectDomain>,
-        newAccountingObject: List<AccountingObjectDomain>
     ): List<AccountingObjectDomain> {
         return withContext(coreDispatchers.io) {
-            val allAccountingObjects = newAccountingObject + accountingObjects
-            val resultList = allAccountingObjects.filter {
+            val resultList = accountingObjects.filter {
                 val title = it.title.replace(" ", "")
                 val searchTitle = searchText.replace(" ", "")
                 val inventoryNumber = it.inventoryNumber.orEmpty().lowercase().replace(" ", "")
@@ -316,7 +242,6 @@ class InventoryCreateInteractor(
 
     fun getAccountingObjectCount(
         accountingObjects: List<AccountingObjectDomain>,
-        newAccountingObjects: List<AccountingObjectDomain>
     ): AccountingObjectCounter {
         return AccountingObjectCounter(
             total = accountingObjects.filter {
@@ -331,7 +256,7 @@ class InventoryCreateInteractor(
             }.size,
             new = accountingObjects.filter {
                 it.inventoryStatus == InventoryAccountingObjectStatus.NEW
-            }.size + newAccountingObjects.size
+            }.size
         )
     }
 
@@ -368,7 +293,10 @@ class InventoryCreateInteractor(
         accountingObjects.removeAt(index)
         accountingObjects.add(
             0,
-            accountingObject.copy(inventoryStatus = InventoryAccountingObjectStatus.FOUND, manualInput = false)
+            accountingObject.copy(
+                inventoryStatus = InventoryAccountingObjectStatus.FOUND,
+                manualInput = false
+            )
         )
     }
 

@@ -39,9 +39,6 @@ interface InventoryCreateStore :
         data class OnAccountingObjectClicked(val accountingObject: AccountingObjectDomain) :
             Intent()
 
-        data class OnAccountingObjectStatusChanged(val switcherResult: SwitcherResult) :
-            Intent()
-
         data class OnNewAccountingObjectRfidHandled(val handledAccountingObjectIds: List<String>) :
             Intent()
 
@@ -78,7 +75,6 @@ interface InventoryCreateStore :
     data class State(
         val inventoryDocument: InventoryCreateDomain,
         val isHideFoundAccountingObjects: Boolean = false,
-        val newAccountingObjects: Set<AccountingObjectDomain> = setOf(),
         val isAddNew: Boolean = false,
         val isLoading: Boolean = false,
         val dialogType: AlertType = AlertType.NONE,

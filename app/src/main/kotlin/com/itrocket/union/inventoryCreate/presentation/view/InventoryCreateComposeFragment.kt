@@ -15,11 +15,10 @@ import com.itrocket.union.inventoryChoose.presentation.store.InventoryChooseResu
 import com.itrocket.union.inventoryChoose.presentation.view.InventoryChooseComposeFragment
 import com.itrocket.union.inventoryCreate.InventoryCreateModule.INVENTORYCREATE_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
+import com.itrocket.union.inventoryCreate.presentation.store.toInventoryCreateUiState
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
-import com.itrocket.union.switcher.presentation.store.SwitcherResult
-import com.itrocket.union.switcher.presentation.view.SwitcherComposeFragment
 import com.itrocket.union.utils.flow.window
 import com.itrocket.union.utils.fragment.ChildBackPressedHandler
 import kotlinx.coroutines.Dispatchers
@@ -46,15 +45,6 @@ class InventoryCreateComposeFragment :
 
     override val fragmentResultList: List<FragmentResult>
         get() = listOf(
-            FragmentResult(
-                resultLabel = SwitcherComposeFragment.SWITCHER_RESULT,
-                resultCode = SwitcherComposeFragment.SWITCHER_RESULT_CODE,
-                resultAction = {
-                    (it as? SwitcherResult?)?.let {
-                        accept(InventoryCreateStore.Intent.OnAccountingObjectStatusChanged(it))
-                    }
-                }
-            ),
             FragmentResult(
                 resultCode = ReadingModeComposeFragment.READING_MODE_TAB_RESULT_CODE,
                 resultLabel = ReadingModeComposeFragment.READING_MODE_TAB_RESULT_LABEL,
@@ -126,7 +116,7 @@ class InventoryCreateComposeFragment :
     ) {
         composeView.setContent {
             InventoryCreateScreen(
-                state = state,
+                state = state.toInventoryCreateUiState(),
                 appInsets = appInsets,
                 onBackClickListener = {
                     accept(InventoryCreateStore.Intent.OnBackClicked)
