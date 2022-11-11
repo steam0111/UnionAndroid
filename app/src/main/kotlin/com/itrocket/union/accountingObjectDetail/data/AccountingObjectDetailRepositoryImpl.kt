@@ -1,15 +1,23 @@
 package com.itrocket.union.accountingObjectDetail.data
 
 import com.example.union_sync_api.data.AccountingObjectSyncApi
+import com.example.union_sync_api.data.EnumsSyncApi
+import com.example.union_sync_api.entity.EnumType
+import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjectDetail.data.mapper.toAccountingObjectDetailDomain
 import com.itrocket.union.accountingObjectDetail.data.mapper.toAccountingObjectScanningData
+import com.itrocket.union.accountingObjectDetail.data.mapper.toAccountingObjectWriteOff
 import com.itrocket.union.accountingObjectDetail.domain.dependencies.AccountingObjectDetailRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 class AccountingObjectDetailRepositoryImpl(
-    private val syncApi: AccountingObjectSyncApi
+    private val syncApi: AccountingObjectSyncApi,
+    private val enumsSyncApi: EnumsSyncApi,
+    private val coreDispatchers: CoreDispatchers,
 ) : AccountingObjectDetailRepository {
 
     override suspend fun getAccountingObject(id: String): AccountingObjectDomain {
@@ -31,6 +39,16 @@ class AccountingObjectDetailRepositoryImpl(
     override suspend fun getAccountingObjectFlow(id: String): Flow<AccountingObjectDomain> {
         return syncApi.getAccountingObjectDetailByIdFlow(id)
             .map { it.toAccountingObjectDetailDomain() }
+    }
+
+    override suspend fun writeOffAccountingObject(accountingObject: AccountingObjectDomain) {
+        withContext(coreDispatchers.io) {
+            val status = enumsSyncApi.getByCompoundId(
+                id = AccountingObjectStatus.WRITTEN_OFF.name,
+                enumType = EnumType.ACCOUNTING_OBJECT_STATUS
+            )
+            syncApi.writeOffAccountingObject(accountingObject.toAccountingObjectWriteOff(status))
+        }
     }
 
     override suspend fun updateScanningData(accountingObject: AccountingObjectDomain) {

@@ -8,11 +8,13 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.identify.domain.IdentifyInteractor
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import com.itrocket.union.ui.listAction.DialogActionType
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class IdentifyStoreFactory(
@@ -99,7 +101,35 @@ class IdentifyStoreFactory(
                     readingModeResult = intent.readingModeResult,
                     getState = getState
                 )
+                IdentifyStore.Intent.OnPlusClicked -> onPlusClicked()
+                IdentifyStore.Intent.OnListActionDialogDismissed -> onListActionDialogDismissed()
+                is IdentifyStore.Intent.OnListActionDialogClicked -> when (intent.dialogActionType) {
+                    DialogActionType.WRITE_OFF -> onWriteOffClicked(accountingObjects = getState().accountingObjects)
+                }
             }
+        }
+
+        private suspend fun onWriteOffClicked(accountingObjects: List<AccountingObjectDomain>) {
+            dispatch(Result.LoadingDialogActionType(DialogActionType.WRITE_OFF))
+            catchException {
+                dispatch(
+                    Result.AccountingObjects(
+                        identifyInteractor.writeOffAccountingObjects(
+                            accountingObjects
+                        )
+                    )
+                )
+            }
+            dispatch(Result.LoadingDialogActionType(null))
+            dispatch(Result.DialogType(AlertType.NONE))
+        }
+
+        private fun onListActionDialogDismissed() {
+            dispatch(Result.DialogType(AlertType.NONE))
+        }
+
+        private fun onPlusClicked() {
+            dispatch(Result.DialogType(AlertType.LIST_ACTION))
         }
 
         private suspend fun onManualInput(
@@ -108,7 +138,7 @@ class IdentifyStoreFactory(
         ) {
             when (readingModeResult.readingModeTab) {
                 ReadingModeTab.RFID -> {
-                   //no-op
+                    //no-op
                 }
                 ReadingModeTab.BARCODE, ReadingModeTab.SN -> {
                     handleBarcodeAccountingObjects(
@@ -146,11 +176,14 @@ class IdentifyStoreFactory(
     }
 
     private sealed class Result {
+        data class DialogType(val dialogType: AlertType) : Result()
         data class Loading(val isLoading: Boolean) : Result()
         data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
         data class Reserves(val reserves: List<ReservesDomain>) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) :
             Result()
+
+        data class LoadingDialogActionType(val dialogActionType: DialogActionType?) : Result()
     }
 
     private object ReducerImpl : Reducer<IdentifyStore.State, Result> {
@@ -160,6 +193,8 @@ class IdentifyStoreFactory(
                 is Result.AccountingObjects -> copy(accountingObjects = result.accountingObjects)
                 is Result.Reserves -> copy(reserves = result.reserves)
                 is Result.ReadingMode -> copy(readingModeTab = result.readingModeTab)
+                is Result.DialogType -> copy(dialogType = result.dialogType)
+                is Result.LoadingDialogActionType -> copy(loadingDialogAction = result.dialogActionType)
             }
     }
 }

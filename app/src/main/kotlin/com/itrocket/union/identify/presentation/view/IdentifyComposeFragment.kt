@@ -171,6 +171,15 @@ class IdentifyComposeFragment :
                 },
                 onPageChanged = {
                     accept(IdentifyStore.Intent.OnSelectPage(it))
+                },
+                onPlusClickListener = {
+                    accept(IdentifyStore.Intent.OnPlusClicked)
+                },
+                onListActionDialogDismissed = {
+                    accept(IdentifyStore.Intent.OnListActionDialogDismissed)
+                },
+                onListActionDialogClick = {
+                    accept(IdentifyStore.Intent.OnListActionDialogClicked(it))
                 }
             )
         }

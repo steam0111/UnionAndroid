@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,7 +39,7 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatusType
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.identify.presentation.store.IdentifyStore
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.AccountingObjectItem
@@ -50,6 +51,8 @@ import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.TabRowIndicator
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.graphite4
+import com.itrocket.union.ui.listAction.DialogActionType
+import com.itrocket.union.ui.listAction.ListActionDialog
 import com.itrocket.utils.clickableUnbounded
 import com.itrocket.utils.getTargetPage
 import kotlinx.coroutines.CoroutineScope
@@ -65,7 +68,10 @@ fun IdentifyScreen(
     onBackClickListener: () -> Unit,
     onObjectClickListener: (AccountingObjectDomain) -> Unit,
     onDropClickListener: () -> Unit,
-    onPageChanged: (Int) -> Unit
+    onPageChanged: (Int) -> Unit,
+    onPlusClickListener: () -> Unit,
+    onListActionDialogDismissed: () -> Unit,
+    onListActionDialogClick: (DialogActionType) -> Unit
 ) {
     val pagerState = rememberPagerState(state.selectedPage)
     val coroutineScope = rememberCoroutineScope()
@@ -75,7 +81,8 @@ fun IdentifyScreen(
             topBar = {
                 Toolbar(
                     onBackClickListener = onBackClickListener,
-                    onDropClickListener = onDropClickListener
+                    onDropClickListener = onDropClickListener,
+                    onPlusClickListener = onPlusClickListener
                 )
             },
             bottomBar = {
@@ -100,6 +107,15 @@ fun IdentifyScreen(
                 top = appInsets.topInset.dp,
                 bottom = appInsets.bottomInset.dp
             )
+        )
+    }
+
+    if (state.dialogType == AlertType.LIST_ACTION) {
+        ListActionDialog(
+            listDialogAction = state.listDialogAction,
+            onDismiss = onListActionDialogDismissed,
+            onActionClick = onListActionDialogClick,
+            loadingDialogActionType = state.loadingDialogAction,
         )
     }
 
@@ -169,6 +185,7 @@ private fun Content(
 private fun Toolbar(
     onBackClickListener: () -> Unit,
     onDropClickListener: () -> Unit,
+    onPlusClickListener: () -> Unit
 ) {
     BaseToolbar(
         title = stringResource(id = R.string.identify_title),
@@ -181,6 +198,13 @@ private fun Toolbar(
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
                     modifier = Modifier.clickableUnbounded(onClick = onDropClickListener)
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.ic_plus),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
+                    modifier = Modifier.clickableUnbounded(onClick = onPlusClickListener)
                 )
             }
         }
@@ -346,6 +370,9 @@ fun IdentifyScreenPreview() {
         onBackClickListener = {},
         onObjectClickListener = {},
         onDropClickListener = {},
-        onPageChanged = {}
+        onPageChanged = {},
+        onPlusClickListener = {},
+        onListActionDialogDismissed = {},
+        onListActionDialogClick = {}
     )
 }

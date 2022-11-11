@@ -1,6 +1,7 @@
 package com.itrocket.union.accountingObjectDetail.domain.dependencies
 
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import kotlinx.coroutines.flow.Flow
 
 interface AccountingObjectDetailRepository {
@@ -13,6 +14,8 @@ interface AccountingObjectDetailRepository {
     ): AccountingObjectDomain
 
     suspend fun getAccountingObjectFlow(id: String): Flow<AccountingObjectDomain>
+
+    suspend fun writeOffAccountingObject(accountingObject: AccountingObjectDomain)
 
     suspend fun updateScanningData(accountingObject: AccountingObjectDomain)
 }

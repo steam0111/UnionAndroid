@@ -47,6 +47,7 @@
     <string name="value_not_defined">Значение не задано</string>
     <string name="common_generate_rfid">Сгенерировать RFID</string>
     <string name="common_write_epc">Записать RFID в метку</string>
+    <string name="common_write_off">Отметить на списание</string>
     <string name="common_remove_rfid">Удалить RFID</string>
     <string name="common_remove_barcode">Удалить штрих-код</string>
     <string name="common_write_epc_dialog_title">Поднесите метку к считывателю и нажмите курок</string>

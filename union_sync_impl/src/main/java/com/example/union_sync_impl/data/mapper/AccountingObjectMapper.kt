@@ -5,6 +5,7 @@ import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectWriteOff
 import com.example.union_sync_api.entity.EnumSyncEntity
 import com.example.union_sync_api.entity.EnumType
 import com.example.union_sync_api.entity.LocationSyncEntity
@@ -12,6 +13,7 @@ import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.entity.AccountingObjectDb
 import com.example.union_sync_impl.entity.AccountingObjectScanningUpdate
 import com.example.union_sync_impl.entity.AccountingObjectUpdate
+import com.example.union_sync_impl.entity.AccountingObjectWriteOffUpdate
 import com.example.union_sync_impl.entity.FullAccountingObject
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import com.example.union_sync_impl.utils.getStringDateFromMillis
@@ -227,6 +229,14 @@ fun AccountingObjectUpdateSyncEntity.toAccountingObjectUpdate(): AccountingObjec
         updateDate = System.currentTimeMillis()
     )
 }
+
+fun AccountingObjectWriteOff.toAccountingObjectWriteOffUpdate() =
+    AccountingObjectWriteOffUpdate(
+        id = id,
+        writtenOff = writtenOff,
+        status = status?.toEnumDb(),
+        statusId = status?.id
+    )
 
 fun AccountingObjectScanningData.toAccountingObjectScanningUpdate() =
     AccountingObjectScanningUpdate(

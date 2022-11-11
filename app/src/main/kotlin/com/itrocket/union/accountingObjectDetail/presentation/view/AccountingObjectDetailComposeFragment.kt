@@ -114,6 +114,9 @@ class AccountingObjectDetailComposeFragment :
                 onWriteEpcDismiss = {
                     accept(AccountingObjectDetailStore.Intent.OnDismissed)
                 },
+                onWriteOffClickListener = {
+                    accept(AccountingObjectDetailStore.Intent.OnWriteOffClicked)
+                },
                 onRemoveBarcodeClickListener = {
                     accept(AccountingObjectDetailStore.Intent.OnRemoveBarcodeClicked)
                 },

@@ -2,13 +2,14 @@ package com.itrocket.union.accountingObjectDetail.data.mapper
 
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectScanningData
+import com.example.union_sync_api.entity.AccountingObjectWriteOff
+import com.example.union_sync_api.entity.EnumSyncEntity
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.data.mapper.toDomainStatus
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoType
 import com.itrocket.union.utils.getStringDateFromMillis
-import com.itrocket.union.utils.getTextDateFromStringDate
 
 
 fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): AccountingObjectDomain {
@@ -241,6 +242,9 @@ fun AccountingObjectDomain.toAccountingObjectScanningData() = AccountingObjectSc
     barcodeValue = barcodeValue,
     rfidValue = rfidValue
 )
+
+fun AccountingObjectDomain.toAccountingObjectWriteOff(status: EnumSyncEntity?) =
+    AccountingObjectWriteOff(id = id, writtenOff = true, status = status)
 
 fun getStringBy(isTrue: Boolean?) =
     when (isTrue) {

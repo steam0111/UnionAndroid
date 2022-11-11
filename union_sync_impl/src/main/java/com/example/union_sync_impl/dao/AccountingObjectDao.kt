@@ -10,6 +10,7 @@ import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.union_sync_impl.entity.AccountingObjectDb
 import com.example.union_sync_impl.entity.AccountingObjectScanningUpdate
 import com.example.union_sync_impl.entity.AccountingObjectUpdate
+import com.example.union_sync_impl.entity.AccountingObjectWriteOffUpdate
 import com.example.union_sync_impl.entity.FullAccountingObject
 import kotlinx.coroutines.flow.Flow
 
@@ -141,6 +142,12 @@ interface AccountingObjectDao {
 
     @Update(entity = AccountingObjectDb::class)
     suspend fun update(accountingObjectUpdates: List<AccountingObjectUpdate>)
+
+    @Update(entity = AccountingObjectDb::class)
+    suspend fun update(accountingObjectUpdate: AccountingObjectWriteOffUpdate)
+
+    @Update(entity = AccountingObjectDb::class)
+    suspend fun updateWriteOffAccountingObjects(accountingObjectUpdates: List<AccountingObjectWriteOffUpdate>)
 
     @Update(entity = AccountingObjectDb::class)
     suspend fun update(accountingObjectUpdate: AccountingObjectScanningUpdate)

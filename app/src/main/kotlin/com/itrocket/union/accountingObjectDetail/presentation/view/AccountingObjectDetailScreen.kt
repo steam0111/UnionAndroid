@@ -62,6 +62,7 @@ fun AccountingObjectDetailScreen(
     onGenerateRfidClickListener: () -> Unit,
     onWriteEpcTagClickListener: () -> Unit,
     onWriteEpcDismiss: () -> Unit,
+    onWriteOffClickListener: () -> Unit,
     onRemoveRfidClickListener: () -> Unit,
     onRemoveBarcodeClickListener: () -> Unit
 ) {
@@ -90,6 +91,7 @@ fun AccountingObjectDetailScreen(
                 state = state,
                 onGenerateRfidClickListener = onGenerateRfidClickListener,
                 onWriteEpcTagClickListener = onWriteEpcTagClickListener,
+                onWriteOffClickListener = onWriteOffClickListener,
                 onRemoveRfidClickListener = onRemoveRfidClickListener,
                 onRemoveBarcodeClickListener = onRemoveBarcodeClickListener
             )
@@ -112,6 +114,7 @@ private fun Content(
     state: AccountingObjectDetailStore.State,
     onGenerateRfidClickListener: () -> Unit,
     onWriteEpcTagClickListener: () -> Unit,
+    onWriteOffClickListener: () -> Unit,
     onRemoveRfidClickListener: () -> Unit,
     onRemoveBarcodeClickListener: () -> Unit
 ) {
@@ -154,6 +157,18 @@ private fun Content(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             )
+        }
+        if (!state.accountingObjectDomain.isWrittenOff && state.canUpdate) {
+            item {
+                Spacer(modifier = Modifier.height(12.dp))
+                BaseButton(
+                    text = stringResource(R.string.common_write_off),
+                    onClick = onWriteOffClickListener,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+            }
         }
         if (state.accountingObjectDomain.rfidValue != null) {
             item {
@@ -288,5 +303,5 @@ fun AccountingObjectDetailScreenPreview() {
                 factoryNumber = "",
                 marked = true,
             ),
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 }
