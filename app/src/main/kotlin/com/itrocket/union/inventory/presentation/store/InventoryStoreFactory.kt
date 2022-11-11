@@ -68,6 +68,7 @@ class InventoryStoreFactory(
             getState: () -> InventoryStore.State
         ) {
             val inventory = getState().inventoryCreateDomain?.let {
+                dispatch(Result.DialogType(AlertType.LOADING))
                 inventoryCreateInteractor.getInventoryById(
                     id = requireNotNull(it.id),
                     isAccountingObjectLoad = false
@@ -89,6 +90,7 @@ class InventoryStoreFactory(
                 dispatch(Result.Params(selectParamsInteractor.getInitialDocumentParams(getState().params)))
             }
             observeAccountingObjects(getState().params)
+            dispatch(Result.DialogType(AlertType.NONE))
         }
 
         override suspend fun executeIntent(
@@ -216,6 +218,7 @@ class InventoryStoreFactory(
             accountingObjects: List<AccountingObjectDomain>,
             params: List<ParamDomain>
         ) {
+            dispatch(Result.IsInWorkInventoryLoading(true))
             dispatch(Result.DialogType(AlertType.LOADING))
             val inventory = inventoryDomain.copy(
                 inventoryStatus = InventoryStatus.IN_PROGRESS,
@@ -229,6 +232,7 @@ class InventoryStoreFactory(
             )
             inventoryDynamicSaveManager.cancel()
             dispatch(Result.DialogType(AlertType.NONE))
+            dispatch(Result.IsInWorkInventoryLoading(false))
             publish(
                 InventoryStore.Label.ShowCreateInventory(
                     inventoryCreate = inventory
@@ -242,6 +246,7 @@ class InventoryStoreFactory(
             params: List<ParamDomain>
         ) {
             dispatch(Result.IsCreateInventoryLoading(true))
+            dispatch(Result.DialogType(AlertType.LOADING))
             catchException {
                 val inventoryCreate =
                     inventoryInteractor.createInventory(
@@ -255,6 +260,7 @@ class InventoryStoreFactory(
             if (isDynamicSaveInventory) {
                 inventoryDynamicSaveManager.subscribeInventorySave()
             }
+            dispatch(Result.DialogType(AlertType.NONE))
             dispatch(Result.IsCreateInventoryLoading(false))
         }
 
@@ -289,6 +295,7 @@ class InventoryStoreFactory(
     private sealed class Result {
         data class IsAccountingObjectsLoading(val isLoading: Boolean) : Result()
         data class IsCreateInventoryLoading(val isLoading: Boolean) : Result()
+        data class IsInWorkInventoryLoading(val isLoading: Boolean) : Result()
         data class Params(val params: List<ParamDomain>) : Result()
         data class SelectPage(val page: Int) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
@@ -312,6 +319,7 @@ class InventoryStoreFactory(
                 is Result.CanUpdateInventory -> copy(canUpdateInventory = result.canUpdateInventory)
                 is Result.IsDynamicSaveInventory -> copy(isDynamicSaveInventory = result.isDynamicSaveInventory)
                 is Result.DialogType -> copy(dialogType = result.dialogType)
+                is Result.IsInWorkInventoryLoading -> copy(isInWorkInventoryLoading = result.isLoading)
             }
     }
 }

@@ -1,5 +1,7 @@
 package com.itrocket.union.inventoryCreate.presentation.view
 
+import androidx.annotation.StringRes
+import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.inventoryCreate.domain.entity.AccountingObjectCounter
@@ -25,5 +27,6 @@ data class InventoryCreateUiState(
     val dropEnabled: Boolean = false,
     val showComplete: Boolean = false,
     val accountingObjects: List<AccountingObjectDomain> = listOf(),
-    val accountingObjectCounter: AccountingObjectCounter = AccountingObjectCounter()
+    val accountingObjectCounter: AccountingObjectCounter = AccountingObjectCounter(),
+    @StringRes val loadingTitleId: Int = R.string.inventory_save_loading
 )

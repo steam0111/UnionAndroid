@@ -1,5 +1,6 @@
 package com.itrocket.union.inventoryCreate.presentation.store
 
+import com.itrocket.union.R
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateUiState
@@ -16,7 +17,12 @@ fun InventoryCreateStore.State.toInventoryCreateUiState(): InventoryCreateUiStat
         inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED && canUpdate
     val completeEnabled = canUpdate && !isLoading && !isCompleteLoading
     val dropEnabled = inventoryDocument.inventoryStatus == InventoryStatus.CREATED && canUpdate
-    val showComplete = inventoryDocument.inventoryStatus == InventoryStatus.IN_PROGRESS && canComplete
+    val showComplete =
+        inventoryDocument.inventoryStatus == InventoryStatus.IN_PROGRESS && canComplete
+    val loadingTitleId = when {
+        isCompleteLoading -> R.string.inventory_confirm_loading
+        else -> R.string.inventory_save_loading
+    }
 
     return InventoryCreateUiState(
         inventoryDocument = inventoryDocument,
@@ -38,5 +44,6 @@ fun InventoryCreateStore.State.toInventoryCreateUiState(): InventoryCreateUiStat
         dropEnabled = dropEnabled,
         showComplete = showComplete,
         accountingObjectCounter = accountingObjectCounter,
+        loadingTitleId =loadingTitleId
     )
 }
