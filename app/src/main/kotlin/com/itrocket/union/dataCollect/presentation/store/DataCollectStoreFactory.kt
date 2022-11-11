@@ -51,7 +51,7 @@ class DataCollectStoreFactory(
                 }
                 is DataCollectStore.Intent.OnNewAccountingObjectRfidHandled -> {
                     val newScanningList: List<String> = dataCollectInteractor.rfidsToNewList(
-                        intent.rfid,
+                        intent.rfids,
                         getState().scanningObjects
                     )
                     dispatch(Result.ScanningObjects(newScanningList))

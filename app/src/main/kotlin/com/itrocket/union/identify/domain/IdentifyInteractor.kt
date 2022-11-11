@@ -20,16 +20,25 @@ class IdentifyInteractor(
 
     suspend fun handleNewAccountingObjectRfids(
         accountingObjects: List<AccountingObjectDomain>,
-        handledAccountingObjectRfid: String
+        handledAccountingObjectRfids: List<String>
     ): List<AccountingObjectDomain> {
         return withContext(coreDispatchers.io) {
             val newAccountingObjectRfids = mutableListOf<String>()
+            val existAccountingObjectRfids = hashMapOf<String, String>()
 
-            val index =
-                accountingObjects.indexOfFirst { it.rfidValue == handledAccountingObjectRfid }
-            if (index == NO_POSITION) {
-                newAccountingObjectRfids.add(handledAccountingObjectRfid)
+            accountingObjects.forEach {
+                if (it.rfidValue != null) {
+                    existAccountingObjectRfids[it.rfidValue] = it.id
+                }
             }
+
+            handledAccountingObjectRfids.forEach { rfid ->
+                val isExist = existAccountingObjectRfids[rfid] != null
+                if (!isExist) {
+                    newAccountingObjectRfids.add(rfid)
+                }
+            }
+
             val newAccountingObjects =
                 accountingObjectRepository.getAccountingObjectsByRfids(newAccountingObjectRfids)
             newAccountingObjects + accountingObjects

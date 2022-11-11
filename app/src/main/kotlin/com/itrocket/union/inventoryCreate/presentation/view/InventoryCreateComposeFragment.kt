@@ -198,7 +198,11 @@ class InventoryCreateComposeFragment :
                 serviceEntryManager
                     .epcInventoryDataFlow
                     .distinctUntilChanged()
-                    .window(maxBufferSize = 20, maxMsWaitTime = 300, bufferOnlyUniqueValues = true)
+                    .window(
+                        maxBufferSize = WINDOW_MAX_BUFFER_SIZE,
+                        maxMsWaitTime = WINDOW_MAX_MS_WAIT_TIME,
+                        bufferOnlyUniqueValues = WINDOW_BUFFER_ONLY_UNIQUE_VALUES
+                    )
                     .collect { rfids ->
                         withContext(Dispatchers.Main) {
                             accept(
@@ -242,6 +246,9 @@ class InventoryCreateComposeFragment :
     }
 
     companion object {
+        const val WINDOW_MAX_BUFFER_SIZE = 20
+        const val WINDOW_MAX_MS_WAIT_TIME = 300L
+        const val WINDOW_BUFFER_ONLY_UNIQUE_VALUES = true
         const val INVENTORY_CREATE_ARGUMENTS = "inventory create arguments"
     }
 }

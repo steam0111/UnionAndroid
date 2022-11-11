@@ -67,7 +67,7 @@ class IdentifyStoreFactory(
                     )
                 }
                 is IdentifyStore.Intent.OnNewAccountingObjectRfidHandled -> handleRfidAccountingObjects(
-                    intent.rfid,
+                    intent.rfids,
                     getState().accountingObjects
                 )
                 is IdentifyStore.Intent.OnNewAccountingObjectBarcodeHandled -> {
@@ -121,12 +121,12 @@ class IdentifyStoreFactory(
         }
 
         private suspend fun handleRfidAccountingObjects(
-            rfid: String,
+            rfids: List<String>,
             accountingObjects: List<AccountingObjectDomain>
         ) {
             val newAccountingObjects = identifyInteractor.handleNewAccountingObjectRfids(
                 accountingObjects = accountingObjects,
-                handledAccountingObjectRfid = rfid
+                handledAccountingObjectRfids = rfids
             )
             dispatch(Result.AccountingObjects(newAccountingObjects))
         }
