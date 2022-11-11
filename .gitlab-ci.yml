@@ -70,17 +70,17 @@ build release apk:
     - git clone -b master --single-branch --depth 1 git@gitlab.com:StanislavKosyakov/unionandroid.git
     - cd unionandroid
     - git checkout -B increment_version_code
-    #- versionCode="$(./gradlew -Pci --console=plain -q incrementVersionCode)"
-    #- git add .
-    #- git commit -m "CI increment version code"
-    #- git push origin increment_version_code:master
+    - versionCode="$(./gradlew -Pci --console=plain -q incrementVersionCode)"
+    - git add .
+    - git commit -m "CI increment version code"
+    - git push origin increment_version_code:master
      
     # Билд и отправка apk в телеграмм
     - ./gradlew app:assembleDebug
     - files=( app/build/outputs/apk/debug/*.apk )
     - echo "${files[0]}"
-    - curl --trace --request POST https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID --form document=@${files[0]} --form caption=$TELEGRAM_BUILD_CHANNEL_MESSAGE
+    - curl --trace --request POST https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID --form document=@${files[0]}
 
     # Отправка комментария к каждой карточке в Done столбце
-    #- java -jar Rocket_Bot/releaseJar/UnionTrelloIntegrate-1.0-SNAPSHOT.jar "$TRELLO_TOKEN" "$TRELLO_API_KEY" "${files[0]}" "$TRELLO_LIST_ID"
+    - java -jar Rocket_Bot/releaseJar/UnionTrelloIntegrate-1.0-SNAPSHOT.jar "$TRELLO_TOKEN" "$TRELLO_API_KEY" "${files[0]}" "$TRELLO_LIST_ID"
   when: manual
