@@ -5,6 +5,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
+import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackDialogNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
@@ -35,6 +36,7 @@ interface ReadingModeStore :
     )
 
     sealed class Label {
+        data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
         data class ResultReadingTab(val readingMode: ReadingModeTab) : Label()
 
         data class ManualInput(val manualInputType: ManualInputType) : Label(),
