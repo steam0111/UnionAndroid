@@ -17,7 +17,7 @@ object DataCollectModule {
             BaseViewModel(get<DataCollectStore>())
         }
         factory {
-            DataCollectInteractor()
+            DataCollectInteractor(coreDispatchers = get())
         }
         factory {
             DataCollectStoreFactory(

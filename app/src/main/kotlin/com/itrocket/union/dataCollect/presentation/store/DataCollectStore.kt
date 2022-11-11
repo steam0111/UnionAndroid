@@ -15,7 +15,7 @@ interface DataCollectStore :
         object OnReadingModeClicked : Intent()
         object OnDropClicked : Intent()
         object OnBackClicked : Intent()
-        data class OnNewAccountingObjectRfidHandled(val rfid: String) :
+        data class OnNewAccountingObjectRfidHandled(val rfids: List<String>) :
             Intent()
 
         data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :

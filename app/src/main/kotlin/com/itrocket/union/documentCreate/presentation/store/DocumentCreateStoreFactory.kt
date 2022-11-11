@@ -164,7 +164,7 @@ class DocumentCreateStoreFactory(
                     getState = getState
                 )
                 is DocumentCreateStore.Intent.OnNewAccountingObjectRfidHandled -> handleRfidsAccountingObjects(
-                    rfid = intent.rfid,
+                    rfids = intent.rfids,
                     accountingObjects = getState().accountingObjects,
                     getState = getState
                 )
@@ -400,14 +400,14 @@ class DocumentCreateStoreFactory(
         }
 
         private suspend fun handleRfidsAccountingObjects(
-            rfid: String,
+            rfids: List<String>,
             accountingObjects: List<AccountingObjectDomain>,
             getState: () -> DocumentCreateStore.State
         ) {
             if (canEditDocument(getState())) {
                 val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectRfids(
                     accountingObjects = accountingObjects,
-                    handledAccountingObjectRfid = rfid
+                    handledAccountingObjectRfids = rfids
                 )
                 dispatch(Result.AccountingObjects(newAccountingObjects))
             }

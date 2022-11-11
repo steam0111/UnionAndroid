@@ -1,17 +1,24 @@
 package com.itrocket.union.dataCollect.domain
 
-class DataCollectInteractor {
-    fun rfidsToNewList(
-        rfid: String,
+import com.itrocket.core.base.CoreDispatchers
+import kotlinx.coroutines.withContext
+
+class DataCollectInteractor(private val coreDispatchers: CoreDispatchers) {
+    suspend fun rfidsToNewList(
+        rfids: List<String>,
         scanningObjects: List<String>
     ): List<String> {
-        val newScanningList: MutableList<String> = mutableListOf()
-        val newScanningItem = "${ScanningObjectType.RFID.title} : $rfid"
-        if (!scanningObjects.contains(newScanningItem) && rfid.isNotBlank()) {
-            newScanningList.add(newScanningItem)
+        return withContext(coreDispatchers.io) {
+            val newScanningList: MutableList<String> = mutableListOf()
+            rfids.forEach { rfid ->
+                val newScanningItem = "${ScanningObjectType.RFID.title} : $rfid"
+                if (!scanningObjects.contains(newScanningItem) && rfid.isNotBlank()) {
+                    newScanningList.add(newScanningItem)
+                }
+            }
+            newScanningList.addAll(scanningObjects)
+            newScanningList
         }
-        newScanningList.addAll(scanningObjects)
-        return newScanningList
     }
 
     fun barcodeToNewList(

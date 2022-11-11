@@ -11,18 +11,20 @@ import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectR
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
 import com.itrocket.union.identify.IdentifyModule.IDENTIFY_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.identify.presentation.store.IdentifyStore
+import com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateComposeFragment
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuResult
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment.Companion.SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_RESULT_CODE
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment.Companion.SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_RESULT_LABEL
+import com.itrocket.union.utils.flow.window
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import ru.interid.scannerclient.domain.reader.ReaderMode
 import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
@@ -103,15 +105,23 @@ class IdentifyComposeFragment :
                 }
             }
             launch {
-                serviceEntryManager.epcInventoryDataFlow.collect {
-                    withContext(Dispatchers.Main) {
-                        accept(
-                            IdentifyStore.Intent.OnNewAccountingObjectRfidHandled(
-                                it
+                serviceEntryManager
+                    .epcInventoryDataFlow
+                    .distinctUntilChanged()
+                    .window(
+                        maxBufferSize = InventoryCreateComposeFragment.WINDOW_MAX_BUFFER_SIZE,
+                        maxMsWaitTime = InventoryCreateComposeFragment.WINDOW_MAX_MS_WAIT_TIME,
+                        bufferOnlyUniqueValues = InventoryCreateComposeFragment.WINDOW_BUFFER_ONLY_UNIQUE_VALUES
+                    )
+                    .collect {
+                        withContext(Dispatchers.Main) {
+                            accept(
+                                IdentifyStore.Intent.OnNewAccountingObjectRfidHandled(
+                                    it
+                                )
                             )
-                        )
+                        }
                     }
-                }
             }
         }
     }

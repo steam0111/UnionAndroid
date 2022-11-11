@@ -157,7 +157,7 @@ class TransitStoreFactory(
                     getState = getState
                 )
                 is TransitStore.Intent.OnNewAccountingObjectRfidHandled -> handleRfidsAccountingObjects(
-                    rfid = intent.rfid,
+                    rfids = intent.rfids,
                     accountingObjects = getState().accountingObjects,
                     getState = getState
                 )
@@ -302,14 +302,14 @@ class TransitStoreFactory(
         }
 
         private suspend fun handleRfidsAccountingObjects(
-            rfid: String,
+            rfids: List<String>,
             accountingObjects: List<AccountingObjectDomain>,
             getState: () -> TransitStore.State
         ) {
             if (canEditTransit(getState())) {
                 val newAccountingObjects = documentCreateInteractor.handleNewAccountingObjectRfids(
                     accountingObjects = accountingObjects,
-                    handledAccountingObjectRfid = rfid
+                    handledAccountingObjectRfids = rfids
                 )
                 dispatch(Result.AccountingObjects(newAccountingObjects))
             }

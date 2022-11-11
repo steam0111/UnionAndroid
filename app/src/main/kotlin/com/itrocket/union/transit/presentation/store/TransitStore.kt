@@ -51,7 +51,7 @@ interface TransitStore : Store<TransitStore.Intent, TransitStore.State, TransitS
         data class OnAccountingObjectSelected(val accountingObjectDomain: AccountingObjectDomain) :
             Intent()
 
-        data class OnNewAccountingObjectRfidHandled(val rfid: String) :
+        data class OnNewAccountingObjectRfidHandled(val rfids: List<String>) :
             Intent()
 
         data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :
