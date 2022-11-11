@@ -160,7 +160,12 @@ fun InventoryScreen(
                 )
             }
             AlertType.LOADING -> {
-                LoadingDialog(title = stringResource(R.string.inventory_in_work_loading))
+                LoadingDialog(
+                    title = getLoadingTitle(
+                        isCreateLoading = state.isCreateInventoryLoading,
+                        isInWorkLoading = state.isInWorkInventoryLoading
+                    )
+                )
             }
         }
     }
@@ -377,6 +382,19 @@ private fun InventoryBottomBar(
             }
         }
     }
+}
+
+@Composable
+private fun getLoadingTitle(
+    isCreateLoading: Boolean,
+    isInWorkLoading: Boolean
+): String {
+    val titleId = when {
+        isCreateLoading -> R.string.inventory_create_loading
+        isInWorkLoading -> R.string.inventory_in_work_loading
+        else -> R.string.inventory_ao_wait
+    }
+    return stringResource(titleId)
 }
 
 @Preview(

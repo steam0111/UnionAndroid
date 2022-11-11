@@ -378,6 +378,7 @@ class InventoryCreateStoreFactory(
         private suspend fun completeInventory(
             inventoryDomain: InventoryCreateDomain,
         ) {
+            dispatch(Result.IsCompleteLoading(true))
             dispatch(Result.DialogType(AlertType.LOADING))
             inventoryDynamicSaveManager.cancel()
             val inventory = inventoryDomain.copy(
@@ -387,6 +388,7 @@ class InventoryCreateStoreFactory(
             dispatch(Result.Inventory(inventory))
             dispatch(Result.IsDynamicSaveInventory(false))
             inventoryCreateInteractor.saveInventoryDocument(inventory, inventory.accountingObjects)
+            dispatch(Result.IsCompleteLoading(false))
             dispatch(Result.DialogType(AlertType.NONE))
         }
 
@@ -470,14 +472,14 @@ class InventoryCreateStoreFactory(
             inventoryDocument: InventoryCreateDomain,
             accountingObjects: List<AccountingObjectDomain>
         ) {
-            dispatch(Result.Loading(true))
+            dispatch(Result.DialogType(AlertType.LOADING))
             catchException {
                 inventoryCreateInteractor.saveInventoryDocument(
                     inventoryDocument,
                     accountingObjects
                 )
             }
-            dispatch(Result.Loading(false))
+            dispatch(Result.DialogType(AlertType.NONE))
         }
 
         private fun drop(getState: () -> InventoryCreateStore.State) {
@@ -546,6 +548,8 @@ class InventoryCreateStoreFactory(
         data class CountOfAccountingObjects(
             val accountingObjectCounter: AccountingObjectCounter
         ) : Result()
+
+        data class IsCompleteLoading(val isLoading: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryCreateStore.State, Result> {
@@ -570,6 +574,7 @@ class InventoryCreateStoreFactory(
                 is Result.DialogType -> copy(dialogType = result.dialogType)
                 is Result.DialogRemovedItemId -> copy(dialogRemovedItemId = result.accountingObjectId)
                 is Result.CanComplete -> copy(canComplete = result.canComplete)
+                is Result.IsCompleteLoading -> copy(isCompleteLoading = result.isLoading)
             }
     }
 }
