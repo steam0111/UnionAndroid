@@ -11,6 +11,7 @@ enum class AlertType {
     DELETE,
     CLEAR_DB,
     WRITE_EPC,
+    LIST_ACTION,
     LIST_ITEM,
     NONE
 }

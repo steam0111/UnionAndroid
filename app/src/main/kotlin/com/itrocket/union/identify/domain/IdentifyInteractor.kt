@@ -81,6 +81,10 @@ class IdentifyInteractor(
         }
     }
 
+    suspend fun writeOffAccountingObjects(accountingObjects: List<AccountingObjectDomain>): List<AccountingObjectDomain> {
+        return accountingObjectRepository.writeOffAccountingObjects(accountingObjects)
+    }
+
     companion object {
         private const val NO_POSITION = -1
     }

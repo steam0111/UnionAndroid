@@ -9,11 +9,17 @@ import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectWriteOff
 import com.example.union_sync_api.entity.EnumType
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectDetailQuery
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
-import com.example.union_sync_impl.data.mapper.*
+import com.example.union_sync_impl.data.mapper.toAccountingObjectDetailSyncEntity
+import com.example.union_sync_impl.data.mapper.toAccountingObjectScanningUpdate
+import com.example.union_sync_impl.data.mapper.toAccountingObjectUpdate
+import com.example.union_sync_impl.data.mapper.toAccountingObjectWriteOffUpdate
+import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
+import com.example.union_sync_impl.data.mapper.toSyncEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -200,6 +206,14 @@ class AccountingObjectSyncApiImpl(
 
     override suspend fun updateAccountingObjects(accountingObjects: List<AccountingObjectUpdateSyncEntity>) {
         accountingObjectsDao.update(accountingObjects.map { it.toAccountingObjectUpdate() })
+    }
+
+    override suspend fun writeOffAccountingObject(accountingObjectWriteOff: AccountingObjectWriteOff) {
+        accountingObjectsDao.update(accountingObjectWriteOff.toAccountingObjectWriteOffUpdate())
+    }
+
+    override suspend fun writeOffAccountingObjects(accountingObjectsWriteOff: List<AccountingObjectWriteOff>) {
+        accountingObjectsDao.updateWriteOffAccountingObjects(accountingObjectsWriteOff.map { it.toAccountingObjectWriteOffUpdate() })
     }
 
     override suspend fun updateAccountingObjectScanningData(accountingObject: AccountingObjectScanningData) {

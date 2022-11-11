@@ -9,12 +9,15 @@ import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuArguments
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment
+import com.itrocket.union.ui.listAction.DialogAction
+import com.itrocket.union.ui.listAction.DialogActionType
 
 interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, IdentifyStore.Label> {
 
@@ -23,6 +26,9 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         object OnDropClicked : Intent()
         data class OnSelectPage(val selectedPage: Int) : Intent()
         object OnBackClicked : Intent()
+        object OnPlusClicked : Intent()
+        object OnListActionDialogDismissed : Intent()
+        data class OnListActionDialogClicked(val dialogActionType: DialogActionType) : Intent()
         data class OnManualInput(val readingModeResult: ReadingModeResult) : Intent()
 
         data class OnItemClicked(val accountingObject: AccountingObjectDomain) : Intent()
@@ -46,7 +52,15 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         val accountingObjects: List<AccountingObjectDomain> = listOf(),
         val reserves: List<ReservesDomain> = listOf(),
         val selectedPage: Int = 0,
-        val readingModeTab: ReadingModeTab
+        val readingModeTab: ReadingModeTab,
+        val dialogType: AlertType = AlertType.NONE,
+        val loadingDialogAction: DialogActionType? = null,
+        val listDialogAction: List<DialogAction> = listOf(
+            DialogAction(
+                type = DialogActionType.WRITE_OFF,
+                actionTextId = R.string.common_write_off
+            )
+        )
     )
 
     sealed class Label {

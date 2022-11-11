@@ -40,6 +40,7 @@ import com.itrocket.union.structural.view.StructuralScreenPreview
 import com.itrocket.union.switcher.presentation.view.SwitcherScreenPreview
 import com.itrocket.union.ui.ConfirmAlertDialogContentPreview
 import com.itrocket.union.ui.ListDialogPreview
+import com.itrocket.union.ui.listAction.ListActionDialogPreview
 import com.karumi.shot.ScreenshotTest
 import org.junit.Rule
 import org.junit.Test
@@ -294,6 +295,13 @@ class ScreensTest : ScreenshotTest {
     fun `InventoryChoose`() {
         takeScreenShot {
             InventoryChooseScreenPreview()
+        }
+    }
+
+    @Test
+    fun `ListActionDialog`() {
+        takeScreenShot {
+            ListActionDialogPreview()
         }
     }
 

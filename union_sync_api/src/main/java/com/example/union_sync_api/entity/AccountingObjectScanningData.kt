@@ -4,5 +4,5 @@ data class AccountingObjectScanningData(
     val id: String,
     val barcodeValue: String?,
     val rfidValue: String?,
-    val factoryNumber: String?
+    val factoryNumber: String?,
 )

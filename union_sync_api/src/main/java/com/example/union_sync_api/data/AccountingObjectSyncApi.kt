@@ -4,6 +4,8 @@ import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectWriteOff
+import com.example.union_sync_api.entity.EnumSyncEntity
 import kotlinx.coroutines.flow.Flow
 
 interface AccountingObjectSyncApi {
@@ -53,6 +55,10 @@ interface AccountingObjectSyncApi {
     suspend fun getAccountingObjectDetailByIdFlow(id: String): Flow<AccountingObjectDetailSyncEntity>
 
     suspend fun updateAccountingObjects(accountingObjects: List<AccountingObjectUpdateSyncEntity>)
+
+    suspend fun writeOffAccountingObject(accountingObjectWriteOff: AccountingObjectWriteOff)
+
+    suspend fun writeOffAccountingObjects(accountingObjectsWriteOff: List<AccountingObjectWriteOff>)
 
     suspend fun updateAccountingObjectScanningData(accountingObject: AccountingObjectScanningData)
 }

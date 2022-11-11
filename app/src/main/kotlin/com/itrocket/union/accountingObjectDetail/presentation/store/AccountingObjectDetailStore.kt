@@ -33,6 +33,7 @@ interface AccountingObjectDetailStore :
         object OnGenerateRfidClicked : Intent()
         object OnWriteEpcClicked : Intent()
         object OnDismissed : Intent()
+        object OnWriteOffClicked : Intent()
         object OnTriggerPressed : Intent()
         object OnTriggerReleased : Intent()
         object OnRemoveBarcodeClicked : Intent()

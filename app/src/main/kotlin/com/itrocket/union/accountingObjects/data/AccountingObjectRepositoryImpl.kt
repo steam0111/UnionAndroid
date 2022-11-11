@@ -6,7 +6,9 @@ import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
 import com.example.union_sync_api.entity.EnumType
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.accountingObjectDetail.data.mapper.toAccountingObjectWriteOff
 import com.itrocket.union.accountingObjects.data.mapper.map
+import com.itrocket.union.accountingObjects.data.mapper.toDomainStatus
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectStatus
@@ -111,5 +113,23 @@ class AccountingObjectRepositoryImpl(
                 enumType = EnumType.ACCOUNTING_OBJECT_STATUS
             )?.toParam(ManualType.STATUS)
         } ?: ParamDomain(type = ManualType.STATUS, value = "")
+    }
+
+    override suspend fun writeOffAccountingObjects(accountingObjects: List<AccountingObjectDomain>): List<AccountingObjectDomain> {
+        return withContext(coreDispatchers.io) {
+            val status = enumsSyncApi.getByCompoundId(
+                id = AccountingObjectStatus.WRITTEN_OFF.name,
+                enumType = EnumType.ACCOUNTING_OBJECT_STATUS
+            )
+            val nonWriteOffAccountingObjects = accountingObjects.filter { !it.isWrittenOff }
+            syncApi.writeOffAccountingObjects(nonWriteOffAccountingObjects.map {
+                it.toAccountingObjectWriteOff(
+                    status
+                )
+            })
+            accountingObjects.map {
+                it.copy(status = status?.toDomainStatus())
+            }
+        }
     }
 }

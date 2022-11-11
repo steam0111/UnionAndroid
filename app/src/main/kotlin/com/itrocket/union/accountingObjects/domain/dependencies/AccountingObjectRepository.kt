@@ -37,4 +37,6 @@ interface AccountingObjectRepository {
     suspend fun updateAccountingObjects(accountingObjects: List<AccountingObjectUpdateSyncEntity>)
 
     suspend fun getAvailableStatus(): ParamDomain
+
+    suspend fun writeOffAccountingObjects(accountingObjects: List<AccountingObjectDomain>): List<AccountingObjectDomain>
 }

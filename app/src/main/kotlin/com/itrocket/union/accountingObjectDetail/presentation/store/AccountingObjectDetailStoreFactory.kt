@@ -113,12 +113,19 @@ class AccountingObjectDetailStoreFactory(
                 AccountingObjectDetailStore.Intent.OnTriggerReleased -> onTriggerRelease()
                 is AccountingObjectDetailStore.Intent.OnWriteEpcError -> onWriteEpcError(intent.error)
                 is AccountingObjectDetailStore.Intent.OnWriteEpcHandled -> onWriteEpcHandled()
+                AccountingObjectDetailStore.Intent.OnWriteOffClicked -> onWriteOffClicked(getState().accountingObjectDomain)
                 AccountingObjectDetailStore.Intent.OnRemoveBarcodeClicked -> onRemoveBarcodeClicked(
                     getState().accountingObjectDomain
                 )
                 AccountingObjectDetailStore.Intent.OnRemoveRfidClicked -> onRemoveRfidClicked(
                     getState().accountingObjectDomain
                 )
+            }
+        }
+
+        private suspend fun onWriteOffClicked(accountingObjectDomain: AccountingObjectDomain) {
+            catchException {
+                interactor.writeOffAccountingObject(accountingObjectDomain)
             }
         }
 

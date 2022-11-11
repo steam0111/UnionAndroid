@@ -2,6 +2,7 @@ package com.itrocket.union.accountingObjectDetail.domain
 
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjectDetail.domain.dependencies.AccountingObjectDetailRepository
+import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoType
@@ -14,6 +15,7 @@ import kotlinx.coroutines.withContext
 
 class AccountingObjectDetailInteractor(
     private val repository: AccountingObjectDetailRepository,
+    private val accountingObjectRepository: AccountingObjectRepository,
     private val coreDispatchers: CoreDispatchers,
     private val unionPermissionsInteractor: UnionPermissionsInteractor
 ) {
@@ -81,6 +83,10 @@ class AccountingObjectDetailInteractor(
             val rfid = rawRfid.toByteArray().toHexString().take(RFID_SIZE).uppercase()
             repository.updateScanningData(accountingObjectDomain.copy(rfidValue = rfid))
         }
+    }
+
+    suspend fun writeOffAccountingObject(accountingObjectDomain: AccountingObjectDomain) {
+        repository.writeOffAccountingObject(accountingObjectDomain)
     }
 
     private fun ByteArray.toHexString() = joinToString("") {
