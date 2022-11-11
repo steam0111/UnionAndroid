@@ -106,7 +106,7 @@
     <string name="inventories">Инв. ведомости</string>
     <string name="producer">Производители</string>
     <string name="counterparties">Контрагенты</string>
-    <string name="equipment_types">Типы оборуд.</string>
+    <string name="equipment_types">Типы имущества</string>
     <string name="sync">Синхронизация</string>
     <string name="reception_category">Приемная категория</string>
     <string name="count">Количество</string>
@@ -331,10 +331,10 @@
     <string name="counterparties_code">Код контрагента</string>
 
     <string name="equipment_type_code">Код</string>
-    <string name="equipment_type_title">Типы оборудования</string>
+    <string name="equipment_type_title">Типы имущества</string>
     <string name="text_begin_identify">Для начала идентификации нажмите курок считывателя</string>
     <string name="choose_action">Выберите действие</string>
-    <string name="equipment_type">Тип оборудования</string>
+    <string name="equipment_type">Тип имущества</string>
 
     <!-- ChooseAction -->
     <string name="choose_action_title">Выберите действие</string>
