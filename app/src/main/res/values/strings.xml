@@ -237,6 +237,7 @@
     <string name="document_create_accounting_object">Об. учета</string>
     <string name="document_create_reserves">Запасы</string>
     <string name="document_create_empty">Для начала считывания нажмите курок или выберите из списка</string>
+    <string name="document_create_dialog_list_item_title">Чтобы провести документ, необходимо выполнить маркировку и повторную синхронизацию.\nНепромаркированные ОУ:</string>
 
     <!-- ModuleSettings -->
     <string name="module_settings_title">Модули</string>

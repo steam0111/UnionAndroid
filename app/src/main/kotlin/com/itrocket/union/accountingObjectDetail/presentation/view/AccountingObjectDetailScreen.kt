@@ -285,7 +285,8 @@ fun AccountingObjectDetailScreenPreview() {
                 inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND,
                 barcodeValue = "",
                 rfidValue = "",
-                factoryNumber = ""
+                factoryNumber = "",
+                marked = true,
             ),
         ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 }

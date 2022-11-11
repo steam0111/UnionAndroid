@@ -660,7 +660,8 @@ fun AccountingObjectItemPreview() {
             ),
             barcodeValue = "",
             rfidValue = "",
-            factoryNumber = ""
+            factoryNumber = "",
+            marked = true
         ),
         onAccountingObjectListener = {},
         onAccountingObjectLongClickListener = {},

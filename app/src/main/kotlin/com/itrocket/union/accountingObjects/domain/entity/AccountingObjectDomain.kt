@@ -19,7 +19,8 @@ data class AccountingObjectDomain(
     val listAdditionallyInfo: List<ObjectInfoDomain>,
     val inventoryNumber: String? = null,
     val comment: String? = null,
-    val manualInput: Boolean? = null
+    val manualInput: Boolean? = null,
+    val marked: Boolean
 ) : Parcelable {
     val hasBarcode: Boolean
         get() = !barcodeValue.isNullOrEmpty()

@@ -444,7 +444,8 @@ fun InventoryCreateScreenPreview() {
                         listAdditionallyInfo = listOf(),
                         barcodeValue = "",
                         rfidValue = "",
-                        factoryNumber = ""
+                        factoryNumber = "",
+                        marked = true
                     ),
                     AccountingObjectDomain(
                         id = "8",
@@ -464,7 +465,8 @@ fun InventoryCreateScreenPreview() {
                         listAdditionallyInfo = listOf(),
                         barcodeValue = "",
                         rfidValue = "",
-                        factoryNumber = ""
+                        factoryNumber = "",
+                        marked = true
                     ),
                 ),
                 inventoryStatus = InventoryStatus.CREATED,

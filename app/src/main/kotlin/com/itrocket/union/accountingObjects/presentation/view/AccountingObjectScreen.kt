@@ -163,7 +163,8 @@ fun AccountingObjectScreenPreview() {
                     listAdditionallyInfo = listOf(),
                     barcodeValue = "",
                     rfidValue = "",
-                    factoryNumber = ""
+                    factoryNumber = "",
+                    marked = false
                 ),
                 AccountingObjectDomain(
                     id = "8",
@@ -183,7 +184,8 @@ fun AccountingObjectScreenPreview() {
                     listAdditionallyInfo = listOf(),
                     barcodeValue = "",
                     rfidValue = "",
-                    factoryNumber = ""
+                    factoryNumber = "",
+                    marked = true
                 )
             ),
             params = emptyList()

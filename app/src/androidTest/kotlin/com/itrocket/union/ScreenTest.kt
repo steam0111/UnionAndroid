@@ -39,6 +39,7 @@ import com.itrocket.union.serverConnect.presentation.view.ServerConnectScreenPre
 import com.itrocket.union.structural.view.StructuralScreenPreview
 import com.itrocket.union.switcher.presentation.view.SwitcherScreenPreview
 import com.itrocket.union.ui.ConfirmAlertDialogContentPreview
+import com.itrocket.union.ui.ListDialogPreview
 import com.karumi.shot.ScreenshotTest
 import org.junit.Rule
 import org.junit.Test
@@ -269,7 +270,7 @@ class ScreensTest : ScreenshotTest {
     }
 
     @Test
-    fun `ChangeScanData`(){
+    fun `ChangeScanData`() {
         takeScreenShot {
             ChangeScanDataScreenPreview()
         }
@@ -283,7 +284,7 @@ class ScreensTest : ScreenshotTest {
     }
 
     @Test
-    fun `Comment`(){
+    fun `Comment`() {
         takeScreenShot {
             CommentScreenPreview()
         }
@@ -293,6 +294,13 @@ class ScreensTest : ScreenshotTest {
     fun `InventoryChoose`() {
         takeScreenShot {
             InventoryChooseScreenPreview()
+        }
+    }
+
+    @Test
+    fun `ListDialog`() {
+        takeScreenShot {
+            ListDialogPreview()
         }
     }
 }

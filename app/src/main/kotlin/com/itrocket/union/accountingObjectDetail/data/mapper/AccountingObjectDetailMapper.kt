@@ -230,7 +230,8 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
         listAdditionallyInfo = emptyList(),
         barcodeValue = accountingObject.barcodeValue,
         rfidValue = accountingObject.rfidValue,
-        factoryNumber = accountingObject.factoryNumber
+        factoryNumber = accountingObject.factoryNumber,
+        marked = accountingObject.marked
     )
 }
 

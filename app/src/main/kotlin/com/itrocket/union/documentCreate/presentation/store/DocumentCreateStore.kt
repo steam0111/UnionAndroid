@@ -42,6 +42,7 @@ interface DocumentCreateStore :
         object OnChooseAccountingObjectClicked : Intent()
         object OnChooseReserveClicked : Intent()
         object OnCompleteClicked : Intent()
+        object OnListItemDialogDismissed : Intent()
         data class OnSelectPage(val selectedPage: Int) : Intent()
         data class OnParamClicked(val param: ParamDomain) : Intent()
         data class OnParamCrossClicked(val param: ParamDomain) : Intent()
@@ -81,6 +82,8 @@ interface DocumentCreateStore :
         val canUpdate: Boolean = false,
         val canCreate: Boolean = false,
         val readingModeTab: ReadingModeTab,
+        val dialogListItem: List<String> = listOf(),
+        val dialogLoading: Boolean = false,
         val canDelete: Boolean = false,
     )
 

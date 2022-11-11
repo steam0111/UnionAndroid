@@ -88,7 +88,8 @@ fun SelectActionWithValuesBottomMenuScreenPreview() {
                 listAdditionallyInfo = listOf(),
                 barcodeValue = "",
                 rfidValue = "",
-                factoryNumber = ""
+                factoryNumber = "",
+                marked = true
             ),
             accountingObjects = listOf()
         ), AppInsets()

@@ -181,6 +181,9 @@ class DocumentCreateComposeFragment :
                 },
                 onDeleteAccountingObjectClickListener = {
                     accept(DocumentCreateStore.Intent.OnDeleteAccountingObjectClicked(it))
+                },
+                onListItemDialogDismissed = {
+                    accept(DocumentCreateStore.Intent.OnListItemDialogDismissed)
                 }
             )
         }
