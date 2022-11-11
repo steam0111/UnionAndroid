@@ -293,7 +293,8 @@ fun IdentifyScreenPreview() {
                     ),
                     barcodeValue = "",
                     rfidValue = "",
-                    factoryNumber = ""
+                    factoryNumber = "",
+                    marked = true
                 ),
                 AccountingObjectDomain(
                     id = "2",
@@ -313,7 +314,8 @@ fun IdentifyScreenPreview() {
                     listAdditionallyInfo = listOf(),
                     barcodeValue = "",
                     rfidValue = "",
-                    factoryNumber = ""
+                    factoryNumber = "",
+                    marked = true
                 ), AccountingObjectDomain(
                     id = "3",
                     isBarcode = true,
@@ -332,7 +334,8 @@ fun IdentifyScreenPreview() {
                     listAdditionallyInfo = listOf(),
                     barcodeValue = "",
                     rfidValue = "",
-                    factoryNumber = ""
+                    factoryNumber = "",
+                    marked = true
                 )
             ),
             selectedPage = 1,

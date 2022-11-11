@@ -39,6 +39,7 @@ fun DocumentCreateScreen(
     onDismissConfirmDialog: () -> Unit,
     onDeleteAccountingObjectClickListener: (String) -> Unit,
     onDeleteReserveClickListener: (String) -> Unit,
+    onListItemDialogDismissed: () -> Unit
 ) {
     DocumentCreateBaseScreen(
         confirmDialogType = state.confirmDialogType,
@@ -50,6 +51,7 @@ fun DocumentCreateScreen(
         reserves = state.reserves,
         documentType = state.document.documentType,
         appInsets = appInsets,
+        dialogListItems = state.dialogListItem,
         onBackClickListener = onBackClickListener,
         onDropClickListener = onDropClickListener,
         onSaveClickListener = onSaveClickListener,
@@ -71,7 +73,9 @@ fun DocumentCreateScreen(
         },
         canDelete = state.canDelete,
         onDeleteAccountingObjectClickListener = onDeleteAccountingObjectClickListener,
-        onDeleteReserveClickListener = onDeleteReserveClickListener
+        onDeleteReserveClickListener = onDeleteReserveClickListener,
+        onListItemDialogDismissed = onListItemDialogDismissed,
+        isDialogLoading = state.dialogLoading
     )
 }
 
@@ -130,6 +134,7 @@ fun DocumentCreateScreenPreview() {
             readingModeTab = ReadingModeTab.SN
         ),
         AppInsets(topInset = previewTopInsetDp),
+        {},
         {},
         {},
         {},

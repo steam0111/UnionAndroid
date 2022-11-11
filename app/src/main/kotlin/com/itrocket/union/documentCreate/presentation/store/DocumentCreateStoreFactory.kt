@@ -9,11 +9,10 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectStatus
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.documentCreate.domain.DocumentAccountingObjectManager
 import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import com.itrocket.union.documentCreate.domain.DocumentReservesManager
-import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.documents.data.mapper.getParams
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
@@ -217,7 +216,13 @@ class DocumentCreateStoreFactory(
                     reserves = getState().reserves,
                     reserveId = intent.reserveId
                 )
+                DocumentCreateStore.Intent.OnListItemDialogDismissed -> onListItemDialogDismissed()
             }
+        }
+
+        private fun onListItemDialogDismissed() {
+            dispatch(Result.ConfirmDialogType(AlertType.NONE))
+            dispatch(Result.DialogListItem(listOf()))
         }
 
         private fun canEditDocument(state: DocumentCreateStore.State): Boolean {
@@ -302,12 +307,15 @@ class DocumentCreateStoreFactory(
         }
 
         private suspend fun handleOnConfirmActionClick(state: DocumentCreateStore.State) {
-            if (state.confirmDialogType == AlertType.SAVE) {
+            val confirmDialogType = state.confirmDialogType
+
+            dispatch(Result.ConfirmDialogType(AlertType.NONE))
+
+            if (confirmDialogType == AlertType.SAVE) {
                 saveDocument(state)
-            } else if (state.confirmDialogType == AlertType.CONDUCT) {
+            } else if (confirmDialogType == AlertType.CONDUCT) {
                 onConductClicked(state)
             }
-            dispatch(Result.ConfirmDialogType(AlertType.NONE))
         }
 
         private suspend fun onConductClicked(state: DocumentCreateStore.State) {
@@ -317,19 +325,39 @@ class DocumentCreateStoreFactory(
             }
 
             val conductPermission = UnionPermission.ALL_DOCUMENTS
-            if (unionPermissionsInteractor.canConductDocument(conductPermission)) {
-                conductDocument(state)
-            } else {
-                publish(
-                    DocumentCreateStore.Label.ShowNfcReader(
-                        documentCreateInteractor.completeDocument(
-                            document = state.document,
-                            accountingObjects = state.accountingObjects,
-                            reserves = state.reserves,
-                            params = state.params
+            val isNotAllAccountingObjectsMarked =
+                documentCreateInteractor.isNotAllAccountingObjectMarked(state.accountingObjects)
+            val isDocumentTypeGive = state.document.documentType == DocumentTypeDomain.GIVE
+            when {
+                isDocumentTypeGive && isNotAllAccountingObjectsMarked -> {
+                    dispatch(Result.ConfirmDialogType(AlertType.LIST_ITEM))
+                    dispatch(Result.DialogLoading(true))
+                    catchException {
+                        dispatch(
+                            Result.DialogListItem(
+                                documentCreateInteractor.filterNotMarkedAccountingObjectNames(
+                                    state.accountingObjects
+                                )
+                            )
+                        )
+                    }
+                    dispatch(Result.DialogLoading(false))
+                }
+                unionPermissionsInteractor.canConductDocument(conductPermission) -> {
+                    conductDocument(state)
+                }
+                else -> {
+                    publish(
+                        DocumentCreateStore.Label.ShowNfcReader(
+                            documentCreateInteractor.completeDocument(
+                                document = state.document,
+                                accountingObjects = state.accountingObjects,
+                                reserves = state.reserves,
+                                params = state.params
+                            )
                         )
                     )
-                )
+                }
             }
         }
 
@@ -451,11 +479,13 @@ class DocumentCreateStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
+            dispatch(Result.ConfirmDialogType(AlertType.NONE))
             publish(DocumentCreateStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 
     private sealed class Result {
+        data class DialogListItem(val listItem: List<String>) : Result()
         data class Loading(val isLoading: Boolean) : Result()
         data class Document(val document: DocumentDomain) : Result()
         data class Params(val params: List<ParamDomain>) : Result()
@@ -463,6 +493,7 @@ class DocumentCreateStoreFactory(
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
         data class Reserves(val reserves: List<ReservesDomain>) : Result()
         data class ConfirmDialogType(val type: AlertType) : Result()
+        data class DialogLoading(val isLoading: Boolean) : Result()
         data class CanUpdate(val canUpdate: Boolean) : Result()
         data class CanCreate(val canCreate: Boolean) : Result()
         data class CanDelete(val canDelete: Boolean) : Result()
@@ -483,6 +514,8 @@ class DocumentCreateStoreFactory(
                 is Result.CanCreate -> copy(canCreate = result.canCreate)
                 is Result.ReadingMode -> copy(readingModeTab = result.readingModeTab)
                 is Result.CanDelete -> copy(canDelete = result.canDelete)
+                is Result.DialogListItem -> copy(dialogListItem = result.listItem)
+                is Result.DialogLoading -> copy(dialogLoading = result.isLoading)
             }
     }
 

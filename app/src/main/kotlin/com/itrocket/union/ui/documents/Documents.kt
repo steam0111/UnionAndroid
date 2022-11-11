@@ -55,6 +55,7 @@ import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ConfirmAlertDialog
 import com.itrocket.union.ui.DoubleTabRow
 import com.itrocket.union.ui.ImageButton
+import com.itrocket.union.ui.ListDialog
 import com.itrocket.union.ui.Loader
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.ReservesItem
@@ -83,6 +84,7 @@ fun DocumentCreateBaseScreen(
     isDocumentExist: Boolean,
     appInsets: AppInsets,
     canDelete: Boolean,
+    dialogListItems: List<String> = listOf(),
     onBackClickListener: () -> Unit,
     onDropClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
@@ -98,6 +100,8 @@ fun DocumentCreateBaseScreen(
     onDismissConfirmDialog: () -> Unit,
     onDeleteAccountingObjectClickListener: (String) -> Unit,
     onDeleteReserveClickListener: (String) -> Unit,
+    onListItemDialogDismissed: () -> Unit = {},
+    isDialogLoading: Boolean = false,
 ) {
     val pagerState = rememberPagerState(selectedPage)
     val coroutineScope = rememberCoroutineScope()
@@ -154,17 +158,23 @@ fun DocumentCreateBaseScreen(
     }
 
     // todo сделать через side effect
-    if (confirmDialogType == AlertType.SAVE) {
-        ConfirmAlertDialog(
+    when (confirmDialogType) {
+        AlertType.SAVE -> ConfirmAlertDialog(
             onDismiss = onDismissConfirmDialog,
             onConfirmClick = onConfirmActionClick,
             textRes = R.string.common_confirm_save_text
         )
-    } else if (confirmDialogType == AlertType.CONDUCT) {
-        ConfirmAlertDialog(
+        AlertType.CONDUCT -> ConfirmAlertDialog(
             onDismiss = onDismissConfirmDialog,
             onConfirmClick = onConfirmActionClick,
             textRes = R.string.confirm_conduct_text
+        )
+        AlertType.LIST_ITEM -> ListDialog(
+            titleRes = R.string.document_create_dialog_list_item_title,
+            listItems = dialogListItems,
+            onDismiss = onListItemDialogDismissed,
+            confirmButtonText = stringResource(R.string.common_ok),
+            isLoading = isDialogLoading
         )
     }
 }
@@ -656,6 +666,7 @@ fun DocumentCreateBaseScreenPreview() {
         isDocumentExist = false,
         canDelete = true,
         onDeleteReserveClickListener = {},
-        onDeleteAccountingObjectClickListener = {}
+        onDeleteAccountingObjectClickListener = {},
+        onListItemDialogDismissed = {}
     )
 }

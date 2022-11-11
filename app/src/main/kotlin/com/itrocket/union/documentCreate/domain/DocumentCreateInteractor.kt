@@ -425,6 +425,18 @@ class DocumentCreateInteractor(
         )
     }
 
+    suspend fun isNotAllAccountingObjectMarked(accountingObjects: List<AccountingObjectDomain>): Boolean {
+        return withContext(coreDispatchers.io) {
+            accountingObjects.any { !it.marked }
+        }
+    }
+
+    suspend fun filterNotMarkedAccountingObjectNames(accountingObjects: List<AccountingObjectDomain>): List<String> {
+        return withContext(coreDispatchers.io) {
+            accountingObjects.filter { !it.marked }.map { it.title }
+        }
+    }
+
     companion object {
         private const val NO_POSITION = -1
     }

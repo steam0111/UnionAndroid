@@ -54,7 +54,8 @@ fun AccountingObjectSyncEntity.map(): AccountingObjectDomain {
         factoryNumber = factoryNumber,
         inventoryNumber = inventoryNumber,
         comment = comment,
-        manualInput = manualInput
+        manualInput = manualInput,
+        marked = marked
     )
 }
 
