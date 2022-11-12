@@ -463,7 +463,13 @@ class DocumentCreateStoreFactory(
                         type = ManualType.RECEPTION_CATEGORY,
                     ),
                     CheckBoxParamDomain(
-                        isChecked = false,
+                        isChecked = true,
+                        manualType = ManualType.CHECKBOX_HIDE_ZERO_RESERVES
+                    )
+                )
+                DocumentTypeDomain.RELOCATION -> listOf(
+                    CheckBoxParamDomain(
+                        isChecked = true,
                         manualType = ManualType.CHECKBOX_HIDE_ZERO_RESERVES
                     )
                 )
