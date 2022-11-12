@@ -11,5 +11,5 @@ data class EmployeeDetailDomain(
     val listInfo: List<ObjectInfoDomain> = emptyList()
 ) {
     val fullName: String
-        get() = "$lastName $firstName $patronymic"
+        get() = "${lastName.trim()} ${firstName.trim()} ${patronymic.trim()}"
 }

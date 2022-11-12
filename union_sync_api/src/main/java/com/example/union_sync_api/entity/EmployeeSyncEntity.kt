@@ -17,5 +17,5 @@ data class EmployeeSyncEntity(
     var updateDate: Long?
 ) {
     val fullName: String
-        get() = "$lastname $firstname $patronymic"
+        get() = "${lastname.trim()} ${firstname.trim()} ${patronymic.trim()}"
 }
