@@ -1,9 +1,7 @@
 package com.example.union_sync_impl.entity
 
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import com.example.union_sync_impl.entity.core.CatalogItemDb
-
 
 @Entity(tableName = "employees")
 class EmployeeDb(
@@ -29,8 +27,4 @@ class EmployeeDb(
     updateDate = updateDate,
     userUpdated = userUpdated,
     userInserted = userInserted
-) {
-
-    val fullName: String
-        get() = "$lastname $firstname $patronymic"
-}
+)
