@@ -1,7 +1,9 @@
 package com.itrocket.union.common
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,10 +20,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.itrocket.union.R
 import com.itrocket.union.ui.AppTheme
+import com.itrocket.union.BuildConfig
+
 
 @Composable
 fun Drawer(
@@ -32,73 +37,94 @@ fun Drawer(
     screens: List<DrawerScreens>
 ) {
     Column(
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
-            .padding(start = 24.dp, top = 48.dp)
+            .padding(start = 16.dp, top = 48.dp, bottom = 56.dp, end = 16.dp),
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        if (lastName.isNotEmpty()) {
-            Text(
-                text = lastName,
-                style = AppTheme.typography.body1,
-                color = AppTheme.colors.mainColor
-            )
-        }
+        Column(modifier = Modifier.weight(2f), verticalArrangement = Arrangement.Top) {
+            if (lastName.isNotEmpty()) {
+                Text(
+                    text = lastName,
+                    style = AppTheme.typography.body1,
+                    color = AppTheme.colors.mainColor
+                )
+            }
 
-        if (firstName.isNotEmpty()) {
-            Text(
-                text = firstName,
-                style = AppTheme.typography.body1,
-                color = AppTheme.colors.mainColor
-            )
-        }
+            if (firstName.isNotEmpty()) {
+                Text(
+                    text = firstName,
+                    style = AppTheme.typography.body1,
+                    color = AppTheme.colors.mainColor
+                )
+            }
 
-        if (patronimic.isNotEmpty()) {
+            if (patronimic.isNotEmpty()) {
+                Text(
+                    text = patronimic,
+                    style = AppTheme.typography.body1,
+                    color = AppTheme.colors.mainColor
+                )
+            }
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = patronimic,
-                style = AppTheme.typography.body1,
+                text = stringResource(id = R.string.build_number, BuildConfig.VERSION_CODE),
+                style = AppTheme.typography.caption,
                 color = AppTheme.colors.mainColor
             )
         }
 
         screens.forEach { screen ->
-            Spacer(Modifier.height(8.dp))
             if (screen.icon != null) {
-                Row(
+                Column(
+                    verticalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .weight(2f)
                         .clickable {
                             onDestinationClicked(screen.type)
-                        }, verticalAlignment = Alignment.CenterVertically
-                ) {
+                        }) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(id = screen.title),
+                            style = AppTheme.typography.body1,
+                            color = AppTheme.colors.mainTextColor
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Image(
+                            modifier = Modifier.size(16.dp),
+                            painter = painterResource(id = screen.icon),
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(AppTheme.colors.mainTextColor)
+                        )
+                    }
+                }
+            } else {
+                Column(verticalArrangement = Arrangement.Bottom, modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onDestinationClicked(screen.type)
+                    }
+                    .weight(2f)) {
                     Text(
                         text = stringResource(id = screen.title),
                         style = AppTheme.typography.body1,
-                        color = AppTheme.colors.mainColor
-                    )
-                    Spacer(Modifier.width(4.dp))
-                    Image(
-                        modifier = Modifier.size(16.dp),
-                        painter = painterResource(id = screen.icon),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(AppTheme.colors.mainColor)
+                        color = AppTheme.colors.mainTextColor
                     )
                 }
-            } else {
-                Text(
-                    text = stringResource(id = screen.title),
-                    style = AppTheme.typography.body1,
-                    color = AppTheme.colors.mainColor,
-                    modifier = Modifier.clickable {
-                        onDestinationClicked(screen.type)
-                    }
-                )
             }
         }
     }
 }
 
-sealed class DrawerScreens(val title: Int, val icon: Int? = null, val type: DrawerScreenType) {
-    object Account : DrawerScreens(
+sealed class DrawerScreens(
+    val title: Int,
+    val icon: Int? = null,
+    val type: DrawerScreenType
+) {
+    object Settings : DrawerScreens(
         R.string.label_settings, R.drawable.ic_settings,
         DrawerScreenType.SETTINGS
     )
@@ -110,10 +136,28 @@ enum class DrawerScreenType {
     SETTINGS, LOGOUT
 }
 
-@Preview
+@Preview(
+    name = "светлая тема экран - 6.3 (3040x1440)",
+    showSystemUi = true,
+    device = Devices.PIXEL_4_XL,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Preview(
+    name = "темная тема экран - 4,95 (1920 × 1080)",
+    showSystemUi = true,
+    device = Devices.NEXUS_5,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
 @Composable
 fun DrawerPreview() {
     AppTheme {
-        Drawer("Анастасия", "Оглоблина", "Владимимровна", {}, listOf())
+        Drawer(
+            "Анастасия",
+            "Оглоблина",
+            "Владимимровна",
+            {},
+            listOf(DrawerScreens.Settings, DrawerScreens.Logout)
+        )
     }
 }
