@@ -41,6 +41,7 @@ import com.itrocket.union.switcher.presentation.view.SwitcherScreenPreview
 import com.itrocket.union.ui.ConfirmAlertDialogContentPreview
 import com.itrocket.union.ui.ListDialogPreview
 import com.itrocket.union.ui.listAction.ListActionDialogPreview
+import com.itrocket.union.common.DrawerPreview
 import com.karumi.shot.ScreenshotTest
 import org.junit.Rule
 import org.junit.Test
@@ -309,6 +310,13 @@ class ScreensTest : ScreenshotTest {
     fun `ListDialog`() {
         takeScreenShot {
             ListDialogPreview()
+        }
+    }
+
+    @Test
+    fun `Drawer`() {
+        takeScreenShot {
+            DrawerPreview()
         }
     }
 }

@@ -89,7 +89,7 @@ fun DocumentMenuScreen(
                         }
                     },
                     screens = listOf(
-                        DrawerScreens.Account,
+                        DrawerScreens.Settings,
                         DrawerScreens.Logout
                     )
                 )
