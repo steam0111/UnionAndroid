@@ -98,7 +98,7 @@ private fun BottomBar(
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         ImageButton(
-            imageId = R.drawable.ic_settings,
+            imageId = R.drawable.ic_reading,
             paddings = PaddingValues(12.dp),
             onClick = onSettingsClickListener,
             isEnabled = selectedTab == ReadingModeTab.RFID

@@ -492,7 +492,7 @@ fun DocumentListBottomBar(
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
         if (isAccountingObject) {
             ImageButton(
-                imageId = R.drawable.ic_settings,
+                imageId = R.drawable.ic_reading,
                 paddings = PaddingValues(12.dp),
                 onClick = onSettingsClickListener,
                 isEnabled = documentStatus != DocumentStatus.COMPLETED && isDocumentChangePermitted
