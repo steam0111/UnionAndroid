@@ -141,11 +141,6 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
                         iconId = R.drawable.ic_inventory,
                         unionPermission = UnionPermission.NO_NEED
                     ),
-                    DocumentMenuDomain(
-                        titleId = R.string.sync,
-                        iconId = R.drawable.ic_inventory,
-                        unionPermission = UnionPermission.NO_NEED
-                    ),
                 )
             }
             else -> listOf()

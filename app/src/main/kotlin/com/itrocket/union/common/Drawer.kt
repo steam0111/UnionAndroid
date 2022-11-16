@@ -23,9 +23,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.itrocket.union.BuildConfig
 import com.itrocket.union.R
 import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.BuildConfig
 
 
 @Composable
@@ -129,11 +129,13 @@ sealed class DrawerScreens(
         DrawerScreenType.SETTINGS
     )
 
+    object Sync : DrawerScreens(title = R.string.sync, type = DrawerScreenType.SYNC)
+
     object Logout : DrawerScreens(R.string.common_exit, type = DrawerScreenType.LOGOUT)
 }
 
 enum class DrawerScreenType {
-    SETTINGS, LOGOUT
+    SETTINGS, LOGOUT, SYNC
 }
 
 @Preview(
@@ -157,7 +159,7 @@ fun DrawerPreview() {
             "Оглоблина",
             "Владимимровна",
             {},
-            listOf(DrawerScreens.Settings, DrawerScreens.Logout)
+            listOf(DrawerScreens.Settings, DrawerScreens.Sync, DrawerScreens.Logout)
         )
     }
 }
