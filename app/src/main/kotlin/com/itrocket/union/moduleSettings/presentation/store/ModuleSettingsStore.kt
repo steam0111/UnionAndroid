@@ -3,6 +3,7 @@ package com.itrocket.union.moduleSettings.presentation.store
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 
 interface ModuleSettingsStore :
     Store<ModuleSettingsStore.Intent, ModuleSettingsStore.State, ModuleSettingsStore.Label> {
@@ -21,6 +22,7 @@ interface ModuleSettingsStore :
         object OnArrowDownClicked : Intent()
         data class OnDynamicSaveInventoryClicked(val isDynamicSaveInventory: Boolean) : Intent()
         data class OnPowerChanged(val newPowerText: String) : Intent()
+        data class OnReadingModeTabClicked(val readingModeTab: ReadingModeTab) : Intent()
     }
 
     data class State(
@@ -31,7 +33,9 @@ interface ModuleSettingsStore :
         val keyCode: Int = 0,
         val dropdownExpanded: Boolean = false,
         val readerPower: Int? = null,
-        val isDynamicSaveInventory: Boolean = false
+        val isDynamicSaveInventory: Boolean = false,
+        val selectedReadingMode: ReadingModeTab = ReadingModeTab.RFID,
+        val readingModeTabs: List<ReadingModeTab> = ReadingModeTab.values().toList()
     )
 
     sealed class Label {

@@ -22,6 +22,7 @@ import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.manual.CheckBoxParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -43,7 +44,8 @@ class DocumentCreateStoreFactory(
     private val documentAccountingObjectManager: DocumentAccountingObjectManager,
     private val documentReservesManager: DocumentReservesManager,
     private val unionPermissionsInteractor: UnionPermissionsInteractor,
-    private val serviceEntryManager: ServiceEntryManager
+    private val serviceEntryManager: ServiceEntryManager,
+    private val moduleSettingsInteractor: ModuleSettingsInteractor
 ) {
     fun create(): DocumentCreateStore =
         object : DocumentCreateStore,
@@ -54,7 +56,6 @@ class DocumentCreateStoreFactory(
                     accountingObjects = documentCreateArguments.document.accountingObjects,
                     params = documentCreateArguments.document.params,
                     reserves = documentCreateArguments.document.reserves,
-                    readingModeTab = serviceEntryManager.currentMode.toReadingModeTab()
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
@@ -73,6 +74,7 @@ class DocumentCreateStoreFactory(
             getState: () -> DocumentCreateStore.State
         ) {
             dispatch(Result.Loading(true))
+            dispatch(Result.ReadingMode(moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = true)))
             dispatch(Result.CanUpdate(unionPermissionsInteractor.canUpdate(UnionPermission.ALL_DOCUMENTS)))
             dispatch(Result.CanCreate(unionPermissionsInteractor.canCreate(UnionPermission.ALL_DOCUMENTS)))
             catchException {
@@ -217,6 +219,7 @@ class DocumentCreateStoreFactory(
                     reserveId = intent.reserveId
                 )
                 DocumentCreateStore.Intent.OnListItemDialogDismissed -> onListItemDialogDismissed()
+                is DocumentCreateStore.Intent.OnErrorHandled -> handleError(intent.throwable)
             }
         }
 

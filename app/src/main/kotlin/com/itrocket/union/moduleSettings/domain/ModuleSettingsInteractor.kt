@@ -3,6 +3,8 @@ package com.itrocket.union.moduleSettings.domain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.moduleSettings.domain.dependencies.ModuleSettingsRepository
 import com.itrocket.union.readerPower.domain.ReaderPowerInteractor.Companion.READER_POWER_FACTOR
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
+import com.itrocket.union.readingMode.presentation.view.toReadingMode
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
@@ -12,6 +14,22 @@ class ModuleSettingsInteractor(
     private val serviceEntryManager: ServiceEntryManager,
     private val coreDispatchers: CoreDispatchers
 ) {
+
+    suspend fun getDefaultReadingMode(isForceUpdate: Boolean) = withContext(coreDispatchers.io) {
+        val readingMode =
+            ReadingModeTab.valueOf(repository.getDefaultReadingMode() ?: ReadingModeTab.RFID.name)
+        if (isForceUpdate) {
+            saveDefaultReadingMode(readingMode)
+        }
+        readingMode
+    }
+
+    suspend fun saveDefaultReadingMode(readingModeTab: ReadingModeTab) =
+        withContext(coreDispatchers.io) {
+            repository.saveDefaultReadingMode(readingModeTab)
+            serviceEntryManager.changeScanMode(readingModeTab.toReadingMode())
+        }
+
     suspend fun getKeyCode() = withContext(coreDispatchers.io) {
         repository.getSavedKeyCode().firstOrNull()
     }

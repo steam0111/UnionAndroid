@@ -23,6 +23,8 @@ object DataCollectModule {
             DataCollectStoreFactory(
                 DefaultStoreFactory,
                 get(),
+                get(),
+                get(),
                 get()
             ).create()
         }

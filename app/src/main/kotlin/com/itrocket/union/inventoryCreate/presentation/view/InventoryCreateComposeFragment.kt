@@ -1,9 +1,12 @@
 package com.itrocket.union.inventoryCreate.presentation.view
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.platform.ComposeView
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
@@ -21,6 +24,7 @@ import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragme
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.utils.flow.window
 import com.itrocket.union.utils.fragment.ChildBackPressedHandler
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -40,6 +44,13 @@ class InventoryCreateComposeFragment :
         get() = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 accept(InventoryCreateStore.Intent.OnBackClicked)
+            }
+        }
+
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { _, throwable ->
+            lifecycleScope.launch(Dispatchers.Main) {
+                accept(InventoryCreateStore.Intent.OnErrorHandled(throwable))
             }
         }
 
@@ -104,8 +115,8 @@ class InventoryCreateComposeFragment :
 
     private val serviceEntryManager: ServiceEntryManager by inject()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         observeScanning()
     }
 
@@ -177,41 +188,43 @@ class InventoryCreateComposeFragment :
     }
 
     private fun observeScanning() {
-        lifecycleScope.launch(Dispatchers.IO) {
-            launch {
-                observeTriggerPress()
-            }
-            launch {
-                serviceEntryManager
-                    .barcodeScanDataFlow
-                    .collect {
-                        withContext(Dispatchers.Main) {
-                            accept(
-                                InventoryCreateStore.Intent.OnNewAccountingObjectBarcodeHandled(
-                                    it.data
+        lifecycleScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    observeTriggerPress()
+                }
+                launch {
+                    serviceEntryManager
+                        .barcodeScanDataFlow
+                        .collect {
+                            withContext(Dispatchers.Main) {
+                                accept(
+                                    InventoryCreateStore.Intent.OnNewAccountingObjectBarcodeHandled(
+                                        it.data
+                                    )
                                 )
-                            )
+                            }
                         }
-                    }
-            }
-            launch {
-                serviceEntryManager
-                    .epcInventoryDataFlow
-                    .distinctUntilChanged()
-                    .window(
-                        maxBufferSize = WINDOW_MAX_BUFFER_SIZE,
-                        maxMsWaitTime = WINDOW_MAX_MS_WAIT_TIME,
-                        bufferOnlyUniqueValues = WINDOW_BUFFER_ONLY_UNIQUE_VALUES
-                    )
-                    .collect { rfids ->
-                        withContext(Dispatchers.Main) {
-                            accept(
-                                InventoryCreateStore.Intent.OnNewAccountingObjectRfidHandled(
-                                    rfids
+                }
+                launch {
+                    serviceEntryManager
+                        .epcInventoryDataFlow
+                        .distinctUntilChanged()
+                        .window(
+                            maxBufferSize = WINDOW_MAX_BUFFER_SIZE,
+                            maxMsWaitTime = WINDOW_MAX_MS_WAIT_TIME,
+                            bufferOnlyUniqueValues = WINDOW_BUFFER_ONLY_UNIQUE_VALUES
+                        )
+                        .collect { rfids ->
+                            withContext(Dispatchers.Main) {
+                                accept(
+                                    InventoryCreateStore.Intent.OnNewAccountingObjectRfidHandled(
+                                        rfids
+                                    )
                                 )
-                            )
+                            }
                         }
-                    }
+                }
             }
         }
     }

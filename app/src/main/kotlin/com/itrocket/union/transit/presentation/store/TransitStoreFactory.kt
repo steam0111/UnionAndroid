@@ -199,6 +199,7 @@ class TransitStoreFactory(
                     readingModeResult = intent.readingModeResult,
                     getState = getState
                 )
+                is TransitStore.Intent.OnErrorHandled -> handleError(intent.throwable)
             }
         }
 

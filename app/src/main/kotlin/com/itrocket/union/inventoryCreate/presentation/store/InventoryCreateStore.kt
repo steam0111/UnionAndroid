@@ -70,6 +70,8 @@ interface InventoryCreateStore :
         data class OnManualInput(val readingModeResult: ReadingModeResult) : Intent()
         data class OnAccountingObjectChanged(val accountingObject: AccountingObjectDomain) :
             Intent()
+
+        data class OnErrorHandled(val throwable: Throwable) : Intent()
     }
 
     data class State(
@@ -78,7 +80,7 @@ interface InventoryCreateStore :
         val isAddNew: Boolean = false,
         val isLoading: Boolean = false,
         val dialogType: AlertType = AlertType.NONE,
-        val readingModeTab: ReadingModeTab,
+        val readingModeTab: ReadingModeTab = ReadingModeTab.RFID,
         val canUpdate: Boolean = false,
         val canComplete: Boolean = false,
         val searchText: String = "",

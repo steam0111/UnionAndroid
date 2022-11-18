@@ -1,14 +1,18 @@
 package com.itrocket.union.transit.presentation.view
 
 import android.os.Bundle
+import android.view.View
 import androidx.compose.ui.platform.ComposeView
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectResult
 import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectComposeFragment
+import com.itrocket.union.dataCollect.presentation.store.DataCollectStore
 import com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateComposeFragment
 import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
 import com.itrocket.union.nfcReader.presentation.view.NfcReaderComposeFragment
@@ -24,6 +28,7 @@ import com.itrocket.union.selectParams.presentation.view.SelectParamsComposeFrag
 import com.itrocket.union.transit.TransitModule.TRANSIT_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.transit.presentation.store.TransitStore
 import com.itrocket.union.utils.flow.window
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -39,6 +44,13 @@ class TransitComposeFragment :
         TRANSIT_VIEW_MODEL_QUALIFIER
     ) {
     override val navArgs by navArgs<TransitComposeFragmentArgs>()
+
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { _, throwable ->
+            lifecycleScope.launch(Dispatchers.Main) {
+                accept(TransitStore.Intent.OnErrorHandled(throwable))
+            }
+        }
 
     override val fragmentResultList: List<FragmentResult>
         get() = listOf(
@@ -123,8 +135,8 @@ class TransitComposeFragment :
 
     private val serviceEntryManager: ServiceEntryManager by inject()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         observeScanning()
     }
 
@@ -181,39 +193,41 @@ class TransitComposeFragment :
     }
 
     private fun observeScanning() {
-        lifecycleScope.launch(Dispatchers.IO) {
-            launch {
-                observeTriggerPress()
-            }
-            launch {
-                serviceEntryManager.barcodeScanDataFlow.collect {
-                    withContext(Dispatchers.Main) {
-                        accept(
-                            TransitStore.Intent.OnNewAccountingObjectBarcodeHandled(
-                                it.data
-                            )
-                        )
-                    }
+        lifecycleScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    observeTriggerPress()
                 }
-            }
-            launch {
-                serviceEntryManager
-                    .epcInventoryDataFlow
-                    .distinctUntilChanged()
-                    .window(
-                        maxBufferSize = InventoryCreateComposeFragment.WINDOW_MAX_BUFFER_SIZE,
-                        maxMsWaitTime = InventoryCreateComposeFragment.WINDOW_MAX_MS_WAIT_TIME,
-                        bufferOnlyUniqueValues = InventoryCreateComposeFragment.WINDOW_BUFFER_ONLY_UNIQUE_VALUES
-                    )
-                    .collect {
+                launch {
+                    serviceEntryManager.barcodeScanDataFlow.collect {
                         withContext(Dispatchers.Main) {
                             accept(
-                                TransitStore.Intent.OnNewAccountingObjectRfidHandled(
-                                    it
+                                TransitStore.Intent.OnNewAccountingObjectBarcodeHandled(
+                                    it.data
                                 )
                             )
                         }
                     }
+                }
+                launch {
+                    serviceEntryManager
+                        .epcInventoryDataFlow
+                        .distinctUntilChanged()
+                        .window(
+                            maxBufferSize = InventoryCreateComposeFragment.WINDOW_MAX_BUFFER_SIZE,
+                            maxMsWaitTime = InventoryCreateComposeFragment.WINDOW_MAX_MS_WAIT_TIME,
+                            bufferOnlyUniqueValues = InventoryCreateComposeFragment.WINDOW_BUFFER_ONLY_UNIQUE_VALUES
+                        )
+                        .collect {
+                            withContext(Dispatchers.Main) {
+                                accept(
+                                    TransitStore.Intent.OnNewAccountingObjectRfidHandled(
+                                        it
+                                    )
+                                )
+                            }
+                        }
+                }
             }
         }
     }

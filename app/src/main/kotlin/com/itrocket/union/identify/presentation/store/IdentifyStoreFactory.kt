@@ -9,10 +9,13 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.alertType.AlertType
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.identify.domain.IdentifyInteractor
+import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
+import com.itrocket.union.readingMode.domain.ReadingModeInteractor
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
-import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
+import com.itrocket.union.readingMode.presentation.view.toReadingMode
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.ui.listAction.DialogActionType
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
@@ -21,13 +24,16 @@ class IdentifyStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val identifyInteractor: IdentifyInteractor,
-    private val serviceEntryManager: ServiceEntryManager
+    private val serviceEntryManager: ServiceEntryManager,
+    private val readingModeInteractor: ReadingModeInteractor,
+    private val moduleSettingsInteractor: ModuleSettingsInteractor,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): IdentifyStore =
         object : IdentifyStore,
             Store<IdentifyStore.Intent, IdentifyStore.State, IdentifyStore.Label> by storeFactory.create(
                 name = "IdentifyStore",
-                initialState = IdentifyStore.State(readingModeTab = serviceEntryManager.currentMode.toReadingModeTab()),
+                initialState = IdentifyStore.State(),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
@@ -45,7 +51,7 @@ class IdentifyStoreFactory(
             action: Unit,
             getState: () -> IdentifyStore.State
         ) {
-
+            dispatch(Result.ReadingMode(moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = true)))
         }
 
         override suspend fun executeIntent(
@@ -106,7 +112,19 @@ class IdentifyStoreFactory(
                 is IdentifyStore.Intent.OnListActionDialogClicked -> when (intent.dialogActionType) {
                     DialogActionType.WRITE_OFF -> onWriteOffClicked(accountingObjects = getState().accountingObjects)
                 }
+                is IdentifyStore.Intent.OnAccountingObjectClosed -> onAccountingObjectClosed(getState = getState)
+                is IdentifyStore.Intent.OnErrorHandled -> handleError(intent.throwable)
             }
+        }
+
+        override fun handleError(throwable: Throwable) {
+            publish(IdentifyStore.Label.Error(errorInteractor.getTextMessage(throwable)))
+        }
+
+        private suspend fun onAccountingObjectClosed(
+            getState: () -> IdentifyStore.State
+        ) {
+            readingModeInteractor.changeScanMode(getState().readingModeTab.toReadingMode())
         }
 
         private suspend fun onWriteOffClicked(accountingObjects: List<AccountingObjectDomain>) {

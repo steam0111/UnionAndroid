@@ -68,6 +68,7 @@ interface DocumentCreateStore :
         data class OnDeleteReserveClicked(val reserveId: String) : Intent()
         object OnDismissConfirmDialog : Intent()
         object OnConfirmActionClick : Intent()
+        data class OnErrorHandled(val throwable: Throwable) : Intent()
     }
 
     data class State(
@@ -81,7 +82,7 @@ interface DocumentCreateStore :
         val confirmDialogType: AlertType = AlertType.NONE,
         val canUpdate: Boolean = false,
         val canCreate: Boolean = false,
-        val readingModeTab: ReadingModeTab,
+        val readingModeTab: ReadingModeTab = ReadingModeTab.RFID,
         val dialogListItem: List<String> = listOf(),
         val dialogLoading: Boolean = false,
         val canDelete: Boolean = false,

@@ -91,6 +91,7 @@ class ChangeScanDataStoreFactory(
                     dispatch(Result.ScanningValue(intent.scanData))
                     textFieldManager.emit(intent.scanData)
                 }
+                is ChangeScanDataStore.Intent.OnErrorHandled -> handleError(intent.throwable)
             }
         }
 

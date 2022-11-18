@@ -8,11 +8,15 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.dataCollect.domain.DataCollectInteractor
+import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 
 class DataCollectStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
-    private val dataCollectInteractor: DataCollectInteractor
+    private val dataCollectInteractor: DataCollectInteractor,
+    private val moduleSettingsInteractor: ModuleSettingsInteractor,
+    private val errorInteractor: ErrorInteractor
 ) {
     fun create(): DataCollectStore =
         object : DataCollectStore,
@@ -35,6 +39,7 @@ class DataCollectStoreFactory(
             action: Unit,
             getState: () -> DataCollectStore.State
         ) {
+            moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = true)
         }
 
         override suspend fun executeIntent(
@@ -63,7 +68,12 @@ class DataCollectStoreFactory(
                     )
                     dispatch(Result.ScanningObjects(newScanningList))
                 }
+                is DataCollectStore.Intent.OnErrorHandled -> handleError(intent.throwable)
             }
+        }
+
+        override fun handleError(throwable: Throwable) {
+            publish(DataCollectStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
     }
 

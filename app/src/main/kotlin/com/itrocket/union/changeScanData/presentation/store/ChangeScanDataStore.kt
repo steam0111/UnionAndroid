@@ -22,6 +22,7 @@ interface ChangeScanDataStore :
         object OnBackClicked : Intent()
         object OnCancelClicked : Intent()
         object OnApplyClicked : Intent()
+        data class OnErrorHandled(val throwable: Throwable) : Intent()
     }
 
     data class State(
