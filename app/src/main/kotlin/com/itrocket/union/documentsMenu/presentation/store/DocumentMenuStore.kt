@@ -61,9 +61,9 @@ interface DocumentMenuStore :
                 get() = DocumentMenuComposeFragmentDirections.toModuleSettings()
         }
 
-        object ShowSync : Label(), ForwardNavigationLabel {
+        data class ShowSync(val instantSync: Boolean) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
-                get() = DocumentMenuComposeFragmentDirections.toSync(SyncAllArguments(true))
+                get() = DocumentMenuComposeFragmentDirections.toSync(SyncAllArguments(instantSync))
         }
 
 

@@ -67,6 +67,7 @@ class DocumentMenuStoreFactory(
                             publish(DocumentMenuStore.Label.ShowSettings)
                         }
                         DrawerScreenType.LOGOUT -> dispatch(Result.DialogType(AlertType.SYNC))
+                        DrawerScreenType.SYNC -> publish(DocumentMenuStore.Label.ShowSync(false))
                     }
                 }
                 DocumentMenuStore.Intent.OnBackClicked -> {
@@ -79,7 +80,7 @@ class DocumentMenuStoreFactory(
                 DocumentMenuStore.Intent.OnConfirmLogoutClicked -> logout()
                 DocumentMenuStore.Intent.OnConfirmSyncClicked -> {
                     dispatch(Result.DialogType(AlertType.NONE))
-                    publish(DocumentMenuStore.Label.ShowSync)
+                    publish(DocumentMenuStore.Label.ShowSync(true))
                 }
                 DocumentMenuStore.Intent.OnDismissLogoutClicked -> dispatch(
                     Result.DialogType(
