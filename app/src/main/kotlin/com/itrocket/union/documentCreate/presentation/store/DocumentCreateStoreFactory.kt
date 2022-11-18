@@ -331,6 +331,8 @@ class DocumentCreateStoreFactory(
             val isNotAllAccountingObjectsMarked =
                 documentCreateInteractor.isNotAllAccountingObjectMarked(state.accountingObjects)
             val isDocumentTypeGive = state.document.documentType == DocumentTypeDomain.GIVE
+            val isDocumentTypeRelocation =
+                state.document.documentType == DocumentTypeDomain.RELOCATION
             when {
                 isDocumentTypeGive && isNotAllAccountingObjectsMarked -> {
                     dispatch(Result.ConfirmDialogType(AlertType.LIST_ITEM))
@@ -345,6 +347,9 @@ class DocumentCreateStoreFactory(
                         )
                     }
                     dispatch(Result.DialogLoading(false))
+                }
+                isDocumentTypeRelocation && state.accountingObjects.isEmpty() && state.reserves.isEmpty() -> {
+                    dispatch(Result.ConfirmDialogType(AlertType.CONDUCT_RETURN))
                 }
                 unionPermissionsInteractor.canConductDocument(conductPermission) -> {
                     conductDocument(state)

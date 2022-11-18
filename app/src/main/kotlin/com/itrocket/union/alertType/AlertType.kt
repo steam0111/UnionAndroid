@@ -4,6 +4,7 @@ enum class AlertType {
     SYNC,
     LOGOUT,
     CONDUCT,
+    CONDUCT_RETURN,
     SAVE,
     IN_WORK,
     COMPLETE,

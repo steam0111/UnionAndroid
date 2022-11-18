@@ -55,6 +55,7 @@ import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ConfirmAlertDialog
 import com.itrocket.union.ui.DoubleTabRow
 import com.itrocket.union.ui.ImageButton
+import com.itrocket.union.ui.InfoDialog
 import com.itrocket.union.ui.ListDialog
 import com.itrocket.union.ui.Loader
 import com.itrocket.union.ui.MediumSpacer
@@ -157,7 +158,6 @@ fun DocumentCreateBaseScreen(
         snapshotFlow { pagerState.currentPage }.collect { onPageChanged(it) }
     }
 
-    // todo сделать через side effect
     when (confirmDialogType) {
         AlertType.SAVE -> ConfirmAlertDialog(
             onDismiss = onDismissConfirmDialog,
@@ -175,6 +175,11 @@ fun DocumentCreateBaseScreen(
             onDismiss = onListItemDialogDismissed,
             confirmButtonText = stringResource(R.string.common_ok),
             isLoading = isDialogLoading
+        )
+        AlertType.CONDUCT_RETURN -> InfoDialog(
+            title = stringResource(R.string.document_create_return_dialog),
+            confirmButtonText = stringResource(R.string.common_ok),
+            onDismiss = onDismissConfirmDialog
         )
     }
 }
