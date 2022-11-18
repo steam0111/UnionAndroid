@@ -10,6 +10,7 @@ import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectSc
 import com.itrocket.union.authUser.presentation.view.AuthUserScreenPreview
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataScreenPreview
 import com.itrocket.union.comment.presentation.view.CommentScreenPreview
+import com.itrocket.union.common.DrawerPreview
 import com.itrocket.union.conterpartyDetail.presentation.view.CounterpartyDetailScreenPreview
 import com.itrocket.union.dataCollect.presentation.view.DataCollectScreenPreview
 import com.itrocket.union.documentCreate.presentation.view.DocumentCreateScreenPreview
@@ -39,9 +40,9 @@ import com.itrocket.union.serverConnect.presentation.view.ServerConnectScreenPre
 import com.itrocket.union.structural.view.StructuralScreenPreview
 import com.itrocket.union.switcher.presentation.view.SwitcherScreenPreview
 import com.itrocket.union.ui.ConfirmAlertDialogContentPreview
+import com.itrocket.union.ui.InfoDialogPreview
 import com.itrocket.union.ui.ListDialogPreview
 import com.itrocket.union.ui.listAction.ListActionDialogPreview
-import com.itrocket.union.common.DrawerPreview
 import com.karumi.shot.ScreenshotTest
 import org.junit.Rule
 import org.junit.Test
@@ -317,6 +318,13 @@ class ScreensTest : ScreenshotTest {
     fun `Drawer`() {
         takeScreenShot {
             DrawerPreview()
+        }
+    }
+
+    @Test
+    fun `InfoDialog`() {
+        takeScreenShot {
+            InfoDialogPreview()
         }
     }
 }
