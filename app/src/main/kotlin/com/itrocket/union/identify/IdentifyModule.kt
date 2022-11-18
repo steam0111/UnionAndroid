@@ -31,6 +31,9 @@ object IdentifyModule {
                 DefaultStoreFactory,
                 get(),
                 get(),
+                get(),
+                get(),
+                get(),
                 get()
             ).create()
         }

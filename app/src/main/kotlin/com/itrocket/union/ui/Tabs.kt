@@ -13,6 +13,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -73,10 +74,11 @@ fun RowScope.ReadingModeTab(
         modifier = Modifier
             .weight(1f)
             .background(backgroundColor, rectangle)
-            .padding(vertical = 12.dp)
+            .clip(rectangle)
             .clickable(onClick = {
                 onClick(tab)
             })
+            .padding(vertical = 12.dp)
 
     )
 }

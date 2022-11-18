@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.arkivanov.mvikotlin.core.store.Store
+import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
@@ -20,6 +21,8 @@ interface DataCollectStore :
 
         data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :
             Intent()
+
+        data class OnErrorHandled(val throwable: Throwable) : Intent()
     }
 
     data class State(
@@ -29,6 +32,7 @@ interface DataCollectStore :
     )
 
     sealed class Label {
+        data class Error(override val message: String): Label(), DefaultNavigationErrorLabel
         object GoBack : Label(), GoBackNavigationLabel
         object ShowReadingMode : Label(),
             ShowBottomSheetNavigationLabel {

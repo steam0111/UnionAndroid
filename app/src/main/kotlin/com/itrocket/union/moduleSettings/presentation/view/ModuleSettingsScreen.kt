@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -41,10 +42,12 @@ import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
 import com.itrocket.union.moduleSettings.presentation.store.ModuleSettingsStore
 import com.itrocket.union.readerPower.domain.ReaderPowerInteractor
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ButtonBottomBar
 import com.itrocket.union.ui.ReaderPowerPicker
+import com.itrocket.union.ui.ReadingModeTabs
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.graphite4
 import com.itrocket.union.ui.graphite6
@@ -63,7 +66,8 @@ fun ModuleSettingsScreen(
     onArrowDownClickListener: () -> Unit,
     onArrowUpClickListener: () -> Unit,
     onPowerChanged: (String) -> Unit,
-    onDynamicSaveInventoryChanged: (Boolean) -> Unit
+    onDynamicSaveInventoryChanged: (Boolean) -> Unit,
+    onReadingTabClickListener: (ReadingModeTab) -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -90,7 +94,8 @@ fun ModuleSettingsScreen(
                     onArrowDownClickListener = onArrowDownClickListener,
                     onArrowUpClickListener = onArrowUpClickListener,
                     onPowerChanged = onPowerChanged,
-                    onDynamicSaveInventoryChanged = onDynamicSaveInventoryChanged
+                    onDynamicSaveInventoryChanged = onDynamicSaveInventoryChanged,
+                    onReadingTabClickListener = onReadingTabClickListener
                 )
             }
         )
@@ -117,7 +122,8 @@ private fun Content(
     onArrowDownClickListener: () -> Unit,
     onArrowUpClickListener: () -> Unit,
     onPowerChanged: (String) -> Unit,
-    onDynamicSaveInventoryChanged: (Boolean) -> Unit
+    onDynamicSaveInventoryChanged: (Boolean) -> Unit,
+    onReadingTabClickListener: (ReadingModeTab) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -151,6 +157,14 @@ private fun Content(
             onDropdownDismiss = onDropdownDismiss,
             onDropdownItemClickListener = onDropdownItemClickListener
         )
+        Spacer(modifier = Modifier.height(24.dp))
+        Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+            ReadingModeTabs(
+                selectedTab = state.selectedReadingMode,
+                tabs = state.readingModeTabs,
+                onClick = onReadingTabClickListener,
+            )
+        }
         Spacer(modifier = Modifier.height(24.dp))
         DynamicSaveInventoryComponent(
             isDynamicSaveInventory = state.isDynamicSaveInventory,
@@ -303,6 +317,7 @@ fun ModuleSettingsScreenPreview() {
     ModuleSettingsScreen(
         ModuleSettingsStore.State(),
         AppInsets(topInset = previewTopInsetDp),
+        {},
         {},
         {},
         {},

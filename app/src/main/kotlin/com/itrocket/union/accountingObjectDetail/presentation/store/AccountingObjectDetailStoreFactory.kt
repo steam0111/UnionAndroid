@@ -12,6 +12,7 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.changeScanData.data.mapper.toChangeScanType
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
@@ -29,15 +30,15 @@ class AccountingObjectDetailStoreFactory(
     private val accountingObjectDetailArguments: AccountingObjectDetailArguments,
     private val errorInteractor: ErrorInteractor,
     private val serviceEntryManager: ServiceEntryManager,
-    private val unionPermissionsInteractor: UnionPermissionsInteractor
+    private val unionPermissionsInteractor: UnionPermissionsInteractor,
+    private val moduleSettingsInteractor: ModuleSettingsInteractor
 ) {
     fun create(): AccountingObjectDetailStore =
         object : AccountingObjectDetailStore,
             Store<AccountingObjectDetailStore.Intent, AccountingObjectDetailStore.State, AccountingObjectDetailStore.Label> by storeFactory.create(
                 name = "AccountingObjectDetailStore",
                 initialState = AccountingObjectDetailStore.State(
-                    accountingObjectDomain = accountingObjectDetailArguments.argument,
-                    readingMode = serviceEntryManager.currentMode.toReadingModeTab()
+                    accountingObjectDomain = accountingObjectDetailArguments.argument
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
@@ -55,6 +56,7 @@ class AccountingObjectDetailStoreFactory(
             action: Unit,
             getState: () -> AccountingObjectDetailStore.State
         ) {
+            dispatch(Result.ReadingMode(moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = true)))
             dispatch(Result.CanUpdate(unionPermissionsInteractor.canUpdate(UnionPermission.ACCOUNTING_OBJECT)))
             listenAccountingObject()
         }

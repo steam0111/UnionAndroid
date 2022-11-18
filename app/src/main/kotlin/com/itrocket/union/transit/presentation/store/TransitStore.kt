@@ -63,6 +63,7 @@ interface TransitStore : Store<TransitStore.Intent, TransitStore.State, TransitS
         data class OnManualInput(val readingModeResult: ReadingModeResult) : Intent()
         object OnDismissConfirmDialog : Intent()
         object OnConfirmActionClick : Intent()
+        data class OnErrorHandled(val throwable: Throwable) : Intent()
     }
 
     data class State(

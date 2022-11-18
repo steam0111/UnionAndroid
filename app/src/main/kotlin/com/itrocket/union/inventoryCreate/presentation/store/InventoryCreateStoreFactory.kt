@@ -22,9 +22,10 @@ import com.itrocket.union.inventoryCreate.domain.entity.AccountingObjectCounter
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
+import com.itrocket.union.readingMode.domain.ReadingModeInteractor
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
-import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
+import com.itrocket.union.readingMode.presentation.view.toReadingMode
 import com.itrocket.union.search.SearchManager
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
@@ -42,14 +43,14 @@ class InventoryCreateStoreFactory(
     private val inventoryDynamicSaveManager: InventoryDynamicSaveManager,
     private val moduleSettingsInteractor: ModuleSettingsInteractor,
     private val commentInteractor: CommentInteractor,
+    private val readingModeInteractor: ReadingModeInteractor
 ) {
     fun create(): InventoryCreateStore =
         object : InventoryCreateStore,
             Store<InventoryCreateStore.Intent, InventoryCreateStore.State, InventoryCreateStore.Label> by storeFactory.create(
                 name = "InventoryCreateStore",
                 initialState = InventoryCreateStore.State(
-                    inventoryDocument = inventoryCreateArguments.inventoryDocument,
-                    readingModeTab = serviceEntryManager.currentMode.toReadingModeTab()
+                    inventoryDocument = inventoryCreateArguments.inventoryDocument
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
@@ -68,6 +69,7 @@ class InventoryCreateStoreFactory(
             getState: () -> InventoryCreateStore.State
         ) {
             dispatch(Result.Loading(true))
+            dispatch(Result.ReadingMode(moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = true)))
             dispatch(Result.CanUpdate(unionPermissionsInteractor.canUpdate(UnionPermission.INVENTORY)))
             dispatch(
                 Result.CanComplete(
@@ -228,6 +230,7 @@ class InventoryCreateStoreFactory(
                     result = intent.result,
                     getState = getState
                 )
+                is InventoryCreateStore.Intent.OnErrorHandled -> handleError(intent.throwable)
             }
         }
 
@@ -268,6 +271,7 @@ class InventoryCreateStoreFactory(
             getState: () -> InventoryCreateStore.State,
             accountingObject: AccountingObjectDomain
         ) {
+            readingModeInteractor.changeScanMode(getState().readingModeTab.toReadingMode())
             val inventoryAccountingObjects = inventoryCreateInteractor.changeAccountingObject(
                 accountingObjects = getState().inventoryDocument.accountingObjects,
                 accountingObject = accountingObject

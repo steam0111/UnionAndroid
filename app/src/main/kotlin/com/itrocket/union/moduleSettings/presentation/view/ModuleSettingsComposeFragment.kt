@@ -63,6 +63,9 @@ class ModuleSettingsComposeFragment :
                             it
                         )
                     )
+                },
+                onReadingTabClickListener = {
+                    accept(ModuleSettingsStore.Intent.OnReadingModeTabClicked(it))
                 }
             )
         }

@@ -45,6 +45,9 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
             Intent()
 
         data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
+        object OnAccountingObjectClosed : Intent()
+
+        data class OnErrorHandled(val throwable: Throwable) : Intent()
     }
 
     data class State(
@@ -52,7 +55,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         val accountingObjects: List<AccountingObjectDomain> = listOf(),
         val reserves: List<ReservesDomain> = listOf(),
         val selectedPage: Int = 0,
-        val readingModeTab: ReadingModeTab,
+        val readingModeTab: ReadingModeTab = ReadingModeTab.RFID,
         val dialogType: AlertType = AlertType.NONE,
         val loadingDialogAction: DialogActionType? = null,
         val listDialogAction: List<DialogAction> = listOf(

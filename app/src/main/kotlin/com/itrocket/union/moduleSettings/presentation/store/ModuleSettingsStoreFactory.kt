@@ -11,6 +11,7 @@ import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.readerPower.domain.ReaderPowerInteractor
 import com.itrocket.union.readerPower.domain.ReaderPowerInteractor.Companion.MIN_READER_POWER
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -45,6 +46,7 @@ class ModuleSettingsStoreFactory(
             withContext(Dispatchers.Main) {
                 moduleSettingsInteractor.checkInstalledService()
             }
+            dispatch(Result.ReadingMode(moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = false)))
             dispatch(
                 Result.KeyCode(
                     moduleSettingsInteractor.getKeyCode() ?: 0
@@ -119,6 +121,11 @@ class ModuleSettingsStoreFactory(
                         intent.isDynamicSaveInventory
                     )
                 )
+                is ModuleSettingsStore.Intent.OnReadingModeTabClicked -> dispatch(
+                    Result.ReadingMode(
+                        intent.readingModeTab
+                    )
+                )
             }
         }
 
@@ -129,6 +136,7 @@ class ModuleSettingsStoreFactory(
                 readerPower = getState().readerPower
             )
             moduleSettingsInteractor.changeDynamicSaveInventory(getState().isDynamicSaveInventory)
+            moduleSettingsInteractor.saveDefaultReadingMode(getState().selectedReadingMode)
             publish(ModuleSettingsStore.Label.GoBack)
         }
 
@@ -156,6 +164,7 @@ class ModuleSettingsStoreFactory(
         data class Services(val services: List<String>) : Result()
         data class DropdownExpanded(val dropdownExpanded: Boolean) : Result()
         data class IsDynamicSaveInventory(val isDynamicSaveInventory: Boolean) : Result()
+        data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
     }
 
     private object ReducerImpl : Reducer<ModuleSettingsStore.State, Result> {
@@ -169,6 +178,7 @@ class ModuleSettingsStoreFactory(
                 is Result.DropdownExpanded -> copy(dropdownExpanded = result.dropdownExpanded)
                 is Result.ReaderPower -> copy(readerPower = result.readerPower)
                 is Result.IsDynamicSaveInventory -> copy(isDynamicSaveInventory = result.isDynamicSaveInventory)
+                is Result.ReadingMode -> copy(selectedReadingMode = result.readingModeTab)
             }
     }
 

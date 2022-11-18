@@ -1,23 +1,27 @@
 package com.itrocket.union.changeScanData.presentation.view
 
 import android.os.Bundle
+import android.view.View
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeBottomSheet
 import com.itrocket.union.R
 import com.itrocket.union.changeScanData.ChangeScanDataModule.CHANGESCANDATA_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataResult
 import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataStore
+import com.itrocket.union.dataCollect.presentation.store.DataCollectStore
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import ru.interid.scannerclient.domain.reader.ReaderMode
 import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
@@ -32,8 +36,15 @@ class ChangeScanDataComposeFragment :
 
     private val serviceEntryManager: ServiceEntryManager by inject()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { _, throwable ->
+            lifecycleScope.launch(Dispatchers.Main) {
+                accept(ChangeScanDataStore.Intent.OnErrorHandled(throwable))
+            }
+        }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         observeScanning()
     }
 
@@ -66,31 +77,33 @@ class ChangeScanDataComposeFragment :
     }
 
     private fun observeScanning() {
-        lifecycleScope.launch(Dispatchers.IO) {
-            launch {
-                observeTriggerPress()
-            }
-            launch {
-                serviceEntryManager.barcodeScanDataFlow.collect {
-                    withContext(Dispatchers.Main) {
-                        accept(
-                            ChangeScanDataStore.Intent.OnScanning(
-                                it.data
+        lifecycleScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    observeTriggerPress()
+                }
+                launch {
+                    serviceEntryManager.barcodeScanDataFlow.collect {
+                        withContext(Dispatchers.Main) {
+                            accept(
+                                ChangeScanDataStore.Intent.OnScanning(
+                                    it.data
+                                )
                             )
-                        )
-                        serviceEntryManager.stopBarcodeScan()
+                            serviceEntryManager.stopBarcodeScan()
+                        }
                     }
                 }
-            }
-            launch {
-                serviceEntryManager.epcInventoryDataFlow.collect {
-                    withContext(Dispatchers.Main) {
-                        accept(
-                            ChangeScanDataStore.Intent.OnScanning(
-                                it
+                launch {
+                    serviceEntryManager.epcInventoryDataFlow.collect {
+                        withContext(Dispatchers.Main) {
+                            accept(
+                                ChangeScanDataStore.Intent.OnScanning(
+                                    it
+                                )
                             )
-                        )
-                        serviceEntryManager.stopRfidOperation()
+                            serviceEntryManager.stopRfidOperation()
+                        }
                     }
                 }
             }
