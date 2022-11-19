@@ -108,6 +108,11 @@ fun SearchToolbar(
     val focusRequest = remember {
         FocusRequester()
     }
+    val iconColor = if (AppTheme.colors.mainColor == AppTheme.colors.appBarBackgroundColor) {
+        AppTheme.colors.appBarTextColor
+    } else {
+        AppTheme.colors.mainColor
+    }
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .fillMaxWidth()
@@ -120,7 +125,7 @@ fun SearchToolbar(
             painter = painterResource(R.drawable.ic_arrow_back),
             contentDescription = null,
             modifier = Modifier.clickableUnbounded(onClick = onBackClickListener),
-            colorFilter = ColorFilter.tint(AppTheme.colors.mainColor)
+            colorFilter = ColorFilter.tint(iconColor)
         )
         Spacer(modifier = Modifier.width(24.dp))
         AnimatedVisibility(
@@ -188,7 +193,7 @@ fun SearchToolbar(
                 Image(
                     painter = painterResource(R.drawable.ic_search_white),
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
+                    colorFilter = ColorFilter.tint(iconColor),
                     modifier = Modifier
                         .clickableUnbounded(onClick = onSearchClickListener)
                 )
@@ -197,7 +202,7 @@ fun SearchToolbar(
                     Image(
                         painter = painterResource(R.drawable.ic_filter_white),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
+                        colorFilter = ColorFilter.tint(iconColor),
                         modifier = Modifier.clickableUnbounded(onClick = onFilterClickListener)
                     )
                 }

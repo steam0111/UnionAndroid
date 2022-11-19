@@ -65,11 +65,11 @@ class ReservesStoreFactory(
             action: Unit,
             getState: () -> ReservesStore.State
         ) {
-            searchManager.listenSearch {
+            searchManager.listenSearch { searchText ->
                 reset()
                 paginator.onLoadNext {
                     getReserves(
-                        searchText = getState().searchText,
+                        searchText = searchText,
                         params = getState().params,
                         offset = it
                     )

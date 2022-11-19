@@ -65,7 +65,7 @@ class NomenclatureStoreFactory(
             action: Unit,
             getState: () -> NomenclatureStore.State
         ) {
-            searchManager.listenSearch {
+            searchManager.listenSearch { searchText ->
                 reset()
                 paginator.onLoadNext {
                     getNomenclatures(params = params, getState().searchText, offset = it)

@@ -21,9 +21,9 @@ import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor.Companion.MIN_CURRENT_STEP
 import com.itrocket.union.structural.domain.StructuralInteractor
 import com.itrocket.union.structural.domain.entity.StructuralDomain
+import kotlin.math.max
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlin.math.max
 
 class SelectParamsStoreFactory(
     private val storeFactory: StoreFactory,
@@ -66,9 +66,9 @@ class SelectParamsStoreFactory(
             action: Unit,
             getState: () -> SelectParamsStore.State
         ) {
-            searchManager.listenSearch {
+            searchManager.listenSearch { searchText ->
                 dispatch(Result.Loading(true))
-                doAccordingParamType(getState, it)
+                doAccordingParamType(getState = getState, searchText = searchText)
                 dispatch(Result.Loading(false))
             }
         }
@@ -351,7 +351,7 @@ class SelectParamsStoreFactory(
                     searchText
                 )
 
-                if (structuralList.isEmpty()) {
+                if (structuralList.isEmpty() && param.structurals.isNotEmpty()) {
                     val index = max(param.structurals.lastIndex - 1, 0)
                     structuralList = structuralInteractor.getStructuralList(
                         param.structurals[index],

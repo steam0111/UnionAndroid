@@ -47,13 +47,16 @@ private fun String.getEmployeesFilterPartQuery(
                 add("structuralId" isEquals structuralId)
             }
             textQuery?.let {
-                add(
-                    listOf(
-                        "firstname",
-                        "lastname",
-                        "patronymic"
-                    ) contains textQuery
-                )
+                val textQuerySplit = textQuery.split(" ")
+                textQuerySplit.forEach {
+                    add(
+                        listOf(
+                            "firstname",
+                            "lastname",
+                            "patronymic"
+                        ) contains it
+                    )
+                }
             }
             updateDate?.let {
                 add("updateDate" more updateDate)

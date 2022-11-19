@@ -60,10 +60,10 @@ class EquipmentTypeStoreFactory(
             action: Unit,
             getState: () -> EquipmentTypeStore.State
         ) {
-            searchManager.listenSearch {
+            searchManager.listenSearch { searchText ->
                 reset()
                 paginator.onLoadNext {
-                    getEquipments(getState().searchText, offset = it)
+                    getEquipments(searchText = searchText, offset = it)
                 }
             }
         }

@@ -56,10 +56,10 @@ class DocumentStoreFactory(
             getState: () -> DocumentStore.State
         ) {
             dispatch(Result.CanCreateDocument(permissionsInteractor.canCreate(UnionPermission.ALL_DOCUMENTS)))
-            searchManager.listenSearch {
+            searchManager.listenSearch { searchText ->
                 listenDocuments(
                     typeDomain = getState().type,
-                    searchText = it,
+                    searchText = searchText,
                     params = getState().params
                 )
             }

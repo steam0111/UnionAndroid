@@ -70,12 +70,12 @@ class AccountingObjectStoreFactory(
                 accountingObjectInteractor.getFilters(accountingObjectArguments?.isFromDocument == true)
             }
             dispatch(Result.Params(filters))
-            searchManager.listenSearch {
+            searchManager.listenSearch { searchText ->
                 reset()
                 paginator.onLoadNext {
                     getAccountingObjects(
                         params = getState().params,
-                        searchText = getState().searchText,
+                        searchText = searchText,
                         offset = it
                     )
                 }
