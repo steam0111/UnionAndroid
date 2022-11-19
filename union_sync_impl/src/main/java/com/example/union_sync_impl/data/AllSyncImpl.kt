@@ -3,24 +3,26 @@ package com.example.union_sync_impl.data
 import com.example.union_sync_api.data.AllSyncApi
 import com.example.union_sync_api.data.SyncEventsApi
 import com.example.union_sync_api.entity.SyncEvent
+import com.example.union_sync_api.entity.SyncInfoType
 import com.example.union_sync_impl.dao.NetworkSyncDao
 import com.example.union_sync_impl.entity.NetworkSyncDb
+import com.example.union_sync_impl.sync.SyncEntity
+import com.example.union_sync_impl.sync.SyncInfoRepository
 import com.example.union_sync_impl.sync.SyncRepository
 import com.itrocket.core.base.CoreDispatchers
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 import kotlinx.coroutines.withContext
 import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.models.StarSyncRequestV2
 import org.openapitools.client.models.SyncInformationV2
 import timber.log.Timber
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.UUID
-import kotlin.time.ExperimentalTime
-import kotlin.time.measureTime
 
 @OptIn(ExperimentalTime::class)
 class AllSyncImpl(
+    private val syncInfoRepository: SyncInfoRepository,
     private val syncControllerApi: SyncControllerApi,
     private val syncRepository: SyncRepository,
     private val coreDispatchers: CoreDispatchers,
@@ -38,7 +40,7 @@ class AllSyncImpl(
 
         Timber.tag(SYNC_TAG).d("startNewSync date = $dateTime")
 
-        syncEventsApi.emit(
+        syncEventsApi.emitSyncEvent(
             SyncEvent.Info(
                 id = UUID.randomUUID().toString(),
                 name = "Старт синхронизации, время: $dateTime"
@@ -49,20 +51,39 @@ class AllSyncImpl(
             val syncInfo = syncControllerApi.apiSyncPost(StarSyncRequestV2(dateTime))
             Timber.tag(SYNC_TAG).d("sync started ${syncInfo.id}")
 
-            startExportFromLocalToServer(syncInfo.id)
-            startExportFromServerToLocal(syncInfo.id)
+            val localItemCount = syncInfoRepository.getLocalItemCount()
+            if (localItemCount != 0L) {
+                syncEventsApi.emitSyncInfoType(
+                    SyncInfoType.TitleEvent(
+                        title = "Старт выгрузки",
+                    )
+                )
+                startExportFromLocalToServer(
+                    syncId = syncInfo.id,
+                    localItemCount = localItemCount
+                )
+            }
+
+            syncEventsApi.emitSyncInfoType(
+                SyncInfoType.TitleEvent(
+                    title = "Старт загрузки",
+                )
+            )
+            startExportFromServerToLocal(
+                syncId = syncInfo.id,
+            )
 
             val syncCompletedInfo = syncControllerApi.apiSyncIdCompleteSyncPost(syncInfo.id)
 
             Timber.tag(SYNC_TAG).d(
                 "sync completed\n" +
                         "isUploadComplete : ${syncCompletedInfo.importComplete}, uploaded parts count: ${syncCompletedInfo.importPartBufferInformation.importRequestsInformation?.size}\n" +
-                        "isDownloadComplete : ${syncCompletedInfo.exportComplete}, all parts count from server: ${syncCompletedInfo.exportPartBufferInformation.exportPartsInformation?.size}"
+                        "isDownloadComplete : ${syncCompletedInfo.exportComplete}, all parts count from server: ${syncCompletedInfo.exportPartBufferInformation.exportPartsInformation.size}"
             )
             updateLastSyncTime()
         }
 
-        syncEventsApi.emit(
+        syncEventsApi.emitSyncEvent(
             SyncEvent.Measured(
                 id = UUID.randomUUID().toString(),
                 name = "Синхронизация завершена",
@@ -84,11 +105,23 @@ class AllSyncImpl(
         )
     }
 
-    private suspend fun startExportFromLocalToServer(syncId: String) {
-        syncEventsApi.emit(
+    private suspend fun startExportFromLocalToServer(syncId: String, localItemCount: Long) {
+        syncEventsApi.emitSyncEvent(
             SyncEvent.Info(
                 id = UUID.randomUUID().toString(),
                 name = "Старт выгрузки на сервер"
+            )
+        )
+        syncEventsApi.emitSyncInfoType(
+            SyncInfoType.ItemCount(
+                count = null,
+                isAllCount = false
+            )
+        )
+        syncEventsApi.emitSyncInfoType(
+            SyncInfoType.ItemCount(
+                count = localItemCount,
+                isAllCount = true
             )
         )
 
@@ -106,7 +139,7 @@ class AllSyncImpl(
             Timber.tag(SYNC_TAG).d("completed export from local to server")
         }
 
-        syncEventsApi.emit(
+        syncEventsApi.emitSyncEvent(
             SyncEvent.Measured(
                 id = UUID.randomUUID().toString(),
                 name = "Окончание выгрузки на сервер",
@@ -115,9 +148,11 @@ class AllSyncImpl(
         )
     }
 
-    private suspend fun exportFromServer(syncId: String, exportSyncInfo: SyncInformationV2) {
-        val syncEntities = syncRepository.getSyncEntities()
-
+    private suspend fun exportFromServer(
+        syncId: String,
+        exportSyncInfo: SyncInformationV2,
+        syncEntities: Map<Pair<String, String>, SyncEntity<*>>
+    ) {
         exportSyncInfo.exportPartBufferInformation.exportPartsInformation.forEach { exportPartInformationV2 ->
             val exportPartId = exportPartInformationV2.id
             val entityId = exportPartInformationV2.entityModel.id
@@ -128,7 +163,7 @@ class AllSyncImpl(
                     throw IllegalStateException()
                 }
 
-                syncEventsApi.emit(
+                syncEventsApi.emitSyncEvent(
                     SyncEvent.Info(
                         id = UUID.randomUUID().toString(),
                         name = "Старт загрузки entityId $entityId tableId $tableId count ${exportPartInformationV2.count}"
@@ -139,7 +174,7 @@ class AllSyncImpl(
                     try {
                         syncEntity.exportFromServer(syncId, exportPartId)
                     } catch (e: Throwable) {
-                        syncEventsApi.emit(
+                        syncEventsApi.emitSyncEvent(
                             SyncEvent.Error(
                                 id = UUID.randomUUID().toString(),
                                 name = "Ошибка загрузки entityId $entityId tableId $tableId",
@@ -147,8 +182,14 @@ class AllSyncImpl(
                         )
                     }
                 }
+                syncEventsApi.emitSyncInfoType(
+                    SyncInfoType.ItemCount(
+                        count = exportPartInformationV2.count?.toLong() ?: 0L,
+                        isAllCount = false,
+                    )
+                )
 
-                syncEventsApi.emit(
+                syncEventsApi.emitSyncEvent(
                     SyncEvent.Measured(
                         id = UUID.randomUUID().toString(),
                         name = "Окончание загрузки entityId $entityId tableId $tableId count ${exportPartInformationV2.count}",
@@ -163,27 +204,46 @@ class AllSyncImpl(
     }
 
     private suspend fun startExportFromServerToLocal(syncId: String) {
-        syncEventsApi.emit(
+        syncEventsApi.emitSyncEvent(
             SyncEvent.Info(
                 id = UUID.randomUUID().toString(),
                 name = "Старт загрузки с сервера"
             )
         )
 
+        syncEventsApi.emitSyncInfoType(
+            SyncInfoType.ItemCount(
+                count = null,
+                isAllCount = false,
+            )
+        )
         val duration = measureTime {
             val exportSyncInfo = syncControllerApi.apiSyncIdStartExportPost(syncId)
+            val syncEntities = syncRepository.getSyncEntities()
+
+            val serverItemCount = syncInfoRepository.getServerItemCount(
+                syncEntities = syncEntities,
+                exportSyncInfo = exportSyncInfo
+            )
+
+            syncEventsApi.emitSyncInfoType(
+                SyncInfoType.ItemCount(
+                    count = serverItemCount,
+                    isAllCount = true,
+                )
+            )
             Timber.tag(SYNC_TAG).d("started export from server to local")
 
             Timber.tag(SYNC_TAG).d("clear data before download")
             syncRepository.clearDataBeforeDownload()
 
-            exportFromServer(syncId, exportSyncInfo)
+            exportFromServer(syncId, exportSyncInfo, syncEntities)
 
             syncControllerApi.apiSyncIdCompleteExportPost(syncId)
             Timber.tag(SYNC_TAG).d("completed export from server to local")
         }
 
-        syncEventsApi.emit(
+        syncEventsApi.emitSyncEvent(
             SyncEvent.Measured(
                 id = UUID.randomUUID().toString(),
                 name = "Окончание загрузки с сервера",

@@ -19,6 +19,7 @@ import com.itrocket.core.base.CoreDispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
+import org.openapitools.client.models.SyncInformationV2
 
 class SyncInfoRepository(
     private val syncDao: NetworkSyncDao,
@@ -107,7 +108,26 @@ class SyncInfoRepository(
         }
     }
 
+    suspend fun getServerItemCount(
+        syncEntities: Map<Pair<String, String>, SyncEntity<*>>,
+        exportSyncInfo: SyncInformationV2
+    ): Long {
+        return withContext(coreDispatchers.io) {
+            val entityIds = syncEntities.map { it.key.first }
+            val exportPartsInformation =
+                exportSyncInfo.exportPartBufferInformation.exportPartsInformation
+
+            exportPartsInformation
+                .filter { entityIds.contains(it.entityModel.id) }
+                .sumOf {
+                    it.count ?: 0
+                }.toLong()
+        }
+    }
+
     suspend fun getLastSyncTime(): Long {
-        return syncDao.getNetworkSync()?.lastSyncTime ?: 0
+        return withContext(coreDispatchers.io) {
+            syncDao.getNetworkSync()?.lastSyncTime ?: 0
+        }
     }
 }
