@@ -92,6 +92,9 @@ class InventoryComposeFragment :
                 },
                 onExitConfirmClickListener = {
                     accept(InventoryStore.Intent.OnExitConfirmed)
+                },
+                onDropConfirmedClickListener = {
+                    accept(InventoryStore.Intent.OnDropConfirmed)
                 }
             )
         }

@@ -86,7 +86,8 @@ fun InventoryScreen(
     onInWorkDismissClickListener: () -> Unit,
     onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit,
     onExitConfirmClickListener: () -> Unit,
-    onAlertDismissClickListener: () -> Unit
+    onAlertDismissClickListener: () -> Unit,
+    onDropConfirmedClickListener: () -> Unit
 ) {
     val pagerState = rememberPagerState(state.selectedPage)
     val coroutineScope = rememberCoroutineScope()
@@ -166,6 +167,13 @@ fun InventoryScreen(
                     onDismiss = onAlertDismissClickListener,
                     onConfirmClick = onExitConfirmClickListener,
                     textRes = R.string.inventory_exit_confirm
+                )
+            }
+            AlertType.DROP -> {
+                ConfirmAlertDialog(
+                    onDismiss = onAlertDismissClickListener,
+                    onConfirmClick = onDropConfirmedClickListener,
+                    textRes = R.string.inventory_drop_confirm
                 )
             }
             AlertType.LOADING -> {
@@ -517,6 +525,7 @@ fun InventoryScreenPreview() {
             inventoryCreateDomain = null
         ),
         AppInsets(topInset = previewTopInsetDp),
+        {},
         {},
         {},
         {},

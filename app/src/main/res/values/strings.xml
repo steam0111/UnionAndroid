@@ -265,6 +265,7 @@
     <string name="inventory_confirm_loading">Идет завершение инв. ведомости. \nПожалуйста подождите…</string>
     <string name="inventory_save_loading">Идет сохранение инв. ведомости. \nПожалуйста подождите…</string>
     <string name="inventory_exit_confirm">Вы точно хотите выйти?</string>
+    <string name="inventory_drop_confirm">Все результаты инвентаризации будут сброшены. Точно ходите продолжить?</string>
 
     <!-- InventoryCreate -->
     <string name="inventory_create_hide_found_ao">Скрывать найденные ОС</string>

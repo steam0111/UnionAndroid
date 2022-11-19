@@ -108,10 +108,16 @@ class InventoryStoreFactory(
                     accountingObjects = getState().accountingObjectList,
                     params = getState().params
                 )
+
                 InventoryStore.Intent.OnDropClicked -> {
+                    dispatch(Result.DialogType(AlertType.DROP))
+                }
+                InventoryStore.Intent.OnDropConfirmed -> {
                     val params = inventoryInteractor.clearParams(getState().params)
                     changeParams(getState, params)
+                    dispatch(Result.DialogType(AlertType.NONE))
                 }
+
                 is InventoryStore.Intent.OnParamClicked -> showParams(
                     params = getState().params,
                     param = intent.param

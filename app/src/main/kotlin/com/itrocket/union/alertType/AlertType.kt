@@ -15,5 +15,6 @@ enum class AlertType {
     LIST_ACTION,
     LIST_ITEM,
     NONE,
-    EXIT
+    EXIT,
+    DROP
 }
