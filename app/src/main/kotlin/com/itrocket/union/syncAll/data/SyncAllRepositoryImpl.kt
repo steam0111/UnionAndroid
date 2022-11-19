@@ -4,6 +4,7 @@ import com.example.union_sync_api.data.AllSyncApi
 import com.example.union_sync_api.data.ManageSyncDataApi
 import com.example.union_sync_api.data.SyncEventsApi
 import com.example.union_sync_api.entity.SyncEvent
+import com.example.union_sync_api.entity.SyncInfoType
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.syncAll.domain.dependencies.SyncAllRepository
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +28,17 @@ class SyncAllRepositoryImpl(
         }
     }
 
+    override suspend fun getLastSyncDate(): Long {
+        return withContext(coreDispatchers.io) {
+            syncApi.getLastSyncTime()
+        }
+    }
+
     override fun subscribeSyncEvents(): Flow<SyncEvent> {
-        return syncEventsApi.subscribe().flowOn(coreDispatchers.io)
+        return syncEventsApi.subscribeSyncEvent().flowOn(coreDispatchers.io)
+    }
+
+    override fun subscribeSyncInfoType(): Flow<SyncInfoType> {
+        return syncEventsApi.subscribeSyncInfoType().flowOn(coreDispatchers.io)
     }
 }

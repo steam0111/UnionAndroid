@@ -1,16 +1,115 @@
 package com.example.union_sync_impl.sync
 
-import android.util.Log
 import com.example.union_sync_api.entity.EnumType
-import com.example.union_sync_impl.dao.*
-import com.example.union_sync_impl.data.mapper.*
+import com.example.union_sync_impl.dao.AccountingObjectDao
+import com.example.union_sync_impl.dao.AccountingObjectSimpleAdditionalFieldDao
+import com.example.union_sync_impl.dao.AccountingObjectVocabularyAdditionalFieldDao
+import com.example.union_sync_impl.dao.ActionRecordDao
+import com.example.union_sync_impl.dao.ActionRemainsRecordDao
+import com.example.union_sync_impl.dao.CounterpartyDao
+import com.example.union_sync_impl.dao.DocumentDao
+import com.example.union_sync_impl.dao.EmployeeDao
+import com.example.union_sync_impl.dao.EnumsDao
+import com.example.union_sync_impl.dao.EquipmentTypeDao
+import com.example.union_sync_impl.dao.InventoryCheckerDao
+import com.example.union_sync_impl.dao.InventoryDao
+import com.example.union_sync_impl.dao.InventoryRecordDao
+import com.example.union_sync_impl.dao.LocationDao
+import com.example.union_sync_impl.dao.LocationPathDao
+import com.example.union_sync_impl.dao.NetworkSyncDao
+import com.example.union_sync_impl.dao.NomenclatureDao
+import com.example.union_sync_impl.dao.NomenclatureGroupDao
+import com.example.union_sync_impl.dao.OrderDao
+import com.example.union_sync_impl.dao.ProducerDao
+import com.example.union_sync_impl.dao.ProviderDao
+import com.example.union_sync_impl.dao.ReceptionItemCategoryDao
+import com.example.union_sync_impl.dao.ReserveDao
+import com.example.union_sync_impl.dao.SimpleAdditionalFieldDao
+import com.example.union_sync_impl.dao.StructuralDao
+import com.example.union_sync_impl.dao.StructuralPathDao
+import com.example.union_sync_impl.dao.TransitAccountingObjectRecordDao
+import com.example.union_sync_impl.dao.TransitDao
+import com.example.union_sync_impl.dao.TransitRemainsRecordDao
+import com.example.union_sync_impl.dao.VocabularyAdditionalFieldDao
+import com.example.union_sync_impl.dao.VocabularyAdditionalFieldValueDao
+import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
+import com.example.union_sync_impl.dao.sqlActionRecordQuery
+import com.example.union_sync_impl.dao.sqlActionRemainsRecordQuery
+import com.example.union_sync_impl.dao.sqlDocumentsQuery
+import com.example.union_sync_impl.dao.sqlInventoryQuery
+import com.example.union_sync_impl.dao.sqlInventoryRecordQuery
+import com.example.union_sync_impl.dao.sqlReserveQuery
+import com.example.union_sync_impl.dao.sqlTransitQuery
+import com.example.union_sync_impl.dao.sqlTransitRecordQuery
+import com.example.union_sync_impl.dao.sqlTransitRemainsRecordQuery
+import com.example.union_sync_impl.data.mapper.toAccountingObjectDb
+import com.example.union_sync_impl.data.mapper.toAccountingObjectDtosV2
+import com.example.union_sync_impl.data.mapper.toActionDtoV2
 import com.example.union_sync_impl.data.mapper.toActionRecordDb
+import com.example.union_sync_impl.data.mapper.toActionRecordDtoV2
 import com.example.union_sync_impl.data.mapper.toActionRemainsRecordDb
+import com.example.union_sync_impl.data.mapper.toActionRemainsRecordDtoV2
+import com.example.union_sync_impl.data.mapper.toCounterpartyDb
+import com.example.union_sync_impl.data.mapper.toDb
+import com.example.union_sync_impl.data.mapper.toDocumentDb
+import com.example.union_sync_impl.data.mapper.toEmployeeDb
+import com.example.union_sync_impl.data.mapper.toEnumDb
+import com.example.union_sync_impl.data.mapper.toEquipmentTypeDb
+import com.example.union_sync_impl.data.mapper.toInventoryCheckerDb
+import com.example.union_sync_impl.data.mapper.toInventoryDb
+import com.example.union_sync_impl.data.mapper.toInventoryDtoV2
+import com.example.union_sync_impl.data.mapper.toInventoryRecordDb
+import com.example.union_sync_impl.data.mapper.toInventoryRecordDtoV2
+import com.example.union_sync_impl.data.mapper.toLocationDb
+import com.example.union_sync_impl.data.mapper.toLocationPathDb
+import com.example.union_sync_impl.data.mapper.toLocationTypeDb
+import com.example.union_sync_impl.data.mapper.toNomenclatureDb
+import com.example.union_sync_impl.data.mapper.toNomenclatureGroupDb
+import com.example.union_sync_impl.data.mapper.toOrderDb
+import com.example.union_sync_impl.data.mapper.toProducerDb
+import com.example.union_sync_impl.data.mapper.toProviderDb
+import com.example.union_sync_impl.data.mapper.toReceptionItemCategoryDb
+import com.example.union_sync_impl.data.mapper.toRemainsDtoV2
 import com.example.union_sync_impl.data.mapper.toReserveDb
+import com.example.union_sync_impl.data.mapper.toStructuralDb
+import com.example.union_sync_impl.data.mapper.toStructuralPathDb
+import com.example.union_sync_impl.data.mapper.toTransitAccountingObjectDb
+import com.example.union_sync_impl.data.mapper.toTransitDb
+import com.example.union_sync_impl.data.mapper.toTransitDtoV2
+import com.example.union_sync_impl.data.mapper.toTransitRemainsDb
 import com.squareup.moshi.Moshi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flow
 import org.openapitools.client.custom_api.SyncControllerApi
-import org.openapitools.client.models.*
+import org.openapitools.client.models.AccountingObjectDtoV2
+import org.openapitools.client.models.AccountingObjectSimpleAdditionalFieldValueDtoV2
+import org.openapitools.client.models.AccountingObjectVocabularyAdditionalFieldValueDtoV2
+import org.openapitools.client.models.ActionDtoV2
+import org.openapitools.client.models.ActionRecordDtoV2
+import org.openapitools.client.models.ActionRemainsRecordDtoV2
+import org.openapitools.client.models.CounterpartyDtoV2
+import org.openapitools.client.models.EmployeeDtoV2
+import org.openapitools.client.models.EnumDtoV2
+import org.openapitools.client.models.EquipmentTypeDtoV2
+import org.openapitools.client.models.InventoryCheckerDto
+import org.openapitools.client.models.InventoryDtoV2
+import org.openapitools.client.models.InventoryRecordDtoV2
+import org.openapitools.client.models.LocationDtoV2
+import org.openapitools.client.models.LocationPathDto
+import org.openapitools.client.models.LocationsTypeDtoV2
+import org.openapitools.client.models.NomenclatureDtoV2
+import org.openapitools.client.models.NomenclatureGroupDtoV2
+import org.openapitools.client.models.OrderDtoV2
+import org.openapitools.client.models.ProducerDtoV2
+import org.openapitools.client.models.RemainsDtoV2
+import org.openapitools.client.models.StructuralUnitDtoV2
+import org.openapitools.client.models.StructuralUnitPathDtoV2
+import org.openapitools.client.models.TransitAccountingObjectRecordDtoV2
+import org.openapitools.client.models.TransitDtoV2
+import org.openapitools.client.models.TransitRemainsRecordDtoV2
 
 class SyncRepository(
     private val syncControllerApi: SyncControllerApi,
@@ -95,7 +194,8 @@ class SyncRepository(
             ::inventoryRecordDbSaver,
             getInventoryRecordDbCollector()
         ),
-        TransitSyncEntity(
+        //Пока не нужен
+        /*TransitSyncEntity(
             syncControllerApi,
             moshi,
             ::transitDbSaver,
@@ -112,7 +212,7 @@ class SyncRepository(
             moshi,
             ::transitRecordDbSaver,
             getTransitRecordAccountingObjectDbCollector()
-        ),
+        ),*/
     )
 
     fun getSyncEntities(): Map<Pair<String, String>, SyncEntity<*>> = listOf(
@@ -253,7 +353,8 @@ class SyncRepository(
             moshi,
             ::structuralPathDbSaver
         ),
-        TransitSyncEntity(
+        //Пока не нужен
+        /*TransitSyncEntity(
             syncControllerApi,
             moshi,
             ::transitDbSaver,
@@ -270,7 +371,7 @@ class SyncRepository(
             moshi,
             ::transitRecordDbSaver,
             getTransitRecordAccountingObjectDbCollector()
-        ),
+        ),*/
         AccountingObjectStatusSyncEntity(
             syncControllerApi,
             moshi,
@@ -523,7 +624,7 @@ class SyncRepository(
         getData: suspend (Long, Long) -> List<LocalEntity>,
         localToNetworkMapper: (List<LocalEntity>) -> List<NetworkEntity>
     ) {
-        val limit = 50L
+        val limit = IMPORT_LIMIT
         var offset = 0L
         var objects: List<LocalEntity>
 
@@ -771,5 +872,9 @@ class SyncRepository(
 
     private suspend fun getLastSyncTime(): Long {
         return syncDao.getNetworkSync()?.lastSyncTime ?: 0
+    }
+
+    companion object {
+        const val IMPORT_LIMIT = 50L
     }
 }

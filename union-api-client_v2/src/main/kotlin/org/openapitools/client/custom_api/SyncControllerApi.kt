@@ -63,7 +63,7 @@ interface SyncControllerApi {
     suspend fun apiSyncIdImportPartsPost(
         @Path("id") id: String,
         @Body importPartDtoV2: ImportPartDtoV2
-    ): Response<SyncInformationV2>
+    ): SyncInformationV2
 
     /**
      *

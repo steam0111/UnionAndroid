@@ -1,12 +1,17 @@
 package com.example.union_sync_impl.sync
 
-import androidx.annotation.StringRes
 import com.example.union_sync_api.data.SyncEventsApi
+import com.example.union_sync_api.entity.SyncDirection
 import com.example.union_sync_api.entity.SyncEvent
+import com.example.union_sync_api.entity.SyncInfoType
 import com.example.union_sync_impl.data.AllSyncImpl
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import java.lang.reflect.Type
+import java.util.*
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import org.json.JSONObject
@@ -15,10 +20,6 @@ import org.koin.core.component.inject
 import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.models.ImportPartDtoV2
 import timber.log.Timber
-import java.lang.reflect.Type
-import java.util.UUID
-import kotlin.time.ExperimentalTime
-import kotlin.time.measureTime
 
 @OptIn(ExperimentalTime::class)
 @Suppress("BlockingMethodInNonBlockingContext")
@@ -27,7 +28,7 @@ abstract class SyncEntity<SyncType>(
     val moshi: Moshi
 ) : KoinComponent {
 
-    private val syncEventApi: SyncEventsApi by inject()
+    val syncEventApi: SyncEventsApi by inject()
 
     /**
      * Возможные варианты id, получены через запрос api/security/entity-models
@@ -49,6 +50,12 @@ abstract class SyncEntity<SyncType>(
     abstract suspend fun saveInDb(objects: List<SyncType>)
 
     suspend inline fun <reified T> defaultGetAndSave(syncId: String, exportPartId: String) {
+        syncEventApi.emitSyncInfoType(
+            SyncInfoType.TitleResourceEvent(
+                titleId = tableTitle,
+                syncDirection = SyncDirection.FROM_SERVER
+            )
+        )
         val objects = getEntitiesFromNetwork<T>(syncId, exportPartId)
 
         Timber.tag(AllSyncImpl.SYNC_TAG).d("${objects?.size} $id downloaded")
@@ -79,28 +86,37 @@ abstract class SyncEntity<SyncType>(
     }
 
     suspend fun defaultUpload(syncId: String, dbPartsCollector: Flow<List<Any>>) {
-        syncEventApi.emit(
+        syncEventApi.emitSyncEvent(
             SyncEvent.Info(
                 id = UUID.randomUUID().toString(),
                 name = "Старт выгрузки id = $id table = $table"
             )
         )
-
+        syncEventApi.emitSyncInfoType(
+            SyncInfoType.TitleResourceEvent(
+                titleId = tableTitle,
+                syncDirection = SyncDirection.TO_SERVER
+            )
+        )
         val duration = measureTime {
             Timber.tag(AllSyncImpl.SYNC_TAG).d("upload id = $id table = $table")
-
             dbPartsCollector.collect { objects ->
                 Timber.tag(AllSyncImpl.SYNC_TAG).d("${objects.size} $id got from db")
 
                 val importPart = createImportPart(objects)
                 syncControllerApi.apiSyncIdImportPartsPost(syncId, importPart)
+                syncEventApi.emitSyncInfoType(
+                    SyncInfoType.ItemCount(
+                        count = importPart.value?.size?.toLong() ?: 0,
+                        isAllCount = false,
+                    )
+                )
 
                 Timber.tag(AllSyncImpl.SYNC_TAG).d("${importPart.value?.size} $id uploaded")
             }
             Timber.tag(AllSyncImpl.SYNC_TAG).d("finish id = $id table = $table")
         }
-
-        syncEventApi.emit(
+        syncEventApi.emitSyncEvent(
             SyncEvent.Measured(
                 id = UUID.randomUUID().toString(),
                 name = "Окончание выгрузки $id table = $table",
