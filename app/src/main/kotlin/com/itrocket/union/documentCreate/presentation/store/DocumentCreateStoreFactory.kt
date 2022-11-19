@@ -84,7 +84,13 @@ class DocumentCreateStoreFactory(
                 } else {
                     null
                 }
+                val isDocumentChangeEnabled = if (document == null) {
+                    getState().canCreate
+                } else {
+                    getState().canUpdate && document.documentStatus != DocumentStatus.COMPLETED
+                }
 
+                dispatch(Result.IsDocumentChangeEnabled(isDocumentChangeEnabled))
                 document?.let { dispatch(Result.Document(it)) }
                 dispatch(Result.CanDelete(getState().canUpdate && !getState().document.isStatusCompleted))
                 changeParams(getState().document.params)
@@ -284,6 +290,7 @@ class DocumentCreateStoreFactory(
                 catchException {
                     val document =
                         documentCreateInteractor.getDocumentById(requireNotNull(nfcReaderResult.documentId))
+                    dispatch(Result.IsDocumentChangeEnabled(false))
                     dispatch(Result.Document(document))
                 }
             }
@@ -388,6 +395,7 @@ class DocumentCreateStoreFactory(
                 params = state.params
             )
             dispatch(Result.Document(state.document.copy(documentStatus = DocumentStatus.COMPLETED)))
+            dispatch(Result.IsDocumentChangeEnabled(false))
         }
 
         private suspend fun handleBarcodeAccountingObjects(
@@ -442,6 +450,7 @@ class DocumentCreateStoreFactory(
                 status = state.document.documentStatus
             )
             dispatch(Result.Document(state.document.copy(id = documentId)))
+            dispatch(Result.IsDocumentChangeEnabled(canEditDocument(state)))
         }
 
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
@@ -512,6 +521,7 @@ class DocumentCreateStoreFactory(
         data class CanCreate(val canCreate: Boolean) : Result()
         data class CanDelete(val canDelete: Boolean) : Result()
         data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
+        data class IsDocumentChangeEnabled(val isDocumentChangeEnabled: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<DocumentCreateStore.State, Result> {
@@ -530,6 +540,7 @@ class DocumentCreateStoreFactory(
                 is Result.CanDelete -> copy(canDelete = result.canDelete)
                 is Result.DialogListItem -> copy(dialogListItem = result.listItem)
                 is Result.DialogLoading -> copy(dialogLoading = result.isLoading)
+                is Result.IsDocumentChangeEnabled -> copy(isDocumentChangeEnabled = result.isDocumentChangeEnabled)
             }
     }
 

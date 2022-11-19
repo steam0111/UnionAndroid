@@ -76,7 +76,8 @@ interface TransitStore : Store<TransitStore.Intent, TransitStore.State, TransitS
         val confirmDialogType: AlertType = AlertType.NONE,
         val canUpdate: Boolean = false,
         val canCreate: Boolean = false,
-        val readingModeTab: ReadingModeTab
+        val readingModeTab: ReadingModeTab,
+        val isDocumentChangeEnabled: Boolean = false
     )
 
     sealed class Label {

@@ -61,7 +61,8 @@ fun TransitScreen(
         },
         canDelete = false,
         onDeleteAccountingObjectClickListener = {},
-        onDeleteReserveClickListener = {}
+        onDeleteReserveClickListener = {},
+        isDocumentChangeEnabled = state.isDocumentChangeEnabled
     )
 }
 

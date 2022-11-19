@@ -75,7 +75,8 @@ fun DocumentCreateScreen(
         onDeleteAccountingObjectClickListener = onDeleteAccountingObjectClickListener,
         onDeleteReserveClickListener = onDeleteReserveClickListener,
         onListItemDialogDismissed = onListItemDialogDismissed,
-        isDialogLoading = state.dialogLoading
+        isDialogLoading = state.dialogLoading,
+        isDocumentChangeEnabled = state.isDocumentChangeEnabled
     )
 }
 

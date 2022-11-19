@@ -103,6 +103,7 @@ fun DocumentCreateBaseScreen(
     onDeleteReserveClickListener: (String) -> Unit,
     onListItemDialogDismissed: () -> Unit = {},
     isDialogLoading: Boolean = false,
+    isDocumentChangeEnabled: Boolean
 ) {
     val pagerState = rememberPagerState(selectedPage)
     val coroutineScope = rememberCoroutineScope()
@@ -125,7 +126,8 @@ fun DocumentCreateBaseScreen(
         isDocumentChangePermitted = isDocumentChangePermitted,
         onDeleteReserveClickListener = onDeleteReserveClickListener,
         onDeleteAccountingObjectClickListener = onDeleteAccountingObjectClickListener,
-        canDelete = canDelete
+        canDelete = canDelete,
+        isDocumentChangeEnabled = isDocumentChangeEnabled
     )
 
     AppTheme {
@@ -135,7 +137,7 @@ fun DocumentCreateBaseScreen(
                     documentType = documentType,
                     onDropClickListener = onDropClickListener,
                     onBackClickListener = onBackClickListener,
-                    isDocumentChangePermitted = isDocumentChangePermitted
+                    isDocumentChangeEnabled = isDocumentChangeEnabled
                 )
             },
             content = {
@@ -227,6 +229,7 @@ fun DocumentContent(
 fun DocumentParamContent(
     params: List<ParamDomain>,
     isDocumentChangePermitted: Boolean,
+    isDocumentChangeEnabled: Boolean,
     isDocumentExist: Boolean,
     onConductClickListener: () -> Unit,
     documentStatus: DocumentStatus,
@@ -255,11 +258,11 @@ fun DocumentParamContent(
                     SelectedBaseField(
                         label = stringResource(it.type.titleId),
                         value = it.value,
-                        clickable = it.isClickable && isDocumentChangePermitted,
+                        clickable = it.isClickable && isDocumentChangeEnabled,
                         onFieldClickListener = {
                             onParamClickListener(it)
                         },
-                        isCrossVisible = it.isClickable && isDocumentChangePermitted,
+                        isCrossVisible = it.isClickable && isDocumentChangeEnabled,
                         onCrossClickListener = {
                             onCrossClickListener(it)
                         }
@@ -267,7 +270,7 @@ fun DocumentParamContent(
                 } else {
                     UnselectedBaseField(
                         label = stringResource(it.type.titleId),
-                        clickable = it.isClickable && isDocumentChangePermitted,
+                        clickable = it.isClickable && isDocumentChangeEnabled,
                         onFieldClickListener = {
                             onParamClickListener(it)
                         })
@@ -403,7 +406,7 @@ fun DocumentToolbar(
     documentType: DocumentTypeDomain,
     onBackClickListener: () -> Unit,
     onDropClickListener: () -> Unit,
-    isDocumentChangePermitted: Boolean
+    isDocumentChangeEnabled: Boolean
 ) {
     BaseToolbar(
         title = stringResource(id = documentType.titleId),
@@ -416,7 +419,7 @@ fun DocumentToolbar(
                 color = AppTheme.colors.mainColor,
                 modifier = Modifier.clickable(
                     onClick = onDropClickListener,
-                    enabled = isDocumentChangePermitted
+                    enabled = isDocumentChangeEnabled
                 )
             )
         }
@@ -538,6 +541,7 @@ private fun getTabList(
     reserves: List<ReservesDomain>,
     documentType: DocumentTypeDomain,
     isDocumentChangePermitted: Boolean,
+    isDocumentChangeEnabled: Boolean,
     onSaveClickListener: () -> Unit,
     onParamClickListener: (ParamDomain) -> Unit,
     onParamCrossClickListener: (ParamDomain) -> Unit,
@@ -563,7 +567,8 @@ private fun getTabList(
                     documentStatus = documentStatus,
                     onConductClickListener = onConductClickListener,
                     isDocumentExist = isDocumentExist,
-                    isDocumentChangePermitted = isDocumentChangePermitted
+                    isDocumentChangePermitted = isDocumentChangePermitted,
+                    isDocumentChangeEnabled = isDocumentChangeEnabled,
                 )
             }
         ),
@@ -672,6 +677,7 @@ fun DocumentCreateBaseScreenPreview() {
         canDelete = true,
         onDeleteReserveClickListener = {},
         onDeleteAccountingObjectClickListener = {},
-        onListItemDialogDismissed = {}
+        onListItemDialogDismissed = {},
+        isDocumentChangeEnabled = true
     )
 }
