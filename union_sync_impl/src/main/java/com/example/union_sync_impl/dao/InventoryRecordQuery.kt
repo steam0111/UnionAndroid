@@ -15,8 +15,13 @@ fun sqlInventoryRecordQuery(
     limit: Long? = null,
     offset: Long? = null,
     isNonCancel: Boolean = true,
+    isFilterCount: Boolean = false,
 ): SimpleSQLiteQuery {
-    val mainQuery = "SELECT * FROM inventory_record"
+    val mainQuery = if (isFilterCount) {
+        "SELECT COUNT(*) FROM inventory_record"
+    } else {
+        "SELECT * FROM inventory_record"
+    }
 
     val query = mainQuery.addFilters(
         sqlTableFilters = SqlTableFilters(

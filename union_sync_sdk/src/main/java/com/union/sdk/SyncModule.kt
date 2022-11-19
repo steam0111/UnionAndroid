@@ -50,6 +50,7 @@ import com.example.union_sync_impl.data.ReserveSyncApiImpl
 import com.example.union_sync_impl.data.StructuralSyncApiImpl
 import com.example.union_sync_impl.data.TransitSyncApiImpl
 import com.example.union_sync_impl.data.logging.SyncEventsImpl
+import com.example.union_sync_impl.sync.SyncInfoRepository
 import com.example.union_sync_impl.sync.SyncRepository
 import org.koin.dsl.module
 
@@ -195,6 +196,19 @@ object SyncModule {
                 get(),
                 UnionDatabase::class.java, "union_database"
             ).fallbackToDestructiveMigration().build()
+        }
+        single {
+            SyncInfoRepository(
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get()
+            )
         }
         factory {
             SyncRepository(

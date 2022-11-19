@@ -16,6 +16,9 @@ interface ActionRemainsRecordDao {
     @RawQuery
     fun getAll(query: SupportSQLiteQuery): List<ActionRemainsRecordDb>
 
+    @RawQuery
+    fun getCount(query: SupportSQLiteQuery): Long
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(actionRecords: List<ActionRemainsRecordDb>)
 

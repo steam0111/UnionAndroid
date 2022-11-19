@@ -71,7 +71,7 @@ class AllSyncImpl(
         )
     }
 
-    private suspend fun getLastSyncTime(): Long {
+    override suspend fun getLastSyncTime(): Long {
         return syncDao.getNetworkSync()?.lastSyncTime ?: 0
     }
 

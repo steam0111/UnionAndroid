@@ -6,7 +6,6 @@ import com.example.union_sync_impl.utils.addFilters
 import com.example.union_sync_impl.utils.addNonCancelFilter
 import com.example.union_sync_impl.utils.addPagination
 import com.example.union_sync_impl.utils.isEquals
-import com.example.union_sync_impl.utils.isNotEquals
 import com.example.union_sync_impl.utils.more
 
 fun sqlActionRecordQuery(
@@ -16,8 +15,13 @@ fun sqlActionRecordQuery(
     limit: Long? = null,
     offset: Long? = null,
     isNonCancel: Boolean = true,
+    isFilterCount: Boolean = false,
 ): SimpleSQLiteQuery {
-    val mainQuery = "SELECT * FROM action_record"
+    val mainQuery = if (isFilterCount) {
+        "SELECT COUNT(*) FROM action_record"
+    } else {
+        "SELECT * FROM action_record"
+    }
 
     val query = mainQuery.addFilters(
         sqlTableFilters = SqlTableFilters(
