@@ -47,6 +47,7 @@ object ModuleSettingsModule {
                 get(),
                 get(),
                 get(),
+                get(),
                 get()
             ).create()
         }

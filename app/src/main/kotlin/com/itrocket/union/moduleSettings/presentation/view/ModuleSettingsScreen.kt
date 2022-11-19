@@ -40,12 +40,15 @@ import androidx.compose.ui.unit.dp
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.moduleSettings.presentation.store.ModuleSettingsStore
 import com.itrocket.union.readerPower.domain.ReaderPowerInteractor
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.AppTheme
+import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ButtonBottomBar
+import com.itrocket.union.ui.ConfirmAlertDialog
 import com.itrocket.union.ui.ReaderPowerPicker
 import com.itrocket.union.ui.ReadingModeTabs
 import com.itrocket.union.ui.graphite2
@@ -67,6 +70,9 @@ fun ModuleSettingsScreen(
     onArrowUpClickListener: () -> Unit,
     onPowerChanged: (String) -> Unit,
     onDynamicSaveInventoryChanged: (Boolean) -> Unit,
+    onClearButtonClicked: () -> Unit,
+    onDismissClearClickListener: () -> Unit,
+    onConfirmClearDbClickListener: () -> Unit,
     onReadingTabClickListener: (ReadingModeTab) -> Unit
 ) {
     AppTheme {
@@ -95,10 +101,20 @@ fun ModuleSettingsScreen(
                     onArrowUpClickListener = onArrowUpClickListener,
                     onPowerChanged = onPowerChanged,
                     onDynamicSaveInventoryChanged = onDynamicSaveInventoryChanged,
+                    onClearButtonClicked = onClearButtonClicked,
                     onReadingTabClickListener = onReadingTabClickListener
                 )
             }
         )
+        when (state.alertType) {
+            AlertType.CLEAR_DB -> ConfirmAlertDialog(
+                onDismiss = onDismissClearClickListener,
+                onConfirmClick = onConfirmClearDbClickListener,
+                textRes = R.string.document_menu_dialog_clear_db_title,
+                confirmTextRes = R.string.common_yes,
+                dismissTextRes = R.string.common_no
+            )
+        }
     }
 }
 
@@ -123,6 +139,7 @@ private fun Content(
     onArrowUpClickListener: () -> Unit,
     onPowerChanged: (String) -> Unit,
     onDynamicSaveInventoryChanged: (Boolean) -> Unit,
+    onClearButtonClicked: () -> Unit,
     onReadingTabClickListener: (ReadingModeTab) -> Unit
 ) {
     Column(
@@ -169,6 +186,15 @@ private fun Content(
         DynamicSaveInventoryComponent(
             isDynamicSaveInventory = state.isDynamicSaveInventory,
             onDynamicSaveInventoryChanged = onDynamicSaveInventoryChanged
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        BaseButton(
+            text = stringResource(R.string.to_clear_db),
+            onClick = onClearButtonClicked,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            isAllUppercase = false,
         )
         Spacer(modifier = Modifier.height(24.dp))
     }
@@ -317,6 +343,9 @@ fun ModuleSettingsScreenPreview() {
     ModuleSettingsScreen(
         ModuleSettingsStore.State(),
         AppInsets(topInset = previewTopInsetDp),
+        {},
+        {},
+        {},
         {},
         {},
         {},

@@ -15,14 +15,11 @@ interface SyncAllStore : Store<SyncAllStore.Intent, SyncAllStore.State, SyncAllS
     sealed class Intent {
         object OnBackClicked : Intent()
         object OnSyncButtonClicked : Intent()
-        object OnClearButtonClicked : Intent()
         object OnAuthButtonClicked : Intent()
         object OnConfirmSyncClicked : Intent()
         object OnDismissSyncClicked : Intent()
         object OnConfirmLogoutClicked : Intent()
         object OnDismissLogoutClicked : Intent()
-        object OnDismissClearDbClicked: Intent()
-        object OnConfirmClearDbClicked : Intent()
     }
 
     data class State(

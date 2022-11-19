@@ -64,6 +64,9 @@ class ModuleSettingsComposeFragment :
                         )
                     )
                 },
+                onClearButtonClicked = { accept(ModuleSettingsStore.Intent.OnClearDbClicked) },
+                onConfirmClearDbClickListener = { accept(ModuleSettingsStore.Intent.OnConfirmClearDbClicked) },
+                onDismissClearClickListener = { accept(ModuleSettingsStore.Intent.OnDismissClearDbClicked) },
                 onReadingTabClickListener = {
                     accept(ModuleSettingsStore.Intent.OnReadingModeTabClicked(it))
                 }
