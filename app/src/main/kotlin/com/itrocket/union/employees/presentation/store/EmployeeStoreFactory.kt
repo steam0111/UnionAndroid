@@ -62,10 +62,10 @@ class EmployeeStoreFactory(
             action: Unit,
             getState: () -> EmployeeStore.State
         ) {
-            searchManager.listenSearch {
+            searchManager.listenSearch { searchText ->
                 reset()
                 paginator.onLoadNext {
-                    getEmployees(params = params, getState().searchText, offset = it)
+                    getEmployees(params = params, searchText = searchText, offset = it)
                 }
             }
         }

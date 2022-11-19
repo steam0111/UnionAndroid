@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class SearchManager {
     private val searchQuery: MutableStateFlow<SearchEvent> = MutableStateFlow(SearchEvent.FirstEmit)
@@ -19,12 +20,19 @@ class SearchManager {
                 is SearchEvent.OnSearchChanged -> SEARCH_DELAY
             }
         }
+            .map {
+                when (it) {
+                    SearchEvent.FirstEmit -> it
+                    is SearchEvent.OnSearchChanged -> SearchEvent.OnSearchChanged(it.value.trim())
+                }
+            }
             .distinctUntilChanged()
             .flatMapLatest {
                 flow {
                     this.emit(it)
                 }
-            }.collect {
+            }
+            .collect {
                 onSearchChanged(
                     when (it) {
                         SearchEvent.FirstEmit -> ""

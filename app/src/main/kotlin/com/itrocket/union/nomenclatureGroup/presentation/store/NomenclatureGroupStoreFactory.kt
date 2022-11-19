@@ -59,10 +59,10 @@ class NomenclatureGroupStoreFactory(
             action: Unit,
             getState: () -> NomenclatureGroupStore.State
         ) {
-            searchManager.listenSearch {
+            searchManager.listenSearch { searchText ->
                 reset()
                 paginator.onLoadNext {
-                    getNomenclatureGroup(getState().searchText, offset = it)
+                    getNomenclatureGroup(searchText = searchText, offset = it)
                 }
             }
         }

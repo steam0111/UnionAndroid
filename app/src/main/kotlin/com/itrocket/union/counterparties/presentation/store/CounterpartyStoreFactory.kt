@@ -11,10 +11,7 @@ import com.itrocket.union.counterparties.domain.CounterpartyInteractor
 import com.itrocket.union.counterparties.domain.entity.CounterpartyDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.search.SearchManager
-import com.itrocket.union.utils.ifBlankOrNull
 import com.itrocket.utils.paging.Paginator
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 
 class CounterpartyStoreFactory(
     private val storeFactory: StoreFactory,
@@ -60,10 +57,10 @@ class CounterpartyStoreFactory(
             action: Unit,
             getState: () -> CounterpartyStore.State
         ) {
-            searchManager.listenSearch {
+            searchManager.listenSearch { searchText ->
                 reset()
                 paginator.onLoadNext {
-                    getCounterparties(getState().searchText, offset = it)
+                    getCounterparties(searchText, offset = it)
                 }
             }
         }

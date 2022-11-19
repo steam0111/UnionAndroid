@@ -94,9 +94,9 @@ class InventoryCreateStoreFactory(
             if (getState().isDynamicSaveInventory && getState().inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED) {
                 inventoryDynamicSaveManager.subscribeInventorySave()
             }
-            searchManager.listenSearch {
+            searchManager.listenSearch { searchText ->
                 listenAccountingObjects(
-                    searchText = it,
+                    searchText = searchText,
                     accountingObjects = getState().inventoryDocument.accountingObjects,
                     getState = getState
                 )

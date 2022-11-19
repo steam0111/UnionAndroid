@@ -11,7 +11,6 @@ import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.producer.domain.ProducerInteractor
 import com.itrocket.union.producer.domain.entity.ProducerDomain
 import com.itrocket.union.search.SearchManager
-import com.itrocket.union.utils.ifBlankOrNull
 import com.itrocket.utils.paging.Paginator
 
 class ProducerStoreFactory(
@@ -58,10 +57,10 @@ class ProducerStoreFactory(
             action: Unit,
             getState: () -> ProducerStore.State
         ) {
-            searchManager.listenSearch {
+            searchManager.listenSearch { searchText ->
                 reset()
                 paginator.onLoadNext {
-                    getProducers(getState().searchText, offset = it)
+                    getProducers(searchText = searchText, offset = it)
                 }
             }
         }
