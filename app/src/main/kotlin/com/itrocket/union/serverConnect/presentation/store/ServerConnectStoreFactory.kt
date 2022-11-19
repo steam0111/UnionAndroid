@@ -13,7 +13,6 @@ import com.itrocket.union.serverConnect.domain.StyleInteractor
 import com.itrocket.union.theme.domain.ColorInteractor
 import com.itrocket.union.theme.domain.MediaInteractor
 import com.itrocket.union.theme.domain.entity.Medias
-import com.itrocket.union.utils.ifBlankOrNull
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -119,19 +118,25 @@ class ServerConnectStoreFactory(
         }
 
         private suspend fun loadSettings() {
-            val styleInteractor by inject<StyleInteractor>()
-            val colors = styleInteractor.getStyleSettings()
-            val logoFile = styleInteractor.getLogoFile()
-            val headerFile = styleInteractor.getHeaderFile()
-            colorInteractor.saveColorSettings(
-                mainColor = colors.mainColor,
-                mainTextColor = colors.mainTextColor,
-                secondaryTextColor = colors.secondaryTextColor,
-                appBarBackgroundColor = colors.appBarBackgroundColor,
-                appBarTextColor = colors.appBarTextColor
-            )
-            colorInteractor.initColorSettings()
-            mediaInteractor.saveMedias(headerFile = headerFile, logoFile = logoFile)
+            try {
+                val styleInteractor by inject<StyleInteractor>()
+                val colors = styleInteractor.getStyleSettings()
+                val logoFile = styleInteractor.getLogoFile()
+                val headerFile = styleInteractor.getHeaderFile()
+                colorInteractor.saveColorSettings(
+                    mainColor = colors.mainColor,
+                    mainTextColor = colors.mainTextColor,
+                    secondaryTextColor = colors.secondaryTextColor,
+                    appBarBackgroundColor = colors.appBarBackgroundColor,
+                    appBarTextColor = colors.appBarTextColor
+                )
+                colorInteractor.initColorSettings()
+                mediaInteractor.saveMedias(headerFile = headerFile, logoFile = logoFile)
+            } catch (t: Throwable) {
+                colorInteractor.saveLocalColorSettings()
+                colorInteractor.initColorSettings()
+                mediaInteractor.removeMedias()
+            }
         }
 
         override fun handleError(throwable: Throwable) {

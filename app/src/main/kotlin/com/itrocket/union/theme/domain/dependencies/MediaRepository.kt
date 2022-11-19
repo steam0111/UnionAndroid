@@ -8,4 +8,6 @@ interface MediaRepository {
     suspend fun saveMedias(logoFile: File?, headerFile: File?)
 
     suspend fun getMedias(): Medias
+
+    suspend fun removeMedias()
 }
