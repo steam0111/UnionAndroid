@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.sync
 
+import com.example.union_sync_impl.R
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.Flow
 import org.openapitools.client.custom_api.SyncControllerApi
@@ -15,6 +16,9 @@ class ReserveSyncEntity(
 
     override val id: String
         get() = "remains"
+
+    override val tableTitle: Int
+        get() = R.string.reserve_table_name
 
     override suspend fun exportFromServer(syncId: String, exportPartId: String) {
         defaultGetAndSave<RemainsDtoV2>(syncId, exportPartId)

@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.sync
 
+import com.example.union_sync_impl.R
 import com.squareup.moshi.Moshi
 import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.models.StructuralUnitPathDtoV2
@@ -12,6 +13,9 @@ class StructuralPathSyncEntity (
 
     override val id: String
         get() = "structuralUnitPath"
+
+    override val tableTitle: Int
+        get() = R.string.structural_path_table_name
 
     override suspend fun exportFromServer(syncId: String, exportPartId: String) {
         defaultGetAndSave<StructuralUnitPathDtoV2>(syncId, exportPartId)
