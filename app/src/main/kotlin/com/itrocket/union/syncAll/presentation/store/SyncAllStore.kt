@@ -3,11 +3,10 @@ package com.itrocket.union.syncAll.presentation.store
 import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
 import com.example.union_sync_api.entity.SyncEvent
+import com.example.union_sync_api.entity.SyncInfoType
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
-import com.itrocket.union.alertType.AlertType
-import com.itrocket.union.authContainer.presentation.view.AuthContainerArguments
 import com.itrocket.union.syncAll.presentation.view.SyncAllComposeFragmentDirections
 
 interface SyncAllStore : Store<SyncAllStore.Intent, SyncAllStore.State, SyncAllStore.Label> {
@@ -15,17 +14,20 @@ interface SyncAllStore : Store<SyncAllStore.Intent, SyncAllStore.State, SyncAllS
     sealed class Intent {
         object OnBackClicked : Intent()
         object OnSyncButtonClicked : Intent()
-        object OnAuthButtonClicked : Intent()
-        object OnConfirmSyncClicked : Intent()
-        object OnDismissSyncClicked : Intent()
-        object OnConfirmLogoutClicked : Intent()
-        object OnDismissLogoutClicked : Intent()
+        object OnChangeLogVisibilityClicked : Intent()
+        object OnFinishClicked : Intent()
     }
 
     data class State(
         val isLoading: Boolean = false,
         val syncEvents: List<SyncEvent> = mutableListOf(),
-        val dialogType: AlertType = AlertType.NONE
+        val lastDateSync: String = "",
+        val currentSyncTitle: String = "",
+        val syncedCount: Long = 0,
+        val allCount: Long = 0,
+        val isSyncFinished: Boolean = false,
+        val isShowLog: Boolean = true,
+        val isSyncSuccess: Boolean = false,
     )
 
     sealed class Label {
@@ -33,11 +35,6 @@ interface SyncAllStore : Store<SyncAllStore.Intent, SyncAllStore.State, SyncAllS
         object ShowMenu : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = SyncAllComposeFragmentDirections.toDocumentsMenu()
-        }
-
-        object ShowAuth : Label(), ForwardNavigationLabel {
-            override val directions: NavDirections
-                get() = SyncAllComposeFragmentDirections.toAuth(AuthContainerArguments(true))
         }
 
         data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel

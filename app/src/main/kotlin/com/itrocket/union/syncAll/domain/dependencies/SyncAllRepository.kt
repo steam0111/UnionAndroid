@@ -9,7 +9,7 @@ interface SyncAllRepository {
 
     suspend fun clearAll()
 
-    suspend fun getLastSyncDate(): Long
+    suspend fun getLastSyncTime(): Long
 
     fun subscribeSyncEvents(): Flow<SyncEvent>
 

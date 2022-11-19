@@ -8,6 +8,7 @@ import com.itrocket.union.syncAll.domain.dependencies.SyncAllRepository
 import com.itrocket.union.syncAll.presentation.store.SyncAllStore
 import com.itrocket.union.syncAll.presentation.store.SyncAllStoreFactory
 import com.itrocket.union.syncAll.presentation.view.SyncAllComposeFragmentArgs
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
@@ -33,7 +34,7 @@ object SyncAllModule {
         }
 
         factory {
-            SyncAllInteractor(get(), get(), get())
+            SyncAllInteractor(get(), get(), get(), androidContext())
         }
 
         factory { (args: SyncAllComposeFragmentArgs) ->
@@ -43,7 +44,6 @@ object SyncAllModule {
                 args.syncAllComposeFragmentArgs,
                 get(),
                 get(),
-                get()
             ).create()
         }
     }
