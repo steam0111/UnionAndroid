@@ -41,14 +41,11 @@ fun SyncAllScreen(
     appInsets: AppInsets,
     onSyncButtonClicked: () -> Unit,
     onBackClickListener: () -> Unit,
-    onClearButtonClicked: () -> Unit,
     onAuthButtonClicked: () -> Unit,
     onConfirmSyncClickListener: () -> Unit,
     onDismissSyncClickListener: () -> Unit,
     onConfirmLogoutClickListener: () -> Unit,
     onDismissLogoutClickListener: () -> Unit,
-    onDismissClearClickListener: () -> Unit,
-    onConfirmClearDbClickListener: () -> Unit,
 ) {
     AppTheme {
         Column(
@@ -74,19 +71,6 @@ fun SyncAllScreen(
                     ) {
                         Text(text = stringResource(R.string.to_sync), color = white)
                     }
-                }
-                item {
-                    Spacer(modifier = Modifier.height(4.dp))
-                    ButtonWithContent(
-                        onClick = onClearButtonClicked,
-                        modifier = Modifier,
-                        isEnabled = true,
-                        content = {
-                            Text(
-                                text = stringResource(R.string.to_clear_db), color = white
-                            )
-                        }
-                    )
                 }
                 item {
                     Spacer(modifier = Modifier.height(4.dp))
@@ -121,13 +105,6 @@ fun SyncAllScreen(
                 onDismiss = onDismissLogoutClickListener,
                 onConfirmClick = onConfirmLogoutClickListener,
                 textRes = R.string.document_menu_dialog_logout_title,
-                confirmTextRes = R.string.common_yes,
-                dismissTextRes = R.string.common_no
-            )
-            AlertType.CLEAR_DB -> ConfirmAlertDialog(
-                onDismiss = onDismissClearClickListener,
-                onConfirmClick = onConfirmClearDbClickListener,
-                textRes = R.string.document_menu_dialog_clear_db_title,
                 confirmTextRes = R.string.common_yes,
                 dismissTextRes = R.string.common_no
             )
@@ -213,5 +190,5 @@ fun SyncAllScreenPreview() {
                 )
             )
         }
-    ), AppInsets(), {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
+    ), AppInsets(), {}, {}, {}, {}, {}, {}, {})
 }

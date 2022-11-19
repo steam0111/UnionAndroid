@@ -30,9 +30,6 @@ class SyncAllComposeFragment :
                 onSyncButtonClicked = {
                     accept(SyncAllStore.Intent.OnSyncButtonClicked)
                 },
-                onClearButtonClicked = {
-                    accept(SyncAllStore.Intent.OnClearButtonClicked)
-                },
                 onAuthButtonClicked = {
                     accept(SyncAllStore.Intent.OnAuthButtonClicked)
                 },
@@ -48,12 +45,6 @@ class SyncAllComposeFragment :
                 onDismissSyncClickListener = {
                     accept(SyncAllStore.Intent.OnDismissSyncClicked)
                 },
-                onDismissClearClickListener = {
-                    accept(SyncAllStore.Intent.OnDismissClearDbClicked)
-                },
-                onConfirmClearDbClickListener = {
-                    accept(SyncAllStore.Intent.OnConfirmClearDbClicked)
-                }
             )
         }
     }

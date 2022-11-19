@@ -7,10 +7,12 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.readerPower.domain.ReaderPowerInteractor
 import com.itrocket.union.readerPower.domain.ReaderPowerInteractor.Companion.MIN_READER_POWER
+import com.itrocket.union.syncAll.domain.SyncAllInteractor
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -20,7 +22,8 @@ class ModuleSettingsStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val moduleSettingsInteractor: ModuleSettingsInteractor,
     private val errorInteractor: ErrorInteractor,
-    private val readerPowerInteractor: ReaderPowerInteractor
+    private val readerPowerInteractor: ReaderPowerInteractor,
+    private val syncAllInteractor: SyncAllInteractor,
 ) {
     fun create(): ModuleSettingsStore =
         object : ModuleSettingsStore,
@@ -126,6 +129,18 @@ class ModuleSettingsStoreFactory(
                         intent.readingModeTab
                     )
                 )
+                ModuleSettingsStore.Intent.OnClearDbClicked -> dispatch(Result.DialogType(AlertType.CLEAR_DB))
+                ModuleSettingsStore.Intent.OnConfirmClearDbClicked -> {
+                    dispatch(Result.DialogType(AlertType.NONE))
+                    catchException {
+                        syncAllInteractor.clearAll()
+                    }
+                }
+                ModuleSettingsStore.Intent.OnDismissClearDbClicked -> dispatch(
+                    Result.DialogType(
+                        AlertType.NONE
+                    )
+                )
             }
         }
 
@@ -164,6 +179,7 @@ class ModuleSettingsStoreFactory(
         data class Services(val services: List<String>) : Result()
         data class DropdownExpanded(val dropdownExpanded: Boolean) : Result()
         data class IsDynamicSaveInventory(val isDynamicSaveInventory: Boolean) : Result()
+        data class DialogType(val alertType: AlertType) : Result()
         data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
     }
 
@@ -178,6 +194,7 @@ class ModuleSettingsStoreFactory(
                 is Result.DropdownExpanded -> copy(dropdownExpanded = result.dropdownExpanded)
                 is Result.ReaderPower -> copy(readerPower = result.readerPower)
                 is Result.IsDynamicSaveInventory -> copy(isDynamicSaveInventory = result.isDynamicSaveInventory)
+                is Result.DialogType -> copy(alertType = result.alertType)
                 is Result.ReadingMode -> copy(selectedReadingMode = result.readingModeTab)
             }
     }
