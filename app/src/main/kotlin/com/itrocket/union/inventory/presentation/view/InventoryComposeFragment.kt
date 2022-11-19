@@ -86,6 +86,12 @@ class InventoryComposeFragment :
                 },
                 onAccountingObjectClickListener = {
                     accept(InventoryStore.Intent.OnAccountingObjectClicked(it))
+                },
+                onAlertDismissClickListener = {
+                    accept(InventoryStore.Intent.OnAlertDismissed)
+                },
+                onExitConfirmClickListener = {
+                    accept(InventoryStore.Intent.OnExitConfirmed)
                 }
             )
         }

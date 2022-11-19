@@ -100,11 +100,7 @@ class InventoryStoreFactory(
             when (intent) {
                 InventoryStore.Intent.OnBackClicked -> {
                     if (getState().dialogType != AlertType.LOADING) {
-                        publish(
-                            InventoryStore.Label.GoBack(
-                                InventoryResult(false)
-                            )
-                        )
+                        dispatch(Result.DialogType(AlertType.EXIT))
                     }
                 }
                 InventoryStore.Intent.OnCreateDocumentClicked -> createInventory(
@@ -142,7 +138,8 @@ class InventoryStoreFactory(
                     )
                     dispatch(Result.DialogType(AlertType.NONE))
                 }
-                InventoryStore.Intent.OnInWorkDismissed -> dispatch(Result.DialogType(AlertType.NONE))
+                InventoryStore.Intent.OnInWorkDismissed,
+                InventoryStore.Intent.OnAlertDismissed -> dispatch(Result.DialogType(AlertType.NONE))
                 InventoryStore.Intent.OnSaveConfirmed -> {
                     saveInventory(
                         inventoryDocument = requireNotNull(getState().inventoryCreateDomain),
@@ -156,6 +153,13 @@ class InventoryStoreFactory(
                         intent.accountingObject
                     )
                 )
+                is InventoryStore.Intent.OnExitConfirmed -> {
+                    publish(
+                        InventoryStore.Label.GoBack(
+                            InventoryResult(false)
+                        )
+                    )
+                }
             }
         }
 
