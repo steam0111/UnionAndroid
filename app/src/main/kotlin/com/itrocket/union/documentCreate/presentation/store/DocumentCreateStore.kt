@@ -86,6 +86,7 @@ interface DocumentCreateStore :
         val dialogListItem: List<String> = listOf(),
         val dialogLoading: Boolean = false,
         val canDelete: Boolean = false,
+        val isDocumentChangeEnabled: Boolean = false
     )
 
     sealed class Label {

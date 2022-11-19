@@ -8,9 +8,8 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import com.itrocket.union.alertType.AlertType
-import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStoreFactory
+import com.itrocket.union.documentCreate.domain.DocumentCreateInteractor
 import com.itrocket.union.documents.data.mapper.getTransitParams
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
@@ -82,7 +81,13 @@ class TransitStoreFactory(
                 } else {
                     null
                 }
+                val isDocumentChangeEnabled = if (transit == null) {
+                    getState().canCreate
+                } else {
+                    getState().canUpdate && transit.documentStatus != DocumentStatus.COMPLETED
+                }
 
+                dispatch(Result.IsDocumentChangeEnabled(isDocumentChangeEnabled))
                 transit?.let { dispatch(Result.Transit(it)) }
                 dispatch(Result.AccountingObjects(transit?.accountingObjects ?: listOf()))
                 dispatch(Result.Reserves(transit?.reserves ?: listOf()))
@@ -233,6 +238,7 @@ class TransitStoreFactory(
                 catchException {
                     val document =
                         transitInteractor.getTransitById(requireNotNull(nfcReaderResult.documentId))
+                    dispatch(Result.IsDocumentChangeEnabled(false))
                     dispatch(Result.Transit(document))
                 }
             }
@@ -342,6 +348,7 @@ class TransitStoreFactory(
                 transitTypeDomain = state.transit.transitType ?: TransitTypeDomain.TRANSIT_SENDING
             )
             dispatch(Result.Transit(state.transit.copy(documentStatus = DocumentStatus.COMPLETED)))
+            dispatch(Result.IsDocumentChangeEnabled(false))
             if (state.transit.transitType != TransitTypeDomain.TRANSIT_RECEPTION) {
                 createReceptionTransit(transitId)
             }
@@ -370,6 +377,7 @@ class TransitStoreFactory(
                 transitTypeDomain = getState().transit.transitType
                     ?: TransitTypeDomain.TRANSIT_RECEPTION
             )
+            dispatch(Result.IsDocumentChangeEnabled(canEditTransit(getState())))
         }
 
         private fun showParams(params: List<ParamDomain>, param: ParamDomain) {
@@ -413,6 +421,7 @@ class TransitStoreFactory(
         data class CanUpdate(val canUpdate: Boolean) : Result()
         data class CanCreate(val canCreate: Boolean) : Result()
         data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
+        data class IsDocumentChangeEnabled(val isDocumentChangeEnabled: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<TransitStore.State, Result> {
@@ -428,6 +437,7 @@ class TransitStoreFactory(
                 is Result.CanUpdate -> copy(canUpdate = result.canUpdate)
                 is Result.CanCreate -> copy(canCreate = result.canCreate)
                 is Result.ReadingMode -> copy(readingModeTab = result.readingModeTab)
+                is Result.IsDocumentChangeEnabled -> copy(isDocumentChangeEnabled = result.isDocumentChangeEnabled)
             }
     }
 }
