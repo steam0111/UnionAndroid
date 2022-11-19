@@ -33,6 +33,7 @@ interface InventoryStore :
         object OnInWorkDismissed : Intent()
         object OnExitConfirmed : Intent()
         object OnAlertDismissed : Intent()
+        object OnDropConfirmed : Intent()
         data class OnAccountingObjectClicked(val accountingObject: AccountingObjectDomain) :
             Intent()
 
