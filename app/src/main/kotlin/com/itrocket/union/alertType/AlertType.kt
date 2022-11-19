@@ -14,5 +14,6 @@ enum class AlertType {
     WRITE_EPC,
     LIST_ACTION,
     LIST_ITEM,
-    NONE
+    NONE,
+    EXIT
 }
