@@ -379,9 +379,6 @@
             android:id="@+id/to_documentsMenu"
             app:destination="@id/documentsMenu"
             app:popUpTo="@id/main" />
-        <action
-            android:id="@+id/to_auth"
-            app:destination="@id/auth" />
     </fragment>
 
     <fragment

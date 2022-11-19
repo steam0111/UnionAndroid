@@ -8,12 +8,23 @@ private const val YEAR = "yyyy"
 private const val DATE_FORMAT = "dd.MM.yyyy"
 private const val UI_DATE_FORMAT = "dd MMMM"
 private const val TIME_FORMAT = "HH:mm"
+private const val FULL_DATE_FORMAT = "dd MMMM yyyy, HH:mm"
 
 //Sample: 12 December
 fun getTextDateFromMillis(dateMillis: Long): String {
     val date = getDateFromMillis(dateMillis)
     return try {
         SimpleDateFormat(UI_DATE_FORMAT, Locale.getDefault()).format(date)
+    } catch (t: Throwable) {
+        ""
+    }
+}
+
+//Sample: 12 December 2021, 12:41
+fun getFullDateFromMillis(dateMillis: Long): String {
+    val date = Date(dateMillis)
+    return try {
+        SimpleDateFormat(FULL_DATE_FORMAT, Locale.getDefault()).format(date)
     } catch (t: Throwable) {
         ""
     }

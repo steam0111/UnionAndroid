@@ -27,11 +27,15 @@ fun HorizontalFilledIndicator(
     backgroundColor: Color = graphite2
 ) {
     Box(modifier = modifier.background(backgroundColor, RoundedCornerShape(111.dp))) {
-
+        val fraction = if(maxCount == 0f){
+            0f
+        } else {
+            count / maxCount
+        }
         Spacer(
             modifier = Modifier
                 .fillMaxHeight()
-                .fillMaxWidth(count / maxCount)
+                .fillMaxWidth(fraction)
                 .background(AppTheme.colors.mainColor, RoundedCornerShape(111.dp))
         )
     }

@@ -28,7 +28,7 @@ class SyncAllRepositoryImpl(
         }
     }
 
-    override suspend fun getLastSyncDate(): Long {
+    override suspend fun getLastSyncTime(): Long {
         return withContext(coreDispatchers.io) {
             syncApi.getLastSyncTime()
         }

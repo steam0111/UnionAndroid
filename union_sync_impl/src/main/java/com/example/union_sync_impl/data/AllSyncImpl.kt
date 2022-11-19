@@ -2,6 +2,7 @@ package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.AllSyncApi
 import com.example.union_sync_api.data.SyncEventsApi
+import com.example.union_sync_api.entity.SyncDirection
 import com.example.union_sync_api.entity.SyncEvent
 import com.example.union_sync_api.entity.SyncInfoType
 import com.example.union_sync_impl.dao.NetworkSyncDao
