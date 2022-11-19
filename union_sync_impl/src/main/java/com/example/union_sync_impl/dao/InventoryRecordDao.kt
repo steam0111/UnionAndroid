@@ -13,6 +13,9 @@ interface InventoryRecordDao {
     @RawQuery
     fun getAll(query: SupportSQLiteQuery): List<InventoryRecordDb>
 
+    @RawQuery
+    fun getCount(query: SupportSQLiteQuery): Long
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(actionRecords: List<InventoryRecordDb>)
 
