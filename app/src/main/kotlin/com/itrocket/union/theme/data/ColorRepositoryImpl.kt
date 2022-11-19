@@ -1,17 +1,15 @@
 package com.itrocket.union.theme.data
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.theme.domain.dependencies.ColorRepository
 import com.itrocket.union.theme.domain.entity.ColorSettings
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
+import okhttp3.internal.toHexString
 
 class ColorRepositoryImpl(
     private val dataStore: DataStore<Preferences>,
@@ -40,6 +38,18 @@ class ColorRepositoryImpl(
         }
     }
 
+    override suspend fun saveLocalColorSettings() {
+        val localColorSettings = ColorSettings()
+        dataStore.edit {
+            it[mainColorPreferenceKey] = localColorSettings.mainColor.toHexColor()
+            it[mainTextColorPreferenceKey] = localColorSettings.mainTextColor.toHexColor()
+            it[secondaryTextColorPreferenceKey] = localColorSettings.secondaryColor.toHexColor()
+            it[appBarBackgroundColorPreferenceKey] =
+                localColorSettings.appBarBackgroundColor.toHexColor()
+            it[appBarTextColorPreferenceKey] = localColorSettings.appBarTextColor.toHexColor()
+        }
+    }
+
     override suspend fun initColorSettings() {
         val mainColor = dataStore.data.map { it[mainColorPreferenceKey] }.firstOrNull()
         val mainTextColor = dataStore.data.map { it[mainTextColorPreferenceKey] }.firstOrNull()
@@ -65,6 +75,8 @@ class ColorRepositoryImpl(
             colorSettings.appBarTextColor = Color(it.toHexColor().toLong(16))
         }
     }
+
+    private fun Color.toHexColor() = toArgb().toHexString().uppercase()
 
     private fun String.toHexColor() = replace("#", "FF")
 }

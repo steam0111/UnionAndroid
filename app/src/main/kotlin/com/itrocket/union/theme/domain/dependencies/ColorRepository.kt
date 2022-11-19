@@ -10,5 +10,7 @@ interface ColorRepository {
         appBarTextColor: String?
     )
 
+    suspend fun saveLocalColorSettings()
+
     suspend fun initColorSettings()
 }

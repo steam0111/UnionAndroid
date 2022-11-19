@@ -27,6 +27,12 @@ class ColorInteractor(
         }
     }
 
+    suspend fun saveLocalColorSettings() {
+        withContext(coreDispatchers.io) {
+            repository.saveLocalColorSettings()
+        }
+    }
+
     suspend fun initColorSettings() {
         withContext(coreDispatchers.io) {
             repository.initColorSettings()

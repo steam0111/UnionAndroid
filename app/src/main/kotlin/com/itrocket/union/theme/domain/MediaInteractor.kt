@@ -27,4 +27,8 @@ class MediaInteractor(
             requireNotNull(medias)
         }
     }
+
+    suspend fun removeMedias() = withContext(coreDispatchers.io) {
+        mediaRepository.removeMedias()
+    }
 }

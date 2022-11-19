@@ -56,6 +56,20 @@ class MediaRepositoryImpl(private val applicationContext: Context) : MediaReposi
         return Medias(logo = logoBitmap?.asImageBitmap(), header = headerBitmap?.asImageBitmap())
     }
 
+    override suspend fun removeMedias() {
+        val directory = getWhiteLabelMediaDirectory()
+        val logoFile = File(directory.absolutePath, LOGO_FILE_NAME)
+        val headerFile = File(directory.absolutePath, HEADER_FILE_NAME)
+
+        if (logoFile.exists()) {
+            logoFile.delete()
+        }
+
+        if (headerFile.exists()) {
+            logoFile.delete()
+        }
+    }
+
     private suspend fun copyFileToInternalStorage(newFile: File, oldFile: File) {
         newFile.createNewFile()
         newFile.outputStream().use {
