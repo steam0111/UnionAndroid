@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.sync
 
+import androidx.annotation.StringRes
 import com.example.union_sync_api.data.SyncEventsApi
 import com.example.union_sync_api.entity.SyncEvent
 import com.example.union_sync_impl.data.AllSyncImpl
@@ -40,6 +41,8 @@ abstract class SyncEntity<SyncType>(
     abstract val id: String
 
     open val table: String = id
+
+    abstract val tableTitle: Int
 
     abstract suspend fun exportFromServer(syncId: String, exportPartId: String)
 

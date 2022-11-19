@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.sync
 
+import com.example.union_sync_impl.R
 import com.squareup.moshi.Moshi
 import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.models.EnumDtoV2
@@ -13,6 +14,9 @@ class ReceptionCategoryItemSyncEntity (
 
     override val id: String
         get() = "reception"
+
+    override val tableTitle: Int
+        get() = R.string.reception_category_item_table_name
 
     override suspend fun exportFromServer(syncId: String, exportPartId: String) {
         defaultGetAndSave<EnumDtoV2>(syncId, exportPartId)

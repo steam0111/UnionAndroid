@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- SyncEntity -->
+    <string name="accounting_object_category_table_name">Таблица категорий объектов учета</string>
+    <string name="accounting_objects_additional_field_table_name">Таблица простых доп. полей объектов учета</string>
+    <string name="accounting_object_status_table_name">Таблица статусов объектов учета</string>
+    <string name="accounting_object_table_name">Таблица объектов учета</string>
+    <string name="accounting_object_vocabulary_additional_table_name">Таблица словаря значений доп. полей объектов учета</string>
+    <string name="action_bases_table_name">Таблица базы дейсвтий документов</string>
+    <string name="action_record_table_name">Таблица объектов учета документов</string>
+    <string name="action_remains_record_table_name">Таблица запасов документов</string>
+    <string name="action_status_table_name">Таблица статусов документов</string>
+    <string name="action_type_table_name">Таблица типов документов</string>
+    <string name="counterparty_table_name">Таблица контрагентов</string>
+    <string name="document_table_name">Таблица документов</string>
+    <string name="employee_status_table_name">Таблица статусов сотрудников</string>
+    <string name="employee_table_name">Таблица сотрудников</string>
+    <string name="entity_model_type_table_name">Таблица типов моделей сущности</string>
+    <string name="equipment_table_name">Таблица типов оборудования</string>
+    <string name="inventory_bases_table_name">Таблица базы инвентаризации</string>
+    <string name="inventory_checker_table_name">Таблица контроллеров инв. ведомостей</string>
+    <string name="inventory_record_status_table_name">Таблица статусов объектов учета инв. ведомостей</string>
+    <string name="inventory_record_table_name">Таблица объектов учета инв. ведомостей</string>
+    <string name="inventory_state_table_name">Таблица состояний инвентаризации</string>
+    <string name="inventory_table_name">Таблица инв. ведомостей</string>
+    <string name="inventory_type_table_name">Таблица типов инвентаризации</string>
+    <string name="location_path_table_name">Таблица путей локаций</string>
+    <string name="location_table_name">Таблица локаций</string>
+    <string name="location_type_table_name">Таблица типов локаций</string>
+    <string name="nomenclature_group_table_name">Таблица номенклатурных групп</string>
+    <string name="nomenclature_table_name">Таблица номенклатур</string>
+    <string name="order_table_name">Таблица заказов</string>
+    <string name="producer_table_name">Таблица производителей</string>
+    <string name="reception_category_item_table_name">Таблица категорий приемов</string>
+    <string name="reserve_table_name">Таблица запасов</string>
+    <string name="structural_path_table_name">Таблица путей структур</string>
+    <string name="structural_table_name">Таблица структур</string>
+    <string name="transit_accounting_object_record_table_name">Таблица транзитов объектов учета</string>
+    <string name="transit_remains_record_table_name">Таблица транзитов запасов</string>
+    <string name="transit_table_name">Таблица транзитов</string>
+
+</resources>

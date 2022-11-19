@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.sync
 
+import com.example.union_sync_impl.R
 import com.squareup.moshi.Moshi
 import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.models.AccountingObjectVocabularyAdditionalFieldValueDtoV2
@@ -16,6 +17,9 @@ class AccountingObjectVocabularyAdditionalFieldSyncEntity(
 
     override val table: String
         get() = "accountingObjectVocabularyAdditionalFieldValue"
+
+    override val tableTitle: Int
+        get() = R.string.accounting_object_vocabulary_additional_table_name
 
     override suspend fun exportFromServer(syncId: String, exportPartId: String) {
         defaultGetAndSave<AccountingObjectVocabularyAdditionalFieldValueDtoV2>(syncId, exportPartId)
