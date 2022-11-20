@@ -1,6 +1,7 @@
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -21,6 +22,15 @@ class AddCommentOnCardsController(
                 parameter(authInfo.token.first, authInfo.token.second)
                 parameter(authInfo.key.first, authInfo.key.second)
                 parameter("text", comment)
+            }
+            httpClient.post {
+                url("https://api.trello.com/1/cards/${card.id}/idMembers")
+                parameter(authInfo.token.first, authInfo.token.second)
+                parameter(authInfo.key.first, authInfo.key.second)
+
+                formData(
+                    FormPart("value", "630a54966d587200369142f9")
+                )
             }
         }
     }
