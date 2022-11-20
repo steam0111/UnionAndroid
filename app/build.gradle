@@ -22,10 +22,30 @@ android {
         testInstrumentationRunner "com.karumi.shot.ShotTestRunner"
     }
 
+    signingConfigs {
+        union_debug {
+            keyAlias 'union_debug'
+            keyPassword 'UNION_DEBUG_KEY_PASSWORD'
+            storePassword 'UNION_DEBUG_KEY_PASSWORD'
+            storeFile file('keystore/union_debug.jks')
+        }
+
+        union_release {
+            keyAlias 'union_release'
+            keyPassword 'UNION_RELEASE_KEY_PASSWORD'
+            storePassword 'UNION_RELEASE_KEY_PASSWORD'
+            storeFile file('keystore/union_release.jks')
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.union_release
+        }
+        debug {
+            signingConfig signingConfigs.union_debug
         }
     }
     compileOptions {
@@ -48,7 +68,7 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "union_version_${variant.versionCode}.apk"
+            outputFileName = "union_version_${variant.versionCode}_${variant.name}.apk"
         }
     }
 }

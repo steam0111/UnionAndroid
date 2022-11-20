@@ -76,10 +76,10 @@ build release apk:
     - git push origin increment_version_code:master
      
     # Билд и отправка apk в телеграмм
-    - ./gradlew app:assembleDebug
-    - files=( app/build/outputs/apk/debug/*.apk )
+    - ./gradlew app:assembleRelease
+    - files=( app/build/outputs/apk/release/*.apk )
     - echo "${files[0]}"
-    - curl --trace --request POST https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID --form document=@${files[0]}
+#    - curl --trace --request POST https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID --form document=@${files[0]}
 
     # Отправка комментария к каждой карточке в Done столбце
     - java -jar Rocket_Bot/releaseJar/UnionTrelloIntegrate-1.0-SNAPSHOT.jar "$TRELLO_TOKEN" "$TRELLO_API_KEY" "${files[0]}" "$TRELLO_LIST_ID"
