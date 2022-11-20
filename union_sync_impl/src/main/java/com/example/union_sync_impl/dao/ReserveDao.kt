@@ -18,6 +18,9 @@ interface ReserveDao {
     fun getAll(query: SupportSQLiteQuery): List<FullReserve>
 
     @RawQuery
+    fun getAllSimpled(query: SupportSQLiteQuery): List<ReserveDb>
+
+    @RawQuery
     suspend fun getFilterCount(query: SupportSQLiteQuery): Long
 
     @Query(

@@ -83,6 +83,23 @@ fun sqlAccountingObjectQuery(
     return SimpleSQLiteQuery(query)
 }
 
+fun sqlAccountingObjectSimpledQuery(
+    limit: Long? = null,
+    offset: Long? = null,
+    updateDate: Long? = null,
+    isNonCancel: Boolean = true,
+): SimpleSQLiteQuery {
+    val mainQuery = "SELECT * FROM accounting_objects"
+
+    val query = mainQuery.getAccountingObjectsFilterPartQuery(
+        updateDate = updateDate, isNonCancel = isNonCancel
+    ).addPagination(
+        limit, offset
+    )
+
+    return SimpleSQLiteQuery(query)
+}
+
 private fun String.getAccountingObjectsFilterPartQuery(
     exploitingId: String? = null,
     rfids: List<String>? = null,

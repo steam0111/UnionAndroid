@@ -33,12 +33,16 @@ import com.example.union_sync_impl.dao.TransitRemainsRecordDao
 import com.example.union_sync_impl.dao.VocabularyAdditionalFieldDao
 import com.example.union_sync_impl.dao.VocabularyAdditionalFieldValueDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
+import com.example.union_sync_impl.dao.sqlAccountingObjectSimpledQuery
 import com.example.union_sync_impl.dao.sqlActionRecordQuery
 import com.example.union_sync_impl.dao.sqlActionRemainsRecordQuery
 import com.example.union_sync_impl.dao.sqlDocumentsQuery
+import com.example.union_sync_impl.dao.sqlDocumentsSimpledQuery
 import com.example.union_sync_impl.dao.sqlInventoryQuery
 import com.example.union_sync_impl.dao.sqlInventoryRecordQuery
+import com.example.union_sync_impl.dao.sqlInventorySimpledQuery
 import com.example.union_sync_impl.dao.sqlReserveQuery
+import com.example.union_sync_impl.dao.sqlReserveSimpledQuery
 import com.example.union_sync_impl.dao.sqlTransitQuery
 import com.example.union_sync_impl.dao.sqlTransitRecordQuery
 import com.example.union_sync_impl.dao.sqlTransitRemainsRecordQuery
@@ -420,8 +424,8 @@ class SyncRepository(
         return flow {
             paginationEmitter(
                 getData = { limit, offset ->
-                    accountingObjectsDao.getAll(
-                        sqlAccountingObjectQuery(
+                    accountingObjectsDao.getAllSimpled(
+                        sqlAccountingObjectSimpledQuery(
                             limit = limit,
                             offset = offset,
                             updateDate = getLastSyncTime(),
@@ -429,8 +433,8 @@ class SyncRepository(
                         )
                     )
                 },
-                localToNetworkMapper = { localObjects ->
-                    localObjects.toAccountingObjectDtosV2()
+                localToNetworkMapper = { localObject ->
+                    localObject.toAccountingObjectDtosV2()
                 }
             )
         }.filterNot { it.isEmpty() }
@@ -440,8 +444,8 @@ class SyncRepository(
         return flow {
             paginationEmitter(
                 getData = { limit, offset ->
-                    reserveDao.getAll(
-                        sqlReserveQuery(
+                    reserveDao.getAllSimpled(
+                        sqlReserveSimpledQuery(
                             limit = limit,
                             offset = offset,
                             updateDate = getLastSyncTime(),
@@ -450,7 +454,7 @@ class SyncRepository(
                     )
                 },
                 localToNetworkMapper = { localObjects ->
-                    localObjects.map { it.reserveDb.toRemainsDtoV2() }
+                    localObjects.map { it.toRemainsDtoV2() }
                 }
             )
         }.filterNot { it.isEmpty() }
@@ -460,8 +464,8 @@ class SyncRepository(
         return flow {
             paginationEmitter(
                 getData = { limit, offset ->
-                    inventoryDao.getAll(
-                        sqlInventoryQuery(
+                    inventoryDao.getAllSimpled(
+                        sqlInventorySimpledQuery(
                             limit = limit,
                             offset = offset,
                             updateDate = getLastSyncTime(),
@@ -470,7 +474,7 @@ class SyncRepository(
                     )
                 },
                 localToNetworkMapper = { localObjects ->
-                    localObjects.map { it.inventoryDb.toInventoryDtoV2() }
+                    localObjects.map { it.toInventoryDtoV2() }
                 }
             )
         }.filterNot { it.isEmpty() }
@@ -480,52 +484,8 @@ class SyncRepository(
         return flow {
             paginationEmitter(
                 getData = { limit, offset ->
-                    documentDao.getAll(
-                        sqlDocumentsQuery(
-                            limit = limit,
-                            offset = offset,
-                            updateDate = getLastSyncTime(),
-                            isNonCancel = false,
-                        )
-                    ).firstOrNull().orEmpty()
-                },
-                localToNetworkMapper = { localObjects ->
-                    localObjects.map { it.documentDb.toActionDtoV2() }
-                }
-            )
-        }.filterNot {
-            it.isEmpty()
-        }
-    }
-
-    private fun getTransitDbCollector(): Flow<List<TransitDtoV2>> {
-        return flow {
-            paginationEmitter(
-                getData = { limit, offset ->
-                    transitDao.getAll(
-                        sqlTransitQuery(
-                            limit = limit,
-                            offset = offset,
-                            updateDate = getLastSyncTime(),
-                            isNonCancel = false,
-                        )
-                    ).firstOrNull().orEmpty()
-                },
-                localToNetworkMapper = { localObjects ->
-                    localObjects.map { it.transitDb.toTransitDtoV2() }
-                }
-            )
-        }.filterNot {
-            it.isEmpty()
-        }
-    }
-
-    private fun getTransitRecordRemainsDbCollector(): Flow<List<TransitRemainsRecordDtoV2>> {
-        return flow {
-            paginationEmitter(
-                getData = { limit, offset ->
-                    transitRemainsRecordDao.getAll(
-                        sqlTransitRemainsRecordQuery(
+                    documentDao.getAllSimpled(
+                        sqlDocumentsSimpledQuery(
                             limit = limit,
                             offset = offset,
                             updateDate = getLastSyncTime(),
@@ -534,31 +494,75 @@ class SyncRepository(
                     )
                 },
                 localToNetworkMapper = { localObjects ->
-                    localObjects.map { it.toTransitRemainsDb() }
+                    localObjects.map { it.toActionDtoV2() }
                 }
             )
-        }.filterNot { it.isEmpty() }
+        }.filterNot {
+            it.isEmpty()
+        }
     }
 
-    private fun getTransitRecordAccountingObjectDbCollector(): Flow<List<TransitAccountingObjectRecordDtoV2>> {
-        return flow {
-            paginationEmitter(
-                getData = { limit, offset ->
-                    transitAccountingObjectRecordDao.getAll(
-                        sqlTransitRecordQuery(
-                            limit = limit,
-                            offset = offset,
-                            updateDate = getLastSyncTime(),
-                            isNonCancel = false,
-                        )
-                    )
-                },
-                localToNetworkMapper = { localObjects ->
-                    localObjects.map { it.toTransitAccountingObjectDb() }
-                }
-            )
-        }.filterNot { it.isEmpty() }
-    }
+//    private fun getTransitDbCollector(): Flow<List<TransitDtoV2>> {
+//        return flow {
+//            paginationEmitter(
+//                getData = { limit, offset ->
+//                    transitDao.getAll(
+//                        sqlTransitQuery(
+//                            limit = limit,
+//                            offset = offset,
+//                            updateDate = getLastSyncTime(),
+//                            isNonCancel = false,
+//                        )
+//                    ).firstOrNull().orEmpty()
+//                },
+//                localToNetworkMapper = { localObjects ->
+//                    localObjects.map { it.transitDb.toTransitDtoV2() }
+//                }
+//            )
+//        }.filterNot {
+//            it.isEmpty()
+//        }
+//    }
+
+//    private fun getTransitRecordRemainsDbCollector(): Flow<List<TransitRemainsRecordDtoV2>> {
+//        return flow {
+//            paginationEmitter(
+//                getData = { limit, offset ->
+//                    transitRemainsRecordDao.getAll(
+//                        sqlTransitRemainsRecordQuery(
+//                            limit = limit,
+//                            offset = offset,
+//                            updateDate = getLastSyncTime(),
+//                            isNonCancel = false,
+//                        )
+//                    )
+//                },
+//                localToNetworkMapper = { localObjects ->
+//                    localObjects.map { it.toTransitRemainsDb() }
+//                }
+//            )
+//        }.filterNot { it.isEmpty() }
+//    }
+
+//    private fun getTransitRecordAccountingObjectDbCollector(): Flow<List<TransitAccountingObjectRecordDtoV2>> {
+//        return flow {
+//            paginationEmitter(
+//                getData = { limit, offset ->
+//                    transitAccountingObjectRecordDao.getAll(
+//                        sqlTransitRecordQuery(
+//                            limit = limit,
+//                            offset = offset,
+//                            updateDate = getLastSyncTime(),
+//                            isNonCancel = false,
+//                        )
+//                    )
+//                },
+//                localToNetworkMapper = { localObjects ->
+//                    localObjects.map { it.toTransitAccountingObjectDb() }
+//                }
+//            )
+//        }.filterNot { it.isEmpty() }
+//    }
 
     private fun getActionRecordRemainsDbCollector(): Flow<List<ActionRemainsRecordDtoV2>> {
         return flow {

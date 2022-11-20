@@ -22,6 +22,9 @@ interface AccountingObjectDao {
     fun getAll(query: SupportSQLiteQuery): List<FullAccountingObject>
 
     @RawQuery
+    fun getAllSimpled(query: SupportSQLiteQuery): List<AccountingObjectDb>
+
+    @RawQuery
     fun getCount(query: SupportSQLiteQuery): Long
 
     @Query(
