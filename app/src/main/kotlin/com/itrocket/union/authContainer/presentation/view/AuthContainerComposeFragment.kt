@@ -123,6 +123,9 @@ class AuthContainerComposeFragment :
             AuthContainerStore.Label.NavigateBack -> {
                 childFragmentManager.popBackStack()
             }
+            is AuthContainerStore.Label.CloseAuthContainer -> {
+                requireActivity().finish()
+            }
         }
     }
 
