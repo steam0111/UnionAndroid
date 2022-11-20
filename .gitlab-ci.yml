@@ -25,7 +25,7 @@ testTrelloIntegration:
     - android
   script:
     - files=( Rocket_Bot/releaseJar/*.jar )
-    - java -jar Rocket_Bot/releaseJar/UnionTrelloIntegrate-2.0-SNAPSHOT.jar "$TRELLO_TOKEN" "$TRELLO_API_KEY" "${files[0]}" "$TRELLO_LIST_ID"
+    - java -jar Rocket_Bot/releaseJar/UnionTrelloIntegrate-6.0-SNAPSHOT.jar "$TRELLO_TOKEN" "$TRELLO_API_KEY" "${files[0]}" "$TRELLO_LIST_ID"
   when: manual
 
 build develop when merge_requests:
@@ -86,5 +86,5 @@ build release apk:
     - curl --trace --request POST https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID --form document=@${releaseFiles[0]}
 
     # Отправка комментария к каждой карточке в Done столбце
-    - java -jar Rocket_Bot/releaseJar/UnionTrelloIntegrate-1.0-SNAPSHOT.jar "$TRELLO_TOKEN" "$TRELLO_API_KEY" "${files[0]}" "$TRELLO_LIST_ID"
+    - java -jar Rocket_Bot/releaseJar/UnionTrelloIntegrate-6.0-SNAPSHOT.jar "$TRELLO_TOKEN" "$TRELLO_API_KEY" "${files[0]}" "$TRELLO_LIST_ID"
   when: manual
