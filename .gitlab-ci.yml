@@ -11,7 +11,7 @@ variables:
 
 stages:
    - buildMR
-   - buildRelease
+   - buildReleaseA
    - addCommentTrelloCards
   #- printCertificates
   #- buildAndTest
