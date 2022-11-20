@@ -13,9 +13,9 @@ val client = HttpClient {
             isLenient = true
             ignoreUnknownKeys = true
         })
-        install(Logging) {
-            logger = Logger.DEFAULT
-            level = LogLevel.ALL
-        }
     }
+//    install(Logging) {
+//        logger = Logger.DEFAULT
+//        level = LogLevel.BODY
+//    }
 }

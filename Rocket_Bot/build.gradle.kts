@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "ru.itrocket.trello"
-version = "2.0-SNAPSHOT"
+version = "6.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -28,6 +28,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
+    implementation("ch.qos.logback:logback-classic:1.4.5")
 }
 
 tasks.jar {

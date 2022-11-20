@@ -27,10 +27,11 @@ class AddCommentOnCardsController(
                 url("https://api.trello.com/1/cards/${card.id}/idMembers")
                 parameter(authInfo.token.first, authInfo.token.second)
                 parameter(authInfo.key.first, authInfo.key.second)
-
-                formData(
-                    FormPart("value", "630a54966d587200369142f9")
-                )
+                setBody(MultiPartFormDataContent(
+                    formData {
+                        append(FormPart("value", "630a54966d587200369142f9"))
+                    }
+                ))
             }
         }
     }
