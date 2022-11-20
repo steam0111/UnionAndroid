@@ -57,7 +57,7 @@ build release apk:
     # Копируем приватный ключ из переменной CI в id_rsa
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
     - ssh-add ~/.ssh/id_rsa
 
     # Записываем в ssh конфиг инфу о том чтобы он не проверял host, по другому на CI работать не будет
