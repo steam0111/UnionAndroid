@@ -10,17 +10,17 @@ import com.example.union_sync_impl.utils.isEquals
 import com.example.union_sync_impl.utils.more
 
 fun sqlDocumentsQuery(
-    textQuery: String? = null,
-    molId: String? = null,
-    exploitingId: String? = null,
-    structuralFromId: String? = null,
-    structuralToId: String? = null,
-    updateDate: Long? = null,
-    limit: Long? = null,
-    offset: Long? = null,
-    isFilterCount: Boolean = false,
-    type: String? = null,
-    isNonCancel: Boolean = true,
+        textQuery: String? = null,
+        molId: String? = null,
+        exploitingId: String? = null,
+        structuralFromId: String? = null,
+        structuralToId: String? = null,
+        updateDate: Long? = null,
+        limit: Long? = null,
+        offset: Long? = null,
+        isFilterCount: Boolean = false,
+        type: String? = null,
+        isNonCancel: Boolean = true,
 ): SimpleSQLiteQuery {
     val mainQuery = if (isFilterCount) {
         "SELECT COUNT(*) FROM documents"
@@ -49,38 +49,66 @@ fun sqlDocumentsQuery(
     }
 
     val query = mainQuery.addFilters(
-        sqlTableFilters = SqlTableFilters(
-            tableName = "documents",
-            filter = buildList {
-                if (isNonCancel) {
-                    addNonCancelFilter()
-                }
-                textQuery?.let {
-                    add("id" contains textQuery)
-                }
-                molId?.let {
-                    add("molId" isEquals molId)
-                }
-                exploitingId?.let {
-                    add("exploitingId" isEquals exploitingId)
-                }
-                structuralFromId?.let {
-                    add("structuralFromId" isEquals structuralFromId)
-                }
-                structuralToId?.let {
-                    add("structuralToId" isEquals structuralToId)
-                }
-                updateDate?.let {
-                    add("updateDate" more updateDate)
-                }
-                type?.let {
-                    add("documentType" isEquals type)
-                }
-            }
-        )
+            sqlTableFilters = SqlTableFilters(
+                    tableName = "documents",
+                    filter = buildList {
+                        if (isNonCancel) {
+                            addNonCancelFilter()
+                        }
+                        textQuery?.let {
+                            add("id" contains textQuery)
+                        }
+                        molId?.let {
+                            add("molId" isEquals molId)
+                        }
+                        exploitingId?.let {
+                            add("exploitingId" isEquals exploitingId)
+                        }
+                        structuralFromId?.let {
+                            add("structuralFromId" isEquals structuralFromId)
+                        }
+                        structuralToId?.let {
+                            add("structuralToId" isEquals structuralToId)
+                        }
+                        updateDate?.let {
+                            add("updateDate" more updateDate)
+                        }
+                        type?.let {
+                            add("documentType" isEquals type)
+                        }
+                    }
+            )
     ).addPagination(
-        limit,
-        offset
+            limit,
+            offset
+    )
+
+    return SimpleSQLiteQuery(query)
+}
+
+fun sqlDocumentsSimpledQuery(
+        limit: Long? = null,
+        offset: Long? = null,
+        updateDate: Long? = null,
+        isNonCancel: Boolean = true,
+): SimpleSQLiteQuery {
+    val mainQuery = "SELECT * FROM documents"
+
+    val query = mainQuery.addFilters(
+            sqlTableFilters = SqlTableFilters(
+                    tableName = "documents",
+                    filter = buildList {
+                        if (isNonCancel) {
+                            addNonCancelFilter()
+                        }
+                        updateDate?.let {
+                            add("updateDate" more updateDate)
+                        }
+                    }
+            )
+    ).addPagination(
+            limit,
+            offset
     )
 
     return SimpleSQLiteQuery(query)
