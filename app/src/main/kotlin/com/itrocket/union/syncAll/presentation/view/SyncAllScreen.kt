@@ -261,7 +261,6 @@ private fun SyncEvent(syncEvent: SyncEvent) {
             }
         }
 
-
         Text(
             text = eventText.toString(),
             modifier = Modifier.fillMaxWidth(),
