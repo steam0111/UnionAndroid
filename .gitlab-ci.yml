@@ -11,7 +11,7 @@ variables:
 
 stages:
    - buildMR
-   - buildReleaseA
+   - buildRelease
    - addCommentTrelloCards
   #- printCertificates
   #- buildAndTest
@@ -44,7 +44,7 @@ build develop when merge_requests:
 build release apk:
   tags:
     - android
-  stage: buildReleaseA
+  stage: buildRelease
   script:
     - git config --global user.email "gitlab@itrokcet.com"
     - git config --global user.name "Gitlab CI"
