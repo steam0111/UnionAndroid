@@ -10,16 +10,16 @@ variables:
   GIT_DEPTH: 1
 
 stages:
-   - buildMR
-   - buildRelease
-   - addCommentTrelloCards
+  - buildMR
+  - buildRelease
+  - addCommentTrelloCards
   #- printCertificates
   #- buildAndTest
   #- testCoverage
   #- incrementVersionCode
   #- deploy
 
-testTrelloIntegration: 
+testTrelloIntegration:
   stage: addCommentTrelloCards
   tags:
     - android
@@ -74,12 +74,16 @@ build release apk:
     - git add .
     - git commit -m "CI increment version code"
     - git push origin increment_version_code:master
-     
+
     # Билд и отправка apk в телеграмм
+    - ./gradlew app:assembleDebug
     - ./gradlew app:assembleRelease
-    - files=( app/build/outputs/apk/release/*.apk )
-    - echo "${files[0]}"
-#    - curl --trace --request POST https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID --form document=@${files[0]}
+    - debugFiles=( app/build/outputs/apk/debug/*.apk )
+    - releaseFiles=( app/build/outputs/apk/release/*.apk )
+    - echo "${debugFiles[0]}"
+    - echo "${releaseFiles[0]}"
+    - curl --trace --request POST https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID --form document=@${debugFiles[0]}
+    - curl --trace --request POST https://api.telegram.org/bot$BOT_KEY/sendDocument?chat_id=$CHAT_ID --form document=@${releaseFiles[0]}
 
     # Отправка комментария к каждой карточке в Done столбце
     - java -jar Rocket_Bot/releaseJar/UnionTrelloIntegrate-1.0-SNAPSHOT.jar "$TRELLO_TOKEN" "$TRELLO_API_KEY" "${files[0]}" "$TRELLO_LIST_ID"

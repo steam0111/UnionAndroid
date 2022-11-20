@@ -23,18 +23,11 @@ android {
     }
 
     signingConfigs {
-        union_debug {
-            keyAlias 'union_debug'
-            keyPassword 'UNION_DEBUG_KEY_PASSWORD'
-            storePassword 'UNION_DEBUG_KEY_PASSWORD'
-            storeFile file('keystore/union_debug.jks')
-        }
-
-        union_release {
+        release {
             keyAlias 'union_release'
             keyPassword 'UNION_RELEASE_KEY_PASSWORD'
             storePassword 'UNION_RELEASE_KEY_PASSWORD'
-            storeFile file('keystore/union_release.jks')
+            storeFile file('keystore/union_release')
         }
     }
 
@@ -42,10 +35,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.union_release
-        }
-        debug {
-            signingConfig signingConfigs.union_debug
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
