@@ -178,11 +178,9 @@ fun FullAccountingObject.toSyncEntity(
     manualInput = manualInput
 )
 
-fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObjectDtoV2> {
-    return map { fullAccountingObject ->
-        val accountingObjectDb = fullAccountingObject.accountingObjectDb
+fun List<AccountingObjectDb>.toAccountingObjectDtosV2(): List<AccountingObjectDtoV2> {
+    return map { accountingObjectDb ->
         AccountingObjectDtoV2(
-            // todo
             id = accountingObjectDb.id,
             locationId = accountingObjectDb.locationId,
             exploitingId = accountingObjectDb.exploitingId,
@@ -211,7 +209,6 @@ fun List<FullAccountingObject>.toAccountingObjectDtosV2(): List<AccountingObject
             userUpdated = accountingObjectDb.userUpdated,
             deleted = accountingObjectDb.cancel ?: false,
             dateInsert = getStringDateFromMillis(accountingObjectDb.insertDate)
-
         )
     }
 }

@@ -13,6 +13,9 @@ interface InventoryDao {
     suspend fun getAll(query: SupportSQLiteQuery): List<FullInventory>
 
     @RawQuery
+    suspend fun getAllSimpled(query: SupportSQLiteQuery): List<InventoryDb>
+
+    @RawQuery
     suspend fun getCount(query: SupportSQLiteQuery): Long
 
     @Query(

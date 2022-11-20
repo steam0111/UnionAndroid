@@ -106,3 +106,31 @@ fun sqlReserveQuery(
 
     return SimpleSQLiteQuery(query)
 }
+
+fun sqlReserveSimpledQuery(
+    limit: Long? = null,
+    offset: Long? = null,
+    updateDate: Long? = null,
+    isNonCancel: Boolean = true,
+): SimpleSQLiteQuery {
+    val mainQuery = "SELECT * FROM reserves"
+
+    val query = mainQuery.addFilters(
+        sqlTableFilters = SqlTableFilters(
+            tableName = "reserves",
+            filter = buildList {
+                if (isNonCancel) {
+                    addNonCancelFilter()
+                }
+                updateDate?.let {
+                    add("updateDate" more updateDate)
+                }
+            }
+        )
+    ).addPagination(
+        limit,
+        offset
+    )
+
+    return SimpleSQLiteQuery(query)
+}

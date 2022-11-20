@@ -13,6 +13,9 @@ interface DocumentDao {
     fun getAll(query: SupportSQLiteQuery): Flow<List<FullDocument>>
 
     @RawQuery
+    fun getAllSimpled(query: SupportSQLiteQuery): List<DocumentDb>
+
+    @RawQuery
     fun getCount(query: SupportSQLiteQuery): Long
 
     @Query(
