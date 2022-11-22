@@ -289,7 +289,7 @@ class InventoryCreateStoreFactory(
             dispatch(Result.AccountingObjects(inventoryAccountingObjects))
 
             dispatch(Result.DialogRemovedItemId(""))
-
+            updateAccountingObjectCounter(getState)
             tryDynamicSendInventorySave(
                 getState = getState,
                 accountingObjects = getState().inventoryDocument.accountingObjects,
@@ -319,6 +319,7 @@ class InventoryCreateStoreFactory(
                         )
                     )
                 }
+                updateAccountingObjectCounter(getState)
                 tryDynamicSendInventorySave(
                     getState = getState,
                     accountingObjects = getState().inventoryDocument.accountingObjects,
