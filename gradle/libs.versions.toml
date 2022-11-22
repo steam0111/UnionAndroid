@@ -38,7 +38,7 @@ okhttp3-logging = "4.9.3"
 
 datastore = "1.0.0"
 
-core = "1.1.7"
+core = "1.1.8"
 ui = "1.0.2"
 utils = "1.0.4"
 

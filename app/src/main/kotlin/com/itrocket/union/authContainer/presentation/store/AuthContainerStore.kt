@@ -25,7 +25,7 @@ interface AuthContainerStore :
     sealed class Label {
         object HandleNext : Label()
         object NavigateBack : Label()
-        object CloseAuthContainer : Label()
+        object CloseAuthContainer : Label(), GoBackNavigationLabel
         data class NavigateNext(val step: AuthContainerStep) : Label()
     }
 }
