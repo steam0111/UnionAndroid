@@ -138,64 +138,66 @@ private fun Content(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        item {
-            Spacer(modifier = Modifier.height(12.dp))
-            BaseButton(
-                text = stringResource(R.string.common_generate_rfid),
-                onClick = onGenerateRfidClickListener,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
-        }
-        item {
-            Spacer(modifier = Modifier.height(12.dp))
-            BaseButton(
-                text = stringResource(R.string.common_write_epc),
-                onClick = onWriteEpcTagClickListener,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
-        }
-        if (!state.accountingObjectDomain.isWrittenOff && state.canUpdate) {
+        if(!state.isLoading) {
             item {
                 Spacer(modifier = Modifier.height(12.dp))
                 BaseButton(
-                    text = stringResource(R.string.common_write_off),
-                    onClick = onWriteOffClickListener,
+                    text = stringResource(R.string.common_generate_rfid),
+                    onClick = onGenerateRfidClickListener,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 )
             }
-        }
-        if (state.accountingObjectDomain.rfidValue != null) {
             item {
                 Spacer(modifier = Modifier.height(12.dp))
                 BaseButton(
-                    text = stringResource(R.string.common_remove_rfid),
-                    onClick = onRemoveRfidClickListener,
+                    text = stringResource(R.string.common_write_epc),
+                    onClick = onWriteEpcTagClickListener,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 )
             }
-        }
-        if (state.accountingObjectDomain.barcodeValue != null) {
-            item {
-                Spacer(modifier = Modifier.height(12.dp))
-                BaseButton(
-                    text = stringResource(R.string.common_remove_barcode),
-                    onClick = onRemoveBarcodeClickListener,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
+            if (!state.accountingObjectDomain.isWrittenOff && state.canUpdate) {
+                item {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    BaseButton(
+                        text = stringResource(R.string.common_write_off),
+                        onClick = onWriteOffClickListener,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
+                }
             }
-        }
-        item {
-            Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
+            if (state.accountingObjectDomain.rfidValue != null) {
+                item {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    BaseButton(
+                        text = stringResource(R.string.common_remove_rfid),
+                        onClick = onRemoveRfidClickListener,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
+                }
+            }
+            if (state.accountingObjectDomain.barcodeValue != null) {
+                item {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    BaseButton(
+                        text = stringResource(R.string.common_remove_barcode),
+                        onClick = onRemoveBarcodeClickListener,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
+                }
+            }
+            item {
+                Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
+            }
         }
     }
 }
