@@ -38,7 +38,8 @@ class AccountingObjectDetailStoreFactory(
             Store<AccountingObjectDetailStore.Intent, AccountingObjectDetailStore.State, AccountingObjectDetailStore.Label> by storeFactory.create(
                 name = "AccountingObjectDetailStore",
                 initialState = AccountingObjectDetailStore.State(
-                    accountingObjectDomain = accountingObjectDetailArguments.argument
+                    accountingObjectDomain = accountingObjectDetailArguments.argument,
+                    isLoading = true
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
