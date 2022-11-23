@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.ModalDrawer
@@ -75,13 +76,16 @@ fun DocumentMenuScreen(
     }
     AppTheme {
         ModalDrawer(
+            modifier = Modifier.padding(
+                top = appInsets.topInset.dp,
+                bottom = appInsets.bottomInset.dp
+            ),
             drawerState = drawerState,
+            drawerShape = RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp),
             gesturesEnabled = drawerState.isOpen,
             drawerContent = {
                 Drawer(
-                    firstName = state.firstName,
-                    lastName = state.lastName,
-                    patronimic = state.patronymic,
+                    fullName = state.fullName,
                     onDestinationClicked = { type ->
                         scope.launch {
                             drawerState.close()
@@ -116,7 +120,6 @@ fun DocumentMenuScreen(
                 }
             }, modifier = Modifier
                 .background(white)
-                .padding(top = appInsets.topInset.dp, bottom = appInsets.bottomInset.dp)
             )
 
             when (state.dialogType) {

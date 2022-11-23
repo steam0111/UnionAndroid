@@ -112,13 +112,7 @@ class DocumentMenuStoreFactory(
             val currentEmployeeId = authMainInteractor.getMyConfig().employeeId
             val user = documentMenuInteractor.getUsername(currentEmployeeId)
             user?.let {
-                dispatch(
-                    Result.Username(
-                        firstName = it.firstName,
-                        secondName = it.lastName,
-                        patronimic = it.patronymic
-                    )
-                )
+                dispatch(Result.Username(fullName = it.fullName))
             }
         }
     }
@@ -127,11 +121,7 @@ class DocumentMenuStoreFactory(
         data class Documents(val documents: List<DocumentMenuDomain>, val menuDeepLevel: Int) :
             Result()
 
-        data class Username(
-            val firstName: String,
-            val secondName: String,
-            val patronimic: String
-        ) : Result()
+        data class Username(val fullName: String, ) : Result()
 
         data class Loading(val loading: Boolean) : Result()
         data class DialogType(val dialogType: AlertType) : Result()
@@ -145,11 +135,7 @@ class DocumentMenuStoreFactory(
                     menuDeepLevel = result.menuDeepLevel
                 )
                 is Result.Loading -> copy(loading = result.loading)
-                is Result.Username -> copy(
-                    firstName = result.firstName,
-                    lastName = result.secondName,
-                    patronymic = result.patronimic
-                )
+                is Result.Username -> copy(fullName = result.fullName)
                 is Result.DialogType -> copy(dialogType = result.dialogType)
             }
     }
