@@ -12,8 +12,8 @@ import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.readerPower.domain.ReaderPowerInteractor
 import com.itrocket.union.readerPower.domain.ReaderPowerInteractor.Companion.MIN_READER_POWER
-import com.itrocket.union.syncAll.domain.SyncAllInteractor
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
+import com.itrocket.union.syncAll.domain.SyncAllInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -67,11 +67,10 @@ class ModuleSettingsStoreFactory(
         ) {
             when (intent) {
                 ModuleSettingsStore.Intent.OnBackClicked -> publish(ModuleSettingsStore.Label.GoBack)
-                is ModuleSettingsStore.Intent.OnCursorDefined -> {
-                    dispatch(Result.KeyCode(intent.keyCode))
-                    moduleSettingsInteractor.changeWaitingKeyCode(true)
-                    dispatch(Result.WaitDefine(false))
-                }
+                is ModuleSettingsStore.Intent.OnCursorDefined -> onCursorDefined(
+                    isDefineWait = getState().isDefineWait,
+                    keyCode = intent.keyCode
+                )
                 ModuleSettingsStore.Intent.OnDefineCursorClicked -> {
                     moduleSettingsInteractor.changeWaitingKeyCode(true)
                     dispatch(Result.WaitDefine(true))
@@ -141,6 +140,14 @@ class ModuleSettingsStoreFactory(
                         AlertType.NONE
                     )
                 )
+            }
+        }
+
+        private fun onCursorDefined(keyCode: Int, isDefineWait: Boolean) {
+            if (isDefineWait) {
+                dispatch(Result.KeyCode(keyCode))
+                moduleSettingsInteractor.changeWaitingKeyCode(false)
+                dispatch(Result.WaitDefine(false))
             }
         }
 
