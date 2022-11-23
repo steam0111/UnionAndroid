@@ -69,7 +69,7 @@ private fun Content(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .sizeIn(maxHeight = 300.dp)
+            .height(300.dp)
             .padding(16.dp),
         contentAlignment = Alignment.BottomEnd
     ) {
@@ -81,6 +81,7 @@ private fun Content(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .weight(1f)
                     .padding(bottom = listPadding)
             ) {
                 if (isLoading) {
