@@ -115,7 +115,7 @@ class AccountingObjectRepositoryImpl(
         } ?: ParamDomain(type = ManualType.STATUS, value = "")
     }
 
-    override suspend fun writeOffAccountingObjects(accountingObjects: List<AccountingObjectDomain>): List<AccountingObjectDomain> {
+    override suspend fun writeOffAccountingObjects(accountingObjects: List<AccountingObjectDomain>) {
         return withContext(coreDispatchers.io) {
             val status = enumsSyncApi.getByCompoundId(
                 id = AccountingObjectStatus.WRITTEN_OFF.name,
@@ -123,13 +123,8 @@ class AccountingObjectRepositoryImpl(
             )
             val nonWriteOffAccountingObjects = accountingObjects.filter { !it.isWrittenOff }
             syncApi.writeOffAccountingObjects(nonWriteOffAccountingObjects.map {
-                it.toAccountingObjectWriteOff(
-                    status
-                )
+                it.toAccountingObjectWriteOff()
             })
-            accountingObjects.map {
-                it.copy(status = status?.toDomainStatus())
-            }
         }
     }
 }

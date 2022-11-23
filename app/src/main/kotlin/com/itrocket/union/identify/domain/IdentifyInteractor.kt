@@ -81,7 +81,7 @@ class IdentifyInteractor(
         }
     }
 
-    suspend fun writeOffAccountingObjects(accountingObjects: List<AccountingObjectDomain>): List<AccountingObjectDomain> {
+    suspend fun writeOffAccountingObjects(accountingObjects: List<AccountingObjectDomain>) {
         return accountingObjectRepository.writeOffAccountingObjects(accountingObjects)
     }
 

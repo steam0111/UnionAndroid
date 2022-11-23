@@ -232,7 +232,8 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
         barcodeValue = accountingObject.barcodeValue,
         rfidValue = accountingObject.rfidValue,
         factoryNumber = accountingObject.factoryNumber,
-        marked = accountingObject.marked
+        marked = accountingObject.marked,
+        forWrittenOff = accountingObject.forWriteOff
     )
 }
 
@@ -243,8 +244,8 @@ fun AccountingObjectDomain.toAccountingObjectScanningData() = AccountingObjectSc
     rfidValue = rfidValue
 )
 
-fun AccountingObjectDomain.toAccountingObjectWriteOff(status: EnumSyncEntity?) =
-    AccountingObjectWriteOff(id = id, writtenOff = true, status = status)
+fun AccountingObjectDomain.toAccountingObjectWriteOff() =
+    AccountingObjectWriteOff(id = id, forWriteOff = true)
 
 fun getStringBy(isTrue: Boolean?) =
     when (isTrue) {

@@ -208,7 +208,8 @@ fun List<AccountingObjectDb>.toAccountingObjectDtosV2(): List<AccountingObjectDt
             userInserted = accountingObjectDb.userInserted,
             userUpdated = accountingObjectDb.userUpdated,
             deleted = accountingObjectDb.cancel ?: false,
-            dateInsert = getStringDateFromMillis(accountingObjectDb.insertDate)
+            dateInsert = getStringDateFromMillis(accountingObjectDb.insertDate),
+            forWriteOff = accountingObjectDb.forWriteOff
         )
     }
 }
@@ -230,9 +231,7 @@ fun AccountingObjectUpdateSyncEntity.toAccountingObjectUpdate(): AccountingObjec
 fun AccountingObjectWriteOff.toAccountingObjectWriteOffUpdate() =
     AccountingObjectWriteOffUpdate(
         id = id,
-        writtenOff = writtenOff,
-        status = status?.toEnumDb(),
-        statusId = status?.id
+        forWriteOff = forWriteOff,
     )
 
 fun AccountingObjectScanningData.toAccountingObjectScanningUpdate() =
