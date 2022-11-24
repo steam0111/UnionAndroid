@@ -58,10 +58,8 @@ class ModuleSettingsInteractor(
         }
     }
 
-    suspend fun changeWaitingKeyCode(isWaiting: Boolean) {
-        withContext(coreDispatchers.io) {
-            serviceEntryManager.isWaitingCode = isWaiting
-        }
+    fun changeWaitingKeyCode(isWaiting: Boolean) {
+        serviceEntryManager.isWaitingCode = isWaiting
     }
 
     suspend fun checkInstalledService() {
