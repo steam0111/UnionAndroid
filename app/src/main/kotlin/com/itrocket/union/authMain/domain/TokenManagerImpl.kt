@@ -21,7 +21,7 @@ class TokenManagerImpl(
     }
 
     override suspend fun getRefreshToken(): String {
-        return authMainRepository.getAccessTokenOrEmpty()
+        return authMainRepository.getRefreshTokenOrEmpty()
     }
 
     override suspend fun saveAuthCredentials(authCredentials: AuthCredentials) {

@@ -5,7 +5,6 @@ import com.itrocket.union.authMain.domain.entity.AuthCredsDomain
 import com.itrocket.union.authMain.domain.entity.AuthDomain
 import com.itrocket.union.authMain.domain.entity.MyConfigDomain
 import kotlinx.coroutines.flow.Flow
-import org.openapitools.client.models.GetMyPermissionsResponseV2
 
 interface AuthMainRepository {
 
@@ -24,6 +23,8 @@ interface AuthMainRepository {
     suspend fun clearAuthCredentials()
 
     suspend fun invalidateToken(accessToken: String): Boolean
+
+    suspend fun getRefreshTokenOrEmpty(): String
 
     suspend fun getAccessTokenOrEmpty(): String
 

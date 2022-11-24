@@ -101,6 +101,12 @@ class AuthMainRepositoryImpl(
 
     override suspend fun getAccessTokenOrEmpty(): String {
         return dataStore.data.map {
+            it[accessTokenPreferencesKey].orEmpty()
+        }.firstOrNull().orEmpty()
+    }
+
+    override suspend fun getRefreshTokenOrEmpty(): String {
+        return dataStore.data.map {
             it[refreshTokenPreferencesKey].orEmpty()
         }.firstOrNull().orEmpty()
     }
