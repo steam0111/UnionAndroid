@@ -130,13 +130,7 @@ class IdentifyStoreFactory(
         private suspend fun onWriteOffClicked(accountingObjects: List<AccountingObjectDomain>) {
             dispatch(Result.LoadingDialogActionType(DialogActionType.WRITE_OFF))
             catchException {
-                dispatch(
-                    Result.AccountingObjects(
-                        identifyInteractor.writeOffAccountingObjects(
-                            accountingObjects
-                        )
-                    )
-                )
+                identifyInteractor.writeOffAccountingObjects(accountingObjects)
             }
             dispatch(Result.LoadingDialogActionType(null))
             dispatch(Result.DialogType(AlertType.NONE))

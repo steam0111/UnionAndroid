@@ -159,7 +159,7 @@ private fun Content(
                         .padding(horizontal = 16.dp)
                 )
             }
-            if (!state.accountingObjectDomain.isWrittenOff && state.canUpdate) {
+            if (state.accountingObjectDomain.forWrittenOff != true && state.canUpdate) {
                 item {
                     Spacer(modifier = Modifier.height(12.dp))
                     BaseButton(

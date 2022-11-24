@@ -38,5 +38,5 @@ interface AccountingObjectRepository {
 
     suspend fun getAvailableStatus(): ParamDomain
 
-    suspend fun writeOffAccountingObjects(accountingObjects: List<AccountingObjectDomain>): List<AccountingObjectDomain>
+    suspend fun writeOffAccountingObjects(accountingObjects: List<AccountingObjectDomain>)
 }

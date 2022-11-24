@@ -43,11 +43,7 @@ class AccountingObjectDetailRepositoryImpl(
 
     override suspend fun writeOffAccountingObject(accountingObject: AccountingObjectDomain) {
         withContext(coreDispatchers.io) {
-            val status = enumsSyncApi.getByCompoundId(
-                id = AccountingObjectStatus.WRITTEN_OFF.name,
-                enumType = EnumType.ACCOUNTING_OBJECT_STATUS
-            )
-            syncApi.writeOffAccountingObject(accountingObject.toAccountingObjectWriteOff(status))
+            syncApi.writeOffAccountingObject(accountingObject.toAccountingObjectWriteOff())
         }
     }
 
