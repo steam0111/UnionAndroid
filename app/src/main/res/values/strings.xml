@@ -51,6 +51,9 @@
     <string name="common_remove_rfid">Удалить RFID</string>
     <string name="common_remove_barcode">Удалить штрих-код</string>
     <string name="common_write_epc_dialog_title">Поднесите метку к считывателю и нажмите курок</string>
+    <string name="common_about_app">О приложении</string>
+    <string name="common_settings">Настройки</string>
+    <string name="common_logout">Выйти из профиля</string>
 
     <!-- Splash -->
     <string name="splash_description">ПРОГРАММНЫЙ КОМПЛЕКС ДЛЯ УЧЕТА ИМУЩЕСТВА ПРЕДПРИЯТИЯ</string>
@@ -349,7 +352,7 @@
     <string name="delete_from_list">Удалить из списка</string>
     <string name="show_utilized">Показывать утилизированные</string>
     <string name="hide_zero_values">Скрыть с нулевым значением</string>
-    <string name="build_number">"Номер версии : %d"</string>
+    <string name="build_number">"Версия %d"</string>
 
     <!-- SelectCount -->
     <string name="select_count_title">Выберите количество</string>

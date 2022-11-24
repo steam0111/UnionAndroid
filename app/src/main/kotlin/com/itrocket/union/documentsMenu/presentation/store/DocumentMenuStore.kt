@@ -38,9 +38,7 @@ interface DocumentMenuStore :
     data class State(
         val documents: List<DocumentMenuDomain> = listOf(),
         val menuDeepLevel: Int = 0,
-        val firstName: String = "",
-        val lastName: String = "",
-        val patronymic: String = "",
+        val fullName: String = "",
         val loading: Boolean = false,
         val dialogType: AlertType = AlertType.NONE
     ) {
