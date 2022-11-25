@@ -9,6 +9,7 @@ import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
+import com.itrocket.core.navigation.ToastNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailArguments
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
@@ -30,7 +31,6 @@ import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
-import com.itrocket.union.switcher.presentation.store.SwitcherResult
 
 interface InventoryCreateStore :
     Store<InventoryCreateStore.Intent, InventoryCreateStore.State, InventoryCreateStore.Label> {
@@ -137,6 +137,8 @@ interface InventoryCreateStore :
                 get() = CommentComposeFragment()
 
         }
+
+        data class ShowToast(override val message: String) : ToastNavigationLabel, Label()
 
         object ShowReadingMode : Label(),
             ShowBottomSheetNavigationLabel {

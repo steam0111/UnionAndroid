@@ -285,9 +285,10 @@ class InventoryStoreFactory(
                         dispatch(
                             Result.AccountingObjects(
                                 accountingObjectInteractor.getAccountingObjects(
-                                    ManualType.LOCATION_INVENTORY,
-                                    "",
-                                    params
+                                    locationManualType = ManualType.LOCATION_INVENTORY,
+                                    searchQuery = "",
+                                    params = params,
+                                    showUtilized = false
                                 )
                             )
                         )
