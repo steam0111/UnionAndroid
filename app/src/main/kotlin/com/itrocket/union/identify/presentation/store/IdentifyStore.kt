@@ -58,6 +58,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         val readingModeTab: ReadingModeTab = ReadingModeTab.RFID,
         val dialogType: AlertType = AlertType.NONE,
         val loadingDialogAction: DialogActionType? = null,
+        val canUpdateAccountingObjects: Boolean = false,
         val listDialogAction: List<DialogAction> = listOf(
             DialogAction(
                 type = DialogActionType.WRITE_OFF,
