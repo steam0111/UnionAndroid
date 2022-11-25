@@ -18,6 +18,8 @@ import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.toReadingMode
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.ui.listAction.DialogActionType
+import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
+import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class IdentifyStoreFactory(
@@ -27,6 +29,7 @@ class IdentifyStoreFactory(
     private val serviceEntryManager: ServiceEntryManager,
     private val readingModeInteractor: ReadingModeInteractor,
     private val moduleSettingsInteractor: ModuleSettingsInteractor,
+    private val unionPermissionsInteractor: UnionPermissionsInteractor,
     private val errorInteractor: ErrorInteractor
 ) {
     fun create(): IdentifyStore =
@@ -51,6 +54,13 @@ class IdentifyStoreFactory(
             action: Unit,
             getState: () -> IdentifyStore.State
         ) {
+            dispatch(
+                Result.CanUpdateAccountingObjects(
+                    unionPermissionsInteractor.canUpdate(
+                        UnionPermission.ACCOUNTING_OBJECT
+                    )
+                )
+            )
             dispatch(Result.ReadingMode(moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = true)))
         }
 
@@ -112,7 +122,9 @@ class IdentifyStoreFactory(
                 is IdentifyStore.Intent.OnListActionDialogClicked -> when (intent.dialogActionType) {
                     DialogActionType.WRITE_OFF -> onWriteOffClicked(accountingObjects = getState().accountingObjects)
                 }
-                is IdentifyStore.Intent.OnAccountingObjectClosed -> onAccountingObjectClosed(getState = getState)
+                is IdentifyStore.Intent.OnAccountingObjectClosed -> onAccountingObjectClosed(
+                    getState = getState
+                )
                 is IdentifyStore.Intent.OnErrorHandled -> handleError(intent.throwable)
             }
         }
@@ -188,6 +200,9 @@ class IdentifyStoreFactory(
     }
 
     private sealed class Result {
+        data class CanUpdateAccountingObjects(val canUpdateAccountingObjects: Boolean) :
+            Result()
+
         data class DialogType(val dialogType: AlertType) : Result()
         data class Loading(val isLoading: Boolean) : Result()
         data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
@@ -207,6 +222,7 @@ class IdentifyStoreFactory(
                 is Result.ReadingMode -> copy(readingModeTab = result.readingModeTab)
                 is Result.DialogType -> copy(dialogType = result.dialogType)
                 is Result.LoadingDialogActionType -> copy(loadingDialogAction = result.dialogActionType)
+                is Result.CanUpdateAccountingObjects -> copy(canUpdateAccountingObjects = result.canUpdateAccountingObjects)
             }
     }
 }

@@ -80,6 +80,7 @@ fun IdentifyScreen(
         Scaffold(
             topBar = {
                 Toolbar(
+                    canUpdateAccountingObjects = state.canUpdateAccountingObjects,
                     onBackClickListener = onBackClickListener,
                     onDropClickListener = onDropClickListener,
                     onPlusClickListener = onPlusClickListener
@@ -183,6 +184,7 @@ private fun Content(
 
 @Composable
 private fun Toolbar(
+    canUpdateAccountingObjects: Boolean,
     onBackClickListener: () -> Unit,
     onDropClickListener: () -> Unit,
     onPlusClickListener: () -> Unit
@@ -199,13 +201,15 @@ private fun Toolbar(
                     colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
                     modifier = Modifier.clickableUnbounded(onClick = onDropClickListener)
                 )
-                Spacer(modifier = Modifier.width(16.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.ic_plus),
-                    contentDescription = null,
-                    colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
-                    modifier = Modifier.clickableUnbounded(onClick = onPlusClickListener)
-                )
+                if (canUpdateAccountingObjects) {
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_plus),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(AppTheme.colors.mainColor),
+                        modifier = Modifier.clickableUnbounded(onClick = onPlusClickListener)
+                    )
+                }
             }
         }
     )
