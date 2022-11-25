@@ -21,7 +21,8 @@ data class AccountingObjectDomain(
     val comment: String? = null,
     val manualInput: Boolean? = null,
     val marked: Boolean,
-    val forWrittenOff: Boolean? = null
+    val forWrittenOff: Boolean? = null,
+    val exploitingId: String? = null
 ) : Parcelable {
     val hasBarcode: Boolean
         get() = !barcodeValue.isNullOrEmpty()

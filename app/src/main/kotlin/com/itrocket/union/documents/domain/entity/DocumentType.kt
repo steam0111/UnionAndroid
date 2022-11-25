@@ -28,6 +28,7 @@ enum class DocumentTypeDomain(
     RETURN(
         titleId = R.string.main_return,
         manualTypes = listOf(
+            ManualType.EXPLOITING,
             ManualType.LOCATION_FROM,
             ManualType.LOCATION_TO,
             ManualType.STRUCTURAL_FROM,

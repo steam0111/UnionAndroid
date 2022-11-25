@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -52,6 +53,7 @@ import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
+import com.itrocket.union.ui.BoxImageButton
 import com.itrocket.union.ui.ConfirmAlertDialog
 import com.itrocket.union.ui.DoubleTabRow
 import com.itrocket.union.ui.ImageButton
@@ -499,9 +501,10 @@ fun DocumentListBottomBar(
 ) {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
         if (isAccountingObject) {
-            ImageButton(
+            BoxImageButton(
                 imageId = R.drawable.ic_reading,
-                paddings = PaddingValues(12.dp),
+                imageSize = DpSize(30.dp, 30.dp),
+                paddings = PaddingValues(10.dp),
                 onClick = onSettingsClickListener,
                 isEnabled = documentStatus != DocumentStatus.COMPLETED && isDocumentChangePermitted
             )
@@ -524,7 +527,7 @@ fun DocumentListBottomBar(
             Spacer(modifier = Modifier.width(8.dp))
             ImageButton(
                 imageId = R.drawable.ic_save,
-                paddings = PaddingValues(12.dp),
+                paddings = PaddingValues(13.dp),
                 onClick = onSaveClickListener,
                 isEnabled = documentStatus != DocumentStatus.COMPLETED && isDocumentChangePermitted
             )
@@ -651,7 +654,7 @@ fun DocumentCreateBaseScreenPreview() {
                 type = ManualType.LOCATION
             ),
         ),
-        selectedPage = 0,
+        selectedPage = 1,
         documentStatus = DocumentStatus.CREATED,
         accountingObjectList = listOf(),
         isLoading = false,
