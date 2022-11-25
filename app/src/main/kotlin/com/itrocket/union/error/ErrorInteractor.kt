@@ -24,4 +24,8 @@ class ErrorInteractor(val context: Context) {
     fun getExceptionMessageByResId(@StringRes messageId: Int): String {
         return context.getString(messageId)
     }
+
+    fun getThrowableByResId(@StringRes messageId: Int) : Throwable {
+        return Throwable(context.getString(messageId))
+    }
 }

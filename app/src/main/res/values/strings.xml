@@ -55,6 +55,7 @@
     <string name="common_settings">Настройки</string>
     <string name="common_logout">Выйти из профиля</string>
 
+    <string name="common_server_validate_error">Введен неправильный сервер или порт</string>
     <!-- Splash -->
     <string name="splash_description">ПРОГРАММНЫЙ КОМПЛЕКС ДЛЯ УЧЕТА ИМУЩЕСТВА ПРЕДПРИЯТИЯ</string>
     <string name="splash_company_title">Developed on Union EAM software product</string>

@@ -7,12 +7,15 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.R
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.network.HttpException
 import com.itrocket.union.serverConnect.domain.ServerConnectInteractor
 import com.itrocket.union.serverConnect.domain.StyleInteractor
 import com.itrocket.union.theme.domain.ColorInteractor
 import com.itrocket.union.theme.domain.MediaInteractor
 import com.itrocket.union.theme.domain.entity.Medias
+import com.squareup.moshi.JsonEncodingException
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -133,9 +136,15 @@ class ServerConnectStoreFactory(
                 colorInteractor.initColorSettings()
                 mediaInteractor.saveMedias(headerFile = headerFile, logoFile = logoFile)
             } catch (t: Throwable) {
-                colorInteractor.saveLocalColorSettings()
-                colorInteractor.initColorSettings()
-                mediaInteractor.removeMedias()
+                when (t) {
+                    is JsonEncodingException -> throw errorInteractor.getThrowableByResId(R.string.common_server_validate_error)
+                    is HttpException -> {
+                        colorInteractor.saveLocalColorSettings()
+                        colorInteractor.initColorSettings()
+                        mediaInteractor.removeMedias()
+                    }
+                    else -> throw t
+                }
             }
         }
 
