@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -36,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.itrocket.union.R
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -122,6 +124,36 @@ fun ImageButton(
             .padding(paddings)
 
     )
+}
+
+@Composable
+fun BoxImageButton(
+    @DrawableRes imageId: Int,
+    paddings: PaddingValues,
+    imageSize: DpSize,
+    onClick: () -> Unit,
+    isEnabled: Boolean = true,
+    enableBackgroundColor: Color = AppTheme.colors.mainColor,
+    disableBackgroundColor: Color = graphite3
+) {
+    val backgroundColor = if (isEnabled) enableBackgroundColor else disableBackgroundColor
+
+    Box(
+        modifier = Modifier
+            .background(backgroundColor, RoundedCornerShape(8.dp))
+            .clickable(onClick = onClick, enabled = isEnabled, interactionSource = remember {
+                MutableInteractionSource()
+            }, indication = rememberRipple())
+            .clip(RoundedCornerShape(8.dp))
+            .padding(paddings)
+    ) {
+        Image(
+            painter = painterResource(id = imageId),
+            contentDescription = null,
+            modifier = Modifier.size(imageSize)
+        )
+    }
+
 }
 
 @Composable
@@ -322,4 +354,15 @@ fun OutlinedImageButtonPreview() {
 @Preview
 fun TextButtonPreview() {
     TextButton(text = "Title", onClick = { })
+}
+
+@Composable
+@Preview
+private fun BoxImageButtonPreview() {
+    BoxImageButton(
+        imageId = R.drawable.ic_reading,
+        onClick = {},
+        paddings = PaddingValues(12.dp),
+        imageSize = DpSize(24.dp, 24.dp)
+    )
 }

@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
@@ -28,6 +29,7 @@ import com.itrocket.union.readingMode.presentation.store.ReadingModeStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BottomSheetDivider
+import com.itrocket.union.ui.BoxImageButton
 import com.itrocket.union.ui.ImageButton
 import com.itrocket.union.ui.ReadingModeTabs
 import com.itrocket.union.ui.white
@@ -97,9 +99,10 @@ private fun BottomBar(
     selectedTab: ReadingModeTab
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        ImageButton(
+        BoxImageButton(
             imageId = R.drawable.ic_reading,
-            paddings = PaddingValues(12.dp),
+            imageSize = DpSize(30.dp, 30.dp),
+            paddings = PaddingValues(10.dp),
             onClick = onSettingsClickListener,
             isEnabled = selectedTab == ReadingModeTab.RFID
         )
@@ -113,7 +116,7 @@ private fun BottomBar(
         Spacer(modifier = Modifier.width(16.dp))
         ImageButton(
             imageId = R.drawable.ic_restart,
-            paddings = PaddingValues(12.dp),
+            paddings = PaddingValues(vertical = 12.dp, horizontal = 11.dp),
             onClick = onRestartClickListener
         )
     }

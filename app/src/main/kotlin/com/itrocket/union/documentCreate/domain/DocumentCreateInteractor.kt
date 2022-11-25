@@ -446,6 +446,62 @@ class DocumentCreateInteractor(
         }
     }
 
+    suspend fun getExploitingFilterIfDocumentReturn(
+        documentType: DocumentTypeDomain,
+        params: List<ParamDomain>
+    ): List<ParamDomain> {
+        return withContext(coreDispatchers.io) {
+            if (documentType != DocumentTypeDomain.RETURN) {
+                listOf()
+            } else {
+                val exploitingIndex = params.indexOfFirst { it.type == ManualType.EXPLOITING }
+                listOf(params[exploitingIndex])
+            }
+        }
+    }
+
+    suspend fun tryChangeReturnExploiting(
+        documentType: DocumentTypeDomain,
+        params: List<ParamDomain>,
+        accountingObjects: List<AccountingObjectDomain>
+    ): List<ParamDomain> {
+        return withContext(coreDispatchers.io) {
+            val isDocumentReturn = documentType == DocumentTypeDomain.RETURN
+
+            if (isDocumentReturn) {
+                changeReturnExploiting(params = params, accountingObjects = accountingObjects)
+            } else {
+                params
+            }
+        }
+    }
+
+    private suspend fun changeReturnExploiting(
+        params: List<ParamDomain>,
+        accountingObjects: List<AccountingObjectDomain>
+    ): List<ParamDomain> {
+        return withContext(coreDispatchers.io) {
+            val mutableParams = params.toMutableList()
+            val paramExploitingIndex =
+                mutableParams.indexOfFirst { it.type == ManualType.EXPLOITING }
+            val paramExploiting = mutableParams[paramExploitingIndex]
+
+            if (paramExploiting.value.isEmpty()) {
+                val accountingObjectExploitingId =
+                    accountingObjects.find { it.exploitingId != null }?.exploitingId
+                accountingObjectExploitingId?.let {
+                    val exploiting = employeeInteractor.getEmployeeDetail(it)
+                    mutableParams[paramExploitingIndex] =
+                        mutableParams[paramExploitingIndex].copy(
+                            id = exploiting?.id,
+                            value = exploiting?.fullName.orEmpty()
+                        )
+                }
+            }
+            mutableParams
+        }
+    }
+
     companion object {
         private const val NO_POSITION = -1
     }

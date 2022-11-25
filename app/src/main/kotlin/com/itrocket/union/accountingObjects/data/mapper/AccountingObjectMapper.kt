@@ -56,6 +56,7 @@ fun AccountingObjectSyncEntity.map(): AccountingObjectDomain {
         comment = comment,
         manualInput = manualInput,
         marked = marked,
+        exploitingId = exploitingEmployeeId,
         forWrittenOff = forWriteOff
     )
 }

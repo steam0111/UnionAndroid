@@ -18,7 +18,6 @@ import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.error.ErrorInteractor
-import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.manual.CheckBoxParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
@@ -26,12 +25,10 @@ import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.nfcReader.presentation.store.NfcReaderResult
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
-import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.selectParams.domain.SelectParamsInteractor
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
-import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class DocumentCreateStoreFactory(
     private val storeFactory: StoreFactory,
@@ -39,12 +36,10 @@ class DocumentCreateStoreFactory(
     private val documentCreateInteractor: DocumentCreateInteractor,
     private val documentCreateArguments: DocumentCreateArguments,
     private val errorInteractor: ErrorInteractor,
-    private val filterInteractor: FilterInteractor,
     private val selectParamsInteractor: SelectParamsInteractor,
     private val documentAccountingObjectManager: DocumentAccountingObjectManager,
     private val documentReservesManager: DocumentReservesManager,
     private val unionPermissionsInteractor: UnionPermissionsInteractor,
-    private val serviceEntryManager: ServiceEntryManager,
     private val moduleSettingsInteractor: ModuleSettingsInteractor
 ) {
     fun create(): DocumentCreateStore =
@@ -94,17 +89,15 @@ class DocumentCreateStoreFactory(
                 document?.let { dispatch(Result.Document(it)) }
                 dispatch(Result.CanDelete(getState().canUpdate && !getState().document.isStatusCompleted))
                 changeParams(getState().document.params)
-                dispatch(
-                    Result.Params(
-                        documentCreateInteractor.changeParams(
-                            oldParams = getState().params,
-                            newParams = getState().params,
-                            documentType = getState().document.documentType
-                        )
-                    )
-                )
 
+                val params = documentCreateInteractor.changeParams(
+                    oldParams = getState().params,
+                    newParams = getState().params,
+                    documentType = getState().document.documentType
+                )
+                dispatch(Result.Params(params))
                 dispatch(Result.AccountingObjects(document?.accountingObjects ?: listOf()))
+                tryChangeReturnExploiting(getState)
                 dispatch(Result.Reserves(document?.reserves ?: listOf()))
 
             }
@@ -121,11 +114,7 @@ class DocumentCreateStoreFactory(
                     getState
                 )
                 DocumentCreateStore.Intent.OnChooseReserveClicked -> onChooseReserveClicked(getState)
-                DocumentCreateStore.Intent.OnDropClicked -> {
-                    changeParams(getState().document.params)
-                    dispatch(Result.AccountingObjects(getState().document.accountingObjects))
-                    dispatch(Result.Reserves(getState().document.reserves))
-                }
+                DocumentCreateStore.Intent.OnDropClicked -> onDropClicked(getState)
                 is DocumentCreateStore.Intent.OnParamClicked -> {
                     if (!getState().document.isStatusCompleted) {
                         showParams(
@@ -155,16 +144,10 @@ class DocumentCreateStoreFactory(
                 }
                 is DocumentCreateStore.Intent.OnSelectPage -> dispatch(Result.SelectPage(intent.selectedPage))
                 DocumentCreateStore.Intent.OnSettingsClicked -> publish(DocumentCreateStore.Label.ShowReadingMode)
-                is DocumentCreateStore.Intent.OnAccountingObjectSelected -> {
-                    dispatch(
-                        Result.AccountingObjects(
-                            documentCreateInteractor.addAccountingObject(
-                                accountingObjects = getState().accountingObjects,
-                                accountingObject = intent.accountingObjectDomain
-                            )
-                        )
-                    )
-                }
+                is DocumentCreateStore.Intent.OnAccountingObjectSelected -> onAccountingObjectSelected(
+                    getState = getState,
+                    accountingObject = intent.accountingObjectDomain
+                )
                 is DocumentCreateStore.Intent.OnNewAccountingObjectBarcodeHandled -> handleBarcodeAccountingObjects(
                     barcode = intent.barcode,
                     accountingObjects = getState().accountingObjects,
@@ -227,6 +210,40 @@ class DocumentCreateStoreFactory(
                 DocumentCreateStore.Intent.OnListItemDialogDismissed -> onListItemDialogDismissed()
                 is DocumentCreateStore.Intent.OnErrorHandled -> handleError(intent.throwable)
             }
+        }
+
+        private suspend fun onDropClicked(getState: () -> DocumentCreateStore.State) {
+            changeParams(getState().document.params)
+            dispatch(Result.AccountingObjects(getState().document.accountingObjects))
+            dispatch(Result.Reserves(getState().document.reserves))
+            tryChangeReturnExploiting(getState)
+        }
+
+        private suspend fun tryChangeReturnExploiting(getState: () -> DocumentCreateStore.State) {
+            dispatch(
+                Result.Params(
+                    documentCreateInteractor.tryChangeReturnExploiting(
+                        documentType = getState().document.documentType,
+                        params = getState().params,
+                        accountingObjects = getState().accountingObjects
+                    )
+                )
+            )
+        }
+
+        private suspend fun onAccountingObjectSelected(
+            getState: () -> DocumentCreateStore.State,
+            accountingObject: AccountingObjectDomain
+        ) {
+            dispatch(
+                Result.AccountingObjects(
+                    documentCreateInteractor.addAccountingObject(
+                        accountingObjects = getState().accountingObjects,
+                        accountingObject = accountingObject
+                    )
+                )
+            )
+            tryChangeReturnExploiting(getState)
         }
 
         private fun onListItemDialogDismissed() {
@@ -412,6 +429,7 @@ class DocumentCreateStoreFactory(
                         isSerialNumber = readingModeTab == ReadingModeTab.SN
                     )
                 dispatch(Result.AccountingObjects(newAccountingObjects))
+                tryChangeReturnExploiting(getState)
             }
         }
 
@@ -426,6 +444,7 @@ class DocumentCreateStoreFactory(
                     handledAccountingObjectRfids = rfids
                 )
                 dispatch(Result.AccountingObjects(newAccountingObjects))
+                tryChangeReturnExploiting(getState)
             }
         }
 
@@ -466,7 +485,10 @@ class DocumentCreateStoreFactory(
         private suspend fun onChooseAccountingObjectClicked(getState: () -> DocumentCreateStore.State) {
             publish(
                 DocumentCreateStore.Label.ShowAccountingObjects(
-                    listOf(),
+                    documentCreateInteractor.getExploitingFilterIfDocumentReturn(
+                        documentType = getState().document.documentType,
+                        params = getState().params
+                    ),
                     documentCreateInteractor.getAccountingObjectIds(getState().accountingObjects)
                 )
             )
