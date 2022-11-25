@@ -15,6 +15,9 @@ import com.itrocket.union.readerPower.domain.ReaderPowerInteractor.Companion.MIN
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.syncAll.domain.SyncAllInteractor
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ModuleSettingsStoreFactory(
@@ -42,6 +45,9 @@ class ModuleSettingsStoreFactory(
         BaseExecutor<ModuleSettingsStore.Intent, Unit, ModuleSettingsStore.State, Result, ModuleSettingsStore.Label>(
             context = coreDispatchers.ui
         ) {
+
+        private var powerJob: Job? = null
+
         override suspend fun executeAction(
             action: Unit,
             getState: () -> ModuleSettingsStore.State
@@ -99,15 +105,7 @@ class ModuleSettingsStoreFactory(
                         intent.service
                     )
                 )
-                is ModuleSettingsStore.Intent.OnPowerChanged -> {
-                    val power = intent.newPowerText.toIntOrNull()
-                    val newPower = if (power != null) {
-                        readerPowerInteractor.validateNewPower(power = power)
-                    } else {
-                        power
-                    }
-                    dispatch(Result.ReaderPower(newPower))
-                }
+                is ModuleSettingsStore.Intent.OnPowerChanged -> onPowerChanged(intent.newPowerText)
                 ModuleSettingsStore.Intent.OnArrowDownClicked -> {
                     val readerPower = getState().readerPower ?: MIN_READER_POWER
                     val newPower = readerPowerInteractor.increasePower(readerPower)
@@ -143,6 +141,21 @@ class ModuleSettingsStoreFactory(
             }
         }
 
+        private suspend fun onPowerChanged(newPowerText: String){
+            coroutineScope {
+                powerJob?.cancel()
+                powerJob = launch {
+                    val power = newPowerText.toIntOrNull()
+                    val newPower = if (power != null) {
+                        readerPowerInteractor.validateNewPower(power = power)
+                    } else {
+                        power
+                    }
+                    dispatch(Result.ReaderPower(newPower))
+                }
+            }
+        }
+
         private fun onCursorDefined(keyCode: Int, isDefineWait: Boolean) {
             if (isDefineWait) {
                 dispatch(Result.KeyCode(keyCode))
@@ -174,6 +187,11 @@ class ModuleSettingsStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             publish(ModuleSettingsStore.Label.Error(errorInteractor.getTextMessage(throwable)))
+        }
+
+        override fun dispose() {
+            powerJob?.cancel()
+            super.dispose()
         }
     }
 

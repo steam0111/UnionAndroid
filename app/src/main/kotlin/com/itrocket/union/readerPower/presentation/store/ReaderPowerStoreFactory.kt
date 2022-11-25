@@ -5,13 +5,13 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import com.itrocket.union.readerPower.domain.ReaderPowerInteractor
-import com.itrocket.union.readerPower.domain.entity.ReaderPowerDomain
-import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.core.base.BaseExecutor
+import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.readerPower.domain.ReaderPowerInteractor
 import com.itrocket.union.readerPower.domain.ReaderPowerInteractor.Companion.MIN_READER_POWER
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 class ReaderPowerStoreFactory(
     private val storeFactory: StoreFactory,
@@ -35,6 +35,9 @@ class ReaderPowerStoreFactory(
         BaseExecutor<ReaderPowerStore.Intent, Unit, ReaderPowerStore.State, Result, ReaderPowerStore.Label>(
             context = coreDispatchers.ui
         ) {
+
+        private var powerJob: Job? = null
+
         override suspend fun executeAction(
             action: Unit,
             getState: () -> ReaderPowerStore.State
@@ -59,10 +62,7 @@ class ReaderPowerStoreFactory(
                 ReaderPowerStore.Intent.OnCancelClicked -> dispatch(
                     Result.ReaderPower(MIN_READER_POWER)
                 )
-                is ReaderPowerStore.Intent.OnPowerChanged -> {
-                    val newPower = readerPowerInteractor.changePower(intent.newPowerText?.toIntOrNull())
-                    dispatch(Result.ReaderPower(newPower))
-                }
+                is ReaderPowerStore.Intent.OnPowerChanged -> onPowerChanged(newPowerText = intent.newPowerText)
                 ReaderPowerStore.Intent.OnArrowDownClicked -> {
                     val readerPower = getState().readerPower ?: MIN_READER_POWER
                     val newPower = readerPowerInteractor.increasePower(readerPower)
@@ -74,6 +74,22 @@ class ReaderPowerStoreFactory(
                     dispatch(Result.ReaderPower(newPower))
                 }
             }
+        }
+
+        private suspend fun onPowerChanged(newPowerText: String?) {
+            coroutineScope {
+                powerJob?.cancel()
+                powerJob = launch {
+                    val newPower =
+                        readerPowerInteractor.changePower(newPowerText?.toIntOrNull())
+                    dispatch(Result.ReaderPower(newPower))
+                }
+            }
+        }
+
+        override fun dispose() {
+            powerJob?.cancel()
+            super.dispose()
         }
     }
 

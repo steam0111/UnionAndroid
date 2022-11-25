@@ -1,6 +1,6 @@
 package com.itrocket.union.ui
 
-import android.widget.NumberPicker
+import android.graphics.Typeface
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,6 +25,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.itrocket.union.R
 import com.itrocket.union.readerPower.domain.ReaderPowerInteractor
 import com.itrocket.utils.rememberViewInteropNestedScrollConnection
+import com.itrocket.utils.toPx
 
 @Composable
 fun ReaderPowerPicker(
@@ -54,20 +55,30 @@ fun ReaderPowerPicker(
             )
         )
         Spacer(modifier = Modifier.width(24.dp))
+        val selectedTextSize = 20.toPx.toFloat()
+        val textSize = 14.toPx.toFloat()
+        val dividerSize = 1.toPx
         AndroidView(
+            update = {
+                it.value = power
+            },
             factory = {
-                NumberPicker(it).apply {
-                    setOnValueChangedListener { numberPicker, _, _ -> onPowerChanged(numberPicker.value.toString()) }
+                com.itrocket.number_picker.NumberPicker(it).apply {
+                    setOnValueChangedListener { _, _, current -> onPowerChanged(current.toString()) }
                     value = power
                     minValue = ReaderPowerInteractor.MIN_READER_POWER
                     maxValue = ReaderPowerInteractor.MAX_READER_POWER
+
+                    setSelectedTextSize(selectedTextSize)
+                    setTextSize(textSize)
+                    setSelectedTypeface(Typeface.DEFAULT_BOLD)
+                    setDividerColorResource(R.color.psb_4)
+                    setDividerThickness(dividerSize)
                 }
-            }, modifier = Modifier
+            },
+            modifier = Modifier
                 .weight(1f)
                 .nestedScroll(rememberViewInteropNestedScrollConnection()),
-            update = {
-                it.value = power
-            }
         )
         Spacer(modifier = Modifier.width(24.dp))
         Image(
