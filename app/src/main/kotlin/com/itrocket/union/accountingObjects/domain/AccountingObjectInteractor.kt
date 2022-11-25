@@ -28,7 +28,8 @@ class AccountingObjectInteractor(
         params: List<ParamDomain>,
         selectedAccountingObjectIds: List<String> = listOf(),
         offset: Long? = null,
-        limit: Long? = null
+        limit: Long? = null,
+        showUtilized: Boolean = true
     ): List<AccountingObjectDomain> =
         withContext(coreDispatchers.io) {
             val lastLocationId = params.getFilterLocationLastId(locationManualType)
@@ -46,13 +47,13 @@ class AccountingObjectInteractor(
             }
 
             repository.getAccountingObjects(
-                searchQuery,
-                params,
-                filterLocationIds,
-                filterStructuralIds,
+                textQuery = searchQuery,
+                params = params,
+                selectedLocationIds = filterLocationIds,
+                structuralIds = filterStructuralIds,
                 offset = offset,
                 limit = limit,
-                showUtilized = params.getFilterShowUtilizedAccountingObjects()
+                showUtilized = params.getFilterShowUtilizedAccountingObjects() && showUtilized
             ).filter {
                 !selectedAccountingObjectIds.contains(it.id)
             }

@@ -7,6 +7,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.comment.domain.CommentInteractor
@@ -409,18 +410,27 @@ class InventoryCreateStoreFactory(
             if (canEditInventory(getState())) {
                 dispatch(Result.Loading(true))
                 catchException {
-                    val inventoryAccountingObjects =
+                    val scannedAccountingObjects =
                         inventoryCreateInteractor.handleNewAccountingObjectRfids(
                             accountingObjects = accountingObjects,
                             handledAccountingObjectIds = handledAccountingObjectIds,
                             inventoryStatus = inventoryStatus,
                             isAddNew = isAddNew,
                         )
-                    dispatch(Result.AccountingObjects(inventoryAccountingObjects))
+                    dispatch(Result.AccountingObjects(scannedAccountingObjects.accountingObjects))
+                    if (scannedAccountingObjects.hasWrittenOffAccountingObjects) {
+                        publish(
+                            InventoryCreateStore.Label.ShowToast(
+                                errorInteractor.getExceptionMessageByResId(
+                                    R.string.inventory_create_written_off_error
+                                )
+                            )
+                        )
+                    }
                     if (isShowSearch) {
                         listenAccountingObjects(
                             searchText = searchText,
-                            accountingObjects = inventoryAccountingObjects,
+                            accountingObjects = scannedAccountingObjects.accountingObjects,
                             getState = getState
                         )
                     }
@@ -447,7 +457,7 @@ class InventoryCreateStoreFactory(
             if (canEditInventory(getState())) {
                 dispatch(Result.Loading(true))
                 catchException {
-                    val inventoryAccountingObjects =
+                    val scannedAccountingObjects =
                         inventoryCreateInteractor.handleNewAccountingObjectBarcode(
                             accountingObjects = accountingObjects,
                             barcode = barcode,
@@ -455,11 +465,20 @@ class InventoryCreateStoreFactory(
                             isAddNew = isAddNew,
                             isSerialNumber = readingModeTab == ReadingModeTab.SN
                         )
-                    dispatch(Result.AccountingObjects(inventoryAccountingObjects))
+                    if (scannedAccountingObjects.hasWrittenOffAccountingObjects) {
+                        publish(
+                            InventoryCreateStore.Label.ShowToast(
+                                errorInteractor.getExceptionMessageByResId(
+                                    R.string.inventory_create_written_off_error
+                                )
+                            )
+                        )
+                    }
+                    dispatch(Result.AccountingObjects(scannedAccountingObjects.accountingObjects))
                     if (isShowSearch) {
                         listenAccountingObjects(
                             searchText = searchText,
-                            accountingObjects = inventoryAccountingObjects,
+                            accountingObjects = scannedAccountingObjects.accountingObjects,
                             getState = getState
                         )
                     }

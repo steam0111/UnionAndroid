@@ -7,9 +7,11 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.snackbar.Snackbar
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
+import com.itrocket.union.R
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailResult
 import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailComposeFragment
 import com.itrocket.union.comment.presentation.store.CommentResult

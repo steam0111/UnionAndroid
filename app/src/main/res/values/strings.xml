@@ -282,6 +282,7 @@
     <string name="inventory_create_not_found">Не найден</string>
     <string name="inventory_create_open_ao">Открыть карточку ОУ</string>
     <string name="inventory_create_add_comment">Добавить комментарий</string>
+    <string name="inventory_create_written_off_error">Идентификатор утилизированного объекта нельзя добавить в ведомость</string>
 
     <!-- Switcher -->
     <string name="switcher_accounting_object_status">Статус ОС</string>

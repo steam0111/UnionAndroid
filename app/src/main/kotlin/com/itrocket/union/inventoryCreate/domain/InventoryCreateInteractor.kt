@@ -9,11 +9,11 @@ import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
 import com.itrocket.union.inventoryCreate.domain.entity.AccountingObjectCounter
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
+import com.itrocket.union.inventoryCreate.domain.entity.ScannedAccountingObjects
 import com.itrocket.union.inventoryCreate.domain.entity.toUpdateSyncEntity
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
-import com.itrocket.union.switcher.domain.entity.SwitcherDomain
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 import kotlinx.coroutines.withContext
@@ -107,7 +107,7 @@ class InventoryCreateInteractor(
         handledAccountingObjectIds: List<String>,
         inventoryStatus: InventoryStatus,
         isAddNew: Boolean,
-    ): List<AccountingObjectDomain> {
+    ): ScannedAccountingObjects {
         return withContext(coreDispatchers.io) {
             val newAccountingObjectRfids = mutableListOf<String>()
             val mutableAccountingObjects = accountingObjects.toMutableList()
@@ -134,7 +134,10 @@ class InventoryCreateInteractor(
 
             val handledAccountingObjects =
                 getHandlesAccountingObjectByRfid(newAccountingObjectRfids)
-            handledAccountingObjects + mutableAccountingObjects
+            hasWrittenOffAccountingObjects(
+                newAccountingObjects = handledAccountingObjects,
+                existAccountingObjects = mutableAccountingObjects
+            )
         }
     }
 
@@ -144,7 +147,7 @@ class InventoryCreateInteractor(
         inventoryStatus: InventoryStatus,
         isAddNew: Boolean,
         isSerialNumber: Boolean
-    ): List<AccountingObjectDomain> {
+    ): ScannedAccountingObjects {
         return withContext(coreDispatchers.io) {
             val barcodeAccountingObjects = mutableListOf<AccountingObjectDomain>()
             val mutableAccountingObjects = accountingObjects.toMutableList()
@@ -177,9 +180,23 @@ class InventoryCreateInteractor(
                     }
                 }
             }
-
-            barcodeAccountingObjects + mutableAccountingObjects
+            hasWrittenOffAccountingObjects(
+                newAccountingObjects = barcodeAccountingObjects,
+                existAccountingObjects = mutableAccountingObjects
+            )
         }
+    }
+
+    private fun hasWrittenOffAccountingObjects(
+        newAccountingObjects: List<AccountingObjectDomain>,
+        existAccountingObjects: List<AccountingObjectDomain>
+    ): ScannedAccountingObjects {
+        val filterWriteOffAccountingObjects =
+            newAccountingObjects.filter { !it.isWrittenOff }
+        return ScannedAccountingObjects(
+            accountingObjects = filterWriteOffAccountingObjects + existAccountingObjects,
+            hasWrittenOffAccountingObjects = newAccountingObjects.size > filterWriteOffAccountingObjects.size
+        )
     }
 
     fun disableBalanceUnit(params: List<ParamDomain>): List<ParamDomain> {
