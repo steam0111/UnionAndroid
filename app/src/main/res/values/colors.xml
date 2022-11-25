@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="bottom_sheet_background">#A6323242</color>
     <color name="ic_launcher_background">#FFFFFF</color>
+    <color name="psb_4">#C7CAD3</color>
+    <color name="psb_3">#6B6B74</color>
 </resources>
