@@ -373,7 +373,8 @@ class SelectParamsStoreFactory(
                 selectParamsInteractor.getParamValues(
                     allParams = allParams,
                     type = type,
-                    searchText = searchText
+                    searchText = searchText,
+                    sourceScreen = selectParamsArguments.sourceScreen
                 )
                     .catch { handleError(it) }
                     .collect {

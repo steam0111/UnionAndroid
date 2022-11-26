@@ -21,8 +21,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class DocumentInteractor(
-    private val repository: DocumentRepository,
-    private val coreDispatchers: CoreDispatchers
+    private val repository: DocumentRepository, private val coreDispatchers: CoreDispatchers
 ) {
     suspend fun getDocuments(
         searchQuery: String = "",
@@ -61,9 +60,7 @@ class DocumentInteractor(
                                 getTextDateFromStringDate(it.key)
                             } else {
                                 it.key
-                            },
-                            dayType = documentDateType,
-                            date = it.key
+                            }, dayType = documentDateType, date = it.key
                         )
                     )
                     documentViews.addAll(it.value.map {
@@ -83,14 +80,9 @@ class DocumentInteractor(
         return listOf(
             StructuralParamDomain(manualType = ManualType.STRUCTURAL_FROM),
             StructuralParamDomain(manualType = ManualType.STRUCTURAL_TO),
-            ParamDomain(
-                type = ManualType.MOL,
-                value = ""
-            ),
-            ParamDomain(
-                type = ManualType.EXPLOITING,
-                value = ""
-            )
+            ParamDomain(type = ManualType.MOL, value = ""),
+            ParamDomain(type = ManualType.EXPLOITING, value = ""),
+            ParamDomain(type = ManualType.DOCUMENT_CODE)
         )
     }
 }

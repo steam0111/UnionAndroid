@@ -11,6 +11,7 @@ import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getFilterInventoryBaseId
 import com.itrocket.union.manual.getFilterStructuralLastId
+import com.itrocket.union.manual.getInventoryCode
 import com.itrocket.union.manual.getMolId
 import kotlinx.coroutines.withContext
 
@@ -53,7 +54,8 @@ class InventoryRepositoryImpl(
                 molId = params?.getMolId(),
                 inventoryBaseId = params?.getFilterInventoryBaseId(),
                 offset = offset,
-                limit = limit
+                limit = limit,
+                code = params?.getInventoryCode()
             ).map { it.map() }
         }
 
@@ -63,7 +65,8 @@ class InventoryRepositoryImpl(
                 textQuery = textQuery,
                 structuralId = params?.getFilterStructuralLastId(ManualType.STRUCTURAL),
                 molId = params?.getMolId(),
-                inventoryBaseId = params?.getFilterInventoryBaseId()
+                inventoryBaseId = params?.getFilterInventoryBaseId(),
+                code = params?.getInventoryCode()
             )
         }
 

@@ -30,4 +30,9 @@ interface SelectParamsRepository {
         type: ManualType,
         textQuery: String?
     ): Flow<List<ParamDomain>>
+
+    suspend fun getDocumentsCodes(number: String, documentType: String?): Flow<List<ParamDomain>>
+
+    suspend fun getInventoriesCodes(number: String): Flow<List<ParamDomain>>
+
 }

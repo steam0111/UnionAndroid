@@ -65,7 +65,8 @@ class DocumentSyncApiImpl(
         molId: String?,
         exploitingId: String?,
         structuralFromId: String?,
-        structuralToId: String?
+        structuralToId: String?,
+        code: String?
     ): Long {
         return documentDao.getCount(
             sqlDocumentsQuery(
@@ -75,7 +76,8 @@ class DocumentSyncApiImpl(
                 structuralFromId = structuralFromId,
                 structuralToId = structuralToId,
                 isFilterCount = true,
-                type = type
+                type = type,
+                code = code
             )
         )
     }
@@ -86,7 +88,8 @@ class DocumentSyncApiImpl(
         molId: String?,
         exploitingId: String?,
         structuralFromId: String?,
-        structuralToId: String?
+        structuralToId: String?,
+        code: String?
     ): Flow<List<DocumentSyncEntity>> {
         return documentDao.getAll(
             sqlDocumentsQuery(
@@ -95,7 +98,8 @@ class DocumentSyncApiImpl(
                 exploitingId = exploitingId,
                 structuralFromId = structuralFromId,
                 structuralToId = structuralToId,
-                type = type
+                type = type,
+                code = code
             )
         ).map { documents ->
             documents.map { document ->
@@ -216,6 +220,10 @@ class DocumentSyncApiImpl(
             actionId = documentUpdateReservesSyncEntity.id,
             userUpdated = documentUpdateReservesSyncEntity.userUpdated
         )
+    }
+
+    override suspend fun getDocumentsCodes(number: String, documentType: String?): List<String> {
+        return documentDao.getDocumentsCodes("%$number%", documentType)
     }
 
     private suspend fun updateActionRecords(

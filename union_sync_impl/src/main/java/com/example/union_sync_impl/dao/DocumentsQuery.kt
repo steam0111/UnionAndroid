@@ -21,6 +21,7 @@ fun sqlDocumentsQuery(
         isFilterCount: Boolean = false,
         type: String? = null,
         isNonCancel: Boolean = true,
+        code: String? = null
 ): SimpleSQLiteQuery {
     val mainQuery = if (isFilterCount) {
         "SELECT COUNT(*) FROM documents"
@@ -75,6 +76,9 @@ fun sqlDocumentsQuery(
                         }
                         type?.let {
                             add("documentType" isEquals type)
+                        }
+                        code?.let {
+                            add("code" contains code)
                         }
                     }
             )

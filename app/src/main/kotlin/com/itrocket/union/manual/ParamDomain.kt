@@ -5,6 +5,10 @@ import com.itrocket.union.location.domain.entity.LocationDomain
 import com.itrocket.union.structural.domain.entity.StructuralDomain
 import kotlinx.parcelize.Parcelize
 
+/**
+id используется для поиска в бд (ниже в файле есть функции из которых мы по ManualType выбираем айди и потом используем в запросах)
+value используется на экране фильтра в SelectedBaseField (то название, которое видим в списке на экране SelectParamsComposeFragment)
+ */
 @Parcelize
 open class ParamDomain(
     open val id: String? = null,
@@ -35,6 +39,14 @@ open class ParamDomain(
 
 fun List<ParamDomain>.getFilterStructuralLastId(type: ManualType): String? {
     return getStructuralParamDomain(type)?.structurals?.lastOrNull()?.id
+}
+
+fun List<ParamDomain>.getDocumentCode(): String? {
+    return filterNotEmpty().find { it.type == ManualType.DOCUMENT_CODE }?.value
+}
+
+fun List<ParamDomain>.getInventoryCode(): String? {
+    return filterNotEmpty().find { it.type == ManualType.INVENTORY_CODE }?.value
 }
 
 fun List<ParamDomain>.getFilterLocationLastId(type: ManualType = ManualType.LOCATION): String? {

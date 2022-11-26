@@ -7,7 +7,6 @@ import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.flow.Flow
 
 class InventoriesInteractor(
     private val repository: InventoryRepository,
@@ -30,10 +29,8 @@ class InventoriesInteractor(
     fun getFilters(): List<ParamDomain> {
         return listOf(
             StructuralParamDomain(manualType = ManualType.STRUCTURAL),
-            ParamDomain(
-                type = ManualType.MOL,
-                value = ""
-            )
+            ParamDomain(type = ManualType.MOL, value = ""),
+            ParamDomain(type = ManualType.INVENTORY_CODE)
         )
     }
 }

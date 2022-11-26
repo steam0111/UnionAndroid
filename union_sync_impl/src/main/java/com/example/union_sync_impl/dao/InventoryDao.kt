@@ -55,4 +55,7 @@ interface InventoryDao {
 
     @Query("DELETE FROM inventories")
     suspend fun clearAll()
+
+    @Query("SELECT code FROM inventories WHERE code LIKE :number")
+    suspend fun getInventoriesCodes(number: String): List<String>
 }

@@ -71,6 +71,7 @@ class FilterStoreFactory(
                     dispatch(Result.Filters(newFilters))
                     dispatch(Result.Count(getResultCount(newFilters, getState())))
                 }
+
                 is FilterStore.Intent.OnShowClicked -> {
                     publish(
                         FilterStore.Label.GoBack(
@@ -78,15 +79,18 @@ class FilterStoreFactory(
                         )
                     )
                 }
+
                 FilterStore.Intent.OnCrossClicked -> {
                     publish(FilterStore.Label.GoBack())
                 }
+
                 FilterStore.Intent.OnDropClicked -> {
                     val droppedFilterFields =
                         filterInteractor.dropFilterFields(getState().params)
                     dispatch(Result.Filters(droppedFilterFields))
                     dispatch(Result.Count(getResultCount(droppedFilterFields, getState())))
                 }
+
                 is FilterStore.Intent.OnFilterChanged -> {
                     val filterList = filterInteractor.changeFilters(
                         filters = getState().params,
@@ -110,11 +114,13 @@ class FilterStoreFactory(
                 ManualType.DATE -> {
                     //no-op
                 }
+
                 else -> {
                     publish(
                         FilterStore.Label.ShowFilters(
                             currentFilter = filter,
-                            allParams = getState().params
+                            allParams = getState().params,
+                            sourceScreen = filterArgs.from
                         )
                     )
                 }

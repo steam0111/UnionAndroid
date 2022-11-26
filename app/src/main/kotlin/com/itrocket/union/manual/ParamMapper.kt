@@ -49,3 +49,9 @@ fun EnumSyncEntity.toParam(type: ManualType) = ParamDomain(
     value = name,
     type = type
 )
+
+fun String.toParam(type: ManualType) = ParamDomain(
+    value = this,
+    type = type,
+    id = this
+)
