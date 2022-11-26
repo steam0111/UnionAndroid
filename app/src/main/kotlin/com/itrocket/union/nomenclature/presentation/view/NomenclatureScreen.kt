@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
 import com.itrocket.union.common.DefaultItem
+import com.itrocket.union.manual.isFilterApplied
 import com.itrocket.union.nomenclature.domain.entity.NomenclatureDomain
 import com.itrocket.union.nomenclature.domain.entity.toDefaultItem
 import com.itrocket.union.nomenclature.presentation.store.NomenclatureStore
@@ -56,7 +57,8 @@ fun NomenclatureScreen(
                 onSearchTextChanged = onSearchTextChanged,
                 isShowSearch = state.isShowSearch,
                 searchText = state.searchText,
-                onFilterClickListener = onFilterClickListener
+                onFilterClickListener = onFilterClickListener,
+                isFilterApplied = state.params.isFilterApplied()
             )
             Content(
                 nomenclatureGroupsDomain = state.nomenclatures,
@@ -133,5 +135,13 @@ private fun Content(
 @Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
 @Composable
 fun NomenclatureScreenPreview() {
-    NomenclatureScreen(NomenclatureStore.State(), AppInsets(), {}, {}, {}, {}, {}, {})
+    NomenclatureScreen(
+        NomenclatureStore.State(params = emptyList()),
+        AppInsets(),
+        {},
+        {},
+        {},
+        {},
+        {},
+        {})
 }

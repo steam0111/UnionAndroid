@@ -29,6 +29,7 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.accountingObjects.presentation.store.AccountingObjectStore
+import com.itrocket.union.manual.isFilterApplied
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.SearchToolbar
@@ -59,7 +60,8 @@ fun AccountingObjectScreen(
                 onFilterClickListener = onFilterClickListener,
                 isShowSearch = state.isShowSearch,
                 onSearchTextChanged = onSearchTextChanged,
-                searchText = state.searchText
+                searchText = state.searchText,
+                isFilterApplied = state.params.isFilterApplied()
             )
             AccountingObjectList(
                 accountingObjects = state.accountingObjects,

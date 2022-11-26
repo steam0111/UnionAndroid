@@ -123,6 +123,8 @@ private val listNotDefaultParams by lazy {
 
 fun ParamDomain.isDefaultParamType() = !listNotDefaultParams.contains(this.type)
 
+fun List<ParamDomain>?.isFilterApplied() = this?.any { it.value.isNotEmpty() } ?: false
+
 @Parcelize
 data class LocationParamDomain(
     val filtered: Boolean = true,

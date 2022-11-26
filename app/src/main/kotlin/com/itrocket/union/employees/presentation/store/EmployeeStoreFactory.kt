@@ -12,7 +12,6 @@ import com.itrocket.union.employees.domain.entity.EmployeeDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.search.SearchManager
-import com.itrocket.union.utils.ifBlankOrNull
 import com.itrocket.utils.paging.Paginator
 
 class EmployeeStoreFactory(
@@ -22,14 +21,11 @@ class EmployeeStoreFactory(
     private val errorInteractor: ErrorInteractor,
     private val searchManager: SearchManager
 ) {
-
-    private var params: List<ParamDomain>? = null
-
     fun create(): EmployeeStore =
         object : EmployeeStore,
             Store<EmployeeStore.Intent, EmployeeStore.State, EmployeeStore.Label> by storeFactory.create(
                 name = "EmployeesStore",
-                initialState = EmployeeStore.State(),
+                initialState = EmployeeStore.State(params = employeeInteractor.getFilters()),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
@@ -65,7 +61,7 @@ class EmployeeStoreFactory(
             searchManager.listenSearch { searchText ->
                 reset()
                 paginator.onLoadNext {
-                    getEmployees(params = params, searchText = searchText, offset = it)
+                    getEmployees(params = getState().params, searchText = searchText, offset = it)
                 }
             }
         }
@@ -77,28 +73,34 @@ class EmployeeStoreFactory(
             when (intent) {
                 EmployeeStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
                 EmployeeStore.Intent.OnFilterClicked -> publish(
-                    EmployeeStore.Label.ShowFilter(
-                        params ?: employeeInteractor.getFilters()
-                    )
+                    EmployeeStore.Label.ShowFilter(getState().params)
                 )
+
                 EmployeeStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is EmployeeStore.Intent.OnEmployeeClicked -> {
                     publish(EmployeeStore.Label.ShowDetail(intent.employeeId))
                 }
+
                 is EmployeeStore.Intent.OnFilterResult -> {
-                    params = intent.params
+                    dispatch(Result.Params(intent.params))
                     reset()
                     paginator.onLoadNext {
-                        getEmployees(params, getState().searchText, offset = it)
+                        getEmployees(
+                            params = getState().params,
+                            searchText = getState().searchText,
+                            offset = it
+                        )
                     }
                 }
+
                 is EmployeeStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
                     searchManager.emit(intent.searchText)
                 }
+
                 is EmployeeStore.Intent.OnLoadNext -> paginator.onLoadNext {
                     getEmployees(
-                        params = params,
+                        params = getState().params,
                         searchText = getState().searchText,
                         offset = it
                     )
@@ -149,6 +151,8 @@ class EmployeeStoreFactory(
         data class SearchText(val searchText: String) : Result()
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
         data class IsListEndReached(val isListEndReached: Boolean) : Result()
+        data class Params(val params: List<ParamDomain>) : Result()
+
     }
 
     private object ReducerImpl : Reducer<EmployeeStore.State, Result> {
@@ -159,6 +163,7 @@ class EmployeeStoreFactory(
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchText -> copy(searchText = result.searchText)
                 is Result.IsListEndReached -> copy(isListEndReached = result.isListEndReached)
+                is Result.Params -> copy(params = result.params)
             }
     }
 }

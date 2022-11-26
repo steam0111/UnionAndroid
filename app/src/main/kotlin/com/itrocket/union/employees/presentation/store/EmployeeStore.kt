@@ -29,7 +29,8 @@ interface EmployeeStore : Store<EmployeeStore.Intent, EmployeeStore.State, Emplo
         val employees: List<EmployeeDomain> = listOf(),
         val isShowSearch: Boolean = false,
         val searchText: String = "",
-        val isListEndReached: Boolean = false
+        val isListEndReached: Boolean = false,
+        val params: List<ParamDomain>
     )
 
     sealed class Label {

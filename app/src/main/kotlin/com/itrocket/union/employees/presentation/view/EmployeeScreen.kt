@@ -18,6 +18,7 @@ import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
 import com.itrocket.union.employees.presentation.store.EmployeeStore
+import com.itrocket.union.manual.isFilterApplied
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.EmployeeItem
 import com.itrocket.union.ui.LoadingContent
@@ -49,6 +50,7 @@ fun EmployeesScreen(
                 onSearchTextChanged = onSearchTextChanged,
                 isShowSearch = state.isShowSearch,
                 searchText = state.searchText,
+                isFilterApplied = state.params.isFilterApplied()
             )
             EmployeesList(
                 employees = state.employees,
@@ -150,6 +152,7 @@ fun EmployeeScreenPreview() {
                     nfc = null,
                     post = "dfdf",
                 )
-            )
+            ),
+            params = emptyList()
         ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {})
 }

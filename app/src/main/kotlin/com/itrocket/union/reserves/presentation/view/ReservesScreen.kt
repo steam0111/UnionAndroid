@@ -26,6 +26,7 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
+import com.itrocket.union.manual.isFilterApplied
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.reserves.presentation.store.ReservesStore
 import com.itrocket.union.ui.AppTheme
@@ -57,7 +58,8 @@ fun ReservesScreen(
                 onFilterClickListener = onFilterClickListener,
                 onSearchTextChanged = onSearchTextChanged,
                 isShowSearch = state.isShowSearch,
-                searchText = state.searchText
+                searchText = state.searchText,
+                isFilterApplied = state.params.isFilterApplied()
             )
             ReservesList(
                 reserves = state.reserves,
