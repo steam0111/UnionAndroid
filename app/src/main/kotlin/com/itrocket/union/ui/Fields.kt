@@ -20,8 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
 import com.itrocket.union.R
 import com.itrocket.utils.clickableUnbounded
 
@@ -69,6 +70,7 @@ private fun RowScope.ExpandedInfoValue(value: String) {
                 enabled = false
             )
         }
+
         else -> {
             Text(
                 text = value,
@@ -89,16 +91,32 @@ fun SelectedBaseField(
     clickable: Boolean = true,
     underlineColor: Color = brightGray,
     isCrossVisible: Boolean = false,
-    onCrossClickListener: () -> Unit = {}
+    onCrossClickListener: () -> Unit = {},
+    isMandatory: Boolean = false
 ) {
+
     Column {
+        if (isMandatory) {
+            Text(
+                text = stringResource(R.string.field_is_mandatory),
+                style = AppTheme.typography.overline,
+                color = orange,
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 8.dp, end = 16.dp)
+            )
+        }
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .clickable(enabled = clickable) {
                     onFieldClickListener()
                 }
-                .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp)) {
+                .padding(
+                    start = 16.dp,
+                    top = if (isMandatory) 0.dp else 8.dp,
+                    end = 16.dp,
+                    bottom = 8.dp
+                )) {
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -137,7 +155,8 @@ fun UnselectedBaseField(
     onFieldClickListener: () -> Unit,
     underlineColor: Color = brightGray,
     clickable: Boolean = true,
-    error: String = ""
+    error: String = "",
+    isMandatory: Boolean = false
 ) {
     Column(
         modifier = Modifier
@@ -147,6 +166,13 @@ fun UnselectedBaseField(
             }
             .padding(start = 16.dp, top = 16.dp, end = 16.dp)
     ) {
+        if (isMandatory) {
+            Text(
+                text = stringResource(R.string.field_is_mandatory),
+                style = AppTheme.typography.overline,
+                color = orange
+            )
+        }
         Text(text = label, style = AppTheme.typography.body2, color = graphite5)
         Spacer(modifier = Modifier.height(16.dp))
         if (isShowBottomLine) {

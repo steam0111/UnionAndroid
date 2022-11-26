@@ -16,5 +16,6 @@ enum class AlertType {
     LIST_ITEM,
     NONE,
     EXIT,
-    DROP
+    DROP,
+    MANDATORY_FIELDS
 }
