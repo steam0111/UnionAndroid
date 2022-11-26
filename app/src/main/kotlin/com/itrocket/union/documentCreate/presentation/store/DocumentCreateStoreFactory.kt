@@ -113,6 +113,7 @@ class DocumentCreateStoreFactory(
                 DocumentCreateStore.Intent.OnChooseAccountingObjectClicked -> onChooseAccountingObjectClicked(
                     getState
                 )
+
                 DocumentCreateStore.Intent.OnChooseReserveClicked -> onChooseReserveClicked(getState)
                 DocumentCreateStore.Intent.OnDropClicked -> onDropClicked(getState)
                 is DocumentCreateStore.Intent.OnParamClicked -> {
@@ -123,6 +124,7 @@ class DocumentCreateStoreFactory(
                         )
                     }
                 }
+
                 is DocumentCreateStore.Intent.OnParamCrossClicked -> {
                     val params = documentCreateInteractor.clearParam(
                         getState().params,
@@ -131,6 +133,7 @@ class DocumentCreateStoreFactory(
                     )
                     changeParams(params = params)
                 }
+
                 is DocumentCreateStore.Intent.OnParamsChanged -> {
                     val params = documentCreateInteractor.changeParams(
                         oldParams = getState().params,
@@ -139,33 +142,40 @@ class DocumentCreateStoreFactory(
                     )
                     changeParams(params = params)
                 }
+
                 DocumentCreateStore.Intent.OnSaveClicked -> {
                     dispatch(Result.ConfirmDialogType(AlertType.SAVE))
                 }
+
                 is DocumentCreateStore.Intent.OnSelectPage -> dispatch(Result.SelectPage(intent.selectedPage))
                 DocumentCreateStore.Intent.OnSettingsClicked -> publish(DocumentCreateStore.Label.ShowReadingMode)
                 is DocumentCreateStore.Intent.OnAccountingObjectSelected -> onAccountingObjectSelected(
                     getState = getState,
                     accountingObject = intent.accountingObjectDomain
                 )
+
                 is DocumentCreateStore.Intent.OnNewAccountingObjectBarcodeHandled -> handleBarcodeAccountingObjects(
                     barcode = intent.barcode,
                     accountingObjects = getState().accountingObjects,
                     readingModeTab = getState().readingModeTab,
                     getState = getState
                 )
+
                 is DocumentCreateStore.Intent.OnNewAccountingObjectRfidHandled -> handleRfidsAccountingObjects(
                     rfids = intent.rfids,
                     accountingObjects = getState().accountingObjects,
                     getState = getState
                 )
+
                 is DocumentCreateStore.Intent.OnReserveSelected -> onReserveSelected(
                     reserves = getState().reserves,
                     newReserve = intent.reserve
                 )
+
                 DocumentCreateStore.Intent.OnCompleteClicked -> {
                     dispatch(Result.ConfirmDialogType(AlertType.CONDUCT))
                 }
+
                 is DocumentCreateStore.Intent.OnReserveCountSelected -> dispatch(
                     Result.Reserves(
                         documentCreateInteractor.updateReserveCount(
@@ -175,38 +185,47 @@ class DocumentCreateStoreFactory(
                         )
                     )
                 )
+
                 is DocumentCreateStore.Intent.OnReserveClicked -> publish(
                     DocumentCreateStore.Label.ShowSelectCount(
                         id = intent.reserve.id,
                         count = intent.reserve.itemsCount
                     )
                 )
+
                 is DocumentCreateStore.Intent.OnDismissConfirmDialog -> {
                     dispatch(Result.ConfirmDialogType(AlertType.NONE))
                 }
+
                 is DocumentCreateStore.Intent.OnConfirmActionClick -> {
                     handleOnConfirmActionClick(getState())
                 }
+
                 is DocumentCreateStore.Intent.OnNfcReaderClose -> {
                     onNfcReaderClose(intent.nfcReaderResult)
                 }
+
                 is DocumentCreateStore.Intent.OnReadingModeTabChanged -> dispatch(
                     Result.ReadingMode(
                         intent.readingModeTab
                     )
                 )
+
                 is DocumentCreateStore.Intent.OnManualInput -> onManualInput(
                     readingModeResult = intent.readingModeResult,
                     getState = getState
                 )
+
                 is DocumentCreateStore.Intent.OnDeleteAccountingObjectClicked -> deleteAccountingObject(
                     accountingObjects = getState().accountingObjects,
                     accountingObjectId = intent.accountingObjectId
                 )
+
                 is DocumentCreateStore.Intent.OnDeleteReserveClicked -> deleteReserve(
                     reserves = getState().reserves,
                     reserveId = intent.reserveId
                 )
+
                 DocumentCreateStore.Intent.OnListItemDialogDismissed -> onListItemDialogDismissed()
                 is DocumentCreateStore.Intent.OnErrorHandled -> handleError(intent.throwable)
             }
@@ -291,6 +310,7 @@ class DocumentCreateStoreFactory(
                 ReadingModeTab.RFID -> {
                     //no-op
                 }
+
                 ReadingModeTab.SN, ReadingModeTab.BARCODE -> {
                     handleBarcodeAccountingObjects(
                         accountingObjects = getState().accountingObjects,
@@ -335,6 +355,13 @@ class DocumentCreateStoreFactory(
 
         private suspend fun handleOnConfirmActionClick(state: DocumentCreateStore.State) {
             val confirmDialogType = state.confirmDialogType
+            val allEmptyMandatoryFields =
+                state.params.filter { it.isMandatory && it.value.isEmpty() }
+
+            if (allEmptyMandatoryFields.isNotEmpty() && confirmDialogType != AlertType.MANDATORY_FIELDS) {
+                dispatch(Result.ConfirmDialogType(AlertType.MANDATORY_FIELDS))
+                return
+            }
 
             dispatch(Result.ConfirmDialogType(AlertType.NONE))
 
@@ -342,6 +369,8 @@ class DocumentCreateStoreFactory(
                 saveDocument(state)
             } else if (confirmDialogType == AlertType.CONDUCT) {
                 onConductClicked(state)
+            } else if (confirmDialogType == AlertType.MANDATORY_FIELDS) {
+                dispatch(Result.ConfirmDialogType(AlertType.NONE))
             }
         }
 
@@ -372,12 +401,15 @@ class DocumentCreateStoreFactory(
                     }
                     dispatch(Result.DialogLoading(false))
                 }
+
                 isDocumentTypeRelocation && state.accountingObjects.isEmpty() && state.reserves.isEmpty() -> {
                     dispatch(Result.ConfirmDialogType(AlertType.CONDUCT_RETURN))
                 }
+
                 unionPermissionsInteractor.canConductDocument(conductPermission) -> {
                     conductDocument(state)
                 }
+
                 else -> {
                     publish(
                         DocumentCreateStore.Label.ShowNfcReader(
@@ -506,12 +538,14 @@ class DocumentCreateStoreFactory(
                         manualType = ManualType.CHECKBOX_HIDE_ZERO_RESERVES
                     )
                 )
+
                 DocumentTypeDomain.RELOCATION -> listOf(
                     CheckBoxParamDomain(
                         isChecked = true,
                         manualType = ManualType.CHECKBOX_HIDE_ZERO_RESERVES
                     )
                 )
+
                 else -> listOf()
             }
             publish(

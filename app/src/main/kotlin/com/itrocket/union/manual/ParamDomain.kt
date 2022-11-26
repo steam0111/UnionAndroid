@@ -16,6 +16,7 @@ open class ParamDomain(
     open val type: ManualType,
     open val isFilter: Boolean = true,
     open val isClickable: Boolean = true,
+    open val isMandatory: Boolean = false
 ) : Parcelable {
     open fun copy(
         id: String? = this.id,
@@ -29,11 +30,12 @@ open class ParamDomain(
             value = value,
             type = type,
             isFilter = isFilter,
-            isClickable = isClickable
+            isClickable = isClickable,
+            isMandatory = isMandatory
         )
     }
 
-    open fun toInitialState() = ParamDomain(type = type)
+    open fun toInitialState() = ParamDomain(type = type, isMandatory = isMandatory)
 }
 
 
@@ -141,17 +143,19 @@ fun List<ParamDomain>?.isFilterApplied() = this?.any { it.value.isNotEmpty() } ?
 data class LocationParamDomain(
     val filtered: Boolean = true,
     val locations: List<LocationDomain> = emptyList(),
-    val manualType: ManualType = ManualType.LOCATION
+    val manualType: ManualType = ManualType.LOCATION,
+    val mandatory: Boolean = false
 ) : Parcelable,
     ParamDomain(
         id = locations.lastOrNull()?.id.toString(),
         value = locations.joinToString(", ") { it.value },
         type = manualType,
-        isFilter = filtered
+        isFilter = filtered,
+        isMandatory = mandatory
     ) {
 
     override fun toInitialState(): LocationParamDomain {
-        return LocationParamDomain(manualType = manualType)
+        return LocationParamDomain(manualType = manualType, mandatory = mandatory)
     }
 }
 
@@ -161,33 +165,37 @@ data class StructuralParamDomain(
     val structurals: List<StructuralDomain> = emptyList(),
     val manualType: ManualType,
     val clickable: Boolean = true,
-    val needUpdate: Boolean = true
+    val needUpdate: Boolean = true,
+    val mandatory: Boolean = false
 ) : Parcelable,
     ParamDomain(
         id = structurals.lastOrNull()?.id,
         value = structurals.joinToString(", ") { it.value },
         type = manualType,
         isFilter = filtered,
-        isClickable = clickable
+        isClickable = clickable,
+        isMandatory = mandatory
     ) {
 
     override fun toInitialState(): StructuralParamDomain {
-        return StructuralParamDomain(manualType = manualType, needUpdate = needUpdate)
+        return StructuralParamDomain(manualType = manualType, needUpdate = needUpdate, mandatory = mandatory)
     }
 }
 
 @Parcelize
 data class CheckBoxParamDomain(
     val isChecked: Boolean,
-    val manualType: ManualType
+    val manualType: ManualType,
+    val mandatory: Boolean = false
 ) : Parcelable,
     ParamDomain(
         type = manualType,
         isFilter = false,
-        isClickable = true
+        isClickable = true,
+        isMandatory = mandatory
     ) {
 
     override fun toInitialState(): CheckBoxParamDomain {
-        return CheckBoxParamDomain(isChecked = false, manualType = manualType)
+        return CheckBoxParamDomain(isChecked = false, manualType = manualType, mandatory = mandatory)
     }
 }

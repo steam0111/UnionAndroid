@@ -244,6 +244,7 @@
     <string name="document_create_empty">Для начала считывания нажмите курок или выберите из списка</string>
     <string name="document_create_dialog_list_item_title">Чтобы провести документ, необходимо выполнить маркировку и повторную синхронизацию.\nНепромаркированные ОУ:</string>
     <string name="document_create_return_dialog">Провести документ нельзя, так как не добавлены ОУ или Запасы.</string>
+    <string name="document_mandatory_fields_dialog">Заполните все обязательные поля</string>
 
     <!-- ModuleSettings -->
     <string name="module_settings_title">Модули</string>
@@ -431,4 +432,5 @@
 
     <string name="inventory_code_filter_title">Номер инвентаризационной ведомости</string>
     <string name="document_code_filter_title">Номер документа</string>
+    <string name="field_is_mandatory">Поле обязательно</string>
 </resources>

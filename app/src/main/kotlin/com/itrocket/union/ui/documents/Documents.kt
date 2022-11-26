@@ -168,11 +168,13 @@ fun DocumentCreateBaseScreen(
             onConfirmClick = onConfirmActionClick,
             textRes = R.string.common_confirm_save_text
         )
+
         AlertType.CONDUCT -> ConfirmAlertDialog(
             onDismiss = onDismissConfirmDialog,
             onConfirmClick = onConfirmActionClick,
             textRes = R.string.confirm_conduct_text
         )
+
         AlertType.LIST_ITEM -> ListDialog(
             titleRes = R.string.document_create_dialog_list_item_title,
             listItems = dialogListItems,
@@ -180,8 +182,15 @@ fun DocumentCreateBaseScreen(
             confirmButtonText = stringResource(R.string.common_ok),
             isLoading = isDialogLoading
         )
+
         AlertType.CONDUCT_RETURN -> InfoDialog(
             title = stringResource(R.string.document_create_return_dialog),
+            confirmButtonText = stringResource(R.string.common_ok),
+            onDismiss = onDismissConfirmDialog
+        )
+
+        AlertType.MANDATORY_FIELDS -> InfoDialog(
+            title = stringResource(R.string.document_mandatory_fields_dialog),
             confirmButtonText = stringResource(R.string.common_ok),
             onDismiss = onDismissConfirmDialog
         )
@@ -256,6 +265,7 @@ fun DocumentParamContent(
             items(params, key = {
                 it.type
             }) {
+                val isMandatory = it.isMandatory && documentStatus != DocumentStatus.COMPLETED
                 if (it.value.isNotBlank()) {
                     SelectedBaseField(
                         label = stringResource(it.type.titleId),
@@ -267,7 +277,8 @@ fun DocumentParamContent(
                         isCrossVisible = it.isClickable && isDocumentChangeEnabled,
                         onCrossClickListener = {
                             onCrossClickListener(it)
-                        }
+                        },
+                        isMandatory = isMandatory
                     )
                 } else {
                     UnselectedBaseField(
@@ -275,7 +286,9 @@ fun DocumentParamContent(
                         clickable = it.isClickable && isDocumentChangeEnabled,
                         onFieldClickListener = {
                             onParamClickListener(it)
-                        })
+                        },
+                        isMandatory = isMandatory
+                    )
                 }
             }
         }
@@ -315,9 +328,11 @@ fun DocumentAccountingObjectScreen(
                 isLoading -> {
                     Loader(contentPadding = PaddingValues())
                 }
+
                 accountingObjectList.isEmpty() -> {
                     DocumentEmpty(paddingValues = PaddingValues())
                 }
+
                 else -> {
                     LazyColumn(
                         modifier = Modifier
@@ -375,9 +390,11 @@ fun DocumentReservesScreen(
                 isLoading -> {
                     Loader(contentPadding = PaddingValues())
                 }
+
                 reserves.isEmpty() -> {
                     DocumentEmpty(paddingValues = PaddingValues())
                 }
+
                 else -> {
                     LazyColumn(
                         modifier = Modifier
