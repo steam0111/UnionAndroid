@@ -14,6 +14,7 @@ import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.getDocumentCode
 import com.itrocket.union.manual.getExploitingId
 import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.manual.getMolId
@@ -40,7 +41,8 @@ class DocumentRepositoryImpl(
                 molId = params?.getMolId(),
                 exploitingId = params?.getExploitingId(),
                 structuralFromId = params?.getFilterStructuralLastId(ManualType.STRUCTURAL_FROM),
-                structuralToId = params?.getFilterStructuralLastId(ManualType.STRUCTURAL_TO)
+                structuralToId = params?.getFilterStructuralLastId(ManualType.STRUCTURAL_TO),
+                code = params?.getDocumentCode()
             )
         }
     }
@@ -56,7 +58,8 @@ class DocumentRepositoryImpl(
             molId = params?.getMolId(),
             exploitingId = params?.getExploitingId(),
             structuralFromId = params?.getFilterStructuralLastId(ManualType.STRUCTURAL_FROM),
-            structuralToId = params?.getFilterStructuralLastId(ManualType.STRUCTURAL_TO)
+            structuralToId = params?.getFilterStructuralLastId(ManualType.STRUCTURAL_TO),
+            code = params?.getDocumentCode()
         ).map { it.map() }
     }
 

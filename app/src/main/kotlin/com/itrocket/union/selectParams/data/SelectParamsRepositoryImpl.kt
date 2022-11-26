@@ -1,9 +1,11 @@
 package com.itrocket.union.selectParams.data
 
 import com.example.union_sync_api.data.CounterpartySyncApi
+import com.example.union_sync_api.data.DocumentSyncApi
 import com.example.union_sync_api.data.EmployeeSyncApi
 import com.example.union_sync_api.data.EnumsSyncApi
 import com.example.union_sync_api.data.EquipmentTypeSyncApi
+import com.example.union_sync_api.data.InventorySyncApi
 import com.example.union_sync_api.data.NomenclatureGroupSyncApi
 import com.example.union_sync_api.data.ProducerSyncApi
 import com.example.union_sync_api.data.ReceptionItemCategorySyncApi
@@ -28,7 +30,9 @@ class SelectParamsRepositoryImpl(
     private val nomenclatureGroupSyncApi: NomenclatureGroupSyncApi,
     private val receptionItemCategorySyncApi: ReceptionItemCategorySyncApi,
     private val coreDispatchers: CoreDispatchers,
-    private val enumsSynApi: EnumsSyncApi
+    private val enumsSynApi: EnumsSyncApi,
+    private val documentSyncApi: DocumentSyncApi,
+    private val inventoriesSyncApi: InventorySyncApi
 ) : SelectParamsRepository {
 
     override suspend fun getEmployees(
@@ -108,6 +112,26 @@ class SelectParamsRepositoryImpl(
             emit(
                 employeeSyncApi.getEmployees(textQuery = textQuery, structuralId = structuralId)
                     .map { it.toParam(type) })
+        }.flowOn(coreDispatchers.io)
+    }
+
+    override suspend fun getDocumentsCodes(
+        number: String,
+        documentType: String?
+    ): Flow<List<ParamDomain>> {
+        return flow {
+            emit(
+                documentSyncApi.getDocumentsCodes(number, documentType)
+                    .map { it.toParam(ManualType.DOCUMENT_CODE) })
+        }.flowOn(coreDispatchers.io)
+    }
+
+    override suspend fun getInventoriesCodes(number: String): Flow<List<ParamDomain>> {
+        return flow {
+            emit(
+                inventoriesSyncApi.getInventoriesCodes(number)
+                    .map { it.toParam(ManualType.INVENTORY_CODE) }
+            )
         }.flowOn(coreDispatchers.io)
     }
 }

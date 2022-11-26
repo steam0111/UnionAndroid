@@ -13,6 +13,7 @@ fun sqlInventoryQuery(
         offset: Long? = null,
         isFilterCount: Boolean = false,
         isNonCancel: Boolean = true,
+        code: String? = null
 ): SimpleSQLiteQuery {
     val mainQuery = if (isFilterCount) {
         "SELECT COUNT(*) FROM inventories"
@@ -46,7 +47,8 @@ fun sqlInventoryQuery(
                     limit = limit,
                     offset = offset,
                     inventoryBaseId = inventoryBaseId,
-                    isNonCancel = isNonCancel
+                    isNonCancel = isNonCancel,
+                    code = code
             )
     )
 }
@@ -98,6 +100,7 @@ fun String.getInventoriesFilterPartQuery(
         offset: Long? = null,
         inventoryBaseId: String? = null,
         isNonCancel: Boolean = true,
+        code: String? = null
 ): String =
         addFilters(
                 sqlTableFilters = SqlTableFilters(
@@ -120,6 +123,9 @@ fun String.getInventoriesFilterPartQuery(
                             }
                             inventoryBaseId?.let {
                                 add("inventoryBaseId" isEquals inventoryBaseId)
+                            }
+                            code?.let {
+                                add("code" contains code)
                             }
                         }
                 )

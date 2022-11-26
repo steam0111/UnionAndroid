@@ -84,4 +84,7 @@ interface DocumentDao {
 
     @Query("DELETE FROM documents")
     suspend fun clearAll()
+
+    @Query("SELECT code FROM documents WHERE code LIKE :number AND documentType is :documentType")
+    suspend fun getDocumentsCodes(number: String, documentType: String?): List<String>
 }

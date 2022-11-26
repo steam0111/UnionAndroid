@@ -19,7 +19,6 @@ import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.ui.documents.DocumentCreateBaseScreen
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun DocumentCreateScreen(
     state: DocumentCreateStore.State,

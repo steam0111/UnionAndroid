@@ -428,4 +428,7 @@
     <string name="sync_all_download_current_table">Загружается \"%1$s\"</string>
     <string name="sync_all_success">Синхронизация успешно завершена</string>
     <string name="sync_all_error">Синхронизация завершена с ошибками !</string>
+
+    <string name="inventory_code_filter_title">Номер инвентаризационной ведомости</string>
+    <string name="document_code_filter_title">Номер документа</string>
 </resources>

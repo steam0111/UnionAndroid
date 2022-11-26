@@ -13,16 +13,19 @@ interface InventorySyncApi {
         molId: String? = null,
         inventoryBaseId: String? = null,
         offset: Long,
-        limit: Long?
+        limit: Long?,
+        code: String?
     ): List<InventorySyncEntity>
 
     suspend fun getInventoriesCount(
         textQuery: String? = null,
         structuralId: String? = null,
         molId: String? = null,
-        inventoryBaseId: String? = null
+        inventoryBaseId: String? = null,
+        code: String? = null
     ): Long
 
     suspend fun getInventoryById(id: String, isAccountingObjectLoad: Boolean): InventorySyncEntity
     suspend fun updateInventory(inventoryUpdateSyncEntity: InventoryUpdateSyncEntity)
+    suspend fun getInventoriesCodes(number: String): List<String>
 }

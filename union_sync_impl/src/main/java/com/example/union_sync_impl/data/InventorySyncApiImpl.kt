@@ -63,7 +63,8 @@ class InventorySyncApiImpl(
         molId: String?,
         inventoryBaseId: String?,
         offset: Long,
-        limit: Long?
+        limit: Long?,
+        code: String?
     ): List<InventorySyncEntity> {
         return inventoryDao.getAll(
             sqlInventoryQuery(
@@ -72,7 +73,8 @@ class InventorySyncApiImpl(
                 molId = molId,
                 inventoryBaseId = inventoryBaseId,
                 offset = offset,
-                limit = limit
+                limit = limit,
+                code = code
             )
         ).map {
             val structurals = listOfNotNull(it.structuralDb?.toStructuralSyncEntity())
@@ -107,7 +109,11 @@ class InventorySyncApiImpl(
     }
 
     override suspend fun getInventoriesCount(
-        textQuery: String?, structuralId: String?, molId: String?, inventoryBaseId: String?
+        textQuery: String?,
+        structuralId: String?,
+        molId: String?,
+        inventoryBaseId: String?,
+        code: String?
     ): Long {
         return inventoryDao.getCount(
             sqlInventoryQuery(
@@ -115,7 +121,8 @@ class InventorySyncApiImpl(
                 structuralId = structuralId,
                 molId = molId,
                 isFilterCount = true,
-                inventoryBaseId = inventoryBaseId
+                inventoryBaseId = inventoryBaseId,
+                code = code
             )
         )
     }
@@ -262,6 +269,10 @@ class InventorySyncApiImpl(
         val removedAccountingObjects = records.filter { it.cancel == true }
             .map { it.copy(updateDate = System.currentTimeMillis()) }
         inventoryRecordDao.insertAll(removedAccountingObjects)
+    }
+
+    override suspend fun getInventoriesCodes(number: String): List<String> {
+        return inventoryDao.getInventoriesCodes("%$number%")
     }
 
     companion object {

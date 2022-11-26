@@ -39,13 +39,15 @@ interface FilterStore : Store<FilterStore.Intent, FilterStore.State, FilterStore
 
         data class ShowFilters(
             val currentFilter: ParamDomain,
-            val allParams: List<ParamDomain>
+            val allParams: List<ParamDomain>,
+            val sourceScreen: CatalogType
         ) : Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = FilterComposeFragmentDirections.toSelectParams(
                     SelectParamsArguments(
                         currentFilter = currentFilter,
-                        allParams = allParams
+                        allParams = allParams,
+                        sourceScreen = sourceScreen
                     )
                 )
         }

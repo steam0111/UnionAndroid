@@ -3,6 +3,7 @@ package com.itrocket.union.selectParams.domain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.employeeDetail.domain.EmployeeDetailInteractor
+import com.itrocket.union.filter.domain.entity.CatalogType
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.selectParams.domain.dependencies.SelectParamsRepository
@@ -19,7 +20,8 @@ class SelectParamsInteractor(
     suspend fun getParamValues(
         allParams: List<ParamDomain>,
         type: ManualType,
-        searchText: String
+        searchText: String,
+        sourceScreen: CatalogType?
     ): Flow<List<ParamDomain>> =
         when (type) {
             ManualType.MOL_IN_STRUCTURAL -> getMolsInStructural(allParams, searchText)
@@ -35,8 +37,22 @@ class SelectParamsInteractor(
             ManualType.NOMENCLATURE_GROUP -> getNomenclatureGroup(searchText)
             ManualType.RECEPTION_CATEGORY -> getReceptionCategory(searchText)
             ManualType.RECIPIENT -> getRecipient(searchText)
+            ManualType.DOCUMENT_CODE -> getDocumentsCodes(searchText, sourceScreen)
+            ManualType.INVENTORY_CODE -> getInventoriesCodes(searchText)
             else -> flow { }
         }
+
+    private suspend fun getDocumentsCodes(
+        number: String,
+        from: CatalogType?
+    ): Flow<List<ParamDomain>> {
+        val documentType = (from as? CatalogType.Documents)?.documentTypeDomain
+        return selectParamsRepository.getDocumentsCodes(number, documentType?.name)
+    }
+
+    private suspend fun getInventoriesCodes(number: String): Flow<List<ParamDomain>> {
+        return selectParamsRepository.getInventoriesCodes(number)
+    }
 
     private suspend fun getMolsInStructural(
         allParams: List<ParamDomain>,
