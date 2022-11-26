@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.itrocket.union.R
 import com.itrocket.utils.clickableUnbounded
@@ -72,7 +73,8 @@ private fun RowScope.ExpandedInfoValue(value: String) {
             Text(
                 text = value,
                 style = AppTheme.typography.body1,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                fontWeight = FontWeight.Bold
             )
         }
     }
