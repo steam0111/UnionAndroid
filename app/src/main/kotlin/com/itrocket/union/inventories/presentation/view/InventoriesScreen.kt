@@ -29,10 +29,10 @@ import com.itrocket.union.inventories.presentation.store.InventoriesStore
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
+import com.itrocket.union.manual.isFilterApplied
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BottomLine
 import com.itrocket.union.ui.InventoryDocumentItem
-import com.itrocket.union.ui.LoadingContent
 import com.itrocket.union.ui.SearchToolbar
 import com.itrocket.utils.paging.subscribePagingListIndex
 
@@ -60,6 +60,7 @@ fun InventoriesScreen(
                     onSearchTextChanged = onSearchTextChanged,
                     isShowSearch = state.isShowSearch,
                     searchText = state.searchText,
+                    isFilterApplied = state.params.isFilterApplied()
                 )
             },
             content = {

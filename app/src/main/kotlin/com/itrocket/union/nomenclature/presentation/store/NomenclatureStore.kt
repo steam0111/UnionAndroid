@@ -30,7 +30,8 @@ interface NomenclatureStore :
         val isLoading: Boolean = false,
         val isShowSearch: Boolean = false,
         val searchText: String = "",
-        val isListEndReached: Boolean = false
+        val isListEndReached: Boolean = false,
+        val params: List<ParamDomain>
     )
 
     sealed class Label {

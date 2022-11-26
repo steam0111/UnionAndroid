@@ -33,6 +33,7 @@ import com.itrocket.union.documents.presentation.store.DocumentStore
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
+import com.itrocket.union.manual.isFilterApplied
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.ButtonLoaderBottomBar
 import com.itrocket.union.ui.DocumentDateItem
@@ -64,7 +65,8 @@ fun DocumentScreen(
                     onFilterClickListener = onFilterClickListener,
                     onSearchTextChanged = onSearchTextChanged,
                     isShowSearch = state.isShowSearch,
-                    searchText = state.searchText
+                    searchText = state.searchText,
+                    isFilterApplied = state.params.isFilterApplied()
                 )
             },
             bottomBar = {
@@ -87,6 +89,7 @@ fun DocumentScreen(
                             CircularProgressIndicator()
                         }
                     }
+
                     state.documents.isNotEmpty() -> {
                         Content(
                             contentPadding = it,
@@ -129,6 +132,7 @@ private fun Content(
                         isRotated = rotatedDates.contains(item.date)
                     )
                 }
+
                 is DocumentView.DocumentItemView -> {
                     val isShowBottomLine =
                         index < documents.lastIndex && documents[index + 1] !is DocumentView.DocumentDateView

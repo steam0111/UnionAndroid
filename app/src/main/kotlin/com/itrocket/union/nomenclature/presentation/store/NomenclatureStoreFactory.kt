@@ -26,13 +26,12 @@ class NomenclatureStoreFactory(
     private val errorInteractor: ErrorInteractor,
     private val searchManager: SearchManager
 ) {
-    private var params: List<ParamDomain>? = null
 
     fun create(): NomenclatureStore =
         object : NomenclatureStore,
             Store<NomenclatureStore.Intent, NomenclatureStore.State, NomenclatureStore.Label> by storeFactory.create(
                 name = "NomenclatureStore",
-                initialState = NomenclatureStore.State(),
+                initialState = NomenclatureStore.State(params = nomenclatureInteractor.getFilters()),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
@@ -68,7 +67,7 @@ class NomenclatureStoreFactory(
             searchManager.listenSearch { searchText ->
                 reset()
                 paginator.onLoadNext {
-                    getNomenclatures(params = params, getState().searchText, offset = it)
+                    getNomenclatures(params = getState().params, getState().searchText, offset = it)
                 }
             }
         }
@@ -81,35 +80,38 @@ class NomenclatureStoreFactory(
                 NomenclatureStore.Intent.OnBackClicked -> onBackClicked(
                     getState().isShowSearch
                 )
+
                 is NomenclatureStore.Intent.OnItemClicked -> publish(
                     NomenclatureStore.Label.ShowDetail(
                         intent.id
                     )
                 )
+
                 is NomenclatureStore.Intent.OnFilterClicked -> publish(
-                    NomenclatureStore.Label.ShowFilter(
-                        params ?: nomenclatureInteractor.getFilters()
-                    )
+                    NomenclatureStore.Label.ShowFilter(getState().params)
                 )
+
                 is NomenclatureStore.Intent.OnFilterResult -> {
-                    params = intent.params
+                    dispatch(Result.Params(intent.params))
                     reset()
                     paginator.onLoadNext {
                         getNomenclatures(
-                            params = params,
+                            params = getState().params,
                             searchText = getState().searchText,
                             offset = it
                         )
                     }
                 }
+
                 NomenclatureStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 is NomenclatureStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
                     searchManager.emit(intent.searchText)
                 }
+
                 is NomenclatureStore.Intent.OnLoadNext -> paginator.onLoadNext {
                     getNomenclatures(
-                        params = params,
+                        params = getState().params,
                         searchText = getState().searchText,
                         offset = it
                     )
@@ -159,6 +161,7 @@ class NomenclatureStoreFactory(
         data class SearchText(val searchText: String) : Result()
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
         data class IsListEndReached(val isListEndReached: Boolean) : Result()
+        data class Params(val params: List<ParamDomain>) : Result()
     }
 
     private object ReducerImpl : Reducer<NomenclatureStore.State, Result> {
@@ -169,6 +172,7 @@ class NomenclatureStoreFactory(
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchText -> copy(searchText = result.searchText)
                 is Result.IsListEndReached -> copy(isListEndReached = result.isListEndReached)
+                is Result.Params -> copy(params = result.params)
             }
     }
 }

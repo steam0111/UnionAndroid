@@ -11,7 +11,6 @@ import com.itrocket.union.inventories.presentation.view.InventoriesComposeFragme
 import com.itrocket.union.inventoryContainer.domain.InventoryContainerType
 import com.itrocket.union.inventoryContainer.presentation.store.InventoryContainerArguments
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
-import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateArguments
 import com.itrocket.union.manual.ParamDomain
 
 interface InventoriesStore :

@@ -331,7 +331,7 @@
     <string name="employees_number">Табельный номер</string>
 
     <!-- Inventories -->
-    <string name="inventories_title">Список инв. ведомостей</string>
+    <string name="inventories_title">Инв. ведомости</string>
     <string name="inventory_checker_title">Проверяющие</string>
 
     <!-- Producer -->

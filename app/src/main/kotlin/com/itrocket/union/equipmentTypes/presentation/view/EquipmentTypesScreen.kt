@@ -20,7 +20,6 @@ import com.itrocket.union.equipmentTypes.domain.entity.toDefaultItem
 import com.itrocket.union.equipmentTypes.presentation.store.EquipmentTypeStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.DefaultListItem
-import com.itrocket.union.ui.LoadingContent
 import com.itrocket.union.ui.SearchToolbar
 import com.itrocket.utils.paging.subscribePagingListIndex
 

@@ -120,11 +120,13 @@ fun InventoryCreateScreen(
                 onConfirmClick = onSaveConfirmClickListener,
                 textRes = R.string.common_confirm_save_text
             )
+
             AlertType.COMPLETE -> ConfirmAlertDialog(
                 onDismiss = onCompleteDismissClickListener,
                 onConfirmClick = onCompleteConfirmClickListener,
                 textRes = R.string.inventory_complete_dialog
             )
+
             AlertType.LOADING -> LoadingDialog(title = stringResource(state.loadingTitleId))
             AlertType.DELETE -> ConfirmAlertDialog(
                 onDismiss = onDeleteDismissClickListener,

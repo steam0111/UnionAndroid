@@ -1,20 +1,13 @@
 package com.itrocket.union.documents.presentation.store
 
-import android.os.Bundle
-import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
-import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
-import com.itrocket.union.R
-import com.itrocket.union.chooseAction.presentation.view.ChooseActionComposeFragment
 import com.itrocket.union.documentCreate.presentation.store.DocumentCreateArguments
 import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
-import com.itrocket.union.documents.domain.entity.ObjectType
 import com.itrocket.union.documents.presentation.view.DocumentComposeFragmentDirections
 import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.filter.domain.entity.CatalogType

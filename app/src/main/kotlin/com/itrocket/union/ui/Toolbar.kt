@@ -98,7 +98,8 @@ fun SearchToolbar(
     onSearchTextChanged: ((String) -> Unit),
     searchText: String,
     isShowSearch: Boolean,
-    content: @Composable () -> Unit = {}
+    content: @Composable () -> Unit = {},
+    isFilterApplied: Boolean = false
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -200,7 +201,7 @@ fun SearchToolbar(
                 if (onFilterClickListener != null) {
                     Spacer(modifier = Modifier.width(28.dp))
                     Image(
-                        painter = painterResource(R.drawable.ic_filter_white),
+                        painter = painterResource(if (isFilterApplied) R.drawable.filter_selected else R.drawable.ic_filter_white),
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(iconColor),
                         modifier = Modifier.clickableUnbounded(onClick = onFilterClickListener)
@@ -224,6 +225,7 @@ fun LogoToolbar(medias: Medias?) {
             medias?.logo != null -> {
                 Image(bitmap = medias.logo, contentDescription = null)
             }
+
             medias != null -> {
                 Image(
                     painter = painterResource(R.drawable.ic_logo),
