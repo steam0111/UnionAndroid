@@ -24,28 +24,26 @@ import com.example.union_sync_impl.dao.ProducerDao
 import com.example.union_sync_impl.dao.ProviderDao
 import com.example.union_sync_impl.dao.ReceptionItemCategoryDao
 import com.example.union_sync_impl.dao.ReserveDao
+import com.example.union_sync_impl.dao.AccountingObjectsSimpleCharacteristicsDao
 import com.example.union_sync_impl.dao.SimpleAdditionalFieldDao
 import com.example.union_sync_impl.dao.StructuralDao
 import com.example.union_sync_impl.dao.StructuralPathDao
 import com.example.union_sync_impl.dao.TransitAccountingObjectRecordDao
 import com.example.union_sync_impl.dao.TransitDao
 import com.example.union_sync_impl.dao.TransitRemainsRecordDao
+import com.example.union_sync_impl.dao.AccountingObjectsVocabularyCharacteristicsDao
+import com.example.union_sync_impl.dao.SimpleCharacteristicDao
 import com.example.union_sync_impl.dao.VocabularyAdditionalFieldDao
 import com.example.union_sync_impl.dao.VocabularyAdditionalFieldValueDao
-import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
+import com.example.union_sync_impl.dao.VocabularyCharacteristicDao
+import com.example.union_sync_impl.dao.VocabularyCharacteristicValueDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectSimpledQuery
 import com.example.union_sync_impl.dao.sqlActionRecordQuery
 import com.example.union_sync_impl.dao.sqlActionRemainsRecordQuery
-import com.example.union_sync_impl.dao.sqlDocumentsQuery
 import com.example.union_sync_impl.dao.sqlDocumentsSimpledQuery
-import com.example.union_sync_impl.dao.sqlInventoryQuery
 import com.example.union_sync_impl.dao.sqlInventoryRecordQuery
 import com.example.union_sync_impl.dao.sqlInventorySimpledQuery
-import com.example.union_sync_impl.dao.sqlReserveQuery
 import com.example.union_sync_impl.dao.sqlReserveSimpledQuery
-import com.example.union_sync_impl.dao.sqlTransitQuery
-import com.example.union_sync_impl.dao.sqlTransitRecordQuery
-import com.example.union_sync_impl.dao.sqlTransitRemainsRecordQuery
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDb
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDtosV2
 import com.example.union_sync_impl.data.mapper.toActionDtoV2
@@ -79,18 +77,18 @@ import com.example.union_sync_impl.data.mapper.toStructuralDb
 import com.example.union_sync_impl.data.mapper.toStructuralPathDb
 import com.example.union_sync_impl.data.mapper.toTransitAccountingObjectDb
 import com.example.union_sync_impl.data.mapper.toTransitDb
-import com.example.union_sync_impl.data.mapper.toTransitDtoV2
 import com.example.union_sync_impl.data.mapper.toTransitRemainsDb
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.filterNot
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import org.openapitools.client.custom_api.SyncControllerApi
+import org.openapitools.client.models.AccountingObjectCharacteristicValueDtoV2
 import org.openapitools.client.models.AccountingObjectDtoV2
 import org.openapitools.client.models.AccountingObjectSimpleAdditionalFieldValueDtoV2
 import org.openapitools.client.models.AccountingObjectVocabularyAdditionalFieldValueDtoV2
+import org.openapitools.client.models.AccountingObjectVocabularyCharacteristicValueDtoV2
 import org.openapitools.client.models.ActionDtoV2
 import org.openapitools.client.models.ActionRecordDtoV2
 import org.openapitools.client.models.ActionRemainsRecordDtoV2
@@ -144,11 +142,18 @@ class SyncRepository(
     private val transitAccountingObjectRecordDao: TransitAccountingObjectRecordDao,
     private val enumsDao: EnumsDao,
     private val inventoryCheckerDao: InventoryCheckerDao,
+
     private val accountingObjectSimpleAdditionalFieldDao: AccountingObjectSimpleAdditionalFieldDao,
     private val accountingObjectVocabularyAdditionalFieldDao: AccountingObjectVocabularyAdditionalFieldDao,
     private val simpleAdditionalFieldDao: SimpleAdditionalFieldDao,
     private val vocabularyAdditionalFieldDao: VocabularyAdditionalFieldDao,
-    private val vocabularyAdditionalFieldValueDao: VocabularyAdditionalFieldValueDao
+    private val vocabularyAdditionalFieldValueDao: VocabularyAdditionalFieldValueDao,
+
+    private val accountingObjectVocabularyCharacteristicsDao: AccountingObjectsVocabularyCharacteristicsDao,
+    private val accountingObjectSimpleCharacteristicsDao: AccountingObjectsSimpleCharacteristicsDao,
+    private val simpleCharacteristicDao: SimpleCharacteristicDao,
+    private val vocabularyCharacteristicDao: VocabularyCharacteristicDao,
+    private val vocabularyCharacteristicValueDao: VocabularyCharacteristicValueDao,
 ) {
     suspend fun clearDataBeforeDownload() {
         inventoryDao.clearAll()
@@ -290,6 +295,16 @@ class SyncRepository(
             syncControllerApi,
             moshi,
             ::accountingObjectSimpleAdditionalFieldDbSaver
+        ),
+        AccountingObjectSimpleCharacteristicFieldSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::accountingObjectSimpleACharacteristicsDbSaver
+        ),
+        AccountingObjectVocabularyCharacteristicFieldSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::accountingObjectVocabularyCharacteristicsDbSaver
         ),
         InventoryBaseSyncEntity(
             syncControllerApi,
@@ -752,6 +767,17 @@ class SyncRepository(
         vocabularyAdditionalFieldDao.insertAll(objects.mapNotNull { it.extendedVocabularyAdditionalField?.toDb() })
         vocabularyAdditionalFieldValueDao.insertAll(objects.mapNotNull { it.extendedVocabularyAdditionalFieldValue?.toDb() })
         accountingObjectVocabularyAdditionalFieldDao.insertAll(objects.map { it.toDb() })
+    }
+
+    private suspend fun accountingObjectSimpleACharacteristicsDbSaver(objects: List<AccountingObjectCharacteristicValueDtoV2>) {
+        simpleCharacteristicDao.insertAll(objects.mapNotNull { it.extendedCharacteristic?.toDb() })
+        accountingObjectSimpleCharacteristicsDao.insertAll(objects.mapNotNull { it.toDb() })
+    }
+
+    private suspend fun accountingObjectVocabularyCharacteristicsDbSaver(objects: List<AccountingObjectVocabularyCharacteristicValueDtoV2>) {
+        vocabularyCharacteristicDao.insertAll(objects.mapNotNull { it.extendedVocabularyCharacteristic?.toDb() })
+        vocabularyCharacteristicValueDao.insertAll(objects.mapNotNull { it.extendedVocabularyCharacteristicValue?.toDb() })
+        accountingObjectVocabularyCharacteristicsDao.insertAll(objects.mapNotNull { it.toDb() })
     }
 
     private suspend fun inventoryBaseDbSaver(objects: List<EnumDtoV2>) {

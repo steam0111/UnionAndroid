@@ -38,5 +38,7 @@
     <string name="transit_accounting_object_record_table_name">Таблица транзитов объектов учета</string>
     <string name="transit_remains_record_table_name">Таблица транзитов запасов</string>
     <string name="transit_table_name">Таблица транзитов</string>
+    <string name="accounting_objects_characteristics_field_table_name">Таблица простых характеристик объектов учета</string>
+    <string name="accounting_objects_vocabulary_characteristics_field_table_name">Таблица ограниченных характеристик объектов учета</string>
 
 </resources>

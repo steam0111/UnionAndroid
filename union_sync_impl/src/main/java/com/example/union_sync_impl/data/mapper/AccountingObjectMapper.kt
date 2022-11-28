@@ -1,6 +1,7 @@
 package com.example.union_sync_impl.data.mapper
 
 import com.example.union_sync_api.entity.AccountingObjectAdditionalFieldSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectCharacteristicSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
@@ -69,6 +70,8 @@ fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
     structuralSyncEntities: List<StructuralSyncEntity>?,
     simpleAdditionalFields: List<AccountingObjectAdditionalFieldSyncEntity>?,
     vocabularyAdditionalFields: List<AccountingObjectAdditionalFieldSyncEntity>?,
+    simpleCharacteristic: List<AccountingObjectCharacteristicSyncEntity>?,
+    vocabularyCharacteristic: List<AccountingObjectCharacteristicSyncEntity>?,
     categorySyncEntity: EnumSyncEntity?
 ): AccountingObjectDetailSyncEntity {
     return AccountingObjectDetailSyncEntity(
@@ -83,7 +86,9 @@ fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
         categorySyncEntity = categorySyncEntity,
         balanceUnitSyncEntities = balanceUnitSyncEntities,
         simpleAdditionalFields = simpleAdditionalFields,
-        vocabularyAdditionalFields = vocabularyAdditionalFields
+        vocabularyAdditionalFields = vocabularyAdditionalFields,
+        simpleCharacteristic = simpleCharacteristic,
+        vocabularyCharacteristic = vocabularyCharacteristic
     )
 }
 

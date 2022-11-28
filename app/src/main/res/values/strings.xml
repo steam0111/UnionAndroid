@@ -188,6 +188,7 @@
 
     <!-- Status -->
     <string name="accounting_object_detail_additionally">Дополнительные</string>
+    <string name="accounting_object_detail_characteristic">Характеристики</string>
     <string name="accounting_object_available">Доступен</string>
     <string name="accounting_object_under_repair">В ремонте</string>
     <string name="accounting_object_under_review">На проверке</string>

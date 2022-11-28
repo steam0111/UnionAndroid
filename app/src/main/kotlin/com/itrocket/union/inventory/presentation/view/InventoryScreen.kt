@@ -477,7 +477,8 @@ fun InventoryScreenPreview() {
                     barcodeValue = "",
                     rfidValue = "",
                     factoryNumber = "",
-                    marked = true
+                    marked = true,
+                    characteristics = emptyList(),
                 ),
                 AccountingObjectDomain(
                     id = "2",
@@ -498,7 +499,8 @@ fun InventoryScreenPreview() {
                     barcodeValue = "",
                     rfidValue = "",
                     factoryNumber = "",
-                    marked = true
+                    marked = true,
+                    characteristics = emptyList(),
                 ), AccountingObjectDomain(
                     id = "3",
                     isBarcode = true,
@@ -518,7 +520,8 @@ fun InventoryScreenPreview() {
                     barcodeValue = "",
                     rfidValue = "",
                     factoryNumber = "",
-                    marked = true
+                    marked = true,
+                    characteristics = emptyList(),
                 )
             ),
             selectedPage = 1,

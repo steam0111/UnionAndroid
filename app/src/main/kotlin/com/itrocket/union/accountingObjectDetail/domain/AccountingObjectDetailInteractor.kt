@@ -39,8 +39,8 @@ class AccountingObjectDetailInteractor(
 
     suspend fun getAccountingObjectFlow(id: String): Flow<AccountingObjectDomain> =
         repository.getAccountingObjectFlow(id).map {
-            val mainInfo = checkAdditionalListPermissions(it.listMainInfo)
-            it.copy(listMainInfo = mainInfo)
+            val additionalInfo = checkAdditionalListPermissions(it.listAdditionallyInfo)
+            it.copy(listMainInfo = it.listMainInfo, listAdditionallyInfo = additionalInfo)
         }
 
     private suspend fun checkAdditionalListPermissions(listInfo: List<ObjectInfoDomain>): List<ObjectInfoDomain> {
