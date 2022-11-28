@@ -197,7 +197,9 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
                 valueRes = R.string.value_not_defined
             )
         )
+    }
 
+    val additionalFields = buildList {
         simpleAdditionalFields?.forEach {
             add(
                 ObjectInfoDomain(
@@ -221,6 +223,30 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
         }
     }
 
+    val characteristics = buildList {
+        simpleCharacteristic?.forEach {
+            add(
+                ObjectInfoDomain(
+                    name = it.name,
+                    value = it.value,
+                    valueRes = R.string.value_not_defined,
+                    filedType = ObjectInfoType.SIMPLE_CHARACTERISTICS
+                )
+            )
+        }
+
+        vocabularyCharacteristic?.forEach {
+            add(
+                ObjectInfoDomain(
+                    name = it.name,
+                    value = it.value,
+                    valueRes = R.string.value_not_defined,
+                    filedType = ObjectInfoType.VOCABULARY_CHARACTERISTICS
+                )
+            )
+        }
+    }
+
 
     return AccountingObjectDomain(
         id = accountingObject.id,
@@ -228,7 +254,8 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
         status = accountingObject.status?.toDomainStatus(),
         isBarcode = accountingObject.barcodeValue != null,
         listMainInfo = listMainInfo,
-        listAdditionallyInfo = emptyList(),
+        listAdditionallyInfo = additionalFields,
+        characteristics = characteristics,
         barcodeValue = accountingObject.barcodeValue,
         rfidValue = accountingObject.rfidValue,
         factoryNumber = accountingObject.factoryNumber,

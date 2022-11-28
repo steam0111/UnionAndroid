@@ -1,6 +1,7 @@
 package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.AccountingObjectAdditionalFieldsSyncApi
+import com.example.union_sync_api.data.AccountingObjectsCharacteristicSyncApi
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.EnumsSyncApi
 import com.example.union_sync_api.data.LocationSyncApi
@@ -28,6 +29,7 @@ class AccountingObjectSyncApiImpl(
     private val locationSyncApi: LocationSyncApi,
     private val structuralSyncApi: StructuralSyncApi,
     private val accountingObjectAdditionalFieldsSyncApi: AccountingObjectAdditionalFieldsSyncApi,
+    private val accountingObjectsCharacteristicSyncApi: AccountingObjectsCharacteristicSyncApi,
     private val enumsApi: EnumsSyncApi
 ) : AccountingObjectSyncApi {
 
@@ -114,6 +116,7 @@ class AccountingObjectSyncApiImpl(
         val location =
             locationSyncApi.getLocationFullPath(fullAccountingObjectDb.accountingObjectDb.locationId)
 
+
         val structurals = structuralSyncApi.getStructuralFullPath(
             fullAccountingObjectDb.structuralDb?.id, mutableListOf()
         ).orEmpty()
@@ -132,6 +135,12 @@ class AccountingObjectSyncApiImpl(
                 fullAccountingObjectDb.accountingObjectDb.id
             ),
             vocabularyAdditionalFields = accountingObjectAdditionalFieldsSyncApi.getVocabularyAdditionalFields(
+                fullAccountingObjectDb.accountingObjectDb.id
+            ),
+            simpleCharacteristic = accountingObjectsCharacteristicSyncApi.getSimpleCharacteristics(
+                fullAccountingObjectDb.accountingObjectDb.id
+            ),
+            vocabularyCharacteristic = accountingObjectsCharacteristicSyncApi.getVocabularyCharacteristics(
                 fullAccountingObjectDb.accountingObjectDb.id
             ),
             categorySyncEntity = categorySyncEntity
@@ -170,6 +179,12 @@ class AccountingObjectSyncApiImpl(
             vocabularyAdditionalFields = accountingObjectAdditionalFieldsSyncApi.getVocabularyAdditionalFields(
                 fullAccountingObject.accountingObjectDb.id
             ),
+            simpleCharacteristic = accountingObjectsCharacteristicSyncApi.getSimpleCharacteristics(
+                fullAccountingObject.accountingObjectDb.id
+            ),
+            vocabularyCharacteristic = accountingObjectsCharacteristicSyncApi.getVocabularyCharacteristics(
+                fullAccountingObject.accountingObjectDb.id
+            ),
             categorySyncEntity = categorySyncEntity
         )
     }
@@ -197,6 +212,12 @@ class AccountingObjectSyncApiImpl(
                     it.accountingObjectDb.id
                 ),
                 vocabularyAdditionalFields = accountingObjectAdditionalFieldsSyncApi.getVocabularyAdditionalFields(
+                    it.accountingObjectDb.id
+                ),
+                simpleCharacteristic = accountingObjectsCharacteristicSyncApi.getSimpleCharacteristics(
+                    it.accountingObjectDb.id
+                ),
+                vocabularyCharacteristic = accountingObjectsCharacteristicSyncApi.getVocabularyCharacteristics(
                     it.accountingObjectDb.id
                 ),
                 categorySyncEntity = categorySyncEntity

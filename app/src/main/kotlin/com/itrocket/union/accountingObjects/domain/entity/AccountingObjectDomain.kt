@@ -17,6 +17,7 @@ data class AccountingObjectDomain(
     val factoryNumber: String?,
     val listMainInfo: List<ObjectInfoDomain>,
     val listAdditionallyInfo: List<ObjectInfoDomain>,
+    val characteristics: List<ObjectInfoDomain>,
     val inventoryNumber: String? = null,
     val comment: String? = null,
     val manualInput: Boolean? = null,

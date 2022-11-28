@@ -48,6 +48,7 @@ fun AccountingObjectSyncEntity.map(): AccountingObjectDomain {
         isBarcode = barcodeValue != null,
         listMainInfo = listMainInfo,
         listAdditionallyInfo = emptyList(),
+        characteristics = emptyList(),
         inventoryStatus = inventoryStatus,
         barcodeValue = barcodeValue,
         rfidValue = rfidValue,
@@ -75,21 +76,27 @@ fun EnumSyncEntity.toObjectStatusType(): ObjectStatusType {
         AccountingObjectStatus.AVAILABLE.name -> {
             backgroundColor = green7
         }
+
         AccountingObjectStatus.GIVEN.name -> {
             backgroundColor = blue6
         }
+
         AccountingObjectStatus.REVIEW.name -> {
             backgroundColor = burntSienna
         }
+
         AccountingObjectStatus.REPAIR.name -> {
             backgroundColor = violet5
         }
+
         AccountingObjectStatus.DECOMMISSIONED.name -> {
             backgroundColor = blue6
         }
+
         AccountingObjectStatus.WRITTEN_OFF.name -> {
             backgroundColor = graphite5
         }
+
         AccountingObjectStatus.TRANSIT.name -> {
             textColor = graphite6
         }

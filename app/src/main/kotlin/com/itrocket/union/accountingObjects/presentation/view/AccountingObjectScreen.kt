@@ -166,7 +166,8 @@ fun AccountingObjectScreenPreview() {
                     barcodeValue = "",
                     rfidValue = "",
                     factoryNumber = "",
-                    marked = false
+                    marked = false,
+                    characteristics = emptyList(),
                 ),
                 AccountingObjectDomain(
                     id = "8",
@@ -187,7 +188,8 @@ fun AccountingObjectScreenPreview() {
                     barcodeValue = "",
                     rfidValue = "",
                     factoryNumber = "",
-                    marked = true
+                    marked = true,
+                    characteristics = emptyList(),
                 )
             ),
             params = emptyList()

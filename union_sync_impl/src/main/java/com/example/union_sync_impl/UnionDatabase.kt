@@ -26,17 +26,24 @@ import com.example.union_sync_impl.dao.ProducerDao
 import com.example.union_sync_impl.dao.ProviderDao
 import com.example.union_sync_impl.dao.ReceptionItemCategoryDao
 import com.example.union_sync_impl.dao.ReserveDao
+import com.example.union_sync_impl.dao.AccountingObjectsSimpleCharacteristicsDao
 import com.example.union_sync_impl.dao.SimpleAdditionalFieldDao
 import com.example.union_sync_impl.dao.StructuralDao
 import com.example.union_sync_impl.dao.StructuralPathDao
 import com.example.union_sync_impl.dao.TransitAccountingObjectRecordDao
 import com.example.union_sync_impl.dao.TransitDao
 import com.example.union_sync_impl.dao.TransitRemainsRecordDao
+import com.example.union_sync_impl.dao.AccountingObjectsVocabularyCharacteristicsDao
+import com.example.union_sync_impl.dao.SimpleCharacteristicDao
 import com.example.union_sync_impl.dao.VocabularyAdditionalFieldDao
 import com.example.union_sync_impl.dao.VocabularyAdditionalFieldValueDao
+import com.example.union_sync_impl.dao.VocabularyCharacteristicDao
+import com.example.union_sync_impl.dao.VocabularyCharacteristicValueDao
 import com.example.union_sync_impl.entity.AccountingObjectDb
 import com.example.union_sync_impl.entity.AccountingObjectSimpleAdditionalFieldDb
+import com.example.union_sync_impl.entity.AccountingObjectSimpleCharacteristicsDb
 import com.example.union_sync_impl.entity.AccountingObjectVocabularyAdditionalFieldDb
+import com.example.union_sync_impl.entity.AccountingObjectVocabularyCharacteristicsDb
 import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
 import com.example.union_sync_impl.entity.CounterpartyDb
@@ -56,11 +63,14 @@ import com.example.union_sync_impl.entity.ProviderDb
 import com.example.union_sync_impl.entity.ReceptionItemCategoryDb
 import com.example.union_sync_impl.entity.ReserveDb
 import com.example.union_sync_impl.entity.SimpleAdditionalFieldDb
+import com.example.union_sync_impl.entity.SimpleCharacteristicDb
 import com.example.union_sync_impl.entity.TransitAccountingObjectRecordDb
 import com.example.union_sync_impl.entity.TransitDb
 import com.example.union_sync_impl.entity.TransitRemainsRecordDb
 import com.example.union_sync_impl.entity.VocabularyAdditionalFieldDb
 import com.example.union_sync_impl.entity.VocabularyAdditionalFieldValueDb
+import com.example.union_sync_impl.entity.VocabularyCharacteristicDb
+import com.example.union_sync_impl.entity.VocabularyCharacteristicValueDb
 import com.example.union_sync_impl.entity.location.LocationDb
 import com.example.union_sync_impl.entity.location.LocationPathDb
 import com.example.union_sync_impl.entity.location.LocationTypeDb
@@ -101,8 +111,13 @@ import com.example.union_sync_impl.utils.Converters
         AccountingObjectVocabularyAdditionalFieldDb::class,
         SimpleAdditionalFieldDb::class,
         VocabularyAdditionalFieldDb::class,
-        VocabularyAdditionalFieldValueDb::class
-    ], version = 114
+        VocabularyAdditionalFieldValueDb::class,
+        AccountingObjectSimpleCharacteristicsDb::class,
+        AccountingObjectVocabularyCharacteristicsDb::class,
+        SimpleCharacteristicDb::class,
+        VocabularyCharacteristicDb::class,
+        VocabularyCharacteristicValueDb::class
+    ], version = 117
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {
@@ -137,4 +152,13 @@ abstract class UnionDatabase : RoomDatabase() {
     abstract fun simpleAdditionalFieldDao(): SimpleAdditionalFieldDao
     abstract fun vocabularyAdditionalFieldDao(): VocabularyAdditionalFieldDao
     abstract fun vocabularyAdditionalFieldValueDao(): VocabularyAdditionalFieldValueDao
+    abstract fun accountingObjectsVocabularyCharacteristicsDao(): AccountingObjectsVocabularyCharacteristicsDao
+    abstract fun accountingObjectsSimpleCharacteristicsDao(): AccountingObjectsSimpleCharacteristicsDao
+
+    abstract fun simpleCharacteristicsDao(): SimpleCharacteristicDao
+
+    abstract fun vocabularyCharacteristicsDao(): VocabularyCharacteristicDao
+
+    abstract fun vocabularyCharacteristicValueDao(): VocabularyCharacteristicValueDao
+
 }

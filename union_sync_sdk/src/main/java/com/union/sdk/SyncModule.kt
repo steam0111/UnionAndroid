@@ -2,6 +2,7 @@ package com.union.sdk
 
 import androidx.room.Room
 import com.example.union_sync_api.data.AccountingObjectAdditionalFieldsSyncApi
+import com.example.union_sync_api.data.AccountingObjectsCharacteristicSyncApi
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.ActionRecordSyncApi
 import com.example.union_sync_api.data.ActionRemainsRecordSyncApi
@@ -27,6 +28,7 @@ import com.example.union_sync_api.data.SyncEventsApi
 import com.example.union_sync_api.data.TransitSyncApi
 import com.example.union_sync_impl.UnionDatabase
 import com.example.union_sync_impl.data.AccountingObjectAdditionalFieldsSyncApiImpl
+import com.example.union_sync_impl.data.AccountingObjectsCharacteristicSyncApiImpl
 import com.example.union_sync_impl.data.AccountingObjectSyncApiImpl
 import com.example.union_sync_impl.data.ActionRecordSyncApiImpl
 import com.example.union_sync_impl.data.ActionRemainsRecordSyncApiImpl
@@ -79,7 +81,8 @@ object SyncModule {
                 locationSyncApi = get(),
                 structuralSyncApi = get(),
                 accountingObjectAdditionalFieldsSyncApi = get(),
-                enumsApi = get()
+                enumsApi = get(),
+                accountingObjectsCharacteristicSyncApi = get()
             )
         }
         factory<InventorySyncApi> {
@@ -192,6 +195,12 @@ object SyncModule {
                 vocabularyDao = get()
             )
         }
+        factory<AccountingObjectsCharacteristicSyncApi> {
+            AccountingObjectsCharacteristicSyncApiImpl(
+                simpleDao = get(),
+                vocabularyDao = get()
+            )
+        }
         single {
             Room.databaseBuilder(
                 get(),
@@ -213,6 +222,11 @@ object SyncModule {
         }
         factory {
             SyncRepository(
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
                 get(),
                 get(),
                 get(),
@@ -340,6 +354,21 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().vocabularyAdditionalFieldValueDao()
+        }
+        factory {
+            get<UnionDatabase>().accountingObjectsVocabularyCharacteristicsDao()
+        }
+        factory {
+            get<UnionDatabase>().accountingObjectsSimpleCharacteristicsDao()
+        }
+        factory {
+            get<UnionDatabase>().simpleCharacteristicsDao()
+        }
+        factory {
+            get<UnionDatabase>().vocabularyCharacteristicValueDao()
+        }
+        factory {
+            get<UnionDatabase>().vocabularyCharacteristicsDao()
         }
         factory<ManageSyncDataApi> {
             ManageSyncDataImpl(

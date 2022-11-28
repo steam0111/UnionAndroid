@@ -661,7 +661,8 @@ fun AccountingObjectItemPreview() {
             barcodeValue = "",
             rfidValue = "",
             factoryNumber = "",
-            marked = true
+            marked = true,
+            characteristics = emptyList(),
         ),
         onAccountingObjectListener = {},
         onAccountingObjectLongClickListener = {},
