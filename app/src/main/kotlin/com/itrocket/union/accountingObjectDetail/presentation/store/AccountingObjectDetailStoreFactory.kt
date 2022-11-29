@@ -12,10 +12,10 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.changeScanData.data.mapper.toChangeScanType
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.image.ImageDomain
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
-import com.itrocket.union.readingMode.presentation.view.toReadingModeTab
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 import kotlinx.coroutines.flow.catch
@@ -123,7 +123,25 @@ class AccountingObjectDetailStoreFactory(
                 AccountingObjectDetailStore.Intent.OnRemoveRfidClicked -> onRemoveRfidClicked(
                     getState().accountingObjectDomain
                 )
+                AccountingObjectDetailStore.Intent.OnAddImageClicked -> onAddImageClicked()
+                is AccountingObjectDetailStore.Intent.OnImageClicked -> onImageClicked(
+                    imageDomain = intent.imageDomain,
+                    images = getState().accountingObjectDomain.images
+                )
             }
+        }
+
+        private fun onAddImageClicked() {
+            publish(AccountingObjectDetailStore.Label.ShowAddImage)
+        }
+
+        private fun onImageClicked(images: List<ImageDomain>, imageDomain: ImageDomain) {
+            publish(
+                AccountingObjectDetailStore.Label.ShowImageViewer(
+                    images = images,
+                    currentImage = imageDomain
+                )
+            )
         }
 
         private suspend fun onWriteOffClicked(accountingObjectDomain: AccountingObjectDomain) {

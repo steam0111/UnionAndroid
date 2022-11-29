@@ -50,6 +50,7 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.alertType.AlertType
+import com.itrocket.union.image.ImageDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.AppTheme
@@ -58,6 +59,7 @@ import com.itrocket.union.ui.ExpandedInfoField
 import com.itrocket.union.ui.InfoDialog
 import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.graphite3
+import com.itrocket.union.ui.image.GridImages
 import com.itrocket.union.ui.white
 import com.itrocket.union.utils.ifBlankOrNull
 import com.itrocket.utils.clickableUnbounded
@@ -80,6 +82,8 @@ fun AccountingObjectDetailScreen(
     onWriteOffClickListener: () -> Unit,
     onRemoveRfidClickListener: () -> Unit,
     onRemoveBarcodeClickListener: () -> Unit,
+    onImageClickListener: (ImageDomain) -> Unit,
+    onAddImageClickListener: () -> Unit,
 ) {
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
@@ -114,6 +118,17 @@ fun AccountingObjectDetailScreen(
                 ListInfo(
                     listInfo = state.accountingObjectDomain.characteristics,
                     state = state
+                )
+            }
+        ),
+        BaseTab(
+            title = stringResource(R.string.accounting_object_detail_photo),
+            screen = {
+                GridImages(
+                    images = state.accountingObjectDomain.images,
+                    onImageClickListener = onImageClickListener,
+                    canAddImage = true,
+                    onAddImageClickListener = onAddImageClickListener
                 )
             }
         )
@@ -458,5 +473,19 @@ fun AccountingObjectDetailScreenPreview() {
                 factoryNumber = "",
                 marked = true,
             ),
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
+        ),
+        AppInsets(topInset = previewTopInsetDp),
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {})
 }

@@ -16,6 +16,7 @@ import com.itrocket.union.changeScanData.domain.entity.ChangeScanType
 import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataArguments
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment.Companion.CHANGE_SCAN_DATA_ARGS
+import com.itrocket.union.image.ImageDomain
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -38,6 +39,8 @@ interface AccountingObjectDetailStore :
         object OnTriggerReleased : Intent()
         object OnRemoveBarcodeClicked : Intent()
         object OnRemoveRfidClicked : Intent()
+        object OnAddImageClicked : Intent()
+        data class OnImageClicked(val imageDomain: ImageDomain) : Intent()
         data class OnWriteEpcHandled(val rfid: String) : Intent()
         data class OnWriteEpcError(val error: String) : Intent()
         data class OnScanHandled(val scanData: String) : Intent()
@@ -103,5 +106,10 @@ interface AccountingObjectDetailStore :
         }
 
         data class ChangeSubscribeScanData(val isSubscribe: Boolean) : Label()
+
+        object ShowAddImage : Label()
+
+        data class ShowImageViewer(val images: List<ImageDomain>, val currentImage: ImageDomain) :
+            Label()
     }
 }

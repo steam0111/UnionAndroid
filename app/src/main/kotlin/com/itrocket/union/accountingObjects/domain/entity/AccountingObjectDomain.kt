@@ -2,8 +2,10 @@ package com.itrocket.union.accountingObjects.domain.entity
 
 import android.os.Parcelable
 import com.example.union_sync_api.entity.AccountingObjectInfoSyncEntity
+import com.itrocket.union.image.ImageDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 
 @Parcelize
 data class AccountingObjectDomain(
@@ -23,7 +25,8 @@ data class AccountingObjectDomain(
     val manualInput: Boolean? = null,
     val marked: Boolean,
     val forWrittenOff: Boolean? = null,
-    val exploitingId: String? = null
+    val exploitingId: String? = null,
+    val images: @RawValue List<ImageDomain> = listOf()
 ) : Parcelable {
     val hasBarcode: Boolean
         get() = !barcodeValue.isNullOrEmpty()

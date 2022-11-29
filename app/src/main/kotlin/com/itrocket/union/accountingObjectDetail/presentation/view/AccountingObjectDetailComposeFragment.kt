@@ -122,7 +122,13 @@ class AccountingObjectDetailComposeFragment :
                 },
                 onRemoveRfidClickListener = {
                     accept(AccountingObjectDetailStore.Intent.OnRemoveRfidClicked)
-                }
+                },
+                onImageClickListener = {
+                    accept(AccountingObjectDetailStore.Intent.OnImageClicked(it))
+                },
+                onAddImageClickListener = {
+                    accept(AccountingObjectDetailStore.Intent.OnAddImageClicked)
+                },
             )
         }
     }
