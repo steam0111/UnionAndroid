@@ -3,13 +3,16 @@ package com.itrocket.union.accountingObjectDetail.presentation.store
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
+import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailComposeFragment.Companion.ACCOUNTING_OBJECT_DETAIL_RESULT_CODE
 import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailComposeFragment.Companion.ACCOUNTING_OBJECT_DETAIL_RESULT_LABEL
+import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailComposeFragmentDirections
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.changeScanData.domain.entity.ChangeScanType
@@ -17,6 +20,7 @@ import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataArgume
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment.Companion.CHANGE_SCAN_DATA_ARGS
 import com.itrocket.union.image.ImageDomain
+import com.itrocket.union.imageViewer.presentation.store.ImageViewerArguments
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -110,6 +114,12 @@ interface AccountingObjectDetailStore :
         object ShowAddImage : Label()
 
         data class ShowImageViewer(val images: List<ImageDomain>, val currentImage: ImageDomain) :
-            Label()
+            Label(), ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = AccountingObjectDetailComposeFragmentDirections.actionAccountingObjectsDetailsToImageViewer(
+                    ImageViewerArguments(images = images, currentImage = currentImage)
+                )
+
+        }
     }
 }

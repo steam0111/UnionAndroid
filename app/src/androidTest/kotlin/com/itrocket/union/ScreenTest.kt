@@ -22,6 +22,7 @@ import com.itrocket.union.equipmentTypeDetail.presentation.view.EquipmentTypeDet
 import com.itrocket.union.equipmentTypes.presentation.view.EquipmentTypesScreenPreview
 import com.itrocket.union.filter.presentation.view.FilterScreenPreview
 import com.itrocket.union.identify.presentation.view.IdentifyScreenPreview
+import com.itrocket.union.imageViewer.presentation.view.ImageViewerScreenPreview
 import com.itrocket.union.inventories.presentation.view.InventoriesScreenPreview
 import com.itrocket.union.inventory.presentation.view.InventoryScreenPreview
 import com.itrocket.union.inventoryChoose.presentation.view.InventoryChooseScreenPreview
@@ -325,6 +326,13 @@ class ScreensTest : ScreenshotTest {
     fun `InfoDialog`() {
         takeScreenShot {
             InfoDialogPreview()
+        }
+    }
+
+    @Test
+    fun `ImageViewer`() {
+        takeScreenShot {
+            ImageViewerScreenPreview()
         }
     }
 }

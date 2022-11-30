@@ -56,6 +56,7 @@ import com.itrocket.union.token.TokenModule
 import com.itrocket.union.transit.TransitModule
 import com.itrocket.union.unionPermissions.UnionPermissionsModule
 import com.union.sdk.SyncModule
+import com.itrocket.union.imageViewer.ImageViewerModule
 
 object Modules {
 
@@ -122,6 +123,7 @@ object Modules {
         ManualInputModule.module,
         DataCollectModule.module,
         InventoryChooseModule.module,
-        CommentModule.module
+        CommentModule.module,
+        ImageViewerModule.module
     )
 }

@@ -78,17 +78,19 @@ fun CellImage(imageDomain: ImageDomain, onImageClickListener: (ImageDomain) -> U
             .background(black),
         contentAlignment = Alignment.BottomEnd
     ) {
-        Image(
-            bitmap = imageDomain.image,
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize()
-        )
-        if (imageDomain.isMainImage) {
+        imageDomain.imageBitmap?.let {
             Image(
-                painter = painterResource(R.drawable.ic_star),
+                bitmap = imageDomain.imageBitmap,
                 contentDescription = null,
-                modifier = Modifier.padding(4.dp)
+                modifier = Modifier.fillMaxSize()
             )
+            if (imageDomain.isMainImage) {
+                Image(
+                    painter = painterResource(R.drawable.ic_star),
+                    contentDescription = null,
+                    modifier = Modifier.padding(4.dp)
+                )
+            }
         }
     }
 }
@@ -123,21 +125,51 @@ private fun GridImagesPreview() {
     GridImages(
         canAddImage = true,
         images = listOf(
-            ImageDomain(ImageBitmap.imageResource(id = R.drawable.mock1), isMainImage = false),
-            ImageDomain(ImageBitmap.imageResource(id = R.drawable.mock2), isMainImage = false),
             ImageDomain(
-                ImageBitmap.imageResource(id = R.drawable.mock3),
+                imagePath = "",
+                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock1),
                 isMainImage = false
             ),
             ImageDomain(
-                ImageBitmap.imageResource(id = R.drawable.mock1),
+                imagePath = "",
+                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock2),
                 isMainImage = false
             ),
-            ImageDomain(ImageBitmap.imageResource(id = R.drawable.mock2), isMainImage = true),
-            ImageDomain(ImageBitmap.imageResource(id = R.drawable.mock3), isMainImage = false),
-            ImageDomain(ImageBitmap.imageResource(id = R.drawable.mock1), isMainImage = false),
-            ImageDomain(ImageBitmap.imageResource(id = R.drawable.mock2), isMainImage = false),
-            ImageDomain(ImageBitmap.imageResource(id = R.drawable.mock3), isMainImage = false),
+            ImageDomain(
+                imagePath = "",
+                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock3),
+                isMainImage = false
+            ),
+            ImageDomain(
+                imagePath = "",
+                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock1),
+                isMainImage = false
+            ),
+            ImageDomain(
+                imagePath = "",
+                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock2),
+                isMainImage = true
+            ),
+            ImageDomain(
+                imagePath = "",
+                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock3),
+                isMainImage = false
+            ),
+            ImageDomain(
+                imagePath = "",
+                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock1),
+                isMainImage = false
+            ),
+            ImageDomain(
+                imagePath = "",
+                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock2),
+                isMainImage = false
+            ),
+            ImageDomain(
+                imagePath = "",
+                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock3),
+                isMainImage = false
+            ),
         ),
         onAddImageClickListener = {},
         onImageClickListener = {}

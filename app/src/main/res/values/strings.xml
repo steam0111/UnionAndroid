@@ -54,6 +54,7 @@
     <string name="common_about_app">О приложении</string>
     <string name="common_settings">Настройки</string>
     <string name="common_logout">Выйти из профиля</string>
+    <string name="common_of">%1$d из %2$d</string>
 
     <string name="common_server_validate_error">Введен неправильный сервер или порт</string>
     <!-- Splash -->
@@ -435,4 +436,8 @@
     <string name="inventory_code_filter_title">Номер инвентаризационной ведомости</string>
     <string name="document_code_filter_title">Номер документа</string>
     <string name="field_is_mandatory">Поле обязательно</string>
+    
+    <!-- Image Viewer -->
+    <string name="image_viewer_make_main">Назначить главной</string>
+    <string name="image_viewer_main">Главная</string>
 </resources>

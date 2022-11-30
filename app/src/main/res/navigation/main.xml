@@ -108,6 +108,9 @@
             android:name="AccountingObjectDetailArguments"
             app:argType="com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailArguments"
             app:nullable="false" />
+        <action
+            android:id="@+id/action_accountingObjectsDetails_to_imageViewer"
+            app:destination="@id/imageViewer" />
     </fragment>
 
     <fragment
@@ -456,4 +459,14 @@
         android:id="@+id/dataCollect"
         android:name="com.itrocket.union.dataCollect.presentation.view.DataCollectComposeFragment"
         android:label="DataCollect" />
+
+    <fragment
+        android:id="@+id/imageViewer"
+        android:name="com.itrocket.union.imageViewer.presentation.view.ImageViewerComposeFragment"
+        android:label="ImageViewer">
+
+        <argument
+            android:name="ImageViewerArguments"
+            app:argType="com.itrocket.union.imageViewer.presentation.store.ImageViewerArguments" />
+    </fragment>
 </navigation>
