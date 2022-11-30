@@ -13,6 +13,7 @@ import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.changeScanData.data.mapper.toChangeScanType
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.image.ImageDomain
+import com.itrocket.union.imageViewer.domain.ImageViewerInteractor
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -31,7 +32,8 @@ class AccountingObjectDetailStoreFactory(
     private val errorInteractor: ErrorInteractor,
     private val serviceEntryManager: ServiceEntryManager,
     private val unionPermissionsInteractor: UnionPermissionsInteractor,
-    private val moduleSettingsInteractor: ModuleSettingsInteractor
+    private val moduleSettingsInteractor: ModuleSettingsInteractor,
+    private val imageViewerInteractor: ImageViewerInteractor
 ) {
     fun create(): AccountingObjectDetailStore =
         object : AccountingObjectDetailStore,
@@ -235,7 +237,7 @@ class AccountingObjectDetailStoreFactory(
                         handleError(it)
                     }.collect {
                         dispatch(Result.Loading(false))
-                        dispatch(Result.AccountingObject(it))
+                        dispatch(Result.AccountingObject(it.copy(images = imageViewerInteractor.getMockImages())))
                     }
             }
         }
