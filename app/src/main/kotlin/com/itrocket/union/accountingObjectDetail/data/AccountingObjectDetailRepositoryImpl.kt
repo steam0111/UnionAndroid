@@ -2,14 +2,13 @@ package com.itrocket.union.accountingObjectDetail.data
 
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.EnumsSyncApi
-import com.example.union_sync_api.entity.EnumType
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjectDetail.data.mapper.toAccountingObjectDetailDomain
 import com.itrocket.union.accountingObjectDetail.data.mapper.toAccountingObjectScanningData
 import com.itrocket.union.accountingObjectDetail.data.mapper.toAccountingObjectWriteOff
 import com.itrocket.union.accountingObjectDetail.domain.dependencies.AccountingObjectDetailRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectStatus
+import com.itrocket.union.image.domain.ImageDomain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -49,5 +48,9 @@ class AccountingObjectDetailRepositoryImpl(
 
     override suspend fun updateScanningData(accountingObject: AccountingObjectDomain) {
         return syncApi.updateAccountingObjectScanningData(accountingObject.toAccountingObjectScanningData())
+    }
+
+    override suspend fun getAccountingObjectImages(accountingObjectId: String): List<ImageDomain> {
+        return listOf()
     }
 }

@@ -89,6 +89,9 @@ class AccountingObjectDetailInteractor(
         repository.writeOffAccountingObject(accountingObjectDomain)
     }
 
+    suspend fun getAccountingObjectImages(accountingObjectId: String) =
+        repository.getAccountingObjectImages(accountingObjectId)
+
     private fun ByteArray.toHexString() = joinToString("") {
         String.format("%02x", it)
     }

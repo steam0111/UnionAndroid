@@ -1,5 +1,7 @@
 package com.itrocket.union.imageViewer.presentation.view
 
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.navArgs
 import com.itrocket.core.base.AppInsets
@@ -12,6 +14,20 @@ class ImageViewerComposeFragment :
         IMAGEVIEWER_VIEW_MODEL_QUALIFIER
     ) {
     override val navArgs by navArgs<ImageViewerComposeFragmentArgs>()
+
+    private val takeImageActivityResult =
+        registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+            accept(
+                ImageViewerStore.Intent.OnImageTaken(success = success)
+            )
+        }
+
+    override val onBackPressedCallback: OnBackPressedCallback
+        get() = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                accept(ImageViewerStore.Intent.OnBackClicked)
+            }
+        }
 
     override fun renderState(
         state: ImageViewerStore.State,
@@ -38,6 +54,15 @@ class ImageViewerComposeFragment :
                     accept(ImageViewerStore.Intent.OnMainClicked)
                 }
             )
+        }
+    }
+
+    override fun handleLabel(label: ImageViewerStore.Label) {
+        when (label) {
+            is ImageViewerStore.Label.ShowAddImage -> {
+                takeImageActivityResult.launch(label.imageUri)
+            }
+            else -> super.handleLabel(label)
         }
     }
 

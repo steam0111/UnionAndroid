@@ -23,6 +23,7 @@ import com.itrocket.union.equipmentTypes.EquipmentTypeModule
 import com.itrocket.union.error.ErrorModule
 import com.itrocket.union.filter.FilterModule
 import com.itrocket.union.identify.IdentifyModule
+import com.itrocket.union.image.ImageModule
 import com.itrocket.union.inventories.InventoriesModule
 import com.itrocket.union.inventory.InventoryModule
 import com.itrocket.union.inventoryChoose.InventoryChooseModule
@@ -124,6 +125,7 @@ object Modules {
         DataCollectModule.module,
         InventoryChooseModule.module,
         CommentModule.module,
-        ImageViewerModule.module
+        ImageViewerModule.module,
+        ImageModule.module
     )
 }

@@ -18,10 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScrollableTabRow
-import androidx.compose.material.TabRowDefaults
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -50,17 +47,11 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.alertType.AlertType
-import com.itrocket.union.image.ImageDomain
+import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
-import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.ui.BaseButton
-import com.itrocket.union.ui.ExpandedInfoField
-import com.itrocket.union.ui.InfoDialog
-import com.itrocket.union.ui.ReadingModeBottomBar
-import com.itrocket.union.ui.graphite3
+import com.itrocket.union.ui.*
 import com.itrocket.union.ui.image.GridImages
-import com.itrocket.union.ui.white
 import com.itrocket.union.utils.ifBlankOrNull
 import com.itrocket.utils.clickableUnbounded
 import kotlinx.coroutines.CoroutineScope
@@ -124,12 +115,18 @@ fun AccountingObjectDetailScreen(
         BaseTab(
             title = stringResource(R.string.accounting_object_detail_photo),
             screen = {
-                GridImages(
-                    images = state.accountingObjectDomain.images,
-                    onImageClickListener = onImageClickListener,
-                    canAddImage = true,
-                    onAddImageClickListener = onAddImageClickListener
-                )
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    GridImages(
+                        modifier = Modifier.fillMaxSize(),
+                        images = state.images,
+                        onImageClickListener = onImageClickListener,
+                        canAddImage = true,
+                        onAddImageClickListener = onAddImageClickListener
+                    )
+                    if (state.isImageLoading) {
+                        CircularProgressIndicator()
+                    }
+                }
             }
         )
     )

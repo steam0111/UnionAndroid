@@ -21,13 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.itrocket.union.R
-import com.itrocket.union.image.ImageDomain
+import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.ui.black
 import com.itrocket.union.ui.psb1
 import com.itrocket.union.ui.psb4
@@ -40,6 +39,7 @@ private const val GRID_IMAGE_SIZE = 76
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GridImages(
+    modifier: Modifier = Modifier,
     images: List<ImageDomain>,
     onImageClickListener: (ImageDomain) -> Unit,
     canAddImage: Boolean = false,
@@ -50,7 +50,7 @@ fun GridImages(
         cells = GridCells.Fixed(CELLS_COUNT),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier
+        modifier = modifier
             .background(white)
             .padding(16.dp)
     ) {
@@ -78,19 +78,17 @@ fun CellImage(imageDomain: ImageDomain, onImageClickListener: (ImageDomain) -> U
             .background(black),
         contentAlignment = Alignment.BottomEnd
     ) {
-        imageDomain.imageBitmap?.let {
+        Image(
+            painter = rememberAsyncImagePainter(model = imageDomain.imageFile),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize()
+        )
+        if (imageDomain.isMainImage) {
             Image(
-                bitmap = imageDomain.imageBitmap,
+                painter = painterResource(R.drawable.ic_star),
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.padding(4.dp)
             )
-            if (imageDomain.isMainImage) {
-                Image(
-                    painter = painterResource(R.drawable.ic_star),
-                    contentDescription = null,
-                    modifier = Modifier.padding(4.dp)
-                )
-            }
         }
     }
 }
@@ -127,47 +125,38 @@ private fun GridImagesPreview() {
         images = listOf(
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock1),
                 isMainImage = false
             ),
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock2),
                 isMainImage = false
             ),
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock3),
                 isMainImage = false
             ),
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock1),
                 isMainImage = false
             ),
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock2),
                 isMainImage = true
             ),
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock3),
                 isMainImage = false
             ),
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock1),
                 isMainImage = false
             ),
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock2),
                 isMainImage = false
             ),
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock3),
                 isMainImage = false
             ),
         ),

@@ -5,9 +5,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.core.parameter.parametersOf
-import com.itrocket.union.imageViewer.data.ImageViewerRepositoryImpl
 import com.itrocket.union.imageViewer.domain.ImageViewerInteractor
-import com.itrocket.union.imageViewer.domain.dependencies.ImageViewerRepository
 import com.itrocket.union.imageViewer.presentation.store.ImageViewerStore
 import com.itrocket.union.imageViewer.presentation.store.ImageViewerStoreFactory
 import com.itrocket.union.imageViewer.presentation.view.ImageViewerComposeFragmentArgs
@@ -23,12 +21,8 @@ object ImageViewerModule {
             })
         }
 
-        factory<ImageViewerRepository> {
-            ImageViewerRepositoryImpl(get(), get())
-        }
-
         factory {
-            ImageViewerInteractor(get(), get())
+            ImageViewerInteractor(get())
         }
 
         factory { (args: ImageViewerComposeFragmentArgs) ->
@@ -37,6 +31,7 @@ object ImageViewerModule {
                 get(),
                 get(),
                 args.imageViewerArguments,
+                get(),
                 get()
             ).create()
         }

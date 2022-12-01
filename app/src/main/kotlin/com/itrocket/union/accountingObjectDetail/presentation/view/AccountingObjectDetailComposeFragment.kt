@@ -1,7 +1,7 @@
 package com.itrocket.union.accountingObjectDetail.presentation.view
 
-import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -12,17 +12,19 @@ import com.itrocket.union.accountingObjectDetail.AccountingObjectDetailModule.AC
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailStore
 import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataResult
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment
+import com.itrocket.union.imageViewer.domain.entity.ImageViewerResult
+import com.itrocket.union.imageViewer.presentation.view.ImageViewerComposeFragment
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
+import kotlinx.coroutines.flow.collect
 
 class AccountingObjectDetailComposeFragment :
     BaseComposeFragment<AccountingObjectDetailStore.Intent, AccountingObjectDetailStore.State, AccountingObjectDetailStore.Label>(
@@ -34,17 +36,19 @@ class AccountingObjectDetailComposeFragment :
 
     private var scanJob: Job? = null
 
+    private val takeImageActivityResult =
+        registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+            accept(
+                AccountingObjectDetailStore.Intent.OnImageTaken(success = success)
+            )
+        }
+
     override val onBackPressedCallback: OnBackPressedCallback =
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 accept(AccountingObjectDetailStore.Intent.OnBackClicked)
             }
         }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        observeScanning()
-    }
 
     override val fragmentResultList: List<FragmentResult>
         get() = listOf(
@@ -75,6 +79,17 @@ class AccountingObjectDetailComposeFragment :
                     (it as ReadingModeResult?)?.let {
                         accept(
                             AccountingObjectDetailStore.Intent.OnManualInput(it)
+                        )
+                    }
+                }
+            ),
+            FragmentResult(
+                resultCode = ImageViewerComposeFragment.IMAGE_VIEWER_RESULT_CODE,
+                resultLabel = ImageViewerComposeFragment.IMAGE_VIEWER_RESULT_LABEL,
+                resultAction = {
+                    (it as ImageViewerResult?)?.let {
+                        accept(
+                            AccountingObjectDetailStore.Intent.OnImagesChanged(it.images)
                         )
                     }
                 }
@@ -134,7 +149,13 @@ class AccountingObjectDetailComposeFragment :
     }
 
     override fun handleLabel(label: AccountingObjectDetailStore.Label) {
-        super.handleLabel(label)
+        when (label) {
+            is AccountingObjectDetailStore.Label.ShowAddImage -> takeImageActivityResult.launch(
+                label.imageUri
+            )
+            else -> super.handleLabel(label)
+        }
+
         if (label is AccountingObjectDetailStore.Label.ChangeSubscribeScanData) {
             if (label.isSubscribe) {
                 observeScanning()
