@@ -1,5 +1,6 @@
 package com.itrocket.union.accountingObjectDetail.presentation.store
 
+import android.net.Uri
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -7,12 +8,14 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.R
 import com.itrocket.union.accountingObjectDetail.domain.AccountingObjectDetailInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.changeScanData.data.mapper.toChangeScanType
 import com.itrocket.union.error.ErrorInteractor
-import com.itrocket.union.image.ImageDomain
+import com.itrocket.union.image.domain.ImageDomain
+import com.itrocket.union.image.domain.ImageInteractor
 import com.itrocket.union.imageViewer.domain.ImageViewerInteractor
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.readingMode.domain.ReadingModeInteractor
@@ -35,6 +38,7 @@ class AccountingObjectDetailStoreFactory(
     private val unionPermissionsInteractor: UnionPermissionsInteractor,
     private val moduleSettingsInteractor: ModuleSettingsInteractor,
     private val imageViewerInteractor: ImageViewerInteractor,
+    private val imageInteractor: ImageInteractor,
     private val readingModeInteractor: ReadingModeInteractor
 ) {
     fun create(): AccountingObjectDetailStore =
@@ -64,6 +68,13 @@ class AccountingObjectDetailStoreFactory(
             dispatch(Result.ReadingMode(moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = true)))
             dispatch(Result.CanUpdate(unionPermissionsInteractor.canUpdate(UnionPermission.ACCOUNTING_OBJECT)))
             listenAccountingObject()
+            dispatch(
+                Result.Images(
+                    interactor.getAccountingObjectImages(
+                        accountingObjectDetailArguments.argument.id
+                    )
+                )
+            )
         }
 
         override fun handleError(throwable: Throwable) {
@@ -126,8 +137,13 @@ class AccountingObjectDetailStoreFactory(
                 AccountingObjectDetailStore.Intent.OnAddImageClicked -> onAddImageClicked()
                 is AccountingObjectDetailStore.Intent.OnImageClicked -> onImageClicked(
                     imageDomain = intent.imageDomain,
-                    images = getState().accountingObjectDomain.images
+                    images = getState().images
                 )
+                is AccountingObjectDetailStore.Intent.OnImageTaken -> onImageTaken(
+                    success = intent.success,
+                    getState = getState
+                )
+                is AccountingObjectDetailStore.Intent.OnImagesChanged -> onImagesChanged(images = intent.images)
             }
         }
 
@@ -141,8 +157,40 @@ class AccountingObjectDetailStoreFactory(
             )
         }
 
-        private fun onAddImageClicked() {
-            publish(AccountingObjectDetailStore.Label.ShowAddImage)
+        private suspend fun onImageTaken(
+            success: Boolean,
+            getState: () -> AccountingObjectDetailStore.State
+        ) {
+            val imageUri = getState().imageUri
+            dispatch(Result.ImageLoading(true))
+            catchException {
+                if (success && imageUri != null) {
+                    val imageDomain = imageInteractor.saveImageFromContentUri(imageUri)
+                    dispatch(
+                        Result.Images(
+                            images = imageInteractor.addImageDomain(
+                                images = getState().images,
+                                image = imageDomain
+                            )
+                        )
+                    )
+                } else {
+                    throw errorInteractor.getThrowableByResId(R.string.image_taken_error)
+                }
+            }
+            dispatch(Result.ImageLoading(false))
+        }
+
+        private fun onImagesChanged(images: List<ImageDomain>) {
+            dispatch(Result.Images(images))
+        }
+
+        private suspend fun onAddImageClicked() {
+            catchException {
+                val imageTmpUri = imageInteractor.getTmpFileUri()
+                dispatch(Result.ImageUri(imageTmpUri))
+                publish(AccountingObjectDetailStore.Label.ShowAddImage(imageTmpUri))
+            }
         }
 
         private fun onImageClicked(images: List<ImageDomain>, imageDomain: ImageDomain) {
@@ -245,7 +293,6 @@ class AccountingObjectDetailStoreFactory(
                         handleError(it)
                     }.collect {
                         dispatch(Result.Loading(false))
-                        dispatch(Result.AccountingObject(it.copy(images = imageViewerInteractor.getMockImages())))
                     }
             }
         }
@@ -254,11 +301,14 @@ class AccountingObjectDetailStoreFactory(
     private sealed class Result {
         data class RfidError(val rfidError: String) : Result()
         data class NewPage(val page: Int) : Result()
+        data class ImageLoading(val isLoading: Boolean) : Result()
         data class Loading(val isLoading: Boolean) : Result()
         data class AccountingObject(val obj: AccountingObjectDomain) : Result()
         data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
         data class CanUpdate(val canUpdate: Boolean) : Result()
         data class DialogType(val dialogType: AlertType) : Result()
+        data class ImageUri(val imageUri: Uri) : Result()
+        data class Images(val images: List<ImageDomain>) : Result()
     }
 
     private object ReducerImpl : Reducer<AccountingObjectDetailStore.State, Result> {
@@ -271,6 +321,9 @@ class AccountingObjectDetailStoreFactory(
                 is Result.CanUpdate -> copy(canUpdate = result.canUpdate)
                 is Result.DialogType -> copy(dialogType = result.dialogType)
                 is Result.RfidError -> copy(rfidError = result.rfidError)
+                is Result.ImageUri -> copy(imageUri = result.imageUri)
+                is Result.Images -> copy(images = result.images)
+                is Result.ImageLoading -> copy(isImageLoading = result.isLoading)
             }
     }
 }

@@ -436,8 +436,11 @@
     <string name="inventory_code_filter_title">Номер инвентаризационной ведомости</string>
     <string name="document_code_filter_title">Номер документа</string>
     <string name="field_is_mandatory">Поле обязательно</string>
-    
+
     <!-- Image Viewer -->
     <string name="image_viewer_make_main">Назначить главной</string>
     <string name="image_viewer_main">Главная</string>
+
+    <!-- Image -->
+    <string name="image_taken_error">Произошла ошибка при получении фотографии</string>
 </resources>

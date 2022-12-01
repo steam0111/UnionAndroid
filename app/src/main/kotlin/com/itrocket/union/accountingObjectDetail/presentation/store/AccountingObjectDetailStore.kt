@@ -1,5 +1,6 @@
 package com.itrocket.union.accountingObjectDetail.presentation.store
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -19,7 +20,7 @@ import com.itrocket.union.changeScanData.domain.entity.ChangeScanType
 import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataArguments
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment.Companion.CHANGE_SCAN_DATA_ARGS
-import com.itrocket.union.image.ImageDomain
+import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.imageViewer.presentation.store.ImageViewerArguments
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
@@ -44,6 +45,8 @@ interface AccountingObjectDetailStore :
         object OnRemoveBarcodeClicked : Intent()
         object OnRemoveRfidClicked : Intent()
         object OnAddImageClicked : Intent()
+        data class OnImagesChanged(val images: List<ImageDomain>) : Intent()
+        data class OnImageTaken(val success: Boolean) : Intent()
         data class OnImageClicked(val imageDomain: ImageDomain) : Intent()
         data class OnWriteEpcHandled(val rfid: String) : Intent()
         data class OnWriteEpcError(val error: String) : Intent()
@@ -55,11 +58,14 @@ interface AccountingObjectDetailStore :
     data class State(
         val accountingObjectDomain: AccountingObjectDomain,
         val isLoading: Boolean = false,
+        val isImageLoading: Boolean = false,
         val readingMode: ReadingModeTab = ReadingModeTab.RFID,
         val selectedPage: Int = 0,
         val canUpdate: Boolean = false,
         val dialogType: AlertType = AlertType.NONE,
         val rfidError: String = "",
+        val imageUri: Uri? = null,
+        val images: List<ImageDomain> = listOf()
     )
 
     sealed class Label {
@@ -111,7 +117,7 @@ interface AccountingObjectDetailStore :
 
         data class ChangeSubscribeScanData(val isSubscribe: Boolean) : Label()
 
-        object ShowAddImage : Label()
+        data class ShowAddImage(val imageUri: Uri) : Label()
 
         data class ShowImageViewer(val images: List<ImageDomain>, val currentImage: ImageDomain) :
             Label(), ForwardNavigationLabel {

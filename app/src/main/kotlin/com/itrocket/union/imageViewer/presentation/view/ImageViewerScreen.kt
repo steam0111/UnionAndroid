@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
@@ -24,17 +25,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
-import com.itrocket.union.image.ImageDomain
+import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.imageViewer.presentation.store.ImageViewerStore
 import com.itrocket.union.ui.*
 import com.itrocket.utils.clickableUnbounded
 import kotlinx.coroutines.flow.collect
+import java.io.File
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -83,7 +86,12 @@ fun ImageViewerScreen(
                         .fillMaxSize()
                         .padding(paddingValues)
                 ) {
-                    Image(image = state.images[it])
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Image(image = state.images[it])
+                        if (state.isLoading) {
+                            CircularProgressIndicator()
+                        }
+                    }
                 }
             }
         )
@@ -105,13 +113,11 @@ private fun Image(image: ImageDomain) {
             .background(black),
         contentAlignment = Alignment.Center
     ) {
-        image.imageBitmap?.let {
-            Image(
-                bitmap = it,
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
+        Image(
+            painter = rememberAsyncImagePainter(model = image.imageFile),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 
@@ -193,47 +199,38 @@ fun ImageViewerScreenPreview() {
         images = listOf(
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock1),
                 isMainImage = false
             ),
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock2),
                 isMainImage = false
             ),
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock3),
                 isMainImage = false
             ),
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock1),
                 isMainImage = false
             ),
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock2),
                 isMainImage = true
             ),
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock3),
                 isMainImage = false
             ),
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock1),
                 isMainImage = false
             ),
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock2),
                 isMainImage = false
             ),
             ImageDomain(
                 imagePath = "",
-                imageBitmap = ImageBitmap.imageResource(id = R.drawable.mock3),
                 isMainImage = false
             ),
         )

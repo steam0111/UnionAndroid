@@ -1,25 +1,13 @@
 package com.itrocket.union.imageViewer.domain
 
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.imageResource
 import com.itrocket.core.base.CoreDispatchers
-import com.itrocket.union.R
-import com.itrocket.union.image.ImageDomain
-import com.itrocket.union.imageViewer.domain.dependencies.ImageViewerRepository
+import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.imageViewer.domain.entity.ImagesDelete
 import kotlinx.coroutines.withContext
 
 class ImageViewerInteractor(
-    private val repository: ImageViewerRepository,
     private val coreDispatchers: CoreDispatchers
 ) {
-
-    fun getMockImages() = repository.getMockImages()
-
-    suspend fun getImagesFromImagesDomain(images: List<ImageDomain>): List<ImageDomain> {
-        return repository.getImagesFromImagesDomain(images)
-    }
-
     fun getImagePage(image: ImageDomain, images: List<ImageDomain>): Int = images.indexOf(image)
 
     suspend fun changeMainImage(images: List<ImageDomain>, page: Int): List<ImageDomain> {
@@ -27,7 +15,8 @@ class ImageViewerInteractor(
             val mutableImages = images.toMutableList()
             val currentImage = images[page]
             if (currentImage.isMainImage) {
-                mutableImages[page] = currentImage.copy(isMainImage = false)
+                mutableImages[page] =
+                    currentImage.copy(isMainImage = false)
             } else {
                 resolveMainImage(mutableImages = mutableImages, page = page)
             }
