@@ -15,6 +15,7 @@ import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.image.ImageDomain
 import com.itrocket.union.imageViewer.domain.ImageViewerInteractor
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
+import com.itrocket.union.readingMode.domain.ReadingModeInteractor
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
@@ -33,7 +34,8 @@ class AccountingObjectDetailStoreFactory(
     private val serviceEntryManager: ServiceEntryManager,
     private val unionPermissionsInteractor: UnionPermissionsInteractor,
     private val moduleSettingsInteractor: ModuleSettingsInteractor,
-    private val imageViewerInteractor: ImageViewerInteractor
+    private val imageViewerInteractor: ImageViewerInteractor,
+    private val readingModeInteractor: ReadingModeInteractor
 ) {
     fun create(): AccountingObjectDetailStore =
         object : AccountingObjectDetailStore,
@@ -108,11 +110,7 @@ class AccountingObjectDetailStoreFactory(
                 AccountingObjectDetailStore.Intent.OnGenerateRfidClicked -> interactor.generateRfid(
                     getState().accountingObjectDomain
                 )
-                AccountingObjectDetailStore.Intent.OnWriteEpcClicked -> dispatch(
-                    Result.DialogType(
-                        AlertType.WRITE_EPC
-                    )
-                )
+                AccountingObjectDetailStore.Intent.OnWriteEpcClicked -> onWriteEpcClicked()
                 AccountingObjectDetailStore.Intent.OnDismissed -> onDismissed()
                 AccountingObjectDetailStore.Intent.OnTriggerPressed -> onTriggerPressed(getState)
                 AccountingObjectDetailStore.Intent.OnTriggerReleased -> onTriggerRelease()
@@ -131,6 +129,16 @@ class AccountingObjectDetailStoreFactory(
                     images = getState().accountingObjectDomain.images
                 )
             }
+        }
+
+        private fun onWriteEpcClicked() {
+            readingModeInteractor.changeScanMode(ReadingMode.RFID)
+            dispatch(Result.ReadingMode(ReadingModeTab.RFID))
+            dispatch(
+                Result.DialogType(
+                    AlertType.WRITE_EPC
+                )
+            )
         }
 
         private fun onAddImageClicked() {
