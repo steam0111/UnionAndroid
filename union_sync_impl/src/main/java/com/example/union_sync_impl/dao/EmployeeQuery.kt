@@ -1,9 +1,11 @@
 package com.example.union_sync_impl.dao
 
 import androidx.sqlite.db.SimpleSQLiteQuery
+import com.example.union_sync_impl.utils.Order
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
 import com.example.union_sync_impl.utils.addNonCancelFilter
+import com.example.union_sync_impl.utils.addOrder
 import com.example.union_sync_impl.utils.addPagination
 import com.example.union_sync_impl.utils.contains
 import com.example.union_sync_impl.utils.isEquals
@@ -26,7 +28,7 @@ fun sqlEmployeeQuery(
 
     val query = mainQuery.getEmployeesFilterPartQuery(
         structuralId, textQuery, updateDate, isNonCancel
-    ).addPagination(limit = limit, offset = offset)
+    ).addPagination(limit = limit, offset = offset).addOrder("lastname", Order.ASC)
 
     return SimpleSQLiteQuery(query)
 }

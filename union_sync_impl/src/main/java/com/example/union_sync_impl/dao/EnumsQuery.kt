@@ -1,8 +1,10 @@
 package com.example.union_sync_impl.dao
 
 import androidx.sqlite.db.SimpleSQLiteQuery
+import com.example.union_sync_impl.utils.Order
 import com.example.union_sync_impl.utils.SqlTableFilters
 import com.example.union_sync_impl.utils.addFilters
+import com.example.union_sync_impl.utils.addOrder
 import com.example.union_sync_impl.utils.contains
 import com.example.union_sync_impl.utils.isEquals
 
@@ -26,6 +28,6 @@ fun sqlEnumsQuery(
                 }
             }
         )
-    )
+    ).addOrder("name", Order.ASC)
     return SimpleSQLiteQuery(query)
 }
