@@ -232,6 +232,12 @@ class InventoryCreateStoreFactory(
                     getState = getState
                 )
                 is InventoryCreateStore.Intent.OnErrorHandled -> handleError(intent.throwable)
+                is InventoryCreateStore.Intent.OnExitConfirmed -> {
+                    publish(InventoryCreateStore.Label.GoBack(InventoryResult(true)))
+                }
+                is InventoryCreateStore.Intent.OnAlertDismissed -> dispatch(
+                    Result.DialogType(AlertType.NONE)
+                )
             }
         }
 
@@ -354,7 +360,7 @@ class InventoryCreateStoreFactory(
                 dispatch(Result.SearchAccountingObjects(listOf()))
                 searchManager.emit("")
             } else if (dialogType != AlertType.LOADING) {
-                publish(InventoryCreateStore.Label.GoBack(InventoryResult(true)))
+                dispatch(Result.DialogType(AlertType.EXIT))
             }
         }
 
