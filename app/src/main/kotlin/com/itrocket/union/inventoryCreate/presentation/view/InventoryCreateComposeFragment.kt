@@ -184,7 +184,13 @@ class InventoryCreateComposeFragment :
                 },
                 onAccountingObjectLongClickListener = {
                     accept(InventoryCreateStore.Intent.OnAccountingObjectLongClicked(it))
-                }
+                },
+                onExitConfirmClickListener = {
+                    accept(InventoryCreateStore.Intent.OnExitConfirmed)
+                },
+                onAlertDismissClickListener = {
+                    accept(InventoryCreateStore.Intent.OnAlertDismissed)
+                },
             )
         }
     }

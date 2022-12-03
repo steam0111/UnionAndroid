@@ -72,6 +72,9 @@ interface InventoryCreateStore :
             Intent()
 
         data class OnErrorHandled(val throwable: Throwable) : Intent()
+
+        object OnExitConfirmed : Intent()
+        object OnAlertDismissed : Intent()
     }
 
     data class State(

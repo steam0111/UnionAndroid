@@ -75,7 +75,9 @@ fun InventoryCreateScreen(
     onSearchTextChanged: (String) -> Unit,
     onSearchClickListener: () -> Unit,
     onStatusClickListener: (AccountingObjectDomain) -> Unit,
-    onAccountingObjectLongClickListener: (AccountingObjectDomain) -> Unit
+    onAccountingObjectLongClickListener: (AccountingObjectDomain) -> Unit,
+    onExitConfirmClickListener: () -> Unit,
+    onAlertDismissClickListener: () -> Unit,
 ) {
     AppTheme {
         Scaffold(
@@ -135,6 +137,14 @@ fun InventoryCreateScreen(
                 confirmTextRes = R.string.common_yes,
                 dismissTextRes = R.string.common_no
             )
+
+            AlertType.EXIT -> {
+                ConfirmAlertDialog(
+                    onDismiss = onAlertDismissClickListener,
+                    onConfirmClick = onExitConfirmClickListener,
+                    textRes = R.string.inventory_exit_confirm
+                )
+            }
         }
     }
 }
@@ -498,6 +508,8 @@ fun InventoryCreateScreenPreview() {
         {},
         {},
         {},
+        {},
+        {}
     )
 }
 
