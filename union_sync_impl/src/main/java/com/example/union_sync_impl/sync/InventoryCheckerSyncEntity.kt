@@ -22,7 +22,7 @@ class InventoryCheckerSyncEntity(
         get() = R.string.inventory_checker_table_name
 
     override suspend fun exportFromServer(syncId: String, exportPartId: String) {
-        defaultGetAndSave<InventoryRecordDtoV2>(syncId, exportPartId)
+        defaultGetAndSave<InventoryCheckerDto>(syncId, exportPartId)
     }
 
     override suspend fun saveInDb(objects: List<InventoryCheckerDto>) {
