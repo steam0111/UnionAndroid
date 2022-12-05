@@ -113,21 +113,32 @@ class InventoryCreateStoreFactory(
                     getState().isShowSearch,
                     getState().dialogType
                 )
+
                 is InventoryCreateStore.Intent.OnAccountingObjectClicked -> publish(
                     InventoryCreateStore.Label.ShowAccountingObjectDetail(intent.accountingObject)
                 )
+
                 InventoryCreateStore.Intent.OnAddNewClicked -> {
                     dispatch(Result.AddNew(!getState().isAddNew))
                 }
+
                 InventoryCreateStore.Intent.OnDropClicked -> {
+                    dispatch(Result.DialogType(AlertType.DROP))
+
+                }
+
+                InventoryCreateStore.Intent.OnDropConfirmed -> {
                     drop(getState)
                 }
+
                 InventoryCreateStore.Intent.OnHideFoundAccountingObjectClicked -> {
                     dispatch(Result.HideFoundedAccountingObjects(!getState().isHideFoundAccountingObjects))
                 }
+
                 InventoryCreateStore.Intent.OnReadingClicked -> {
                     publish(InventoryCreateStore.Label.ShowReadingMode)
                 }
+
                 InventoryCreateStore.Intent.OnSaveClicked -> dispatch(Result.DialogType(AlertType.SAVE))
                 is InventoryCreateStore.Intent.OnNewAccountingObjectBarcodeHandled -> {
                     val inventoryStatus = getState().inventoryDocument.inventoryStatus
@@ -144,6 +155,7 @@ class InventoryCreateStoreFactory(
                         )
                     }
                 }
+
                 is InventoryCreateStore.Intent.OnNewAccountingObjectRfidHandled -> {
                     val inventoryStatus = getState().inventoryDocument.inventoryStatus
                     if (inventoryStatus != InventoryStatus.COMPLETED && getState().canUpdate) {
@@ -158,16 +170,19 @@ class InventoryCreateStoreFactory(
                         )
                     }
                 }
+
                 InventoryCreateStore.Intent.OnCompleteClicked -> dispatch(
                     Result.DialogType(
                         AlertType.COMPLETE
                     )
                 )
+
                 is InventoryCreateStore.Intent.OnSaveDismissed -> dispatch(
                     Result.DialogType(
                         AlertType.NONE
                     )
                 )
+
                 is InventoryCreateStore.Intent.OnSaveConfirmed -> {
                     dispatch(Result.DialogType(AlertType.NONE))
                     saveInventory(
@@ -175,15 +190,18 @@ class InventoryCreateStoreFactory(
                         accountingObjects = getState().inventoryDocument.accountingObjects
                     )
                 }
+
                 is InventoryCreateStore.Intent.OnReadingModeTabChanged -> dispatch(
                     Result.ReadingMode(
                         intent.readingModeTab
                     )
                 )
+
                 is InventoryCreateStore.Intent.OnManualInput -> onManualInput(
                     readingModeResult = intent.readingModeResult,
                     getState = getState
                 )
+
                 InventoryCreateStore.Intent.OnSearchClicked -> {
                     dispatch(Result.IsShowSearch(true))
                     listenAccountingObjects(
@@ -192,49 +210,60 @@ class InventoryCreateStoreFactory(
                         getState = getState
                     )
                 }
+
                 is InventoryCreateStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
                     searchManager.emit(intent.searchText)
                 }
+
                 InventoryCreateStore.Intent.OnCompleteConfirmed -> {
                     dispatch(Result.DialogType(AlertType.NONE))
                     completeInventory(inventoryDomain = getState().inventoryDocument)
                 }
+
                 InventoryCreateStore.Intent.OnCompleteDismissed -> dispatch(
                     Result.DialogType(
                         AlertType.NONE
                     )
                 )
+
                 InventoryCreateStore.Intent.OnDeleteConfirmClicked -> onDeleteConfirmed(getState)
                 InventoryCreateStore.Intent.OnDeleteDismissClicked -> dispatch(
                     Result.DialogType(
                         AlertType.NONE
                     )
                 )
+
                 is InventoryCreateStore.Intent.OnStatusClicked -> onStatusClicked(
                     getState = getState,
                     accountingObject = intent.accountingObject
                 )
+
                 is InventoryCreateStore.Intent.OnAccountingObjectChanged -> {
                     onAccountingObjectChanged(
                         getState = getState,
                         accountingObject = intent.accountingObject
                     )
                 }
+
                 is InventoryCreateStore.Intent.OnAccountingObjectLongClicked -> publish(
                     InventoryCreateStore.Label.ShowInventoryChoose(intent.accountingObject)
                 )
+
                 is InventoryCreateStore.Intent.OnInventoryChooseResultHandled -> onInventoryChooseResultHandled(
                     intent.result
                 )
+
                 is InventoryCreateStore.Intent.OnCommentResultHandled -> onCommentResultHandled(
                     result = intent.result,
                     getState = getState
                 )
+
                 is InventoryCreateStore.Intent.OnErrorHandled -> handleError(intent.throwable)
                 is InventoryCreateStore.Intent.OnExitConfirmed -> {
                     publish(InventoryCreateStore.Label.GoBack(InventoryResult(true)))
                 }
+
                 is InventoryCreateStore.Intent.OnAlertDismissed -> dispatch(
                     Result.DialogType(AlertType.NONE)
                 )
@@ -266,6 +295,7 @@ class InventoryCreateStoreFactory(
                         result.accountingObject
                     )
                 )
+
                 InventoryChooseActionType.ADD_COMMENT -> publish(
                     InventoryCreateStore.Label.ShowComment(
                         result.accountingObject
@@ -372,6 +402,7 @@ class InventoryCreateStoreFactory(
                 ReadingModeTab.RFID -> {
                     //no-op
                 }
+
                 ReadingModeTab.SN, ReadingModeTab.BARCODE -> {
                     handleNewAccountingObjectBarcode(
                         accountingObjects = getState().inventoryDocument.accountingObjects,
@@ -513,9 +544,12 @@ class InventoryCreateStoreFactory(
         }
 
         private fun drop(getState: () -> InventoryCreateStore.State) {
-            //todo: Подумать как дроп сделать
-            dispatch(Result.AddNew(false))
-            dispatch(Result.HideFoundedAccountingObjects(false))
+            val newList = inventoryCreateInteractor.updateAccountingObjectListAfterDrop(
+                oldList = getState().inventoryDocument.accountingObjects
+            )
+            dispatch(Result.AccountingObjects(newList))
+            dispatch(Result.DialogType(AlertType.NONE))
+            updateAccountingObjectCounter(getState)
         }
 
         private suspend fun listenAccountingObjects(
@@ -593,6 +627,7 @@ class InventoryCreateStoreFactory(
                         accountingObjects = result.accountingObjects
                     )
                 )
+
                 is Result.Inventory -> copy(inventoryDocument = result.inventory)
                 is Result.ReadingMode -> copy(readingModeTab = result.readingModeTab)
                 is Result.SearchText -> copy(searchText = result.searchText)

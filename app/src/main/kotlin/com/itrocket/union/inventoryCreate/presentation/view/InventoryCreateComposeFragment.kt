@@ -191,6 +191,9 @@ class InventoryCreateComposeFragment :
                 onAlertDismissClickListener = {
                     accept(InventoryCreateStore.Intent.OnAlertDismissed)
                 },
+                onDropConfirmClick = {
+                    accept(InventoryCreateStore.Intent.OnDropConfirmed)
+                }
             )
         }
     }
@@ -247,6 +250,7 @@ class InventoryCreateComposeFragment :
                         serviceEntryManager.startBarcodeScan()
                     }
                 }
+
                 TriggerEvent.Released -> {
                     if (serviceEntryManager.currentMode == ReadingMode.RFID) {
                         serviceEntryManager.stopRfidOperation()
