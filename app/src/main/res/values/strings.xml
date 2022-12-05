@@ -443,4 +443,5 @@
 
     <!-- Image -->
     <string name="image_taken_error">Произошла ошибка при получении фотографии</string>
+    <string name="first_sync_title">Первичная синхронизация</string>
 </resources>
