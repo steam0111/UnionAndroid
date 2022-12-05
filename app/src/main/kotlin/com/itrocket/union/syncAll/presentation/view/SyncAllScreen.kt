@@ -151,7 +151,7 @@ private fun Title(state: SyncAllStore.State) {
 @Composable
 private fun Toolbar(onCrossClickListener: () -> Unit, lastSyncDate: String) {
     BaseToolbar(
-        title = lastSyncDate,
+        title = lastSyncDate.ifEmpty { stringResource(R.string.first_sync_title) },
         startImageId = R.drawable.ic_cross,
         onStartImageClickListener = onCrossClickListener,
     )
