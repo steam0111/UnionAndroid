@@ -75,6 +75,7 @@ interface InventoryCreateStore :
 
         object OnExitConfirmed : Intent()
         object OnAlertDismissed : Intent()
+        object OnDropConfirmed : Intent()
     }
 
     data class State(

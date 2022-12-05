@@ -43,7 +43,7 @@ class InventoryCreateInteractor(
             }
             Timber.d(
                 "Запрос на инвентарную ведомость выполнился за " +
-                        "result ${result.duration.inWholeMilliseconds}"
+                    "result ${result.duration.inWholeMilliseconds}"
             )
 
             return@withContext result.value
@@ -126,6 +126,7 @@ class InventoryCreateInteractor(
                         mutableAccountingObjects,
                         accountingObjectIndex
                     )
+
                     accountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew -> newAccountingObjectRfids.add(
                         handledAccountingObjectId
                     )
@@ -170,6 +171,7 @@ class InventoryCreateInteractor(
                     mutableAccountingObjects,
                     accountingObjectIndex
                 )
+
                 accountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew -> {
                     val accountingObjectDomain = getHandleAccountingObjectByBarcode(
                         barcode = barcode,
@@ -250,8 +252,8 @@ class InventoryCreateInteractor(
                 val inventoryNumber = it.inventoryNumber.orEmpty().lowercase().replace(" ", "")
 
                 title.contains(other = searchTitle, ignoreCase = true)
-                        || inventoryNumber.contains(other = searchText, ignoreCase = true)
-                        || searchText.isEmpty()
+                    || inventoryNumber.contains(other = searchText, ignoreCase = true)
+                    || searchText.isEmpty()
             }
             resultList
         }
@@ -263,7 +265,7 @@ class InventoryCreateInteractor(
         return AccountingObjectCounter(
             total = accountingObjects.filter {
                 it.inventoryStatus == InventoryAccountingObjectStatus.FOUND ||
-                        it.inventoryStatus == InventoryAccountingObjectStatus.NOT_FOUND
+                    it.inventoryStatus == InventoryAccountingObjectStatus.NOT_FOUND
             }.size,
             found = accountingObjects.filter {
                 it.inventoryStatus == InventoryAccountingObjectStatus.FOUND
@@ -315,6 +317,24 @@ class InventoryCreateInteractor(
                 manualInput = false
             )
         )
+    }
+
+    fun updateAccountingObjectListAfterDrop(
+        oldList: List<AccountingObjectDomain>
+    ): List<AccountingObjectDomain> {
+        val newList = oldList.toMutableList()
+
+        val newAccountingObjects =
+            oldList.filter { it.inventoryStatus == InventoryAccountingObjectStatus.NEW }
+        newList.removeAll(newAccountingObjects)
+
+        return newList.map {
+            if (it.inventoryStatus == InventoryAccountingObjectStatus.FOUND) {
+                it.copy(inventoryStatus = InventoryAccountingObjectStatus.NOT_FOUND)
+            } else {
+                it
+            }
+        }
     }
 
     companion object {

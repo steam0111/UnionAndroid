@@ -78,6 +78,7 @@ fun InventoryCreateScreen(
     onAccountingObjectLongClickListener: (AccountingObjectDomain) -> Unit,
     onExitConfirmClickListener: () -> Unit,
     onAlertDismissClickListener: () -> Unit,
+    onDropConfirmClick: () -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -143,6 +144,14 @@ fun InventoryCreateScreen(
                     onDismiss = onAlertDismissClickListener,
                     onConfirmClick = onExitConfirmClickListener,
                     textRes = R.string.inventory_exit_confirm
+                )
+            }
+
+            AlertType.DROP -> {
+                ConfirmAlertDialog(
+                    onDismiss = onAlertDismissClickListener,
+                    onConfirmClick = onDropConfirmClick,
+                    textRes = R.string.inventory_drop_confirm
                 )
             }
         }
@@ -490,6 +499,7 @@ fun InventoryCreateScreenPreview() {
             readingModeTab = ReadingModeTab.RFID
         ),
         AppInsets(previewTopInsetDp),
+        {},
         {},
         {},
         {},
