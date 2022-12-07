@@ -1,6 +1,12 @@
 package com.example.union_sync_impl.sync
 
 import com.example.union_sync_api.entity.EnumType
+import com.squareup.moshi.Moshi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.flow
+import org.openapitools.client.custom_api.SyncControllerApi
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.AccountingObjectSimpleAdditionalFieldDao
 import com.example.union_sync_impl.dao.AccountingObjectVocabularyAdditionalFieldDao
@@ -32,6 +38,7 @@ import com.example.union_sync_impl.dao.TransitAccountingObjectRecordDao
 import com.example.union_sync_impl.dao.TransitDao
 import com.example.union_sync_impl.dao.TransitRemainsRecordDao
 import com.example.union_sync_impl.dao.AccountingObjectsVocabularyCharacteristicsDao
+import com.example.union_sync_impl.dao.LabelTypeDao
 import com.example.union_sync_impl.dao.SimpleCharacteristicDao
 import com.example.union_sync_impl.dao.VocabularyAdditionalFieldDao
 import com.example.union_sync_impl.dao.VocabularyAdditionalFieldValueDao
@@ -62,6 +69,7 @@ import com.example.union_sync_impl.data.mapper.toInventoryDb
 import com.example.union_sync_impl.data.mapper.toInventoryDtoV2
 import com.example.union_sync_impl.data.mapper.toInventoryRecordDb
 import com.example.union_sync_impl.data.mapper.toInventoryRecordDtoV2
+import com.example.union_sync_impl.data.mapper.toLabelTypeDb
 import com.example.union_sync_impl.data.mapper.toLocationDb
 import com.example.union_sync_impl.data.mapper.toLocationPathDb
 import com.example.union_sync_impl.data.mapper.toLocationTypeDb
@@ -78,12 +86,6 @@ import com.example.union_sync_impl.data.mapper.toStructuralPathDb
 import com.example.union_sync_impl.data.mapper.toTransitAccountingObjectDb
 import com.example.union_sync_impl.data.mapper.toTransitDb
 import com.example.union_sync_impl.data.mapper.toTransitRemainsDb
-import com.squareup.moshi.Moshi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.filterNot
-import kotlinx.coroutines.flow.flow
-import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.models.AccountingObjectCharacteristicValueDtoV2
 import org.openapitools.client.models.AccountingObjectDtoV2
 import org.openapitools.client.models.AccountingObjectSimpleAdditionalFieldValueDtoV2
@@ -99,6 +101,7 @@ import org.openapitools.client.models.EquipmentTypeDtoV2
 import org.openapitools.client.models.InventoryCheckerDto
 import org.openapitools.client.models.InventoryDtoV2
 import org.openapitools.client.models.InventoryRecordDtoV2
+import org.openapitools.client.models.LabelTypeDtoV2
 import org.openapitools.client.models.LocationDtoV2
 import org.openapitools.client.models.LocationPathDto
 import org.openapitools.client.models.LocationsTypeDtoV2
@@ -142,18 +145,17 @@ class SyncRepository(
     private val transitAccountingObjectRecordDao: TransitAccountingObjectRecordDao,
     private val enumsDao: EnumsDao,
     private val inventoryCheckerDao: InventoryCheckerDao,
-
     private val accountingObjectSimpleAdditionalFieldDao: AccountingObjectSimpleAdditionalFieldDao,
     private val accountingObjectVocabularyAdditionalFieldDao: AccountingObjectVocabularyAdditionalFieldDao,
     private val simpleAdditionalFieldDao: SimpleAdditionalFieldDao,
     private val vocabularyAdditionalFieldDao: VocabularyAdditionalFieldDao,
     private val vocabularyAdditionalFieldValueDao: VocabularyAdditionalFieldValueDao,
-
     private val accountingObjectVocabularyCharacteristicsDao: AccountingObjectsVocabularyCharacteristicsDao,
     private val accountingObjectSimpleCharacteristicsDao: AccountingObjectsSimpleCharacteristicsDao,
     private val simpleCharacteristicDao: SimpleCharacteristicDao,
     private val vocabularyCharacteristicDao: VocabularyCharacteristicDao,
     private val vocabularyCharacteristicValueDao: VocabularyCharacteristicValueDao,
+    private val labelTypeDao: LabelTypeDao
 ) {
     suspend fun clearDataBeforeDownload() {
         inventoryDao.clearAll()
@@ -415,6 +417,11 @@ class SyncRepository(
             syncControllerApi,
             moshi,
             ::entityModelTypeDbSaver
+        ),
+        LabelTypeSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::labelTypeDbSaver
         ),
         InventoryRecordStatusSyncEntity(
             syncControllerApi,
@@ -874,6 +881,10 @@ class SyncRepository(
 
     private suspend fun entityModelTypeDbSaver(objects: List<EnumDtoV2>) {
         enumsDao.insertAll(objects.map { it.toEnumDb(EnumType.ENTITY_MODEL_TYPE) })
+    }
+
+    private suspend fun labelTypeDbSaver(objects: List<LabelTypeDtoV2>) {
+        labelTypeDao.insertAll(objects.map { it.toLabelTypeDb() })
     }
 
     private suspend fun inventoryRecordStatusDbSaver(objects: List<EnumDtoV2>) {

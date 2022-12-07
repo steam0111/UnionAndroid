@@ -1,56 +1,9 @@
 package com.union.sdk
 
 import androidx.room.Room
-import com.example.union_sync_api.data.AccountingObjectAdditionalFieldsSyncApi
-import com.example.union_sync_api.data.AccountingObjectsCharacteristicSyncApi
-import com.example.union_sync_api.data.AccountingObjectSyncApi
-import com.example.union_sync_api.data.ActionRecordSyncApi
-import com.example.union_sync_api.data.ActionRemainsRecordSyncApi
-import com.example.union_sync_api.data.AllSyncApi
-import com.example.union_sync_api.data.CounterpartySyncApi
-import com.example.union_sync_api.data.DocumentSyncApi
-import com.example.union_sync_api.data.EmployeeSyncApi
-import com.example.union_sync_api.data.EnumsSyncApi
-import com.example.union_sync_api.data.EquipmentTypeSyncApi
-import com.example.union_sync_api.data.InventoryCheckerSyncApi
-import com.example.union_sync_api.data.InventoryRecordSyncApi
-import com.example.union_sync_api.data.InventorySyncApi
-import com.example.union_sync_api.data.LocationSyncApi
-import com.example.union_sync_api.data.ManageSyncDataApi
-import com.example.union_sync_api.data.NomenclatureGroupSyncApi
-import com.example.union_sync_api.data.NomenclatureSyncApi
-import com.example.union_sync_api.data.OrderSyncApi
-import com.example.union_sync_api.data.ProducerSyncApi
-import com.example.union_sync_api.data.ReceptionItemCategorySyncApi
-import com.example.union_sync_api.data.ReserveSyncApi
-import com.example.union_sync_api.data.StructuralSyncApi
-import com.example.union_sync_api.data.SyncEventsApi
-import com.example.union_sync_api.data.TransitSyncApi
+import com.example.union_sync_api.data.*
 import com.example.union_sync_impl.UnionDatabase
-import com.example.union_sync_impl.data.AccountingObjectAdditionalFieldsSyncApiImpl
-import com.example.union_sync_impl.data.AccountingObjectsCharacteristicSyncApiImpl
-import com.example.union_sync_impl.data.AccountingObjectSyncApiImpl
-import com.example.union_sync_impl.data.ActionRecordSyncApiImpl
-import com.example.union_sync_impl.data.ActionRemainsRecordSyncApiImpl
-import com.example.union_sync_impl.data.AllSyncImpl
-import com.example.union_sync_impl.data.CounterpartySyncApiImpl
-import com.example.union_sync_impl.data.DocumentSyncApiImpl
-import com.example.union_sync_impl.data.EmployeeSyncApiImpl
-import com.example.union_sync_impl.data.EnumsSyncApiImpl
-import com.example.union_sync_impl.data.EquipmentTypeSyncApiImpl
-import com.example.union_sync_impl.data.InventoryCheckerSyncApiImpl
-import com.example.union_sync_impl.data.InventoryRecordSyncApiImpl
-import com.example.union_sync_impl.data.InventorySyncApiImpl
-import com.example.union_sync_impl.data.LocationSyncApiImpl
-import com.example.union_sync_impl.data.ManageSyncDataImpl
-import com.example.union_sync_impl.data.NomenclatureGroupSyncApiImpl
-import com.example.union_sync_impl.data.NomenclatureSyncApiImpl
-import com.example.union_sync_impl.data.OrderSyncApiImpl
-import com.example.union_sync_impl.data.ProducerSyncApiImpl
-import com.example.union_sync_impl.data.ReceptionCategoryItemSyncApiImpl
-import com.example.union_sync_impl.data.ReserveSyncApiImpl
-import com.example.union_sync_impl.data.StructuralSyncApiImpl
-import com.example.union_sync_impl.data.TransitSyncApiImpl
+import com.example.union_sync_impl.data.*
 import com.example.union_sync_impl.data.logging.SyncEventsImpl
 import com.example.union_sync_impl.sync.SyncInfoRepository
 import com.example.union_sync_impl.sync.SyncRepository
@@ -162,6 +115,9 @@ object SyncModule {
         factory<ActionRemainsRecordSyncApi> {
             ActionRemainsRecordSyncApiImpl(actionRemainsRecordDao = get())
         }
+        factory<LabelTypeSyncApi> {
+            LabelTypeSyncApiImpl(labelTypeDao = get())
+        }
         factory<TransitSyncApi> {
             TransitSyncApiImpl(
                 transitDao = get(),
@@ -259,8 +215,12 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
+                get(),
                 get()
             )
+        }
+        factory {
+            get<UnionDatabase>().labelTypeDao()
         }
         factory {
             get<UnionDatabase>().nomenclatureGroupDao()
