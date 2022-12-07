@@ -16,6 +16,7 @@
     <string name="employee_status_table_name">Таблица статусов сотрудников</string>
     <string name="employee_table_name">Таблица сотрудников</string>
     <string name="entity_model_type_table_name">Таблица типов моделей сущности</string>
+    <string name="entity_label_type_table_name">Таблица типов меток</string>
     <string name="equipment_table_name">Таблица типов оборудования</string>
     <string name="inventory_bases_table_name">Таблица базы инвентаризации</string>
     <string name="inventory_checker_table_name">Таблица контроллеров инв. ведомостей</string>
