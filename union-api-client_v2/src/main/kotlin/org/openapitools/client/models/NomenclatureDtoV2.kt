@@ -76,6 +76,9 @@ data class NomenclatureDtoV2 (
     @Json(name = "nomenclatureGroupId")
     val nomenclatureGroupId: kotlin.String? = null,
 
+    @Json(name = "barcodeValue")
+    val barcodeValue: String? = null,
+
     @Json(name = "extendedNomenclatureGroup")
     val extendedNomenclatureGroup: NomenclatureGroupDtoV2? = null
 

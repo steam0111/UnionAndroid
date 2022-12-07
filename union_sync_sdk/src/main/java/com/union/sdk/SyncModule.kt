@@ -142,6 +142,7 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
+                get(),
                 get()
             )
         }
@@ -236,6 +237,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().employeeDao()
+        }
+        factory {
+            get<UnionDatabase>().terminalInfoDao()
         }
         factory {
             get<UnionDatabase>().networkSyncDao()

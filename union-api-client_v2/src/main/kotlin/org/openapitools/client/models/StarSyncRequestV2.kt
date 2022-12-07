@@ -32,7 +32,9 @@ import com.squareup.moshi.Json
 data class StarSyncRequestV2 (
 
     @Json(name = "dateTimeFrom")
-    val dateTimeFrom: kotlin.String? = null
+    val dateTimeFrom: kotlin.String? = null,
 
+    @Json(name = "terminalId")
+    val terminalId: String
 )
 

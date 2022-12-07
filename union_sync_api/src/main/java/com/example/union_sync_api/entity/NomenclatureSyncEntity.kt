@@ -10,4 +10,5 @@ class NomenclatureSyncEntity(
     var userInserted: String?,
     val dateInsert: Long?,
     var updateDate: Long?,
+    val barcode: String?,
 )
