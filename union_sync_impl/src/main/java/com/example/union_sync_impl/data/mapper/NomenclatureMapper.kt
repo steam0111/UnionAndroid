@@ -18,7 +18,8 @@ fun NomenclatureDtoV2.toNomenclatureDb(): NomenclatureDb {
         insertDate = getMillisDateFromServerFormat(dateInsert),
         userUpdated = userUpdated,
         userInserted = userInserted,
-        cancel = deleted
+        cancel = deleted,
+        barcode = barcodeValue
     )
 }
 
@@ -31,7 +32,8 @@ fun NomenclatureDb.toSyncEntity() = NomenclatureSyncEntity(
     userInserted = userInserted,
     userUpdated = userUpdated,
     dateInsert = insertDate,
-    updateDate = updateDate
+    updateDate = updateDate,
+    barcode = barcode
 )
 
 fun FullNomenclatureDb.toDetailSyncEntity() = NomenclatureDetailSyncEntity(

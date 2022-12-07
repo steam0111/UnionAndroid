@@ -22,6 +22,7 @@ class NomenclatureDb(
     var number: String,
     val nomenclatureGroupId: String?,
     val name: String,
+    val barcode: String?,
     insertDate: Long?,
     updateDate: Long?,
     userInserted: String?,

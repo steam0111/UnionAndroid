@@ -9,6 +9,7 @@ data class NomenclatureDomain(
     val id: String,
     val name: String = "",
     val code: String?,
+    val barcode: String?,
     val nomenclatureGroupName: String? = null
 
 ) : Parcelable

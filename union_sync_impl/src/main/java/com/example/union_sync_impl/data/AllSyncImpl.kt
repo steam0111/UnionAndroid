@@ -6,7 +6,9 @@ import com.example.union_sync_api.entity.SyncDirection
 import com.example.union_sync_api.entity.SyncEvent
 import com.example.union_sync_api.entity.SyncInfoType
 import com.example.union_sync_impl.dao.NetworkSyncDao
+import com.example.union_sync_impl.dao.TerminalInfoDao
 import com.example.union_sync_impl.entity.NetworkSyncDb
+import com.example.union_sync_impl.entity.TerminalInfoDb
 import com.example.union_sync_impl.sync.SyncEntity
 import com.example.union_sync_impl.sync.SyncInfoRepository
 import com.example.union_sync_impl.sync.SyncRepository
@@ -28,6 +30,7 @@ class AllSyncImpl(
     private val syncRepository: SyncRepository,
     private val coreDispatchers: CoreDispatchers,
     private val syncDao: NetworkSyncDao,
+    private val terminalInfoDao: TerminalInfoDao,
     private val syncEventsApi: SyncEventsApi
 ) : AllSyncApi {
 
@@ -49,7 +52,13 @@ class AllSyncImpl(
         )
 
         val duration = measureTime {
-            val syncInfo = syncControllerApi.apiSyncPost(StarSyncRequestV2(dateTime))
+            val syncInfo = syncControllerApi.apiSyncPost(
+                StarSyncRequestV2(
+                    dateTimeFrom = dateTime,
+                    terminalId = "empty string" //TODO: Когда найдем способ получать terminalId - поменять
+                )
+            )
+            terminalInfoDao.insert(TerminalInfoDb(terminalPrefix = syncInfo.terminalPrefix))
             Timber.tag(SYNC_TAG).d("sync started ${syncInfo.id}")
 
             val localItemCount = syncInfoRepository.getLocalItemCount()
