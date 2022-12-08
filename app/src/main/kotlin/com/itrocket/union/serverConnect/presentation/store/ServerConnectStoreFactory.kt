@@ -10,6 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.R
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.network.HttpException
+import com.itrocket.union.network.NetworkModule
 import com.itrocket.union.serverConnect.domain.ServerConnectInteractor
 import com.itrocket.union.serverConnect.domain.StyleInteractor
 import com.itrocket.union.theme.domain.ColorInteractor
@@ -18,6 +19,8 @@ import com.itrocket.union.theme.domain.entity.Medias
 import com.squareup.moshi.JsonEncodingException
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.context.loadKoinModules
+import org.koin.core.context.unloadKoinModules
 
 class ServerConnectStoreFactory(
     private val storeFactory: StoreFactory,
@@ -114,6 +117,8 @@ class ServerConnectStoreFactory(
                 )
                 serverConnectInteractor.saveBaseUrl(getState().serverAddress)
                 serverConnectInteractor.savePort(getState().port)
+                unloadKoinModules(NetworkModule.module)
+                loadKoinModules(NetworkModule.module)
                 loadSettings()
                 publish(ServerConnectStore.Label.NextFinish)
             }

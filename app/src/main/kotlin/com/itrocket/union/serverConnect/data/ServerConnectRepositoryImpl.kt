@@ -25,15 +25,18 @@ class ServerConnectRepositoryImpl(
     private val manageSyncDataApi: ManageSyncDataApi,
 ) : ServerConnectRepository, KoinComponent {
 
-    private val serverUrl = MutableSharedFlow<String>(replay = 1)
+    private var baseUrl: String? = null
+    private var port: String? = null
 
     override suspend fun saveBaseUrl(baseUrl: String) {
+        this.baseUrl = baseUrl
         dataStore.edit { preferences ->
             preferences[baseUrlPreferencesKey] = baseUrl
         }
     }
 
     override suspend fun savePort(port: String) {
+        this.port = port
         dataStore.edit { preferences ->
             preferences[portPreferencesKey] = port
         }
@@ -60,13 +63,17 @@ class ServerConnectRepositoryImpl(
             }
         ) { baseUrl, port ->
             "$baseUrl:$port/"
-        }.distinctUntilChanged().onEach {
-            serverUrl.emit(it)
-        }
+        }.distinctUntilChanged()
     }
 
     override fun getReadyServerUrl(): String {
-        return serverUrl.replayCache.firstOrNull() ?: throw IllegalStateException(
+        val serverAddress = if(baseUrl != null && port != null){
+            "$baseUrl:$port/"
+        } else {
+            null
+        }
+
+        return serverAddress ?: throw IllegalStateException(
             "Call getServerUrl() and wait for collect Url before call it"
         )
     }
