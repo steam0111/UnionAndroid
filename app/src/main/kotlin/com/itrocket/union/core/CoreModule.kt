@@ -28,9 +28,6 @@ object CoreModule {
                 get<Context>().preferencesDataStoreFile("union_settings")
             }
         }
-        single(createdAtStart = true) {
-            ServerConnectManager(get(), get())
-        }
         single {
             NfcManager()
         }
