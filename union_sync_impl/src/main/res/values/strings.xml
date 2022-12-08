@@ -8,6 +8,7 @@
     <string name="accounting_object_vocabulary_additional_table_name">Таблица словаря значений доп. полей объектов учета</string>
     <string name="action_bases_table_name">Таблица базы дейсвтий документов</string>
     <string name="action_record_table_name">Таблица объектов учета документов</string>
+    <string name="terminal_remains_numerator_name">Таблица нумераторов запасов для ТСД</string>
     <string name="action_remains_record_table_name">Таблица запасов документов</string>
     <string name="action_status_table_name">Таблица статусов документов</string>
     <string name="action_type_table_name">Таблица типов документов</string>
