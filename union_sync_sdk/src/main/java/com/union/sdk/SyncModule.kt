@@ -146,6 +146,9 @@ object SyncModule {
                 get()
             )
         }
+        factory<TerminalRemainsNumeratorSyncApi> {
+            TerminalRemainsNumeratorSyncApiImpl(terminalRemainsNumeratorDao = get())
+        }
         factory<AccountingObjectAdditionalFieldsSyncApi> {
             AccountingObjectAdditionalFieldsSyncApiImpl(
                 simpleDao = get(),
@@ -217,8 +220,12 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
+                get(),
                 get()
             )
+        }
+        factory {
+            get<UnionDatabase>().terminalRemainsNumeratorDao()
         }
         factory {
             get<UnionDatabase>().labelTypeDao()

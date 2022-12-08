@@ -40,6 +40,7 @@ import com.example.union_sync_impl.dao.TransitRemainsRecordDao
 import com.example.union_sync_impl.dao.AccountingObjectsVocabularyCharacteristicsDao
 import com.example.union_sync_impl.dao.LabelTypeDao
 import com.example.union_sync_impl.dao.SimpleCharacteristicDao
+import com.example.union_sync_impl.dao.TerminalRemainsNumeratorDao
 import com.example.union_sync_impl.dao.VocabularyAdditionalFieldDao
 import com.example.union_sync_impl.dao.VocabularyAdditionalFieldValueDao
 import com.example.union_sync_impl.dao.VocabularyCharacteristicDao
@@ -51,6 +52,7 @@ import com.example.union_sync_impl.dao.sqlDocumentsSimpledQuery
 import com.example.union_sync_impl.dao.sqlInventoryRecordQuery
 import com.example.union_sync_impl.dao.sqlInventorySimpledQuery
 import com.example.union_sync_impl.dao.sqlReserveSimpledQuery
+import com.example.union_sync_impl.dao.sqlTerminalRemainsNumeratorQuery
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDb
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDtosV2
 import com.example.union_sync_impl.data.mapper.toActionDtoV2
@@ -83,6 +85,7 @@ import com.example.union_sync_impl.data.mapper.toRemainsDtoV2
 import com.example.union_sync_impl.data.mapper.toReserveDb
 import com.example.union_sync_impl.data.mapper.toStructuralDb
 import com.example.union_sync_impl.data.mapper.toStructuralPathDb
+import com.example.union_sync_impl.data.mapper.toTerminalRemainsNumeratorDtoV2
 import com.example.union_sync_impl.data.mapper.toTransitAccountingObjectDb
 import com.example.union_sync_impl.data.mapper.toTransitDb
 import com.example.union_sync_impl.data.mapper.toTransitRemainsDb
@@ -112,6 +115,7 @@ import org.openapitools.client.models.ProducerDtoV2
 import org.openapitools.client.models.RemainsDtoV2
 import org.openapitools.client.models.StructuralUnitDtoV2
 import org.openapitools.client.models.StructuralUnitPathDtoV2
+import org.openapitools.client.models.TerminalRemainsNumeratorDtoV2
 import org.openapitools.client.models.TransitAccountingObjectRecordDtoV2
 import org.openapitools.client.models.TransitDtoV2
 import org.openapitools.client.models.TransitRemainsRecordDtoV2
@@ -155,7 +159,8 @@ class SyncRepository(
     private val simpleCharacteristicDao: SimpleCharacteristicDao,
     private val vocabularyCharacteristicDao: VocabularyCharacteristicDao,
     private val vocabularyCharacteristicValueDao: VocabularyCharacteristicValueDao,
-    private val labelTypeDao: LabelTypeDao
+    private val labelTypeDao: LabelTypeDao,
+    private val terminalRemainsNumeratorDao: TerminalRemainsNumeratorDao
 ) {
     suspend fun clearDataBeforeDownload() {
         inventoryDao.clearAll()
@@ -198,6 +203,12 @@ class SyncRepository(
             moshi,
             ::actionRemainsRecordDbSaver,
             getActionRecordRemainsDbCollector()
+        ),
+        TerminalRemainsNumeratorSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::terminalRemainsNumeratorDbSaver,
+            getTerminalRemainsNumeratorDbCollector()
         ),
         InventoryRecordSyncEntity(
             syncControllerApi,
@@ -292,6 +303,12 @@ class SyncRepository(
             syncControllerApi,
             moshi,
             ::accountingObjectVocabularyAdditionalFieldDbSaver
+        ),
+        TerminalRemainsNumeratorSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::terminalRemainsNumeratorDbSaver,
+            getTerminalRemainsNumeratorDbCollector()
         ),
         AccountingObjectSimpleAdditionalFieldSyncEntity(
             syncControllerApi,
@@ -585,6 +602,26 @@ class SyncRepository(
 //            )
 //        }.filterNot { it.isEmpty() }
 //    }
+
+    private fun getTerminalRemainsNumeratorDbCollector(): Flow<List<TerminalRemainsNumeratorDtoV2>> {
+        return flow {
+            paginationEmitter(
+                getData = { limit, offset ->
+                    terminalRemainsNumeratorDao.getAllRemainsNumerators(
+                        sqlTerminalRemainsNumeratorQuery(
+                            limit = limit,
+                            offset = offset,
+                            updateDate = getLastSyncTime(),
+                            isNonCancel = false,
+                        )
+                    )
+                },
+                localToNetworkMapper = { localObjects ->
+                    localObjects.map { it.toTerminalRemainsNumeratorDtoV2() }
+                }
+            )
+        }.filterNot { it.isEmpty() }
+    }
 
     private fun getActionRecordRemainsDbCollector(): Flow<List<ActionRemainsRecordDtoV2>> {
         return flow {
@@ -897,6 +934,10 @@ class SyncRepository(
 
     private suspend fun inventoryTypeDbSaver(objects: List<EnumDtoV2>) {
         enumsDao.insertAll(objects.map { it.toEnumDb(EnumType.INVENTORY_TYPE) })
+    }
+
+    private suspend fun terminalRemainsNumeratorDbSaver(objects: List<TerminalRemainsNumeratorDtoV2>) {
+        terminalRemainsNumeratorDao.insertAll(objects.map { it.toDb() })
     }
 
     private suspend fun locationPathDbSaver(objects: List<LocationPathDto>) {

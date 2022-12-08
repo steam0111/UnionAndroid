@@ -37,6 +37,7 @@ import com.example.union_sync_impl.dao.AccountingObjectsVocabularyCharacteristic
 import com.example.union_sync_impl.dao.LabelTypeDao
 import com.example.union_sync_impl.dao.SimpleCharacteristicDao
 import com.example.union_sync_impl.dao.TerminalInfoDao
+import com.example.union_sync_impl.dao.TerminalRemainsNumeratorDao
 import com.example.union_sync_impl.dao.VocabularyAdditionalFieldDao
 import com.example.union_sync_impl.dao.VocabularyAdditionalFieldValueDao
 import com.example.union_sync_impl.dao.VocabularyCharacteristicDao
@@ -68,6 +69,7 @@ import com.example.union_sync_impl.entity.ReserveDb
 import com.example.union_sync_impl.entity.SimpleAdditionalFieldDb
 import com.example.union_sync_impl.entity.SimpleCharacteristicDb
 import com.example.union_sync_impl.entity.TerminalInfoDb
+import com.example.union_sync_impl.entity.TerminalRemainsNumeratorDb
 import com.example.union_sync_impl.entity.TransitAccountingObjectRecordDb
 import com.example.union_sync_impl.entity.TransitDb
 import com.example.union_sync_impl.entity.TransitRemainsRecordDb
@@ -122,11 +124,13 @@ import com.example.union_sync_impl.utils.Converters
         VocabularyCharacteristicDb::class,
         VocabularyCharacteristicValueDb::class,
         TerminalInfoDb::class,
-        LabelTypeDb::class
-    ], version = 122
+        LabelTypeDb::class,
+        TerminalRemainsNumeratorDb::class
+    ], version = 123
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {
+    abstract fun terminalRemainsNumeratorDao(): TerminalRemainsNumeratorDao
     abstract fun labelTypeDao(): LabelTypeDao
     abstract fun nomenclatureGroupDao(): NomenclatureGroupDao
     abstract fun nomenclatureDao(): NomenclatureDao
