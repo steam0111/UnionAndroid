@@ -82,6 +82,9 @@
         <action
             android:id="@+id/to_selectParams"
             app:destination="@id/selectParams" />
+        <action
+            android:id="@+id/to_labelType"
+            app:destination="@id/labelType" />
     </fragment>
 
     <fragment
@@ -441,18 +444,18 @@
         <action
             android:id="@+id/to_auth"
             app:destination="@id/auth"
-            app:popUpToInclusive="true"
-            app:popUpTo="@id/main" />
+            app:popUpTo="@id/main"
+            app:popUpToInclusive="true" />
         <action
             android:id="@id/to_documentsMenu"
             app:destination="@id/documentsMenu"
-            app:popUpToInclusive="true"
-            app:popUpTo="@id/main" />
+            app:popUpTo="@id/main"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/to_SyncAll"
             app:destination="@+id/syncAll"
-            app:popUpToInclusive="true"
-            app:popUpTo="@id/main" />
+            app:popUpTo="@id/main"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -468,5 +471,25 @@
         <argument
             android:name="ImageViewerArguments"
             app:argType="com.itrocket.union.imageViewer.presentation.store.ImageViewerArguments" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/labelType"
+        android:name="com.itrocket.union.labelType.presentation.view.LabelTypeComposeFragment"
+        android:label="LabelType">
+
+        <action
+            android:id="@+id/to_labelTypeDetail"
+            app:destination="@id/labelTypeDetail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/labelTypeDetail"
+        android:name="com.itrocket.union.labelTypeDetail.presentation.view.LabelTypeDetailComposeFragment"
+        android:label="LabelTypeDetail">
+
+        <argument
+            android:name="LabelTypeDetailArguments"
+            app:argType="com.itrocket.union.labelTypeDetail.presentation.store.LabelTypeDetailArguments" />
     </fragment>
 </navigation>

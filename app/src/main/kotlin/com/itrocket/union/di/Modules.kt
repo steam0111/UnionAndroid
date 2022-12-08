@@ -58,6 +58,8 @@ import com.itrocket.union.transit.TransitModule
 import com.itrocket.union.unionPermissions.UnionPermissionsModule
 import com.union.sdk.SyncModule
 import com.itrocket.union.imageViewer.ImageViewerModule
+import com.itrocket.union.labelType.LabelTypeModule
+import com.itrocket.union.labelTypeDetail.LabelTypeDetailModule
 
 object Modules {
 
@@ -126,6 +128,8 @@ object Modules {
         InventoryChooseModule.module,
         CommentModule.module,
         ImageViewerModule.module,
-        ImageModule.module
+        ImageModule.module,
+        LabelTypeModule.module,
+        LabelTypeDetailModule.module
     )
 }
