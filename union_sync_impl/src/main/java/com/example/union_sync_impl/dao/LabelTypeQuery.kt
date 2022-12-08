@@ -22,7 +22,6 @@ fun sqlLabelTypeQuery(
             updateDate,
             isNonCancel,
         ).addPagination(limit = limit, offset = offset)
-            .addOrder(fieldName = "name", order = Order.ASC)
     )
 }
 
@@ -45,4 +44,4 @@ private fun String.getLabelTypeFilterPartQuery(
             }
         }
     )
-)
+).addOrder(fieldName = "name", order = Order.ASC)

@@ -4,6 +4,7 @@ enum class UnionPermission(val model: String) {
     ACCOUNTING_OBJECT("accountingObject"),
     REMAINS("remains"),
     EMPLOYEE("employee"),
+    LABEL_TYPE("labelType"),
     NOMENCLATURE_GROUP("nomenclatureGroup"),
     NOMENCLATURE("nomenclature"),
     PRODUCER("producer"),
@@ -37,7 +38,8 @@ fun UnionPermission.customPermissionToListUnionPermissions() = when (this) {
         UnionPermission.PRODUCER,
         UnionPermission.COUNTERPARTY,
         UnionPermission.EQUIPMENT_TYPE,
-        UnionPermission.STRUCTURAL_UNIT
+        UnionPermission.STRUCTURAL_UNIT,
+        UnionPermission.LABEL_TYPE,
     )
     UnionPermission.PROPERTY -> listOf(UnionPermission.ACCOUNTING_OBJECT, UnionPermission.REMAINS)
     else -> listOf()

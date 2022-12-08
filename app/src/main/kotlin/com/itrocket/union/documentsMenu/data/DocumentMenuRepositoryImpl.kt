@@ -91,6 +91,11 @@ class DocumentMenuRepositoryImpl : DocumentMenuRepository {
                         iconId = R.drawable.ic_inventory,
                         unionPermission = UnionPermission.STRUCTURAL_UNIT
                     ),
+                    DocumentMenuDomain(
+                        titleId = R.string.manual_label_type,
+                        iconId = R.drawable.ic_inventory,
+                        unionPermission = UnionPermission.LABEL_TYPE
+                    ),
                 )
             }
             currentDocument?.titleId == R.string.main_inventory -> {

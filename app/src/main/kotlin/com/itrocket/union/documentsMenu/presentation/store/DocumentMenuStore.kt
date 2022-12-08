@@ -128,6 +128,7 @@ interface DocumentMenuStore :
                         )
                     }
                     R.string.main_data_collect -> DocumentMenuComposeFragmentDirections.toDataCollect()
+                    R.string.manual_label_type -> DocumentMenuComposeFragmentDirections.toLabelType()
                     else -> null
                 }
         }

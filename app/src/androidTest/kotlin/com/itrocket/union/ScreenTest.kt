@@ -27,6 +27,8 @@ import com.itrocket.union.inventories.presentation.view.InventoriesScreenPreview
 import com.itrocket.union.inventory.presentation.view.InventoryScreenPreview
 import com.itrocket.union.inventoryChoose.presentation.view.InventoryChooseScreenPreview
 import com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateScreenPreview
+import com.itrocket.union.labelType.presentation.view.LabelTypeScreenPreview
+import com.itrocket.union.labelTypeDetail.presentation.view.LabelTypeDetailScreenPreview
 import com.itrocket.union.location.presentation.view.LocationScreenPreview
 import com.itrocket.union.nomenclatureDetail.presentation.view.NomenclatureDetailScreenPreview
 import com.itrocket.union.nomenclatureGroupDetail.presentation.view.NomenclatureGroupDetailScreenPreview
@@ -333,6 +335,20 @@ class ScreensTest : ScreenshotTest {
     fun `ImageViewer`() {
         takeScreenShot {
             ImageViewerScreenPreview()
+        }
+    }
+
+    @Test
+    fun `LabelType`() {
+        takeScreenShot {
+            LabelTypeScreenPreview()
+        }
+    }
+
+    @Test
+    fun `LabelTypeDetail`() {
+        takeScreenShot {
+            LabelTypeDetailScreenPreview()
         }
     }
 }

@@ -62,6 +62,11 @@ fun BaseToolbar(
             .padding(vertical = 18.dp, horizontal = 16.dp)
     ) {
         if (startImageId != null) {
+            val iconColor = if (AppTheme.colors.mainColor == AppTheme.colors.appBarBackgroundColor) {
+                AppTheme.colors.appBarTextColor
+            } else {
+                AppTheme.colors.mainColor
+            }
             Image(
                 painter = painterResource(startImageId),
                 contentDescription = null,
@@ -69,7 +74,7 @@ fun BaseToolbar(
                     enabled = onStartImageClickListener != null,
                     onClick = onStartImageClickListener ?: { }
                 ),
-                colorFilter = ColorFilter.tint(AppTheme.colors.mainColor)
+                colorFilter = ColorFilter.tint(iconColor)
             )
         }
 

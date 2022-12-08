@@ -126,6 +126,7 @@
     <string name="manual_mol">Мол/Ответственный</string>
     <string name="manual_location">Местоположение</string>
     <string name="manual_structural">Подразделение</string>
+    <string name="manual_label_type">Типы меток</string>
     <string name="manual_structural_from">Подразделение отправителя</string>
     <string name="manual_structural_to">Подразделение получателя</string>
     <string name="manual_exploiting">Эксплуатирующий</string>
@@ -444,4 +445,8 @@
     <!-- Image -->
     <string name="image_taken_error">Произошла ошибка при получении фотографии</string>
     <string name="first_sync_title">Первичная синхронизация</string>
+
+    <!-- Label Type -->
+    <string name="label_type_description">Описание</string>
+    <string name="label_type_title">Тип метки</string>
 </resources>
