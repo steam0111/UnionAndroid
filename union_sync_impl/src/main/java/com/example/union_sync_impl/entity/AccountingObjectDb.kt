@@ -74,6 +74,7 @@ class AccountingObjectDb(
     val invoiceNumber: String?,
     val nfc: String?,
     val traceable: Boolean,
+    val labelTypeId: String?,
     userInserted: String?,
     userUpdated: String?,
     updateDate: Long?,

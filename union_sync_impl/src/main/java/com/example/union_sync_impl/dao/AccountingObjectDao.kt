@@ -8,6 +8,7 @@ import androidx.room.RawQuery
 import androidx.room.Update
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.union_sync_impl.entity.AccountingObjectDb
+import com.example.union_sync_impl.entity.AccountingObjectLabelTypeUpdate
 import com.example.union_sync_impl.entity.AccountingObjectScanningUpdate
 import com.example.union_sync_impl.entity.AccountingObjectUpdate
 import com.example.union_sync_impl.entity.AccountingObjectWriteOffUpdate
@@ -126,7 +127,13 @@ interface AccountingObjectDao {
                 "" +
                 "providers.id AS provider_id, " +
                 "providers.catalogItemName AS provider_catalogItemName, " +
-                "providers.name AS provider_name " +
+                "providers.name AS provider_name, " +
+                ""+
+                "label_type.id AS label_type_id, "+
+                "label_type.name AS label_type_name," +
+                "label_type.description AS label_type_description," +
+                "label_type.code as label_type_code," +
+                "label_type.catalogItemName AS label_type_catalogItemName " +
                 "" +
                 "FROM accounting_objects " +
                 "LEFT JOIN providers ON accounting_objects.producerId = providers.id " +
@@ -135,6 +142,7 @@ interface AccountingObjectDao {
                 "LEFT JOIN location ON accounting_objects.locationId = location.id " +
                 "LEFT JOIN employees molEmployees ON accounting_objects.molId = molEmployees.id " +
                 "LEFT JOIN structural ON accounting_objects.structuralId = structural.id " +
+                "LEFT JOIN label_type ON accounting_objects.labelTypeId = label_type.id "+
                 "LEFT JOIN employees exploitingEmployees ON accounting_objects.exploitingId = exploitingEmployees.id " +
                 "WHERE accounting_objects.id = :id LIMIT 1"
     )
@@ -154,4 +162,7 @@ interface AccountingObjectDao {
 
     @Update(entity = AccountingObjectDb::class)
     suspend fun update(accountingObjectUpdate: AccountingObjectScanningUpdate)
+
+    @Update(entity = AccountingObjectDb::class)
+    suspend fun update(accountingObjectUpdate: AccountingObjectLabelTypeUpdate)
 }

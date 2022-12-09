@@ -17,7 +17,7 @@ fun LabelTypeDtoV2.toLabelTypeDb() = LabelTypeDb(
     userInserted = userInserted
 )
 
-fun LabelTypeDb.toLabelTypeSyncEntity() = LabelTypeSyncEntity(
+fun LabelTypeDb.toSyncEntity() = LabelTypeSyncEntity(
     id = id,
     catalogItemName = catalogItemName,
     name = name,

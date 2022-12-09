@@ -15,4 +15,5 @@ data class AccountingObjectDetailSyncEntity(
     val vocabularyAdditionalFields: List<AccountingObjectAdditionalFieldSyncEntity>?,
     val simpleCharacteristic: List<AccountingObjectCharacteristicSyncEntity>?,
     val vocabularyCharacteristic: List<AccountingObjectCharacteristicSyncEntity>?,
+    val labelType: LabelTypeSyncEntity?
 )
