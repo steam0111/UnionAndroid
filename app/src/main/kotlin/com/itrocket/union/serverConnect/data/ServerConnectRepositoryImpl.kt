@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 
@@ -27,6 +28,17 @@ class ServerConnectRepositoryImpl(
 
     private var baseUrl: String? = null
     private var port: String? = null
+
+    init {
+        updateServerInfo()
+    }
+
+    private fun updateServerInfo() {
+        runBlocking {
+            baseUrl = getBaseUrl().firstOrNull()
+            port = getPort().firstOrNull()
+        }
+    }
 
     override suspend fun saveBaseUrl(baseUrl: String) {
         this.baseUrl = baseUrl
@@ -67,7 +79,7 @@ class ServerConnectRepositoryImpl(
     }
 
     override fun getReadyServerUrl(): String {
-        val serverAddress = if(baseUrl != null && port != null){
+        val serverAddress = if (baseUrl != null && port != null) {
             "$baseUrl:$port/"
         } else {
             null
