@@ -28,7 +28,7 @@ fun sqlEmployeeQuery(
 
     val query = mainQuery.getEmployeesFilterPartQuery(
         structuralId, textQuery, updateDate, isNonCancel
-    ).addPagination(limit = limit, offset = offset).addOrder("lastname", Order.ASC)
+    ).addPagination(limit = limit, offset = offset)
 
     return SimpleSQLiteQuery(query)
 }
@@ -65,4 +65,4 @@ private fun String.getEmployeesFilterPartQuery(
             }
         }
     )
-)
+).addOrder("lastname", Order.ASC)

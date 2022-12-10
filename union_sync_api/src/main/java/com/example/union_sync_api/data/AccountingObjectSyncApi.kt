@@ -1,6 +1,7 @@
 package com.example.union_sync_api.data
 
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectLabelType
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
@@ -61,4 +62,6 @@ interface AccountingObjectSyncApi {
     suspend fun writeOffAccountingObjects(accountingObjectsWriteOff: List<AccountingObjectWriteOff>)
 
     suspend fun updateAccountingObjectScanningData(accountingObject: AccountingObjectScanningData)
+
+    suspend fun updateAccountingObjectLabelType(accountingObject: AccountingObjectLabelType)
 }

@@ -7,6 +7,7 @@ import com.example.union_sync_api.data.EnumsSyncApi
 import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectLabelType
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
@@ -16,6 +17,7 @@ import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectDetailQuery
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDetailSyncEntity
+import com.example.union_sync_impl.data.mapper.toAccountingObjectLabelTypeUpdate
 import com.example.union_sync_impl.data.mapper.toAccountingObjectScanningUpdate
 import com.example.union_sync_impl.data.mapper.toAccountingObjectUpdate
 import com.example.union_sync_impl.data.mapper.toAccountingObjectWriteOffUpdate
@@ -205,9 +207,9 @@ class AccountingObjectSyncApiImpl(
             )
 
             it.toAccountingObjectDetailSyncEntity(
-                location,
-                balanceUnit,
-                structurals,
+                locationSyncEntity = location,
+                balanceUnitSyncEntities = balanceUnit,
+                structuralSyncEntities = structurals,
                 simpleAdditionalFields = accountingObjectAdditionalFieldsSyncApi.getSimpleAdditionalFields(
                     it.accountingObjectDb.id
                 ),
@@ -239,5 +241,9 @@ class AccountingObjectSyncApiImpl(
 
     override suspend fun updateAccountingObjectScanningData(accountingObject: AccountingObjectScanningData) {
         accountingObjectsDao.update(accountingObject.toAccountingObjectScanningUpdate())
+    }
+
+    override suspend fun updateAccountingObjectLabelType(accountingObject: AccountingObjectLabelType) {
+        accountingObjectsDao.update(accountingObject.toAccountingObjectLabelTypeUpdate())
     }
 }

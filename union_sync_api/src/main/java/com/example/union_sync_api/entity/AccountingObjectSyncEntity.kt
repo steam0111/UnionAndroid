@@ -41,7 +41,8 @@ data class AccountingObjectSyncEntity(
     val dateInsert: Long?,
     var updateDate: Long?,
     val comment: String? = null,
-    val manualInput: Boolean? = null
+    val manualInput: Boolean? = null,
+    val labelTypeId: String?
 )
 
 fun AccountingObjectSyncEntity.toAccountingObjectUpdateSyncEntity(userUpdated: String?): AccountingObjectUpdateSyncEntity {

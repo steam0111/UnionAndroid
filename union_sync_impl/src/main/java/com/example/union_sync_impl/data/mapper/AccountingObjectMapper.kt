@@ -3,6 +3,7 @@ package com.example.union_sync_impl.data.mapper
 import com.example.union_sync_api.entity.AccountingObjectAdditionalFieldSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectCharacteristicSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectLabelType
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
@@ -12,6 +13,7 @@ import com.example.union_sync_api.entity.EnumType
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.entity.AccountingObjectDb
+import com.example.union_sync_impl.entity.AccountingObjectLabelTypeUpdate
 import com.example.union_sync_impl.entity.AccountingObjectScanningUpdate
 import com.example.union_sync_impl.entity.AccountingObjectUpdate
 import com.example.union_sync_impl.entity.AccountingObjectWriteOffUpdate
@@ -60,7 +62,8 @@ fun AccountingObjectDtoV2.toAccountingObjectDb(): AccountingObjectDb {
         invoiceNumber = invoiceNumber,
         nfc = nfcValue,
         traceable = traceable ?: false,
-        cancel = deleted
+        cancel = deleted,
+        labelTypeId = labelTypeId
     )
 }
 
@@ -88,7 +91,8 @@ fun FullAccountingObject.toAccountingObjectDetailSyncEntity(
         simpleAdditionalFields = simpleAdditionalFields,
         vocabularyAdditionalFields = vocabularyAdditionalFields,
         simpleCharacteristic = simpleCharacteristic,
-        vocabularyCharacteristic = vocabularyCharacteristic
+        vocabularyCharacteristic = vocabularyCharacteristic,
+        labelType = labelTypeDb?.toSyncEntity()
     )
 }
 
@@ -131,7 +135,8 @@ fun AccountingObjectDb.toSyncEntity(locationSyncEntity: List<LocationSyncEntity>
         updateDate = updateDate,
         dateInsert = insertDate,
         userInserted = userInserted,
-        userUpdated = userUpdated
+        userUpdated = userUpdated,
+        labelTypeId = labelTypeId
     )
 
 fun FullAccountingObject.toSyncEntity(
@@ -180,7 +185,8 @@ fun FullAccountingObject.toSyncEntity(
     userUpdated = accountingObjectDb.userUpdated,
     userInserted = accountingObjectDb.userInserted,
     comment = comment,
-    manualInput = manualInput
+    manualInput = manualInput,
+    labelTypeId = labelTypeDb?.id
 )
 
 fun List<AccountingObjectDb>.toAccountingObjectDtosV2(): List<AccountingObjectDtoV2> {
@@ -214,7 +220,8 @@ fun List<AccountingObjectDb>.toAccountingObjectDtosV2(): List<AccountingObjectDt
             userUpdated = accountingObjectDb.userUpdated,
             deleted = accountingObjectDb.cancel ?: false,
             dateInsert = getStringDateFromMillis(accountingObjectDb.insertDate),
-            forWriteOff = accountingObjectDb.forWriteOff
+            forWriteOff = accountingObjectDb.forWriteOff,
+            labelTypeId = accountingObjectDb.labelTypeId
         )
     }
 }
@@ -246,3 +253,6 @@ fun AccountingObjectScanningData.toAccountingObjectScanningUpdate() =
         rfidValue = rfidValue,
         factoryNumber = factoryNumber
     )
+
+fun AccountingObjectLabelType.toAccountingObjectLabelTypeUpdate() =
+    AccountingObjectLabelTypeUpdate(id = id, labelTypeId = labelTypeId)
