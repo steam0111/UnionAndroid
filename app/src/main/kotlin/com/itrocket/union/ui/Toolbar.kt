@@ -193,23 +193,29 @@ fun SearchToolbar(
                     text = title,
                     style = AppTheme.typography.body1,
                     fontWeight = FontWeight.Medium,
-                    color = AppTheme.colors.appBarTextColor
+                    color = AppTheme.colors.appBarTextColor,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    modifier = Modifier.weight(8f)
                 )
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.width(8.dp))
                 Image(
                     painter = painterResource(R.drawable.ic_search_white),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(iconColor),
                     modifier = Modifier
+                        .weight(1f, false)
                         .clickableUnbounded(onClick = onSearchClickListener)
                 )
                 if (onFilterClickListener != null) {
-                    Spacer(modifier = Modifier.width(28.dp))
+                    Spacer(modifier = Modifier.width(16.dp))
                     Image(
                         painter = painterResource(if (isFilterApplied) R.drawable.filter_selected else R.drawable.ic_filter_white),
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(iconColor),
-                        modifier = Modifier.clickableUnbounded(onClick = onFilterClickListener)
+                        modifier = Modifier
+                            .weight(1f, false)
+                            .clickableUnbounded(onClick = onFilterClickListener)
                     )
                 }
                 content()
