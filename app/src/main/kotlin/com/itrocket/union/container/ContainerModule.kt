@@ -6,6 +6,7 @@ import com.itrocket.union.container.domain.IsUserAuthorizedUseCase
 import com.itrocket.union.container.domain.OnSessionExpiredUseCase
 import com.itrocket.union.container.domain.ScannerManager
 import com.itrocket.union.container.presentation.MainViewModel
+import com.itrocket.union.core.CoreModule.UNION_DATA_STORE_QUALIFIER
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -13,7 +14,7 @@ object ContainerModule {
     val module = module {
         factory {
             IsUserAuthorizedUseCase(
-                get(),
+                dataStore = get(UNION_DATA_STORE_QUALIFIER),
                 get(AuthMainModule.ACCESS_TOKEN_PREFERENCE_KEY),
                 get()
             )

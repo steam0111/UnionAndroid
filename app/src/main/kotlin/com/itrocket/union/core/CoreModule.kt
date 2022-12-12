@@ -10,9 +10,12 @@ import com.itrocket.union.intentHandler.IntentHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 object CoreModule {
+
+    val UNION_DATA_STORE_QUALIFIER = named("UNION_DATA_STORE_QUALIFIER")
 
     val module = module {
         single<CoreDispatchers> {
@@ -21,7 +24,7 @@ object CoreModule {
         single {
             AppInsetsStateHolder()
         }
-        single {
+        single(UNION_DATA_STORE_QUALIFIER) {
             PreferenceDataStoreFactory.create(
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
             ) {

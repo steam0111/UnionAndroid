@@ -1,0 +1,3 @@
+adb shell pm clear com.itrocket.union - отчистить данные приложения
+
+adb shell bmgr backupnow com.itrocket.union - сделать бэкап приложения

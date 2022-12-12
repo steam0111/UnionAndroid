@@ -6,6 +6,7 @@ import com.itrocket.core.base.BaseViewModel
 import com.itrocket.core.utils.getExternalStateSaver
 import com.itrocket.core.utils.getSavedState
 import com.itrocket.union.authContainer.AuthContainerModule
+import com.itrocket.union.core.CoreModule.UNION_DATA_STORE_QUALIFIER
 import com.itrocket.union.serverConnect.data.ServerConnectRepositoryImpl
 import com.itrocket.union.serverConnect.data.StyleRepositoryImpl
 import com.itrocket.union.serverConnect.domain.ServerConnectInteractor
@@ -43,7 +44,7 @@ object ServerConnectModule {
             ServerConnectRepositoryImpl(
                 baseUrlPreferencesKey = get(BASE_URL_PREFERENCE_KEY),
                 portPreferencesKey = get(PORT_PREFERENCE_KEY),
-                dataStore = get(),
+                dataStore = get(UNION_DATA_STORE_QUALIFIER),
                 coreDispatchers = get(),
                 manageSyncDataApi = get(),
             )
@@ -65,6 +66,7 @@ object ServerConnectModule {
                 initialState = getSavedState<ServerConnectStore.State, AuthContainerModule>(
                     SERVERCONNECT_STATE_SAVER
                 ),
+                get(),
                 get(),
                 get(),
                 get()

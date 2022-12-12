@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.itrocket.core.base.BaseViewModel
+import com.itrocket.union.core.CoreModule.UNION_DATA_STORE_QUALIFIER
 import com.itrocket.union.moduleSettings.data.ModuleSettingsRepositoryImpl
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.moduleSettings.domain.dependencies.ModuleSettingsRepository
@@ -29,7 +30,7 @@ object ModuleSettingsModule {
 
         factory<ModuleSettingsRepository> {
             ModuleSettingsRepositoryImpl(
-                dataStore = get(),
+                dataStore = get(UNION_DATA_STORE_QUALIFIER),
                 keyCodePreferencesKey = get(KEY_CODE_PREFERENCE_KEY),
                 readerPowerPreferencesKey = get(READER_POWER_PREFERENCE_KEY),
                 dynamicSaveInventoryPreferencesKey = get(DYNAMIC_SAVE_INVENTORY_PREFERENCE_KEY),

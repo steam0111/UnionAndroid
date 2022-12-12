@@ -10,17 +10,16 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.R
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.network.HttpException
-import com.itrocket.union.network.NetworkModule
 import com.itrocket.union.serverConnect.domain.ServerConnectInteractor
 import com.itrocket.union.serverConnect.domain.StyleInteractor
 import com.itrocket.union.theme.domain.ColorInteractor
 import com.itrocket.union.theme.domain.MediaInteractor
 import com.itrocket.union.theme.domain.entity.Medias
+import com.itrocket.union.uniqueDeviceId.store.UniqueDeviceIdRepository
 import com.squareup.moshi.JsonEncodingException
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.core.context.loadKoinModules
-import org.koin.core.context.unloadKoinModules
+import timber.log.Timber
 
 class ServerConnectStoreFactory(
     private val storeFactory: StoreFactory,
@@ -29,7 +28,8 @@ class ServerConnectStoreFactory(
     private val initialState: ServerConnectStore.State?,
     private val colorInteractor: ColorInteractor,
     private val mediaInteractor: MediaInteractor,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val deviceIdRepository: UniqueDeviceIdRepository
 ) : KoinComponent {
     fun create(): ServerConnectStore =
         object : ServerConnectStore,
@@ -52,6 +52,8 @@ class ServerConnectStoreFactory(
             action: Unit,
             getState: () -> ServerConnectStore.State
         ) {
+            Timber.d("deviceId ${deviceIdRepository.getUniqueDeviceId()}")
+
             dispatch(Result.MediaList(mediaInteractor.getMedias()))
             val serverUrl = serverConnectInteractor.getBaseUrl()
             val port = serverConnectInteractor.getPort()
@@ -117,8 +119,6 @@ class ServerConnectStoreFactory(
                 )
                 serverConnectInteractor.saveBaseUrl(getState().serverAddress)
                 serverConnectInteractor.savePort(getState().port)
-                unloadKoinModules(NetworkModule.module)
-                loadKoinModules(NetworkModule.module)
                 loadSettings()
                 publish(ServerConnectStore.Label.NextFinish)
             }
