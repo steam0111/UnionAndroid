@@ -10,6 +10,7 @@ import com.itrocket.union.authMain.domain.dependencies.AuthMainRepository
 import com.itrocket.union.authMain.presentation.store.AuthMainStore
 import com.itrocket.union.authMain.presentation.store.AuthMainStoreFactory
 import com.itrocket.union.authMain.presentation.view.AuthMainComposeFragmentArgs
+import com.itrocket.union.core.CoreModule.UNION_DATA_STORE_QUALIFIER
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
@@ -35,7 +36,7 @@ object AuthMainModule {
             AuthMainRepositoryImpl(
                 api = get(),
                 jwtAuthControllerApi = get(),
-                dataStore = get(),
+                dataStore = get(UNION_DATA_STORE_QUALIFIER),
                 accessTokenPreferencesKey = get(ACCESS_TOKEN_PREFERENCE_KEY),
                 refreshTokenPreferencesKey = get(REFRESH_TOKEN_PREFERENCE_KEY),
                 loginPreferencesKey = get(LOGIN_PREFERENCE_KEY),

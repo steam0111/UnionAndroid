@@ -29,7 +29,7 @@ object SyncAllModule {
                 get(),
                 get(),
                 get(),
-                get()
+                get(),
             )
         }
 

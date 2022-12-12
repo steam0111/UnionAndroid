@@ -25,11 +25,14 @@ import com.itrocket.union.error.ErrorModule
 import com.itrocket.union.filter.FilterModule
 import com.itrocket.union.identify.IdentifyModule
 import com.itrocket.union.image.ImageModule
+import com.itrocket.union.imageViewer.ImageViewerModule
 import com.itrocket.union.inventories.InventoriesModule
 import com.itrocket.union.inventory.InventoryModule
 import com.itrocket.union.inventoryChoose.InventoryChooseModule
 import com.itrocket.union.inventoryContainer.InventoryContainerModule
 import com.itrocket.union.inventoryCreate.InventoryCreateModule
+import com.itrocket.union.labelType.LabelTypeModule
+import com.itrocket.union.labelTypeDetail.LabelTypeDetailModule
 import com.itrocket.union.manualInput.ManualInputModule
 import com.itrocket.union.moduleSettings.ModuleSettingsModule
 import com.itrocket.union.network.NetworkModule
@@ -57,10 +60,8 @@ import com.itrocket.union.theme.ThemeModule
 import com.itrocket.union.token.TokenModule
 import com.itrocket.union.transit.TransitModule
 import com.itrocket.union.unionPermissions.UnionPermissionsModule
+import com.itrocket.union.uniqueDeviceId.UniqueDeviceIdModule
 import com.union.sdk.SyncModule
-import com.itrocket.union.imageViewer.ImageViewerModule
-import com.itrocket.union.labelType.LabelTypeModule
-import com.itrocket.union.labelTypeDetail.LabelTypeDetailModule
 
 object Modules {
 
@@ -130,6 +131,7 @@ object Modules {
         CommentModule.module,
         ImageViewerModule.module,
         ImageModule.module,
+        UniqueDeviceIdModule.module,
         LabelTypeModule.module,
         LabelTypeDetailModule.module,
         SgtinModule.module

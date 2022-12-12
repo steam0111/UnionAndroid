@@ -1,6 +1,7 @@
 package com.itrocket.union.theme
 
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.itrocket.union.core.CoreModule.UNION_DATA_STORE_QUALIFIER
 import com.itrocket.union.theme.data.ColorRepositoryImpl
 import com.itrocket.union.theme.data.MediaRepositoryImpl
 import com.itrocket.union.theme.domain.ColorInteractor
@@ -28,7 +29,7 @@ object ThemeModule {
 
         single<ColorRepository> {
             ColorRepositoryImpl(
-                dataStore = get(),
+                dataStore = get(UNION_DATA_STORE_QUALIFIER),
                 colorSettings = get(),
                 mainColorPreferenceKey = get(MAIN_COLOR_PREFERENCE_KEY),
                 mainTextColorPreferenceKey = get(MAIN_TEXT_COLOR_PREFERENCE_KEY),
