@@ -17,7 +17,6 @@ import com.itrocket.union.R
 import com.itrocket.union.container.domain.ScannerManager
 import com.itrocket.union.intentHandler.IntentHandler
 import com.itrocket.utils.setGraph
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel

@@ -1,5 +1,6 @@
 package com.itrocket.union.di
 
+import com.itrocket.sgtin.SgtinModule
 import com.itrocket.union.accountingObjectDetail.AccountingObjectDetailModule
 import com.itrocket.union.accountingObjects.AccountingObjectModule
 import com.itrocket.union.authContainer.AuthContainerModule
@@ -130,6 +131,7 @@ object Modules {
         ImageViewerModule.module,
         ImageModule.module,
         LabelTypeModule.module,
-        LabelTypeDetailModule.module
+        LabelTypeDetailModule.module,
+        SgtinModule.module
     )
 }

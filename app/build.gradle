@@ -70,6 +70,7 @@ dependencies {
     implementation project(":union_sync_sdk")
     implementation project(":nfc")
     implementation project(":number_picker")
+    implementation project(":sgtin")
 
     implementation(libs.androidx.core)
     implementation(libs.androidx.appcompat)

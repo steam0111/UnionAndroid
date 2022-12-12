@@ -49,6 +49,8 @@ scannerclient_impl = "1.1.2"
 
 junit = "4.13.2"
 
+mockk = "1.13.3"
+
 logger = "5.0.1"
 
 svg = "1.4"
@@ -118,6 +120,7 @@ scannerclient = { module = "ru.interid:scanner_client", version.ref = "scannercl
 
 logger = { module = "com.jakewharton.timber:timber", version.ref = "logger" }
 junit = { module = "junit:junit", version.ref = "junit" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 svg = { module = "com.caverock:androidsvg-aar", version.ref = "svg" }
 
