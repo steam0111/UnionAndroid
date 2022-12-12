@@ -15,6 +15,7 @@ import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 import com.itrocket.union.documentsMenu.presentation.view.DocumentMenuComposeFragmentDirections
 import com.itrocket.union.inventoryContainer.domain.InventoryContainerType
 import com.itrocket.union.inventoryContainer.presentation.store.InventoryContainerArguments
+import com.itrocket.union.labelType.presentation.store.LabelTypeArguments
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.nomenclature.presentation.store.NomenclatureArguments
@@ -128,7 +129,9 @@ interface DocumentMenuStore :
                         )
                     }
                     R.string.main_data_collect -> DocumentMenuComposeFragmentDirections.toDataCollect()
-                    R.string.manual_label_type -> DocumentMenuComposeFragmentDirections.toLabelType()
+                    R.string.manual_label_type -> DocumentMenuComposeFragmentDirections.toLabelType(
+                        LabelTypeArguments(isSelectMode = false)
+                    )
                     else -> null
                 }
         }

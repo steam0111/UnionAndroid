@@ -151,6 +151,7 @@
     <string name="accounting_objects_current_status">Статус</string>
     <string name="accounting_objects_factory_num">Серийный номер</string>
     <string name="accounting_objects_inventory_num">Инвентарный номер</string>
+    <string name="accounting_objects_label_type">Тип метки</string>
     <string name="accounting_objects_location">Местоположение</string>
     <string name="accounting_objects_department">Подразделение</string>
     <string name="accounting_objects_model">Модель</string>

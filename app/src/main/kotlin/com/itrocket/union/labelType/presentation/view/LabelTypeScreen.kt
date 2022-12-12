@@ -127,27 +127,30 @@ private fun Content(
 @Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
 @Composable
 fun LabelTypeScreenPreview() {
-    LabelTypeScreen(LabelTypeStore.State(types = listOf(
-        LabelTypeDomain(
-            id = "1",
-            catalogItemName = "name3",
-            name = "name3",
-            code = "code3",
-            description = "blblblblbllb"
+    LabelTypeScreen(LabelTypeStore.State(
+        types = listOf(
+            LabelTypeDomain(
+                id = "1",
+                catalogItemName = "name3",
+                name = "name3",
+                code = "code3",
+                description = "blblblblbllb"
+            ),
+            LabelTypeDomain(
+                id = "2",
+                catalogItemName = "name3",
+                name = "name3",
+                code = "code3",
+                description = "blblblblbllb"
+            ),
+            LabelTypeDomain(
+                id = "3",
+                catalogItemName = "name3",
+                name = "name3",
+                code = "code3",
+                description = "blblblblbllb"
+            ),
         ),
-        LabelTypeDomain(
-            id = "2",
-            catalogItemName = "name3",
-            name = "name3",
-            code = "code3",
-            description = "blblblblbllb"
-        ),
-        LabelTypeDomain(
-            id = "3",
-            catalogItemName = "name3",
-            name = "name3",
-            code = "code3",
-            description = "blblblblbllb"
-        ),
-    )), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {})
+        isSelectMode = false,
+    ), AppInsets(previewTopInsetDp), {}, {}, {}, {}, {})
 }

@@ -1,15 +1,18 @@
 package com.itrocket.union.labelType.domain.entity
 
+import android.os.Parcelable
 import com.itrocket.union.R
 import com.itrocket.union.common.DefaultItem
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class LabelTypeDomain(
     val id: String,
     val catalogItemName: String,
     val name: String,
     val code: String,
     val description: String?
-)
+) : Parcelable
 
 fun LabelTypeDomain.toDefaultItem(): DefaultItem {
     val subtitles = mutableMapOf<Int, String>()

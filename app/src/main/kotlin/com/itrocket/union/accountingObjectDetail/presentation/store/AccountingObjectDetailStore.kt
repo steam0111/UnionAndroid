@@ -22,6 +22,8 @@ import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataCompose
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment.Companion.CHANGE_SCAN_DATA_ARGS
 import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.imageViewer.presentation.store.ImageViewerArguments
+import com.itrocket.union.labelType.domain.entity.LabelTypeDomain
+import com.itrocket.union.labelType.presentation.store.LabelTypeArguments
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -45,6 +47,7 @@ interface AccountingObjectDetailStore :
         object OnRemoveBarcodeClicked : Intent()
         object OnRemoveRfidClicked : Intent()
         object OnAddImageClicked : Intent()
+        object OnLabelTypeEditClicked : Intent()
         data class OnImagesChanged(val images: List<ImageDomain>) : Intent()
         data class OnImageTaken(val success: Boolean) : Intent()
         data class OnImageClicked(val imageDomain: ImageDomain) : Intent()
@@ -53,6 +56,7 @@ interface AccountingObjectDetailStore :
         data class OnScanHandled(val scanData: String) : Intent()
         data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
         data class OnManualInput(val readingModeResult: ReadingModeResult) : Intent()
+        data class OnLabelTypeSelected(val labelTypeId: String) : Intent()
     }
 
     data class State(
@@ -65,7 +69,7 @@ interface AccountingObjectDetailStore :
         val dialogType: AlertType = AlertType.NONE,
         val rfidError: String = "",
         val imageUri: Uri? = null,
-        val images: List<ImageDomain> = listOf()
+        val images: List<ImageDomain> = listOf(),
     )
 
     sealed class Label {
@@ -126,6 +130,13 @@ interface AccountingObjectDetailStore :
                     ImageViewerArguments(images = images, currentImage = currentImage)
                 )
 
+        }
+
+        object ShowLabelTypes : Label(), ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = AccountingObjectDetailComposeFragmentDirections.toLabelType(
+                    LabelTypeArguments(isSelectMode = true)
+                )
         }
     }
 }

@@ -17,7 +17,7 @@ class AccountingObjectDetailInteractor(
     private val repository: AccountingObjectDetailRepository,
     private val accountingObjectRepository: AccountingObjectRepository,
     private val coreDispatchers: CoreDispatchers,
-    private val unionPermissionsInteractor: UnionPermissionsInteractor
+    private val unionPermissionsInteractor: UnionPermissionsInteractor,
 ) {
 
     suspend fun getAccountingObject(id: String): AccountingObjectDomain =
@@ -58,6 +58,13 @@ class AccountingObjectDetailInteractor(
                 mainInfo.filter { it.filedType != ObjectInfoType.VOCABULARY_ADDITIONAL_FIELD }
         }
         return mainInfo
+    }
+
+    suspend fun updateLabelType(
+        accountingObjectDomain: AccountingObjectDomain,
+        labelTypeId: String
+    ) = withContext(coreDispatchers.io) {
+        repository.updateLabelType(accountingObject = accountingObjectDomain, labelTypeId = labelTypeId)
     }
 
     suspend fun updateScanningData(accountingObjectDomain: AccountingObjectDomain) =

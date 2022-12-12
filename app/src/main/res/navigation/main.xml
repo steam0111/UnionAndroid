@@ -114,6 +114,9 @@
         <action
             android:id="@+id/action_accountingObjectsDetails_to_imageViewer"
             app:destination="@id/imageViewer" />
+        <action
+            android:id="@+id/to_labelType"
+            app:destination="@id/labelType" />
     </fragment>
 
     <fragment
@@ -477,7 +480,9 @@
         android:id="@+id/labelType"
         android:name="com.itrocket.union.labelType.presentation.view.LabelTypeComposeFragment"
         android:label="LabelType">
-
+        <argument
+            android:name="LabelTypeArguments"
+            app:argType="com.itrocket.union.labelType.presentation.store.LabelTypeArguments" />
         <action
             android:id="@+id/to_labelTypeDetail"
             app:destination="@id/labelTypeDetail" />

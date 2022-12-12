@@ -10,13 +10,17 @@ import com.itrocket.union.labelType.domain.dependencies.LabelTypeRepository
 import com.itrocket.union.labelType.presentation.store.LabelTypeStore
 import com.itrocket.union.labelType.presentation.store.LabelTypeStoreFactory
 import com.itrocket.core.base.BaseViewModel
+import com.itrocket.union.labelType.presentation.view.LabelTypeComposeFragmentArgs
+import org.koin.core.parameter.parametersOf
 
 object LabelTypeModule {
     val LABELTYPE_VIEW_MODEL_QUALIFIER = named("LABELTYPE_VIEW_MODEL")
 
     val module = module {
-        viewModel(LABELTYPE_VIEW_MODEL_QUALIFIER) {
-            BaseViewModel(get<LabelTypeStore>())
+        viewModel(LABELTYPE_VIEW_MODEL_QUALIFIER) { (argument: LabelTypeComposeFragmentArgs) ->
+            BaseViewModel(get<LabelTypeStore> {
+                parametersOf(argument)
+            })
         }
 
         factory<LabelTypeRepository> {
@@ -27,13 +31,14 @@ object LabelTypeModule {
             LabelTypeInteractor(get(), get())
         }
 
-        factory {
+        factory { (argument: LabelTypeComposeFragmentArgs) ->
             LabelTypeStoreFactory(
                 DefaultStoreFactory,
                 get(),
                 get(),
                 get(),
-                get()
+                get(),
+                argument.labelTypeArguments
             ).create()
         }
     }

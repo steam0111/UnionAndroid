@@ -1,12 +1,15 @@
 package com.itrocket.union.accountingObjectDetail.data.mapper
 
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
+import com.example.union_sync_api.entity.AccountingObjectLabelType
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectWriteOff
 import com.example.union_sync_api.entity.EnumSyncEntity
+import com.example.union_sync_api.entity.LabelTypeSyncEntity
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.data.mapper.toDomainStatus
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoBehavior
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoType
 import com.itrocket.union.utils.getStringDateFromMillis
@@ -47,6 +50,14 @@ fun AccountingObjectDetailSyncEntity.toAccountingObjectDetailDomain(): Accountin
                 title = R.string.accounting_objects_inventory_num,
                 value = accountingObject.inventoryNumber,
                 valueRes = R.string.value_not_defined
+            )
+        )
+        add(
+            ObjectInfoDomain(
+                title = R.string.accounting_objects_label_type,
+                value = labelType?.name,
+                valueRes = R.string.value_not_defined,
+                fieldBehavior = ObjectInfoBehavior.LABEL_TYPE
             )
         )
         add(
@@ -270,6 +281,9 @@ fun AccountingObjectDomain.toAccountingObjectScanningData() = AccountingObjectSc
     barcodeValue = barcodeValue,
     rfidValue = rfidValue
 )
+
+fun AccountingObjectDomain.toAccountingObjectLabelType(labelTypeId: String) =
+    AccountingObjectLabelType(id = id, labelTypeId = labelTypeId)
 
 fun AccountingObjectDomain.toAccountingObjectWriteOff() =
     AccountingObjectWriteOff(id = id, forWriteOff = true)
