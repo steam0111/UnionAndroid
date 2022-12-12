@@ -20,5 +20,7 @@ interface AccountingObjectDetailRepository {
 
     suspend fun updateScanningData(accountingObject: AccountingObjectDomain)
 
+    suspend fun updateLabelType(accountingObject: AccountingObjectDomain, labelTypeId: String)
+
     suspend fun getAccountingObjectImages(accountingObjectId: String) : List<ImageDomain>
 }

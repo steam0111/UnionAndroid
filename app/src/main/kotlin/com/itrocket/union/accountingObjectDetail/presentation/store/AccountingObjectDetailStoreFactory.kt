@@ -17,6 +17,8 @@ import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.image.domain.ImageInteractor
 import com.itrocket.union.imageViewer.domain.ImageViewerInteractor
+import com.itrocket.union.labelType.domain.LabelTypeInteractor
+import com.itrocket.union.labelType.domain.entity.LabelTypeDomain
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.readingMode.domain.ReadingModeInteractor
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
@@ -39,7 +41,8 @@ class AccountingObjectDetailStoreFactory(
     private val moduleSettingsInteractor: ModuleSettingsInteractor,
     private val imageViewerInteractor: ImageViewerInteractor,
     private val imageInteractor: ImageInteractor,
-    private val readingModeInteractor: ReadingModeInteractor
+    private val readingModeInteractor: ReadingModeInteractor,
+    private val labelTypeInteractor: LabelTypeInteractor
 ) {
     fun create(): AccountingObjectDetailStore =
         object : AccountingObjectDetailStore,
@@ -144,7 +147,26 @@ class AccountingObjectDetailStoreFactory(
                     getState = getState
                 )
                 is AccountingObjectDetailStore.Intent.OnImagesChanged -> onImagesChanged(images = intent.images)
+                AccountingObjectDetailStore.Intent.OnLabelTypeEditClicked -> onLabelTypeEditClicked()
+                is AccountingObjectDetailStore.Intent.OnLabelTypeSelected -> onLabelTypeSelected(
+                    getState = getState,
+                    labelTypeId = intent.labelTypeId
+                )
             }
+        }
+
+        private fun onLabelTypeEditClicked() {
+            publish(AccountingObjectDetailStore.Label.ShowLabelTypes)
+        }
+
+        private suspend fun onLabelTypeSelected(
+            getState: () -> AccountingObjectDetailStore.State,
+            labelTypeId: String
+        ) {
+            interactor.updateLabelType(
+                accountingObjectDomain = getState().accountingObjectDomain,
+                labelTypeId = labelTypeId
+            )
         }
 
         private fun onWriteEpcClicked() {
@@ -292,6 +314,7 @@ class AccountingObjectDetailStoreFactory(
                     .catch {
                         handleError(it)
                     }.collect {
+                        dispatch(Result.AccountingObject(it))
                         dispatch(Result.Loading(false))
                     }
             }

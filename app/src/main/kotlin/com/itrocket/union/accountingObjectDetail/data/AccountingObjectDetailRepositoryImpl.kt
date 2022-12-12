@@ -4,6 +4,7 @@ import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.EnumsSyncApi
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjectDetail.data.mapper.toAccountingObjectDetailDomain
+import com.itrocket.union.accountingObjectDetail.data.mapper.toAccountingObjectLabelType
 import com.itrocket.union.accountingObjectDetail.data.mapper.toAccountingObjectScanningData
 import com.itrocket.union.accountingObjectDetail.data.mapper.toAccountingObjectWriteOff
 import com.itrocket.union.accountingObjectDetail.domain.dependencies.AccountingObjectDetailRepository
@@ -48,6 +49,17 @@ class AccountingObjectDetailRepositoryImpl(
 
     override suspend fun updateScanningData(accountingObject: AccountingObjectDomain) {
         return syncApi.updateAccountingObjectScanningData(accountingObject.toAccountingObjectScanningData())
+    }
+
+    override suspend fun updateLabelType(
+        accountingObject: AccountingObjectDomain,
+        labelTypeId: String
+    ) {
+        return syncApi.updateAccountingObjectLabelType(
+            accountingObject.toAccountingObjectLabelType(
+                labelTypeId
+            )
+        )
     }
 
     override suspend fun getAccountingObjectImages(accountingObjectId: String): List<ImageDomain> {

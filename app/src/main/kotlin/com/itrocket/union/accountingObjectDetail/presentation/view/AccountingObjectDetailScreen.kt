@@ -44,11 +44,13 @@ import com.itrocket.ui.BaseTab
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailStore
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoBehavior
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
+import com.itrocket.union.labelType.domain.entity.LabelTypeDomain
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.*
 import com.itrocket.union.ui.image.GridImages
@@ -75,6 +77,7 @@ fun AccountingObjectDetailScreen(
     onRemoveBarcodeClickListener: () -> Unit,
     onImageClickListener: (ImageDomain) -> Unit,
     onAddImageClickListener: () -> Unit,
+    onLabelTypeEditClickListener: () -> Unit,
 ) {
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
@@ -90,6 +93,7 @@ fun AccountingObjectDetailScreen(
                     onWriteOffClickListener = onWriteOffClickListener,
                     onRemoveRfidClickListener = onRemoveRfidClickListener,
                     onRemoveBarcodeClickListener = onRemoveBarcodeClickListener,
+                    onLabelTypeEditClickListener = onLabelTypeEditClickListener,
                     showButtons = true
                 )
             }
@@ -287,19 +291,38 @@ private fun ListInfo(
     onWriteOffClickListener: () -> Unit = {},
     onRemoveRfidClickListener: () -> Unit = {},
     onRemoveBarcodeClickListener: () -> Unit = {},
+    onLabelTypeEditClickListener: () -> Unit = {},
     showButtons: Boolean = false
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         itemsIndexed(listInfo) { index, item ->
             val valueRes = item.valueRes?.let { stringResource(id = it) }.orEmpty()
-            ExpandedInfoField(
-                label = item.name ?: item.title?.let { stringResource(id = it) }.orEmpty(),
-                value = item.value.ifBlankOrNull { valueRes },
-                modifier = Modifier.fillMaxWidth()
-            )
-            if (showButtons && index == listInfo.lastIndex) {
-                when {
-                    !state.isLoading && state.canUpdate -> {
+            val label = item.name ?: item.title?.let { stringResource(id = it) }.orEmpty()
+            val value = item.value.ifBlankOrNull { valueRes }
+
+            when (item.fieldBehavior) {
+                ObjectInfoBehavior.DEFAULT -> {
+                    ExpandedInfoField(
+                        label = label,
+                        value = value,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                ObjectInfoBehavior.LABEL_TYPE -> {
+                    ExpandedInfoField(
+                        label = label,
+                        value = value,
+                        modifier = Modifier.fillMaxWidth(),
+                        canEdit = state.canUpdate,
+                        onEditClickListener = onLabelTypeEditClickListener
+                    )
+                }
+            }
+        }
+        if (showButtons) {
+            when {
+                !state.isLoading && state.canUpdate -> {
+                    item {
                         Spacer(modifier = Modifier.height(12.dp))
                         BaseButton(
                             text = stringResource(R.string.common_generate_rfid),
@@ -308,6 +331,8 @@ private fun ListInfo(
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
                         )
+                    }
+                    item {
                         Spacer(modifier = Modifier.height(12.dp))
                         BaseButton(
                             text = stringResource(R.string.common_write_epc),
@@ -316,7 +341,9 @@ private fun ListInfo(
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
                         )
-                        if (state.accountingObjectDomain.forWrittenOff != true) {
+                    }
+                    if (state.accountingObjectDomain.forWrittenOff != true) {
+                        item {
                             Spacer(modifier = Modifier.height(12.dp))
                             BaseButton(
                                 text = stringResource(R.string.common_write_off),
@@ -326,7 +353,9 @@ private fun ListInfo(
                                     .padding(horizontal = 16.dp)
                             )
                         }
-                        if (state.accountingObjectDomain.rfidValue != null) {
+                    }
+                    if (state.accountingObjectDomain.rfidValue != null) {
+                        item {
                             Spacer(modifier = Modifier.height(12.dp))
                             BaseButton(
                                 text = stringResource(R.string.common_remove_rfid),
@@ -336,7 +365,9 @@ private fun ListInfo(
                                     .padding(horizontal = 16.dp)
                             )
                         }
-                        if (state.accountingObjectDomain.barcodeValue != null) {
+                    }
+                    if (state.accountingObjectDomain.barcodeValue != null) {
+                        item {
                             Spacer(modifier = Modifier.height(12.dp))
                             BaseButton(
                                 text = stringResource(R.string.common_remove_barcode),
@@ -346,10 +377,14 @@ private fun ListInfo(
                                     .padding(horizontal = 16.dp)
                             )
                         }
+                    }
+                    item {
                         Spacer(modifier = Modifier.height(16.dp))
                     }
+                }
 
-                    !state.isLoading -> {
+                !state.isLoading -> {
+                    item {
                         Spacer(modifier = Modifier.height(12.dp))
                         BaseButton(
                             text = stringResource(R.string.common_write_epc),
@@ -484,5 +519,7 @@ fun AccountingObjectDetailScreenPreview() {
         {},
         {},
         {},
-        {})
+        {},
+        {},
+    )
 }

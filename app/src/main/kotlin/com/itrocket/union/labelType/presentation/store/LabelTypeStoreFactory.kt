@@ -22,13 +22,14 @@ class LabelTypeStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val labelTypeInteractor: LabelTypeInteractor,
     private val errorInteractor: ErrorInteractor,
-    private val searchManager: SearchManager
+    private val searchManager: SearchManager,
+    private val arguments: LabelTypeArguments
 ) {
     fun create(): LabelTypeStore =
         object : LabelTypeStore,
             Store<LabelTypeStore.Intent, LabelTypeStore.State, LabelTypeStore.Label> by storeFactory.create(
                 name = "LabelTypeStore",
-                initialState = LabelTypeStore.State(),
+                initialState = LabelTypeStore.State(isSelectMode = arguments.isSelectMode),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,
                 reducer = ReducerImpl
@@ -75,9 +76,10 @@ class LabelTypeStoreFactory(
         ) {
             when (intent) {
                 LabelTypeStore.Intent.OnBackClicked -> onBackClicked(getState().isShowSearch)
-                is LabelTypeStore.Intent.OnItemClicked -> {
-                    publish(LabelTypeStore.Label.ShowDetail(intent.id))
-                }
+                is LabelTypeStore.Intent.OnItemClicked -> onItemClicked(
+                    labelTypeId = intent.id,
+                    isSelectMode = getState().isSelectMode
+                )
                 LabelTypeStore.Intent.OnSearchClicked -> dispatch(
                     Result.IsShowSearch(
                         true
@@ -93,6 +95,14 @@ class LabelTypeStoreFactory(
                         offset = it
                     )
                 }
+            }
+        }
+
+        private fun onItemClicked(labelTypeId: String, isSelectMode: Boolean) {
+            if (isSelectMode) {
+                publish(LabelTypeStore.Label.GoBack(LabelTypeResult(labelTypeId = labelTypeId)))
+            } else {
+                publish(LabelTypeStore.Label.ShowDetail(labelTypeId))
             }
         }
 
@@ -112,7 +122,7 @@ class LabelTypeStoreFactory(
                 dispatch(Result.SearchText(""))
                 searchManager.emit("")
             } else {
-                publish(LabelTypeStore.Label.GoBack)
+                publish(LabelTypeStore.Label.GoBack())
             }
         }
 

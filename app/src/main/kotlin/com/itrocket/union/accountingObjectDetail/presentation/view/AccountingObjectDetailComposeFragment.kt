@@ -14,6 +14,8 @@ import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataResult
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment
 import com.itrocket.union.imageViewer.domain.entity.ImageViewerResult
 import com.itrocket.union.imageViewer.presentation.view.ImageViewerComposeFragment
+import com.itrocket.union.labelType.presentation.store.LabelTypeResult
+import com.itrocket.union.labelType.presentation.view.LabelTypeComposeFragment
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -94,6 +96,17 @@ class AccountingObjectDetailComposeFragment :
                     }
                 }
             ),
+            FragmentResult(
+                resultCode = LabelTypeComposeFragment.LABEL_TYPE_RESULT_CODE,
+                resultLabel = LabelTypeComposeFragment.LABEL_TYPE_RESULT_LABEL,
+                resultAction = {
+                    (it as LabelTypeResult?)?.let {
+                        accept(
+                            AccountingObjectDetailStore.Intent.OnLabelTypeSelected(it.labelTypeId)
+                        )
+                    }
+                }
+            ),
         )
 
     override fun renderState(
@@ -144,6 +157,9 @@ class AccountingObjectDetailComposeFragment :
                 onAddImageClickListener = {
                     accept(AccountingObjectDetailStore.Intent.OnAddImageClicked)
                 },
+                onLabelTypeEditClickListener = {
+                    accept(AccountingObjectDetailStore.Intent.OnLabelTypeEditClicked)
+                }
             )
         }
     }

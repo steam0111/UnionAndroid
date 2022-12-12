@@ -30,6 +30,8 @@ import com.itrocket.utils.clickableUnbounded
 fun ExpandedInfoField(
     label: String,
     value: String,
+    canEdit: Boolean = false,
+    onEditClickListener: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column {
@@ -47,7 +49,20 @@ fun ExpandedInfoField(
                 modifier = Modifier.fillMaxWidth(fraction)
             )
             Spacer(modifier = Modifier.width(32.dp))
-            ExpandedInfoValue(value)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                ExpandedInfoValue(value)
+                if (canEdit) {
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Image(
+                        painter = painterResource(R.drawable.ic_edit),
+                        contentDescription = null,
+                        modifier = Modifier.clickableUnbounded(onClick = onEditClickListener)
+                    )
+                }
+            }
         }
         Spacer(modifier = Modifier.height(12.dp))
         BottomLine()
@@ -75,7 +90,7 @@ private fun RowScope.ExpandedInfoValue(value: String) {
             Text(
                 text = value,
                 style = AppTheme.typography.body1,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.weight(1f),
                 fontWeight = FontWeight.Bold
             )
         }
