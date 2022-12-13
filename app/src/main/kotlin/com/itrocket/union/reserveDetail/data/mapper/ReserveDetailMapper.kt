@@ -35,6 +35,8 @@ fun ReserveDetailSyncEntity.map(): ReservesDomain {
         )
     )
 
+    listInfo.add(ObjectInfoDomain(title = R.string.common_barcode, value = reserveSyncEntity.barcodeValue))
+
     reserveSyncEntity.invoiceNumber?.let {
         listInfo.add(ObjectInfoDomain(R.string.common_invoice_number, it))
     }
