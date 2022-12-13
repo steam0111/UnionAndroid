@@ -14,6 +14,7 @@ import com.itrocket.union.documentsMenu.domain.DocumentMenuInteractor
 import com.itrocket.union.documentsMenu.domain.entity.DocumentMenuDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.syncAll.domain.SyncAllInteractor
+import com.itrocket.union.uniqueDeviceId.data.UniqueDeviceIdRepository
 
 class DocumentMenuStoreFactory(
     private val storeFactory: StoreFactory,
@@ -21,17 +22,17 @@ class DocumentMenuStoreFactory(
     private val documentMenuInteractor: DocumentMenuInteractor,
     private val authMainInteractor: AuthMainInteractor,
     private val syncAllInteractor: SyncAllInteractor,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val uniqueDeviceIdRepository: UniqueDeviceIdRepository
 ) {
-    fun create(): DocumentMenuStore =
-        object : DocumentMenuStore,
-            Store<DocumentMenuStore.Intent, DocumentMenuStore.State, DocumentMenuStore.Label> by storeFactory.create(
-                name = "DocumentStore",
-                initialState = DocumentMenuStore.State(),
-                bootstrapper = SimpleBootstrapper(Unit),
-                executorFactory = ::createExecutor,
-                reducer = ReducerImpl
-            ) {}
+    fun create(): DocumentMenuStore = object : DocumentMenuStore,
+        Store<DocumentMenuStore.Intent, DocumentMenuStore.State, DocumentMenuStore.Label> by storeFactory.create(
+            name = "DocumentStore",
+            initialState = DocumentMenuStore.State(),
+            bootstrapper = SimpleBootstrapper(Unit),
+            executorFactory = ::createExecutor,
+            reducer = ReducerImpl
+        ) {}
 
     private fun createExecutor(): Executor<DocumentMenuStore.Intent, Unit, DocumentMenuStore.State, Result, DocumentMenuStore.Label> =
         DocumentExecutor()
@@ -41,16 +42,15 @@ class DocumentMenuStoreFactory(
             context = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
-            action: Unit,
-            getState: () -> DocumentMenuStore.State
+            action: Unit, getState: () -> DocumentMenuStore.State
         ) {
+            dispatch(Result.DeviceId(uniqueDeviceIdRepository.getUniqueDeviceId().id))
             dispatch(Result.Documents(documentMenuInteractor.getDocuments(), 0))
             getUsername()
         }
 
         override suspend fun executeIntent(
-            intent: DocumentMenuStore.Intent,
-            getState: () -> DocumentMenuStore.State
+            intent: DocumentMenuStore.Intent, getState: () -> DocumentMenuStore.State
         ) {
             when (intent) {
                 is DocumentMenuStore.Intent.OnDocumentClicked -> {
@@ -121,22 +121,22 @@ class DocumentMenuStoreFactory(
         data class Documents(val documents: List<DocumentMenuDomain>, val menuDeepLevel: Int) :
             Result()
 
-        data class Username(val fullName: String, ) : Result()
+        data class Username(val fullName: String) : Result()
 
         data class Loading(val loading: Boolean) : Result()
         data class DialogType(val dialogType: AlertType) : Result()
+        data class DeviceId(val deviceId: String) : Result()
     }
 
     private object ReducerImpl : Reducer<DocumentMenuStore.State, Result> {
-        override fun DocumentMenuStore.State.reduce(result: Result) =
-            when (result) {
-                is Result.Documents -> copy(
-                    documents = result.documents,
-                    menuDeepLevel = result.menuDeepLevel
-                )
-                is Result.Loading -> copy(loading = result.loading)
-                is Result.Username -> copy(fullName = result.fullName)
-                is Result.DialogType -> copy(dialogType = result.dialogType)
-            }
+        override fun DocumentMenuStore.State.reduce(result: Result) = when (result) {
+            is Result.Documents -> copy(
+                documents = result.documents, menuDeepLevel = result.menuDeepLevel
+            )
+            is Result.Loading -> copy(loading = result.loading)
+            is Result.Username -> copy(fullName = result.fullName)
+            is Result.DialogType -> copy(dialogType = result.dialogType)
+            is Result.DeviceId -> copy(deviceId = result.deviceId)
+        }
     }
 }

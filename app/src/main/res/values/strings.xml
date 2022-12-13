@@ -55,6 +55,7 @@
     <string name="common_settings">Настройки</string>
     <string name="common_logout">Выйти из профиля</string>
     <string name="common_of">%1$d из %2$d</string>
+    <string name="common_device_id">Device id</string>
     <string name="common_formatter_error">ШК запаса не подходит под формат EAN13</string>
 
     <string name="common_server_validate_error">Введен неправильный сервер или порт</string>
@@ -447,6 +448,15 @@
     <!-- Image -->
     <string name="image_taken_error">Произошла ошибка при получении фотографии</string>
     <string name="first_sync_title">Первичная синхронизация</string>
+
+    <!-- App file data -->
+    <string name="app_file_data_description">
+        Не удалось восстановить данные приложение из бэкапа.
+        Если бэкап выключен создайте или откройте файл с данными приложения.
+    </string>
+    <string name="app_file_data_open">Открыть</string>
+    <string name="app_file_data_create">Создать</string>
+    <string name="app_file_data_parse_error_file">Не удалось распарсить файл</string>
 
     <!-- Label Type -->
     <string name="label_type_description">Описание</string>

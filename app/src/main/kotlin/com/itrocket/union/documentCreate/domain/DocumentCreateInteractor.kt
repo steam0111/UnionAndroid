@@ -18,6 +18,11 @@ import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.structural.domain.dependencies.StructuralRepository
 import kotlinx.coroutines.withContext
 
+/**
+ * Создание
+ * Детальное описание
+ * Редактирование документа
+ */
 class DocumentCreateInteractor(
     private val documentRepository: DocumentRepository,
     private val accountingObjectRepository: AccountingObjectRepository,

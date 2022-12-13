@@ -9,6 +9,7 @@ import com.itrocket.union.authContainer.AuthContainerModule
 import com.itrocket.union.core.CoreModule.UNION_DATA_STORE_QUALIFIER
 import com.itrocket.union.serverConnect.data.ServerConnectRepositoryImpl
 import com.itrocket.union.serverConnect.data.StyleRepositoryImpl
+import com.itrocket.union.serverConnect.domain.FileInteractor
 import com.itrocket.union.serverConnect.domain.ServerConnectInteractor
 import com.itrocket.union.serverConnect.domain.StyleInteractor
 import com.itrocket.union.serverConnect.domain.dependencies.ServerConnectRepository
@@ -51,7 +52,7 @@ object ServerConnectModule {
         }
 
         factory {
-            ServerConnectInteractor(get(), get())
+            ServerConnectInteractor(get(), get(), get(), get())
         }
 
         factory {
@@ -69,7 +70,7 @@ object ServerConnectModule {
                 get(),
                 get(),
                 get(),
-                get()
+                get(),
             ).create()
         }
 
@@ -79,6 +80,12 @@ object ServerConnectModule {
 
         single(qualifier = PORT_PREFERENCE_KEY) {
             stringPreferencesKey(PORT_PREFERENCE_KEY.value)
+        }
+
+        factory {
+            FileInteractor(
+                context = androidContext(), coreDispatchers = get()
+            )
         }
     }
 }

@@ -134,6 +134,8 @@ object Modules {
         ImageViewerModule.module,
         ImageModule.module,
         UniqueDeviceIdModule.module,
+        ImageModule.module,
+        UniqueDeviceIdModule.module,
         LabelTypeModule.module,
         LabelTypeDetailModule.module,
         SgtinModule.module,

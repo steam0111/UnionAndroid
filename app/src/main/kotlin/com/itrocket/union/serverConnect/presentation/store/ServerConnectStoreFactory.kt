@@ -8,6 +8,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.R
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.network.HttpException
 import com.itrocket.union.serverConnect.domain.ServerConnectInteractor
@@ -15,11 +16,10 @@ import com.itrocket.union.serverConnect.domain.StyleInteractor
 import com.itrocket.union.theme.domain.ColorInteractor
 import com.itrocket.union.theme.domain.MediaInteractor
 import com.itrocket.union.theme.domain.entity.Medias
-import com.itrocket.union.uniqueDeviceId.store.UniqueDeviceIdRepository
+import com.itrocket.union.uniqueDeviceId.data.UniqueDeviceIdRepository
 import com.squareup.moshi.JsonEncodingException
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import timber.log.Timber
 
 class ServerConnectStoreFactory(
     private val storeFactory: StoreFactory,
@@ -29,17 +29,16 @@ class ServerConnectStoreFactory(
     private val colorInteractor: ColorInteractor,
     private val mediaInteractor: MediaInteractor,
     private val errorInteractor: ErrorInteractor,
-    private val deviceIdRepository: UniqueDeviceIdRepository
+    private val deviceIdRepository: UniqueDeviceIdRepository,
 ) : KoinComponent {
-    fun create(): ServerConnectStore =
-        object : ServerConnectStore,
-            Store<ServerConnectStore.Intent, ServerConnectStore.State, ServerConnectStore.Label> by storeFactory.create(
-                name = "ServerConnectStore",
-                initialState = initialState ?: ServerConnectStore.State(),
-                bootstrapper = SimpleBootstrapper(Unit),
-                executorFactory = ::createExecutor,
-                reducer = ReducerImpl
-            ) {}
+    fun create(): ServerConnectStore = object : ServerConnectStore,
+        Store<ServerConnectStore.Intent, ServerConnectStore.State, ServerConnectStore.Label> by storeFactory.create(
+            name = "ServerConnectStore",
+            initialState = initialState ?: ServerConnectStore.State(),
+            bootstrapper = SimpleBootstrapper(Unit),
+            executorFactory = ::createExecutor,
+            reducer = ReducerImpl
+        ) {}
 
     private fun createExecutor(): Executor<ServerConnectStore.Intent, Unit, ServerConnectStore.State, Result, ServerConnectStore.Label> =
         ServerConnectExecutor()
@@ -49,11 +48,8 @@ class ServerConnectStoreFactory(
             context = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
-            action: Unit,
-            getState: () -> ServerConnectStore.State
+            action: Unit, getState: () -> ServerConnectStore.State
         ) {
-            Timber.d("deviceId ${deviceIdRepository.getUniqueDeviceId()}")
-
             dispatch(Result.MediaList(mediaInteractor.getMedias()))
             val serverUrl = serverConnectInteractor.getBaseUrl()
             val port = serverConnectInteractor.getPort()
@@ -66,16 +62,19 @@ class ServerConnectStoreFactory(
             publish(
                 ServerConnectStore.Label.ChangeEnable(
                     isEnabled(
-                        getState().serverAddress,
-                        getState().port
+                        getState().serverAddress, getState().port
                     )
                 )
             )
+            val deviceId = deviceIdRepository.getUniqueDeviceId()
+            if (deviceId.isGenerateNow) {
+                dispatch(Result.DialogType(dialogType = AlertType.APP_DATA_FILE))
+                dispatch(Result.DeviceId(deviceId = deviceId.id))
+            }
         }
 
         override suspend fun executeIntent(
-            intent: ServerConnectStore.Intent,
-            getState: () -> ServerConnectStore.State
+            intent: ServerConnectStore.Intent, getState: () -> ServerConnectStore.State
         ) {
             when (intent) {
                 is ServerConnectStore.Intent.OnServerAddressChanged -> {
@@ -87,8 +86,7 @@ class ServerConnectStoreFactory(
                     publish(
                         ServerConnectStore.Label.ChangeEnable(
                             isEnabled(
-                                getState().serverAddress,
-                                getState().port
+                                getState().serverAddress, getState().port
                             )
                         )
                     )
@@ -99,14 +97,33 @@ class ServerConnectStoreFactory(
                         publish(
                             ServerConnectStore.Label.ChangeEnable(
                                 isEnabled(
-                                    getState().serverAddress,
-                                    getState().port
+                                    getState().serverAddress, getState().port
                                 )
                             )
                         )
                     }
                 }
+                is ServerConnectStore.Intent.OnCreateFileClick -> {
+                    publish(ServerConnectStore.Label.CreateAppDataFile)
+                }
                 ServerConnectStore.Intent.OnNextClicked -> onNextClicked(getState)
+                is ServerConnectStore.Intent.OnOpenFileClick -> {
+                    publish(ServerConnectStore.Label.OpenAppDataFile)
+                }
+                is ServerConnectStore.Intent.OnFileCreated -> {
+                    catchException {
+                        if (serverConnectInteractor.saveDeviceId(intent.uri, getState().deviceId)) {
+                            dispatch(Result.DialogType(AlertType.NONE))
+                        }
+                    }
+                }
+                is ServerConnectStore.Intent.OnFileOpened -> {
+                    catchException {
+                        if (serverConnectInteractor.readAndSaveDeviceId(intent.uri)) {
+                            dispatch(Result.DialogType(AlertType.NONE))
+                        }
+                    }
+                }
             }
         }
 
@@ -114,8 +131,7 @@ class ServerConnectStoreFactory(
             publish(ServerConnectStore.Label.ParentLoading(true))
             catchException {
                 serverConnectInteractor.clearAllSyncDataIfNeeded(
-                    getState().serverAddress,
-                    getState().port
+                    getState().serverAddress, getState().port
                 )
                 serverConnectInteractor.saveBaseUrl(getState().serverAddress)
                 serverConnectInteractor.savePort(getState().port)
@@ -156,25 +172,28 @@ class ServerConnectStoreFactory(
         override fun handleError(throwable: Throwable) {
             publish(ServerConnectStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
-
     }
 
     private fun isEnabled(serverAddress: String, port: String) =
-        serverConnectInteractor.validatePort(port) &&
-                serverConnectInteractor.validateServerAddress(serverAddress)
+        serverConnectInteractor.validatePort(port) && serverConnectInteractor.validateServerAddress(
+            serverAddress
+        )
 
     private sealed class Result {
         data class ServerAddress(val serverAddress: String) : Result()
         data class Port(val port: String) : Result()
         data class MediaList(val medias: Medias) : Result()
+        data class DialogType(val dialogType: AlertType) : Result()
+        data class DeviceId(val deviceId: String) : Result()
     }
 
     private object ReducerImpl : Reducer<ServerConnectStore.State, Result> {
-        override fun ServerConnectStore.State.reduce(result: Result) =
-            when (result) {
-                is Result.ServerAddress -> copy(serverAddress = result.serverAddress)
-                is Result.Port -> copy(port = result.port)
-                is Result.MediaList -> copy(medias = result.medias)
-            }
+        override fun ServerConnectStore.State.reduce(result: Result) = when (result) {
+            is Result.ServerAddress -> copy(serverAddress = result.serverAddress)
+            is Result.Port -> copy(port = result.port)
+            is Result.MediaList -> copy(medias = result.medias)
+            is Result.DialogType -> copy(dialogType = result.dialogType)
+            is Result.DeviceId -> copy(deviceId = result.deviceId)
+        }
     }
 }
