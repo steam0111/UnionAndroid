@@ -8,6 +8,7 @@ import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.InventoryRecordDao
 import com.example.union_sync_impl.dao.NetworkSyncDao
 import com.example.union_sync_impl.dao.ReserveDao
+import com.example.union_sync_impl.dao.TerminalRemainsNumeratorDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.dao.sqlActionRecordQuery
 import com.example.union_sync_impl.dao.sqlActionRemainsRecordQuery
@@ -15,6 +16,7 @@ import com.example.union_sync_impl.dao.sqlDocumentsQuery
 import com.example.union_sync_impl.dao.sqlInventoryQuery
 import com.example.union_sync_impl.dao.sqlInventoryRecordQuery
 import com.example.union_sync_impl.dao.sqlReserveQuery
+import com.example.union_sync_impl.dao.sqlTerminalRemainsNumeratorQuery
 import com.itrocket.core.base.CoreDispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -30,6 +32,7 @@ class SyncInfoRepository(
     private val actionRecordDao: ActionRecordDao,
     private val actionRemainsRecordDao: ActionRemainsRecordDao,
     private val inventoryRecordDao: InventoryRecordDao,
+    private val terminalRemainsNumeratorDao: TerminalRemainsNumeratorDao,
     private val coreDispatchers: CoreDispatchers
 ) {
 
@@ -99,10 +102,19 @@ class SyncInfoRepository(
                         )
                     )
                 }
+                val terminalRemainsNumeratorCount = async {
+                    terminalRemainsNumeratorDao.getCount(
+                        sqlTerminalRemainsNumeratorQuery(
+                            updateDate = getLastSyncTime(),
+                            isFilterCount = true,
+                            isNonCancel = false
+                        )
+                    )
+                }
                 val allCount =
                     accountingObjectCount.await() + reserveCount.await() + inventoryCount.await() +
                             documentCount.await() + actionRecordCount.await() + actionRemainsRecordCount.await() +
-                            inventoryRecordCount.await()
+                            inventoryRecordCount.await() + terminalRemainsNumeratorCount.await()
                 allCount
             }
         }

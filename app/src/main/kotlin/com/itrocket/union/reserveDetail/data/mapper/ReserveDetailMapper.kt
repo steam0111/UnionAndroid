@@ -77,6 +77,7 @@ fun ReserveDetailSyncEntity.map(): ReservesDomain {
         isBarcode = false,
         itemsCount = reserveSyncEntity.count ?: 0L,
         title = reserveSyncEntity.name,
-        listInfo = listInfo
+        listInfo = listInfo,
+        barcodeValue = reserveSyncEntity.barcodeValue
     )
 }

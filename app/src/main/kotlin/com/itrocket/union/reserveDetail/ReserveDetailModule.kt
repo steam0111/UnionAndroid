@@ -28,7 +28,7 @@ object ReserveDetailModule {
         }
 
         factory {
-            ReserveDetailInteractor(get(), get())
+            ReserveDetailInteractor(get(), get(), get(), get(), get(), get(), get())
         }
 
         factory { (args: ReserveDetailComposeFragmentArgs) ->
@@ -37,7 +37,11 @@ object ReserveDetailModule {
                 get(),
                 get(),
                 args.reserveDetailComposeFragmentArgs,
-                get()
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
             ).create()
         }
     }

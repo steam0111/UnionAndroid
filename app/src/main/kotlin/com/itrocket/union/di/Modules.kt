@@ -56,6 +56,8 @@ import com.itrocket.union.serverConnect.ServerConnectModule
 import com.itrocket.union.splash.SplashModule
 import com.itrocket.union.switcher.SwitcherModule
 import com.itrocket.union.syncAll.SyncAllModule
+import com.itrocket.union.terminalInfo.TerminalInfoModule
+import com.itrocket.union.terminalRemainsNumerator.TerminalRemainsNumeratorModule
 import com.itrocket.union.theme.ThemeModule
 import com.itrocket.union.token.TokenModule
 import com.itrocket.union.transit.TransitModule
@@ -134,6 +136,8 @@ object Modules {
         UniqueDeviceIdModule.module,
         LabelTypeModule.module,
         LabelTypeDetailModule.module,
-        SgtinModule.module
+        SgtinModule.module,
+        TerminalRemainsNumeratorModule.module,
+        TerminalInfoModule.module
     )
 }

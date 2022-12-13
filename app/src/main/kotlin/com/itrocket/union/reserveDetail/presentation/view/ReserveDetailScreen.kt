@@ -29,12 +29,15 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.reserveDetail.presentation.store.ReserveDetailStore
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.ui.AppTheme
+import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ExpandedInfoField
+import com.itrocket.union.ui.InfoDialog
 import com.itrocket.union.ui.LoadingContent
 import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.utils.clickableUnbounded
@@ -47,6 +50,8 @@ fun ReserveDetailScreen(
     onReadingModeClickListener: () -> Unit,
     onDocumentSearchClickListener: () -> Unit,
     onDocumentAddClickListener: () -> Unit,
+    onMarkingClicked: () -> Unit,
+    onWriteEpcDismiss: () -> Unit,
 ) {
     AppTheme {
         Scaffold(
@@ -58,10 +63,10 @@ fun ReserveDetailScreen(
                 )
             },
             bottomBar = {
-                //TODO: Пока не нужен
-                /*BottomBar(
-                    onReadingModeClickListener = onReadingModeClickListener
-                )*/
+                BottomBar(
+                    onReadingModeClickListener = onReadingModeClickListener,
+                    readingModeTab = state.readingMode
+                )
             },
             modifier = Modifier.padding(
                 top = appInsets.topInset.dp,
@@ -79,9 +84,23 @@ fun ReserveDetailScreen(
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    ListInfo(listInfo = state.reserve?.listInfo.orEmpty())
+                    ListInfo(
+                        listInfo = state.reserve?.listInfo.orEmpty(),
+                        showButtons = state.showButtons,
+                        canUpdate = state.canUpdate,
+                        onMarkingClicked = onMarkingClicked
+                    )
                 }
             }
+        }
+
+        when (state.dialogType) {
+            AlertType.WRITE_EPC -> InfoDialog(
+                title = state.rfidError.ifEmpty {
+                    stringResource(R.string.common_write_epc_dialog_title)
+                },
+                onDismiss = onWriteEpcDismiss
+            )
         }
     }
 }
@@ -128,7 +147,12 @@ private fun BottomBar(
 }
 
 @Composable
-private fun ListInfo(listInfo: List<ObjectInfoDomain>) {
+private fun ListInfo(
+    listInfo: List<ObjectInfoDomain>,
+    showButtons: Boolean,
+    canUpdate: Boolean,
+    onMarkingClicked: () -> Unit
+) {
     LazyColumn {
         items(listInfo) {
             ExpandedInfoField(
@@ -136,6 +160,18 @@ private fun ListInfo(listInfo: List<ObjectInfoDomain>) {
                 value = it.value.orEmpty(),
                 modifier = Modifier.fillMaxWidth()
             )
+        }
+        if (showButtons && canUpdate) {
+            item {
+                Spacer(modifier = Modifier.height(12.dp))
+                BaseButton(
+                    text = stringResource(R.string.main_marking),
+                    onClick = onMarkingClicked,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+            }
         }
     }
 }
@@ -167,7 +203,8 @@ fun ReserveDetailScreenPreview() {
                     R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 )
-            ), itemsCount = 1200L
+            ), itemsCount = 1200L,
+            barcodeValue = null
         )
-    ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {})
+    ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {})
 }

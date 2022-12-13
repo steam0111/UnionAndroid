@@ -29,6 +29,7 @@ fun ReserveSyncEntity.map(): ReservesDomain {
         isBarcode = false,
         itemsCount = count ?: 0L,
         title = name,
-        listInfo = listInfo
+        listInfo = listInfo,
+        barcodeValue = barcodeValue
     )
 }

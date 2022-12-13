@@ -17,7 +17,7 @@ class TerminalRemainsNumeratorSyncEntity(
         get() = "terminalRemainsNumerator"
 
     override val tableTitle: Int
-        get() = R.string.action_record_table_name
+        get() = R.string.terminal_remains_numerator_name
 
     override suspend fun exportFromServer(syncId: String, exportPartId: String) {
         defaultGetAndSave<TerminalRemainsNumeratorDtoV2>(syncId, exportPartId)

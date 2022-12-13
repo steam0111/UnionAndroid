@@ -152,7 +152,8 @@ fun ReservesScreenPreview() {
                         R.string.auth_main_title,
                         "таылватвлыавыалвыоалвыа"
                     )
-                ), itemsCount = 1200L
+                ), itemsCount = 1200L,
+                barcodeValue = ""
             ),
             ReservesDomain(
                 id = "2",
@@ -169,7 +170,8 @@ fun ReservesScreenPreview() {
                         "таылватвлыавыалвыоалвыа"
                     )
                 ),
-                itemsCount = 1200L
+                itemsCount = 1200L,
+                barcodeValue = ""
             ),
             ReservesDomain(
                 id = "3",
@@ -186,7 +188,8 @@ fun ReservesScreenPreview() {
                         "таылватвлыавыалвыоалвыа"
                     )
                 ),
-                itemsCount = 1200L
+                itemsCount = 1200L,
+                barcodeValue = ""
             )
         ),
         params = listOf()
