@@ -16,14 +16,16 @@ class NomenclatureSyncApiImpl(
         groupId: String?,
         textQuery: String?,
         offset: Long?,
-        limit: Long?
+        limit: Long?,
+        number: String?
     ): List<NomenclatureSyncEntity> {
         return nomenclatureDao.getAll(
             sqlNomenclatureQuery(
                 groupId,
                 textQuery,
                 limit = limit,
-                offset = offset
+                offset = offset,
+                number = number
             )
         )
             .map { it.toSyncEntity() }

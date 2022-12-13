@@ -227,6 +227,7 @@
 
     <!-- Reserves Detail -->
     <string name="reserves_detail_nomenclature">Номенклатура</string>
+    <string name="reserves_detail_nomenclature_code">Код номенклатуры</string>
     <string name="reserves_detail_nomenclature_group">Номенклатурная группа</string>
     <string name="reserves_detail_order">Заказ</string>
     <string name="reserves_detail_reception_item_category">Категория</string>

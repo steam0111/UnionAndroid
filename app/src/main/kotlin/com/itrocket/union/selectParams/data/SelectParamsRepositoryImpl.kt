@@ -7,6 +7,7 @@ import com.example.union_sync_api.data.EnumsSyncApi
 import com.example.union_sync_api.data.EquipmentTypeSyncApi
 import com.example.union_sync_api.data.InventorySyncApi
 import com.example.union_sync_api.data.NomenclatureGroupSyncApi
+import com.example.union_sync_api.data.NomenclatureSyncApi
 import com.example.union_sync_api.data.ProducerSyncApi
 import com.example.union_sync_api.data.ReceptionItemCategorySyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
@@ -32,7 +33,8 @@ class SelectParamsRepositoryImpl(
     private val coreDispatchers: CoreDispatchers,
     private val enumsSynApi: EnumsSyncApi,
     private val documentSyncApi: DocumentSyncApi,
-    private val inventoriesSyncApi: InventorySyncApi
+    private val inventoriesSyncApi: InventorySyncApi,
+    private val nomenclatureSyncApi: NomenclatureSyncApi
 ) : SelectParamsRepository {
 
     override suspend fun getEmployees(
@@ -131,6 +133,15 @@ class SelectParamsRepositoryImpl(
             emit(
                 inventoriesSyncApi.getInventoriesCodes(number)
                     .map { it.toParam(ManualType.INVENTORY_CODE) }
+            )
+        }.flowOn(coreDispatchers.io)
+    }
+
+    override suspend fun getNomenclatureCodes(code: String): Flow<List<ParamDomain>> {
+        return flow {
+            emit(
+                nomenclatureSyncApi.getNomenclatures(number = code)
+                    .map { it.toParam(ManualType.NOMENCLATURE_CODE) }
             )
         }.flowOn(coreDispatchers.io)
     }

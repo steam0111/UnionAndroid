@@ -51,6 +51,10 @@ fun ReserveDetailSyncEntity.map(): ReservesDomain {
         listInfo.add(ObjectInfoDomain(R.string.reserves_detail_nomenclature, it.name))
     }
 
+    nomenclatureSyncEntity?.let {
+        listInfo.add(ObjectInfoDomain(R.string.reserves_detail_nomenclature_code, it.code))
+    }
+
     orderSyncEntity?.let {
         listInfo.add(ObjectInfoDomain(R.string.reserves_detail_order, it.number))
     }

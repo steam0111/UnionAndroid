@@ -139,6 +139,10 @@ fun ParamDomain.isDefaultParamType() = !listNotDefaultParams.contains(this.type)
 
 fun List<ParamDomain>?.isFilterApplied() = this?.any { it.value.isNotEmpty() } ?: false
 
+fun List<ParamDomain>.getNomenclatureId(): String? {
+    return filterNotEmpty().find { it.type == ManualType.NOMENCLATURE_CODE }?.id
+}
+
 @Parcelize
 data class LocationParamDomain(
     val filtered: Boolean = true,
@@ -178,7 +182,11 @@ data class StructuralParamDomain(
     ) {
 
     override fun toInitialState(): StructuralParamDomain {
-        return StructuralParamDomain(manualType = manualType, needUpdate = needUpdate, mandatory = mandatory)
+        return StructuralParamDomain(
+            manualType = manualType,
+            needUpdate = needUpdate,
+            mandatory = mandatory
+        )
     }
 }
 
@@ -196,6 +204,10 @@ data class CheckBoxParamDomain(
     ) {
 
     override fun toInitialState(): CheckBoxParamDomain {
-        return CheckBoxParamDomain(isChecked = false, manualType = manualType, mandatory = mandatory)
+        return CheckBoxParamDomain(
+            isChecked = false,
+            manualType = manualType,
+            mandatory = mandatory
+        )
     }
 }

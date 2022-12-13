@@ -5,6 +5,7 @@ import com.example.union_sync_api.entity.EmployeeSyncEntity
 import com.example.union_sync_api.entity.EnumSyncEntity
 import com.example.union_sync_api.entity.EquipmentTypeSyncEntity
 import com.example.union_sync_api.entity.NomenclatureGroupSyncEntity
+import com.example.union_sync_api.entity.NomenclatureSyncEntity
 import com.example.union_sync_api.entity.ProducerSyncEntity
 import com.example.union_sync_api.entity.ReceptionItemCategorySyncEntity
 
@@ -54,4 +55,10 @@ fun String.toParam(type: ManualType) = ParamDomain(
     value = this,
     type = type,
     id = this
+)
+
+fun NomenclatureSyncEntity.toParam(type: ManualType) = ParamDomain(
+    value = code.orEmpty(),
+    type = type,
+    id = id
 )

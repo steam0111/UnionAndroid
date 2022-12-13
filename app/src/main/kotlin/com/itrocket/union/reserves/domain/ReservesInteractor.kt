@@ -77,6 +77,12 @@ class ReservesInteractor(
                 value = ""
             )
         )
+        add(
+            ParamDomain(
+                type = ManualType.NOMENCLATURE_CODE,
+                value = ""
+            )
+        )
         if (isFromDocuments) {
             add(
                 CheckBoxParamDomain(
