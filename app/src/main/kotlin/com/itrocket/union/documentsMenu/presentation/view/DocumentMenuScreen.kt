@@ -97,7 +97,8 @@ fun DocumentMenuScreen(
                         DrawerScreens.Settings,
                         DrawerScreens.Sync,
                         DrawerScreens.Logout
-                    )
+                    ),
+                    deviceId = state.deviceId
                 )
             }
         ) {

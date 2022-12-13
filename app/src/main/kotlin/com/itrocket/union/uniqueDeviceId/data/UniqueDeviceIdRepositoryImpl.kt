@@ -1,4 +1,4 @@
-package com.itrocket.union.uniqueDeviceId.store
+package com.itrocket.union.uniqueDeviceId.data
 
 import android.app.backup.BackupManager
 import android.content.SharedPreferences
@@ -19,15 +19,24 @@ class UniqueDeviceIdRepositoryImpl(
         if (deviceIdFromStore.isNullOrBlank()) {
             val generatedDeviceId = UUID.randomUUID().toString()
 
-            dataStore.edit {
-                putString(UNIQUE_DEVICE_ID_STRING_KEY, generatedDeviceId)
-            }
-            backupManager.dataChanged()
-
             UniqueDeviceId(generatedDeviceId, isGenerateNow = true)
         } else {
+            backupManager.dataChanged()
             UniqueDeviceId(deviceIdFromStore, isGenerateNow = false)
         }
+    }
+
+    override suspend fun clearDeviceId() {
+        dataStore.edit {
+            putString(UNIQUE_DEVICE_ID_STRING_KEY, null)
+        }
+    }
+
+    override suspend fun saveDeviceId(id: String) {
+        dataStore.edit {
+            putString(UNIQUE_DEVICE_ID_STRING_KEY, id)
+        }
+        backupManager.dataChanged()
     }
 
     private companion object {

@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.itrocket.union.R
 
 @Composable
@@ -32,8 +33,7 @@ fun ConfirmAlertDialog(
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Surface(
-            shape = RoundedCornerShape(8.dp),
-            color = Color.White
+            shape = RoundedCornerShape(8.dp), color = Color.White
         ) {
             Box(
                 contentAlignment = Alignment.Center
@@ -45,6 +45,60 @@ fun ConfirmAlertDialog(
                     onConfirmClick = onConfirmClick,
                     onDismiss = onDismiss
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun ChooseAlertDialog(
+    textRes: Int,
+    actionResources: List<Int>,
+    onActionClick: (Int) -> Unit
+) {
+    Dialog(
+        onDismissRequest = { },
+        properties = DialogProperties(
+            dismissOnBackPress = false, dismissOnClickOutside = false
+        )
+    ) {
+        Surface(
+            shape = RoundedCornerShape(8.dp), color = Color.White
+        ) {
+            Box(
+                contentAlignment = Alignment.Center
+            ) {
+                ActionContent(
+                    textRes = textRes, actionResources = actionResources, onActionClick
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ActionContent(
+    textRes: Int, actionResources: List<Int>, onActionClick: (Int) -> Unit
+) {
+    Box(
+        contentAlignment = Alignment.Center
+    ) {
+        Column(modifier = Modifier.padding(24.dp, 12.dp, 12.dp, 8.dp)) {
+            Text(
+                text = stringResource(textRes), style = TextStyle(
+                    fontSize = 14.sp, color = graphite8
+                )
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End
+            ) {
+                actionResources.forEach { res ->
+                    TextButton(
+                        text = stringResource(res),
+                        onClick = { onActionClick(res) },
+                        isTextUpperCased = false
+                    )
+                }
             }
         }
     }
@@ -63,16 +117,13 @@ private fun Content(
     ) {
         Column(modifier = Modifier.padding(24.dp, 12.dp, 12.dp, 8.dp)) {
             Text(
-                text = stringResource(textRes),
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    color = graphite8
+                text = stringResource(textRes), style = TextStyle(
+                    fontSize = 14.sp, color = graphite8
                 )
             )
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End
             ) {
                 TextButton(
                     text = stringResource(dismissTextRes),

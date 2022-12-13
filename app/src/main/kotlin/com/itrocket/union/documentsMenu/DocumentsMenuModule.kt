@@ -34,6 +34,7 @@ object DocumentMenuModule {
                 get(),
                 get(),
                 get(),
+                get(),
                 get()
             ).create()
         }

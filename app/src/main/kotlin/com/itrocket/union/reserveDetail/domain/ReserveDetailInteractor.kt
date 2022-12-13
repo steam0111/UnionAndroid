@@ -1,8 +1,6 @@
 package com.itrocket.union.reserveDetail.domain
 
 import com.example.union_sync_api.entity.UpdateTerminalRemainsNumerator
-import kotlinx.coroutines.withContext
-import com.itrocket.union.reserveDetail.domain.dependencies.ReserveDetailRepository
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.sgtin.SgtinFormatter
 import com.itrocket.union.authMain.domain.AuthMainInteractor
@@ -10,7 +8,8 @@ import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
 import com.itrocket.union.terminalInfo.TerminalInfoRepository
 import com.itrocket.union.terminalRemainsNumerator.domain.TerminalRemainsNumeratorDomain
 import com.itrocket.union.terminalRemainsNumerator.domain.TerminalRemainsNumeratorRepository
-import com.itrocket.union.uniqueDeviceId.store.UniqueDeviceIdRepository
+import com.itrocket.union.uniqueDeviceId.data.UniqueDeviceIdRepository
+import kotlinx.coroutines.withContext
 
 class ReserveDetailInteractor(
     private val repository: ReservesRepository,
