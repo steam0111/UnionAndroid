@@ -60,6 +60,7 @@ class ReserveDb(
     val traceable: Boolean,
     val invoiceNumber: String?,
     val subName: String?,
+    val barcodeValue: String?,
     insertDate: Long?,
     updateDate: Long?,
     userInserted: String?,

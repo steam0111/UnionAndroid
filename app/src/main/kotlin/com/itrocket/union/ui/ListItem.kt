@@ -622,7 +622,8 @@ fun ReservesItemPreview() {
                     R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 )
-            ), itemsCount = 1200L
+            ), itemsCount = 1200L,
+            barcodeValue = ""
         ), onReservesListener = {},
         canDelete = true,
         isShowBottomLine = true

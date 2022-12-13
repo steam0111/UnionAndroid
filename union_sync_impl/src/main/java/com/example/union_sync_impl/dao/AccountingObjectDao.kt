@@ -154,7 +154,7 @@ interface AccountingObjectDao {
     @Update(entity = AccountingObjectDb::class)
     suspend fun update(accountingObjectUpdates: List<AccountingObjectUpdate>)
 
-    @Update(entity = AccountingObjectDb::class)
+        @Update(entity = AccountingObjectDb::class)
     suspend fun update(accountingObjectUpdate: AccountingObjectWriteOffUpdate)
 
     @Update(entity = AccountingObjectDb::class)

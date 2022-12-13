@@ -55,6 +55,7 @@
     <string name="common_settings">Настройки</string>
     <string name="common_logout">Выйти из профиля</string>
     <string name="common_of">%1$d из %2$d</string>
+    <string name="common_formatter_error">ШК запаса не подходит под формат EAN13</string>
 
     <string name="common_server_validate_error">Введен неправильный сервер или порт</string>
     <!-- Splash -->

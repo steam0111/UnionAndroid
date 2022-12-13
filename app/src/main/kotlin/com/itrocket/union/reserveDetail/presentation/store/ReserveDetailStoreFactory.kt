@@ -1,5 +1,6 @@
 package com.itrocket.union.reserveDetail.presentation.store
 
+import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -9,16 +10,31 @@ import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.union.reserveDetail.domain.ReserveDetailInteractor
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.sgtin.IncorrectBarcodeException
+import com.itrocket.union.R
+import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.error.ErrorInteractor
+import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
+import com.itrocket.union.readingMode.domain.ReadingModeInteractor
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import com.itrocket.union.terminalRemainsNumerator.domain.TerminalRemainsNumeratorDomain
+import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
+import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 import com.itrocket.union.utils.ifBlankOrNull
+import ru.interid.scannerclient_impl.platform.entry.ReadingMode
+import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class ReserveDetailStoreFactory(
     private val storeFactory: StoreFactory,
     private val coreDispatchers: CoreDispatchers,
     private val reserveDetailInteractor: ReserveDetailInteractor,
     private val reserveDetailArguments: ReserveDetailArguments,
-    private val errorInteractor: ErrorInteractor
+    private val errorInteractor: ErrorInteractor,
+    private val moduleSettingsInteractor: ModuleSettingsInteractor,
+    private val unionPermissionsInteractor: UnionPermissionsInteractor,
+    private val serviceEntryManager: ServiceEntryManager,
+    private val readingModeInteractor: ReadingModeInteractor
 ) {
     fun create(): ReserveDetailStore =
         object : ReserveDetailStore,
@@ -41,6 +57,8 @@ class ReserveDetailStoreFactory(
             action: Unit,
             getState: () -> ReserveDetailStore.State
         ) {
+            dispatch(Result.ReadingMode(moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = true)))
+            dispatch(Result.CanUpdate(unionPermissionsInteractor.canUpdate(UnionPermission.REMAINS)))
             catchException {
                 dispatch(Result.Loading(true))
                 dispatch(
@@ -50,6 +68,7 @@ class ReserveDetailStoreFactory(
                         )
                     )
                 )
+                dispatch(Result.ShowButtons(true))
                 dispatch(Result.Loading(false))
             }
         }
@@ -71,18 +90,113 @@ class ReserveDetailStoreFactory(
                 ReserveDetailStore.Intent.OnDocumentSearchClicked -> {
                     //no-op
                 }
+                is ReserveDetailStore.Intent.OnReadingModeTabChanged -> dispatch(
+                    Result.ReadingMode(
+                        intent.readingModeTab
+                    )
+                )
+                ReserveDetailStore.Intent.OnMarkingClicked -> onMarkingClicked(getState = getState)
+                ReserveDetailStore.Intent.OnTriggerPressed -> onTriggerPressed(getState = getState)
+                ReserveDetailStore.Intent.OnTriggerReleased -> onTriggerRelease()
+                is ReserveDetailStore.Intent.OnWriteEpcError -> onWriteEpcError(error = intent.error)
+                is ReserveDetailStore.Intent.OnWriteEpcHandled -> onWriteEpcHandled(getState = getState)
+                is ReserveDetailStore.Intent.OnErrorHandled -> handleError(throwable = intent.error)
+                ReserveDetailStore.Intent.OnDismissed -> onDismissed()
             }
+        }
+
+        private fun onDismissed() {
+            dispatch(Result.DialogType(AlertType.NONE))
+            dispatch(Result.RfidError(""))
+            dispatch(Result.Rfid(null))
+            dispatch(Result.TerminalRemainsNumerator(null))
+        }
+
+
+        private suspend fun onWriteEpcHandled(getState: () -> ReserveDetailStore.State) {
+            catchException {
+                val terminalRemainsNumerator = requireNotNull(getState().terminalRemainsNumerator)
+                dispatch(Result.RfidError(""))
+                dispatch(Result.DialogType(AlertType.NONE))
+                dispatch(Result.Rfid(null))
+                reserveDetailInteractor.updateActualNumber(
+                    remainsId = terminalRemainsNumerator.remainsId,
+                    actualNumber = terminalRemainsNumerator.actualNumber
+                )
+                dispatch(Result.TerminalRemainsNumerator(null))
+            }
+        }
+
+        private fun onWriteEpcError(error: String) {
+            dispatch(Result.RfidError(error))
+        }
+
+        private fun onTriggerPressed(getState: () -> ReserveDetailStore.State) {
+            val rfid = getState().rfid
+            when {
+                serviceEntryManager.currentMode == ReadingMode.RFID && rfid != null -> {
+                    serviceEntryManager.writeEpcTag(rfid)
+                }
+            }
+        }
+
+        private fun onTriggerRelease() {
+            if (serviceEntryManager.currentMode == ReadingMode.RFID) {
+                serviceEntryManager.stopRfidOperation()
+            } else {
+                serviceEntryManager.stopBarcodeScan()
+            }
+        }
+
+        private suspend fun onMarkingClicked(getState: () -> ReserveDetailStore.State) {
+            dispatch(Result.Loading(true))
+            catchException {
+                val reserve = getState().reserve
+                val barcode = reserve?.barcodeValue
+                val terminalNumerator = reserveDetailInteractor.getTerminalRemainsNumeratorById(
+                    remainsId = requireNotNull(reserve?.id)
+                )
+
+                val rfid = reserveDetailInteractor.generateSgtinRfid(
+                    barcode = barcode,
+                    actualNumber = terminalNumerator.actualNumber,
+                    terminalPrefix = terminalNumerator.terminalPrefix
+                )
+
+                readingModeInteractor.changeScanMode(ReadingMode.RFID)
+
+                dispatch(Result.ReadingMode(ReadingModeTab.RFID))
+                dispatch(Result.Rfid(rfid))
+                dispatch(Result.TerminalRemainsNumerator(terminalNumerator))
+                dispatch(Result.DialogType(dialogType = AlertType.WRITE_EPC))
+            }
+            dispatch(Result.Loading(false))
         }
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(ReserveDetailStore.Label.Error(errorInteractor.getTextMessage(throwable)))
+            publish(
+                ReserveDetailStore.Label.Error(
+                    when (throwable) {
+                        is IncorrectBarcodeException -> errorInteractor.getExceptionMessageByResId(R.string.common_formatter_error)
+                        else -> errorInteractor.getTextMessage(throwable)
+                    }
+                )
+            )
         }
     }
 
     private sealed class Result {
         data class Loading(val isLoading: Boolean) : Result()
+        data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
         data class Reserve(val reserve: ReservesDomain) : Result()
+        data class CanUpdate(val canUpdate: Boolean) : Result()
+        data class ShowButtons(val showButtons: Boolean) : Result()
+        data class Rfid(val rfid: String?) : Result()
+        data class DialogType(val dialogType: AlertType) : Result()
+        data class RfidError(val rfidError: String) : Result()
+        data class TerminalRemainsNumerator(val terminalRemainsNumerator: TerminalRemainsNumeratorDomain?) :
+            Result()
     }
 
     private object ReducerImpl : Reducer<ReserveDetailStore.State, Result> {
@@ -90,6 +204,13 @@ class ReserveDetailStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isLoading = result.isLoading)
                 is Result.Reserve -> copy(reserve = result.reserve)
+                is Result.ReadingMode -> copy(readingMode = result.readingModeTab)
+                is Result.CanUpdate -> copy(canUpdate = result.canUpdate)
+                is Result.ShowButtons -> copy(showButtons = result.showButtons)
+                is Result.DialogType -> copy(dialogType = result.dialogType)
+                is Result.Rfid -> copy(rfid = result.rfid)
+                is Result.RfidError -> copy(rfidError = result.rfidError)
+                is Result.TerminalRemainsNumerator -> copy(terminalRemainsNumerator = result.terminalRemainsNumerator)
             }
     }
 }
