@@ -4,6 +4,7 @@
     <string name="accounting_object_category_table_name">Таблица категорий объектов учета</string>
     <string name="accounting_objects_additional_field_table_name">Таблица простых доп. полей объектов учета</string>
     <string name="accounting_object_status_table_name">Таблица статусов объектов учета</string>
+    <string name="accounting_object_image_table_name">Таблица картинок объектов учета</string>
     <string name="accounting_object_table_name">Таблица объектов учета</string>
     <string name="accounting_object_vocabulary_additional_table_name">Таблица словаря значений доп. полей объектов учета</string>
     <string name="action_bases_table_name">Таблица базы дейсвтий документов</string>

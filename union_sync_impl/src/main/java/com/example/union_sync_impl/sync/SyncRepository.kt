@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.flow
 import org.openapitools.client.custom_api.SyncControllerApi
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.AccountingObjectSimpleAdditionalFieldDao
+import com.example.union_sync_impl.dao.AccountingObjectUnionImageDao
 import com.example.union_sync_impl.dao.AccountingObjectVocabularyAdditionalFieldDao
 import com.example.union_sync_impl.dao.ActionRecordDao
 import com.example.union_sync_impl.dao.ActionRemainsRecordDao
@@ -46,6 +47,7 @@ import com.example.union_sync_impl.dao.VocabularyAdditionalFieldValueDao
 import com.example.union_sync_impl.dao.VocabularyCharacteristicDao
 import com.example.union_sync_impl.dao.VocabularyCharacteristicValueDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectSimpledQuery
+import com.example.union_sync_impl.dao.sqlAccountingObjectUnionImageQuery
 import com.example.union_sync_impl.dao.sqlActionRecordQuery
 import com.example.union_sync_impl.dao.sqlActionRemainsRecordQuery
 import com.example.union_sync_impl.dao.sqlDocumentsSimpledQuery
@@ -63,6 +65,7 @@ import com.example.union_sync_impl.data.mapper.toActionRemainsRecordDtoV2
 import com.example.union_sync_impl.data.mapper.toCounterpartyDb
 import com.example.union_sync_impl.data.mapper.toDb
 import com.example.union_sync_impl.data.mapper.toDocumentDb
+import com.example.union_sync_impl.data.mapper.toDto
 import com.example.union_sync_impl.data.mapper.toEmployeeDb
 import com.example.union_sync_impl.data.mapper.toEnumDb
 import com.example.union_sync_impl.data.mapper.toEquipmentTypeDb
@@ -92,6 +95,7 @@ import com.example.union_sync_impl.data.mapper.toTransitRemainsDb
 import org.openapitools.client.models.AccountingObjectCharacteristicValueDtoV2
 import org.openapitools.client.models.AccountingObjectDtoV2
 import org.openapitools.client.models.AccountingObjectSimpleAdditionalFieldValueDtoV2
+import org.openapitools.client.models.AccountingObjectUnionImageDtoV2
 import org.openapitools.client.models.AccountingObjectVocabularyAdditionalFieldValueDtoV2
 import org.openapitools.client.models.AccountingObjectVocabularyCharacteristicValueDtoV2
 import org.openapitools.client.models.ActionDtoV2
@@ -160,7 +164,8 @@ class SyncRepository(
     private val vocabularyCharacteristicDao: VocabularyCharacteristicDao,
     private val vocabularyCharacteristicValueDao: VocabularyCharacteristicValueDao,
     private val labelTypeDao: LabelTypeDao,
-    private val terminalRemainsNumeratorDao: TerminalRemainsNumeratorDao
+    private val terminalRemainsNumeratorDao: TerminalRemainsNumeratorDao,
+    private val accountingObjectUnionImageDao: AccountingObjectUnionImageDao
 ) {
     suspend fun clearDataBeforeDownload() {
         inventoryDao.clearAll()
@@ -216,6 +221,12 @@ class SyncRepository(
             ::inventoryRecordDbSaver,
             getInventoryRecordDbCollector()
         ),
+        AccountingObjectUnionImageSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::accountingObjectUnionImageDbSaver,
+            getAccountingObjectUnionImageDbCollector()
+        )
         //Пока не нужен
         /*TransitSyncEntity(
             syncControllerApi,
@@ -455,6 +466,12 @@ class SyncRepository(
             moshi,
             ::inventoryTypeDbSaver
         ),
+        AccountingObjectUnionImageSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::accountingObjectUnionImageDbSaver,
+            getAccountingObjectUnionImageDbCollector()
+        )
     ).associateBy {
         it.id to it.table
     }
@@ -658,6 +675,26 @@ class SyncRepository(
                 },
                 localToNetworkMapper = { localObjects ->
                     localObjects.map { it.toInventoryRecordDtoV2() }
+                }
+            )
+        }.filterNot { it.isEmpty() }
+    }
+
+    private fun getAccountingObjectUnionImageDbCollector(): Flow<List<AccountingObjectUnionImageDtoV2>> {
+        return flow {
+            paginationEmitter(
+                getData = { limit, offset ->
+                    accountingObjectUnionImageDao.getAll(
+                        sqlAccountingObjectUnionImageQuery(
+                            limit = limit,
+                            offset = offset,
+                            updateDate = getLastSyncTime(),
+                            isNonCancel = false,
+                        )
+                    )
+                },
+                localToNetworkMapper = { localObjects ->
+                    localObjects.map { it.toDto() }
                 }
             )
         }.filterNot { it.isEmpty() }
@@ -888,6 +925,10 @@ class SyncRepository(
 
     private suspend fun inventoryRecordDbSaver(objects: List<InventoryRecordDtoV2>) {
         inventoryRecordDao.insertAll(objects.map { it.toInventoryRecordDb() })
+    }
+
+    private suspend fun accountingObjectUnionImageDbSaver(objects: List<AccountingObjectUnionImageDtoV2>) {
+        accountingObjectUnionImageDao.insertAll(objects.map { it.toDb() })
     }
 
     private suspend fun inventoryCheckerDbSaver(objects: List<InventoryCheckerDto>) {

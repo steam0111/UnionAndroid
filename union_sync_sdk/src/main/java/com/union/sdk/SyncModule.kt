@@ -146,6 +146,9 @@ object SyncModule {
                 get()
             )
         }
+        factory<AccountingObjectUnionImageSyncApi> {
+            AccountingObjectUnionImageSyncApiImpl(accountingObjectUnionImageDao = get())
+        }
         factory<TerminalRemainsNumeratorSyncApi> {
             TerminalRemainsNumeratorSyncApiImpl(terminalRemainsNumeratorDao = get())
         }
@@ -221,6 +224,7 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
+                get(),
                 get()
             )
         }
@@ -232,6 +236,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().nomenclatureGroupDao()
+        }
+        factory {
+            get<UnionDatabase>().accountingObjectUnionImageDao()
         }
         factory {
             get<UnionDatabase>().nomenclatureDao()

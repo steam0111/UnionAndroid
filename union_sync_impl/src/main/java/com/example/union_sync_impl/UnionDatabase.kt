@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.AccountingObjectSimpleAdditionalFieldDao
+import com.example.union_sync_impl.dao.AccountingObjectUnionImageDao
 import com.example.union_sync_impl.dao.AccountingObjectVocabularyAdditionalFieldDao
 import com.example.union_sync_impl.dao.ActionRecordDao
 import com.example.union_sync_impl.dao.ActionRemainsRecordDao
@@ -45,6 +46,7 @@ import com.example.union_sync_impl.dao.VocabularyCharacteristicValueDao
 import com.example.union_sync_impl.entity.AccountingObjectDb
 import com.example.union_sync_impl.entity.AccountingObjectSimpleAdditionalFieldDb
 import com.example.union_sync_impl.entity.AccountingObjectSimpleCharacteristicsDb
+import com.example.union_sync_impl.entity.AccountingObjectUnionImageDb
 import com.example.union_sync_impl.entity.AccountingObjectVocabularyAdditionalFieldDb
 import com.example.union_sync_impl.entity.AccountingObjectVocabularyCharacteristicsDb
 import com.example.union_sync_impl.entity.ActionRecordDb
@@ -125,7 +127,8 @@ import com.example.union_sync_impl.utils.Converters
         VocabularyCharacteristicValueDb::class,
         TerminalInfoDb::class,
         LabelTypeDb::class,
-        TerminalRemainsNumeratorDb::class
+        TerminalRemainsNumeratorDb::class,
+        AccountingObjectUnionImageDb::class
     ], version = 123
 )
 @TypeConverters(Converters::class)
@@ -133,6 +136,7 @@ abstract class UnionDatabase : RoomDatabase() {
     abstract fun terminalRemainsNumeratorDao(): TerminalRemainsNumeratorDao
     abstract fun labelTypeDao(): LabelTypeDao
     abstract fun nomenclatureGroupDao(): NomenclatureGroupDao
+    abstract fun accountingObjectUnionImageDao(): AccountingObjectUnionImageDao
     abstract fun nomenclatureDao(): NomenclatureDao
     abstract fun locationDao(): LocationDao
     abstract fun locationPathDao(): LocationPathDao
