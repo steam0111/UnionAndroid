@@ -35,4 +35,6 @@ interface SelectParamsRepository {
 
     suspend fun getInventoriesCodes(number: String): Flow<List<ParamDomain>>
 
+    suspend fun getNomenclatureCodes(code: String): Flow<List<ParamDomain>>
+
 }
