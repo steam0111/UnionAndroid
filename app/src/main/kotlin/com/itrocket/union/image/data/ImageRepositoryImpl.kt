@@ -23,6 +23,14 @@ class ImageRepositoryImpl(
         return File(getWhiteLabelMediaDirectory().absolutePath + "/$imageName")
     }
 
+    override suspend fun getImagesFromImagesDomain(images: List<ImageDomain>): List<ImageDomain> {
+        return withContext(coreDispatchers.io) {
+            images.map {
+                it.copy(imageFile = getImageFromName(it.imageId))
+            }
+        }
+    }
+
     override suspend fun getTmpFileUri(): Uri {
         return withContext(coreDispatchers.io) {
             val tmpFile =

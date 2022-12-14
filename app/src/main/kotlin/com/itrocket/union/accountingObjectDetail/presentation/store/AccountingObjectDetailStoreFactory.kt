@@ -25,8 +25,10 @@ import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
@@ -68,16 +70,19 @@ class AccountingObjectDetailStoreFactory(
             action: Unit,
             getState: () -> AccountingObjectDetailStore.State
         ) {
-            dispatch(Result.ReadingMode(moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = true)))
-            dispatch(Result.CanUpdate(unionPermissionsInteractor.canUpdate(UnionPermission.ACCOUNTING_OBJECT)))
-            dispatch(
-                Result.Images(
-                    interactor.getAccountingObjectImages(
-                        accountingObjectDetailArguments.argument.id
-                    )
-                )
-            )
-            listenAccountingObject()
+
+            coroutineScope {
+                launch {
+                    dispatch(Result.ReadingMode(moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = true)))
+                    dispatch(Result.CanUpdate(unionPermissionsInteractor.canUpdate(UnionPermission.ACCOUNTING_OBJECT)))
+                }
+                launch {
+                    listenAccountingObject()
+                }
+                launch {
+                    listenAccountingObjectImages()
+                }
+            }
         }
 
         override fun handleError(throwable: Throwable) {
@@ -193,9 +198,6 @@ class AccountingObjectDetailStoreFactory(
                         imageDomain = imageDomain,
                         accountingObjectId = accountingObjectId
                     )
-                    val images =
-                        interactor.getAccountingObjectImages(getState().accountingObjectDomain.id)
-                    dispatch(Result.Images(images = images))
                 } else {
                     throw errorInteractor.getThrowableByResId(R.string.image_taken_error)
                 }
@@ -316,6 +318,17 @@ class AccountingObjectDetailStoreFactory(
                     }.collect {
                         dispatch(Result.AccountingObject(it))
                         dispatch(Result.Loading(false))
+                    }
+            }
+        }
+
+        private suspend fun listenAccountingObjectImages() {
+            catchException {
+                interactor.getAccountingObjectImagesFlow(accountingObjectId = accountingObjectDetailArguments.argument.id)
+                    .catch {
+                        handleError(it)
+                    }.collect {
+                        dispatch(Result.Images(it))
                     }
             }
         }

@@ -1,7 +1,6 @@
 package com.itrocket.union.accountingObjectDetail.domain.dependencies
 
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.image.domain.ImageDomain
 import kotlinx.coroutines.flow.Flow
 
@@ -28,5 +27,5 @@ interface AccountingObjectDetailRepository {
 
     suspend fun updateLabelType(accountingObject: AccountingObjectDomain, labelTypeId: String)
 
-    suspend fun getAccountingObjectImages(accountingObjectId: String): List<ImageDomain>
+    suspend fun getAccountingObjectImagesFlow(accountingObjectId: String): Flow<List<ImageDomain>>
 }

@@ -14,7 +14,6 @@ import com.itrocket.union.image.data.toDomain
 import com.itrocket.union.image.data.toSyncEntity
 import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.image.domain.dependencies.ImageRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -84,13 +83,17 @@ class AccountingObjectDetailRepositoryImpl(
         )
     }
 
-    override suspend fun getAccountingObjectImages(accountingObjectId: String): List<ImageDomain> {
+    override suspend fun getAccountingObjectImagesFlow(accountingObjectId: String): Flow<List<ImageDomain>> {
         return withContext(coreDispatchers.io) {
             val images =
-                accountingObjectUnionImageSyncApi.getAccountingObjectImagesById(accountingObjectId)
+                accountingObjectUnionImageSyncApi.getAccountingObjectImagesByIdFlow(
+                    accountingObjectId
+                )
             images.map {
-                val imageFile = imageRepository.getImageFromName(it.unionImageId)
-                it.toDomain(imageFile)
+                it.map {
+                    val imageFile = imageRepository.getImageFromName(it.unionImageId)
+                    it.toDomain(imageFile)
+                }
             }
         }
     }

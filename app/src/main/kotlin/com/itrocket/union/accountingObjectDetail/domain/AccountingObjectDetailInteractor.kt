@@ -110,8 +110,8 @@ class AccountingObjectDetailInteractor(
         )
     }
 
-    suspend fun getAccountingObjectImages(accountingObjectId: String) =
-        repository.getAccountingObjectImages(accountingObjectId)
+    suspend fun getAccountingObjectImagesFlow(accountingObjectId: String) =
+        repository.getAccountingObjectImagesFlow(accountingObjectId)
 
     private fun ByteArray.toHexString() = joinToString("") {
         String.format("%02x", it)

@@ -6,16 +6,17 @@ import com.example.union_sync_impl.dao.AccountingObjectUnionImageDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectUnionImageQuery
 import com.example.union_sync_impl.data.mapper.toDb
 import com.example.union_sync_impl.data.mapper.toSyncEntity
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class AccountingObjectUnionImageSyncApiImpl(private val accountingObjectUnionImageDao: AccountingObjectUnionImageDao) :
     AccountingObjectUnionImageSyncApi {
 
-    override suspend fun getAccountingObjectImagesById(accountingObjectId: String): List<AccountingObjectUnionImageSyncEntity> {
-        return accountingObjectUnionImageDao.getAll(
-            sqlAccountingObjectUnionImageQuery(
-                accountingObjectId = accountingObjectId
-            )
-        ).map { it.toSyncEntity() }
+    override suspend fun getAccountingObjectImagesByIdFlow(accountingObjectId: String): Flow<List<AccountingObjectUnionImageSyncEntity>> {
+        return accountingObjectUnionImageDao.getAllFlow(accountingObjectId = accountingObjectId)
+            .map {
+                it.map { it.toSyncEntity() }
+            }
     }
 
     override suspend fun saveAccountingObjectImage(syncEntity: AccountingObjectUnionImageSyncEntity) {
