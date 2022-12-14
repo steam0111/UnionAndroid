@@ -1,53 +1,53 @@
 package com.itrocket.union.imageViewer.domain
 
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.accountingObjectDetail.domain.dependencies.AccountingObjectDetailRepository
+import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.image.domain.ImageDomain
+import com.itrocket.union.image.domain.dependencies.ImageRepository
 import com.itrocket.union.imageViewer.domain.entity.ImagesDelete
 import kotlinx.coroutines.withContext
 
 class ImageViewerInteractor(
+    private val accountingObjectDetailRepository: AccountingObjectDetailRepository,
+    private val authMainInteractor: AuthMainInteractor,
     private val coreDispatchers: CoreDispatchers
 ) {
     fun getImagePage(image: ImageDomain, images: List<ImageDomain>): Int = images.indexOf(image)
 
-    suspend fun changeMainImage(images: List<ImageDomain>, page: Int): List<ImageDomain> {
+    suspend fun changeMainImage(images: List<ImageDomain>, page: Int) {
         return withContext(coreDispatchers.io) {
-            val mutableImages = images.toMutableList()
-            val currentImage = images[page]
-            if (currentImage.isMainImage) {
-                mutableImages[page] =
-                    currentImage.copy(isMainImage = false)
+            val oldMainImage = images.find { it.isMainImage }
+            val newMainImage = if (images[page] == oldMainImage) {
+                null
             } else {
-                resolveMainImage(mutableImages = mutableImages, page = page)
+                images[page]
             }
-            mutableImages
+            accountingObjectDetailRepository.updateIsMainImage(
+                newMainImageId = newMainImage?.imageId,
+                oldMainImageId = oldMainImage?.imageId
+            )
         }
     }
 
-    suspend fun deleteImage(images: List<ImageDomain>, page: Int): ImagesDelete {
+    suspend fun deleteImage(images: List<ImageDomain>, page: Int) {
         return withContext(coreDispatchers.io) {
-            val mutableImages = images.toMutableList()
-            mutableImages.removeAt(page)
-            val newPage = if (page == images.lastIndex) {
-                page - 1
-            } else {
-                page
-            }
-            ImagesDelete(images = mutableImages, newPage = newPage)
+            val deleteImageId = images[page].imageId
+            accountingObjectDetailRepository.deleteAccountingObjectImage(deleteImageId)
         }
     }
 
-    private suspend fun resolveMainImage(
-        mutableImages: MutableList<ImageDomain>,
-        page: Int
-    ): MutableList<ImageDomain> {
-        return withContext(coreDispatchers.io) {
-            val mainIndex = mutableImages.indexOfFirst { it.isMainImage }
-            if (mainIndex >= 0) {
-                mutableImages[mainIndex] = mutableImages[mainIndex].copy(isMainImage = false)
-            }
-            mutableImages[page] = mutableImages[page].copy(isMainImage = true)
-            mutableImages
+    suspend fun saveImage(image: ImageDomain, accountingObjectId: String) {
+        withContext(coreDispatchers.io) {
+            accountingObjectDetailRepository.saveImage(
+                imageDomain = image,
+                accountingObjectId = accountingObjectId,
+                userInserted = authMainInteractor.getLogin()
+            )
         }
+    }
+
+    suspend fun getImagesFlow(entityId: String) = withContext(coreDispatchers.io) {
+        accountingObjectDetailRepository.getAccountingObjectImagesFlow(entityId)
     }
 }

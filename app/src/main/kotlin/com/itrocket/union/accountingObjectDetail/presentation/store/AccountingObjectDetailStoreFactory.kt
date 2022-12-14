@@ -73,7 +73,13 @@ class AccountingObjectDetailStoreFactory(
 
             coroutineScope {
                 launch {
-                    dispatch(Result.ReadingMode(moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = true)))
+                    dispatch(
+                        Result.ReadingMode(
+                            moduleSettingsInteractor.getDefaultReadingMode(
+                                isForceUpdate = true
+                            )
+                        )
+                    )
                     dispatch(Result.CanUpdate(unionPermissionsInteractor.canUpdate(UnionPermission.ACCOUNTING_OBJECT)))
                 }
                 launch {
@@ -145,13 +151,13 @@ class AccountingObjectDetailStoreFactory(
                 AccountingObjectDetailStore.Intent.OnAddImageClicked -> onAddImageClicked()
                 is AccountingObjectDetailStore.Intent.OnImageClicked -> onImageClicked(
                     imageDomain = intent.imageDomain,
-                    images = getState().images
+                    images = getState().images,
+                    accountingObjectId = getState().accountingObjectDomain.id
                 )
                 is AccountingObjectDetailStore.Intent.OnImageTaken -> onImageTaken(
                     success = intent.success,
                     getState = getState
                 )
-                is AccountingObjectDetailStore.Intent.OnImagesChanged -> onImagesChanged(images = intent.images)
                 AccountingObjectDetailStore.Intent.OnLabelTypeEditClicked -> onLabelTypeEditClicked()
                 is AccountingObjectDetailStore.Intent.OnLabelTypeSelected -> onLabelTypeSelected(
                     getState = getState,
@@ -205,10 +211,6 @@ class AccountingObjectDetailStoreFactory(
             dispatch(Result.ImageLoading(false))
         }
 
-        private fun onImagesChanged(images: List<ImageDomain>) {
-            dispatch(Result.Images(images))
-        }
-
         private suspend fun onAddImageClicked() {
             catchException {
                 val imageTmpUri = imageInteractor.getTmpFileUri()
@@ -217,11 +219,16 @@ class AccountingObjectDetailStoreFactory(
             }
         }
 
-        private fun onImageClicked(images: List<ImageDomain>, imageDomain: ImageDomain) {
+        private fun onImageClicked(
+            images: List<ImageDomain>,
+            imageDomain: ImageDomain,
+            accountingObjectId: String
+        ) {
             publish(
                 AccountingObjectDetailStore.Label.ShowImageViewer(
                     images = images,
-                    currentImage = imageDomain
+                    currentImage = imageDomain,
+                    accountingObjectId = accountingObjectId
                 )
             )
         }

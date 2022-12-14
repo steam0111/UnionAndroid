@@ -22,7 +22,7 @@ object ImageViewerModule {
         }
 
         factory {
-            ImageViewerInteractor(get())
+            ImageViewerInteractor(get(), get(), get())
         }
 
         factory { (args: ImageViewerComposeFragmentArgs) ->

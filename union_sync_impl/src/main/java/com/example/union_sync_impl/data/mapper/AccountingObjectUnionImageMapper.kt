@@ -1,7 +1,9 @@
 package com.example.union_sync_impl.data.mapper
 
+import com.example.union_sync_api.entity.AccountingObjectImageMainUpdate
 import com.example.union_sync_api.entity.AccountingObjectUnionImageSyncEntity
 import com.example.union_sync_impl.entity.AccountingObjectUnionImageDb
+import com.example.union_sync_impl.entity.UpdateAccountingObjectImageMain
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.AccountingObjectUnionImageDtoV2
@@ -43,4 +45,9 @@ fun AccountingObjectUnionImageSyncEntity.toDb() = AccountingObjectUnionImageDb(
     insertDate = System.currentTimeMillis(),
     userInserted = userInserted,
     userUpdated = userInserted,
+)
+
+fun AccountingObjectImageMainUpdate.toUpdate() = UpdateAccountingObjectImageMain(
+    isMainImage = isMainImage,
+    id = imageId,
 )

@@ -28,4 +28,8 @@ interface AccountingObjectDetailRepository {
     suspend fun updateLabelType(accountingObject: AccountingObjectDomain, labelTypeId: String)
 
     suspend fun getAccountingObjectImagesFlow(accountingObjectId: String): Flow<List<ImageDomain>>
+
+    suspend fun deleteAccountingObjectImage(imageId: String)
+
+    suspend fun updateIsMainImage(newMainImageId: String?, oldMainImageId: String?)
 }

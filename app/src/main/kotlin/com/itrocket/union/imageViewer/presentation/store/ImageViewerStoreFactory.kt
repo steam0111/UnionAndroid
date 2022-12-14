@@ -12,6 +12,7 @@ import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.image.domain.ImageInteractor
 import com.itrocket.union.imageViewer.domain.ImageViewerInteractor
 import com.itrocket.union.imageViewer.domain.entity.ImageViewerResult
+import kotlinx.coroutines.flow.catch
 
 class ImageViewerStoreFactory(
     private val storeFactory: StoreFactory,
@@ -48,7 +49,7 @@ class ImageViewerStoreFactory(
             action: Unit,
             getState: () -> ImageViewerStore.State
         ) {
-            dispatch(Result.Images(imageInteractor.getImagesFromImagesDomain(images = getState().images)))
+            listenImages(getState)
         }
 
         override suspend fun executeIntent(
@@ -56,7 +57,7 @@ class ImageViewerStoreFactory(
             getState: () -> ImageViewerStore.State
         ) {
             when (intent) {
-                ImageViewerStore.Intent.OnBackClicked -> onBackClicked(getState = getState)
+                ImageViewerStore.Intent.OnBackClicked -> onBackClicked()
                 ImageViewerStore.Intent.OnAddImageClicked -> onAddImageClicked()
                 ImageViewerStore.Intent.OnDeleteImageClicked -> onDeleteImageClicked(getState = getState)
                 is ImageViewerStore.Intent.OnImageSwipe -> onImageSwipe(page = intent.page)
@@ -68,8 +69,8 @@ class ImageViewerStoreFactory(
             }
         }
 
-        private fun onBackClicked(getState: () -> ImageViewerStore.State) {
-            publish(ImageViewerStore.Label.GoBack(ImageViewerResult(getState().images)))
+        private fun onBackClicked() {
+            publish(ImageViewerStore.Label.GoBack)
         }
 
         private suspend fun onImageTaken(
@@ -81,13 +82,10 @@ class ImageViewerStoreFactory(
             catchException {
                 if (success && imageUri != null) {
                     val imageDomain = imageInteractor.saveImageFromContentUri(imageUri)
-                    dispatch(
-                        Result.Images(
-                            images = imageInteractor.addImageDomain(
-                                images = getState().images,
-                                image = imageDomain
-                            )
-                        )
+                    val accountingObjectId = imageViewerArguments.accountingObjectId
+                    imageViewerInteractor.saveImage(
+                        image = imageDomain,
+                        accountingObjectId = accountingObjectId
                     )
                 } else {
                     throw errorInteractor.getThrowableByResId(R.string.image_taken_error)
@@ -105,16 +103,7 @@ class ImageViewerStoreFactory(
         }
 
         private suspend fun onDeleteImageClicked(getState: () -> ImageViewerStore.State) {
-            val imagesDelete = imageViewerInteractor.deleteImage(
-                images = getState().images,
-                page = getState().page
-            )
-            if (imagesDelete.images.isEmpty()) {
-                publish(ImageViewerStore.Label.GoBack(ImageViewerResult(listOf())))
-            } else {
-                dispatch(Result.Page(page = imagesDelete.newPage))
-                dispatch(Result.Images(images = imagesDelete.images))
-            }
+            imageViewerInteractor.deleteImage(images = getState().images, page = getState().page)
         }
 
         private fun onImageSwipe(page: Int) {
@@ -122,14 +111,28 @@ class ImageViewerStoreFactory(
         }
 
         private suspend fun onMainClicked(getState: () -> ImageViewerStore.State) {
-            dispatch(
-                Result.Images(
-                    imageViewerInteractor.changeMainImage(
-                        images = getState().images,
-                        page = getState().page
-                    )
-                )
+            imageViewerInteractor.changeMainImage(
+                images = getState().images,
+                page = getState().page
             )
+        }
+
+        private suspend fun listenImages(getState: () -> ImageViewerStore.State) {
+            catchException {
+                imageViewerInteractor.getImagesFlow(entityId = imageViewerArguments.accountingObjectId)
+                    .catch {
+                        handleError(it)
+                    }.collect {
+                        when {
+                            it.isEmpty() -> publish(ImageViewerStore.Label.GoBack)
+                            it.size <= getState().page -> {
+                                dispatch(Result.Images(it))
+                                dispatch(Result.Page(it.size - 1))
+                            }
+                            else -> dispatch(Result.Images(it))
+                        }
+                    }
+            }
         }
 
         override fun handleError(throwable: Throwable) {

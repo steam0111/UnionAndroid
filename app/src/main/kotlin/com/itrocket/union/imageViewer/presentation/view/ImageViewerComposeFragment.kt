@@ -65,9 +65,4 @@ class ImageViewerComposeFragment :
             else -> super.handleLabel(label)
         }
     }
-
-    companion object {
-        const val IMAGE_VIEWER_RESULT_CODE = "IMAGE_VIEWER_RESULT_CODE"
-        const val IMAGE_VIEWER_RESULT_LABEL = "IMAGE_VIEWER_RESULT_LABEL"
-    }
 }

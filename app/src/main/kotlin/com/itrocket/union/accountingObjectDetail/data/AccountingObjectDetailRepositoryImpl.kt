@@ -3,6 +3,7 @@ package com.itrocket.union.accountingObjectDetail.data
 import com.example.union_sync_api.data.AccountingObjectSyncApi
 import com.example.union_sync_api.data.AccountingObjectUnionImageSyncApi
 import com.example.union_sync_api.data.EnumsSyncApi
+import com.example.union_sync_api.entity.AccountingObjectImageMainUpdate
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjectDetail.data.mapper.toAccountingObjectDetailDomain
 import com.itrocket.union.accountingObjectDetail.data.mapper.toAccountingObjectLabelType
@@ -95,6 +96,36 @@ class AccountingObjectDetailRepositoryImpl(
                     it.toDomain(imageFile)
                 }
             }
+        }
+    }
+
+    override suspend fun deleteAccountingObjectImage(imageId: String) {
+        return withContext(coreDispatchers.io) {
+            accountingObjectUnionImageSyncApi.deleteAccountingObjectImage(imageId)
+        }
+    }
+
+    override suspend fun updateIsMainImage(newMainImageId: String?, oldMainImageId: String?) {
+        return withContext(coreDispatchers.io) {
+            val updates = buildList {
+                if (newMainImageId != null) {
+                    add(
+                        AccountingObjectImageMainUpdate(
+                            isMainImage = true,
+                            imageId = newMainImageId
+                        )
+                    )
+                }
+                if (oldMainImageId != null) {
+                    add(
+                        AccountingObjectImageMainUpdate(
+                            isMainImage = false,
+                            imageId = oldMainImageId
+                        )
+                    )
+                }
+            }
+            accountingObjectUnionImageSyncApi.changeMainImage(updates)
         }
     }
 }
