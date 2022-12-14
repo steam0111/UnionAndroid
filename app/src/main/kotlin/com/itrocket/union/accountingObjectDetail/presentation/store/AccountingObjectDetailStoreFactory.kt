@@ -70,7 +70,6 @@ class AccountingObjectDetailStoreFactory(
         ) {
             dispatch(Result.ReadingMode(moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = true)))
             dispatch(Result.CanUpdate(unionPermissionsInteractor.canUpdate(UnionPermission.ACCOUNTING_OBJECT)))
-            listenAccountingObject()
             dispatch(
                 Result.Images(
                     interactor.getAccountingObjectImages(
@@ -78,6 +77,7 @@ class AccountingObjectDetailStoreFactory(
                     )
                 )
             )
+            listenAccountingObject()
         }
 
         override fun handleError(throwable: Throwable) {
@@ -187,15 +187,15 @@ class AccountingObjectDetailStoreFactory(
             dispatch(Result.ImageLoading(true))
             catchException {
                 if (success && imageUri != null) {
+                    val accountingObjectId = getState().accountingObjectDomain.id
                     val imageDomain = imageInteractor.saveImageFromContentUri(imageUri)
-                    dispatch(
-                        Result.Images(
-                            images = imageInteractor.addImageDomain(
-                                images = getState().images,
-                                image = imageDomain
-                            )
-                        )
+                    interactor.saveImage(
+                        imageDomain = imageDomain,
+                        accountingObjectId = accountingObjectId
                     )
+                    val images =
+                        interactor.getAccountingObjectImages(getState().accountingObjectDomain.id)
+                    dispatch(Result.Images(images = images))
                 } else {
                     throw errorInteractor.getThrowableByResId(R.string.image_taken_error)
                 }

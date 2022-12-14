@@ -13,6 +13,9 @@ interface AccountingObjectUnionImageDao {
     @RawQuery
     fun getAll(query: SupportSQLiteQuery): List<AccountingObjectUnionImageDb>
 
+    @RawQuery
+    fun getCount(query: SupportSQLiteQuery): Long
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(list: List<AccountingObjectUnionImageDb>)
 

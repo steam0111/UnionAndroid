@@ -19,12 +19,8 @@ class ImageRepositoryImpl(
     private val coreDispatchers: CoreDispatchers
 ) : ImageRepository {
 
-    override suspend fun getImagesFromImagesDomain(images: List<ImageDomain>): List<ImageDomain> {
-        return withContext(coreDispatchers.io) {
-            images.map {
-                it.copy(imageFile = File(it.imagePath))
-            }
-        }
+    override suspend fun getImageFromName(imageName: String): File {
+        return File(getWhiteLabelMediaDirectory().absolutePath + "/$imageName")
     }
 
     override suspend fun getTmpFileUri(): Uri {
@@ -32,7 +28,8 @@ class ImageRepositoryImpl(
             val tmpFile =
                 File.createTempFile(
                     TMP_FILE_NAME,
-                    TMP_FILE_MIME_TYPE, applicationContext.cacheDir
+                    TMP_FILE_MIME_TYPE,
+                    applicationContext.cacheDir
                 ).apply {
                     createNewFile()
                     deleteOnExit()
@@ -50,7 +47,9 @@ class ImageRepositoryImpl(
         return withContext(coreDispatchers.io) {
             val directory = getWhiteLabelMediaDirectory()
 
-            val newImageFile = File(directory.absolutePath, System.currentTimeMillis().toString())
+
+            val fileName = System.currentTimeMillis().toString()
+            val newImageFile = File(directory.absolutePath, fileName)
 
             newImageFile.createNewFile()
 
@@ -68,9 +67,9 @@ class ImageRepositoryImpl(
             }
 
             ImageDomain.create(
-                imagePath = newImageFile.absolutePath,
                 isMainImage = false,
-                imageFile = newImageFile
+                imageFile = newImageFile,
+                imageId = fileName
             )
         }
     }

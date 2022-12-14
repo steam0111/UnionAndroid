@@ -6,6 +6,8 @@ import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObject
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoType
+import com.itrocket.union.authMain.domain.AuthMainInteractor
+import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 import java.util.*
@@ -18,6 +20,7 @@ class AccountingObjectDetailInteractor(
     private val accountingObjectRepository: AccountingObjectRepository,
     private val coreDispatchers: CoreDispatchers,
     private val unionPermissionsInteractor: UnionPermissionsInteractor,
+    private val authMainInteractor: AuthMainInteractor
 ) {
 
     suspend fun getAccountingObject(id: String): AccountingObjectDomain =
@@ -64,7 +67,10 @@ class AccountingObjectDetailInteractor(
         accountingObjectDomain: AccountingObjectDomain,
         labelTypeId: String
     ) = withContext(coreDispatchers.io) {
-        repository.updateLabelType(accountingObject = accountingObjectDomain, labelTypeId = labelTypeId)
+        repository.updateLabelType(
+            accountingObject = accountingObjectDomain,
+            labelTypeId = labelTypeId
+        )
     }
 
     suspend fun updateScanningData(accountingObjectDomain: AccountingObjectDomain) =
@@ -94,6 +100,14 @@ class AccountingObjectDetailInteractor(
 
     suspend fun writeOffAccountingObject(accountingObjectDomain: AccountingObjectDomain) {
         repository.writeOffAccountingObject(accountingObjectDomain)
+    }
+
+    suspend fun saveImage(imageDomain: ImageDomain, accountingObjectId: String) {
+        repository.saveImage(
+            imageDomain = imageDomain,
+            accountingObjectId = accountingObjectId,
+            userInserted = authMainInteractor.getLogin()
+        )
     }
 
     suspend fun getAccountingObjectImages(accountingObjectId: String) =

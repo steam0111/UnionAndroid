@@ -14,7 +14,7 @@ class ImageInteractor(
     suspend fun saveImageFromContentUri(uri: Uri) = repository.saveImage(uri)
 
     suspend fun getImagesFromImagesDomain(images: List<ImageDomain>) =
-        repository.getImagesFromImagesDomain(images)
+        listOf<ImageDomain>()//repository.getImagesFromImagesDomain(images)
 
     fun addImageDomain(images: List<ImageDomain>, image: ImageDomain) = images + image
 }

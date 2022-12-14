@@ -1,6 +1,7 @@
 package com.example.union_sync_impl.sync
 
 import com.example.union_sync_impl.dao.AccountingObjectDao
+import com.example.union_sync_impl.dao.AccountingObjectUnionImageDao
 import com.example.union_sync_impl.dao.ActionRecordDao
 import com.example.union_sync_impl.dao.ActionRemainsRecordDao
 import com.example.union_sync_impl.dao.DocumentDao
@@ -9,6 +10,7 @@ import com.example.union_sync_impl.dao.InventoryRecordDao
 import com.example.union_sync_impl.dao.NetworkSyncDao
 import com.example.union_sync_impl.dao.ReserveDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
+import com.example.union_sync_impl.dao.sqlAccountingObjectUnionImageQuery
 import com.example.union_sync_impl.dao.sqlActionRecordQuery
 import com.example.union_sync_impl.dao.sqlActionRemainsRecordQuery
 import com.example.union_sync_impl.dao.sqlDocumentsQuery
@@ -30,6 +32,7 @@ class SyncInfoRepository(
     private val actionRecordDao: ActionRecordDao,
     private val actionRemainsRecordDao: ActionRemainsRecordDao,
     private val inventoryRecordDao: InventoryRecordDao,
+    private val accountingObjectUnionImageDao: AccountingObjectUnionImageDao,
     private val coreDispatchers: CoreDispatchers
 ) {
 
@@ -99,10 +102,19 @@ class SyncInfoRepository(
                         )
                     )
                 }
+                val accountingObjectUnionImageCount = async {
+                    accountingObjectUnionImageDao.getCount(
+                        sqlAccountingObjectUnionImageQuery(
+                            updateDate = getLastSyncTime(),
+                            isFilterCount = true,
+                            isNonCancel = false
+                        )
+                    )
+                }
                 val allCount =
                     accountingObjectCount.await() + reserveCount.await() + inventoryCount.await() +
                             documentCount.await() + actionRecordCount.await() + actionRemainsRecordCount.await() +
-                            inventoryRecordCount.await()
+                            inventoryRecordCount.await() + accountingObjectUnionImageCount.await()
                 allCount
             }
         }

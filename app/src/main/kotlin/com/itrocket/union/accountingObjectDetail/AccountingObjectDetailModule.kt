@@ -25,11 +25,11 @@ object AccountingObjectDetailModule {
         }
 
         factory<AccountingObjectDetailRepository> {
-            AccountingObjectDetailRepositoryImpl(get(), get(), get())
+            AccountingObjectDetailRepositoryImpl(get(), get(), get(), get(), get())
         }
 
         factory {
-            AccountingObjectDetailInteractor(get(), get(), get(), get())
+            AccountingObjectDetailInteractor(get(), get(), get(), get(), get())
         }
 
         factory { (args: AccountingObjectDetailComposeFragmentArgs) ->
