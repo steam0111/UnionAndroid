@@ -13,11 +13,15 @@ import com.example.union_sync_impl.sync.SyncEntity
 import com.example.union_sync_impl.sync.SyncInfoRepository
 import com.example.union_sync_impl.sync.SyncRepository
 import com.itrocket.core.base.CoreDispatchers
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.models.StarSyncRequestV2
 import org.openapitools.client.models.SyncInformationV2
@@ -58,6 +62,7 @@ class AllSyncImpl(
                     terminalId = "empty string" //TODO: Когда найдем способ получать terminalId - поменять
                 )
             )
+
             terminalInfoDao.insert(TerminalInfoDb(terminalPrefix = syncInfo.terminalPrefix))
             Timber.tag(SYNC_TAG).d("sync started ${syncInfo.id}")
 
@@ -253,6 +258,8 @@ class AllSyncImpl(
             Timber.tag(SYNC_TAG).d("completed export from server to local")
         }
 
+        syncFile(files = listOf(), syncId = syncId)
+
         syncEventsApi.emitSyncEvent(
             SyncEvent.Measured(
                 id = UUID.randomUUID().toString(),
@@ -262,7 +269,52 @@ class AllSyncImpl(
         )
     }
 
+    private suspend fun syncFile(files: List<File>, syncId: String) {
+        syncEventsApi.emitSyncInfoType(
+            SyncInfoType.TitleEvent(
+                title = "Старт выгрузки файлов ",
+            )
+        )
+        syncEventsApi.emitSyncInfoType(
+            SyncInfoType.ItemCount(
+                count = files.size.toLong(),
+                isAllCount = true
+            )
+        )
+        syncEventsApi.emitSyncInfoType(
+            SyncInfoType.ItemCount(
+                count = null,
+                isAllCount = false
+            )
+        )
+        files.forEach {
+            try {
+                val multipart = MultipartBody.Part.createFormData(
+                    name = MULTIPART_NAME,
+                    filename = it.name,
+                    body = it.asRequestBody(IMAGE_MIME_TYPE.toMediaTypeOrNull())
+                )
+                syncControllerApi.importFiles(syncId = syncId, filePart = multipart)
+                syncEventsApi.emitSyncInfoType(
+                    SyncInfoType.ItemCount(
+                        count = 1,
+                        isAllCount = false
+                    )
+                )
+            } catch (t: Throwable) {
+                syncEventsApi.emitSyncEvent(SyncEvent.Error(name = it.name, id = it.name))
+            }
+        }
+        syncEventsApi.emitSyncInfoType(
+            SyncInfoType.TitleEvent(
+                title = "Конец выгрузки файлов ",
+            )
+        )
+    }
+
     companion object {
+        const val MULTIPART_NAME = "file"
+        const val IMAGE_MIME_TYPE = "image/*"
         const val SYNC_TAG = "SYNC_TAG"
     }
 }
