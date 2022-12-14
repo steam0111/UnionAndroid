@@ -38,54 +38,11 @@ class AllSyncImpl(
     private val syncEventsApi: SyncEventsApi
 ) : AllSyncApi {
 
-    override suspend fun syncAll() = withContext(coreDispatchers.io) {
-        startNewSync()
+    override suspend fun syncAll(files: List<File>) = withContext(coreDispatchers.io) {
+        startNewSync(files)
     }
 
-    override suspend fun syncFile(files: List<File>, syncId: String) {
-        syncEventsApi.emitSyncInfoType(
-            SyncInfoType.TitleEvent(
-                title = "Старт выгрузки файлов ",
-            )
-        )
-        syncEventsApi.emitSyncInfoType(
-            SyncInfoType.ItemCount(
-                count = files.size.toLong(),
-                isAllCount = true
-            )
-        )
-        syncEventsApi.emitSyncInfoType(
-            SyncInfoType.ItemCount(
-                count = null,
-                isAllCount = false
-            )
-        )
-        files.forEach {
-            try {
-                val multipart = MultipartBody.Part.createFormData(
-                    name = MULTIPART_NAME,
-                    filename = it.name,
-                    body = it.asRequestBody(IMAGE_MIME_TYPE.toMediaTypeOrNull())
-                )
-                syncControllerApi.importFiles(syncId = syncId, filePart = multipart)
-                syncEventsApi.emitSyncInfoType(
-                    SyncInfoType.ItemCount(
-                        count = 1,
-                        isAllCount = false
-                    )
-                )
-            } catch (t: Throwable) {
-                syncEventsApi.emitSyncEvent(SyncEvent.Error(name = it.name, id = it.name))
-            }
-        }
-        syncEventsApi.emitSyncInfoType(
-            SyncInfoType.TitleEvent(
-                title = "Конец выгрузки файлов ",
-            )
-        )
-    }
-
-    private suspend fun startNewSync(): String {
+    private suspend fun startNewSync(files: List<File>) {
         val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
         val dateTime: String = dateFormatter.format(Date(getLastSyncTime()))
 
@@ -98,14 +55,14 @@ class AllSyncImpl(
             )
         )
 
-        val syncInfo = syncControllerApi.apiSyncPost(
-            StarSyncRequestV2(
-                dateTimeFrom = dateTime,
-                terminalId = "empty string" //TODO: Когда найдем способ получать terminalId - поменять
-            )
-        )
-
         val duration = measureTime {
+            val syncInfo = syncControllerApi.apiSyncPost(
+                StarSyncRequestV2(
+                    dateTimeFrom = dateTime,
+                    terminalId = "empty string" //TODO: Когда найдем способ получать terminalId - поменять
+                )
+            )
+
             terminalInfoDao.insert(TerminalInfoDb(terminalPrefix = syncInfo.terminalPrefix))
             Timber.tag(SYNC_TAG).d("sync started ${syncInfo.id}")
 
@@ -129,6 +86,7 @@ class AllSyncImpl(
             )
             startExportFromServerToLocal(
                 syncId = syncInfo.id,
+                files = files
             )
 
             val syncCompletedInfo = syncControllerApi.apiSyncIdCompleteSyncPost(syncInfo.id)
@@ -148,7 +106,6 @@ class AllSyncImpl(
                 duration = duration
             )
         )
-        return syncInfo.id
     }
 
     override suspend fun getLastSyncTime(): Long {
@@ -262,7 +219,7 @@ class AllSyncImpl(
             .d("exportPartsInformation count ${exportSyncInfo.exportPartBufferInformation.exportPartsInformation.size}")
     }
 
-    private suspend fun startExportFromServerToLocal(syncId: String) {
+    private suspend fun startExportFromServerToLocal(syncId: String, files: List<File>) {
         syncEventsApi.emitSyncEvent(
             SyncEvent.Info(
                 id = UUID.randomUUID().toString(),
@@ -302,11 +259,56 @@ class AllSyncImpl(
             Timber.tag(SYNC_TAG).d("completed export from server to local")
         }
 
+        syncFile(files = files, syncId = syncId)
+
         syncEventsApi.emitSyncEvent(
             SyncEvent.Measured(
                 id = UUID.randomUUID().toString(),
                 name = "Окончание загрузки с сервера",
                 duration = duration
+            )
+        )
+    }
+
+    private suspend fun syncFile(files: List<File>, syncId: String) {
+        syncEventsApi.emitSyncInfoType(
+            SyncInfoType.TitleEvent(
+                title = "Старт выгрузки файлов ",
+            )
+        )
+        syncEventsApi.emitSyncInfoType(
+            SyncInfoType.ItemCount(
+                count = files.size.toLong(),
+                isAllCount = true
+            )
+        )
+        syncEventsApi.emitSyncInfoType(
+            SyncInfoType.ItemCount(
+                count = null,
+                isAllCount = false
+            )
+        )
+        files.forEach {
+            try {
+                val multipart = MultipartBody.Part.createFormData(
+                    name = MULTIPART_NAME,
+                    filename = it.name,
+                    body = it.asRequestBody(IMAGE_MIME_TYPE.toMediaTypeOrNull())
+                )
+                syncControllerApi.importFiles(syncId = syncId, filePart = multipart)
+                syncEventsApi.emitSyncInfoType(
+                    SyncInfoType.ItemCount(
+                        count = 1,
+                        isAllCount = false
+                    )
+                )
+            } catch (t: Throwable) {
+                syncEventsApi.emitSyncEvent(SyncEvent.Error(name = it.name, id = it.name))
+            }
+        }
+        syncEventsApi.emitSyncInfoType(
+            SyncInfoType.TitleEvent(
+                title = "Конец выгрузки файлов ",
             )
         )
     }

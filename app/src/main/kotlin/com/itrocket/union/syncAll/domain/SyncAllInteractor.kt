@@ -9,6 +9,7 @@ import com.itrocket.union.R
 import com.itrocket.union.authMain.domain.dependencies.AuthMainRepository
 import com.itrocket.union.syncAll.domain.dependencies.SyncAllRepository
 import com.itrocket.union.utils.getFullDateFromMillis
+import java.io.File
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
@@ -34,9 +35,9 @@ class SyncAllInteractor(
         }
     }
 
-    suspend fun syncAll() = withContext(coreDispatchers.io) {
+    suspend fun syncAll(files: List<File>) = withContext(coreDispatchers.io) {
         updateMyConfig()
-        repository.syncAll()
+        repository.syncAll(files)
     }
 
     suspend fun clearAll() =

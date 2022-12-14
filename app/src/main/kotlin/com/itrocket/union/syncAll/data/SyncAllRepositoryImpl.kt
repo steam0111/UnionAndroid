@@ -7,6 +7,7 @@ import com.example.union_sync_api.entity.SyncEvent
 import com.example.union_sync_api.entity.SyncInfoType
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.syncAll.domain.dependencies.SyncAllRepository
+import java.io.File
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
@@ -18,8 +19,8 @@ class SyncAllRepositoryImpl(
     private val syncEventsApi: SyncEventsApi
 ) : SyncAllRepository {
 
-    override suspend fun syncAll(): Unit = withContext(coreDispatchers.io) {
-        syncApi.syncAll()
+    override suspend fun syncAll(files: List<File>): Unit = withContext(coreDispatchers.io) {
+        syncApi.syncAll(files)
     }
 
     override suspend fun clearAll() {
