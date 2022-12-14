@@ -6,7 +6,7 @@ import java.io.File
 import kotlinx.coroutines.flow.Flow
 
 interface SyncAllRepository {
-    suspend fun syncAll(files: List<File>)
+    suspend fun syncAll()
 
     suspend fun clearAll()
 

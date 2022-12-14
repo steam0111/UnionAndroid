@@ -19,8 +19,8 @@ class SyncAllRepositoryImpl(
     private val syncEventsApi: SyncEventsApi
 ) : SyncAllRepository {
 
-    override suspend fun syncAll(files: List<File>): Unit = withContext(coreDispatchers.io) {
-        syncApi.syncAll(files)
+    override suspend fun syncAll(): Unit = withContext(coreDispatchers.io) {
+        syncApi.syncAll()
     }
 
     override suspend fun clearAll() {

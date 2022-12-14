@@ -35,9 +35,9 @@ class SyncAllInteractor(
         }
     }
 
-    suspend fun syncAll(files: List<File>) = withContext(coreDispatchers.io) {
+    suspend fun syncAll() = withContext(coreDispatchers.io) {
         updateMyConfig()
-        repository.syncAll(files)
+        repository.syncAll()
     }
 
     suspend fun clearAll() =

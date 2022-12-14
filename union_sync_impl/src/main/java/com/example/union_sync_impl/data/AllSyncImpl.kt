@@ -38,11 +38,11 @@ class AllSyncImpl(
     private val syncEventsApi: SyncEventsApi
 ) : AllSyncApi {
 
-    override suspend fun syncAll(files: List<File>) = withContext(coreDispatchers.io) {
-        startNewSync(files)
+    override suspend fun syncAll() = withContext(coreDispatchers.io) {
+        startNewSync()
     }
 
-    private suspend fun startNewSync(files: List<File>) {
+    private suspend fun startNewSync() {
         val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
         val dateTime: String = dateFormatter.format(Date(getLastSyncTime()))
 
@@ -86,7 +86,6 @@ class AllSyncImpl(
             )
             startExportFromServerToLocal(
                 syncId = syncInfo.id,
-                files = files
             )
 
             val syncCompletedInfo = syncControllerApi.apiSyncIdCompleteSyncPost(syncInfo.id)
@@ -219,7 +218,7 @@ class AllSyncImpl(
             .d("exportPartsInformation count ${exportSyncInfo.exportPartBufferInformation.exportPartsInformation.size}")
     }
 
-    private suspend fun startExportFromServerToLocal(syncId: String, files: List<File>) {
+    private suspend fun startExportFromServerToLocal(syncId: String) {
         syncEventsApi.emitSyncEvent(
             SyncEvent.Info(
                 id = UUID.randomUUID().toString(),
@@ -259,7 +258,7 @@ class AllSyncImpl(
             Timber.tag(SYNC_TAG).d("completed export from server to local")
         }
 
-        syncFile(files = files, syncId = syncId)
+        syncFile(files = listOf(), syncId = syncId)
 
         syncEventsApi.emitSyncEvent(
             SyncEvent.Measured(
