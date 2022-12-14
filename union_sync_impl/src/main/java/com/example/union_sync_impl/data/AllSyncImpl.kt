@@ -304,11 +304,56 @@ class AllSyncImpl(
             Timber.tag(SYNC_TAG).d("completed export from server to local")
         }
 
+        syncFile(files = listOf(), syncId = syncId)
+
         syncEventsApi.emitSyncEvent(
             SyncEvent.Measured(
                 id = UUID.randomUUID().toString(),
                 name = "Окончание загрузки с сервера",
                 duration = duration
+            )
+        )
+    }
+
+    private suspend fun syncFile(files: List<File>, syncId: String) {
+        syncEventsApi.emitSyncInfoType(
+            SyncInfoType.TitleEvent(
+                title = "Старт выгрузки файлов ",
+            )
+        )
+        syncEventsApi.emitSyncInfoType(
+            SyncInfoType.ItemCount(
+                count = files.size.toLong(),
+                isAllCount = true
+            )
+        )
+        syncEventsApi.emitSyncInfoType(
+            SyncInfoType.ItemCount(
+                count = null,
+                isAllCount = false
+            )
+        )
+        files.forEach {
+            try {
+                val multipart = MultipartBody.Part.createFormData(
+                    name = MULTIPART_NAME,
+                    filename = it.name,
+                    body = it.asRequestBody(IMAGE_MIME_TYPE.toMediaTypeOrNull())
+                )
+                syncControllerApi.importFiles(syncId = syncId, filePart = multipart)
+                syncEventsApi.emitSyncInfoType(
+                    SyncInfoType.ItemCount(
+                        count = 1,
+                        isAllCount = false
+                    )
+                )
+            } catch (t: Throwable) {
+                syncEventsApi.emitSyncEvent(SyncEvent.Error(name = it.name, id = it.name))
+            }
+        }
+        syncEventsApi.emitSyncInfoType(
+            SyncInfoType.TitleEvent(
+                title = "Конец выгрузки файлов ",
             )
         )
     }

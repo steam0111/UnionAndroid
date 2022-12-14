@@ -35,6 +35,8 @@ fun ReserveDetailSyncEntity.map(): ReservesDomain {
         )
     )
 
+    listInfo.add(ObjectInfoDomain(title = R.string.common_barcode, value = reserveSyncEntity.barcodeValue))
+
     reserveSyncEntity.invoiceNumber?.let {
         listInfo.add(ObjectInfoDomain(R.string.common_invoice_number, it))
     }
@@ -49,6 +51,10 @@ fun ReserveDetailSyncEntity.map(): ReservesDomain {
 
     nomenclatureSyncEntity?.let {
         listInfo.add(ObjectInfoDomain(R.string.reserves_detail_nomenclature, it.name))
+    }
+
+    nomenclatureSyncEntity?.let {
+        listInfo.add(ObjectInfoDomain(R.string.reserves_detail_nomenclature_code, it.code))
     }
 
     orderSyncEntity?.let {
@@ -77,6 +83,7 @@ fun ReserveDetailSyncEntity.map(): ReservesDomain {
         isBarcode = false,
         itemsCount = reserveSyncEntity.count ?: 0L,
         title = reserveSyncEntity.name,
-        listInfo = listInfo
+        listInfo = listInfo,
+        barcodeValue = reserveSyncEntity.barcodeValue
     )
 }

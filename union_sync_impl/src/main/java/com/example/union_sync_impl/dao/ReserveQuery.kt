@@ -25,7 +25,8 @@ fun sqlReserveQuery(
     limit: Long? = null,
     offset: Long? = null,
     isNonCancel: Boolean = true,
-    hideZeroReserves: Boolean = false
+    hideZeroReserves: Boolean = false,
+    nomenclatureId: String? = null
 ): SimpleSQLiteQuery {
     val name = textQuery?.ifEmpty { null }
     val mainQuery = if (isFilterCount) {
@@ -96,6 +97,10 @@ fun sqlReserveQuery(
                 }
                 if (hideZeroReserves) {
                     add("count" more 0)
+                }
+
+                nomenclatureId?.let {
+                    add("nomenclatureId" isEquals nomenclatureId)
                 }
             }
         )

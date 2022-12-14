@@ -39,6 +39,7 @@ class SelectParamsInteractor(
             ManualType.RECIPIENT -> getRecipient(searchText)
             ManualType.DOCUMENT_CODE -> getDocumentsCodes(searchText, sourceScreen)
             ManualType.INVENTORY_CODE -> getInventoriesCodes(searchText)
+            ManualType.NOMENCLATURE_CODE -> getNomenclatureCodes(searchText)
             else -> flow { }
         }
 
@@ -52,6 +53,10 @@ class SelectParamsInteractor(
 
     private suspend fun getInventoriesCodes(number: String): Flow<List<ParamDomain>> {
         return selectParamsRepository.getInventoriesCodes(number)
+    }
+
+    private suspend fun getNomenclatureCodes(code: String): Flow<List<ParamDomain>> {
+        return selectParamsRepository.getNomenclatureCodes(code)
     }
 
     private suspend fun getMolsInStructural(

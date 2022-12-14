@@ -8,7 +8,8 @@ interface NomenclatureSyncApi {
         groupId: String? = null,
         textQuery: String? = null,
         offset: Long? = null,
-        limit: Long? = null
+        limit: Long? = null,
+        number: String? = null
     ): List<NomenclatureSyncEntity>
 
     suspend fun getNomenclaturesCount(

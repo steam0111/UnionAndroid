@@ -7,6 +7,7 @@ import com.example.union_sync_api.entity.ReserveUpdateSyncEntity
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getMolId
+import com.itrocket.union.manual.getNomenclatureId
 import com.itrocket.union.manual.getNomenclatureGroupId
 import com.itrocket.union.manual.getReceptionCategoryId
 import com.itrocket.union.reserveDetail.data.mapper.map
@@ -41,7 +42,8 @@ class ReservesRepositoryImpl(
                 locationIds = selectedLocationIds,
                 offset = offset,
                 limit = limit,
-                hideZeroReserves = hideZeroReserves
+                hideZeroReserves = hideZeroReserves,
+                nomenclatureId = params?.getNomenclatureId()
             ).map()
         }
 
@@ -57,7 +59,8 @@ class ReservesRepositoryImpl(
             nomenclatureGroupId = params?.getNomenclatureGroupId(),
             receptionItemCategoryId = params?.getReceptionCategoryId(),
             locationIds = selectedLocationIds,
-            hideZeroReserves = hideZeroReserves
+            hideZeroReserves = hideZeroReserves,
+            nomenclatureId = params?.getNomenclatureId()
         )
     }
 

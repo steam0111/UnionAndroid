@@ -41,7 +41,8 @@ interface DocumentMenuStore :
         val menuDeepLevel: Int = 0,
         val fullName: String = "",
         val loading: Boolean = false,
-        val dialogType: AlertType = AlertType.NONE
+        val dialogType: AlertType = AlertType.NONE,
+        val deviceId: String = ""
     ) {
         val isBackButtonVisible: Boolean
             get() = menuDeepLevel > 0

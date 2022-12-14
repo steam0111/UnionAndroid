@@ -1,4 +1,4 @@
-package com.itrocket.union.uniqueDeviceId.store
+package com.itrocket.union.uniqueDeviceId.data
 
 data class UniqueDeviceId(
     val id: String,

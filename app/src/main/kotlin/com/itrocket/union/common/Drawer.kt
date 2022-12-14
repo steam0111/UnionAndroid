@@ -26,8 +26,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.itrocket.core.base.AppInsets
-import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.BuildConfig
 import com.itrocket.union.R
 import com.itrocket.union.ui.AppTheme
@@ -39,7 +37,8 @@ import com.itrocket.union.ui.white
 fun Drawer(
     fullName: String,
     onDestinationClicked: (type: DrawerScreenType) -> Unit,
-    screens: List<DrawerScreens>
+    screens: List<DrawerScreens>,
+    deviceId: String
 ) {
     Column(
         modifier = Modifier
@@ -71,6 +70,28 @@ fun Drawer(
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = stringResource(R.string.build_number, BuildConfig.VERSION_CODE),
+                style = AppTheme.typography.body2,
+                color = AppTheme.colors.secondaryColor
+            )
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.common_device_id),
+                style = AppTheme.typography.h6,
+                fontSize = 18.sp
+            )
+            Spacer(
+                modifier = Modifier
+                    .weight(1f)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = deviceId,
                 style = AppTheme.typography.body2,
                 color = AppTheme.colors.secondaryColor
             )
@@ -160,7 +181,8 @@ fun DrawerPreview() {
         Drawer(
             "Оглоблина Анастасия Владимимровна",
             {},
-            listOf(DrawerScreens.Settings, DrawerScreens.Sync, DrawerScreens.Logout)
+            listOf(DrawerScreens.Settings, DrawerScreens.Sync, DrawerScreens.Logout),
+            "123"
         )
     }
 }

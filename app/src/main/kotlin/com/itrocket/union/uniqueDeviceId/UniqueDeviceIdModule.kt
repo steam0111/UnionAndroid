@@ -3,8 +3,8 @@ package com.itrocket.union.uniqueDeviceId
 import android.app.backup.BackupManager
 import android.content.Context.MODE_PRIVATE
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.itrocket.union.uniqueDeviceId.store.UniqueDeviceIdRepository
-import com.itrocket.union.uniqueDeviceId.store.UniqueDeviceIdRepositoryImpl
+import com.itrocket.union.uniqueDeviceId.data.UniqueDeviceIdRepository
+import com.itrocket.union.uniqueDeviceId.data.UniqueDeviceIdRepositoryImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -37,4 +37,5 @@ object UniqueDeviceIdModule {
     }
 
     const val UNIQUE_DEVICE_ID_FILE_NAME = "UNIQUE_DEVICE_ID_FILE_NAME"
+    const val UNIQUE_DEVICE_ID_EXTERNAL_FILE_NAME = "union_app_data.union"
 }

@@ -100,6 +100,9 @@ object SyncModule {
                 orderDao = get()
             )
         }
+        factory<TerminalInfoSyncApi> {
+            TerminalInfoSyncApiImpl(terminalInfoDao = get())
+        }
         factory<NomenclatureSyncApi> {
             NomenclatureSyncApiImpl(nomenclatureDao = get())
         }

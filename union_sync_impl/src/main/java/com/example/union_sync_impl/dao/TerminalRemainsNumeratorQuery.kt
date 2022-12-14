@@ -12,8 +12,13 @@ fun sqlTerminalRemainsNumeratorQuery(
     offset: Long? = null,
     updateDate: Long? = null,
     isNonCancel: Boolean = true,
+    isFilterCount: Boolean = false,
 ): SimpleSQLiteQuery {
-    val mainQuery = "SELECT * FROM terminal_remains_numerator"
+    val mainQuery = if (isFilterCount) {
+        "SELECT COUNT(*) FROM terminal_remains_numerator"
+    } else {
+        "SELECT * FROM terminal_remains_numerator"
+    }
 
     val query = mainQuery.addFilters(
         sqlTableFilters = SqlTableFilters(

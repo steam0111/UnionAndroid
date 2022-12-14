@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.sync
 
+import android.util.Log
 import com.example.union_sync_api.entity.EnumType
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.Flow
@@ -634,7 +635,9 @@ class SyncRepository(
                     )
                 },
                 localToNetworkMapper = { localObjects ->
-                    localObjects.map { it.toTerminalRemainsNumeratorDtoV2() }
+                    localObjects.map {
+                        it.toTerminalRemainsNumeratorDtoV2()
+                    }
                 }
             )
         }.filterNot { it.isEmpty() }

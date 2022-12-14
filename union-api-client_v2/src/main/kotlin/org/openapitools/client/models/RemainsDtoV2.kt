@@ -168,7 +168,10 @@ data class RemainsDtoV2 (
     val tnwed: kotlin.String? = null,
 
     @Json(name = "invoiceNumber")
-    val invoiceNumber: kotlin.String? = null
+    val invoiceNumber: kotlin.String? = null,
+
+    @Json(name = "barcodeValue")
+    val barcodeValue: kotlin.String? = null,
 
 )
 

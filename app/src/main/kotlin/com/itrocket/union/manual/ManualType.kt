@@ -33,5 +33,6 @@ enum class ManualType(@StringRes val titleId: Int) {
     CHECKBOX_SHOW_UTILIZED(R.string.show_utilized),
     CHECKBOX_HIDE_ZERO_RESERVES(R.string.hide_zero_values),
     DOCUMENT_CODE(R.string.document_code_filter_title),
-    INVENTORY_CODE(R.string.inventory_code_filter_title)
+    INVENTORY_CODE(R.string.inventory_code_filter_title),
+    NOMENCLATURE_CODE(R.string.reserves_detail_nomenclature_code)
 }
