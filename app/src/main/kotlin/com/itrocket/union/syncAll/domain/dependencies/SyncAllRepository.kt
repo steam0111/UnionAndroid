@@ -2,6 +2,7 @@ package com.itrocket.union.syncAll.domain.dependencies
 
 import com.example.union_sync_api.entity.SyncEvent
 import com.example.union_sync_api.entity.SyncInfoType
+import java.io.File
 import kotlinx.coroutines.flow.Flow
 
 interface SyncAllRepository {
