@@ -238,6 +238,9 @@ object SyncModule {
             get<UnionDatabase>().nomenclatureGroupDao()
         }
         factory {
+            get<UnionDatabase>().accountingObjectUnionImageDao()
+        }
+        factory {
             get<UnionDatabase>().nomenclatureDao()
         }
         factory {
