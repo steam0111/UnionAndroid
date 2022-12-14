@@ -1,5 +1,6 @@
 package org.openapitools.client.custom_api
 
+import okhttp3.MultipartBody
 import org.openapitools.client.models.ExportPartBufferInformationV2
 import org.openapitools.client.models.GetResponseV2
 import org.openapitools.client.models.ImportPartDtoV2
@@ -8,7 +9,9 @@ import org.openapitools.client.models.SyncInformationV2
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface SyncControllerApi {
@@ -100,6 +103,10 @@ interface SyncControllerApi {
      */
     @POST("api/sync")
     suspend fun apiSyncPost(@Body starSyncRequestV2: StarSyncRequestV2): SyncInformationV2
+
+    @Multipart
+    @POST("api/sync/{syncId}/import-files")
+    suspend fun importFiles(@Path("syncId") syncId: String, @Part filePart: MultipartBody.Part)
 
     /**
      *

@@ -34,7 +34,7 @@ object SyncAllModule {
         }
 
         factory {
-            SyncAllInteractor(get(), get(), get(), androidContext())
+            SyncAllInteractor(get(), get(), get(), get(), get(), androidContext())
         }
 
         factory { (args: SyncAllComposeFragmentArgs) ->

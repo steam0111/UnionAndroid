@@ -84,6 +84,16 @@ class AccountingObjectDetailRepositoryImpl(
         )
     }
 
+    override suspend fun getAccountingObjectImagesByUpdateDate(updateDate: Long): List<ImageDomain> {
+        return withContext(coreDispatchers.io) {
+            accountingObjectUnionImageSyncApi.getAccountingObjectImages(updateDate = updateDate)
+                .map {
+                    val imageFile = imageRepository.getImageFromName(it.unionImageId)
+                    it.toDomain(imageFile)
+                }
+        }
+    }
+
     override suspend fun getAccountingObjectImagesFlow(accountingObjectId: String): Flow<List<ImageDomain>> {
         return withContext(coreDispatchers.io) {
             val images =

@@ -6,9 +6,12 @@ import com.example.union_sync_api.entity.SyncEvent
 import com.example.union_sync_api.entity.SyncInfoType
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.R
+import com.itrocket.union.accountingObjectDetail.domain.dependencies.AccountingObjectDetailRepository
 import com.itrocket.union.authMain.domain.dependencies.AuthMainRepository
+import com.itrocket.union.image.domain.dependencies.ImageRepository
 import com.itrocket.union.syncAll.domain.dependencies.SyncAllRepository
 import com.itrocket.union.utils.getFullDateFromMillis
+import java.io.File
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
@@ -16,6 +19,8 @@ class SyncAllInteractor(
     private val repository: SyncAllRepository,
     private val authMainRepository: AuthMainRepository,
     private val coreDispatchers: CoreDispatchers,
+    private val imageRepository: ImageRepository,
+    private val accountingObjectDetailRepository: AccountingObjectDetailRepository,
     private val applicationContext: Context
 ) {
     suspend fun getLastSyncDate(): String {
@@ -93,5 +98,16 @@ class SyncAllInteractor(
             mutableEvents.add(0, newEvent)
             mutableEvents
         }
+    }
+
+    suspend fun getSyncFiles(): List<File> {
+        val lastSyncDate = repository.getLastSyncTime()
+        val syncImages =
+            accountingObjectDetailRepository.getAccountingObjectImagesByUpdateDate(lastSyncDate)
+        return syncImages.mapNotNull { it.imageFile }
+    }
+
+    suspend fun syncFiles(files: List<File>, syncId: String) {
+        repository.syncFile(files = files, syncId = syncId)
     }
 }

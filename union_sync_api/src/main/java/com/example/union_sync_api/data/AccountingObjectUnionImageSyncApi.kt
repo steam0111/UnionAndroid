@@ -8,6 +8,11 @@ interface AccountingObjectUnionImageSyncApi {
 
     suspend fun getAccountingObjectImagesByIdFlow(accountingObjectId: String): Flow<List<AccountingObjectUnionImageSyncEntity>>
 
+    suspend fun getAccountingObjectImages(
+        accountingObjectId: String? = null,
+        updateDate: Long? = null
+    ): List<AccountingObjectUnionImageSyncEntity>
+
     suspend fun saveAccountingObjectImage(syncEntity: AccountingObjectUnionImageSyncEntity)
 
     suspend fun deleteAccountingObjectImage(imageId: String)

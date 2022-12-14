@@ -4,6 +4,7 @@ import com.example.union_sync_api.data.AccountingObjectUnionImageSyncApi
 import com.example.union_sync_api.entity.AccountingObjectImageMainUpdate
 import com.example.union_sync_api.entity.AccountingObjectUnionImageSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectUnionImageDao
+import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.dao.sqlAccountingObjectUnionImageQuery
 import com.example.union_sync_impl.data.mapper.toDb
 import com.example.union_sync_impl.data.mapper.toSyncEntity
@@ -19,6 +20,18 @@ class AccountingObjectUnionImageSyncApiImpl(private val accountingObjectUnionIma
             .map {
                 it.map { it.toSyncEntity() }
             }
+    }
+
+    override suspend fun getAccountingObjectImages(
+        accountingObjectId: String?,
+        updateDate: Long?
+    ): List<AccountingObjectUnionImageSyncEntity> {
+        return accountingObjectUnionImageDao.getAll(
+            sqlAccountingObjectUnionImageQuery(
+                accountingObjectId = accountingObjectId,
+                updateDate = updateDate
+            )
+        ).map { it.toSyncEntity() }
     }
 
     override suspend fun saveAccountingObjectImage(syncEntity: AccountingObjectUnionImageSyncEntity) {

@@ -135,7 +135,9 @@ class SyncAllStoreFactory(
         private suspend fun syncAll(getState: () -> SyncAllStore.State) {
             dispatch(Loading(true))
             catchException {
-                syncAllInteractor.syncAll()
+                val syncFiles = syncAllInteractor.getSyncFiles()
+                val syncId = syncAllInteractor.syncAll()
+                syncAllInteractor.syncFiles(files = syncFiles, syncId = syncId)
 
                 val isSyncSuccess = !syncAllInteractor.isSyncEventHasError(getState().syncEvents)
                 dispatch(Result.IsSyncSuccess(isSyncSuccess))
