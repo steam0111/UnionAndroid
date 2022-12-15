@@ -8,7 +8,7 @@ import java.io.File
 
 @Parcelize
 class ImageDomain(
-    val imagePath: String,
+    val imageId: String,
     val isMainImage: Boolean,
 ) : Parcelable {
     @IgnoredOnParcel
@@ -16,22 +16,26 @@ class ImageDomain(
         private set
 
     fun copy(
-        imagePath: String = this.imagePath,
         isMainImage: Boolean = this.isMainImage,
-        imageFile: File? = this.imageFile
+        imageFile: File? = this.imageFile,
+        imageId: String = this.imageId
     ): ImageDomain {
-        return create(imagePath = imagePath, isMainImage = isMainImage, imageFile = imageFile)
+        return create(
+            isMainImage = isMainImage,
+            imageFile = imageFile,
+            imageId = imageId
+        )
     }
 
     companion object {
         fun create(
-            imagePath: String,
             isMainImage: Boolean,
+            imageId: String,
             imageFile: File?
         ): ImageDomain {
             return ImageDomain(
-                imagePath = imagePath,
                 isMainImage = isMainImage,
+                imageId = imageId
             ).apply {
                 this.imageFile = imageFile
             }

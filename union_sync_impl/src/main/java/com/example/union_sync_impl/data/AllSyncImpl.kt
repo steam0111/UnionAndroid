@@ -1,5 +1,7 @@
 package com.example.union_sync_impl.data
 
+import android.content.Context
+import com.example.union_sync_api.data.AccountingObjectUnionImageSyncApi
 import com.example.union_sync_api.data.AllSyncApi
 import com.example.union_sync_api.data.SyncEventsApi
 import com.example.union_sync_api.entity.SyncDirection
@@ -35,7 +37,9 @@ class AllSyncImpl(
     private val coreDispatchers: CoreDispatchers,
     private val syncDao: NetworkSyncDao,
     private val terminalInfoDao: TerminalInfoDao,
-    private val syncEventsApi: SyncEventsApi
+    private val syncEventsApi: SyncEventsApi,
+    private val accountingObjectUnionImageSyncApi: AccountingObjectUnionImageSyncApi,
+    private val context: Context
 ) : AllSyncApi {
 
     override suspend fun syncAll() = withContext(coreDispatchers.io) {
@@ -258,7 +262,7 @@ class AllSyncImpl(
             Timber.tag(SYNC_TAG).d("completed export from server to local")
         }
 
-        syncFile(files = listOf(), syncId = syncId)
+        syncFile(files = getFilesForExport(), syncId = syncId)
 
         syncEventsApi.emitSyncEvent(
             SyncEvent.Measured(
@@ -312,9 +316,25 @@ class AllSyncImpl(
         )
     }
 
+    private suspend fun getFilesForExport(): List<File> {
+        return accountingObjectUnionImageSyncApi.getAccountingObjectImages(updateDate = getLastSyncTime())
+            .map {
+                File(getImagesDirectory().absolutePath + "/${it.unionImageId}")
+            }
+    }
+
+    private fun getImagesDirectory(): File {
+        val directory = File(context.filesDir, IMAGES_DIRECTORY)
+        if (!directory.exists()) {
+            directory.mkdirs()
+        }
+        return directory
+    }
+
     companion object {
         const val MULTIPART_NAME = "file"
         const val IMAGE_MIME_TYPE = "image/*"
         const val SYNC_TAG = "SYNC_TAG"
+        private const val IMAGES_DIRECTORY = "images"
     }
 }

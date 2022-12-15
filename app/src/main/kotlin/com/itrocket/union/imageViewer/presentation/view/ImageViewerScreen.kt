@@ -198,39 +198,39 @@ fun ImageViewerScreenPreview() {
         page = 4,
         images = listOf(
             ImageDomain(
-                imagePath = "",
+                imageId = "",
                 isMainImage = false
             ),
             ImageDomain(
-                imagePath = "",
+                imageId = "",
                 isMainImage = false
             ),
             ImageDomain(
-                imagePath = "",
+                imageId = "",
                 isMainImage = false
             ),
             ImageDomain(
-                imagePath = "",
+                imageId = "",
                 isMainImage = false
             ),
             ImageDomain(
-                imagePath = "",
+                imageId = "",
                 isMainImage = true
             ),
             ImageDomain(
-                imagePath = "",
+                imageId = "",
                 isMainImage = false
             ),
             ImageDomain(
-                imagePath = "",
+                imageId = "",
                 isMainImage = false
             ),
             ImageDomain(
-                imagePath = "",
+                imageId = "",
                 isMainImage = false
             ),
             ImageDomain(
-                imagePath = "",
+                imageId = "",
                 isMainImage = false
             ),
         )

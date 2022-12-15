@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.util.Log
 import androidx.core.content.FileProvider
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.BuildConfig
@@ -19,10 +18,14 @@ class ImageRepositoryImpl(
     private val coreDispatchers: CoreDispatchers
 ) : ImageRepository {
 
+    override suspend fun getImageFromName(imageName: String): File {
+        return File(getImagesDirectory().absolutePath + "/$imageName")
+    }
+
     override suspend fun getImagesFromImagesDomain(images: List<ImageDomain>): List<ImageDomain> {
         return withContext(coreDispatchers.io) {
             images.map {
-                it.copy(imageFile = File(it.imagePath))
+                it.copy(imageFile = getImageFromName(it.imageId))
             }
         }
     }
@@ -32,7 +35,8 @@ class ImageRepositoryImpl(
             val tmpFile =
                 File.createTempFile(
                     TMP_FILE_NAME,
-                    TMP_FILE_MIME_TYPE, applicationContext.cacheDir
+                    TMP_FILE_MIME_TYPE,
+                    applicationContext.cacheDir
                 ).apply {
                     createNewFile()
                     deleteOnExit()
@@ -48,9 +52,11 @@ class ImageRepositoryImpl(
 
     override suspend fun saveImage(imageUri: Uri): ImageDomain {
         return withContext(coreDispatchers.io) {
-            val directory = getWhiteLabelMediaDirectory()
+            val directory = getImagesDirectory()
 
-            val newImageFile = File(directory.absolutePath, System.currentTimeMillis().toString())
+
+            val fileName = System.currentTimeMillis().toString()
+            val newImageFile = File(directory.absolutePath, fileName)
 
             newImageFile.createNewFile()
 
@@ -68,14 +74,14 @@ class ImageRepositoryImpl(
             }
 
             ImageDomain.create(
-                imagePath = newImageFile.absolutePath,
                 isMainImage = false,
-                imageFile = newImageFile
+                imageFile = newImageFile,
+                imageId = fileName
             )
         }
     }
 
-    private fun getWhiteLabelMediaDirectory(): File {
+    private fun getImagesDirectory(): File {
         val directory = File(applicationContext.filesDir, IMAGES_DIRECTORY)
         if (!directory.exists()) {
             directory.mkdirs()
