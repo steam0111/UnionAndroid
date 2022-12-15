@@ -10,5 +10,6 @@ data class ReserveDetailSyncEntity(
     val nomenclatureGroupSyncEntity: NomenclatureGroupSyncEntity?,
     val orderSyncEntity: OrderSyncEntity?,
     val receptionItemCategorySyncEntity: ReceptionItemCategorySyncEntity?,
-    val balanceUnitSyncEntities: List<StructuralSyncEntity>?
+    val balanceUnitSyncEntities: List<StructuralSyncEntity>?,
+    val labelType: LabelTypeSyncEntity?
 )

@@ -44,7 +44,8 @@ data class ObjectInfoDomain(
     val valueRes: Int? = null,
     val name: String? = null,
     val filedType: ObjectInfoType = ObjectInfoType.OTHER,
-    val fieldBehavior: ObjectInfoBehavior = ObjectInfoBehavior.DEFAULT
+    val fieldBehavior: ObjectInfoBehavior = ObjectInfoBehavior.DEFAULT,
+    val canEdit: Boolean = true
 ) : Parcelable
 
 

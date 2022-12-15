@@ -61,6 +61,7 @@ class ReserveDb(
     val invoiceNumber: String?,
     val subName: String?,
     val barcodeValue: String?,
+    val labelTypeId: String? = null,
     insertDate: Long?,
     updateDate: Long?,
     userInserted: String?,

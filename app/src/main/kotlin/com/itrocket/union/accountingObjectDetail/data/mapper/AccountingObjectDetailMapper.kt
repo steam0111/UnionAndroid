@@ -1,11 +1,9 @@
 package com.itrocket.union.accountingObjectDetail.data.mapper
 
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
-import com.example.union_sync_api.entity.AccountingObjectLabelType
+import com.example.union_sync_api.entity.LabelType
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectWriteOff
-import com.example.union_sync_api.entity.EnumSyncEntity
-import com.example.union_sync_api.entity.LabelTypeSyncEntity
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.data.mapper.toDomainStatus
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
@@ -283,7 +281,7 @@ fun AccountingObjectDomain.toAccountingObjectScanningData() = AccountingObjectSc
 )
 
 fun AccountingObjectDomain.toAccountingObjectLabelType(labelTypeId: String) =
-    AccountingObjectLabelType(id = id, labelTypeId = labelTypeId)
+    LabelType(id = id, labelTypeId = labelTypeId)
 
 fun AccountingObjectDomain.toAccountingObjectWriteOff() =
     AccountingObjectWriteOff(id = id, forWriteOff = true)

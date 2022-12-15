@@ -10,15 +10,14 @@ import androidx.navigation.fragment.navArgs
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
-import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailStore
-import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
+import com.itrocket.union.labelType.presentation.store.LabelTypeResult
+import com.itrocket.union.labelType.presentation.view.LabelTypeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.reserveDetail.ReserveDetailModule.RESERVEDETAIL_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.reserveDetail.presentation.store.ReserveDetailStore
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -52,6 +51,17 @@ class ReserveDetailComposeFragment :
                         )
                     }
                 }
+            ),
+            FragmentResult(
+                resultCode = LabelTypeComposeFragment.LABEL_TYPE_RESULT_CODE,
+                resultLabel = LabelTypeComposeFragment.LABEL_TYPE_RESULT_LABEL,
+                resultAction = {
+                    (it as LabelTypeResult?)?.let {
+                        accept(
+                            ReserveDetailStore.Intent.OnLabelTypeSelected(it.labelTypeId)
+                        )
+                    }
+                }
             )
         )
 
@@ -81,6 +91,9 @@ class ReserveDetailComposeFragment :
                 },
                 onWriteEpcDismiss = {
                     accept(ReserveDetailStore.Intent.OnDismissed)
+                },
+                onLabelTypeEditClickListener = {
+                    accept(ReserveDetailStore.Intent.OnLabelTypeEditClicked)
                 }
             )
         }

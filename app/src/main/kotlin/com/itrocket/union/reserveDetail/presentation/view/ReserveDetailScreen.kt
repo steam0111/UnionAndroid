@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
 import com.itrocket.union.R
+import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoBehavior
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -40,6 +41,7 @@ import com.itrocket.union.ui.ExpandedInfoField
 import com.itrocket.union.ui.InfoDialog
 import com.itrocket.union.ui.LoadingContent
 import com.itrocket.union.ui.ReadingModeBottomBar
+import com.itrocket.union.utils.ifBlankOrNull
 import com.itrocket.utils.clickableUnbounded
 
 @Composable
@@ -52,6 +54,7 @@ fun ReserveDetailScreen(
     onDocumentAddClickListener: () -> Unit,
     onMarkingClicked: () -> Unit,
     onWriteEpcDismiss: () -> Unit,
+    onLabelTypeEditClickListener: () -> Unit,
 ) {
     AppTheme {
         Scaffold(
@@ -88,7 +91,8 @@ fun ReserveDetailScreen(
                         listInfo = state.reserve?.listInfo.orEmpty(),
                         showButtons = state.showButtons,
                         canUpdate = state.canUpdate,
-                        onMarkingClicked = onMarkingClicked
+                        onMarkingClicked = onMarkingClicked,
+                        onLabelTypeEditClickListener = onLabelTypeEditClickListener
                     )
                 }
             }
@@ -151,15 +155,34 @@ private fun ListInfo(
     listInfo: List<ObjectInfoDomain>,
     showButtons: Boolean,
     canUpdate: Boolean,
-    onMarkingClicked: () -> Unit
+    onMarkingClicked: () -> Unit,
+    onLabelTypeEditClickListener: () -> Unit
 ) {
     LazyColumn {
-        items(listInfo) {
-            ExpandedInfoField(
-                label = it.title?.let { stringResource(id = it) }.orEmpty(),
-                value = it.value.orEmpty(),
-                modifier = Modifier.fillMaxWidth()
-            )
+        itemsIndexed(listInfo) { index, item ->
+            val valueRes = item.valueRes?.let { stringResource(id = it) }.orEmpty()
+            val label = item.name ?: item.title?.let { stringResource(id = it) }.orEmpty()
+            val value = item.value.ifBlankOrNull { valueRes }
+
+            when (item.fieldBehavior) {
+                ObjectInfoBehavior.DEFAULT -> {
+                    ExpandedInfoField(
+                        label = label,
+                        value = value,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+                ObjectInfoBehavior.LABEL_TYPE -> {
+                    ExpandedInfoField(
+                        label = label,
+                        value = value,
+                        modifier = Modifier.fillMaxWidth(),
+                        canEdit = item.canEdit,
+                        onEditClickListener = onLabelTypeEditClickListener
+                    )
+                }
+            }
         }
         if (showButtons && canUpdate) {
             item {
@@ -206,5 +229,5 @@ fun ReserveDetailScreenPreview() {
             ), itemsCount = 1200L,
             barcodeValue = null
         )
-    ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {})
+    ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {})
 }

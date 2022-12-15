@@ -165,6 +165,10 @@
             android:name="ReserveDetailComposeFragmentArgs"
             app:argType="com.itrocket.union.reserveDetail.presentation.store.ReserveDetailArguments"
             app:nullable="false" />
+
+        <action
+            android:id="@+id/to_labelType"
+            app:destination="@id/labelType" />
     </fragment>
 
     <fragment

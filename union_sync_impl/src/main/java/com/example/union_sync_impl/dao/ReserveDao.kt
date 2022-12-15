@@ -9,6 +9,7 @@ import androidx.room.Update
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.union_sync_impl.entity.FullReserve
 import com.example.union_sync_impl.entity.ReserveDb
+import com.example.union_sync_impl.entity.ReserveLabelTypeUpdate
 import com.example.union_sync_impl.entity.ReserveUpdate
 
 @Dao
@@ -61,7 +62,13 @@ interface ReserveDao {
                 "locationTypes.id AS location_type_id, " +
                 "locationTypes.catalogItemName AS location_type_catalogItemName, " +
                 "locationTypes.name AS location_type_name, " +
-                "locationTypes.parentId AS location_type_parentId " +
+                "locationTypes.parentId AS location_type_parentId, " +
+                "" +
+                "label_type.id AS label_type_id, " +
+                "label_type.name AS label_type_name," +
+                "label_type.description AS label_type_description," +
+                "label_type.code as label_type_code," +
+                "label_type.catalogItemName AS label_type_catalogItemName " +
                 "" +
                 "FROM reserves " +
                 "LEFT JOIN location ON reserves.locationId = location.id " +
@@ -70,6 +77,7 @@ interface ReserveDao {
                 "LEFT JOIN nomenclature_group ON reserves.nomenclatureGroupId = nomenclature_group.id " +
                 "LEFT JOIN reception_item_category ON reserves.receptionItemCategoryId = reception_item_category.id " +
                 "LEFT JOIN locationTypes ON reserves.locationTypeId = locationTypes.id " +
+                "LEFT JOIN label_type ON reserves.labelTypeId = label_type.id " +
                 "LEFT JOIN structural ON reserves.structuralId = structural.id " +
                 "WHERE reserves.id = :id LIMIT 1"
     )
@@ -80,4 +88,7 @@ interface ReserveDao {
 
     @Update(entity = ReserveDb::class)
     suspend fun update(reserveUpdates: List<ReserveUpdate>)
+
+    @Update(entity = ReserveDb::class)
+    suspend fun update(ReserveDb: ReserveLabelTypeUpdate)
 }

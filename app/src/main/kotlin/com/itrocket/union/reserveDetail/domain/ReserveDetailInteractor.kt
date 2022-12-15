@@ -10,6 +10,9 @@ import com.itrocket.union.terminalRemainsNumerator.domain.TerminalRemainsNumerat
 import com.itrocket.union.terminalRemainsNumerator.domain.TerminalRemainsNumeratorRepository
 import com.itrocket.union.uniqueDeviceId.data.UniqueDeviceIdRepository
 import kotlinx.coroutines.withContext
+import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
+import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 
 class ReserveDetailInteractor(
     private val repository: ReservesRepository,
@@ -18,10 +21,15 @@ class ReserveDetailInteractor(
     private val terminalInfoRepository: TerminalInfoRepository,
     private val uniqueDeviceIdRepository: UniqueDeviceIdRepository,
     private val sgtinFormatter: SgtinFormatter,
-    private val coreDispatchers: CoreDispatchers
+    private val coreDispatchers: CoreDispatchers,
+    private val unionPermissionsInteractor: UnionPermissionsInteractor,
 ) {
     suspend fun getReserveById(id: String) = withContext(coreDispatchers.io) {
-        repository.getReserveById(id)
+        repository.getReserveById(
+            id = id,
+            canReadLabelType = unionPermissionsInteractor.canRead(UnionPermission.LABEL_TYPE),
+            canUpdateLabelType = unionPermissionsInteractor.canUpdate(UnionPermission.LABEL_TYPE)
+        )
     }
 
     suspend fun getTerminalRemainsNumeratorById(remainsId: String) =
@@ -32,7 +40,9 @@ class ReserveDetailInteractor(
                 val newNumerator = TerminalRemainsNumeratorDomain(
                     actualNumber = 0,
                     remainsId = remainsId,
-                    terminalPrefix = requireNotNull(terminalInfoRepository.getTerminalPrefix()?.toInt()),
+                    terminalPrefix = requireNotNull(
+                        terminalInfoRepository.getTerminalPrefix()?.toInt()
+                    ),
                     terminalId = uniqueDeviceIdRepository.getUniqueDeviceId().id
                 )
                 terminalRemainsNumeratorRepository.createTerminalRemainsNumerator(
@@ -69,4 +79,13 @@ class ReserveDetailInteractor(
         rfid
     }
 
+    suspend fun updateLabelType(
+        reserve: ReservesDomain,
+        labelTypeId: String
+    ): ReservesDomain {
+        return withContext(coreDispatchers.io) {
+            repository.updateLabelType(reserve = reserve, labelTypeId = labelTypeId)
+            getReserveById(reserve.id)
+        }
+    }
 }
