@@ -146,6 +146,8 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
+                get(),
+                get(),
                 get()
             )
         }
@@ -163,6 +165,9 @@ object SyncModule {
                 simpleDao = get(),
                 vocabularyDao = get()
             )
+        }
+        factory<AccountingObjectUnionImageSyncApi> {
+            AccountingObjectUnionImageSyncApiImpl(accountingObjectUnionImageDao = get())
         }
         single {
             Room.databaseBuilder(
