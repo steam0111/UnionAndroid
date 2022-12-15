@@ -35,9 +35,15 @@ interface ReservesRepository {
         hideZeroReserves: Boolean
     ): Long
 
-    suspend fun getReserveById(id: String): ReservesDomain
+    suspend fun getReserveById(
+        id: String,
+        canReadLabelType: Boolean,
+        canUpdateLabelType: Boolean
+    ): ReservesDomain
 
     suspend fun updateReserves(reserves: List<ReserveUpdateSyncEntity>)
 
     suspend fun insertAll(reserves: List<ReserveSyncEntity>)
+
+    suspend fun updateLabelType(reserve: ReservesDomain, labelTypeId: String)
 }

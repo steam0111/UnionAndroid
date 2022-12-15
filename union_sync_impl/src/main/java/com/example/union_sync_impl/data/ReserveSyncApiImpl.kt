@@ -3,6 +3,7 @@ package com.example.union_sync_impl.data
 import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.ReserveSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
+import com.example.union_sync_api.entity.LabelType
 import com.example.union_sync_api.entity.ReserveDetailSyncEntity
 import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
@@ -11,10 +12,12 @@ import com.example.union_sync_api.entity.ReserveUpdateSyncEntity
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.StructuralDao
 import com.example.union_sync_impl.dao.sqlReserveQuery
+import com.example.union_sync_impl.data.mapper.toAccountingObjectLabelTypeUpdate
 import com.example.union_sync_impl.data.mapper.toDetailSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
 import com.example.union_sync_impl.data.mapper.toReserveDb
+import com.example.union_sync_impl.data.mapper.toReserveLabelTypeUpdate
 import com.example.union_sync_impl.data.mapper.toReserveUpdate
 import com.example.union_sync_impl.data.mapper.toStructuralSyncEntity
 
@@ -107,5 +110,9 @@ class ReserveSyncApiImpl(
 
     override suspend fun insertAll(reserves: List<ReserveSyncEntity>) {
         reserveDao.insertAll(reserves.map { it.toReserveDb() })
+    }
+
+    override suspend fun updateLabelType(labelType: LabelType) {
+        reserveDao.update(labelType.toReserveLabelTypeUpdate())
     }
 }

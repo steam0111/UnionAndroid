@@ -24,4 +24,6 @@ class FullReserve(
     val receptionItemCategoryDb: ReceptionItemCategoryDb?,
     @Embedded(prefix = "structural_")
     val structuralDb: StructuralDb?,
+    @Embedded(prefix = "label_type_")
+    val labelTypeDb: LabelTypeDb?
 )

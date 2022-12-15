@@ -7,7 +7,7 @@ import com.example.union_sync_api.data.EnumsSyncApi
 import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
-import com.example.union_sync_api.entity.AccountingObjectLabelType
+import com.example.union_sync_api.entity.LabelType
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
@@ -243,7 +243,7 @@ class AccountingObjectSyncApiImpl(
         accountingObjectsDao.update(accountingObject.toAccountingObjectScanningUpdate())
     }
 
-    override suspend fun updateAccountingObjectLabelType(accountingObject: AccountingObjectLabelType) {
+    override suspend fun updateAccountingObjectLabelType(accountingObject: LabelType) {
         accountingObjectsDao.update(accountingObject.toAccountingObjectLabelTypeUpdate())
     }
 }

@@ -11,6 +11,7 @@ import com.itrocket.union.manual.getNomenclatureId
 import com.itrocket.union.manual.getNomenclatureGroupId
 import com.itrocket.union.manual.getReceptionCategoryId
 import com.itrocket.union.reserveDetail.data.mapper.map
+import com.itrocket.union.reserveDetail.data.mapper.toLabelType
 import com.itrocket.union.reserves.data.mapper.map
 import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
@@ -64,8 +65,12 @@ class ReservesRepositoryImpl(
         )
     }
 
-    override suspend fun getReserveById(id: String): ReservesDomain {
-        return syncApi.getById(id).map()
+    override suspend fun getReserveById(
+        id: String,
+        canReadLabelType: Boolean,
+        canUpdateLabelType: Boolean
+    ): ReservesDomain {
+        return syncApi.getById(id).map(canReadLabelType, canUpdateLabelType)
     }
 
     override suspend fun getReservesByIds(reservesIds: List<String>): List<ReserveSyncEntity> {
@@ -82,5 +87,14 @@ class ReservesRepositoryImpl(
 
     override suspend fun insertAll(reserves: List<ReserveSyncEntity>) {
         return syncApi.insertAll(reserves)
+    }
+
+    override suspend fun updateLabelType(
+        reserve: ReservesDomain,
+        labelTypeId: String
+    ) {
+        return syncApi.updateLabelType(
+            reserve.toLabelType(labelTypeId = labelTypeId)
+        )
     }
 }

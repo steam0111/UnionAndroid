@@ -1,14 +1,11 @@
 package com.itrocket.union.reserveDetail.presentation.store
 
-import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.itrocket.core.base.BaseExecutor
-import com.itrocket.union.reserveDetail.domain.ReserveDetailInteractor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.sgtin.IncorrectBarcodeException
 import com.itrocket.union.R
@@ -17,11 +14,11 @@ import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.readingMode.domain.ReadingModeInteractor
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
+import com.itrocket.union.reserveDetail.domain.ReserveDetailInteractor
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.terminalRemainsNumerator.domain.TerminalRemainsNumeratorDomain
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
-import com.itrocket.union.utils.ifBlankOrNull
 import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
@@ -102,6 +99,31 @@ class ReserveDetailStoreFactory(
                 is ReserveDetailStore.Intent.OnWriteEpcHandled -> onWriteEpcHandled(getState = getState)
                 is ReserveDetailStore.Intent.OnErrorHandled -> handleError(throwable = intent.error)
                 ReserveDetailStore.Intent.OnDismissed -> onDismissed()
+                ReserveDetailStore.Intent.OnLabelTypeEditClicked -> onLabelTypeEditClicked()
+                is ReserveDetailStore.Intent.OnLabelTypeSelected -> onLabelTypeSelected(
+                    getState = getState,
+                    labelTypeId = intent.labelTypeId
+                )
+            }
+        }
+
+        private fun onLabelTypeEditClicked() {
+            publish(ReserveDetailStore.Label.ShowLabelTypes)
+        }
+
+        private suspend fun onLabelTypeSelected(
+            getState: () -> ReserveDetailStore.State,
+            labelTypeId: String
+        ) {
+            getState().reserve?.let {
+                dispatch(
+                    Result.Reserve(
+                        reserveDetailInteractor.updateLabelType(
+                            reserve = it,
+                            labelTypeId = labelTypeId
+                        )
+                    )
+                )
             }
         }
 

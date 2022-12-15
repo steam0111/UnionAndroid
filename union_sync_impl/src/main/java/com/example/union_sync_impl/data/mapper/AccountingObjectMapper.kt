@@ -3,7 +3,7 @@ package com.example.union_sync_impl.data.mapper
 import com.example.union_sync_api.entity.AccountingObjectAdditionalFieldSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectCharacteristicSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
-import com.example.union_sync_api.entity.AccountingObjectLabelType
+import com.example.union_sync_api.entity.LabelType
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
@@ -254,5 +254,5 @@ fun AccountingObjectScanningData.toAccountingObjectScanningUpdate() =
         factoryNumber = factoryNumber
     )
 
-fun AccountingObjectLabelType.toAccountingObjectLabelTypeUpdate() =
+fun LabelType.toAccountingObjectLabelTypeUpdate() =
     AccountingObjectLabelTypeUpdate(id = id, labelTypeId = labelTypeId)

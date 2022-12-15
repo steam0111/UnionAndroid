@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.data.mapper
 
+import com.example.union_sync_api.entity.LabelType
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.ReserveDetailSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
@@ -7,6 +8,7 @@ import com.example.union_sync_api.entity.ReserveUpdateSyncEntity
 import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.entity.FullReserve
 import com.example.union_sync_impl.entity.ReserveDb
+import com.example.union_sync_impl.entity.ReserveLabelTypeUpdate
 import com.example.union_sync_impl.entity.ReserveUpdate
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import com.example.union_sync_impl.utils.getStringDateFromMillis
@@ -36,7 +38,8 @@ fun RemainsDtoV2.toReserveDb(): ReserveDb {
         subName = subName,
         traceable = traceable ?: false,
         cancel = deleted,
-        barcodeValue = barcodeValue
+        barcodeValue = barcodeValue,
+        labelTypeId = labelTypeId
     )
 }
 
@@ -59,7 +62,8 @@ fun ReserveDb.toRemainsDtoV2(): RemainsDtoV2 {
         userUpdated = userUpdated,
         userInserted = userInserted,
         dateInsert = getStringDateFromMillis(insertDate),
-        barcodeValue = barcodeValue
+        barcodeValue = barcodeValue,
+        labelTypeId = labelTypeId
     )
 }
 
@@ -131,7 +135,11 @@ fun FullReserve.toSyncEntity(location: List<LocationSyncEntity>?): ReserveSyncEn
         structuralId = structuralDb?.id,
         receptionDocumentNumber = reserveDb.receptionDocumentNumber,
         unitPrice = reserveDb.unitPrice,
-        locationSyncEntity = location ?: listOfNotNull(locationDb?.toLocationSyncEntity(locationTypeDb)),
+        locationSyncEntity = location ?: listOfNotNull(
+            locationDb?.toLocationSyncEntity(
+                locationTypeDb
+            )
+        ),
         userUpdated = reserveDb.userUpdated,
         userInserted = reserveDb.userInserted,
         invoiceNumber = reserveDb.invoiceNumber,
@@ -143,7 +151,11 @@ fun FullReserve.toSyncEntity(location: List<LocationSyncEntity>?): ReserveSyncEn
     )
 }
 
-fun FullReserve.toDetailSyncEntity(balanceUnits: List<StructuralSyncEntity>?, structurals: List<StructuralSyncEntity>?, location: List<LocationSyncEntity>?): ReserveDetailSyncEntity {
+fun FullReserve.toDetailSyncEntity(
+    balanceUnits: List<StructuralSyncEntity>?,
+    structurals: List<StructuralSyncEntity>?,
+    location: List<LocationSyncEntity>?
+): ReserveDetailSyncEntity {
     return ReserveDetailSyncEntity(
         reserveSyncEntity = reserveDb.toSyncEntity(location),
         locationSyncEntity = location,
@@ -154,7 +166,8 @@ fun FullReserve.toDetailSyncEntity(balanceUnits: List<StructuralSyncEntity>?, st
         orderSyncEntity = orderDb?.toSyncEntity(),
         receptionItemCategorySyncEntity = receptionItemCategoryDb?.toSyncEntity(),
         structuralSyncEntities = structurals,
-        balanceUnitSyncEntities = balanceUnits
+        balanceUnitSyncEntities = balanceUnits,
+        labelType = labelTypeDb?.toSyncEntity()
     )
 }
 
@@ -165,3 +178,6 @@ fun ReserveUpdateSyncEntity.toReserveUpdate() = ReserveUpdate(
     updateDate = System.currentTimeMillis(),
     userUpdated = userUpdated
 )
+
+fun LabelType.toReserveLabelTypeUpdate() =
+    ReserveLabelTypeUpdate(id = id, labelTypeId = labelTypeId)

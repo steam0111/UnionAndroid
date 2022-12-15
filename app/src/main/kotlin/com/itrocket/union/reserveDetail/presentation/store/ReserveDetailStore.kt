@@ -3,14 +3,18 @@ package com.itrocket.union.reserveDetail.presentation.store
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import com.itrocket.core.navigation.GoBackNavigationLabel
+import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
+import com.itrocket.core.navigation.ForwardNavigationLabel
+import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.alertType.AlertType
+import com.itrocket.union.labelType.presentation.store.LabelTypeArguments
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
+import com.itrocket.union.reserveDetail.presentation.view.ReserveDetailComposeFragmentDirections
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.terminalRemainsNumerator.domain.TerminalRemainsNumeratorDomain
 
@@ -30,6 +34,8 @@ interface ReserveDetailStore :
         object OnDocumentAddClicked : Intent()
         object OnDismissed : Intent()
         data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
+        object OnLabelTypeEditClicked : Intent()
+        data class OnLabelTypeSelected(val labelTypeId: String) : Intent()
     }
 
     data class State(
@@ -57,6 +63,13 @@ interface ReserveDetailStore :
 
             override val fragment: Fragment
                 get() = ReadingModeComposeFragment()
+        }
+
+        object ShowLabelTypes : Label(), ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = ReserveDetailComposeFragmentDirections.toLabelType(
+                    LabelTypeArguments(isSelectMode = true)
+                )
         }
     }
 }

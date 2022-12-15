@@ -1,13 +1,18 @@
 package com.itrocket.union.reserveDetail.data.mapper
 
+import com.example.union_sync_api.entity.LabelType
 import com.example.union_sync_api.entity.ReserveDetailSyncEntity
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjectDetail.data.mapper.getStringBy
+import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoBehavior
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.utils.getStringDateFromMillis
 
-fun ReserveDetailSyncEntity.map(): ReservesDomain {
+fun ReserveDetailSyncEntity.map(
+    canReadLabelType: Boolean,
+    canUpdateLabelType: Boolean
+): ReservesDomain {
     val listInfo = mutableListOf<ObjectInfoDomain>()
 
     listInfo.add(ObjectInfoDomain(R.string.common_name, reserveSyncEntity.name))
@@ -21,7 +26,11 @@ fun ReserveDetailSyncEntity.map(): ReservesDomain {
     }
 
     structuralSyncEntities?.let {
-        listInfo.add(ObjectInfoDomain(R.string.manual_structural, it.joinToString(", ") { it.name }))
+        listInfo.add(
+            ObjectInfoDomain(
+                R.string.manual_structural,
+                it.joinToString(", ") { it.name })
+        )
     }
 
     balanceUnitSyncEntities?.let {
@@ -35,7 +44,12 @@ fun ReserveDetailSyncEntity.map(): ReservesDomain {
         )
     )
 
-    listInfo.add(ObjectInfoDomain(title = R.string.common_barcode, value = reserveSyncEntity.barcodeValue))
+    listInfo.add(
+        ObjectInfoDomain(
+            title = R.string.common_barcode,
+            value = reserveSyncEntity.barcodeValue
+        )
+    )
 
     reserveSyncEntity.invoiceNumber?.let {
         listInfo.add(ObjectInfoDomain(R.string.common_invoice_number, it))
@@ -46,7 +60,11 @@ fun ReserveDetailSyncEntity.map(): ReservesDomain {
     }
 
     locationSyncEntity?.let {
-        listInfo.add(ObjectInfoDomain(R.string.accounting_objects_location, it.joinToString(", ") { it.name }))
+        listInfo.add(
+            ObjectInfoDomain(
+                R.string.accounting_objects_location,
+                it.joinToString(", ") { it.name })
+        )
     }
 
     nomenclatureSyncEntity?.let {
@@ -78,6 +96,18 @@ fun ReserveDetailSyncEntity.map(): ReservesDomain {
         listInfo.add(ObjectInfoDomain(R.string.common_user_update, it))
     }
 
+    if (canReadLabelType) {
+        listInfo.add(
+            ObjectInfoDomain(
+                title = R.string.accounting_objects_label_type,
+                value = labelType?.name,
+                valueRes = R.string.value_not_defined,
+                fieldBehavior = ObjectInfoBehavior.LABEL_TYPE,
+                canEdit = canUpdateLabelType
+            )
+        )
+    }
+
     return ReservesDomain(
         id = reserveSyncEntity.id,
         isBarcode = false,
@@ -87,3 +117,5 @@ fun ReserveDetailSyncEntity.map(): ReservesDomain {
         barcodeValue = reserveSyncEntity.barcodeValue
     )
 }
+
+fun ReservesDomain.toLabelType(labelTypeId: String) = LabelType(id = id, labelTypeId = labelTypeId)
