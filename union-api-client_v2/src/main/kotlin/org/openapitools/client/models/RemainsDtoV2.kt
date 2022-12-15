@@ -174,6 +174,12 @@ data class RemainsDtoV2 (
     val barcodeValue: kotlin.String? = null,
 
     @Json(name = "labelTypeId")
-    val labelTypeId: String? = null
+    val labelTypeId: String? = null,
+
+    @Json(name = "bookkeepingInvoice")
+    val bookkeepingInvoice: Int? = null,
+
+    @Json(name = "consignment")
+    val consignment: String? = null
 )
 

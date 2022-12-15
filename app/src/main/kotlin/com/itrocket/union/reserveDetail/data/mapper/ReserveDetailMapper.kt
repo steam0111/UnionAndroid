@@ -108,6 +108,21 @@ fun ReserveDetailSyncEntity.map(
         )
     }
 
+    listInfo.add(
+        ObjectInfoDomain(
+            title = R.string.reserves_bookkeepingInvoice,
+            value = reserveSyncEntity.bookkeepingInvoice?.toString(),
+            valueRes = R.string.value_not_defined,
+        )
+    )
+    listInfo.add(
+        ObjectInfoDomain(
+            title = R.string.reserves_consignment,
+            value = reserveSyncEntity.consignment,
+            valueRes = R.string.value_not_defined,
+        )
+    )
+
     return ReservesDomain(
         id = reserveSyncEntity.id,
         isBarcode = false,

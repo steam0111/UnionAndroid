@@ -39,7 +39,9 @@ fun RemainsDtoV2.toReserveDb(): ReserveDb {
         traceable = traceable ?: false,
         cancel = deleted,
         barcodeValue = barcodeValue,
-        labelTypeId = labelTypeId
+        labelTypeId = labelTypeId,
+        bookkeepingInvoice = bookkeepingInvoice,
+        consignment = consignment
     )
 }
 
@@ -63,7 +65,8 @@ fun ReserveDb.toRemainsDtoV2(): RemainsDtoV2 {
         userInserted = userInserted,
         dateInsert = getStringDateFromMillis(insertDate),
         barcodeValue = barcodeValue,
-        labelTypeId = labelTypeId
+        labelTypeId = labelTypeId,
+        consignment = consignment
     )
 }
 
@@ -91,7 +94,9 @@ fun ReserveSyncEntity.toReserveDb(): ReserveDb {
         subName = subName,
         traceable = traceable,
         cancel = false,
-        barcodeValue = barcodeValue
+        barcodeValue = barcodeValue,
+        bookkeepingInvoice = bookkeepingInvoice,
+        consignment = consignment
     )
 }
 
@@ -117,7 +122,9 @@ fun ReserveDb.toSyncEntity(locationSyncEntity: List<LocationSyncEntity>?): Reser
         traceable = traceable,
         insertDate = insertDate,
         updateDate = updateDate,
-        barcodeValue = barcodeValue
+        barcodeValue = barcodeValue,
+        bookkeepingInvoice = bookkeepingInvoice,
+        consignment = consignment
     )
 }
 
@@ -147,7 +154,9 @@ fun FullReserve.toSyncEntity(location: List<LocationSyncEntity>?): ReserveSyncEn
         traceable = reserveDb.traceable,
         insertDate = reserveDb.insertDate,
         updateDate = reserveDb.updateDate,
-        barcodeValue = reserveDb.barcodeValue
+        barcodeValue = reserveDb.barcodeValue,
+        bookkeepingInvoice = reserveDb.bookkeepingInvoice,
+        consignment = reserveDb.consignment
     )
 }
 
