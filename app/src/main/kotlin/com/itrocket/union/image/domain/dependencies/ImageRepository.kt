@@ -12,5 +12,5 @@ interface ImageRepository {
 
     suspend fun saveImage(imageUri: Uri): ImageDomain
 
-    suspend fun getImageFromName(imageName: String): File
+    suspend fun getImageByName(imageName: String): File
 }

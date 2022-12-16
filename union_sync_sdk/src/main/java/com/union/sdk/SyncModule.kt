@@ -186,11 +186,13 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
+                get(),
                 get()
             )
         }
         factory {
             SyncRepository(
+                get(),
                 get(),
                 get(),
                 get(),
