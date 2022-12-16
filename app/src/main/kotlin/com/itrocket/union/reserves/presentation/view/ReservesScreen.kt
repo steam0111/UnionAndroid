@@ -153,7 +153,10 @@ fun ReservesScreenPreview() {
                         "таылватвлыавыалвыоалвыа"
                     )
                 ), itemsCount = 1200L,
-                barcodeValue = ""
+                barcodeValue = "",
+                labelTypeId = "",
+                nomenclatureId = "",
+                consignment = ""
             ),
             ReservesDomain(
                 id = "2",
@@ -171,7 +174,10 @@ fun ReservesScreenPreview() {
                     )
                 ),
                 itemsCount = 1200L,
-                barcodeValue = ""
+                barcodeValue = "",
+                labelTypeId = "",
+                nomenclatureId = "",
+                consignment = ""
             ),
             ReservesDomain(
                 id = "3",
@@ -189,7 +195,10 @@ fun ReservesScreenPreview() {
                     )
                 ),
                 itemsCount = 1200L,
-                barcodeValue = ""
+                barcodeValue = "",
+                labelTypeId = "",
+                nomenclatureId = "",
+                consignment = ""
             )
         ),
         params = listOf()

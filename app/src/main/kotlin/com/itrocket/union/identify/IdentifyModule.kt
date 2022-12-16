@@ -23,7 +23,7 @@ object IdentifyModule {
             })
         }
         factory {
-            IdentifyInteractor(get(), get())
+            IdentifyInteractor(get(), get(), get(), get(), get(), get())
         }
 
         factory {

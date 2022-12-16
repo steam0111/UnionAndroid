@@ -3,17 +3,21 @@ package com.itrocket.union.identify.presentation.store
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavDirections
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
+import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.alertType.AlertType
+import com.itrocket.union.identify.domain.NomenclatureReserveDomain
+import com.itrocket.union.identify.presentation.view.IdentifyComposeFragmentDirections
+import com.itrocket.union.nomenclatureDetail.presentation.store.NomenclatureDetailArguments
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
-import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuArguments
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment
 import com.itrocket.union.ui.listAction.DialogAction
@@ -28,6 +32,9 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         object OnBackClicked : Intent()
         object OnPlusClicked : Intent()
         object OnListActionDialogDismissed : Intent()
+        data class OnNomenclatureReserveClicked(val nomenclatureReserveDomain: NomenclatureReserveDomain) :
+            Intent()
+
         data class OnListActionDialogClicked(val dialogActionType: DialogActionType) : Intent()
         data class OnManualInput(val readingModeResult: ReadingModeResult) : Intent()
 
@@ -35,10 +42,10 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         data class OnDeleteFromSelectActionWithValuesBottomMenu(val accountingObjects: List<AccountingObjectDomain>) :
             Intent()
 
-        data class OnNewAccountingObjectRfidHandled(val rfids: List<String>) :
+        data class OnNewRfidHandled(val rfids: List<String>) :
             Intent()
 
-        data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :
+        data class OnNewBarcodeHandled(val barcode: String) :
             Intent()
 
         data class OnAccountingObjectSelected(val accountingObject: AccountingObjectDomain) :
@@ -53,7 +60,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
     data class State(
         val isIdentifyLoading: Boolean = false,
         val accountingObjects: List<AccountingObjectDomain> = listOf(),
-        val reserves: List<ReservesDomain> = listOf(),
+        val nomenclatureReserves: List<NomenclatureReserveDomain> = listOf(),
         val selectedPage: Int = 0,
         val readingModeTab: ReadingModeTab = ReadingModeTab.RFID,
         val dialogType: AlertType = AlertType.NONE,
@@ -64,7 +71,8 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
                 type = DialogActionType.WRITE_OFF,
                 actionTextId = R.string.common_write_off
             )
-        )
+        ),
+        val nomenclatureRfids: List<String> = listOf()
     )
 
     sealed class Label {
@@ -78,6 +86,14 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
 
             override val fragment: Fragment
                 get() = ReadingModeComposeFragment()
+        }
+
+        data class ShowNomenclature(val nomenclatureId: String) : Label(), ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = IdentifyComposeFragmentDirections.toNomenclatureDetail(
+                    NomenclatureDetailArguments(nomenclatureId)
+                )
+
         }
 
         data class ShowDetail(

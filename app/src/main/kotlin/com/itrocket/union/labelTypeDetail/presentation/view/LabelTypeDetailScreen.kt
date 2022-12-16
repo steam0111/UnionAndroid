@@ -98,7 +98,8 @@ fun LabelTypeDetailScreenPreview() {
                 R.string.label_type_description,
                 "таылватвлыавыалвыоалвыа"
             )
-        )
+        ),
+        name = ""
     )
     ), AppInsets(previewTopInsetDp), {})
 }

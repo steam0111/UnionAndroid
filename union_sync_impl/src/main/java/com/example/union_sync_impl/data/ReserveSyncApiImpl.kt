@@ -38,6 +38,7 @@ class ReserveSyncApiImpl(
         locationIds: List<String?>?,
         offset: Long?,
         limit: Long?,
+        barcode: String?,
         hideZeroReserves: Boolean,
         nomenclatureId: String?
     ): List<ReserveSyncEntity> {
@@ -53,6 +54,7 @@ class ReserveSyncApiImpl(
                 isFilterCount = false,
                 locationIds = locationIds,
                 reservesShorts = reservesShorts,
+                barcode = barcode,
                 offset = offset,
                 limit = limit,
                 hideZeroReserves = hideZeroReserves,

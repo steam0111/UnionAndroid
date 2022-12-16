@@ -96,7 +96,8 @@ fun ReserveSyncEntity.toReserveDb(): ReserveDb {
         cancel = false,
         barcodeValue = barcodeValue,
         bookkeepingInvoice = bookkeepingInvoice,
-        consignment = consignment
+        consignment = consignment,
+        labelTypeId = labelTypeId
     )
 }
 
@@ -124,7 +125,8 @@ fun ReserveDb.toSyncEntity(locationSyncEntity: List<LocationSyncEntity>?): Reser
         updateDate = updateDate,
         barcodeValue = barcodeValue,
         bookkeepingInvoice = bookkeepingInvoice,
-        consignment = consignment
+        consignment = consignment,
+        labelTypeId = labelTypeId
     )
 }
 
@@ -156,7 +158,8 @@ fun FullReserve.toSyncEntity(location: List<LocationSyncEntity>?): ReserveSyncEn
         updateDate = reserveDb.updateDate,
         barcodeValue = reserveDb.barcodeValue,
         bookkeepingInvoice = reserveDb.bookkeepingInvoice,
-        consignment = reserveDb.consignment
+        consignment = reserveDb.consignment,
+        labelTypeId = reserveDb.labelTypeId
     )
 }
 

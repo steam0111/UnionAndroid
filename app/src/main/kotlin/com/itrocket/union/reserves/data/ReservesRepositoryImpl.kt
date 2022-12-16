@@ -30,6 +30,7 @@ class ReservesRepositoryImpl(
         structuralIds: List<String?>?,
         offset: Long?,
         limit: Long?,
+        barcode: String?,
         hideZeroReserves: Boolean
     ): List<ReservesDomain> =
         withContext(coreDispatchers.io) {
@@ -44,6 +45,7 @@ class ReservesRepositoryImpl(
                 offset = offset,
                 limit = limit,
                 hideZeroReserves = hideZeroReserves,
+                barcode = barcode,
                 nomenclatureId = params?.getNomenclatureId()
             ).map()
         }

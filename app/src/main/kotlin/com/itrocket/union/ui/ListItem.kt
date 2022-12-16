@@ -52,6 +52,7 @@ import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
+import com.itrocket.union.identify.domain.NomenclatureReserveDomain
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.ManualType
@@ -86,9 +87,7 @@ fun AccountingObjectItem(
                 onClick = { onAccountingObjectListener(accountingObject) },
                 onLongClick = { onAccountingObjectLongClickListener(accountingObject) },
                 enabled = isEnabled
-            ),
-        horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.Bottom
+            ), horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.Bottom
     ) {
         Row(
             modifier = Modifier
@@ -96,8 +95,7 @@ fun AccountingObjectItem(
                 .padding(top = 12.dp, start = 16.dp, end = 16.dp)
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth(0.7f)
+                modifier = Modifier.fillMaxWidth(0.7f)
             ) {
                 val headerText =
                     accountingObject.title.ifEmpty { stringResource(id = R.string.value_not_defined) }
@@ -109,8 +107,7 @@ fun AccountingObjectItem(
                             R.string.common_two_dots,
                             it.title?.let { stringResource(id = it) }.orEmpty(),
                             it.value.orEmpty()
-                        ),
-                        style = AppTheme.typography.subtitle1
+                        ), style = AppTheme.typography.subtitle1
                     )
                 }
             }
@@ -180,11 +177,9 @@ fun AccountingObjectItem(
                 colorFilter = ColorFilter.tint(red5),
                 contentDescription = null,
                 modifier = Modifier
-                    .clickableUnbounded(
-                        onClick = {
-                            onDeleteClickListener(accountingObject.id)
-                        }
-                    )
+                    .clickableUnbounded(onClick = {
+                        onDeleteClickListener(accountingObject.id)
+                    })
                     .padding(vertical = 12.dp, horizontal = 16.dp)
             )
         } else {
@@ -221,8 +216,7 @@ fun ReservesItem(
                 .padding(start = 16.dp, top = 12.dp, end = 16.dp)
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth(0.7f)
+                modifier = Modifier.fillMaxWidth(0.7f)
             ) {
                 HeaderText(reserves.title)
                 Spacer(modifier = Modifier.height(4.dp))
@@ -232,8 +226,7 @@ fun ReservesItem(
                             R.string.common_two_dots,
                             it.title?.let { stringResource(id = it) }.orEmpty(),
                             it.value.orEmpty()
-                        ),
-                        style = AppTheme.typography.subtitle1
+                        ), style = AppTheme.typography.subtitle1
                     )
                 }
             }
@@ -252,11 +245,9 @@ fun ReservesItem(
                 colorFilter = ColorFilter.tint(red5),
                 contentDescription = null,
                 modifier = Modifier
-                    .clickableUnbounded(
-                        onClick = {
-                            onDeleteClickListener(reserves.id)
-                        }
-                    )
+                    .clickableUnbounded(onClick = {
+                        onDeleteClickListener(reserves.id)
+                    })
                     .padding(vertical = 12.dp, horizontal = 16.dp)
             )
         } else {
@@ -285,8 +276,7 @@ fun InventoryDocumentItem(
                 append(" ")
                 withStyle(
                     SpanStyle(
-                        color = AppTheme.colors.mainColor,
-                        fontWeight = FontWeight.ExtraBold
+                        color = AppTheme.colors.mainColor, fontWeight = FontWeight.ExtraBold
                     )
                 ) {
                     append("|")
@@ -333,6 +323,59 @@ fun InventoryDocumentItem(
             color = AppTheme.colors.secondaryColor
         )
         Spacer(modifier = Modifier.height(12.dp))
+    }
+}
+
+@Composable
+fun NomenclatureReserveItem(
+    nomenclatureReserveDomain: NomenclatureReserveDomain,
+    onClick: (NomenclatureReserveDomain) -> Unit,
+    isShowBottomLine: Boolean
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(white)
+            .clickable(onClick = { onClick(nomenclatureReserveDomain) })
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+    ) {
+        Column {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                HeaderText(
+                    text = nomenclatureReserveDomain.nomenclature,
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(modifier = Modifier.width(24.dp))
+                Text(
+                    text = nomenclatureReserveDomain.count.toString(),
+                    color = AppTheme.colors.mainTextColor,
+                    style = AppTheme.typography.body2,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(
+                    R.string.common_two_dots,
+                    stringResource(R.string.label_type_title),
+                    nomenclatureReserveDomain.labelType.orEmpty()
+                ), style = AppTheme.typography.subtitle1
+            )
+            Text(
+                text = stringResource(
+                    R.string.common_two_dots,
+                    stringResource(id = R.string.consignment_title),
+                    nomenclatureReserveDomain.labelType.orEmpty()
+                ), style = AppTheme.typography.subtitle1
+            )
+
+        }
+        if (isShowBottomLine) {
+            BottomLine()
+        }
     }
 }
 
@@ -417,8 +460,7 @@ fun DocumentInfoItem(
                 append(" ")
                 withStyle(
                     SpanStyle(
-                        color = AppTheme.colors.mainColor,
-                        fontWeight = FontWeight.ExtraBold
+                        color = AppTheme.colors.mainColor, fontWeight = FontWeight.ExtraBold
                     )
                 ) {
                     append("|")
@@ -427,15 +469,13 @@ fun DocumentInfoItem(
             }
         }
     }
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(white)
-            .clickable {
-                onDocumentClickListener(item)
-            }
-            .padding(horizontal = 16.dp)
-    ) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .background(white)
+        .clickable {
+            onDocumentClickListener(item)
+        }
+        .padding(horizontal = 16.dp)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -484,10 +524,8 @@ fun DocumentDateItem(
     isRotated: Boolean = false
 ) {
     val angle: Float by animateFloatAsState(
-        targetValue = if (isRotated) 180F else 0F,
-        animationSpec = tween(
-            durationMillis = DATE_ITEM_ROTATION_DURATION,
-            easing = FastOutSlowInEasing
+        targetValue = if (isRotated) 180F else 0F, animationSpec = tween(
+            durationMillis = DATE_ITEM_ROTATION_DURATION, easing = FastOutSlowInEasing
         )
     )
 
@@ -513,9 +551,7 @@ fun DocumentDateItem(
                 "(${item.dateUi})"
             } else {
                 ""
-            },
-            style = AppTheme.typography.body2,
-            color = graphite6
+            }, style = AppTheme.typography.body2, color = graphite6
         )
         Spacer(modifier = Modifier.weight(1f))
         Image(
@@ -532,9 +568,7 @@ fun DocumentDateItem(
 
 @Composable
 fun DefaultListItem(
-    item: DefaultItem,
-    onItemClickListener: (DefaultItem) -> Unit,
-    isShowBottomLine: Boolean
+    item: DefaultItem, onItemClickListener: (DefaultItem) -> Unit, isShowBottomLine: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -551,12 +585,8 @@ fun DefaultListItem(
                 if (!it.value.isNullOrBlank()) {
                     Text(
                         text = stringResource(
-                            R.string.common_two_dots,
-                            stringResource(it.key),
-                            it.value.orEmpty()
-                        ),
-                        style = AppTheme.typography.body2,
-                        color = AppTheme.colors.secondaryColor
+                            R.string.common_two_dots, stringResource(it.key), it.value.orEmpty()
+                        ), style = AppTheme.typography.body2, color = AppTheme.colors.secondaryColor
                     )
                 }
             }
@@ -572,9 +602,7 @@ fun DefaultListItem(
 fun DocumentDateItemPreview() {
     DocumentDateItem(
         item = DocumentView.DocumentDateView(
-            "12.12.12",
-            DocumentDateType.OTHER,
-            "12.12.12"
+            "12.12.12", DocumentDateType.OTHER, "12.12.12"
         ), {}, false
     )
 }
@@ -590,14 +618,10 @@ fun DocumentInfoItemPreview() {
             date = 123123,
             params = listOf(
                 ParamDomain(
-                    "1", "blbbb",
-                    type = ManualType.MOL
-                ),
-                ParamDomain(
-                    "1", "blbbb",
-                    type = ManualType.LOCATION
-                ),
-                StructuralParamDomain(manualType = ManualType.STRUCTURAL)
+                    "1", "blbbb", type = ManualType.MOL
+                ), ParamDomain(
+                    "1", "blbbb", type = ManualType.LOCATION
+                ), StructuralParamDomain(manualType = ManualType.STRUCTURAL)
             ),
             documentType = DocumentTypeDomain.WRITE_OFF,
             dateUi = "12.12.12",
@@ -612,21 +636,15 @@ fun DocumentInfoItemPreview() {
 fun ReservesItemPreview() {
     ReservesItem(
         reserves = ReservesDomain(
-            id = "1", title = "Авторучка «Зебра TR22»", isBarcode = true, listInfo =
-            listOf(
+            id = "1", title = "Авторучка «Зебра TR22»", isBarcode = true, listInfo = listOf(
                 ObjectInfoDomain(
-                    R.string.auth_main_title,
-                    "таылватвлыавыалвыоалвыа"
-                ),
-                ObjectInfoDomain(
-                    R.string.auth_main_title,
-                    "таылватвлыавыалвыоалвыа"
+                    R.string.auth_main_title, "таылватвлыавыалвыоалвыа"
+                ), ObjectInfoDomain(
+                    R.string.auth_main_title, "таылватвлыавыалвыоалвыа"
                 )
-            ), itemsCount = 1200L,
-            barcodeValue = ""
-        ), onReservesListener = {},
-        canDelete = true,
-        isShowBottomLine = true
+            ), itemsCount = 1200L, barcodeValue = "", labelTypeId = ":", nomenclatureId = "",
+            consignment = ""
+        ), onReservesListener = {}, canDelete = true, isShowBottomLine = true
     )
 }
 
@@ -641,22 +659,18 @@ fun AccountingObjectItemPreview() {
             status = ObjectStatus("available"),
             listMainInfo = listOf(
                 ObjectInfoDomain(
-                    R.string.auth_main_title,
-                    "таылватвлыавыалвыоалвыа"
+                    R.string.auth_main_title, "таылватвлыавыалвыоалвыа"
                 ),
                 ObjectInfoDomain(
-                    R.string.auth_main_title,
-                    "таылватвлыавыалвыоалвыа"
+                    R.string.auth_main_title, "таылватвлыавыалвыоалвыа"
                 ),
             ),
             listAdditionallyInfo = listOf(
                 ObjectInfoDomain(
-                    R.string.auth_main_title,
-                    "таылватвлыавыалвыоалвыа"
+                    R.string.auth_main_title, "таылватвлыавыалвыоалвыа"
                 ),
                 ObjectInfoDomain(
-                    R.string.auth_main_title,
-                    "таылватвлыавыалвыоалвыа"
+                    R.string.auth_main_title, "таылватвлыавыалвыоалвыа"
                 ),
             ),
             barcodeValue = "",
@@ -689,8 +703,7 @@ fun DefaultListItemPreview() {
                 R.string.department_code to "value1", R.string.department_code to "value2"
             ),
 
-            ), onItemClickListener = {},
-        isShowBottomLine = true
+            ), onItemClickListener = {}, isShowBottomLine = true
     )
 }
 
@@ -711,8 +724,7 @@ fun InventoryDocumentItemPreview() {
             inventoryStatus = InventoryStatus.CREATED,
             userInserted = "",
             userUpdated = ""
-        ),
-        isShowStatus = true
+        ), isShowStatus = true
     )
 }
 
@@ -735,11 +747,8 @@ fun EmployeeItem(
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = stringResource(
-                    R.string.employees_service_number,
-                    item.number
-                ),
-                style = AppTheme.typography.subtitle1,
-                color = AppTheme.colors.secondaryColor
+                    R.string.employees_service_number, item.number
+                ), style = AppTheme.typography.subtitle1, color = AppTheme.colors.secondaryColor
             )
         }
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
@@ -755,11 +764,8 @@ fun EmployeeItem(
                     modifier = Modifier.padding(end = 4.dp)
                 )
                 RadioButton(
-                    selected = item.hasNfc,
-                    onClick = null,
-                    colors = RadioButtonDefaults.colors(
-                        selectedColor = AppTheme.colors.mainColor,
-                        unselectedColor = graphite3
+                    selected = item.hasNfc, onClick = null, colors = RadioButtonDefaults.colors(
+                        selectedColor = AppTheme.colors.mainColor, unselectedColor = graphite3
                     )
                 )
             }
@@ -788,8 +794,9 @@ fun EmployeeItemPreview() {
 }
 
 @Composable
-private fun HeaderText(text: String) {
+private fun HeaderText(text: String, modifier: Modifier = Modifier) {
     Text(
+        modifier = modifier,
         text = text,
         fontWeight = FontWeight.Bold,
         style = AppTheme.typography.h6,
@@ -808,12 +815,26 @@ fun ScanningObjectItem(
             .padding(vertical = 12.dp, horizontal = 16.dp)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text(
                 text = scanningObject
             )
         }
     }
+}
+
+@Composable
+@Preview
+private fun NomenclatureReserveItemPreview() {
+    NomenclatureReserveItem(
+        nomenclatureReserveDomain = NomenclatureReserveDomain(
+            "aas",
+            "vcvcv",
+            "fsdf",
+            "fsdf",
+            "fsdf",
+            12
+        ), onClick = {}, isShowBottomLine = false
+    )
 }

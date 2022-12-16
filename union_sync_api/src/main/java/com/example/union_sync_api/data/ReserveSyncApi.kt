@@ -20,6 +20,7 @@ interface ReserveSyncApi {
         locationIds: List<String?>? = null,
         offset: Long? = null,
         limit: Long? = null,
+        barcode: String? = null,
         hideZeroReserves: Boolean,
         nomenclatureId: String? = null
     ): List<ReserveSyncEntity>

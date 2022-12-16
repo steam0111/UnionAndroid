@@ -12,5 +12,8 @@ data class ReservesDomain(
     val listInfo: List<ObjectInfoDomain>,
     val itemsCount: Long,
     val comment: String = "",
-    val barcodeValue: String?
+    val barcodeValue: String?,
+    val nomenclatureId: String?,
+    val labelTypeId: String?,
+    val consignment: String?
 ) : Parcelable

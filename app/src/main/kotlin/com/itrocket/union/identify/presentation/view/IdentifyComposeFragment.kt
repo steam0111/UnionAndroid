@@ -26,7 +26,6 @@ import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.Sel
 import com.itrocket.union.utils.flow.window
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -122,7 +121,7 @@ class IdentifyComposeFragment :
                     serviceEntryManager.barcodeScanDataFlow.collect {
                         withContext(Dispatchers.Main) {
                             accept(
-                                IdentifyStore.Intent.OnNewAccountingObjectBarcodeHandled(
+                                IdentifyStore.Intent.OnNewBarcodeHandled(
                                     it.data
                                 )
                             )
@@ -141,7 +140,7 @@ class IdentifyComposeFragment :
                         .collect {
                             withContext(Dispatchers.Main) {
                                 accept(
-                                    IdentifyStore.Intent.OnNewAccountingObjectRfidHandled(
+                                    IdentifyStore.Intent.OnNewRfidHandled(
                                         it
                                     )
                                 )
@@ -206,6 +205,9 @@ class IdentifyComposeFragment :
                 },
                 onListActionDialogClick = {
                     accept(IdentifyStore.Intent.OnListActionDialogClicked(it))
+                },
+                onNomenclatureReserveClickListener = {
+                    accept(IdentifyStore.Intent.OnNomenclatureReserveClicked(it))
                 }
             )
         }

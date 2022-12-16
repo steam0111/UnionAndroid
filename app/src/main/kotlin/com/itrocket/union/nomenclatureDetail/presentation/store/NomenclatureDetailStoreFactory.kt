@@ -25,7 +25,7 @@ class NomenclatureDetailStoreFactory(
             Store<NomenclatureDetailStore.Intent, NomenclatureDetailStore.State, NomenclatureDetailStore.Label> by storeFactory.create(
                 name = "NomenclatureDetailStore",
                 initialState = NomenclatureDetailStore.State(
-                    item = NomenclatureDetailDomain(emptyList())
+                    item = NomenclatureDetailDomain(name = "", listInfo = emptyList())
                 ),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::createExecutor,

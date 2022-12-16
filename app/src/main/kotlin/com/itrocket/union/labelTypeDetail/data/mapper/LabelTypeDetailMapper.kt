@@ -30,5 +30,5 @@ fun LabelTypeSyncEntity.toDomain(): LabelTypeDetailDomain {
         listInfo.add(ObjectInfoDomain(R.string.common_user_update, it))
     }
 
-    return LabelTypeDetailDomain(listInfo)
+    return LabelTypeDetailDomain(name = name.orEmpty(), listInfo = listInfo)
 }

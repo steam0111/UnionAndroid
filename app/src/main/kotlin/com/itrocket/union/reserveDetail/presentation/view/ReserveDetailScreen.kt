@@ -227,7 +227,10 @@ fun ReserveDetailScreenPreview() {
                     "таылватвлыавыалвыоалвыа"
                 )
             ), itemsCount = 1200L,
-            barcodeValue = null
+            barcodeValue = null,
+            nomenclatureId = "",
+            labelTypeId = "",
+            consignment = ""
         )
     ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {})
 }

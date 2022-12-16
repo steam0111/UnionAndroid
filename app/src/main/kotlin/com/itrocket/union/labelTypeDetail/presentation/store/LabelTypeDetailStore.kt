@@ -13,7 +13,7 @@ interface LabelTypeDetailStore :
     }
 
     data class State(
-        val item: LabelTypeDetailDomain = LabelTypeDetailDomain(listOf()),
+        val item: LabelTypeDetailDomain = LabelTypeDetailDomain(name = "", listInfo = listOf()),
         val isLoading: Boolean = false
     )
 
