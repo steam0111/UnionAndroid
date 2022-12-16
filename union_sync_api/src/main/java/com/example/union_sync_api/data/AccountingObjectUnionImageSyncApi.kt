@@ -17,5 +17,5 @@ interface AccountingObjectUnionImageSyncApi {
 
     suspend fun deleteAccountingObjectImage(imageId: String)
 
-    suspend fun changeMainImage(updates: List<AccountingObjectImageMainUpdate>)
+    suspend fun changeMainImage(update: List<AccountingObjectImageMainUpdate>)
 }

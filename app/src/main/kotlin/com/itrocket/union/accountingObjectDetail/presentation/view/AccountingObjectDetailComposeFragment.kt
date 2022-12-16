@@ -86,17 +86,6 @@ class AccountingObjectDetailComposeFragment :
                 }
             ),
             FragmentResult(
-                resultCode = ImageViewerComposeFragment.IMAGE_VIEWER_RESULT_CODE,
-                resultLabel = ImageViewerComposeFragment.IMAGE_VIEWER_RESULT_LABEL,
-                resultAction = {
-                    (it as ImageViewerResult?)?.let {
-                        accept(
-                            AccountingObjectDetailStore.Intent.OnImagesChanged(it.images)
-                        )
-                    }
-                }
-            ),
-            FragmentResult(
                 resultCode = LabelTypeComposeFragment.LABEL_TYPE_RESULT_CODE,
                 resultLabel = LabelTypeComposeFragment.LABEL_TYPE_RESULT_LABEL,
                 resultAction = {

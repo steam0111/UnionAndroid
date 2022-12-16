@@ -88,7 +88,7 @@ class AccountingObjectDetailRepositoryImpl(
         return withContext(coreDispatchers.io) {
             accountingObjectUnionImageSyncApi.getAccountingObjectImages(updateDate = updateDate)
                 .map {
-                    val imageFile = imageRepository.getImageFromName(it.unionImageId)
+                    val imageFile = imageRepository.getImageByName(it.unionImageId)
                     it.toDomain(imageFile)
                 }
         }
@@ -96,14 +96,14 @@ class AccountingObjectDetailRepositoryImpl(
 
     override suspend fun getAccountingObjectImagesFlow(accountingObjectId: String): Flow<List<ImageDomain>> {
         return withContext(coreDispatchers.io) {
-            val images =
+            val imagesFlow =
                 accountingObjectUnionImageSyncApi.getAccountingObjectImagesByIdFlow(
                     accountingObjectId
                 )
-            images.map {
-                it.map {
-                    val imageFile = imageRepository.getImageFromName(it.unionImageId)
-                    it.toDomain(imageFile)
+            imagesFlow.map { imageList ->
+                imageList.map { image ->
+                    val imageFile = imageRepository.getImageByName(image.unionImageId)
+                    image.toDomain(imageFile)
                 }
             }
         }
@@ -117,7 +117,7 @@ class AccountingObjectDetailRepositoryImpl(
 
     override suspend fun updateIsMainImage(newMainImageId: String?, oldMainImageId: String?) {
         return withContext(coreDispatchers.io) {
-            val updates = buildList {
+            val update = buildList {
                 if (newMainImageId != null) {
                     add(
                         AccountingObjectImageMainUpdate(
@@ -135,7 +135,7 @@ class AccountingObjectDetailRepositoryImpl(
                     )
                 }
             }
-            accountingObjectUnionImageSyncApi.changeMainImage(updates)
+            accountingObjectUnionImageSyncApi.changeMainImage(update)
         }
     }
 

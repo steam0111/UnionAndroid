@@ -18,14 +18,14 @@ class ImageRepositoryImpl(
     private val coreDispatchers: CoreDispatchers
 ) : ImageRepository {
 
-    override suspend fun getImageFromName(imageName: String): File {
+    override suspend fun getImageByName(imageName: String): File {
         return File(getImagesDirectory().absolutePath + "/$imageName")
     }
 
     override suspend fun getImagesFromImagesDomain(images: List<ImageDomain>): List<ImageDomain> {
         return withContext(coreDispatchers.io) {
             images.map {
-                it.copy(imageFile = getImageFromName(it.imageId))
+                it.copy(imageFile = getImageByName(it.imageId))
             }
         }
     }
@@ -55,7 +55,7 @@ class ImageRepositoryImpl(
             val directory = getImagesDirectory()
 
 
-            val fileName = System.currentTimeMillis().toString()
+            val fileName = IMAGE_NAME_PREFIX + System.currentTimeMillis().toString()
             val newImageFile = File(directory.absolutePath, fileName)
 
             newImageFile.createNewFile()
@@ -93,6 +93,7 @@ class ImageRepositoryImpl(
     private fun getFileAuthority() = "${BuildConfig.APPLICATION_ID}.provider"
 
     companion object {
+        private const val IMAGE_NAME_PREFIX = "ao_image_"
         private const val TMP_FILE_NAME = "tmp_image_file"
         private const val TMP_FILE_MIME_TYPE = ".png"
         private const val IMAGES_DIRECTORY = "images"

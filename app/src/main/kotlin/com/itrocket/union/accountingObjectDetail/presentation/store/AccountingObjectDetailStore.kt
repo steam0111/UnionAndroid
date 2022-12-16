@@ -123,11 +123,19 @@ interface AccountingObjectDetailStore :
 
         data class ShowAddImage(val imageUri: Uri) : Label()
 
-        data class ShowImageViewer(val images: List<ImageDomain>, val currentImage: ImageDomain) :
+        data class ShowImageViewer(
+            val images: List<ImageDomain>,
+            val currentImage: ImageDomain,
+            val accountingObjectId: String
+        ) :
             Label(), ForwardNavigationLabel {
             override val directions: NavDirections
                 get() = AccountingObjectDetailComposeFragmentDirections.actionAccountingObjectsDetailsToImageViewer(
-                    ImageViewerArguments(images = images, currentImage = currentImage)
+                    ImageViewerArguments(
+                        images = images,
+                        currentImage = currentImage,
+                        accountingObjectId = accountingObjectId
+                    )
                 )
 
         }

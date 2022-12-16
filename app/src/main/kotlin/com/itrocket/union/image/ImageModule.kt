@@ -10,7 +10,7 @@ object ImageModule {
 
     val module = module {
         factory {
-            ImageInteractor(repository = get(), coreDispatchers = get())
+            ImageInteractor(repository = get())
         }
         single<ImageRepository> {
             ImageRepositoryImpl(applicationContext = androidContext(), coreDispatchers = get())
