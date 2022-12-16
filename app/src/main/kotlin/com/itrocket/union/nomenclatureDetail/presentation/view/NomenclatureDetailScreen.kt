@@ -103,7 +103,8 @@ fun NomenclatureDetailScreenPreview() {
                         R.string.auth_main_title,
                         "таылватвлыавыалвыоалвыа"
                     )
-                )
+                ),
+                name = ""
             )
         ), AppInsets(topInset = previewTopInsetDp), {})
 }

@@ -105,7 +105,9 @@ internal class SgtinFormatterImpl : SgtinFormatter {
                 binaryBarcode.substring(COMPANY_PREFIX_BITS_COUNT, binaryBarcode.length)
 
             val companyPrefix = binaryCompanyPrefix.binaryToRadixNumber(DECIMAL_RADIX)
+                .withLeadingZero(COMPANY_PREFIX_LENGTH)
             val itemReference = binaryItemReference.binaryToRadixNumber(DECIMAL_RADIX)
+                .withLeadingZero(ITEM_REFERENCE_LENGTH)
 
             val serialNumber = BigInteger(binarySerialNumber, BINARY_RADIX).toString(DECIMAL_RADIX)
 
@@ -132,13 +134,15 @@ internal class SgtinFormatterImpl : SgtinFormatter {
         }
     }
 
+    private fun String.withLeadingZero(length: Int) =
+        String.format("%" + length + "s", this).replace(" ".toRegex(), "0")
+
     private fun String.binaryToRadixNumber(radix: Int) =
         BigInteger(this, BINARY_RADIX).toString(radix)
 
     private fun String.toBinary(len: Int): String {
         val long = toLong()
-        return String.format("%" + len + "s", long.toString(BINARY_RADIX))
-            .replace(" ".toRegex(), "0")
+        return long.toString(BINARY_RADIX).withLeadingZero(len)
     }
 
     private fun String.rfidToBinary(): String {
@@ -147,19 +151,19 @@ internal class SgtinFormatterImpl : SgtinFormatter {
     }
 
     private fun calculateControlNumber(barcodeWithoutControl: String): String {
-        var evenSum = "" //Сумма всех чисел на четных позициях в штрих коде
-        var oddSum = "" //Сумма всех чисел на нечетных позицях в штрих коде
+        var evenSum = 0 //Сумма всех чисел на четных позициях в штрих коде
+        var oddSum = 0 //Сумма всех чисел на нечетных позицях в штрих коде
         barcodeWithoutControl.reversed()
             .forEachIndexed { index, c -> // reversed потому что в Модуло 10 нумерация идет справа налево
                 if ((index + 1) % 2 == 0) {
-                    evenSum += c
+                    evenSum += c.digitToInt()
                 } else {
-                    oddSum += c
+                    oddSum += c.digitToInt()
                 }
             }
 
         val sum =
-            oddSum.toInt() * 3 + evenSum.toInt() // По алгоритму Модуло 10 складываем сумму четных чисел с нечетными умноженными на три
+            oddSum * 3 + evenSum // По алгоритму Модуло 10 складываем сумму четных чисел с нечетными умноженными на три
         val sumString = sum.toString()
 
         val lastSumNumber = sumString.last()
@@ -215,6 +219,8 @@ internal class SgtinFormatterImpl : SgtinFormatter {
         //Epc rfid to barcode
         private const val BARCODE_FROM_RFID_BITS_COUNT = 44
         private const val RFID_BITS_COUNT = 96
+        private const val ITEM_REFERENCE_LENGTH = 4
+        private const val COMPANY_PREFIX_LENGTH = 9
 
         //basic constants
         private const val GTIN_PREFIX = "0"

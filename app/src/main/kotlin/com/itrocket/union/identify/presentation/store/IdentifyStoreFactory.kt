@@ -11,12 +11,14 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.identify.domain.IdentifyInteractor
+import com.itrocket.union.identify.domain.IdentifyInteractor.Companion.ACCOUNTING_OBJECT_PAGE
+import com.itrocket.union.identify.domain.IdentifyInteractor.Companion.NOMENCLATURE_RESERVE_PAGE
+import com.itrocket.union.identify.domain.NomenclatureReserveDomain
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.readingMode.domain.ReadingModeInteractor
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.toReadingMode
-import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.ui.listAction.DialogActionType
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
@@ -84,15 +86,14 @@ class IdentifyStoreFactory(
                         )
                     )
                 }
-                is IdentifyStore.Intent.OnNewAccountingObjectRfidHandled -> handleRfidAccountingObjects(
-                    intent.rfids,
-                    getState().accountingObjects
+                is IdentifyStore.Intent.OnNewRfidHandled -> handleRfid(
+                    rfids = intent.rfids,
+                    getState = getState
                 )
-                is IdentifyStore.Intent.OnNewAccountingObjectBarcodeHandled -> {
-                    handleBarcodeAccountingObjects(
-                        intent.barcode,
-                        getState().accountingObjects,
-                        getState().readingModeTab
+                is IdentifyStore.Intent.OnNewBarcodeHandled -> {
+                    handleBarcode(
+                        barcode = intent.barcode,
+                        getState = getState
                     )
                 }
                 is IdentifyStore.Intent.OnAccountingObjectSelected -> {
@@ -126,11 +127,19 @@ class IdentifyStoreFactory(
                     getState = getState
                 )
                 is IdentifyStore.Intent.OnErrorHandled -> handleError(intent.throwable)
+                is IdentifyStore.Intent.OnNomenclatureReserveClicked -> onNomenclatureReserveClicked(
+                    intent.nomenclatureReserveDomain
+                )
+                is IdentifyStore.Intent.OnSelectPage -> dispatch(Result.Page(intent.selectedPage))
             }
         }
 
         override fun handleError(throwable: Throwable) {
             publish(IdentifyStore.Label.Error(errorInteractor.getTextMessage(throwable)))
+        }
+
+        private fun onNomenclatureReserveClicked(nomenclatureReserveDomain: NomenclatureReserveDomain) {
+            publish(IdentifyStore.Label.ShowNomenclature(nomenclatureReserveDomain.nomenclatureId))
         }
 
         private suspend fun onAccountingObjectClosed(
@@ -165,37 +174,62 @@ class IdentifyStoreFactory(
                     //no-op
                 }
                 ReadingModeTab.BARCODE, ReadingModeTab.SN -> {
-                    handleBarcodeAccountingObjects(
+                    handleBarcode(
                         barcode = readingModeResult.scanData,
-                        accountingObjects = getState().accountingObjects,
-                        readingModeTab = getState().readingModeTab
+                        getState = getState
                     )
                 }
             }
         }
 
-        private suspend fun handleRfidAccountingObjects(
+        private suspend fun handleRfid(
             rfids: List<String>,
-            accountingObjects: List<AccountingObjectDomain>
+            getState: () -> IdentifyStore.State
         ) {
-            val newAccountingObjects = identifyInteractor.handleNewAccountingObjectRfids(
-                accountingObjects = accountingObjects,
-                handledAccountingObjectRfids = rfids
-            )
-            dispatch(Result.AccountingObjects(newAccountingObjects))
+            when (getState().selectedPage) {
+                ACCOUNTING_OBJECT_PAGE -> {
+                    val newAccountingObjects = identifyInteractor.handleNewAccountingObjectRfids(
+                        accountingObjects = getState().accountingObjects,
+                        handledAccountingObjectRfids = rfids
+                    )
+                    dispatch(Result.AccountingObjects(newAccountingObjects))
+                }
+                NOMENCLATURE_RESERVE_PAGE -> {
+                    val oldRfids = getState().nomenclatureRfids
+                    val nomenclatureReservesRfid =
+                        identifyInteractor.handleNewNomenclatureReserveRfids(
+                            nomenclatureReserves = getState().nomenclatureReserves,
+                            rfids = rfids,
+                            oldsRfids = getState().nomenclatureRfids
+                        )
+                    dispatch(Result.NomenclatureReserves(nomenclatureReservesRfid.newNomenclatureReserves))
+                    dispatch(Result.NomenclatureRfids(oldRfids + nomenclatureReservesRfid.newRfids))
+                }
+            }
         }
 
-        private suspend fun handleBarcodeAccountingObjects(
+        private suspend fun handleBarcode(
             barcode: String,
-            accountingObjects: List<AccountingObjectDomain>,
-            readingModeTab: ReadingModeTab
+            getState: () -> IdentifyStore.State,
         ) {
-            val newAccountingObjects = identifyInteractor.handleNewAccountingObjectBarcode(
-                accountingObjects = accountingObjects,
-                barcode = barcode,
-                isSerialNumber = readingModeTab == ReadingModeTab.SN
-            )
-            dispatch(Result.AccountingObjects(newAccountingObjects))
+            when (getState().selectedPage) {
+                ACCOUNTING_OBJECT_PAGE -> {
+                    val newAccountingObjects = identifyInteractor.handleNewAccountingObjectBarcode(
+                        accountingObjects = getState().accountingObjects,
+                        barcode = barcode,
+                        isSerialNumber = getState().readingModeTab == ReadingModeTab.SN
+                    )
+                    dispatch(Result.AccountingObjects(newAccountingObjects))
+                }
+                NOMENCLATURE_RESERVE_PAGE -> {
+                    val newNomenclatureReserves =
+                        identifyInteractor.handleNewNomenclatureReserveBarcode(
+                            barcode = barcode,
+                            nomenclatureReserves = getState().nomenclatureReserves
+                        )
+                    dispatch(Result.NomenclatureReserves(newNomenclatureReserves))
+                }
+            }
         }
     }
 
@@ -203,14 +237,18 @@ class IdentifyStoreFactory(
         data class CanUpdateAccountingObjects(val canUpdateAccountingObjects: Boolean) :
             Result()
 
+        data class Page(val page: Int) : Result()
         data class DialogType(val dialogType: AlertType) : Result()
         data class Loading(val isLoading: Boolean) : Result()
         data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
-        data class Reserves(val reserves: List<ReservesDomain>) : Result()
+        data class NomenclatureReserves(val nomenclatureReserves: List<NomenclatureReserveDomain>) :
+            Result()
+
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) :
             Result()
 
         data class LoadingDialogActionType(val dialogActionType: DialogActionType?) : Result()
+        data class NomenclatureRfids(val rfids: List<String>) : Result()
     }
 
     private object ReducerImpl : Reducer<IdentifyStore.State, Result> {
@@ -218,11 +256,13 @@ class IdentifyStoreFactory(
             when (result) {
                 is Result.Loading -> copy(isIdentifyLoading = result.isLoading)
                 is Result.AccountingObjects -> copy(accountingObjects = result.accountingObjects)
-                is Result.Reserves -> copy(reserves = result.reserves)
+                is Result.NomenclatureReserves -> copy(nomenclatureReserves = result.nomenclatureReserves)
                 is Result.ReadingMode -> copy(readingModeTab = result.readingModeTab)
                 is Result.DialogType -> copy(dialogType = result.dialogType)
                 is Result.LoadingDialogActionType -> copy(loadingDialogAction = result.dialogActionType)
                 is Result.CanUpdateAccountingObjects -> copy(canUpdateAccountingObjects = result.canUpdateAccountingObjects)
+                is Result.Page -> copy(selectedPage = result.page)
+                is Result.NomenclatureRfids -> copy(nomenclatureRfids = result.rfids)
             }
     }
 }

@@ -25,6 +25,7 @@ fun sqlReserveQuery(
     limit: Long? = null,
     offset: Long? = null,
     isNonCancel: Boolean = true,
+    barcode: String? = null,
     hideZeroReserves: Boolean = false,
     nomenclatureId: String? = null
 ): SimpleSQLiteQuery {
@@ -65,6 +66,9 @@ fun sqlReserveQuery(
                 }
                 nomenclatureGroupId?.let {
                     add("nomenclatureGroupId" isEquals nomenclatureGroupId)
+                }
+                barcode?.let {
+                    add("barcodeValue" isEquals barcode)
                 }
                 orderId?.let {
                     add("orderId" isEquals orderId)

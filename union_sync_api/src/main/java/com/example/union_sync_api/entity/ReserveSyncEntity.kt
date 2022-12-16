@@ -23,7 +23,8 @@ data class ReserveSyncEntity(
     val subName: String?,
     val barcodeValue: String?,
     val bookkeepingInvoice: Int?,
-    val consignment: String?
+    val consignment: String?,
+    val labelTypeId: String?
 )
 
 fun ReserveSyncEntity.toReserveUpdateSyncEntity(userUpdated: String?) = ReserveUpdateSyncEntity(

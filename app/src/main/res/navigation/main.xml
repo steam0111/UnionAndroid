@@ -128,8 +128,8 @@
             app:destination="@id/accountingObjectsDetails" />
 
         <action
-            android:id="@+id/to_reserveDetail"
-            app:destination="@id/reserveDetail" />
+            android:id="@+id/to_nomenclatureDetail"
+            app:destination="@id/nomenclatureDetail" />
 
         <action
             android:id="@+id/to_Filter"

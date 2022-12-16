@@ -17,6 +17,7 @@ interface ReservesRepository {
         structuralIds: List<String?>?,
         offset: Long?,
         limit: Long?,
+        barcode: String? = null,
         hideZeroReserves: Boolean
     ): List<ReservesDomain>
 

@@ -375,6 +375,7 @@
 
     <!-- Identify -->
     <string name="os_tab_title">ОС (%s)</string>
+    <string name="reserve_tab_title">Запасы (%s)</string>
 
     <!-- DataCollect -->
     <string name="data_collect_title">Сбор данных</string>
@@ -464,4 +465,7 @@
     <!-- Label Type -->
     <string name="label_type_description">Описание</string>
     <string name="label_type_title">Тип метки</string>
+
+    <!-- Consignment -->
+    <string name="consignment_title">Партия</string>
 </resources>

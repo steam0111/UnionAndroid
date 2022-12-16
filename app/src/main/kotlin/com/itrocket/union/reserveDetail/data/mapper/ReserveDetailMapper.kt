@@ -129,7 +129,10 @@ fun ReserveDetailSyncEntity.map(
         itemsCount = reserveSyncEntity.count ?: 0L,
         title = reserveSyncEntity.name,
         listInfo = listInfo,
-        barcodeValue = reserveSyncEntity.barcodeValue
+        barcodeValue = reserveSyncEntity.barcodeValue,
+        nomenclatureId = reserveSyncEntity.nomenclatureId,
+        labelTypeId = reserveSyncEntity.labelTypeId,
+        consignment = reserveSyncEntity.consignment
     )
 }
 

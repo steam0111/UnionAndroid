@@ -2,13 +2,16 @@ package com.itrocket.union.identify.presentation.view
 
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -40,6 +43,7 @@ import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.alertType.AlertType
+import com.itrocket.union.identify.domain.NomenclatureReserveDomain
 import com.itrocket.union.identify.presentation.store.IdentifyStore
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.AccountingObjectItem
@@ -47,16 +51,17 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.DoubleTabRow
 import com.itrocket.union.ui.MediumSpacer
+import com.itrocket.union.ui.NomenclatureReserveItem
 import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.TabRowIndicator
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.graphite4
 import com.itrocket.union.ui.listAction.DialogActionType
 import com.itrocket.union.ui.listAction.ListActionDialog
+import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
 import com.itrocket.utils.getTargetPage
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -71,7 +76,8 @@ fun IdentifyScreen(
     onPageChanged: (Int) -> Unit,
     onPlusClickListener: () -> Unit,
     onListActionDialogDismissed: () -> Unit,
-    onListActionDialogClick: (DialogActionType) -> Unit
+    onListActionDialogClick: (DialogActionType) -> Unit,
+    onNomenclatureReserveClickListener: (NomenclatureReserveDomain) -> Unit
 ) {
     val pagerState = rememberPagerState(state.selectedPage)
     val coroutineScope = rememberCoroutineScope()
@@ -101,6 +107,7 @@ fun IdentifyScreen(
                     state = state,
                     onObjectClickListener = onObjectClickListener,
                     onReadingModeClickListener = onReadingModeClickListener,
+                    onNomenclatureReserveClickListener = onNomenclatureReserveClickListener,
                     paddingValues = it
                 )
             },
@@ -137,6 +144,7 @@ private fun Content(
     state: IdentifyStore.State,
     onReadingModeClickListener: () -> Unit,
     onObjectClickListener: (AccountingObjectDomain) -> Unit,
+    onNomenclatureReserveClickListener: (NomenclatureReserveDomain) -> Unit,
     paddingValues: PaddingValues
 ) {
     val tabs = listOf(
@@ -144,9 +152,21 @@ private fun Content(
             title = (stringResource(R.string.os_tab_title, state.accountingObjects.size)),
             screen = {
                 if (state.accountingObjects.isNotEmpty()) {
-                    ScanningObjectsScreen(
+                    AccountingObjectsScreen(
                         accountingObjects = state.accountingObjects,
                         onObjectClickListener = onObjectClickListener,
+                        paddingValues = paddingValues
+                    )
+                } else EmptyListStub(paddingValues = PaddingValues())
+            }
+        ),
+        BaseTab(
+            title = (stringResource(R.string.reserve_tab_title, state.nomenclatureReserves.size)),
+            screen = {
+                if (state.nomenclatureReserves.isNotEmpty()) {
+                    NomenclatureReserveScreen(
+                        nomenclatures = state.nomenclatureReserves,
+                        onItemClickListener = onNomenclatureReserveClickListener,
                         paddingValues = paddingValues
                     )
                 } else EmptyListStub(paddingValues = PaddingValues())
@@ -216,7 +236,7 @@ private fun Toolbar(
 }
 
 @Composable
-private fun ScanningObjectsScreen(
+private fun AccountingObjectsScreen(
     accountingObjects: List<AccountingObjectDomain>,
     onObjectClickListener: (AccountingObjectDomain) -> Unit,
     paddingValues: PaddingValues
@@ -236,6 +256,34 @@ private fun ScanningObjectsScreen(
                 status = item.status?.type,
                 isShowBottomLine = isShowBottomLine,
                 statusText = item.status?.text
+            )
+        }
+        item {
+            Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
+        }
+    }
+    Spacer(modifier = Modifier.height(10.dp))
+}
+
+@Composable
+private fun NomenclatureReserveScreen(
+    nomenclatures: List<NomenclatureReserveDomain>,
+    onItemClickListener: (NomenclatureReserveDomain) -> Unit,
+    paddingValues: PaddingValues
+) {
+    LazyColumn(
+        Modifier
+            .fillMaxSize()
+            .padding(top = paddingValues.calculateTopPadding())
+    ) {
+        itemsIndexed(nomenclatures, key = { _, item ->
+            item.nomenclatureId
+        }) { index, item ->
+            val isShowBottomLine = nomenclatures.lastIndex != index
+            NomenclatureReserveItem(
+                nomenclatureReserveDomain = item,
+                isShowBottomLine = isShowBottomLine,
+                onClick = onItemClickListener
             )
         }
         item {
@@ -380,6 +428,7 @@ fun IdentifyScreenPreview() {
         onPageChanged = {},
         onPlusClickListener = {},
         onListActionDialogDismissed = {},
-        onListActionDialogClick = {}
+        onListActionDialogClick = {},
+        onNomenclatureReserveClickListener = {}
     )
 }
