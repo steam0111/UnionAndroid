@@ -138,7 +138,7 @@ class FormatterTest {
     fun epcRfid_toBarcodeSerialNumber_isCorrect() = runBlocking {
 
         val epcRfid = "302DB7A5C35033D74876E955"
-        val result = BarcodeSerialNumber(barcode = "04610038292078", serialNumber = "100000000341")
+        val result = BarcodeSerialNumber(barcode = "4610038292078", serialNumber = "100000000341")
         val sgtinFormatter: SgtinFormatter = SgtinFormatterImpl()
 
         assertEquals(result, sgtinFormatter.epcRfidToBarcode(epcRfid))
