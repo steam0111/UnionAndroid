@@ -124,13 +124,22 @@ internal class SgtinFormatterImpl : SgtinFormatter {
             }
 
             val barcodeWithoutControl =
-                firstBarcodeDecimal + companyPrefix.toString() + lastBarcodeDecimals
+                firstBarcodeDecimal + companyPrefix + lastBarcodeDecimals
 
             val controlNumber = calculateControlNumber(barcodeWithoutControl)
 
             val barcode = barcodeWithoutControl + controlNumber
 
-            BarcodeSerialNumber(serialNumber = serialNumber, barcode = barcode)
+            val formattedBarcode =
+                if (barcode.length == MAX_BARCODE_LENGTH && barcode.first()
+                        .toString() == GTIN_PREFIX
+                ) {
+                    barcode.substring(1, barcode.length)
+                } else {
+                    barcode
+                }
+
+            BarcodeSerialNumber(serialNumber = serialNumber, barcode = formattedBarcode)
         }
     }
 
