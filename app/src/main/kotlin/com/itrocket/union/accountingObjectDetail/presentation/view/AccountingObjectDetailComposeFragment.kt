@@ -12,8 +12,6 @@ import com.itrocket.union.accountingObjectDetail.AccountingObjectDetailModule.AC
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailStore
 import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataResult
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment
-import com.itrocket.union.imageViewer.domain.entity.ImageViewerResult
-import com.itrocket.union.imageViewer.presentation.view.ImageViewerComposeFragment
 import com.itrocket.union.labelType.presentation.store.LabelTypeResult
 import com.itrocket.union.labelType.presentation.view.LabelTypeComposeFragment
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
@@ -26,7 +24,6 @@ import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
-import kotlinx.coroutines.flow.collect
 
 class AccountingObjectDetailComposeFragment :
     BaseComposeFragment<AccountingObjectDetailStore.Intent, AccountingObjectDetailStore.State, AccountingObjectDetailStore.Label>(
@@ -42,6 +39,13 @@ class AccountingObjectDetailComposeFragment :
         registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
             accept(
                 AccountingObjectDetailStore.Intent.OnImageTaken(success = success)
+            )
+        }
+
+    private val takePictureFromFilesResult =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            accept(
+                AccountingObjectDetailStore.Intent.OnImageTaken(success = true, uri = uri)
             )
         }
 
@@ -148,6 +152,15 @@ class AccountingObjectDetailComposeFragment :
                 },
                 onLabelTypeEditClickListener = {
                     accept(AccountingObjectDetailStore.Intent.OnLabelTypeEditClicked)
+                },
+                onTakeFromCameraClickListener = {
+                    accept(AccountingObjectDetailStore.Intent.OnTakeFromCameraClicked)
+                },
+                onTakeFromFilesClickListener = {
+                    accept(AccountingObjectDetailStore.Intent.OnTakeFromFilesClicked)
+                },
+                onDialogDismiss = {
+                    accept(AccountingObjectDetailStore.Intent.OnDismissed)
                 }
             )
         }
@@ -158,6 +171,11 @@ class AccountingObjectDetailComposeFragment :
             is AccountingObjectDetailStore.Label.ShowAddImage -> takeImageActivityResult.launch(
                 label.imageUri
             )
+
+            is AccountingObjectDetailStore.Label.ShowPeekPhotoFromFiles -> takePictureFromFilesResult.launch(
+                "image/*"
+            )
+
             else -> super.handleLabel(label)
         }
 
@@ -226,6 +244,7 @@ class AccountingObjectDetailComposeFragment :
                     TriggerEvent.Pressed -> {
                         accept(AccountingObjectDetailStore.Intent.OnTriggerPressed)
                     }
+
                     TriggerEvent.Released -> {
                         accept(AccountingObjectDetailStore.Intent.OnTriggerReleased)
                     }

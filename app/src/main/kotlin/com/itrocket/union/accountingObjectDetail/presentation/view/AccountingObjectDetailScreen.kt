@@ -5,6 +5,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,11 +19,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
@@ -50,7 +53,6 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
-import com.itrocket.union.labelType.domain.entity.LabelTypeDomain
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.*
 import com.itrocket.union.ui.image.GridImages
@@ -78,6 +80,9 @@ fun AccountingObjectDetailScreen(
     onImageClickListener: (ImageDomain) -> Unit,
     onAddImageClickListener: () -> Unit,
     onLabelTypeEditClickListener: () -> Unit,
+    onTakeFromCameraClickListener: () -> Unit,
+    onTakeFromFilesClickListener: () -> Unit,
+    onDialogDismiss: () -> Unit
 ) {
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
@@ -168,7 +173,13 @@ fun AccountingObjectDetailScreen(
                 title = state.rfidError.ifEmpty {
                     stringResource(R.string.common_write_epc_dialog_title)
                 },
-                onDismiss = onWriteEpcDismiss
+                onDismiss = onDialogDismiss
+            )
+
+            AlertType.ADD_IMAGE -> ChooseAddPhotoSource(
+                onDismiss = onDialogDismiss,
+                onTakeFromCameraClickListener = onTakeFromCameraClickListener,
+                onTakeFromFilesClickListener = onTakeFromFilesClickListener
             )
         }
     }
@@ -308,6 +319,7 @@ private fun ListInfo(
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
+
                 ObjectInfoBehavior.LABEL_TYPE -> {
                     ExpandedInfoField(
                         label = label,
@@ -462,6 +474,51 @@ private fun BottomBar(
     )
 }
 
+@Composable
+fun ChooseAddPhotoSource(
+    onDismiss: () -> Unit,
+    onTakeFromCameraClickListener: () -> Unit,
+    onTakeFromFilesClickListener: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(black_50)
+            .clickable(
+                onClick = onDismiss,
+                indication = null,
+                interactionSource = MutableInteractionSource()
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(white, RoundedCornerShape(8.dp)),
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+            BaseButton(
+                text = stringResource(R.string.from_camera),
+                onClick = onTakeFromCameraClickListener,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            BaseButton(
+                text = stringResource(R.string.from_files),
+                onClick = onTakeFromFilesClickListener,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
 @Preview(
     name = "светлая тема экран - 6.3 (3040x1440)",
     showSystemUi = true,
@@ -521,5 +578,8 @@ fun AccountingObjectDetailScreenPreview() {
         {},
         {},
         {},
+        {},
+        {},
+        {}
     )
 }
