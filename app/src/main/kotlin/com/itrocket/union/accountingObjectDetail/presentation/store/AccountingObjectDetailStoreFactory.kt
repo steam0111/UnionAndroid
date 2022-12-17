@@ -18,7 +18,6 @@ import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.image.domain.ImageInteractor
 import com.itrocket.union.imageViewer.domain.ImageViewerInteractor
 import com.itrocket.union.labelType.domain.LabelTypeInteractor
-import com.itrocket.union.labelType.domain.entity.LabelTypeDomain
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.readingMode.domain.ReadingModeInteractor
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
@@ -140,7 +139,7 @@ class AccountingObjectDetailStoreFactory(
                 AccountingObjectDetailStore.Intent.OnTriggerPressed -> onTriggerPressed(getState)
                 AccountingObjectDetailStore.Intent.OnTriggerReleased -> onTriggerRelease()
                 is AccountingObjectDetailStore.Intent.OnWriteEpcError -> onWriteEpcError(intent.error)
-                is AccountingObjectDetailStore.Intent.OnWriteEpcHandled -> onWriteEpcHandled()
+                is AccountingObjectDetailStore.Intent.OnWriteEpcHandled -> onWriteEpcHandled(getState().accountingObjectDomain.id, intent.rfid)
                 AccountingObjectDetailStore.Intent.OnWriteOffClicked -> onWriteOffClicked(getState().accountingObjectDomain)
                 AccountingObjectDetailStore.Intent.OnRemoveBarcodeClicked -> onRemoveBarcodeClicked(
                     getState().accountingObjectDomain
@@ -260,9 +259,10 @@ class AccountingObjectDetailStoreFactory(
             dispatch(Result.RfidError(error))
         }
 
-        private fun onWriteEpcHandled() {
+        private suspend fun onWriteEpcHandled(accountingObjectId: String, rfid: String) {
             dispatch(Result.RfidError(""))
             dispatch(Result.DialogType(AlertType.NONE))
+            interactor.updateAccountingObjectMarked(accountingObjectId, rfid)
         }
 
         private fun onTriggerPressed(getState: () -> AccountingObjectDetailStore.State) {

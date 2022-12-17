@@ -251,7 +251,8 @@ fun AccountingObjectScanningData.toAccountingObjectScanningUpdate() =
         id = id,
         barcodeValue = barcodeValue,
         rfidValue = rfidValue,
-        factoryNumber = factoryNumber
+        factoryNumber = factoryNumber,
+        marked = marked
     )
 
 fun LabelType.toAccountingObjectLabelTypeUpdate() =

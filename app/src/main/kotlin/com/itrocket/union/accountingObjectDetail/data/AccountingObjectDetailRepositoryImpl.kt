@@ -69,6 +69,10 @@ class AccountingObjectDetailRepositoryImpl(
         )
     }
 
+    override suspend fun updateAccountingObjectMarked(accountingObjectId: String, rfid: String) {
+        syncApi.updateAccountingObjectMarked(accountingObjectId, rfid)
+    }
+
     override suspend fun saveImage(
         imageDomain: ImageDomain,
         accountingObjectId: String,

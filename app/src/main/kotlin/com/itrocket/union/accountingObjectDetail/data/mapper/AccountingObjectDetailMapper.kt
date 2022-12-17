@@ -277,7 +277,8 @@ fun AccountingObjectDomain.toAccountingObjectScanningData() = AccountingObjectSc
     id = id,
     factoryNumber = factoryNumber,
     barcodeValue = barcodeValue,
-    rfidValue = rfidValue
+    rfidValue = rfidValue,
+    marked = marked
 )
 
 fun AccountingObjectDomain.toAccountingObjectLabelType(labelTypeId: String) =
