@@ -213,6 +213,7 @@ private fun Content(
             title = stringResource(R.string.inventory_params),
             screen = {
                 ParamContent(
+                    paddingValues = paddingValues,
                     onParamClickListener = onParamClickListener,
                     params = state.params,
                     onCrossClickListener = onParamCrossClickListener,
@@ -267,8 +268,13 @@ private fun ParamContent(
     onParamClickListener: (ParamDomain) -> Unit,
     onCrossClickListener: (ParamDomain) -> Unit,
     isInventoryChangePermitted: Boolean,
+    paddingValues: PaddingValues
 ) {
-    LazyColumn(modifier = Modifier.fillMaxHeight()) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(paddingValues)
+    ) {
         items(params, key = {
             it.type
         }) {
