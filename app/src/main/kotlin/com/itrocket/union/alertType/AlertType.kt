@@ -18,5 +18,6 @@ enum class AlertType {
     EXIT,
     DROP,
     MANDATORY_FIELDS,
-    APP_DATA_FILE
+    APP_DATA_FILE,
+    ADD_IMAGE
 }

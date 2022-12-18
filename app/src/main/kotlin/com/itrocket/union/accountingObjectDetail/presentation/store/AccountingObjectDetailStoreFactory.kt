@@ -18,7 +18,6 @@ import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.image.domain.ImageInteractor
 import com.itrocket.union.imageViewer.domain.ImageViewerInteractor
 import com.itrocket.union.labelType.domain.LabelTypeInteractor
-import com.itrocket.union.labelType.domain.entity.LabelTypeDomain
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
 import com.itrocket.union.readingMode.domain.ReadingModeInteractor
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
@@ -27,7 +26,6 @@ import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
@@ -156,6 +154,7 @@ class AccountingObjectDetailStoreFactory(
                 )
                 is AccountingObjectDetailStore.Intent.OnImageTaken -> onImageTaken(
                     success = intent.success,
+                    uri = intent.uri,
                     getState = getState
                 )
                 AccountingObjectDetailStore.Intent.OnLabelTypeEditClicked -> onLabelTypeEditClicked()
@@ -163,6 +162,20 @@ class AccountingObjectDetailStoreFactory(
                     getState = getState,
                     labelTypeId = intent.labelTypeId
                 )
+                is AccountingObjectDetailStore.Intent.OnTakeFromCameraClicked -> onTakeFromCamera()
+                is AccountingObjectDetailStore.Intent.OnTakeFromFilesClicked -> onTakeFromFiles()
+            }
+        }
+
+        private fun onTakeFromFiles() {
+            publish(AccountingObjectDetailStore.Label.ShowPeekPhotoFromFiles)
+        }
+
+        private suspend fun onTakeFromCamera() {
+            catchException {
+                val imageTmpUri = imageInteractor.getTmpFileUri()
+                dispatch(Result.ImageUri(imageTmpUri))
+                publish(AccountingObjectDetailStore.Label.ShowAddImage(imageTmpUri))
             }
         }
 
@@ -192,9 +205,10 @@ class AccountingObjectDetailStoreFactory(
 
         private suspend fun onImageTaken(
             success: Boolean,
+            uri: Uri?,
             getState: () -> AccountingObjectDetailStore.State
         ) {
-            val imageUri = getState().imageUri
+            val imageUri = uri ?: getState().imageUri
             dispatch(Result.ImageLoading(true))
             catchException {
                 if (success && imageUri != null) {
@@ -209,14 +223,11 @@ class AccountingObjectDetailStoreFactory(
                 }
             }
             dispatch(Result.ImageLoading(false))
+            dispatch(Result.DialogType(AlertType.NONE))
         }
 
-        private suspend fun onAddImageClicked() {
-            catchException {
-                val imageTmpUri = imageInteractor.getTmpFileUri()
-                dispatch(Result.ImageUri(imageTmpUri))
-                publish(AccountingObjectDetailStore.Label.ShowAddImage(imageTmpUri))
-            }
+        private fun onAddImageClicked() {
+            dispatch(Result.DialogType(AlertType.ADD_IMAGE))
         }
 
         private fun onImageClicked(

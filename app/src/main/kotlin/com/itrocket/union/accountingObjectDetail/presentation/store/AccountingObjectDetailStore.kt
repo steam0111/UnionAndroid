@@ -49,7 +49,7 @@ interface AccountingObjectDetailStore :
         object OnAddImageClicked : Intent()
         object OnLabelTypeEditClicked : Intent()
         data class OnImagesChanged(val images: List<ImageDomain>) : Intent()
-        data class OnImageTaken(val success: Boolean) : Intent()
+        data class OnImageTaken(val success: Boolean, val uri: Uri? = null) : Intent()
         data class OnImageClicked(val imageDomain: ImageDomain) : Intent()
         data class OnWriteEpcHandled(val rfid: String) : Intent()
         data class OnWriteEpcError(val error: String) : Intent()
@@ -57,6 +57,8 @@ interface AccountingObjectDetailStore :
         data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
         data class OnManualInput(val readingModeResult: ReadingModeResult) : Intent()
         data class OnLabelTypeSelected(val labelTypeId: String) : Intent()
+        object OnTakeFromCameraClicked : Intent()
+        object OnTakeFromFilesClicked : Intent()
     }
 
     data class State(
@@ -122,6 +124,7 @@ interface AccountingObjectDetailStore :
         data class ChangeSubscribeScanData(val isSubscribe: Boolean) : Label()
 
         data class ShowAddImage(val imageUri: Uri) : Label()
+        object ShowPeekPhotoFromFiles : Label()
 
         data class ShowImageViewer(
             val images: List<ImageDomain>,
