@@ -8,5 +8,6 @@ class AccountingObjectScanningUpdate(
     val barcodeValue: String?,
     val rfidValue: String?,
     val factoryNumber: String?,
-    val updateDate: Long = System.currentTimeMillis()
+    val updateDate: Long = System.currentTimeMillis(),
+    val marked: Boolean
 )

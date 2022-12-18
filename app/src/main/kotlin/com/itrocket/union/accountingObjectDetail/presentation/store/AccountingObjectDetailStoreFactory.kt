@@ -138,7 +138,7 @@ class AccountingObjectDetailStoreFactory(
                 AccountingObjectDetailStore.Intent.OnTriggerPressed -> onTriggerPressed(getState)
                 AccountingObjectDetailStore.Intent.OnTriggerReleased -> onTriggerRelease()
                 is AccountingObjectDetailStore.Intent.OnWriteEpcError -> onWriteEpcError(intent.error)
-                is AccountingObjectDetailStore.Intent.OnWriteEpcHandled -> onWriteEpcHandled()
+                is AccountingObjectDetailStore.Intent.OnWriteEpcHandled -> onWriteEpcHandled(getState().accountingObjectDomain.id, intent.rfid)
                 AccountingObjectDetailStore.Intent.OnWriteOffClicked -> onWriteOffClicked(getState().accountingObjectDomain)
                 AccountingObjectDetailStore.Intent.OnRemoveBarcodeClicked -> onRemoveBarcodeClicked(
                     getState().accountingObjectDomain
@@ -271,9 +271,10 @@ class AccountingObjectDetailStoreFactory(
             dispatch(Result.RfidError(error))
         }
 
-        private fun onWriteEpcHandled() {
+        private suspend fun onWriteEpcHandled(accountingObjectId: String, rfid: String) {
             dispatch(Result.RfidError(""))
             dispatch(Result.DialogType(AlertType.NONE))
+            interactor.updateAccountingObjectMarked(accountingObjectId, rfid)
         }
 
         private fun onTriggerPressed(getState: () -> AccountingObjectDetailStore.State) {

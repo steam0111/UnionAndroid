@@ -18,7 +18,7 @@ class ChangeScanDataInteractor(
     ) {
         val accountingObject = accountingObjectDetailInteractor.getAccountingObject(entityId)
         val newAccountingObject = when (changeScanType) {
-            ChangeScanType.RFID -> accountingObject.copy(rfidValue = scanningValue)
+            ChangeScanType.RFID -> accountingObject.copy(rfidValue = scanningValue, marked = true)
             ChangeScanType.BARCODE -> accountingObject.copy(barcodeValue = scanningValue)
             ChangeScanType.SN -> accountingObject.copy(factoryNumber = scanningValue)
         }

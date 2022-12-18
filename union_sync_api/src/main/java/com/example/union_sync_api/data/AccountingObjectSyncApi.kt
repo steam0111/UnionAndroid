@@ -63,4 +63,6 @@ interface AccountingObjectSyncApi {
     suspend fun updateAccountingObjectScanningData(accountingObject: AccountingObjectScanningData)
 
     suspend fun updateAccountingObjectLabelType(accountingObject: LabelType)
+
+    suspend fun updateAccountingObjectMarked(accountingObjectId: String, rfid: String)
 }

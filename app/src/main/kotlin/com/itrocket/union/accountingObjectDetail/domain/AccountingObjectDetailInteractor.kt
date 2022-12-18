@@ -78,7 +78,16 @@ class AccountingObjectDetailInteractor(
         accountingObjectDomain: AccountingObjectDomain,
         labelTypeId: String
     ) = withContext(coreDispatchers.io) {
-        repository.updateLabelType(accountingObject = accountingObjectDomain, labelTypeId = labelTypeId)
+        repository.updateLabelType(
+            accountingObject = accountingObjectDomain,
+            labelTypeId = labelTypeId
+        )
+    }
+
+    suspend fun updateAccountingObjectMarked(accountingObjectId: String, rfid: String) {
+        withContext(coreDispatchers.io) {
+            repository.updateAccountingObjectMarked(accountingObjectId, rfid)
+        }
     }
 
     suspend fun updateScanningData(accountingObjectDomain: AccountingObjectDomain) =

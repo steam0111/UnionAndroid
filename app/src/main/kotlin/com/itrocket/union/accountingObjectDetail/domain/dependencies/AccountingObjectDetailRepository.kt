@@ -22,7 +22,9 @@ interface AccountingObjectDetailRepository {
 
     suspend fun updateLabelType(accountingObject: AccountingObjectDomain, labelTypeId: String)
 
-    suspend fun getAccountingObjectImages(accountingObjectId: String) : List<ImageDomain>
+    suspend fun updateAccountingObjectMarked(accountingObjectId: String, rfid: String)
+
+    suspend fun getAccountingObjectImages(accountingObjectId: String): List<ImageDomain>
 
     suspend fun getAccountingObjectImagesByUpdateDate(updateDate: Long): List<ImageDomain>
 
