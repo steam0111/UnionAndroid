@@ -1,5 +1,7 @@
 package com.itrocket.union.accountingObjectDetail.presentation.view
 
+import android.os.Bundle
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.ComposeView
@@ -164,6 +166,11 @@ class AccountingObjectDetailComposeFragment :
                 }
             )
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeScanning()
     }
 
     override fun handleLabel(label: AccountingObjectDetailStore.Label) {
