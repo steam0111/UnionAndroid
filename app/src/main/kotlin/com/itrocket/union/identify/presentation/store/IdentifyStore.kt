@@ -10,6 +10,7 @@ import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
+import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailArguments
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.identify.domain.NomenclatureReserveDomain
@@ -19,6 +20,7 @@ import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuArguments
+import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuResult
 import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.view.SelectActionWithValuesBottomMenuFragment
 import com.itrocket.union.ui.listAction.DialogAction
 import com.itrocket.union.ui.listAction.DialogActionType
@@ -39,7 +41,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
         data class OnManualInput(val readingModeResult: ReadingModeResult) : Intent()
 
         data class OnItemClicked(val accountingObject: AccountingObjectDomain) : Intent()
-        data class OnDeleteFromSelectActionWithValuesBottomMenu(val accountingObjects: List<AccountingObjectDomain>) :
+        data class OnAccountingObjectActionsResultHandled(val result: SelectActionWithValuesBottomMenuResult) :
             Intent()
 
         data class OnNewRfidHandled(val rfids: List<String>) :
@@ -96,16 +98,22 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
 
         }
 
-        data class ShowDetail(
+        data class ShowAccountingObjectDetail(val accountingObject: AccountingObjectDomain) :
+            Label(), ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = IdentifyComposeFragmentDirections.toAccountingObjectsDetails(
+                    AccountingObjectDetailArguments(argument = accountingObject)
+                )
+        }
+
+        data class ShowActions(
             val accountingObject: AccountingObjectDomain,
-            val accountingObjects: List<AccountingObjectDomain>
         ) : Label(),
             ShowBottomSheetNavigationLabel {
             override val arguments: Bundle
                 get() = bundleOf(
                     SelectActionWithValuesBottomMenuFragment.SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_ARGS to SelectActionWithValuesBottomMenuArguments(
                         accountingObject = accountingObject,
-                        accountingObjects = accountingObjects
                     ),
                 )
 

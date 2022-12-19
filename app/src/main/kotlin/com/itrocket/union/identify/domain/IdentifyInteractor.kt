@@ -2,8 +2,10 @@ package com.itrocket.union.identify.domain
 
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.sgtin.SgtinFormatter
+import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
+import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.labelTypeDetail.domain.dependencies.LabelTypeDetailRepository
 import com.itrocket.union.nomenclature.domain.NomenclatureInteractor
 import com.itrocket.union.nomenclatureDetail.domain.NomenclatureDetailInteractor
@@ -17,6 +19,7 @@ class IdentifyInteractor(
     private val coreDispatchers: CoreDispatchers,
     private val nomenclatureDetailInteractor: NomenclatureDetailInteractor,
     private val labelTypeDetailRepository: LabelTypeDetailRepository,
+    private val errorInteractor: ErrorInteractor,
     private val sgtinFormatter: SgtinFormatter
 ) {
     fun addAccountingObject(
@@ -25,6 +28,15 @@ class IdentifyInteractor(
     ): List<AccountingObjectDomain> {
         val mutableList = accountingObjects.toMutableList()
         mutableList.add(accountingObject)
+        return mutableList
+    }
+
+    fun removeAccountingObject(
+        accountingObjects: List<AccountingObjectDomain>,
+        accountingObject: AccountingObjectDomain
+    ) : List<AccountingObjectDomain>{
+        val mutableList = accountingObjects.toMutableList()
+        mutableList.remove(accountingObject)
         return mutableList
     }
 
@@ -76,16 +88,28 @@ class IdentifyInteractor(
                         accountingObjectRepository.getAccountingObjectsByBarcode(
                             barcode = null,
                             serialNumber = barcode
+                        ) ?: throw java.lang.IllegalArgumentException(
+                            errorInteractor.getExceptionMessageByResId(
+                                R.string.common_sn_error
+                            )
                         )
                     } else {
                         accountingObjectRepository.getAccountingObjectsByBarcode(
                             barcode = barcode,
                             serialNumber = null
+                        ) ?: throw java.lang.IllegalArgumentException(
+                            errorInteractor.getExceptionMessageByResId(
+                                R.string.common_barcode_error
+                            )
                         )
                     }
-                barcodeAccountingObject?.let {
-                    newAccountingObjectBarcode.add(it)
-                }
+                newAccountingObjectBarcode.add(barcodeAccountingObject)
+            } else {
+                throw java.lang.IllegalArgumentException(
+                    errorInteractor.getExceptionMessageByResId(
+                        R.string.common_exist_error
+                    )
+                )
             }
             newAccountingObjectBarcode + accountingObjects
         }
@@ -129,7 +153,11 @@ class IdentifyInteractor(
             )
 
             if (reserves.isEmpty()) {
-                nomenclatureReserves
+                throw java.lang.IllegalArgumentException(
+                    errorInteractor.getExceptionMessageByResId(
+                        R.string.common_barcode_error
+                    )
+                )
             } else {
                 val reserve = reserves.first()
                 val existNomenclature = nomenclatureReserves.find {

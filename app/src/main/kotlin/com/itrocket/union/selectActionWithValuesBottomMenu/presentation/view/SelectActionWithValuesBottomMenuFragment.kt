@@ -20,13 +20,7 @@ class SelectActionWithValuesBottomMenuFragment :
                 state = state,
                 appInsets = appInsets,
                 onTypeClickListener = {
-                    accept(
-                        SelectActionWithValuesBottomMenuStore.Intent.OnTypeClicked(
-                            it,
-                            accountingObject = state.accountingObject,
-                            accountingObjects = state.accountingObjects
-                        )
-                    )
+                    accept(SelectActionWithValuesBottomMenuStore.Intent.OnTypeClicked(it))
                 }
             )
         }
