@@ -216,7 +216,8 @@ class AccountingObjectDetailStoreFactory(
                     val imageDomain = imageInteractor.saveImageFromContentUri(imageUri)
                     interactor.saveImage(
                         imageDomain = imageDomain,
-                        accountingObjectId = accountingObjectId
+                        accountingObjectId = accountingObjectId,
+                        isMainImage = getState().images.isEmpty()
                     )
                 } else {
                     throw errorInteractor.getThrowableByResId(R.string.image_taken_error)
