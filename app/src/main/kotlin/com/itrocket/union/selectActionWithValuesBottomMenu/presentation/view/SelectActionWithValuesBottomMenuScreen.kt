@@ -92,7 +92,6 @@ fun SelectActionWithValuesBottomMenuScreenPreview() {
                 marked = true,
                 characteristics = emptyList(),
             ),
-            accountingObjects = listOf()
         ), AppInsets()
     ) {}
 }

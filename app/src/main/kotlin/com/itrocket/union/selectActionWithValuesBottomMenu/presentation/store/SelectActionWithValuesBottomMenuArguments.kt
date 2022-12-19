@@ -7,5 +7,4 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class SelectActionWithValuesBottomMenuArguments(
     val accountingObject: AccountingObjectDomain,
-    val accountingObjects: List<AccountingObjectDomain>
 ) : Parcelable

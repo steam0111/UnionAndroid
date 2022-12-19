@@ -53,8 +53,8 @@ class IdentifyComposeFragment :
                 resultCode = SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_RESULT_CODE,
                 resultLabel = SELECT_ACTION_WITH_VALUES_BOTTOM_MENU_RESULT_LABEL,
                 resultAction = {
-                    (it as SelectActionWithValuesBottomMenuResult?)?.accountingObjects?.let {
-                        accept(IdentifyStore.Intent.OnDeleteFromSelectActionWithValuesBottomMenu(it))
+                    (it as SelectActionWithValuesBottomMenuResult?)?.let {
+                        accept(IdentifyStore.Intent.OnAccountingObjectActionsResultHandled(it))
                     }
                 }
             ),

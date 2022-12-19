@@ -448,18 +448,6 @@ private fun Toolbar(
                 color = white
             )
         }
-        Spacer(modifier = Modifier.weight(1f))
-        Image(
-            painter = painterResource(id = R.drawable.ic_document_add),
-            contentDescription = null,
-            modifier = Modifier.clickableUnbounded(onClick = onDocumentAddClickListener)
-        )
-        Spacer(modifier = Modifier.width(24.dp))
-        Image(
-            painter = painterResource(id = R.drawable.ic_document_search),
-            contentDescription = null,
-            modifier = Modifier.clickableUnbounded(onClick = onDocumentSearchClickListener)
-        )
     }
 }
 

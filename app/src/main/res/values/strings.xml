@@ -57,6 +57,9 @@
     <string name="common_of">%1$d из %2$d</string>
     <string name="common_device_id">Device id</string>
     <string name="common_formatter_error">ШК запаса не подходит под формат EAN13</string>
+    <string name="common_barcode_error">Штрих-код не найден</string>
+    <string name="common_sn_error">Серийный номер не найден</string>
+    <string name="common_exist_error">Этот объект уже добавлен</string>
 
     <string name="common_server_validate_error">Введен неправильный сервер или порт</string>
     <!-- Splash -->

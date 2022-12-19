@@ -9,6 +9,7 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.alertType.AlertType
+import com.itrocket.union.documents.domain.entity.ActionsWithIdentifyObjects
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.identify.domain.IdentifyInteractor
 import com.itrocket.union.identify.domain.IdentifyInteractor.Companion.ACCOUNTING_OBJECT_PAGE
@@ -19,6 +20,7 @@ import com.itrocket.union.readingMode.domain.ReadingModeInteractor
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.toReadingMode
+import com.itrocket.union.selectActionWithValuesBottomMenu.presentation.store.SelectActionWithValuesBottomMenuResult
 import com.itrocket.union.ui.listAction.DialogActionType
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
@@ -79,12 +81,7 @@ class IdentifyStoreFactory(
                     publish(IdentifyStore.Label.ShowReadingMode)
                 }
                 is IdentifyStore.Intent.OnItemClicked -> {
-                    publish(
-                        IdentifyStore.Label.ShowDetail(
-                            intent.accountingObject,
-                            getState().accountingObjects
-                        )
-                    )
+                    publish(IdentifyStore.Label.ShowActions(intent.accountingObject))
                 }
                 is IdentifyStore.Intent.OnNewRfidHandled -> handleRfid(
                     rfids = intent.rfids,
@@ -106,8 +103,11 @@ class IdentifyStoreFactory(
                         )
                     )
                 }
-                is IdentifyStore.Intent.OnDeleteFromSelectActionWithValuesBottomMenu -> {
-                    dispatch(Result.AccountingObjects(intent.accountingObjects))
+                is IdentifyStore.Intent.OnAccountingObjectActionsResultHandled -> {
+                    onAccountingObjectActionsResultHandled(
+                        result = intent.result,
+                        accountingObjects = getState().accountingObjects
+                    )
                 }
                 is IdentifyStore.Intent.OnReadingModeTabChanged -> dispatch(
                     Result.ReadingMode(
@@ -136,6 +136,27 @@ class IdentifyStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             publish(IdentifyStore.Label.Error(errorInteractor.getTextMessage(throwable)))
+        }
+
+        private fun onAccountingObjectActionsResultHandled(
+            result: SelectActionWithValuesBottomMenuResult,
+            accountingObjects: List<AccountingObjectDomain>
+        ) {
+            when (result.actionType) {
+                ActionsWithIdentifyObjects.OPEN_CARD -> publish(
+                    IdentifyStore.Label.ShowAccountingObjectDetail(
+                        result.accountingObject
+                    )
+                )
+                ActionsWithIdentifyObjects.DELETE_FROM_LIST -> dispatch(
+                    Result.AccountingObjects(
+                        identifyInteractor.removeAccountingObject(
+                            accountingObjects = accountingObjects,
+                            accountingObject = result.accountingObject
+                        )
+                    )
+                )
+            }
         }
 
         private fun onNomenclatureReserveClicked(nomenclatureReserveDomain: NomenclatureReserveDomain) {
@@ -186,24 +207,27 @@ class IdentifyStoreFactory(
             rfids: List<String>,
             getState: () -> IdentifyStore.State
         ) {
-            when (getState().selectedPage) {
-                ACCOUNTING_OBJECT_PAGE -> {
-                    val newAccountingObjects = identifyInteractor.handleNewAccountingObjectRfids(
-                        accountingObjects = getState().accountingObjects,
-                        handledAccountingObjectRfids = rfids
-                    )
-                    dispatch(Result.AccountingObjects(newAccountingObjects))
-                }
-                NOMENCLATURE_RESERVE_PAGE -> {
-                    val oldRfids = getState().nomenclatureRfids
-                    val nomenclatureReservesRfid =
-                        identifyInteractor.handleNewNomenclatureReserveRfids(
-                            nomenclatureReserves = getState().nomenclatureReserves,
-                            rfids = rfids,
-                            oldsRfids = getState().nomenclatureRfids
-                        )
-                    dispatch(Result.NomenclatureReserves(nomenclatureReservesRfid.newNomenclatureReserves))
-                    dispatch(Result.NomenclatureRfids(oldRfids + nomenclatureReservesRfid.newRfids))
+            catchException {
+                when (getState().selectedPage) {
+                    ACCOUNTING_OBJECT_PAGE -> {
+                        val newAccountingObjects =
+                            identifyInteractor.handleNewAccountingObjectRfids(
+                                accountingObjects = getState().accountingObjects,
+                                handledAccountingObjectRfids = rfids
+                            )
+                        dispatch(Result.AccountingObjects(newAccountingObjects))
+                    }
+                    NOMENCLATURE_RESERVE_PAGE -> {
+                        val oldRfids = getState().nomenclatureRfids
+                        val nomenclatureReservesRfid =
+                            identifyInteractor.handleNewNomenclatureReserveRfids(
+                                nomenclatureReserves = getState().nomenclatureReserves,
+                                rfids = rfids,
+                                oldsRfids = getState().nomenclatureRfids
+                            )
+                        dispatch(Result.NomenclatureReserves(nomenclatureReservesRfid.newNomenclatureReserves))
+                        dispatch(Result.NomenclatureRfids(oldRfids + nomenclatureReservesRfid.newRfids))
+                    }
                 }
             }
         }
@@ -212,22 +236,25 @@ class IdentifyStoreFactory(
             barcode: String,
             getState: () -> IdentifyStore.State,
         ) {
-            when (getState().selectedPage) {
-                ACCOUNTING_OBJECT_PAGE -> {
-                    val newAccountingObjects = identifyInteractor.handleNewAccountingObjectBarcode(
-                        accountingObjects = getState().accountingObjects,
-                        barcode = barcode,
-                        isSerialNumber = getState().readingModeTab == ReadingModeTab.SN
-                    )
-                    dispatch(Result.AccountingObjects(newAccountingObjects))
-                }
-                NOMENCLATURE_RESERVE_PAGE -> {
-                    val newNomenclatureReserves =
-                        identifyInteractor.handleNewNomenclatureReserveBarcode(
-                            barcode = barcode,
-                            nomenclatureReserves = getState().nomenclatureReserves
-                        )
-                    dispatch(Result.NomenclatureReserves(newNomenclatureReserves))
+            catchException {
+                when (getState().selectedPage) {
+                    ACCOUNTING_OBJECT_PAGE -> {
+                        val newAccountingObjects =
+                            identifyInteractor.handleNewAccountingObjectBarcode(
+                                accountingObjects = getState().accountingObjects,
+                                barcode = barcode,
+                                isSerialNumber = getState().readingModeTab == ReadingModeTab.SN
+                            )
+                        dispatch(Result.AccountingObjects(newAccountingObjects))
+                    }
+                    NOMENCLATURE_RESERVE_PAGE -> {
+                        val newNomenclatureReserves =
+                            identifyInteractor.handleNewNomenclatureReserveBarcode(
+                                barcode = barcode,
+                                nomenclatureReserves = getState().nomenclatureReserves
+                            )
+                        dispatch(Result.NomenclatureReserves(newNomenclatureReserves))
+                    }
                 }
             }
         }
