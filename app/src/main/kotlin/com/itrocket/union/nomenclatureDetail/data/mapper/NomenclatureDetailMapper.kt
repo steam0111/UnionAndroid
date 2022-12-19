@@ -25,8 +25,12 @@ fun NomenclatureDetailSyncEntity.toDomain(): NomenclatureDetailDomain {
     nomenclature.userUpdated?.let {
         listInfo.add(ObjectInfoDomain(R.string.common_user_update, it))
     }
-    nomenclature.barcode?.let {
-        listInfo.add(ObjectInfoDomain(R.string.common_barcode, it))
-    }
+    listInfo.add(
+        ObjectInfoDomain(
+            title = R.string.common_barcode,
+            value = nomenclature.barcode,
+            valueRes = R.string.value_not_defined
+        )
+    )
     return NomenclatureDetailDomain(name = nomenclature.name, listInfo = listInfo)
 }
