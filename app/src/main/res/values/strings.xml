@@ -286,7 +286,7 @@
     <string name="inventory_drop_confirm">Все результаты инвентаризации будут сброшены. Точно ходите продолжить?</string>
 
     <!-- InventoryCreate -->
-    <string name="inventory_create_hide_found_ao">Скрывать найденные ОС</string>
+    <string name="inventory_create_hide_found_ao">Скрывать найденные ОУ</string>
     <string name="inventory_create_total_ao">Всего ОС: %s</string>
     <string name="inventory_create_find_ao">Найдено ОС: %s</string>
     <string name="inventory_create_not_find_ao">Не найдено ОС: %s</string>
@@ -300,7 +300,7 @@
     <string name="inventory_create_written_off_error">Идентификатор утилизированного объекта нельзя добавить в ведомость</string>
 
     <!-- Switcher -->
-    <string name="switcher_accounting_object_status">Статус ОС</string>
+    <string name="switcher_accounting_object_status">Статус ОУ</string>
 
     <!-- NewAccountingObject -->
     <string name="new_accounting_object_title">Новый ОУ</string>
