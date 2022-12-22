@@ -40,6 +40,7 @@ import com.example.union_sync_impl.dao.TransitAccountingObjectRecordDao
 import com.example.union_sync_impl.dao.TransitDao
 import com.example.union_sync_impl.dao.TransitRemainsRecordDao
 import com.example.union_sync_impl.dao.AccountingObjectsVocabularyCharacteristicsDao
+import com.example.union_sync_impl.dao.EmployeeWorkPlaceDao
 import com.example.union_sync_impl.dao.LabelTypeDao
 import com.example.union_sync_impl.dao.SimpleCharacteristicDao
 import com.example.union_sync_impl.dao.TerminalRemainsNumeratorDao
@@ -68,6 +69,7 @@ import com.example.union_sync_impl.data.mapper.toDb
 import com.example.union_sync_impl.data.mapper.toDocumentDb
 import com.example.union_sync_impl.data.mapper.toDto
 import com.example.union_sync_impl.data.mapper.toEmployeeDb
+import com.example.union_sync_impl.data.mapper.toEmployeeWorkPlaceDb
 import com.example.union_sync_impl.data.mapper.toEnumDb
 import com.example.union_sync_impl.data.mapper.toEquipmentTypeDb
 import com.example.union_sync_impl.data.mapper.toInventoryCheckerDb
@@ -93,6 +95,7 @@ import com.example.union_sync_impl.data.mapper.toTerminalRemainsNumeratorDtoV2
 import com.example.union_sync_impl.data.mapper.toTransitAccountingObjectDb
 import com.example.union_sync_impl.data.mapper.toTransitDb
 import com.example.union_sync_impl.data.mapper.toTransitRemainsDb
+import com.example.union_sync_impl.entity.location.LocationDb
 import org.openapitools.client.models.AccountingObjectCharacteristicValueDtoV2
 import org.openapitools.client.models.AccountingObjectDtoV2
 import org.openapitools.client.models.AccountingObjectSimpleAdditionalFieldValueDtoV2
@@ -104,6 +107,7 @@ import org.openapitools.client.models.ActionRecordDtoV2
 import org.openapitools.client.models.ActionRemainsRecordDtoV2
 import org.openapitools.client.models.CounterpartyDtoV2
 import org.openapitools.client.models.EmployeeDtoV2
+import org.openapitools.client.models.EmployeeLocationDto
 import org.openapitools.client.models.EnumDtoV2
 import org.openapitools.client.models.EquipmentTypeDtoV2
 import org.openapitools.client.models.InventoryCheckerDto
@@ -166,7 +170,8 @@ class SyncRepository(
     private val vocabularyCharacteristicValueDao: VocabularyCharacteristicValueDao,
     private val labelTypeDao: LabelTypeDao,
     private val terminalRemainsNumeratorDao: TerminalRemainsNumeratorDao,
-    private val accountingObjectUnionImageDao: AccountingObjectUnionImageDao
+    private val accountingObjectUnionImageDao: AccountingObjectUnionImageDao,
+    private val workPlaceDao: EmployeeWorkPlaceDao
 ) {
     suspend fun clearDataBeforeDownload() {
         inventoryDao.clearAll()
@@ -300,6 +305,11 @@ class SyncRepository(
             syncControllerApi,
             moshi,
             ::producersDbSaver
+        ),
+        EmployeeWorkPlaceSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::employeeWorkPlacesDbSaver
         ),
         ReceptionCategoryItemSyncEntity(
             syncControllerApi,
@@ -784,8 +794,23 @@ class SyncRepository(
         equipmentTypeDao.insertAll(objects.map { it.toEquipmentTypeDb() })
     }
 
+    private suspend fun employeeWorkPlacesDbSaver(objects: List<EmployeeLocationDto>) {
+        locationDao.insertAll(objects.mapNotNull { it.extendedLocation?.toLocationDb() })
+        workPlaceDao.insertAll(objects.map { it.toEmployeeWorkPlaceDb() })
+    }
+
     private suspend fun employeesDbSaver(objects: List<EmployeeDtoV2>) {
         structuralDao.insertAll(objects.mapNotNull { it.extendedStructuralUnit?.toStructuralDb() })
+
+        val locations: List<LocationDb> = buildList {
+            objects.map { it.employeeWorkPlaces }.map { workPlaces ->
+                workPlaces?.forEach { place ->
+                    place.extendedLocation?.toLocationDb()?.let { add(it) }
+                }
+            }
+        }
+
+        locationDao.insertAll(locations)
         employeeDao.insertAll(objects.map { it.toEmployeeDb() })
     }
 

@@ -473,4 +473,5 @@
     <string name="consignment_title">Партия</string>
     <string name="from_camera">Камера</string>
     <string name="from_files">Файловая система</string>
+    <string name="work_places">Рабочие места</string>
 </resources>

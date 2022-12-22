@@ -2,12 +2,17 @@ package com.example.union_sync_impl.data.mapper
 
 import com.example.union_sync_api.entity.EmployeeDetailSyncEntity
 import com.example.union_sync_api.entity.EmployeeSyncEntity
+import com.example.union_sync_api.entity.EmployeeWorkPlaceSyncEntity
 import com.example.union_sync_api.entity.EnumSyncEntity
 import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.entity.EmployeeDb
+import com.example.union_sync_impl.entity.EmployeeWorkPlaceDb
 import com.example.union_sync_impl.entity.FullEmployeeDb
+import com.example.union_sync_impl.entity.FullEmployeeWorkPlaceDb
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import org.openapitools.client.models.EmployeeDtoV2
+import org.openapitools.client.models.EmployeeLocationDto
+
 
 fun EmployeeDtoV2.toEmployeeDb(): EmployeeDb {
     return EmployeeDb(
@@ -51,11 +56,31 @@ fun EmployeeDb.toSyncEntity(): EmployeeSyncEntity {
 fun FullEmployeeDb.toDetailSyncEntity(
     balanceUnits: List<StructuralSyncEntity>?,
     structurals: List<StructuralSyncEntity>?,
-    employeeStatusSyncEntity: EnumSyncEntity?
+    employeeStatusSyncEntity: EnumSyncEntity?,
+    workPlaces: List<EmployeeWorkPlaceSyncEntity>?
 ) =
     EmployeeDetailSyncEntity(
-        employeeDb.toSyncEntity(),
-        structurals,
-        balanceUnits,
-        employeeStatusSyncEntity
+        employee = employeeDb.toSyncEntity(),
+        structuralSyncEntities = structurals,
+        balanceUnitSyncEntities = balanceUnits,
+        employeeStatusSyncEntity = employeeStatusSyncEntity,
+        workPlaces = workPlaces
     )
+
+fun EmployeeLocationDto.toEmployeeWorkPlaceDb() = EmployeeWorkPlaceDb(
+    id = locationId,
+    catalogItemName = extendedLocation?.catalogItemName.orEmpty(),
+    employeeId = employeeId,
+    comment = comment,
+    mainWorkPlace = mainWorkPlace ?: false
+)
+
+fun FullEmployeeWorkPlaceDb.toSyncEntity(
+) = EmployeeWorkPlaceSyncEntity(
+    locationId = employeeWorkPlaceDb.id,
+    catalogItemName = employeeWorkPlaceDb.catalogItemName,
+    employeeId = employeeWorkPlaceDb.employeeId,
+    comment = employeeWorkPlaceDb.comment,
+    mainWorkPlace = employeeWorkPlaceDb.mainWorkPlace,
+    location = location?.toLocationShortSyncEntity()
+)
