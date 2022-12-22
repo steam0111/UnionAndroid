@@ -1,12 +1,15 @@
 package com.itrocket.union.nomenclatureGroupDetail.presentation.store
 
-import com.arkivanov.mvikotlin.core.store.*
+import com.arkivanov.mvikotlin.core.store.Executor
+import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
+import com.arkivanov.mvikotlin.core.store.Store
+import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.nomenclatureGroupDetail.domain.NomenclatureGroupDetailInteractor
 import com.itrocket.union.nomenclatureGroupDetail.domain.entity.NomenclatureGroupDetailDomain
-import com.itrocket.union.utils.ifBlankOrNull
 
 class NomenclatureGroupDetailStoreFactory(
     private val storeFactory: StoreFactory,
@@ -16,17 +19,16 @@ class NomenclatureGroupDetailStoreFactory(
     private val errorInteractor: ErrorInteractor
 ) {
 
-    fun create(): NomenclatureGroupDetailStore =
-        object : NomenclatureGroupDetailStore,
-            Store<NomenclatureGroupDetailStore.Intent, NomenclatureGroupDetailStore.State, NomenclatureGroupDetailStore.Label> by storeFactory.create(
-                name = "NomenclatureDetailStore",
-                initialState = NomenclatureGroupDetailStore.State(
-                    item = NomenclatureGroupDetailDomain(emptyList())
-                ),
-                bootstrapper = SimpleBootstrapper(Unit),
-                executorFactory = ::createExecutor,
-                reducer = ReducerImpl
-            ) {}
+    fun create(): NomenclatureGroupDetailStore = object : NomenclatureGroupDetailStore,
+        Store<NomenclatureGroupDetailStore.Intent, NomenclatureGroupDetailStore.State, NomenclatureGroupDetailStore.Label> by storeFactory.create(
+            name = "NomenclatureDetailStore",
+            initialState = NomenclatureGroupDetailStore.State(
+                item = NomenclatureGroupDetailDomain(emptyList())
+            ),
+            bootstrapper = SimpleBootstrapper(Unit),
+            executorFactory = ::createExecutor,
+            reducer = ReducerImpl
+        ) {}
 
     private fun createExecutor(): Executor<NomenclatureGroupDetailStore.Intent, Unit, NomenclatureGroupDetailStore.State, Result, NomenclatureGroupDetailStore.Label> =
         NomenclatureDetailExecutor()
@@ -36,8 +38,7 @@ class NomenclatureGroupDetailStoreFactory(
             context = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
-            action: Unit,
-            getState: () -> NomenclatureGroupDetailStore.State
+            action: Unit, getState: () -> NomenclatureGroupDetailStore.State
         ) {
             catchException {
                 dispatch(Result.Loading(true))
@@ -52,7 +53,13 @@ class NomenclatureGroupDetailStoreFactory(
 
         override fun handleError(throwable: Throwable) {
             dispatch(Result.Loading(false))
-            publish(NomenclatureGroupDetailStore.Label.Error(errorInteractor.getTextMessage(throwable)))
+            publish(
+                NomenclatureGroupDetailStore.Label.Error(
+                    errorInteractor.getTextMessage(
+                        throwable
+                    )
+                )
+            )
         }
 
         override suspend fun executeIntent(
@@ -72,12 +79,10 @@ class NomenclatureGroupDetailStoreFactory(
         class Nomenclature(val item: NomenclatureGroupDetailDomain) : Result()
     }
 
-    private object ReducerImpl :
-        Reducer<NomenclatureGroupDetailStore.State, Result> {
-        override fun NomenclatureGroupDetailStore.State.reduce(result: Result) =
-            when (result) {
-                is Result.Loading -> copy(isLoading = result.isLoading)
-                is Result.Nomenclature -> copy(item = result.item)
-            }
+    private object ReducerImpl : Reducer<NomenclatureGroupDetailStore.State, Result> {
+        override fun NomenclatureGroupDetailStore.State.reduce(result: Result) = when (result) {
+            is Result.Loading -> copy(isLoading = result.isLoading)
+            is Result.Nomenclature -> copy(item = result.item)
+        }
     }
 }

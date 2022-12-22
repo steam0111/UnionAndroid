@@ -7,6 +7,7 @@ plugins {
     id 'androidx.navigation.safeargs'
     id 'kotlin-kapt'
     id 'shot'
+    id("io.gitlab.arturbosch.detekt").version("1.22.0")
 }
 
 android {
@@ -60,6 +61,12 @@ android {
         variant.outputs.all {
             outputFileName = "union_version_${variant.versionCode}_${variant.name}.apk"
         }
+    }
+
+    detekt {
+        toolVersion = "1.22.0"
+        config = files("$rootDir/detekt/detekt.yml")
+        buildUponDefaultConfig = true
     }
 }
 
