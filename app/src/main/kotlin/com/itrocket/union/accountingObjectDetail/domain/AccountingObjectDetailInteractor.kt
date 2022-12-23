@@ -40,9 +40,9 @@ class AccountingObjectDetailInteractor(
         )
     }
 
-    suspend fun saveImage(imageDomain: ImageDomain, accountingObjectId: String) {
+    suspend fun saveImage(imageDomain: ImageDomain, accountingObjectId: String, isMainImage: Boolean) {
         repository.saveImage(
-            imageDomain = imageDomain,
+            imageDomain = imageDomain.copy(isMainImage = isMainImage),
             accountingObjectId = accountingObjectId,
             userInserted = authMainInteractor.getLogin()
         )
