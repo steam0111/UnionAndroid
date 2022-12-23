@@ -43,5 +43,6 @@
     <string name="transit_table_name">Таблица транзитов</string>
     <string name="accounting_objects_characteristics_field_table_name">Таблица простых характеристик объектов учета</string>
     <string name="accounting_objects_vocabulary_characteristics_field_table_name">Таблица ограниченных характеристик объектов учета</string>
+    <string name="employee_work_places">Таблица рабочих мест сотрудников</string>
 
 </resources>

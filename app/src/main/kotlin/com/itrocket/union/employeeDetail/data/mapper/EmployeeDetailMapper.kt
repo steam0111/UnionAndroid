@@ -41,6 +41,15 @@ fun EmployeeDetailSyncEntity.toEmployeeDetailDomain(): EmployeeDetailDomain {
     employee.userUpdated?.let {
         listInfo.add(ObjectInfoDomain(R.string.common_user_update, it))
     }
+    workPlaces?.let {
+        listInfo.add(
+            ObjectInfoDomain(
+                title = R.string.work_places,
+                value = it.mapNotNull { it.location?.name }.joinToString("; "),
+                valueRes = R.string.not_set
+            )
+        )
+    }
 
     return EmployeeDetailDomain(
         id = employee.id,

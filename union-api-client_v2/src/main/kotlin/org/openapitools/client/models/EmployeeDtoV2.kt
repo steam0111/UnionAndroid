@@ -121,7 +121,10 @@ data class EmployeeDtoV2 (
     val employeeStatusId: kotlin.String? = null,
 
     @Json(name = "serviceNumber")
-    val serviceNumber: kotlin.String? = null
+    val serviceNumber: kotlin.String? = null,
+
+    @Json(name = "employeeWorkPlaces")
+    val employeeWorkPlaces: List<EmployeeLocationDto>? = null
 
 )
 

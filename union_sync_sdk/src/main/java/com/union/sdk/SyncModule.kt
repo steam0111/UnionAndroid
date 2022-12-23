@@ -20,7 +20,8 @@ object SyncModule {
             EmployeeSyncApiImpl(
                 employeeDao = get(),
                 structuralSyncApi = get(),
-                enumSyncApi = get()
+                enumSyncApi = get(),
+                employeeWorkPlacesDao = get()
             )
         }
         factory<ProducerSyncApi> {
@@ -232,6 +233,7 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
+                get(),
                 get()
             )
         }
@@ -354,6 +356,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().vocabularyCharacteristicsDao()
+        }
+        factory {
+            get<UnionDatabase>().employeeWorkPlaceDao()
         }
         factory<ManageSyncDataApi> {
             ManageSyncDataImpl(
