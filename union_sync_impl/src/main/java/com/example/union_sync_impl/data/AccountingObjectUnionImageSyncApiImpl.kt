@@ -33,7 +33,11 @@ class AccountingObjectUnionImageSyncApiImpl(private val accountingObjectUnionIma
         ).map { it.toSyncEntity() }
     }
 
-    override suspend fun saveAccountingObjectImage(syncEntity: AccountingObjectUnionImageSyncEntity) {
+    override suspend fun saveAccountingObjectImage(
+        syncEntity: AccountingObjectUnionImageSyncEntity,
+        oldMainImageId: String?
+    ) {
+        oldMainImageId?.let { accountingObjectUnionImageDao.unsetMainImage(it) }
         accountingObjectUnionImageDao.insert(syncEntity.toDb())
     }
 

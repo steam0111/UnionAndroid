@@ -84,9 +84,11 @@ class ImageViewerStoreFactory(
                     val imageDomain = imageInteractor.saveImageFromContentUri(imageUri)
                     val accountingObjectId = imageViewerArguments.accountingObjectId
                     imageViewerInteractor.saveImage(
+                        oldMainImageId = getState().images.find { it.isMainImage }?.imageId,
                         image = imageDomain,
                         accountingObjectId = accountingObjectId
                     )
+                    dispatch(Result.Page(0))
                 } else {
                     throw errorInteractor.getThrowableByResId(R.string.image_taken_error)
                 }
@@ -129,6 +131,7 @@ class ImageViewerStoreFactory(
                                 dispatch(Result.Images(it))
                                 dispatch(Result.Page(it.size - 1))
                             }
+
                             else -> dispatch(Result.Images(it))
                         }
                     }

@@ -37,9 +37,10 @@ class ImageViewerInteractor(
         }
     }
 
-    suspend fun saveImage(image: ImageDomain, accountingObjectId: String) {
+    suspend fun saveImage(oldMainImageId: String?, image: ImageDomain, accountingObjectId: String) {
         withContext(coreDispatchers.io) {
             accountingObjectDetailRepository.saveImage(
+                oldMainImageId = oldMainImageId,
                 imageDomain = image,
                 accountingObjectId = accountingObjectId,
                 userInserted = authMainInteractor.getLogin()

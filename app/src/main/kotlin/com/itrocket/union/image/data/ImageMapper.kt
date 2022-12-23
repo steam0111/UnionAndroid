@@ -12,7 +12,7 @@ fun AccountingObjectUnionImageSyncEntity.toDomain(imageFile: File) = ImageDomain
 
 fun ImageDomain.toSyncEntity(accountingObjectId: String, userInserted: String?) =
     AccountingObjectUnionImageSyncEntity(
-        isMainImage = isMainImage,
+        isMainImage = true,
         accountingObjectId = accountingObjectId,
         unionImageId = imageId,
         userInserted = userInserted

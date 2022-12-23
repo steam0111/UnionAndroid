@@ -74,13 +74,15 @@ class AccountingObjectDetailRepositoryImpl(
     }
 
     override suspend fun saveImage(
+        oldMainImageId: String?,
         imageDomain: ImageDomain,
         accountingObjectId: String,
         userInserted: String?
     ) {
         withContext(coreDispatchers.io) {
             accountingObjectUnionImageSyncApi.saveAccountingObjectImage(
-                imageDomain.toSyncEntity(
+                oldMainImageId = oldMainImageId,
+                syncEntity = imageDomain.toSyncEntity(
                     accountingObjectId = accountingObjectId,
                     userInserted = userInserted
                 )

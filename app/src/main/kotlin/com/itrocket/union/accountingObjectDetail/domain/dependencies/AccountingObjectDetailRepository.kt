@@ -35,6 +35,7 @@ interface AccountingObjectDetailRepository {
     suspend fun updateIsMainImage(newMainImageId: String?, oldMainImageId: String?)
 
     suspend fun saveImage(
+        oldMainImageId: String?,
         imageDomain: ImageDomain,
         accountingObjectId: String,
         userInserted: String?
