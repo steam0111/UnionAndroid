@@ -13,12 +13,11 @@ import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -36,8 +35,7 @@ import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.imageViewer.presentation.store.ImageViewerStore
 import com.itrocket.union.ui.*
 import com.itrocket.utils.clickableUnbounded
-import kotlinx.coroutines.flow.collect
-import java.io.File
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -51,6 +49,7 @@ fun ImageViewerScreen(
     onImageSwipe: (Int) -> Unit
 ) {
     AppTheme {
+        val coroutineScope = rememberCoroutineScope()
         val pagerState = rememberPagerState(state.page)
 
         Scaffold(
@@ -99,6 +98,12 @@ fun ImageViewerScreen(
         LaunchedEffect(pagerState) {
             snapshotFlow { pagerState.currentPage }.collect {
                 onImageSwipe(it)
+            }
+        }
+
+        coroutineScope.launch {
+            if (pagerState.pageCount != 0 && pagerState.currentPage != state.page) {
+                pagerState.scrollToPage(state.page)
             }
         }
     }

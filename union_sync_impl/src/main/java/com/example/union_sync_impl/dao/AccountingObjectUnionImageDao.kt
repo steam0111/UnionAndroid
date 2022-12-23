@@ -17,8 +17,11 @@ interface AccountingObjectUnionImageDao {
     @RawQuery
     fun getAll(query: SupportSQLiteQuery): List<AccountingObjectUnionImageDb>
 
-    @Query("SELECT * FROM accounting_object_union_image WHERE accountingObjectId = :accountingObjectId")
+    @Query("SELECT * FROM accounting_object_union_image WHERE accountingObjectId = :accountingObjectId ORDER BY id DESC")
     fun getAllFlow(accountingObjectId: String): Flow<List<AccountingObjectUnionImageDb>>
+
+    @Query("UPDATE  accounting_object_union_image SET isMainImage = 0 WHERE id = :imageId")
+    fun unsetMainImage(imageId: String)
 
     @RawQuery
     fun getCount(query: SupportSQLiteQuery): Long

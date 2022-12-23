@@ -13,7 +13,10 @@ interface AccountingObjectUnionImageSyncApi {
         updateDate: Long? = null
     ): List<AccountingObjectUnionImageSyncEntity>
 
-    suspend fun saveAccountingObjectImage(syncEntity: AccountingObjectUnionImageSyncEntity)
+    suspend fun saveAccountingObjectImage(
+        syncEntity: AccountingObjectUnionImageSyncEntity,
+        oldMainImageId: String?
+    )
 
     suspend fun deleteAccountingObjectImage(imageId: String)
 
