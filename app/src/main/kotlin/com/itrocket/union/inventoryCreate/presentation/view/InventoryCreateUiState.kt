@@ -26,6 +26,7 @@ data class InventoryCreateUiState(
     val completeEnabled: Boolean = false,
     val dropEnabled: Boolean = false,
     val showComplete: Boolean = false,
+    val isExistNonMarkingAccountingObject: Boolean = false,
     val accountingObjects: List<AccountingObjectDomain> = listOf(),
     val accountingObjectCounter: AccountingObjectCounter = AccountingObjectCounter(),
     @StringRes val loadingTitleId: Int = R.string.inventory_save_loading

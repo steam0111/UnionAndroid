@@ -46,6 +46,7 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventory.presentation.store.InventoryStore
+import com.itrocket.union.inventoryCreate.presentation.view.AttentionNotMarking
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
@@ -139,7 +140,8 @@ fun InventoryScreen(
                     paddingValues = it,
                     state = state,
                     isInventoryChangePermitted = isInventoryChangePermitted,
-                    onAccountingObjectClickListener = onAccountingObjectClickListener
+                    onAccountingObjectClickListener = onAccountingObjectClickListener,
+                    isExistNonMarkingAccountingObject = state.isExistNonMarkingAccountingObject
                 )
             },
             modifier = Modifier.padding(
@@ -206,7 +208,8 @@ private fun Content(
     selectedPage: Int,
     pagerState: PagerState,
     paddingValues: PaddingValues,
-    isInventoryChangePermitted: Boolean
+    isInventoryChangePermitted: Boolean,
+    isExistNonMarkingAccountingObject: Boolean
 ) {
     val tabs = listOf(
         BaseTab(
@@ -255,7 +258,11 @@ private fun Content(
                 TabRowIndicator(tabPositions = it, pagerState = pagerState)
             }
         )
-        MediumSpacer()
+        if (isExistNonMarkingAccountingObject) {
+            AttentionNotMarking()
+        } else {
+            MediumSpacer()
+        }
         HorizontalPager(count = tabs.size, state = pagerState) { page ->
             tabs[page].screen()
         }
@@ -338,7 +345,8 @@ private fun AccountingObjectScreen(
                     accountingObject = item,
                     onAccountingObjectListener = onAccountingObjectClickListener,
                     isShowBottomLine = isShowBottomLine,
-                    status = item.status?.type
+                    status = item.status?.type,
+                    showNonMarkingAttention = true
                 )
             }
         }

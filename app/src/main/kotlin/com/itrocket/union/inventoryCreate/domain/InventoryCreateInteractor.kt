@@ -94,7 +94,8 @@ class InventoryCreateInteractor(
                     mutableAccountingObjects[existAccountingObjectIndex].copy(
                         rfidValue = accountingObject.rfidValue,
                         barcodeValue = accountingObject.barcodeValue,
-                        factoryNumber = accountingObject.factoryNumber
+                        factoryNumber = accountingObject.factoryNumber,
+                        marked = accountingObject.marked
                     )
             }
 

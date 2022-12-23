@@ -166,11 +166,26 @@ class InventoryStoreFactory(
                         )
                     )
                 }
+                is InventoryStore.Intent.OnAccountingObjectChanged -> onAccountingObjectChanged(
+                    accountingObject = intent.accountingObject,
+                    accountingObjects = getState().accountingObjectList
+                )
             }
         }
 
         override fun handleError(throwable: Throwable) {
             publish(InventoryStore.Label.Error(errorInteractor.getTextMessage(throwable)))
+        }
+
+        private suspend fun onAccountingObjectChanged(
+            accountingObject: AccountingObjectDomain,
+            accountingObjects: List<AccountingObjectDomain>
+        ) {
+            val inventoryAccountingObjects = inventoryCreateInteractor.changeAccountingObject(
+                accountingObjects = accountingObjects,
+                accountingObject = accountingObject
+            )
+            changeAccountingObjects(inventoryAccountingObjects)
         }
 
         private suspend fun isLoading(getState: () -> InventoryStore.State): Boolean {
@@ -265,7 +280,7 @@ class InventoryStoreFactory(
                         isAccountingObjectLoad = false
                     )
                 dispatch(Result.InventoryCreate(inventoryCreate))
-                dispatch(Result.AccountingObjects(accountingObjects))
+                changeAccountingObjects(accountingObjects)
             }
             if (isDynamicSaveInventory) {
                 inventoryDynamicSaveManager.subscribeInventorySave()
@@ -282,14 +297,12 @@ class InventoryStoreFactory(
                 accountingObjectsJob = launch {
                     dispatch(Result.IsAccountingObjectsLoading(true))
                     try {
-                        dispatch(
-                            Result.AccountingObjects(
-                                accountingObjectInteractor.getAccountingObjects(
-                                    locationManualType = ManualType.LOCATION_INVENTORY,
-                                    searchQuery = "",
-                                    params = params,
-                                    showUtilized = false
-                                )
+                        changeAccountingObjects(
+                            accountingObjectInteractor.getAccountingObjects(
+                                locationManualType = ManualType.LOCATION_INVENTORY,
+                                searchQuery = "",
+                                params = params,
+                                showUtilized = false
                             )
                         )
                     } catch (t: Throwable) {
@@ -300,6 +313,17 @@ class InventoryStoreFactory(
                     dispatch(Result.IsAccountingObjectsLoading(false))
                 }
             }
+        }
+
+        private suspend fun changeAccountingObjects(accountingObjects: List<AccountingObjectDomain>) {
+            dispatch(Result.AccountingObjects(accountingObjects))
+            dispatch(
+                Result.IsExistNonMarkingAccountingObjects(
+                    inventoryInteractor.isExistNonMarkingAccountingObjects(
+                        accountingObjects
+                    )
+                )
+            )
         }
     }
 
@@ -315,6 +339,8 @@ class InventoryStoreFactory(
         data class InventoryCreate(val inventoryCreateDomain: InventoryCreateDomain) : Result()
         data class IsDynamicSaveInventory(val isDynamicSaveInventory: Boolean) : Result()
         data class DialogType(val dialogType: AlertType) : Result()
+        data class IsExistNonMarkingAccountingObjects(val isExistNonMarkingAccountingObject: Boolean) :
+            Result()
     }
 
     private object ReducerImpl : Reducer<InventoryStore.State, Result> {
@@ -331,6 +357,9 @@ class InventoryStoreFactory(
                 is Result.IsDynamicSaveInventory -> copy(isDynamicSaveInventory = result.isDynamicSaveInventory)
                 is Result.DialogType -> copy(dialogType = result.dialogType)
                 is Result.IsInWorkInventoryLoading -> copy(isInWorkInventoryLoading = result.isLoading)
+                is Result.IsExistNonMarkingAccountingObjects -> copy(
+                    isExistNonMarkingAccountingObject = result.isExistNonMarkingAccountingObject
+                )
             }
     }
 }
