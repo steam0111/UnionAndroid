@@ -65,6 +65,7 @@ class ModuleSettingsStoreFactory(
                 Result.ReaderPower(moduleSettingsInteractor.getReaderPower())
             )
             dispatch(Result.IsDynamicSaveInventory(moduleSettingsInteractor.getDynamicSaveInventory()))
+            dispatch(Result.SyncFileEnabled(moduleSettingsInteractor.getSyncFileEnabled()))
         }
 
         override suspend fun executeIntent(
@@ -138,10 +139,16 @@ class ModuleSettingsStoreFactory(
                         AlertType.NONE
                     )
                 )
+                is ModuleSettingsStore.Intent.OnSyncFileSwitched -> onSyncFileSwitched(intent.syncFileEnabled)
             }
         }
 
-        private suspend fun onPowerChanged(newPowerText: String){
+        private suspend fun onSyncFileSwitched(syncFileEnabled: Boolean) {
+            dispatch(Result.SyncFileEnabled(syncFileEnabled))
+        }
+
+
+        private suspend fun onPowerChanged(newPowerText: String) {
             coroutineScope {
                 powerJob?.cancel()
                 powerJob = launch {
@@ -172,6 +179,7 @@ class ModuleSettingsStoreFactory(
             )
             moduleSettingsInteractor.changeDynamicSaveInventory(getState().isDynamicSaveInventory)
             moduleSettingsInteractor.saveDefaultReadingMode(getState().selectedReadingMode)
+            moduleSettingsInteractor.changeSyncFilesEnabled(getState().syncFileEnabled)
             publish(ModuleSettingsStore.Label.GoBack)
         }
 
@@ -206,6 +214,7 @@ class ModuleSettingsStoreFactory(
         data class IsDynamicSaveInventory(val isDynamicSaveInventory: Boolean) : Result()
         data class DialogType(val alertType: AlertType) : Result()
         data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
+        data class SyncFileEnabled(val syncFileEnabled: Boolean) : Result()
     }
 
     private object ReducerImpl : Reducer<ModuleSettingsStore.State, Result> {
@@ -221,6 +230,7 @@ class ModuleSettingsStoreFactory(
                 is Result.IsDynamicSaveInventory -> copy(isDynamicSaveInventory = result.isDynamicSaveInventory)
                 is Result.DialogType -> copy(alertType = result.alertType)
                 is Result.ReadingMode -> copy(selectedReadingMode = result.readingModeTab)
+                is Result.SyncFileEnabled -> copy(syncFileEnabled = result.syncFileEnabled)
             }
     }
 

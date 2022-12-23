@@ -69,6 +69,9 @@ class ModuleSettingsComposeFragment :
                 onDismissClearClickListener = { accept(ModuleSettingsStore.Intent.OnDismissClearDbClicked) },
                 onReadingTabClickListener = {
                     accept(ModuleSettingsStore.Intent.OnReadingModeTabClicked(it))
+                },
+                onSyncFileChecked = {
+                    accept(ModuleSettingsStore.Intent.OnSyncFileSwitched(it))
                 }
             )
         }

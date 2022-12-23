@@ -3,6 +3,7 @@ package com.itrocket.union.moduleSettings.data
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import com.example.union_sync_api.data.NetworkSyncApi
 import com.itrocket.union.moduleSettings.domain.dependencies.ModuleSettingsRepository
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +15,8 @@ class ModuleSettingsRepositoryImpl(
     private val dynamicSaveInventoryPreferencesKey: Preferences.Key<Boolean>,
     private val keyCodePreferencesKey: Preferences.Key<Int>,
     private val readerPowerPreferencesKey: Preferences.Key<Int>,
-    private val readingModePreferencesKey: Preferences.Key<String>
+    private val readingModePreferencesKey: Preferences.Key<String>,
+    private val networkSyncApi: NetworkSyncApi
 ) : ModuleSettingsRepository {
 
     override suspend fun saveDefaultReadingMode(readingModeTab: ReadingModeTab) {
@@ -47,5 +49,13 @@ class ModuleSettingsRepositoryImpl(
 
     override suspend fun getDynamicSaveInventory(): Boolean {
         return dataStore.data.map { it[dynamicSaveInventoryPreferencesKey] }.firstOrNull() ?: false
+    }
+
+    override suspend fun changeSyncFilesEnabled(enabled: Boolean) {
+        return networkSyncApi.changeSyncFilesEnabled(enabled)
+    }
+
+    override suspend fun getSyncFileEnabled(): Boolean {
+        return networkSyncApi.getSyncFileEnabled()
     }
 }

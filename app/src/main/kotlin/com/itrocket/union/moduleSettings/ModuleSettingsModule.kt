@@ -34,7 +34,8 @@ object ModuleSettingsModule {
                 keyCodePreferencesKey = get(KEY_CODE_PREFERENCE_KEY),
                 readerPowerPreferencesKey = get(READER_POWER_PREFERENCE_KEY),
                 dynamicSaveInventoryPreferencesKey = get(DYNAMIC_SAVE_INVENTORY_PREFERENCE_KEY),
-                readingModePreferencesKey = get(DEFAULT_READING_MODE_PREFERENCE_KEY)
+                readingModePreferencesKey = get(DEFAULT_READING_MODE_PREFERENCE_KEY),
+                networkSyncApi = get()
             )
         }
 
@@ -52,7 +53,6 @@ object ModuleSettingsModule {
                 get()
             ).create()
         }
-
         single(qualifier = KEY_CODE_PREFERENCE_KEY) {
             intPreferencesKey(KEY_CODE_PREFERENCE_KEY.value)
         }

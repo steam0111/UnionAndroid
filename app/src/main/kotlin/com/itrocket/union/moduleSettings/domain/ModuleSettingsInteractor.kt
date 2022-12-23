@@ -79,4 +79,12 @@ class ModuleSettingsInteractor(
             repository.getDynamicSaveInventory()
         }
     }
+
+    suspend fun changeSyncFilesEnabled(enabled: Boolean) = withContext(coreDispatchers.io) {
+        repository.changeSyncFilesEnabled(enabled)
+    }
+
+    suspend fun getSyncFileEnabled() = withContext(coreDispatchers.io) {
+        repository.getSyncFileEnabled()
+    }
 }

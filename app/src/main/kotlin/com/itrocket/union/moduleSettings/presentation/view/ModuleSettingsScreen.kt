@@ -78,7 +78,8 @@ fun ModuleSettingsScreen(
     onClearButtonClicked: () -> Unit,
     onDismissClearClickListener: () -> Unit,
     onConfirmClearDbClickListener: () -> Unit,
-    onReadingTabClickListener: (ReadingModeTab) -> Unit
+    onReadingTabClickListener: (ReadingModeTab) -> Unit,
+    onSyncFileChecked: (Boolean) -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -107,7 +108,8 @@ fun ModuleSettingsScreen(
                     onPowerChanged = onPowerChanged,
                     onDynamicSaveInventoryChanged = onDynamicSaveInventoryChanged,
                     onClearButtonClicked = onClearButtonClicked,
-                    onReadingTabClickListener = onReadingTabClickListener
+                    onReadingTabClickListener = onReadingTabClickListener,
+                    onSyncFileChecked = onSyncFileChecked
                 )
             }
         )
@@ -145,7 +147,8 @@ private fun Content(
     onPowerChanged: (String) -> Unit,
     onDynamicSaveInventoryChanged: (Boolean) -> Unit,
     onClearButtonClicked: () -> Unit,
-    onReadingTabClickListener: (ReadingModeTab) -> Unit
+    onReadingTabClickListener: (ReadingModeTab) -> Unit,
+    onSyncFileChecked: (Boolean) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -188,6 +191,11 @@ private fun Content(
             )
         }
         Spacer(modifier = Modifier.height(24.dp))
+        SyncFileComponent(
+            syncFileEnabled = state.syncFileEnabled,
+            onSyncFileChecked = onSyncFileChecked
+        )
+        Spacer(modifier = Modifier.height(24.dp))
         DynamicSaveInventoryComponent(
             isDynamicSaveInventory = state.isDynamicSaveInventory,
             onDynamicSaveInventoryChanged = onDynamicSaveInventoryChanged
@@ -223,6 +231,33 @@ private fun DynamicSaveInventoryComponent(
         Switch(
             checked = isDynamicSaveInventory,
             onCheckedChange = onDynamicSaveInventoryChanged,
+            colors = SwitchDefaults.colors(
+                checkedTrackColor = AppTheme.colors.mainColor,
+                checkedThumbColor = white,
+            )
+        )
+    }
+}
+
+
+@Composable
+private fun SyncFileComponent(
+    syncFileEnabled: Boolean,
+    onSyncFileChecked: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    )
+    {
+        Text(text = stringResource(id = R.string.module_settings_sync_file))
+        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.width(16.dp))
+        Switch(
+            checked = syncFileEnabled,
+            onCheckedChange = onSyncFileChecked,
             colors = SwitchDefaults.colors(
                 checkedTrackColor = AppTheme.colors.mainColor,
                 checkedThumbColor = white,
@@ -348,6 +383,7 @@ fun ModuleSettingsScreenPreview() {
     ModuleSettingsScreen(
         ModuleSettingsStore.State(),
         AppInsets(topInset = previewTopInsetDp),
+        {},
         {},
         {},
         {},

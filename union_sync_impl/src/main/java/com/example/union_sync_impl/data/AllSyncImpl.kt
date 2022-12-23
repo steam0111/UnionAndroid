@@ -116,10 +116,12 @@ class AllSyncImpl(
     }
 
     private suspend fun updateLastSyncTime() {
+        val networkSync = syncDao.getNetworkSync()
         syncDao.insert(
             NetworkSyncDb(
                 lastSyncTime = System.currentTimeMillis(),
-                isSynced = true
+                isSynced = true,
+                syncFileEnabled = networkSync?.syncFileEnabled ?: false
             )
         )
     }
@@ -262,8 +264,9 @@ class AllSyncImpl(
             Timber.tag(SYNC_TAG).d("completed export from server to local")
         }
 
-        syncFile(files = getFilesForExport(), syncId = syncId)
-
+        if (syncDao.getNetworkSync()?.syncFileEnabled == true) {
+            syncFile(files = getFilesForExport(), syncId = syncId)
+        }
         syncEventsApi.emitSyncEvent(
             SyncEvent.Measured(
                 id = UUID.randomUUID().toString(),
