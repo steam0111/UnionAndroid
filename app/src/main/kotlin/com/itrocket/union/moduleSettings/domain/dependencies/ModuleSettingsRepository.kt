@@ -20,4 +20,8 @@ interface ModuleSettingsRepository {
     suspend fun changeDynamicSaveInventory(isDynamicChangeInventory: Boolean)
 
     suspend fun getDynamicSaveInventory(): Boolean
+
+    suspend fun changeSyncFilesEnabled(enabled: Boolean)
+
+    suspend fun getSyncFileEnabled(): Boolean
 }

@@ -101,6 +101,9 @@ object SyncModule {
                 orderDao = get()
             )
         }
+        factory<NetworkSyncApi> {
+            NetworkSyncApiImpl(networkSyncDao = get())
+        }
         factory<TerminalInfoSyncApi> {
             TerminalInfoSyncApiImpl(terminalInfoDao = get())
         }

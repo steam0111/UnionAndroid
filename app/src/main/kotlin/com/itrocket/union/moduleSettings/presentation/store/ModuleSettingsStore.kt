@@ -22,8 +22,9 @@ interface ModuleSettingsStore :
         object OnArrowUpClicked : Intent()
         object OnArrowDownClicked : Intent()
         object OnClearDbClicked : Intent()
-        object OnDismissClearDbClicked: Intent()
+        object OnDismissClearDbClicked : Intent()
         object OnConfirmClearDbClicked : Intent()
+        data class OnSyncFileSwitched(val syncFileEnabled: Boolean) : Intent()
         data class OnDynamicSaveInventoryClicked(val isDynamicSaveInventory: Boolean) : Intent()
         data class OnPowerChanged(val newPowerText: String) : Intent()
         data class OnReadingModeTabClicked(val readingModeTab: ReadingModeTab) : Intent()
@@ -40,7 +41,8 @@ interface ModuleSettingsStore :
         val isDynamicSaveInventory: Boolean = false,
         val selectedReadingMode: ReadingModeTab = ReadingModeTab.RFID,
         val readingModeTabs: List<ReadingModeTab> = ReadingModeTab.values().toList(),
-        val alertType: AlertType = AlertType.NONE
+        val alertType: AlertType = AlertType.NONE,
+        val syncFileEnabled: Boolean = false,
     )
 
     sealed class Label {

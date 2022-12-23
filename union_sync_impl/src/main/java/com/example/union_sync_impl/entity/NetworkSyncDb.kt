@@ -8,5 +8,6 @@ data class NetworkSyncDb(
     @PrimaryKey(autoGenerate = false)
     val id: Long = 0L,
     val lastSyncTime: Long? = null,
-    val isSynced: Boolean = false
+    val isSynced: Boolean = false,
+    val syncFileEnabled: Boolean = false
 )
