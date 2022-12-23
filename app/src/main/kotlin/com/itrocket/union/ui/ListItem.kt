@@ -455,6 +455,13 @@ fun DocumentInfoItem(
     val annotatedInfo = buildAnnotatedString {
         val filteredParams = item.params.filter { it.value.isNotBlank() }
         filteredParams.forEachIndexed { index, info ->
+            if (info.type == ManualType.STRUCTURAL_TO) {
+                append(stringResource(R.string.documents_to))
+                append(" ")
+            } else if (info.type == ManualType.STRUCTURAL_FROM) {
+                append(stringResource(R.string.documents_from))
+                append(" ")
+            }
             append(info.value)
             if (index < filteredParams.lastIndex) {
                 append(" ")

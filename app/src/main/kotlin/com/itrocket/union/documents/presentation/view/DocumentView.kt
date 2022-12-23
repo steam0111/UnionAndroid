@@ -5,6 +5,7 @@ import com.itrocket.union.documents.domain.entity.DocumentDomain
 import com.itrocket.union.documents.domain.entity.DocumentStatus
 import com.itrocket.union.documents.domain.entity.DocumentTypeDomain
 import com.itrocket.union.documents.domain.entity.ObjectType
+import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.utils.getStringDateFromMillis
 import com.itrocket.union.utils.getTimeFromMillis
@@ -42,13 +43,19 @@ fun DocumentView.DocumentItemView.toDocumentDomain() = DocumentDomain(
     userUpdated = ""
 )
 
-fun DocumentDomain.toDocumentItemView(dateUi: String) = DocumentView.DocumentItemView(
-    id = id,
-    number = number.orEmpty(),
-    documentStatus = documentStatus,
-    date = creationDate ?: 0,
-    documentType = documentType,
-    params = params,
-    dateUi = dateUi,
-    userInserted = userInserted
-)
+fun DocumentDomain.toDocumentItemView(dateUi: String): DocumentView.DocumentItemView {
+    val filteredParams = params.filter {
+        it.type != ManualType.BALANCE_UNIT_FROM && it.type != ManualType.BALANCE_UNIT_TO && it.type != ManualType.BALANCE_UNIT
+    }
+
+    return DocumentView.DocumentItemView(
+        id = id,
+        number = number.orEmpty(),
+        documentStatus = documentStatus,
+        date = creationDate ?: 0,
+        documentType = documentType,
+        params = filteredParams,
+        dateUi = dateUi,
+        userInserted = userInserted
+    )
+}
