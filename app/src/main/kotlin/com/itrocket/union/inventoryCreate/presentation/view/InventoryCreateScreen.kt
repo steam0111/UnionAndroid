@@ -2,6 +2,7 @@ package com.itrocket.union.inventoryCreate.presentation.view
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,6 +54,7 @@ import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.SearchToolbar
 import com.itrocket.union.ui.black_50
 import com.itrocket.union.ui.graphite2
+import com.itrocket.union.ui.lightYellow
 import com.itrocket.union.ui.white
 
 @Composable
@@ -196,13 +199,13 @@ private fun Content(
                         notFindAccountingObjects = state.accountingObjectCounter.notFound,
                         newAccountingObjects = state.accountingObjectCounter.new
                     )
-                    MediumSpacer()
                     SettingsBar(
                         isHideFoundAccountingObjects = state.isHideFoundAccountingObjects,
                         isAddNew = state.isAddNew,
                         onAddNewChanged = onAddNewChanged,
                         onHideFoundAccountingObjectChanged = onHideFoundAccountingObjectChanged,
-                        canUpdate = state.canUpdate
+                        canUpdate = state.canUpdate,
+                        isExistNonMarkingAccountingObject = state.isExistNonMarkingAccountingObject
                     )
                     MediumSpacer()
                 }
@@ -217,7 +220,8 @@ private fun Content(
                         isShowBottomLine = isShowBottomLine,
                         status = item.inventoryStatus,
                         isEnabled = state.canChangeInventory,
-                        onAccountingObjectLongClickListener = onAccountingObjectLongClickListener
+                        onAccountingObjectLongClickListener = onAccountingObjectLongClickListener,
+                        showNonMarkingAttention = true
                     )
                 }
                 item {
@@ -306,49 +310,57 @@ fun CountBar(
 fun SettingsBar(
     isHideFoundAccountingObjects: Boolean,
     isAddNew: Boolean,
+    isExistNonMarkingAccountingObject: Boolean,
     onAddNewChanged: () -> Unit,
     onHideFoundAccountingObjectChanged: () -> Unit,
     canUpdate: Boolean
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(white)
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Row(
-            modifier = Modifier.weight(1f),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
-        ) {
-            BaseCheckbox(
-                isChecked = isHideFoundAccountingObjects,
-                onCheckClickListener = onHideFoundAccountingObjectChanged,
-                enabled = canUpdate
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = stringResource(R.string.inventory_create_hide_found_ao),
-                style = AppTheme.typography.body2
-            )
+    Column {
+        if (isExistNonMarkingAccountingObject) {
+            AttentionNotMarking()
+        } else {
+            MediumSpacer()
         }
-        Spacer(modifier = Modifier.width(16.dp))
         Row(
-            modifier = Modifier.weight(1f),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(white)
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            BaseCheckbox(
-                isChecked = isAddNew,
-                onCheckClickListener = onAddNewChanged,
-                enabled = canUpdate
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = stringResource(R.string.inventory_create_add_new),
-                style = AppTheme.typography.body2
-            )
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                BaseCheckbox(
+                    isChecked = isHideFoundAccountingObjects,
+                    onCheckClickListener = onHideFoundAccountingObjectChanged,
+                    enabled = canUpdate
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = stringResource(R.string.inventory_create_hide_found_ao),
+                    style = AppTheme.typography.body2
+                )
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                BaseCheckbox(
+                    isChecked = isAddNew,
+                    onCheckClickListener = onAddNewChanged,
+                    enabled = canUpdate
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = stringResource(R.string.inventory_create_add_new),
+                    style = AppTheme.typography.body2
+                )
+            }
         }
     }
 }
@@ -419,6 +431,21 @@ private fun Toolbar(
             )
         }
     )
+}
+
+@Composable
+fun AttentionNotMarking() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(lightYellow)
+            .padding(vertical = 4.dp, horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(painter = painterResource(R.drawable.ic_attention_circle), contentDescription = null)
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text = stringResource(R.string.inventory_create_non_marking_attention), style = AppTheme.typography.caption)
+    }
 }
 
 @Preview(

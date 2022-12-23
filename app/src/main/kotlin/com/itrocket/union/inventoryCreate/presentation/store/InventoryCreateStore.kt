@@ -93,7 +93,8 @@ interface InventoryCreateStore :
         val isCompleteLoading: Boolean = false,
         val dialogRemovedItemId: String = "",
         val searchAccountingObjects: List<AccountingObjectDomain> = listOf(),
-        val accountingObjectCounter: AccountingObjectCounter = AccountingObjectCounter()
+        val accountingObjectCounter: AccountingObjectCounter = AccountingObjectCounter(),
+        val isExistNonMarkingAccountingObject: Boolean = false
     )
 
     sealed class Label {

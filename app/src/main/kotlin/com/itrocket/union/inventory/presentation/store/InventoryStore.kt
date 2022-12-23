@@ -37,6 +37,8 @@ interface InventoryStore :
         data class OnAccountingObjectClicked(val accountingObject: AccountingObjectDomain) :
             Intent()
 
+        data class OnAccountingObjectChanged(val accountingObject: AccountingObjectDomain) :
+            Intent()
         data class OnSelectPage(val selectedPage: Int) : Intent()
         data class OnParamClicked(val param: ParamDomain) : Intent()
         data class OnParamCrossClicked(val param: ParamDomain) : Intent()
@@ -66,7 +68,8 @@ interface InventoryStore :
         val canUpdateInventory: Boolean = false,
         val inventoryCreateDomain: InventoryCreateDomain?,
         val isDynamicSaveInventory: Boolean = false,
-        val dialogType: AlertType = AlertType.NONE
+        val dialogType: AlertType = AlertType.NONE,
+        val isExistNonMarkingAccountingObject: Boolean = false,
     )
 
     sealed class Label {

@@ -5,6 +5,8 @@ import androidx.compose.ui.platform.ComposeView
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
+import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailResult
+import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailComposeFragment
 import com.itrocket.union.inventory.InventoryModule.INVENTORY_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.inventory.presentation.store.InventoryStore
 import com.itrocket.union.inventoryContainer.presentation.view.InventoryCreateClickHandler
@@ -36,7 +38,18 @@ class InventoryComposeFragment :
                         )
                     }
                 }
-            )
+            ),
+            FragmentResult(
+                resultCode = AccountingObjectDetailComposeFragment.ACCOUNTING_OBJECT_DETAIL_RESULT_CODE,
+                resultLabel = AccountingObjectDetailComposeFragment.ACCOUNTING_OBJECT_DETAIL_RESULT_LABEL,
+                resultAction = {
+                    (it as AccountingObjectDetailResult?)?.let {
+                        accept(
+                            InventoryStore.Intent.OnAccountingObjectChanged(it.accountingObject)
+                        )
+                    }
+                }
+            ),
         )
 
     override fun renderState(

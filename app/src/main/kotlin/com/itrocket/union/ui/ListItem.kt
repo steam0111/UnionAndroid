@@ -78,6 +78,7 @@ fun AccountingObjectItem(
     isEnabled: Boolean = true,
     isShowScanInfo: Boolean = true,
     canDelete: Boolean = false,
+    showNonMarkingAttention: Boolean = false
 ) {
     Column(
         modifier = Modifier
@@ -119,6 +120,13 @@ fun AccountingObjectItem(
                         onClick = onStatusClickListener,
                         enabled = isEnabled
 
+                    )
+                }
+                if (showNonMarkingAttention && !accountingObject.marked) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Image(
+                        painter = painterResource(R.drawable.ic_attention_circle),
+                        contentDescription = null
                     )
                 }
                 if (status is ObjectStatusType && isShowScanInfo && (accountingObject.hasBarcode || accountingObject.hasRfid)) {
@@ -683,7 +691,7 @@ fun AccountingObjectItemPreview() {
             barcodeValue = "",
             rfidValue = "",
             factoryNumber = "",
-            marked = true,
+            marked = false,
             characteristics = emptyList(),
         ),
         onAccountingObjectListener = {},
@@ -695,6 +703,7 @@ fun AccountingObjectItemPreview() {
             AppTheme.colors.secondaryColor.value.toString(),
             ""
         ),
+        showNonMarkingAttention = true,
         canDelete = true
     )
 }

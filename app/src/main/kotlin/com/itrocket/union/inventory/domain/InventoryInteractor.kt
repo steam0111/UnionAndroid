@@ -26,6 +26,13 @@ class InventoryInteractor(
     private val authMainInteractor: AuthMainInteractor,
     private val structuralRepository: StructuralRepository
 ) {
+
+    suspend fun isExistNonMarkingAccountingObjects(accountingObjects: List<AccountingObjectDomain>) : Boolean {
+        return withContext(coreDispatchers.io){
+            accountingObjects.find { !it.marked } != null
+        }
+    }
+
     suspend fun createInventory(
         accountingObjects: List<AccountingObjectDomain>,
         params: List<ParamDomain>,

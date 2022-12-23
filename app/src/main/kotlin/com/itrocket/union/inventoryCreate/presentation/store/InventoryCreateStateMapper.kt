@@ -44,6 +44,7 @@ fun InventoryCreateStore.State.toInventoryCreateUiState(): InventoryCreateUiStat
         dropEnabled = dropEnabled,
         showComplete = showComplete,
         accountingObjectCounter = accountingObjectCounter,
-        loadingTitleId =loadingTitleId
+        loadingTitleId = loadingTitleId,
+        isExistNonMarkingAccountingObject = isExistNonMarkingAccountingObject
     )
 }

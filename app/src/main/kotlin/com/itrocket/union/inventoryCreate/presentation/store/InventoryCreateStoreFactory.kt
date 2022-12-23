@@ -14,6 +14,7 @@ import com.itrocket.union.comment.domain.CommentInteractor
 import com.itrocket.union.comment.presentation.store.CommentResult
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
+import com.itrocket.union.inventory.domain.InventoryInteractor
 import com.itrocket.union.inventory.presentation.store.InventoryResult
 import com.itrocket.union.inventoryChoose.domain.InventoryChooseActionType
 import com.itrocket.union.inventoryChoose.presentation.store.InventoryChooseResult
@@ -37,6 +38,7 @@ class InventoryCreateStoreFactory(
     private val coreDispatchers: CoreDispatchers,
     private val inventoryCreateInteractor: InventoryCreateInteractor,
     private val inventoryCreateArguments: InventoryCreateArguments,
+    private val inventoryInteractor: InventoryInteractor,
     private val errorInteractor: ErrorInteractor,
     private val serviceEntryManager: ServiceEntryManager,
     private val searchManager: SearchManager,
@@ -80,16 +82,19 @@ class InventoryCreateStoreFactory(
                 )
             )
             catchException {
-                dispatch(
-                    Result.Inventory(
-                        inventoryCreateInteractor.getInventoryById(
-                            id = inventoryCreateArguments.inventoryDocument.id.orEmpty(),
-                            isAccountingObjectLoad = true
-                        )
-                    )
+                val inventory = inventoryCreateInteractor.getInventoryById(
+                    id = inventoryCreateArguments.inventoryDocument.id.orEmpty(),
+                    isAccountingObjectLoad = true
                 )
                 val isDynamicSaveInventory = moduleSettingsInteractor.getDynamicSaveInventory()
+                val accountingObjects = inventory.accountingObjects
+                val isExistNonMarkingAccountingObject = inventoryInteractor.isExistNonMarkingAccountingObjects(
+                    accountingObjects
+                )
+
+                dispatch(Result.Inventory(inventory))
                 dispatch(Result.IsDynamicSaveInventory(isDynamicSaveInventory))
+                dispatch(Result.IsExistNonMarkingAccountingObjects(isExistNonMarkingAccountingObject))
             }
             dispatch(Result.Loading(false))
             if (getState().isDynamicSaveInventory && getState().inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED) {
@@ -279,8 +284,7 @@ class InventoryCreateStoreFactory(
                 comment = result.comment,
                 listAccountingObject = getState().inventoryDocument.accountingObjects,
             )
-
-            dispatch(Result.AccountingObjects(inventoryAccountingObjects))
+            changeAccountingObjects(inventoryAccountingObjects)
 
             tryDynamicSendInventorySave(
                 getState = getState,
@@ -313,7 +317,7 @@ class InventoryCreateStoreFactory(
                 accountingObjects = getState().inventoryDocument.accountingObjects,
                 accountingObject = accountingObject
             )
-            dispatch(Result.AccountingObjects(inventoryAccountingObjects))
+            changeAccountingObjects(inventoryAccountingObjects)
         }
 
         private suspend fun onDeleteConfirmed(getState: () -> InventoryCreateStore.State) {
@@ -323,7 +327,7 @@ class InventoryCreateStoreFactory(
                 accountingObjects = getState().inventoryDocument.accountingObjects,
                 accountingObjectId = getState().dialogRemovedItemId
             )
-            dispatch(Result.AccountingObjects(inventoryAccountingObjects))
+            changeAccountingObjects(inventoryAccountingObjects)
 
             dispatch(Result.DialogRemovedItemId(""))
             updateAccountingObjectCounter(getState)
@@ -338,12 +342,10 @@ class InventoryCreateStoreFactory(
             accountingObject: AccountingObjectDomain,
         ) {
             if (accountingObject.inventoryStatus != InventoryAccountingObjectStatus.NEW) {
-                dispatch(
-                    Result.AccountingObjects(
-                        inventoryCreateInteractor.changeStatus(
-                            accountingObjects = getState().inventoryDocument.accountingObjects,
-                            accountingObjectId = accountingObject.id
-                        )
+                changeAccountingObjects(
+                    inventoryCreateInteractor.changeStatus(
+                        accountingObjects = getState().inventoryDocument.accountingObjects,
+                        accountingObjectId = accountingObject.id
                     )
                 )
                 if (getState().isShowSearch) {
@@ -454,7 +456,7 @@ class InventoryCreateStoreFactory(
                             inventoryStatus = inventoryStatus,
                             isAddNew = isAddNew,
                         )
-                    dispatch(Result.AccountingObjects(scannedAccountingObjects.accountingObjects))
+                    changeAccountingObjects(scannedAccountingObjects.accountingObjects)
                     if (scannedAccountingObjects.hasWrittenOffAccountingObjects) {
                         publish(
                             InventoryCreateStore.Label.ShowToast(
@@ -511,7 +513,7 @@ class InventoryCreateStoreFactory(
                             )
                         )
                     }
-                    dispatch(Result.AccountingObjects(scannedAccountingObjects.accountingObjects))
+                    changeAccountingObjects(scannedAccountingObjects.accountingObjects)
                     if (isShowSearch) {
                         listenAccountingObjects(
                             searchText = searchText,
@@ -543,11 +545,11 @@ class InventoryCreateStoreFactory(
             dispatch(Result.DialogType(AlertType.NONE))
         }
 
-        private fun drop(getState: () -> InventoryCreateStore.State) {
+        private suspend fun drop(getState: () -> InventoryCreateStore.State) {
             val newList = inventoryCreateInteractor.updateAccountingObjectListAfterDrop(
                 oldList = getState().inventoryDocument.accountingObjects
             )
-            dispatch(Result.AccountingObjects(newList))
+            changeAccountingObjects(newList)
             dispatch(Result.DialogType(AlertType.NONE))
             updateAccountingObjectCounter(getState)
         }
@@ -584,6 +586,18 @@ class InventoryCreateStoreFactory(
             )
         }
 
+        private suspend fun changeAccountingObjects(accountingObjects: List<AccountingObjectDomain>) {
+            dispatch(Result.AccountingObjects(accountingObjects))
+            dispatch(
+                Result.IsExistNonMarkingAccountingObjects(
+                    inventoryInteractor.isExistNonMarkingAccountingObjects(
+                        accountingObjects
+                    )
+                )
+            )
+
+        }
+
         override fun handleError(throwable: Throwable) {
             publish(InventoryCreateStore.Label.Error(errorInteractor.getTextMessage(throwable)))
         }
@@ -614,6 +628,8 @@ class InventoryCreateStoreFactory(
         ) : Result()
 
         data class IsCompleteLoading(val isLoading: Boolean) : Result()
+        data class IsExistNonMarkingAccountingObjects(val isExistNonMarkingAccountingObject: Boolean) :
+            Result()
     }
 
     private object ReducerImpl : Reducer<InventoryCreateStore.State, Result> {
@@ -640,6 +656,9 @@ class InventoryCreateStoreFactory(
                 is Result.DialogRemovedItemId -> copy(dialogRemovedItemId = result.accountingObjectId)
                 is Result.CanComplete -> copy(canComplete = result.canComplete)
                 is Result.IsCompleteLoading -> copy(isCompleteLoading = result.isLoading)
+                is Result.IsExistNonMarkingAccountingObjects -> copy(
+                    isExistNonMarkingAccountingObject = result.isExistNonMarkingAccountingObject
+                )
             }
     }
 }
