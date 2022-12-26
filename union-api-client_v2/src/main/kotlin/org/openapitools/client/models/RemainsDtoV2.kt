@@ -30,6 +30,7 @@ import org.openapitools.client.models.ReceptionRecordDtoV2
 import org.openapitools.client.models.StructuralUnitDtoV2
 
 import com.squareup.moshi.Json
+import java.math.BigDecimal
 
 /**
  * 
@@ -177,7 +178,7 @@ data class RemainsDtoV2 (
     val labelTypeId: String? = null,
 
     @Json(name = "bookkeepingInvoice")
-    val bookkeepingInvoice: Int? = null,
+    val bookkeepingInvoice: BigDecimal? = null,
 
     @Json(name = "consignment")
     val consignment: String? = null

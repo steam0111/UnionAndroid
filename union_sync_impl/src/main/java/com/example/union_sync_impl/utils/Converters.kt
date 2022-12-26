@@ -7,6 +7,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types.newParameterizedType
 import java.lang.reflect.Type
+import java.math.BigDecimal
 
 class Converters {
 
@@ -70,5 +71,15 @@ class Converters {
             val jsonAdapter: JsonAdapter<List<AccountingObjectInfoSyncEntity>> = moshi.adapter(type)
             return jsonAdapter.toJson(ids)
         }
+    }
+
+    @TypeConverter
+    fun bigDecimalToString(input: BigDecimal?): String {
+        return input?.toPlainString() ?: ""
+    }
+
+    @TypeConverter
+    fun stringToBigDecimal(input: String?): BigDecimal? {
+        return input?.toBigDecimalOrNull()
     }
 }
