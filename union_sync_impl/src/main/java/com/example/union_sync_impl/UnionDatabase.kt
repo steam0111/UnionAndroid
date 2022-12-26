@@ -132,7 +132,7 @@ import com.example.union_sync_impl.utils.Converters
         TerminalRemainsNumeratorDb::class,
         AccountingObjectUnionImageDb::class,
         EmployeeWorkPlaceDb::class
-    ], version = 130
+    ], version = 132
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {

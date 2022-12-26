@@ -1,5 +1,7 @@
 package com.example.union_sync_api.entity
 
+import java.math.BigDecimal
+
 data class ReserveSyncEntity(
     val id: String,
     var catalogItemName: String,
@@ -22,7 +24,7 @@ data class ReserveSyncEntity(
     val invoiceNumber: String?,
     val subName: String?,
     val barcodeValue: String?,
-    val bookkeepingInvoice: Int?,
+    val bookkeepingInvoice: BigDecimal?,
     val consignment: String?,
     val labelTypeId: String?
 )
