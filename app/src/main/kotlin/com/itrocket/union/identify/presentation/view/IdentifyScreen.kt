@@ -22,6 +22,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -241,25 +242,27 @@ private fun AccountingObjectsScreen(
     onObjectClickListener: (AccountingObjectDomain) -> Unit,
     paddingValues: PaddingValues
 ) {
-    LazyColumn(
-        Modifier
-            .fillMaxSize()
-            .padding(top = paddingValues.calculateTopPadding())
-    ) {
-        itemsIndexed(accountingObjects, key = { _, item ->
-            item.id
-        }) { index, item ->
-            val isShowBottomLine = accountingObjects.lastIndex != index
-            AccountingObjectItem(
-                accountingObject = item,
-                onAccountingObjectListener = onObjectClickListener,
-                status = item.status?.type,
-                isShowBottomLine = isShowBottomLine,
-                statusText = item.status?.text
-            )
-        }
-        item {
-            Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
+    key(accountingObjects.size) {
+        LazyColumn(
+            Modifier
+                .fillMaxSize()
+                .padding(top = paddingValues.calculateTopPadding())
+        ) {
+            itemsIndexed(accountingObjects, key = { _, item ->
+                item.id
+            }) { index, item ->
+                val isShowBottomLine = accountingObjects.lastIndex != index
+                AccountingObjectItem(
+                    accountingObject = item,
+                    onAccountingObjectListener = onObjectClickListener,
+                    status = item.status?.type,
+                    isShowBottomLine = isShowBottomLine,
+                    statusText = item.status?.text
+                )
+            }
+            item {
+                Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
+            }
         }
     }
     Spacer(modifier = Modifier.height(10.dp))
