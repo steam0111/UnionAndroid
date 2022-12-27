@@ -176,7 +176,7 @@
     <string name="accounting_object_traceable">Прослеживаемый</string>
     <string name="accounting_object_commissioning_date">Дата ввода в эксплуатацию</string>
     <string name="accounting_object_nomenclature">Номенклатура</string>
-    <string name="accounting_object_rfid">Рфид</string>
+    <string name="accounting_object_rfid">RFID</string>
     <string name="inventory_location">Место инвентаризации</string>
 
     <!-- NomenclatureGroup -->
