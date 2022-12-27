@@ -134,13 +134,13 @@ class AllSyncImpl(
             )
         )
         syncEventsApi.emitSyncInfoType(
-            SyncInfoType.ItemCount(
+            SyncInfoType.ItemCountExport(
                 count = null,
                 isAllCount = false
             )
         )
         syncEventsApi.emitSyncInfoType(
-            SyncInfoType.ItemCount(
+            SyncInfoType.ItemCountExport(
                 count = localItemCount,
                 isAllCount = true
             )
@@ -204,7 +204,8 @@ class AllSyncImpl(
                     }
                 }
                 syncEventsApi.emitSyncInfoType(
-                    SyncInfoType.ItemCount(
+
+                    SyncInfoType.ItemCountImport(
                         count = exportPartInformationV2.count?.toLong() ?: 0L,
                         isAllCount = false,
                     )
@@ -233,7 +234,7 @@ class AllSyncImpl(
         )
 
         syncEventsApi.emitSyncInfoType(
-            SyncInfoType.ItemCount(
+            SyncInfoType.ItemCountImport(
                 count = null,
                 isAllCount = false,
             )
@@ -248,7 +249,7 @@ class AllSyncImpl(
             )
 
             syncEventsApi.emitSyncInfoType(
-                SyncInfoType.ItemCount(
+                SyncInfoType.ItemCountImport(
                     count = serverItemCount,
                     isAllCount = true,
                 )
@@ -283,13 +284,13 @@ class AllSyncImpl(
             )
         )
         syncEventsApi.emitSyncInfoType(
-            SyncInfoType.ItemCount(
+            SyncInfoType.ItemCountExport(
                 count = files.size.toLong(),
                 isAllCount = true
             )
         )
         syncEventsApi.emitSyncInfoType(
-            SyncInfoType.ItemCount(
+            SyncInfoType.ItemCountExport(
                 count = null,
                 isAllCount = false
             )
@@ -303,7 +304,7 @@ class AllSyncImpl(
                 )
                 syncControllerApi.importFiles(syncId = syncId, filePart = multipart)
                 syncEventsApi.emitSyncInfoType(
-                    SyncInfoType.ItemCount(
+                    SyncInfoType.ItemCountExport(
                         count = 1,
                         isAllCount = false
                     )

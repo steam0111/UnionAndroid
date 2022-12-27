@@ -478,4 +478,7 @@
     <string name="from_camera">Камера</string>
     <string name="from_files">Файловая система</string>
     <string name="work_places">Рабочие места</string>
+
+    <string name="imported">"Загружено: %1$s/%2$s"</string>
+    <string name="exported">"Выгружено: %1$s/%2$s"</string>
 </resources>

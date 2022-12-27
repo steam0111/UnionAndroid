@@ -97,12 +97,25 @@ private fun Content(state: SyncAllStore.State, paddingValues: PaddingValues) {
                 modifier = Modifier
                     .height(4.dp)
                     .fillMaxWidth(),
-                maxCount = state.allCount.toFloat(),
-                count = state.syncedCount.toFloat()
+                maxCount = (state.allExportedCount + state.allImportedCount).toFloat(),
+                count = (state.exportSyncedCount + state.importSyncedCount).toFloat()
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = "${state.syncedCount}/${state.allCount}",
+                text = stringResource(
+                    id = R.string.imported,
+                    state.importSyncedCount,
+                    state.allImportedCount
+                ),
+                style = TextStyle(color = AppTheme.colors.mainTextColor, fontSize = 20.sp)
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(
+                    id = R.string.exported,
+                    state.exportSyncedCount,
+                    state.allExportedCount
+                ),
                 style = TextStyle(color = AppTheme.colors.mainTextColor, fontSize = 20.sp)
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -131,6 +144,7 @@ private fun Title(state: SyncAllStore.State) {
                 fontWeight = FontWeight.Bold
             )
         }
+
         state.isSyncFinished -> {
             Text(
                 text = stringResource(R.string.sync_all_error),
@@ -139,6 +153,7 @@ private fun Title(state: SyncAllStore.State) {
                 color = diagRed
             )
         }
+
         else -> {
             Text(
                 text = state.currentSyncTitle,
@@ -187,12 +202,14 @@ private fun BottomBar(
                     onChangeVisibleLogClickListener = onChangeVisibleLogClickListener
                 )
             }
+
             isSyncLoading -> {
                 LogButton(
                     isShowLog = isShowLog,
                     onChangeVisibleLogClickListener = onChangeVisibleLogClickListener
                 )
             }
+
             else -> {
                 BaseButton(
                     text = stringResource(R.string.sync),
@@ -286,8 +303,10 @@ private fun SyncEvent(syncEvent: SyncEvent) {
 @Composable
 fun SyncAllScreenPreview() {
     SyncAllScreen(SyncAllStore.State(
-        allCount = 10,
-        syncedCount = 3,
+        exportSyncedCount = 10,
+        allExportedCount = 3,
+        importSyncedCount = 10,
+        allImportedCount = 3,
         isShowLog = true,
         syncEvents = buildList {
             add(SyncEvent.Info("Начало синхронизации", "0"))

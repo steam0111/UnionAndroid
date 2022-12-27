@@ -106,7 +106,7 @@ abstract class SyncEntity<SyncType>(
                 val importPart = createImportPart(objects)
                 syncControllerApi.apiSyncIdImportPartsPost(syncId, importPart)
                 syncEventApi.emitSyncInfoType(
-                    SyncInfoType.ItemCount(
+                    SyncInfoType.ItemCountExport(
                         count = importPart.value?.size?.toLong() ?: 0,
                         isAllCount = false,
                     )
