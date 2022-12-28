@@ -11,7 +11,7 @@ data class ReserveSyncEntity(
     val nomenclatureId: String?,
     val nomenclatureGroupId: String?,
     val name: String,
-    val count: Long?,
+    val count: BigDecimal?,
     val receptionItemCategoryId: String?,
     val receptionDocumentNumber: String?,
     val unitPrice: String?,
@@ -31,7 +31,7 @@ data class ReserveSyncEntity(
 
 fun ReserveSyncEntity.toReserveUpdateSyncEntity(userUpdated: String?) = ReserveUpdateSyncEntity(
     id = id,
-    count = count ?: 0,
+    count = count ?: BigDecimal.ZERO,
     locationId = locationSyncEntity?.lastOrNull()?.id,
     userUpdated = userUpdated,
     dateUpdate = System.currentTimeMillis()

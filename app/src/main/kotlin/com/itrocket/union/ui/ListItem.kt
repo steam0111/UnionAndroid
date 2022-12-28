@@ -60,6 +60,7 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.utils.clickableUnbounded
+import java.math.BigDecimal
 
 private const val MAX_LIST_INFO = 3
 private const val DATE_ITEM_ROTATION_DURATION = 200
@@ -657,7 +658,7 @@ fun ReservesItemPreview() {
                 ), ObjectInfoDomain(
                     R.string.auth_main_title, "таылватвлыавыалвыоалвыа"
                 )
-            ), itemsCount = 1200L, barcodeValue = "", labelTypeId = ":", nomenclatureId = "",
+            ), itemsCount = BigDecimal(1200L), barcodeValue = "", labelTypeId = ":", nomenclatureId = "",
             consignment = ""
         ), onReservesListener = {}, canDelete = true, isShowBottomLine = true
     )

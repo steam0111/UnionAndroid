@@ -20,10 +20,8 @@
 
 package org.openapitools.client.models
 
-import org.openapitools.client.models.RemainsDtoV2
-import org.openapitools.client.models.TransitDtoV2
-
 import com.squareup.moshi.Json
+import java.math.BigDecimal
 
 /**
  * 
@@ -86,7 +84,7 @@ data class TransitRemainsRecordDtoV2 (
     val extendedRemains: RemainsDtoV2? = null,
 
     @Json(name = "count")
-    val count: Long? = null
+    val count: BigDecimal? = null
 
 )
 

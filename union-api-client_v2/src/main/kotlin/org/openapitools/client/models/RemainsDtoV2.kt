@@ -20,15 +20,6 @@
 
 package org.openapitools.client.models
 
-import org.openapitools.client.models.EmployeeDtoV2
-import org.openapitools.client.models.EnumDtoV2
-import org.openapitools.client.models.LocationDtoV2
-import org.openapitools.client.models.NomenclatureDtoV2
-import org.openapitools.client.models.NomenclatureGroupDtoV2
-import org.openapitools.client.models.OrderDtoV2
-import org.openapitools.client.models.ReceptionRecordDtoV2
-import org.openapitools.client.models.StructuralUnitDtoV2
-
 import com.squareup.moshi.Json
 import java.math.BigDecimal
 
@@ -118,7 +109,7 @@ data class RemainsDtoV2 (
     val extendedMol: EmployeeDtoV2? = null,
 
     @Json(name = "count")
-    val count: Long? = null,
+    val count: BigDecimal? = null,
 
     @Json(name = "receptionItemCategoryId")
     val receptionItemCategoryId: kotlin.String? = null,

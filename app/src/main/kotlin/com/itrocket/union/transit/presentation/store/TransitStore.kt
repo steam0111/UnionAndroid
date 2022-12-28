@@ -4,10 +4,10 @@ import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
-import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
+import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
@@ -29,6 +29,7 @@ import com.itrocket.union.selectCount.presentation.store.SelectCountResult
 import com.itrocket.union.selectCount.presentation.view.SelectCountComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsArguments
 import com.itrocket.union.transit.presentation.view.TransitComposeFragmentDirections
+import java.math.BigDecimal
 
 interface TransitStore : Store<TransitStore.Intent, TransitStore.State, TransitStore.Label> {
 
@@ -139,7 +140,7 @@ interface TransitStore : Store<TransitStore.Intent, TransitStore.State, TransitS
                 get() = ReadingModeComposeFragment()
         }
 
-        data class ShowSelectCount(val id: String, val count: Long) : Label(),
+        data class ShowSelectCount(val id: String, val count: BigDecimal) : Label(),
             ShowBottomSheetNavigationLabel {
             override val arguments: Bundle
                 get() = bundleOf(

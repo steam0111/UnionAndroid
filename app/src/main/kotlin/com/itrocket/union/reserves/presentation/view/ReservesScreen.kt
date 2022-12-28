@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
@@ -33,6 +32,7 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.ReservesItem
 import com.itrocket.union.ui.SearchToolbar
 import com.itrocket.utils.paging.subscribePagingListIndex
+import java.math.BigDecimal
 
 @Composable
 fun ReservesScreen(
@@ -152,7 +152,7 @@ fun ReservesScreenPreview() {
                         R.string.auth_main_title,
                         "таылватвлыавыалвыоалвыа"
                     )
-                ), itemsCount = 1200L,
+                ), itemsCount = BigDecimal(1200L),
                 barcodeValue = "",
                 labelTypeId = "",
                 nomenclatureId = "",
@@ -173,7 +173,7 @@ fun ReservesScreenPreview() {
                         "таылватвлыавыалвыоалвыа"
                     )
                 ),
-                itemsCount = 1200L,
+                itemsCount = BigDecimal(1200L),
                 barcodeValue = "",
                 labelTypeId = "",
                 nomenclatureId = "",
@@ -194,7 +194,7 @@ fun ReservesScreenPreview() {
                         "таылватвлыавыалвыоалвыа"
                     )
                 ),
-                itemsCount = 1200L,
+                itemsCount = BigDecimal(1200L),
                 barcodeValue = "",
                 labelTypeId = "",
                 nomenclatureId = "",

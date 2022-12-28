@@ -43,6 +43,7 @@ import com.itrocket.union.ui.LoadingContent
 import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.utils.ifBlankOrNull
 import com.itrocket.utils.clickableUnbounded
+import java.math.BigDecimal
 
 @Composable
 fun ReserveDetailScreen(
@@ -226,7 +227,7 @@ fun ReserveDetailScreenPreview() {
                     R.string.auth_main_title,
                     "таылватвлыавыалвыоалвыа"
                 )
-            ), itemsCount = 1200L,
+            ), itemsCount = BigDecimal(1200L),
             barcodeValue = null,
             nomenclatureId = "",
             labelTypeId = "",

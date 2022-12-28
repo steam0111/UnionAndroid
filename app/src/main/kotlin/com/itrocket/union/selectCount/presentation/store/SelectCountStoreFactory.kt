@@ -8,7 +8,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.error.ErrorInteractor
-import com.itrocket.union.utils.ifBlankOrNull
+import java.math.BigDecimal
 
 class SelectCountStoreFactory(
     private val storeFactory: StoreFactory,
@@ -56,7 +56,7 @@ class SelectCountStoreFactory(
                     )
                 )
                 is SelectCountStore.Intent.OnCountChanged -> dispatch(
-                    Result.Count(intent.count.toLongOrNull() ?: 0)
+                    Result.Count(intent.count.toBigDecimal())
                 )
             }
         }
@@ -67,7 +67,7 @@ class SelectCountStoreFactory(
     }
 
     private sealed class Result {
-        data class Count(val count: Long) : Result()
+        data class Count(val count: BigDecimal) : Result()
     }
 
     private object ReducerImpl : Reducer<SelectCountStore.State, Result> {

@@ -1,10 +1,11 @@
 package com.itrocket.union.selectCount.presentation.store
 
-import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.arkivanov.mvikotlin.core.store.Store
 import com.itrocket.core.navigation.DefaultNavigationErrorLabel
+import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.selectCount.presentation.view.SelectCountComposeFragment.Companion.SELECT_COUNT_RESULT_CODE
 import com.itrocket.union.selectCount.presentation.view.SelectCountComposeFragment.Companion.SELECT_COUNT_RESULT_LABEL
+import java.math.BigDecimal
 
 interface SelectCountStore :
     Store<SelectCountStore.Intent, SelectCountStore.State, SelectCountStore.Label> {
@@ -16,7 +17,7 @@ interface SelectCountStore :
 
     data class State(
         val id: String,
-        val count: Long
+        val count: BigDecimal
     )
 
     sealed class Label {
