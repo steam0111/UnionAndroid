@@ -25,6 +25,24 @@ fun ReserveSyncEntity.map(): ReservesDomain {
         listInfo.add(ObjectInfoDomain(R.string.accounting_objects_location, it))
     }
 
+    labelType?.let {
+        listInfo.add(
+            ObjectInfoDomain(
+                title = R.string.label_type_title,
+                value = it.name,
+            )
+        )
+    }
+
+    nomenclatureSyncEntity?.let {
+        listInfo.add(
+            ObjectInfoDomain(
+                title = R.string.reserves_detail_nomenclature_code,
+                value = it.code,
+            )
+        )
+    }
+
     return ReservesDomain(
         id = id,
         isBarcode = false,
