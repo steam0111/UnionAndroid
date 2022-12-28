@@ -44,10 +44,24 @@ fun sqlReserveQuery(
                 "location.catalogItemName AS locations_catalogItemName, " +
                 "location.name AS locations_name, " +
                 "location.parentId AS locations_parentId, " +
-                "location.locationTypeId AS locations_locationTypeId " +
+                "location.locationTypeId AS locations_locationTypeId, " +
+                "" +
+                "label_type.id AS label_type_id, " +
+                "label_type.name AS label_type_name," +
+                "label_type.description AS label_type_description," +
+                "label_type.code as label_type_code," +
+                "label_type.catalogItemName AS label_type_catalogItemName, " +
+                "" +
+                "nomenclature.id AS nomenclature_id, " +
+                "nomenclature.catalogItemName AS nomenclature_catalogItemName, " +
+                "nomenclature.name AS nomenclature_name, " +
+                "nomenclature.number AS nomenclature_number, " +
+                "nomenclature.nomenclatureGroupId AS nomenclature_nomenclatureGroupId " +
                 "" +
                 "FROM reserves " +
                 "LEFT JOIN location ON reserves.locationId = location.id " +
+                "LEFT JOIN label_type ON reserves.labelTypeId = label_type.id " +
+                "LEFT JOIN nomenclature ON reserves.nomenclatureId = nomenclature.id " +
                 "LEFT JOIN structural ON reserves.structuralId = structural.id "
     }
 

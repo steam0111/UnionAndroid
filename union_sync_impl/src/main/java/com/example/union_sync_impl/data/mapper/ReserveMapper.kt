@@ -159,7 +159,9 @@ fun FullReserve.toSyncEntity(location: List<LocationSyncEntity>?): ReserveSyncEn
         barcodeValue = reserveDb.barcodeValue,
         bookkeepingInvoice = reserveDb.bookkeepingInvoice,
         consignment = reserveDb.consignment,
-        labelTypeId = reserveDb.labelTypeId
+        labelTypeId = reserveDb.labelTypeId,
+        labelType = labelTypeDb?.toSyncEntity(),
+        nomenclatureSyncEntity = nomenclatureDb?.toSyncEntity()
     )
 }
 
