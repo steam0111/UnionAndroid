@@ -2,6 +2,7 @@ package com.example.union_sync_impl.entity
 
 import androidx.room.Entity
 import com.example.union_sync_impl.entity.core.SyncItemDb
+import java.math.BigDecimal
 
 @Entity(tableName = "transit_remains_record")
 class TransitRemainsRecordDb(
@@ -9,7 +10,7 @@ class TransitRemainsRecordDb(
     cancel: Boolean? = false,
     val transitId: String?,
     val remainId: String?,
-    val count: Long?,
+    val count: BigDecimal?,
     updateDate: Long?,
     insertDate: Long?,
     userInserted: String?,

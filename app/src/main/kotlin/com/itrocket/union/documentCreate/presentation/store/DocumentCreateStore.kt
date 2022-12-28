@@ -30,6 +30,7 @@ import com.itrocket.union.selectCount.presentation.store.SelectCountArguments
 import com.itrocket.union.selectCount.presentation.store.SelectCountResult
 import com.itrocket.union.selectCount.presentation.view.SelectCountComposeFragment
 import com.itrocket.union.selectParams.presentation.store.SelectParamsArguments
+import java.math.BigDecimal
 
 interface DocumentCreateStore :
     Store<DocumentCreateStore.Intent, DocumentCreateStore.State, DocumentCreateStore.Label> {
@@ -149,7 +150,7 @@ interface DocumentCreateStore :
                 get() = ReadingModeComposeFragment()
         }
 
-        data class ShowSelectCount(val id: String, val count: Long) : Label(),
+        data class ShowSelectCount(val id: String, val count: BigDecimal) : Label(),
             ShowBottomSheetNavigationLabel {
             override val arguments: Bundle
                 get() = bundleOf(

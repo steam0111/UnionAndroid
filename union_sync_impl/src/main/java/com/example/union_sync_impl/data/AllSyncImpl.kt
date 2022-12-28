@@ -4,7 +4,6 @@ import android.content.Context
 import com.example.union_sync_api.data.AccountingObjectUnionImageSyncApi
 import com.example.union_sync_api.data.AllSyncApi
 import com.example.union_sync_api.data.SyncEventsApi
-import com.example.union_sync_api.entity.SyncDirection
 import com.example.union_sync_api.entity.SyncEvent
 import com.example.union_sync_api.entity.SyncInfoType
 import com.example.union_sync_impl.dao.NetworkSyncDao
@@ -15,11 +14,6 @@ import com.example.union_sync_impl.sync.SyncEntity
 import com.example.union_sync_impl.sync.SyncInfoRepository
 import com.example.union_sync_impl.sync.SyncRepository
 import com.itrocket.core.base.CoreDispatchers
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.time.ExperimentalTime
-import kotlin.time.measureTime
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -28,6 +22,11 @@ import org.openapitools.client.custom_api.SyncControllerApi
 import org.openapitools.client.models.StarSyncRequestV2
 import org.openapitools.client.models.SyncInformationV2
 import timber.log.Timber
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
 @OptIn(ExperimentalTime::class)
 class AllSyncImpl(
@@ -195,6 +194,8 @@ class AllSyncImpl(
                     try {
                         syncEntity.exportFromServer(syncId, exportPartId)
                     } catch (e: Throwable) {
+                        Timber.e(e)
+
                         syncEventsApi.emitSyncEvent(
                             SyncEvent.Error(
                                 id = UUID.randomUUID().toString(),

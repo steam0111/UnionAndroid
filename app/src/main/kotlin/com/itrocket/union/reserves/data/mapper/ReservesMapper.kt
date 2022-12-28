@@ -4,6 +4,7 @@ import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import java.math.BigDecimal
 
 fun List<ReserveSyncEntity>.map() = map {
     it.map()
@@ -27,7 +28,7 @@ fun ReserveSyncEntity.map(): ReservesDomain {
     return ReservesDomain(
         id = id,
         isBarcode = false,
-        itemsCount = count ?: 0L,
+        itemsCount = count ?: BigDecimal.ZERO,
         title = name,
         listInfo = listInfo,
         barcodeValue = barcodeValue,

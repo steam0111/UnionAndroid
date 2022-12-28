@@ -1,9 +1,7 @@
 package com.itrocket.union.transit.domain
 
-import com.example.union_sync_api.entity.ReserveCountSyncEntity
 import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
-import com.example.union_sync_api.entity.TransitUpdateReservesSyncEntity
 import com.example.union_sync_api.entity.toReserveCountSyncEntity
 import com.example.union_sync_api.entity.toReserveShortSyncEntity
 import com.example.union_sync_api.entity.toReserveUpdateSyncEntity
@@ -17,6 +15,7 @@ import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.transit.domain.dependencies.TransitRepository
 import kotlinx.coroutines.withContext
+import java.math.BigDecimal
 
 class TransitRemainsManager(
     private val coreDispatchers: CoreDispatchers,
@@ -100,7 +99,7 @@ class TransitRemainsManager(
                     val reserve = reserves.find { it.id == oldReserve.id }
                     oldReserve.copy(
                         locationSyncEntity = listOfNotNull(locationSyncEntity),
-                        count = reserve?.itemsCount ?: 0,
+                        count = reserve?.itemsCount ?: BigDecimal.ZERO,
                         userUpdated = login,
                         userInserted = login,
                         updateDate = System.currentTimeMillis()
@@ -128,7 +127,7 @@ class TransitRemainsManager(
                 }
                 if (changedReserve != null) {
                     existingReserve.copy(
-                        count = (existingReserve.count ?: 0) + (changedReserve.count ?: 0)
+                        count = (existingReserve.count ?: BigDecimal.ZERO) + (changedReserve.count ?: BigDecimal.ZERO)
                     )
                 } else {
                     existingReserve
@@ -169,7 +168,7 @@ class TransitRemainsManager(
         val newReserves = oldReserves.map { oldReserve ->
             val reserve = reservesDomain.first { it.id == oldReserve.id }
             val newCount = if (oldReserve.count == null) {
-                0
+                BigDecimal.ZERO
             } else {
                 requireNotNull(oldReserve.count) - reserve.itemsCount
             }

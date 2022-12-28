@@ -7,16 +7,20 @@ import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.AccountingObjectSimpleAdditionalFieldDao
 import com.example.union_sync_impl.dao.AccountingObjectUnionImageDao
 import com.example.union_sync_impl.dao.AccountingObjectVocabularyAdditionalFieldDao
+import com.example.union_sync_impl.dao.AccountingObjectsSimpleCharacteristicsDao
+import com.example.union_sync_impl.dao.AccountingObjectsVocabularyCharacteristicsDao
 import com.example.union_sync_impl.dao.ActionRecordDao
 import com.example.union_sync_impl.dao.ActionRemainsRecordDao
 import com.example.union_sync_impl.dao.CounterpartyDao
 import com.example.union_sync_impl.dao.DocumentDao
 import com.example.union_sync_impl.dao.EmployeeDao
+import com.example.union_sync_impl.dao.EmployeeWorkPlaceDao
 import com.example.union_sync_impl.dao.EnumsDao
 import com.example.union_sync_impl.dao.EquipmentTypeDao
 import com.example.union_sync_impl.dao.InventoryCheckerDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.InventoryRecordDao
+import com.example.union_sync_impl.dao.LabelTypeDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.LocationPathDao
 import com.example.union_sync_impl.dao.NetworkSyncDao
@@ -27,19 +31,15 @@ import com.example.union_sync_impl.dao.ProducerDao
 import com.example.union_sync_impl.dao.ProviderDao
 import com.example.union_sync_impl.dao.ReceptionItemCategoryDao
 import com.example.union_sync_impl.dao.ReserveDao
-import com.example.union_sync_impl.dao.AccountingObjectsSimpleCharacteristicsDao
 import com.example.union_sync_impl.dao.SimpleAdditionalFieldDao
+import com.example.union_sync_impl.dao.SimpleCharacteristicDao
 import com.example.union_sync_impl.dao.StructuralDao
 import com.example.union_sync_impl.dao.StructuralPathDao
+import com.example.union_sync_impl.dao.TerminalInfoDao
+import com.example.union_sync_impl.dao.TerminalRemainsNumeratorDao
 import com.example.union_sync_impl.dao.TransitAccountingObjectRecordDao
 import com.example.union_sync_impl.dao.TransitDao
 import com.example.union_sync_impl.dao.TransitRemainsRecordDao
-import com.example.union_sync_impl.dao.AccountingObjectsVocabularyCharacteristicsDao
-import com.example.union_sync_impl.dao.EmployeeWorkPlaceDao
-import com.example.union_sync_impl.dao.LabelTypeDao
-import com.example.union_sync_impl.dao.SimpleCharacteristicDao
-import com.example.union_sync_impl.dao.TerminalInfoDao
-import com.example.union_sync_impl.dao.TerminalRemainsNumeratorDao
 import com.example.union_sync_impl.dao.VocabularyAdditionalFieldDao
 import com.example.union_sync_impl.dao.VocabularyAdditionalFieldValueDao
 import com.example.union_sync_impl.dao.VocabularyCharacteristicDao
@@ -132,7 +132,7 @@ import com.example.union_sync_impl.utils.Converters
         TerminalRemainsNumeratorDb::class,
         AccountingObjectUnionImageDb::class,
         EmployeeWorkPlaceDb::class
-    ], version = 132
+    ], version = 133
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {

@@ -17,6 +17,7 @@ import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.structural.domain.dependencies.StructuralRepository
 import kotlinx.coroutines.withContext
+import java.math.BigDecimal
 
 /**
  * Создание
@@ -322,7 +323,7 @@ class DocumentCreateInteractor(
     fun updateReserveCount(
         reserves: List<ReservesDomain>,
         id: String,
-        count: Long
+        count: BigDecimal
     ): List<ReservesDomain> {
         val mutableList = reserves.toMutableList()
         val index = mutableList.indexOfFirst { it.id == id }

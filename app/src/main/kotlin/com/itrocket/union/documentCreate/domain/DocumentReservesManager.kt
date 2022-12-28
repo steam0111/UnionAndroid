@@ -16,6 +16,7 @@ import com.itrocket.union.manual.getFilterLocationLastId
 import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import kotlinx.coroutines.withContext
+import java.math.BigDecimal
 
 class DocumentReservesManager(
     private val coreDispatchers: CoreDispatchers,
@@ -102,7 +103,7 @@ class DocumentReservesManager(
                     val reserve = reserves.find { it.id == oldReserve.id }
                     oldReserve.copy(
                         locationSyncEntity = listOfNotNull(locationSyncEntity),
-                        count = reserve?.itemsCount ?: 0,
+                        count = reserve?.itemsCount ?: BigDecimal.ZERO,
                         userUpdated = login,
                         userInserted = login,
                         updateDate = System.currentTimeMillis()
@@ -130,7 +131,7 @@ class DocumentReservesManager(
                 }
                 if (changedReserve != null) {
                     existingReserve.copy(
-                        count = (existingReserve.count ?: 0) + (changedReserve.count ?: 0)
+                        count = (existingReserve.count ?: BigDecimal.ZERO) + (changedReserve.count ?: BigDecimal.ZERO)
                     )
                 } else {
                     existingReserve
@@ -171,7 +172,7 @@ class DocumentReservesManager(
         val newReserves = oldReserves.map { oldReserve ->
             val reserve = reservesDomain.first { it.id == oldReserve.id }
             val newCount = if (oldReserve.count == null) {
-                0
+                BigDecimal.ZERO
             } else {
                 requireNotNull(oldReserve.count) - reserve.itemsCount
             }

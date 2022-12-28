@@ -8,6 +8,7 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoBehavior
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.utils.getStringDateFromMillis
+import java.math.BigDecimal
 
 fun ReserveDetailSyncEntity.map(
     canReadLabelType: Boolean,
@@ -126,7 +127,7 @@ fun ReserveDetailSyncEntity.map(
     return ReservesDomain(
         id = reserveSyncEntity.id,
         isBarcode = false,
-        itemsCount = reserveSyncEntity.count ?: 0L,
+        itemsCount = reserveSyncEntity.count ?: BigDecimal.ZERO,
         title = reserveSyncEntity.name,
         listInfo = listInfo,
         barcodeValue = reserveSyncEntity.barcodeValue,

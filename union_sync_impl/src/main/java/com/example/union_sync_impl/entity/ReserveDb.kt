@@ -3,9 +3,7 @@ package com.example.union_sync_impl.entity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import com.example.union_sync_impl.entity.core.CatalogItemDb
-import com.example.union_sync_impl.entity.core.SyncItemDb
 import com.example.union_sync_impl.entity.location.LocationDb
-import com.squareup.moshi.Json
 import java.math.BigDecimal
 
 @Entity(
@@ -52,7 +50,7 @@ class ReserveDb(
     val nomenclatureId: String?,
     val nomenclatureGroupId: String?,
     val name: String?,
-    val count: Long?,
+    val count: BigDecimal?,
     val receptionItemCategoryId: String?,
     val receptionDocumentNumber: String?,
     val unitPrice: String?,

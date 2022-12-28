@@ -35,6 +35,7 @@ import com.itrocket.union.ui.BottomSheetDivider
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.brightGray
 import com.itrocket.union.ui.white
+import java.math.BigDecimal
 
 @Composable
 fun SelectCountScreen(
@@ -77,7 +78,7 @@ fun SelectCountScreen(
                 }
                 val focusRequester = FocusRequester()
                 val mainColor = AppTheme.colors.mainColor
-                val countString = if (state.count == 0L) {
+                val countString = if (state.count == BigDecimal.ZERO) {
                     ""
                 } else {
                     state.count.toString()
@@ -112,7 +113,7 @@ fun SelectCountScreen(
                 BaseButton(
                     text = stringResource(R.string.common_apply),
                     onClick = onAcceptClickListener,
-                    enabled = state.count != 0L,
+                    enabled = state.count != BigDecimal.ZERO,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
@@ -140,6 +141,6 @@ fun SelectCountScreen(
 fun SelectCountScreenPreview() {
     SelectCountScreen(SelectCountStore.State(
         id = "",
-        count = 123
+        count = BigDecimal(123)
     ), AppInsets(), {}, {})
 }
