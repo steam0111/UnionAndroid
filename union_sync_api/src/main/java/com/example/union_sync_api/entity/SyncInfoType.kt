@@ -1,7 +1,12 @@
 package com.example.union_sync_api.entity
 
 sealed class SyncInfoType {
-    data class ItemCount(
+    data class ItemCountImport(
+        val count: Long?,
+        val isAllCount: Boolean
+    ) : SyncInfoType()
+
+    data class ItemCountExport(
         val count: Long?,
         val isAllCount: Boolean
     ) : SyncInfoType()

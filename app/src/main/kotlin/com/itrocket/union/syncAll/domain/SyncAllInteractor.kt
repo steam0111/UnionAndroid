@@ -55,7 +55,8 @@ class SyncAllInteractor(
 
     fun getSyncTitle(syncInfoType: SyncInfoType): String {
         return when (syncInfoType) {
-            is SyncInfoType.ItemCount -> ""
+            is SyncInfoType.ItemCountExport -> ""
+            is SyncInfoType.ItemCountImport -> ""
             is SyncInfoType.TitleEvent -> syncInfoType.title
             is SyncInfoType.TitleResourceEvent -> {
                 val tableName = applicationContext.getString(syncInfoType.titleId)
@@ -64,6 +65,7 @@ class SyncAllInteractor(
                         R.string.sync_all_download_current_table,
                         tableName
                     )
+
                     SyncDirection.TO_SERVER -> applicationContext.getString(
                         R.string.sync_all_upload_current_table,
                         tableName
@@ -73,10 +75,9 @@ class SyncAllInteractor(
         }
     }
 
-    fun getItemCount(itemCount: SyncInfoType.ItemCount, syncedCount: Long): Long {
-        val count = itemCount.count
-        return if (count != null) {
-            syncedCount + count
+    fun getItemCount(itemCount: Long?, syncedCount: Long): Long {
+        return if (itemCount != null) {
+            syncedCount + itemCount
         } else {
             0
         }

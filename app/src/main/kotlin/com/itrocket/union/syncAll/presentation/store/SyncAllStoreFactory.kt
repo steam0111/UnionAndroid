@@ -68,7 +68,8 @@ class SyncAllStoreFactory(
                         .collect {
                             collectSyncInfoType(
                                 syncInfoType = it,
-                                syncedCount = getState().syncedCount
+                                syncedCountImport = getState().importSyncedCount,
+                                syncedCountExport = getState().exportSyncedCount
                             )
                         }
                 }
@@ -90,15 +91,25 @@ class SyncAllStoreFactory(
                 SyncAllStore.Intent.OnChangeLogVisibilityClicked -> onChangeLogVisibilityClicked(
                     getState().isShowLog
                 )
+
                 SyncAllStore.Intent.OnFinishClicked -> onFinishClicked()
             }
         }
 
-        private fun collectSyncInfoType(syncInfoType: SyncInfoType, syncedCount: Long) {
+        private fun collectSyncInfoType(
+            syncInfoType: SyncInfoType,
+            syncedCountExport: Long,
+            syncedCountImport: Long
+        ) {
             when (syncInfoType) {
-                is SyncInfoType.ItemCount -> {
-                    dispatchCount(itemCount = syncInfoType, syncedCount = syncedCount)
+                is SyncInfoType.ItemCountExport -> {
+                    dispatchExportedCount(itemCount = syncInfoType, syncedCount = syncedCountExport)
                 }
+
+                is SyncInfoType.ItemCountImport -> {
+                    dispatchImportedCount(itemCount = syncInfoType, syncedCount = syncedCountImport)
+                }
+
                 else -> dispatch(
                     Result.SyncTitle(
                         syncAllInteractor.getSyncTitle(
@@ -109,14 +120,35 @@ class SyncAllStoreFactory(
             }
         }
 
-        private fun dispatchCount(itemCount: SyncInfoType.ItemCount, syncedCount: Long) {
+        private fun dispatchImportedCount(
+            itemCount: SyncInfoType.ItemCountImport,
+            syncedCount: Long
+        ) {
             if (itemCount.isAllCount) {
-                dispatch(Result.AllCount(itemCount.count ?: 0))
+                dispatch(Result.AllCountImport(itemCount.count ?: 0))
             } else {
                 dispatch(
-                    Result.SyncedCount(
+                    Result.SyncedCountImport(
                         syncAllInteractor.getItemCount(
-                            itemCount = itemCount,
+                            itemCount = itemCount.count,
+                            syncedCount = syncedCount
+                        )
+                    )
+                )
+            }
+        }
+
+        private fun dispatchExportedCount(
+            itemCount: SyncInfoType.ItemCountExport,
+            syncedCount: Long
+        ) {
+            if (itemCount.isAllCount) {
+                dispatch(Result.AllCountExport(itemCount.count ?: 0))
+            } else {
+                dispatch(
+                    Result.SyncedCountExport(
+                        syncAllInteractor.getItemCount(
+                            itemCount = itemCount.count,
                             syncedCount = syncedCount
                         )
                     )
@@ -156,8 +188,12 @@ class SyncAllStoreFactory(
         data class IsShowLog(val isShowLog: Boolean) : Result()
         data class IsSyncFinished(val isSyncFinished: Boolean) : Result()
         data class SyncTitle(val title: String) : Result()
-        data class AllCount(val count: Long) : Result()
-        data class SyncedCount(val count: Long) : Result()
+        data class AllCountExport(val count: Long) : Result()
+        data class AllCountImport(val count: Long) : Result()
+
+        data class SyncedCountExport(val count: Long) : Result()
+        data class SyncedCountImport(val count: Long) : Result()
+
         data class LastDateSync(val lastDateSync: String) : Result()
         data class IsSyncSuccess(val isSuccess: Boolean) : Result()
     }
@@ -169,8 +205,10 @@ class SyncAllStoreFactory(
                 is Result.NewSyncEvents -> copy(syncEvents = result.newSyncEvents)
                 is Result.IsShowLog -> copy(isShowLog = result.isShowLog)
                 is Result.IsSyncFinished -> copy(isSyncFinished = result.isSyncFinished)
-                is Result.AllCount -> copy(allCount = result.count)
-                is Result.SyncedCount -> copy(syncedCount = result.count)
+                is Result.AllCountImport -> copy(allImportedCount = result.count)
+                is Result.SyncedCountImport -> copy(importSyncedCount = result.count)
+                is Result.AllCountExport -> copy(allExportedCount = result.count)
+                is Result.SyncedCountExport -> copy(exportSyncedCount = result.count)
                 is Result.SyncTitle -> copy(currentSyncTitle = result.title)
                 is Result.LastDateSync -> copy(lastDateSync = result.lastDateSync)
                 is Result.IsSyncSuccess -> copy(isSyncSuccess = result.isSuccess)
