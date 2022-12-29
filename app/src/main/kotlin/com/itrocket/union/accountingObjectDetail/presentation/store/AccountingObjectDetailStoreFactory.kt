@@ -219,8 +219,6 @@ class AccountingObjectDetailStoreFactory(
                         imageDomain = imageDomain,
                         accountingObjectId = accountingObjectId
                     )
-                } else {
-                    throw errorInteractor.getThrowableByResId(R.string.image_taken_error)
                 }
             }
             dispatch(Result.ImageLoading(false))
