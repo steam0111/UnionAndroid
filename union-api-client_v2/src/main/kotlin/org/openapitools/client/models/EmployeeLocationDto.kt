@@ -12,5 +12,10 @@ data class EmployeeLocationDto(
     @Json(name = "comment")
     val comment: String? = null,
     @Json(name = "mainWorkPlace")
-    val mainWorkPlace: Boolean? = null
-)
+    val mainWorkPlace: Boolean? = null,
+    @Json(name = "deleted")
+    override val deleted: Boolean
+) : DeletedItemDto {
+    override val id: String
+        get() = employeeId
+}

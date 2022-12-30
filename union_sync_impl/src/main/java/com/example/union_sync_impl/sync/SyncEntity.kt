@@ -4,28 +4,31 @@ import com.example.union_sync_api.data.SyncEventsApi
 import com.example.union_sync_api.entity.SyncDirection
 import com.example.union_sync_api.entity.SyncEvent
 import com.example.union_sync_api.entity.SyncInfoType
+import com.example.union_sync_impl.dao.SyncDao
+import com.example.union_sync_impl.dao.sqlRemoveDeletedItemsQuery
 import com.example.union_sync_impl.data.AllSyncImpl
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import java.lang.reflect.Type
-import java.util.*
-import kotlin.time.ExperimentalTime
-import kotlin.time.measureTime
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import org.json.JSONObject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.openapitools.client.custom_api.SyncControllerApi
+import org.openapitools.client.models.DeletedItemDto
 import org.openapitools.client.models.ImportPartDtoV2
 import timber.log.Timber
+import java.lang.reflect.Type
+import java.util.*
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
 @OptIn(ExperimentalTime::class)
 @Suppress("BlockingMethodInNonBlockingContext")
 abstract class SyncEntity<SyncType>(
     val syncControllerApi: SyncControllerApi,
-    val moshi: Moshi
+    val moshi: Moshi,
+    val syncDao: SyncDao
 ) : KoinComponent {
 
     val syncEventApi: SyncEventsApi by inject()
@@ -42,6 +45,8 @@ abstract class SyncEntity<SyncType>(
     abstract val id: String
 
     open val table: String = id
+
+    open val localTableName: String = id
 
     abstract val tableTitle: Int
 
@@ -72,7 +77,21 @@ abstract class SyncEntity<SyncType>(
         val resultJsonString =
             syncControllerApi.apiSyncSyncIdExportPartsExportPartIdGet(syncId, exportPartId)
         val resultObjectsString = getListEntitiesFromString(resultJsonString)
-        return getJsonAdapter<T>().fromJson(resultObjectsString)
+
+        val items = getJsonAdapter<T>().fromJson(resultObjectsString)
+        if (items?.get(0) is DeletedItemDto) {
+            removeDeletedItems(items as List<DeletedItemDto>)
+        }
+
+        return items
+    }
+
+    open suspend fun removeDeletedItems(items: List<DeletedItemDto>) {
+        syncDao.removeDeletedItems(
+            sqlRemoveDeletedItemsQuery(
+                tableName = localTableName,
+                ids = items.filter { it.deleted }.map { it.id })
+        )
     }
 
     fun getListEntitiesFromString(networkResult: String): String {

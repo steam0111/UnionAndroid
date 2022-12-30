@@ -19,7 +19,7 @@ data class TerminalRemainsNumeratorDtoV2(
     val actualNumber: Int,
 
     @Json(name = "deleted")
-    val deleted: kotlin.Boolean,
+    override val deleted: kotlin.Boolean,
 
     @Json(name = "version")
     val version: kotlin.Int? = null,
@@ -35,4 +35,7 @@ data class TerminalRemainsNumeratorDtoV2(
 
     @Json(name = "userUpdated")
     val userUpdated: kotlin.String? = null,
-)
+) : DeletedItemDto {
+    override val id: String
+        get() = remainsId
+}

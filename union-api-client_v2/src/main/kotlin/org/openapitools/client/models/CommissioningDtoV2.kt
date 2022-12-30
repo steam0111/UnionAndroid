@@ -53,10 +53,10 @@ import com.squareup.moshi.Json
 data class CommissioningDtoV2 (
 
     @Json(name = "id")
-    val id: kotlin.String,
+    override val id: kotlin.String,
 
     @Json(name = "deleted")
-    val deleted: kotlin.Boolean,
+    override val deleted: kotlin.Boolean,
 
     @Json(name = "version")
     val version: kotlin.Int? = null,
@@ -106,5 +106,5 @@ data class CommissioningDtoV2 (
     @Json(name = "extendedInventoryNumberTemplate")
     val extendedInventoryNumberTemplate: InventoryNumberTemplateDtoV2? = null
 
-)
+): DeletedItemDto
 

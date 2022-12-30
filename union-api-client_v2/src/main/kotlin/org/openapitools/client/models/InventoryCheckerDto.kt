@@ -10,5 +10,10 @@ data class InventoryCheckerDto(
     @Json(name = "extendedInventory")
     val extendedInventory: InventoryDtoV2?,
     @Json(name = "extendedEmployee")
-    val extendedEmployee: EmployeeDtoV2?
-)
+    val extendedEmployee: EmployeeDtoV2?,
+    @Json(name = "deleted")
+    override val deleted: Boolean
+) : DeletedItemDto {
+    override val id: String
+        get() = inventoryId
+}
