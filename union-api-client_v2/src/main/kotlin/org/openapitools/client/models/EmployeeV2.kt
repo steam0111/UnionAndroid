@@ -57,10 +57,10 @@ import com.squareup.moshi.Json
 data class EmployeeV2 (
 
     @Json(name = "id")
-    val id: kotlin.String? = null,
+    override val id: String,
 
     @Json(name = "deleted")
-    val deleted: kotlin.Boolean? = null,
+    override val deleted: Boolean,
 
     @Json(name = "dateInsert")
     val dateInsert: kotlin.String? = null,
@@ -128,5 +128,5 @@ data class EmployeeV2 (
     @Json(name = "cascadeItems")
     val cascadeItems: kotlin.collections.List<SyncItemV2>? = null
 
-)
+): DeletedItemDto
 

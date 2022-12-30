@@ -13,7 +13,7 @@ data class AccountingObjectUnionImageDtoV2(
     val isMainImage: Boolean,
 
     @Json(name = "deleted")
-    val deleted: kotlin.Boolean,
+    override val deleted: kotlin.Boolean,
 
     @Json(name = "version")
     val version: kotlin.Int? = null,
@@ -35,4 +35,7 @@ data class AccountingObjectUnionImageDtoV2(
 
     @Json(name = "userUpdated")
     val userUpdated: kotlin.String? = null,
-)
+) : DeletedItemDto{
+    override val id: String
+        get() = accountingObjectId
+}

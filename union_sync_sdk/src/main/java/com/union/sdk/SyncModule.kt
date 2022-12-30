@@ -237,6 +237,7 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
+                get(),
                 get()
             )
         }
@@ -369,5 +370,6 @@ object SyncModule {
                 networkSyncDao = get()
             )
         }
+        factory { get<UnionDatabase>().syncDao() }
     }
 }

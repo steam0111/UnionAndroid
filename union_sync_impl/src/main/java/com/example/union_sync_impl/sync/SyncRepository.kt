@@ -43,6 +43,7 @@ import com.example.union_sync_impl.dao.AccountingObjectsVocabularyCharacteristic
 import com.example.union_sync_impl.dao.EmployeeWorkPlaceDao
 import com.example.union_sync_impl.dao.LabelTypeDao
 import com.example.union_sync_impl.dao.SimpleCharacteristicDao
+import com.example.union_sync_impl.dao.SyncDao
 import com.example.union_sync_impl.dao.TerminalRemainsNumeratorDao
 import com.example.union_sync_impl.dao.VocabularyAdditionalFieldDao
 import com.example.union_sync_impl.dao.VocabularyAdditionalFieldValueDao
@@ -55,6 +56,7 @@ import com.example.union_sync_impl.dao.sqlActionRemainsRecordQuery
 import com.example.union_sync_impl.dao.sqlDocumentsSimpledQuery
 import com.example.union_sync_impl.dao.sqlInventoryRecordQuery
 import com.example.union_sync_impl.dao.sqlInventorySimpledQuery
+import com.example.union_sync_impl.dao.sqlRemoveDeletedItemsQuery
 import com.example.union_sync_impl.dao.sqlReserveSimpledQuery
 import com.example.union_sync_impl.dao.sqlTerminalRemainsNumeratorQuery
 import com.example.union_sync_impl.data.mapper.toAccountingObjectDb
@@ -150,7 +152,7 @@ class SyncRepository(
     private val actionRecordDao: ActionRecordDao,
     private val actionRemainsRecordDao: ActionRemainsRecordDao,
     private val inventoryRecordDao: InventoryRecordDao,
-    private val syncDao: NetworkSyncDao,
+    private val networkSyncDao: NetworkSyncDao,
     private val structuralDao: StructuralDao,
     private val structuralPathDao: StructuralPathDao,
     private val transitDao: TransitDao,
@@ -171,7 +173,8 @@ class SyncRepository(
     private val labelTypeDao: LabelTypeDao,
     private val terminalRemainsNumeratorDao: TerminalRemainsNumeratorDao,
     private val accountingObjectUnionImageDao: AccountingObjectUnionImageDao,
-    private val workPlaceDao: EmployeeWorkPlaceDao
+    private val workPlaceDao: EmployeeWorkPlaceDao,
+    private val syncDao: SyncDao
 ) {
     suspend fun clearDataBeforeDownload() {
         inventoryDao.clearAll()
@@ -183,55 +186,64 @@ class SyncRepository(
             syncControllerApi,
             moshi,
             ::accountingObjectDbSaver,
-            getAccountingObjectDbCollector()
+            getAccountingObjectDbCollector(),
+            syncDao
         ),
         ReserveSyncEntity(
             syncControllerApi,
             moshi,
             ::reservesDbSaver,
-            getRemainsDbCollector()
+            getRemainsDbCollector(),
+            syncDao
         ),
         InventorySyncEntity(
             syncControllerApi,
             moshi,
             ::inventoryDbSaver,
-            getInventoryDbCollector()
+            getInventoryDbCollector(),
+            syncDao
         ),
         DocumentSyncEntity(
             syncControllerApi,
             moshi,
             ::documentDbSaver,
-            getActionDbCollector()
+            getActionDbCollector(),
+            syncDao
         ),
         ActionRecordSyncEntity(
             syncControllerApi,
             moshi,
             ::actionRecordDbSaver,
-            getActionRecordDbCollector()
+            getActionRecordDbCollector(),
+            syncDao
         ),
         ActionRemainsRecordSyncEntity(
             syncControllerApi,
             moshi,
             ::actionRemainsRecordDbSaver,
-            getActionRecordRemainsDbCollector()
+            getActionRecordRemainsDbCollector(),
+            syncDao
         ),
         TerminalRemainsNumeratorSyncEntity(
             syncControllerApi,
             moshi,
             ::terminalRemainsNumeratorDbSaver,
-            getTerminalRemainsNumeratorDbCollector()
+            getTerminalRemainsNumeratorDbCollector(),
+            syncDao
         ),
         InventoryRecordSyncEntity(
             syncControllerApi,
             moshi,
             ::inventoryRecordDbSaver,
-            getInventoryRecordDbCollector()
+            getInventoryRecordDbCollector(),
+            syncDao
         ),
         AccountingObjectUnionImageSyncEntity(
             syncControllerApi,
             moshi,
             ::accountingObjectUnionImageDbSaver,
-            getAccountingObjectUnionImageDbCollector()
+            getAccountingObjectUnionImageDbCollector(),
+            syncDao
         )
         //Пока не нужен
         /*TransitSyncEntity(
@@ -259,159 +271,189 @@ class SyncRepository(
             syncControllerApi,
             moshi,
             ::accountingObjectDbSaver,
-            getAccountingObjectDbCollector()
+            getAccountingObjectDbCollector(),
+            syncDao
         ),
         LocationSyncEntity(
             syncControllerApi,
             moshi,
-            ::locationsDbSaver
+            ::locationsDbSaver,
+            syncDao
         ),
         LocationTypeSyncEntity(
             syncControllerApi,
             moshi,
-            ::locationTypesDbSaver
+            ::locationTypesDbSaver,
+            syncDao
         ),
         CounterpartySyncEntity(
             syncControllerApi,
             moshi,
-            ::counterpartiesDbSaver
+            ::counterpartiesDbSaver,
+            syncDao
         ),
         EmployeeSyncEntity(
             syncControllerApi,
             moshi,
-            ::employeesDbSaver
+            ::employeesDbSaver,
+            syncDao
         ),
         EquipmentSyncEntity(
             syncControllerApi,
             moshi,
-            ::equipmentsDbSaver
+            ::equipmentsDbSaver,
+            syncDao
         ),
         NomenclatureGroupSyncEntity(
             syncControllerApi,
             moshi,
-            ::nomenclatureGroupsDbSaver
+            ::nomenclatureGroupsDbSaver,
+            syncDao
         ),
         NomenclatureSyncEntity(
             syncControllerApi,
             moshi,
-            ::nomenclaturesDbSaver
+            ::nomenclaturesDbSaver,
+            syncDao
         ),
         OrderSyncEntity(
             syncControllerApi,
             moshi,
-            ::ordersDbSaver
+            ::ordersDbSaver,
+            syncDao
         ),
         ProducerSyncEntity(
             syncControllerApi,
             moshi,
-            ::producersDbSaver
+            ::producersDbSaver,
+            syncDao
         ),
         EmployeeWorkPlaceSyncEntity(
             syncControllerApi,
             moshi,
-            ::employeeWorkPlacesDbSaver
+            ::employeeWorkPlacesDbSaver,
+            syncDao
         ),
         ReceptionCategoryItemSyncEntity(
             syncControllerApi,
             moshi,
-            ::receptionItemCategoryDbSaver
+            ::receptionItemCategoryDbSaver,
+            syncDao
         ),
         AccountingObjectCategorySyncEntity(
             syncControllerApi,
             moshi,
-            ::accountingObjectCategoryDbSaver
+            ::accountingObjectCategoryDbSaver,
+            syncDao
         ),
         AccountingObjectVocabularyAdditionalFieldSyncEntity(
             syncControllerApi,
             moshi,
-            ::accountingObjectVocabularyAdditionalFieldDbSaver
+            ::accountingObjectVocabularyAdditionalFieldDbSaver,
+            syncDao
         ),
         TerminalRemainsNumeratorSyncEntity(
             syncControllerApi,
             moshi,
             ::terminalRemainsNumeratorDbSaver,
-            getTerminalRemainsNumeratorDbCollector()
+            getTerminalRemainsNumeratorDbCollector(),
+            syncDao
         ),
         AccountingObjectSimpleAdditionalFieldSyncEntity(
             syncControllerApi,
             moshi,
-            ::accountingObjectSimpleAdditionalFieldDbSaver
+            ::accountingObjectSimpleAdditionalFieldDbSaver,
+            syncDao
         ),
         AccountingObjectSimpleCharacteristicFieldSyncEntity(
             syncControllerApi,
             moshi,
-            ::accountingObjectSimpleACharacteristicsDbSaver
+            ::accountingObjectSimpleACharacteristicsDbSaver,
+            syncDao
         ),
         AccountingObjectVocabularyCharacteristicFieldSyncEntity(
             syncControllerApi,
             moshi,
-            ::accountingObjectVocabularyCharacteristicsDbSaver
+            ::accountingObjectVocabularyCharacteristicsDbSaver,
+            syncDao
         ),
         InventoryBaseSyncEntity(
             syncControllerApi,
             moshi,
-            ::inventoryBaseDbSaver
+            ::inventoryBaseDbSaver,
+            syncDao
         ),
         ReserveSyncEntity(
             syncControllerApi,
             moshi,
             ::reservesDbSaver,
-            getRemainsDbCollector()
+            getRemainsDbCollector(),
+            syncDao
         ),
         InventorySyncEntity(
             syncControllerApi,
             moshi,
             ::inventoryDbSaver,
-            getInventoryDbCollector()
+            getInventoryDbCollector(),
+            syncDao
         ),
         DocumentSyncEntity(
             syncControllerApi,
             moshi,
             ::documentDbSaver,
-            getActionDbCollector()
+            getActionDbCollector(),
+            syncDao
         ),
         ActionRecordSyncEntity(
             syncControllerApi,
             moshi,
             ::actionRecordDbSaver,
-            getActionRecordDbCollector()
+            getActionRecordDbCollector(),
+            syncDao
         ),
         ActionRemainsRecordSyncEntity(
             syncControllerApi,
             moshi,
             ::actionRemainsRecordDbSaver,
-            getActionRecordRemainsDbCollector()
+            getActionRecordRemainsDbCollector(),
+            syncDao
         ),
         LocationPathSyncEntity(
             syncControllerApi,
             moshi,
-            ::locationPathDbSaver
+            ::locationPathDbSaver,
+            syncDao
         ),
         InventoryRecordSyncEntity(
             syncControllerApi,
             moshi,
             ::inventoryRecordDbSaver,
-            getInventoryRecordDbCollector()
+            getInventoryRecordDbCollector(),
+            syncDao
         ),
         InventoryCheckerSyncEntity(
             syncControllerApi,
             moshi,
             ::inventoryCheckerDbSaver,
+            syncDao
         ),
         ActionBasesSyncEntity(
             syncControllerApi,
             moshi,
-            ::actionBasesDbSaver
+            ::actionBasesDbSaver,
+            syncDao
         ),
         StructuralSyncEntity(
             syncControllerApi,
             moshi,
-            ::structuralsDbSaver
+            ::structuralsDbSaver,
+            syncDao
         ),
         StructuralPathSyncEntity(
             syncControllerApi,
             moshi,
-            ::structuralPathDbSaver
+            ::structuralPathDbSaver,
+            syncDao
         ),
         //Пока не нужен
         /*TransitSyncEntity(
@@ -435,53 +477,63 @@ class SyncRepository(
         AccountingObjectStatusSyncEntity(
             syncControllerApi,
             moshi,
-            ::accountingObjectStatusDbSaver
+            ::accountingObjectStatusDbSaver,
+            syncDao
         ),
         ActionStatusSyncEntity(
             syncControllerApi,
             moshi,
-            ::actionStatusDbSaver
+            ::actionStatusDbSaver,
+            syncDao
         ),
         ActionTypeSyncEntity(
             syncControllerApi,
             moshi,
-            ::actionTypeDbSaver
+            ::actionTypeDbSaver,
+            syncDao
         ),
         EmployeeStatusSyncEntity(
             syncControllerApi,
             moshi,
-            ::employeeStatusDbSaver
+            ::employeeStatusDbSaver,
+            syncDao
         ),
         EntityModelTypeSyncEntity(
             syncControllerApi,
             moshi,
-            ::entityModelTypeDbSaver
+            ::entityModelTypeDbSaver,
+            syncDao
         ),
         LabelTypeSyncEntity(
             syncControllerApi,
             moshi,
-            ::labelTypeDbSaver
+            ::labelTypeDbSaver,
+            syncDao
         ),
         InventoryRecordStatusSyncEntity(
             syncControllerApi,
             moshi,
-            ::inventoryRecordStatusDbSaver
+            ::inventoryRecordStatusDbSaver,
+            syncDao
         ),
         InventoryStateSyncEntity(
             syncControllerApi,
             moshi,
-            ::inventoryStateDbSaver
+            ::inventoryStateDbSaver,
+            syncDao
         ),
         InventoryTypeSyncEntity(
             syncControllerApi,
             moshi,
-            ::inventoryTypeDbSaver
+            ::inventoryTypeDbSaver,
+            syncDao
         ),
         AccountingObjectUnionImageSyncEntity(
             syncControllerApi,
             moshi,
             ::accountingObjectUnionImageDbSaver,
-            getAccountingObjectUnionImageDbCollector()
+            getAccountingObjectUnionImageDbCollector(),
+            syncDao
         )
     ).associateBy {
         it.id to it.table
@@ -1022,7 +1074,7 @@ class SyncRepository(
     }
 
     private suspend fun getLastSyncTime(): Long {
-        return syncDao.getNetworkSync()?.lastSyncTime ?: 0
+        return networkSyncDao.getNetworkSync()?.lastSyncTime ?: 0
     }
 
     companion object {

@@ -44,10 +44,10 @@ import com.squareup.moshi.Json
 data class FloorsSvgDtoV2 (
 
     @Json(name = "id")
-    val id: kotlin.String,
+    override val id: kotlin.String,
 
     @Json(name = "deleted")
-    val deleted: kotlin.Boolean,
+    override val deleted: kotlin.Boolean,
 
     @Json(name = "version")
     val version: kotlin.Int? = null,
@@ -79,5 +79,5 @@ data class FloorsSvgDtoV2 (
     @Json(name = "svgSchemeInString")
     val svgSchemeInString: kotlin.String? = null
 
-)
+): DeletedItemDto
 

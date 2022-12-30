@@ -1,6 +1,7 @@
 package com.example.union_sync_impl.sync
 
 import com.example.union_sync_impl.R
+import com.example.union_sync_impl.dao.SyncDao
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.Flow
 import org.openapitools.client.custom_api.SyncControllerApi
@@ -10,8 +11,9 @@ class TransitAccountingObjectRecordSyncEntity(
     syncControllerApi: SyncControllerApi,
     moshi: Moshi,
     private val dbSaver: suspend (List<TransitAccountingObjectRecordDtoV2>) -> Unit,
-    private val dbPartsCollector: Flow<List<TransitAccountingObjectRecordDtoV2>>
-) : SyncEntity<TransitAccountingObjectRecordDtoV2>(syncControllerApi, moshi), UploadableSyncEntity {
+    private val dbPartsCollector: Flow<List<TransitAccountingObjectRecordDtoV2>>,
+    syncDao: SyncDao
+) : SyncEntity<TransitAccountingObjectRecordDtoV2>(syncControllerApi, moshi, syncDao), UploadableSyncEntity {
 
     override val id: String
         get() = "Transit"
