@@ -9,6 +9,7 @@ import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
+import com.itrocket.core.navigation.ToastNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.labelType.presentation.store.LabelTypeArguments
@@ -64,6 +65,9 @@ interface ReserveDetailStore :
             override val fragment: Fragment
                 get() = ReadingModeComposeFragment()
         }
+
+        data class ShowToast(override val message: String, override val backgroundColor: Int) :
+            ToastNavigationLabel, Label()
 
         object ShowLabelTypes : Label(), ForwardNavigationLabel {
             override val directions: NavDirections

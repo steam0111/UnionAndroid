@@ -460,9 +460,10 @@ class InventoryCreateStoreFactory(
                     if (scannedAccountingObjects.hasWrittenOffAccountingObjects) {
                         publish(
                             InventoryCreateStore.Label.ShowToast(
-                                errorInteractor.getExceptionMessageByResId(
+                                message = errorInteractor.getMessageByResId(
                                     R.string.inventory_create_written_off_error
-                                )
+                                ),
+                                backgroundColor = R.color.psb1
                             )
                         )
                     }
@@ -507,9 +508,10 @@ class InventoryCreateStoreFactory(
                     if (scannedAccountingObjects.hasWrittenOffAccountingObjects) {
                         publish(
                             InventoryCreateStore.Label.ShowToast(
-                                errorInteractor.getExceptionMessageByResId(
+                                message = errorInteractor.getMessageByResId(
                                     R.string.inventory_create_written_off_error
-                                )
+                                ),
+                                backgroundColor = R.color.psb1
                             )
                         )
                     }

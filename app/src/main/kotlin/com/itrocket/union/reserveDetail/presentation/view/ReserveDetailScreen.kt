@@ -41,6 +41,8 @@ import com.itrocket.union.ui.ExpandedInfoField
 import com.itrocket.union.ui.InfoDialog
 import com.itrocket.union.ui.LoadingContent
 import com.itrocket.union.ui.ReadingModeBottomBar
+import com.itrocket.union.ui.black
+import com.itrocket.union.ui.red5
 import com.itrocket.union.utils.ifBlankOrNull
 import com.itrocket.utils.clickableUnbounded
 import java.math.BigDecimal
@@ -100,12 +102,17 @@ fun ReserveDetailScreen(
         }
 
         when (state.dialogType) {
-            AlertType.WRITE_EPC -> InfoDialog(
-                title = state.rfidError.ifEmpty {
+            AlertType.WRITE_EPC -> {
+                val title = state.rfidError.ifEmpty {
                     stringResource(R.string.common_write_epc_dialog_title)
-                },
-                onDismiss = onWriteEpcDismiss
-            )
+                }
+                val textColor = if (state.rfidError.isEmpty()) black else red5
+                InfoDialog(
+                    title = title,
+                    textColor = textColor,
+                    onDismiss = onWriteEpcDismiss
+                )
+            }
         }
     }
 }

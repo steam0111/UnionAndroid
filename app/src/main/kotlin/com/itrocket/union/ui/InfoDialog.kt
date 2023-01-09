@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 fun InfoDialog(
     title: String,
     confirmButtonText: String = "",
+    textColor: Color = black,
     onDismiss: () -> Unit
 ) {
     Box(
@@ -45,7 +47,7 @@ fun InfoDialog(
                 .clip(RoundedCornerShape(8.dp))
                 .background(white, RoundedCornerShape(8.dp)),
         ) {
-            Content(title)
+            Content(title = title, textColor = textColor)
             if (confirmButtonText.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
@@ -60,9 +62,9 @@ fun InfoDialog(
 }
 
 @Composable
-private fun Content(title: String) {
+private fun Content(title: String, textColor: Color) {
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = title)
+        Text(text = title, color = textColor)
     }
 }
 

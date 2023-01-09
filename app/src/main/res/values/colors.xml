@@ -11,4 +11,6 @@
     <color name="ic_launcher_background">#FFFFFF</color>
     <color name="psb_4">#C7CAD3</color>
     <color name="psb_3">#6B6B74</color>
+    <color name="green">#28BC00</color>
+    <color name="psb1">#323242</color>
 </resources>

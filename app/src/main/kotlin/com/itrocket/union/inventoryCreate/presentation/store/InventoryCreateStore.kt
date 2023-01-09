@@ -143,7 +143,8 @@ interface InventoryCreateStore :
 
         }
 
-        data class ShowToast(override val message: String) : ToastNavigationLabel, Label()
+        data class ShowToast(override val message: String, override val backgroundColor: Int) :
+            ToastNavigationLabel, Label()
 
         object ShowReadingMode : Label(),
             ShowBottomSheetNavigationLabel {

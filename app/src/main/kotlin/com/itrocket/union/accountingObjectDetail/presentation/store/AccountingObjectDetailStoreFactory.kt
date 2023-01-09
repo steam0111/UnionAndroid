@@ -137,8 +137,11 @@ class AccountingObjectDetailStoreFactory(
                 AccountingObjectDetailStore.Intent.OnDismissed -> onDismissed()
                 AccountingObjectDetailStore.Intent.OnTriggerPressed -> onTriggerPressed(getState)
                 AccountingObjectDetailStore.Intent.OnTriggerReleased -> onTriggerRelease()
-                is AccountingObjectDetailStore.Intent.OnWriteEpcError -> onWriteEpcError(intent.error)
-                is AccountingObjectDetailStore.Intent.OnWriteEpcHandled -> onWriteEpcHandled(getState().accountingObjectDomain.id, intent.rfid)
+                is AccountingObjectDetailStore.Intent.OnWriteEpcError -> onWriteEpcError()
+                is AccountingObjectDetailStore.Intent.OnWriteEpcHandled -> onWriteEpcHandled(
+                    getState().accountingObjectDomain.id,
+                    intent.rfid
+                )
                 AccountingObjectDetailStore.Intent.OnWriteOffClicked -> onWriteOffClicked(getState().accountingObjectDomain)
                 AccountingObjectDetailStore.Intent.OnRemoveBarcodeClicked -> onRemoveBarcodeClicked(
                     getState().accountingObjectDomain
@@ -266,14 +269,20 @@ class AccountingObjectDetailStoreFactory(
             dispatch(Result.RfidError(""))
         }
 
-        private fun onWriteEpcError(error: String) {
-            dispatch(Result.RfidError(error))
+        private fun onWriteEpcError() {
+            dispatch(Result.RfidError(errorInteractor.getMessageByResId(R.string.accounting_object_detail_write_epc_error)))
         }
 
         private suspend fun onWriteEpcHandled(accountingObjectId: String, rfid: String) {
             dispatch(Result.RfidError(""))
             dispatch(Result.DialogType(AlertType.NONE))
             interactor.updateAccountingObjectMarked(accountingObjectId, rfid)
+            publish(
+                AccountingObjectDetailStore.Label.ShowToast(
+                    message = errorInteractor.getMessageByResId(R.string.accounting_object_detail_write_epc_success),
+                    backgroundColor = R.color.green
+                )
+            )
         }
 
         private fun onTriggerPressed(getState: () -> AccountingObjectDetailStore.State) {
