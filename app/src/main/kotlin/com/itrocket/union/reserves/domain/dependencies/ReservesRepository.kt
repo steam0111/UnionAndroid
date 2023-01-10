@@ -3,6 +3,7 @@ package com.itrocket.union.reserves.domain.dependencies
 import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_api.entity.ReserveUpdateSyncEntity
+import com.itrocket.union.accountingObjects.domain.entity.PropertyCount
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 
@@ -47,4 +48,6 @@ interface ReservesRepository {
     suspend fun insertAll(reserves: List<ReserveSyncEntity>)
 
     suspend fun updateLabelType(reserve: ReservesDomain, labelTypeId: String)
+
+    suspend fun getPropertyCount(): PropertyCount
 }

@@ -5,6 +5,8 @@ import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
 import com.example.union_sync_api.entity.ReserveUpdateSyncEntity
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.accountingObjectDetail.data.mapper.toPropertyCount
+import com.itrocket.union.accountingObjects.domain.entity.PropertyCount
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getMolId
 import com.itrocket.union.manual.getNomenclatureId
@@ -98,5 +100,9 @@ class ReservesRepositoryImpl(
         return syncApi.updateLabelType(
             reserve.toLabelType(labelTypeId = labelTypeId)
         )
+    }
+
+    override suspend fun getPropertyCount(): PropertyCount {
+        return syncApi.getPropertyCount().toPropertyCount()
     }
 }

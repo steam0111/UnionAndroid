@@ -33,6 +33,7 @@ import com.itrocket.union.manual.isFilterApplied
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.SearchToolbar
+import com.itrocket.union.ui.listAction.PropertyInfoAlertDialog
 import com.itrocket.utils.paging.subscribePagingListIndex
 
 @ExperimentalPagerApi
@@ -45,7 +46,9 @@ fun AccountingObjectScreen(
     onFilterClickListener: () -> Unit,
     onAccountingObjectListener: (AccountingObjectDomain) -> Unit,
     onSearchTextChanged: (String) -> Unit,
-    onLoadNext: () -> Unit
+    onLoadNext: () -> Unit,
+    onInfoClicked: () -> Unit,
+    onDialogDismiss: () -> Unit
 ) {
     AppTheme {
         Column(
@@ -58,6 +61,7 @@ fun AccountingObjectScreen(
                 onBackClickListener = onBackClickListener,
                 onSearchClickListener = onSearchClickListener,
                 onFilterClickListener = onFilterClickListener,
+                onInfoClickListener = onInfoClicked,
                 isShowSearch = state.isShowSearch,
                 onSearchTextChanged = onSearchTextChanged,
                 searchText = state.searchText,
@@ -72,6 +76,16 @@ fun AccountingObjectScreen(
                 onLoadNext = onLoadNext,
                 isLoading = state.isLoading,
                 isEndReached = state.isListEndReached
+            )
+        }
+        if (state.isInfoDialogVisible) {
+            PropertyInfoAlertDialog(
+                onDismiss = onDialogDismiss,
+                text = stringResource(
+                    id = R.string.property_info_text,
+                    state.positionsCount,
+                    state.allCount
+                )
             )
         }
     }
@@ -112,6 +126,7 @@ private fun AccountingObjectList(
                 }
             }
         }
+
         item {
             Spacer(modifier = Modifier.height(navBarPadding.dp))
         }
@@ -193,5 +208,5 @@ fun AccountingObjectScreenPreview() {
                 )
             ),
             params = emptyList()
-        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {})
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {})
 }

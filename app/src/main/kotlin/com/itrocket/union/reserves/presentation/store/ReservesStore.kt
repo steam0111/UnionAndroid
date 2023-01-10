@@ -25,6 +25,8 @@ interface ReservesStore : Store<ReservesStore.Intent, ReservesStore.State, Reser
         data class OnFilterResult(val params: List<ParamDomain>) : Intent()
         data class OnSearchTextChanged(val searchText: String) : Intent()
         object OnLoadNext : Intent()
+        object OnInfoClicked : Intent()
+        object DismissDialog : Intent()
     }
 
     data class State(
@@ -33,7 +35,10 @@ interface ReservesStore : Store<ReservesStore.Intent, ReservesStore.State, Reser
         val isShowSearch: Boolean = false,
         val searchText: String = "",
         val params: List<ParamDomain>,
-        val isListEndReached: Boolean = false
+        val isListEndReached: Boolean = false,
+        val isInfoDialogVisible: Boolean = false,
+        val positionsCount: Long = 0,
+        val allCount: Long = 0
     )
 
     sealed class Label {

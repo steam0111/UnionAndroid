@@ -71,6 +71,12 @@ class AccountingObjectComposeFragment :
                 },
                 onLoadNext = {
                     accept(AccountingObjectStore.Intent.OnLoadNext)
+                },
+                onInfoClicked = {
+                    accept(AccountingObjectStore.Intent.OnInfoClicked)
+                },
+                onDialogDismiss = {
+                    accept(AccountingObjectStore.Intent.DismissDialog)
                 }
             )
         }
