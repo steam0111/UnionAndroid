@@ -96,7 +96,7 @@ class ReserveDetailStoreFactory(
                 ReserveDetailStore.Intent.OnMarkingClicked -> onMarkingClicked(getState = getState)
                 ReserveDetailStore.Intent.OnTriggerPressed -> onTriggerPressed(getState = getState)
                 ReserveDetailStore.Intent.OnTriggerReleased -> onTriggerRelease()
-                is ReserveDetailStore.Intent.OnWriteEpcError -> onWriteEpcError()
+                is ReserveDetailStore.Intent.OnWriteEpcError -> onWriteEpcError(intent.error)
                 is ReserveDetailStore.Intent.OnWriteEpcHandled -> onWriteEpcHandled(getState = getState)
                 is ReserveDetailStore.Intent.OnErrorHandled -> handleError(throwable = intent.error)
                 ReserveDetailStore.Intent.OnDismissed -> onDismissed()
@@ -156,8 +156,9 @@ class ReserveDetailStoreFactory(
             }
         }
 
-        private fun onWriteEpcError() {
-            dispatch(Result.RfidError(errorInteractor.getMessageByResId(R.string.accounting_object_detail_write_epc_error)))
+        private fun onWriteEpcError(error: String) {
+            val postfixError = errorInteractor.getMessageByResId(R.string.accounting_object_detail_write_epc_error)
+            dispatch(Result.RfidError("$error : $postfixError"))
         }
 
         private fun onTriggerPressed(getState: () -> ReserveDetailStore.State) {
