@@ -1,14 +1,12 @@
 package com.itrocket.union.dataCollect.presentation.view
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,11 +30,10 @@ import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
 import com.itrocket.union.dataCollect.presentation.store.DataCollectStore
 import com.itrocket.union.ui.AppTheme
-import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.BottomLine
+import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.ScanningObjectItem
-import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.graphite4
 import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
@@ -62,7 +59,8 @@ fun DataCollectScreen(
                 )
             },
             bottomBar = {
-                BottomBar(
+                ReadingModeBottomBar(
+                    readingModeTab = state.readingModeTab,
                     onReadingModeClickListener = onReadingModeClickListener
                 )
             },
@@ -170,25 +168,6 @@ private fun ObjectListEmpty(paddingValues: PaddingValues) {
             style = AppTheme.typography.body1,
             color = graphite4,
             textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-private fun BottomBar(
-    onReadingModeClickListener: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(graphite2)
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        BaseButton(
-            text = stringResource(R.string.accounting_object_detail_reading_mode),
-            onClick = onReadingModeClickListener,
-            modifier = Modifier.fillMaxWidth()
         )
     }
 }
