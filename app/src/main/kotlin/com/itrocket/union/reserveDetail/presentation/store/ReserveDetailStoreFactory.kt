@@ -9,6 +9,7 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.sgtin.IncorrectBarcodeException
 import com.itrocket.union.R
+import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailStore
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
@@ -95,7 +96,7 @@ class ReserveDetailStoreFactory(
                 ReserveDetailStore.Intent.OnMarkingClicked -> onMarkingClicked(getState = getState)
                 ReserveDetailStore.Intent.OnTriggerPressed -> onTriggerPressed(getState = getState)
                 ReserveDetailStore.Intent.OnTriggerReleased -> onTriggerRelease()
-                is ReserveDetailStore.Intent.OnWriteEpcError -> onWriteEpcError(error = intent.error)
+                is ReserveDetailStore.Intent.OnWriteEpcError -> onWriteEpcError()
                 is ReserveDetailStore.Intent.OnWriteEpcHandled -> onWriteEpcHandled(getState = getState)
                 is ReserveDetailStore.Intent.OnErrorHandled -> handleError(throwable = intent.error)
                 ReserveDetailStore.Intent.OnDismissed -> onDismissed()
@@ -145,12 +146,18 @@ class ReserveDetailStoreFactory(
                     remainsId = terminalRemainsNumerator.remainsId,
                     actualNumber = terminalRemainsNumerator.actualNumber
                 )
+                publish(
+                    ReserveDetailStore.Label.ShowToast(
+                        message = errorInteractor.getMessageByResId(R.string.accounting_object_detail_write_epc_success),
+                        backgroundColor = R.color.green
+                    )
+                )
                 dispatch(Result.TerminalRemainsNumerator(null))
             }
         }
 
-        private fun onWriteEpcError(error: String) {
-            dispatch(Result.RfidError(error))
+        private fun onWriteEpcError() {
+            dispatch(Result.RfidError(errorInteractor.getMessageByResId(R.string.accounting_object_detail_write_epc_error)))
         }
 
         private fun onTriggerPressed(getState: () -> ReserveDetailStore.State) {
@@ -200,7 +207,7 @@ class ReserveDetailStoreFactory(
             publish(
                 ReserveDetailStore.Label.Error(
                     when (throwable) {
-                        is IncorrectBarcodeException -> errorInteractor.getExceptionMessageByResId(R.string.common_formatter_error)
+                        is IncorrectBarcodeException -> errorInteractor.getMessageByResId(R.string.common_formatter_error)
                         else -> errorInteractor.getTextMessage(throwable)
                     }
                 )

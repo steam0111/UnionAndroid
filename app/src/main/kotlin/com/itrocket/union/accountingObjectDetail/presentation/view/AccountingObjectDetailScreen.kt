@@ -169,12 +169,17 @@ fun AccountingObjectDetailScreen(
             )
         }
         when (state.dialogType) {
-            AlertType.WRITE_EPC -> InfoDialog(
-                title = state.rfidError.ifEmpty {
+            AlertType.WRITE_EPC -> {
+                val title = state.rfidError.ifEmpty {
                     stringResource(R.string.common_write_epc_dialog_title)
-                },
-                onDismiss = onDialogDismiss
-            )
+                }
+                val textColor = if(state.rfidError.isEmpty()) black else red5
+                InfoDialog(
+                    title = title,
+                    textColor = textColor,
+                    onDismiss = onDialogDismiss
+                )
+            }
 
             AlertType.ADD_IMAGE -> ChooseAddPhotoSource(
                 onDismiss = onDialogDismiss,

@@ -7,7 +7,6 @@ import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObject
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.labelTypeDetail.domain.dependencies.LabelTypeDetailRepository
-import com.itrocket.union.nomenclature.domain.NomenclatureInteractor
 import com.itrocket.union.nomenclatureDetail.domain.NomenclatureDetailInteractor
 import com.itrocket.union.reserves.domain.dependencies.ReservesRepository
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
@@ -89,7 +88,7 @@ class IdentifyInteractor(
                             barcode = null,
                             serialNumber = barcode
                         ) ?: throw java.lang.IllegalArgumentException(
-                            errorInteractor.getExceptionMessageByResId(
+                            errorInteractor.getMessageByResId(
                                 R.string.common_sn_error
                             )
                         )
@@ -98,7 +97,7 @@ class IdentifyInteractor(
                             barcode = barcode,
                             serialNumber = null
                         ) ?: throw java.lang.IllegalArgumentException(
-                            errorInteractor.getExceptionMessageByResId(
+                            errorInteractor.getMessageByResId(
                                 R.string.common_barcode_error
                             )
                         )
@@ -106,7 +105,7 @@ class IdentifyInteractor(
                 newAccountingObjectBarcode.add(barcodeAccountingObject)
             } else {
                 throw java.lang.IllegalArgumentException(
-                    errorInteractor.getExceptionMessageByResId(
+                    errorInteractor.getMessageByResId(
                         R.string.common_exist_error
                     )
                 )
@@ -154,7 +153,7 @@ class IdentifyInteractor(
 
             if (reserves.isEmpty()) {
                 throw java.lang.IllegalArgumentException(
-                    errorInteractor.getExceptionMessageByResId(
+                    errorInteractor.getMessageByResId(
                         R.string.common_barcode_error
                     )
                 )

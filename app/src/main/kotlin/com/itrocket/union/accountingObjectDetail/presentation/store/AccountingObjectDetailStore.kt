@@ -10,6 +10,7 @@ import com.itrocket.core.navigation.DefaultNavigationErrorLabel
 import com.itrocket.core.navigation.ForwardNavigationLabel
 import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
+import com.itrocket.core.navigation.ToastNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailComposeFragment.Companion.ACCOUNTING_OBJECT_DETAIL_RESULT_CODE
 import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailComposeFragment.Companion.ACCOUNTING_OBJECT_DETAIL_RESULT_LABEL
@@ -97,6 +98,9 @@ interface AccountingObjectDetailStore :
             override val fragment: Fragment
                 get() = ReadingModeComposeFragment()
         }
+
+        data class ShowToast(override val message: String, override val backgroundColor: Int) :
+            ToastNavigationLabel, Label()
 
         data class ShowChangeScanData(
             val entityId: String,
