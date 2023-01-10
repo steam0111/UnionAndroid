@@ -10,6 +10,7 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.dataCollect.domain.DataCollectInteractor
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 
 class DataCollectStoreFactory(
     private val storeFactory: StoreFactory,
@@ -69,6 +70,9 @@ class DataCollectStoreFactory(
                     dispatch(Result.ScanningObjects(newScanningList))
                 }
                 is DataCollectStore.Intent.OnErrorHandled -> handleError(intent.throwable)
+                is DataCollectStore.Intent.OnReadingModeTabChanged -> dispatch(
+                    Result.ReadingMode(intent.readingModeTab)
+                )
             }
         }
 
@@ -81,12 +85,15 @@ class DataCollectStoreFactory(
         data class ScanningObjects(
             val scanningObjects: List<String>
         ) : Result()
+
+        data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
     }
 
     private object ReducerImpl : Reducer<DataCollectStore.State, Result> {
         override fun DataCollectStore.State.reduce(result: Result): DataCollectStore.State =
             when (result) {
                 is Result.ScanningObjects -> copy(scanningObjects = result.scanningObjects)
+                is Result.ReadingMode -> copy(readingModeTab = result.readingModeTab)
             }
     }
 }

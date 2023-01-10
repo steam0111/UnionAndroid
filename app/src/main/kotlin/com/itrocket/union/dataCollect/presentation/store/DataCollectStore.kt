@@ -9,6 +9,7 @@ import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.core.navigation.ShowBottomSheetNavigationLabel
 import com.itrocket.union.R
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 
 interface DataCollectStore :
     Store<DataCollectStore.Intent, DataCollectStore.State, DataCollectStore.Label> {
@@ -23,16 +24,19 @@ interface DataCollectStore :
             Intent()
 
         data class OnErrorHandled(val throwable: Throwable) : Intent()
+
+        data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
     }
 
     data class State(
         val scanningObjects: List<String> = listOf(),
         val selectedPage: Int = 0,
-        val count: Int = 0
+        val count: Int = 0,
+        val readingModeTab: ReadingModeTab = ReadingModeTab.RFID
     )
 
     sealed class Label {
-        data class Error(override val message: String): Label(), DefaultNavigationErrorLabel
+        data class Error(override val message: String) : Label(), DefaultNavigationErrorLabel
         object GoBack : Label(), GoBackNavigationLabel
         object ShowReadingMode : Label(),
             ShowBottomSheetNavigationLabel {

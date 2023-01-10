@@ -8,13 +8,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
+import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.dataCollect.DataCollectModule.DATA_COLLECT_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.dataCollect.presentation.store.DataCollectStore
 import com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateComposeFragment
+import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
+import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.utils.flow.window
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,6 +38,21 @@ class DataCollectComposeFragment :
                 accept(DataCollectStore.Intent.OnErrorHandled(throwable))
             }
         }
+
+    override val fragmentResultList: List<FragmentResult>
+        get() = listOf(
+            FragmentResult(
+                resultCode = ReadingModeComposeFragment.READING_MODE_TAB_RESULT_CODE,
+                resultLabel = ReadingModeComposeFragment.READING_MODE_TAB_RESULT_LABEL,
+                resultAction = {
+                    (it as ReadingModeTab?)?.let {
+                        accept(
+                            DataCollectStore.Intent.OnReadingModeTabChanged(it)
+                        )
+                    }
+                }
+            )
+        )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
