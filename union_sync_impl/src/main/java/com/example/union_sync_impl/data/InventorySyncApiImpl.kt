@@ -20,6 +20,7 @@ import com.example.union_sync_impl.dao.InventoryNomenclatureRecordDao
 import com.example.union_sync_impl.dao.InventoryRecordDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
+import com.example.union_sync_impl.dao.sqlInventoryNomenclatureRecordQuery
 import com.example.union_sync_impl.dao.sqlInventoryQuery
 import com.example.union_sync_impl.dao.sqlInventoryRecordQuery
 import com.example.union_sync_impl.data.mapper.toInventoryDb
@@ -53,11 +54,6 @@ class InventorySyncApiImpl(
     override suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): String {
         val inventoryId = UUID.randomUUID().toString()
         inventoryDao.insert(inventoryCreateSyncEntity.toInventoryDb(inventoryId))
-        updateAccountingObjectRecords(
-            inventoryId = inventoryId,
-            accountingObjectIds = inventoryCreateSyncEntity.accountingObjectsIds,
-            userUpdated = inventoryCreateSyncEntity.userUpdated
-        )
         return inventoryId
     }
 
@@ -97,7 +93,8 @@ class InventorySyncApiImpl(
                 accountingObjects = listOf(),
                 inventoryBaseSyncEntity = inventoryBase,
                 balanceUnit = balanceUnitFullPath.orEmpty(),
-                checkers = checkerSyncApi.getCheckers(it.inventoryDb.id)
+                checkers = checkerSyncApi.getCheckers(it.inventoryDb.id),
+                nomenclatureRecords = listOf()
             )
         }
     }
@@ -165,6 +162,18 @@ class InventorySyncApiImpl(
             }
         }
 
+        val inventoryNomenclatureRecords = async(coreDispatchers.io) {
+            if (isAccountingObjectLoad) {
+                inventoryNomenclatureRecordDao.getAll(
+                    sqlInventoryNomenclatureRecordQuery(
+                        inventoryId = fullInventory.inventoryDb.id
+                    )
+                ).map { it.toSyncEntity() }
+            } else {
+                listOf()
+            }
+        }
+
         val locationsDeferred = async(coreDispatchers.io) {
             if (fullInventory.inventoryDb.locationIds != null) {
                 locationSyncApi.getLocationsByIds(fullInventory.inventoryDb.locationIds)
@@ -186,7 +195,8 @@ class InventorySyncApiImpl(
             accountingObjects = accountingObjectsDeferred.await(),
             inventoryBaseSyncEntity = inventoryBaseDeferred.await(),
             balanceUnit = balanceUnitFullPath,
-            checkers = checkersDeferred.await()
+            checkers = checkersDeferred.await(),
+            nomenclatureRecords = inventoryNomenclatureRecords.await()
         )
     }
 

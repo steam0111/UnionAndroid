@@ -95,7 +95,7 @@ data class InventoryNomenclatureRecordDtoV2(
     val consignment: String? = null,
 
     @Json(name = "bookkeepingInvoice")
-    val bookKeepingInvoice: Long? = null,
+    val bookKeepingInvoice: BigDecimal? = null,
 
     @Json(name = "price")
     val price: String? = null,

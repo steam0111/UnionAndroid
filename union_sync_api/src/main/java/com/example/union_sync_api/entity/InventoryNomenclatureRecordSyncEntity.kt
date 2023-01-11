@@ -1,5 +1,7 @@
 package com.example.union_sync_api.entity
 
+import java.math.BigDecimal
+
 data class InventoryNomenclatureRecordSyncEntity(
     val id: String,
     val inventoryId: String,
@@ -8,8 +10,8 @@ data class InventoryNomenclatureRecordSyncEntity(
     val expectedCount: Long?,
     val actualCount: Long?,
     val consignment: String?,
-    val bookKeepingInvoice: Long?,
+    val bookKeepingInvoice: BigDecimal?,
     val price: String?,
     val cancel: Boolean?,
-    val userUpdated: String?
+    val userUpdated: String? = null
 )

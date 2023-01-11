@@ -49,7 +49,8 @@ object SyncModule {
                 structuralSyncApi = get(),
                 checkerSyncApi = get(),
                 enumsApi = get(),
-                coreDispatchers = get()
+                coreDispatchers = get(),
+                inventoryNomenclatureRecordDao = get()
             )
         }
         factory<DocumentSyncApi> {

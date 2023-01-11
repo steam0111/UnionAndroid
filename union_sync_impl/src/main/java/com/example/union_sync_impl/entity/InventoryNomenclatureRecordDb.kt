@@ -2,6 +2,7 @@ package com.example.union_sync_impl.entity
 
 import androidx.room.Entity
 import com.example.union_sync_impl.entity.core.SyncItemDb
+import java.math.BigDecimal
 
 @Entity(tableName = "inventory_nomenclature_record")
 class InventoryNomenclatureRecordDb(
@@ -12,7 +13,7 @@ class InventoryNomenclatureRecordDb(
     val expectedCount: Long?,
     val actualCount: Long?,
     val consignment: String?,
-    val bookKeepingInvoice: Long?,
+    val bookKeepingInvoice: BigDecimal?,
     val price: String?,
     insertDate: Long?,
     updateDate: Long?,
@@ -40,7 +41,7 @@ class InventoryNomenclatureRecordDb(
         expectedCount: Long? = this.expectedCount,
         consignment: String? = this.consignment,
         price: String? = this.price,
-        bookKeepingInvoice: Long? = this.bookKeepingInvoice,
+        bookKeepingInvoice: BigDecimal? = this.bookKeepingInvoice,
     ): InventoryNomenclatureRecordDb {
         return InventoryNomenclatureRecordDb(
             id = id,
