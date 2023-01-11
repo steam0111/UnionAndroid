@@ -4,6 +4,7 @@ import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.ReserveSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
 import com.example.union_sync_api.entity.LabelType
+import com.example.union_sync_api.entity.PropertyCountSyncEntity
 import com.example.union_sync_api.entity.ReserveDetailSyncEntity
 import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
@@ -116,5 +117,10 @@ class ReserveSyncApiImpl(
 
     override suspend fun updateLabelType(labelType: LabelType) {
         reserveDao.update(labelType.toReserveLabelTypeUpdate())
+    }
+
+    override suspend fun getPropertyCount(): PropertyCountSyncEntity {
+        val propertyCount = reserveDao.getPropertyCount()
+        return PropertyCountSyncEntity(propertyCount.positionsCount, propertyCount.allCount)
     }
 }

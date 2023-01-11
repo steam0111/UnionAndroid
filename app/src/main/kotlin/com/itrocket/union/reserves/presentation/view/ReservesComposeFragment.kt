@@ -67,6 +67,12 @@ class ReservesComposeFragment :
                 },
                 onLoadNext = {
                     accept(ReservesStore.Intent.OnLoadNext)
+                },
+                onInfoClicked = {
+                    accept(ReservesStore.Intent.OnInfoClicked)
+                },
+                onDialogDismiss = {
+                    accept(ReservesStore.Intent.DismissDialog)
                 }
             )
         }

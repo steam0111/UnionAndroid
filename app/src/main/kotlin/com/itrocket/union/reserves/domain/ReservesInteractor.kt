@@ -1,6 +1,7 @@
 package com.itrocket.union.reserves.domain
 
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.union.accountingObjects.domain.entity.PropertyCount
 import com.itrocket.union.location.domain.dependencies.LocationRepository
 import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
@@ -91,5 +92,9 @@ class ReservesInteractor(
                 )
             )
         }
+    }
+
+    suspend fun getPropertyCount(): PropertyCount = withContext(coreDispatchers.io) {
+        repository.getPropertyCount()
     }
 }

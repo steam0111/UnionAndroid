@@ -111,6 +111,21 @@ class ReservesStoreFactory(
                         offset = it
                     )
                 }
+
+                ReservesStore.Intent.OnInfoClicked -> {
+                    val propertyCount = reservesInteractor.getPropertyCount()
+                    dispatch(
+                        Result.PropertyCount(
+                            positionsCount = propertyCount.positionsCount,
+                            allCount = propertyCount.allCount
+                        )
+                    )
+                    dispatch(Result.IsPropertyDialogVisible(true))
+                }
+
+                ReservesStore.Intent.DismissDialog -> {
+                    dispatch(Result.IsPropertyDialogVisible(false))
+                }
             }
         }
 
@@ -170,6 +185,9 @@ class ReservesStoreFactory(
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
         data class Params(val params: List<ParamDomain>) : Result()
         data class IsListEndReached(val isListEndReached: Boolean) : Result()
+        data class IsPropertyDialogVisible(val isVisible: Boolean) : Result()
+
+        data class PropertyCount(val positionsCount: Long, val allCount: Long) : Result()
     }
 
     private object ReducerImpl : Reducer<ReservesStore.State, Result> {
@@ -181,6 +199,11 @@ class ReservesStoreFactory(
                 is Result.SearchText -> copy(searchText = result.searchText)
                 is Result.Params -> copy(params = result.params)
                 is Result.IsListEndReached -> copy(isListEndReached = result.isListEndReached)
+                is Result.IsPropertyDialogVisible -> copy(isInfoDialogVisible = result.isVisible)
+                is Result.PropertyCount -> copy(
+                    positionsCount = result.positionsCount,
+                    allCount = result.allCount
+                )
             }
     }
 }

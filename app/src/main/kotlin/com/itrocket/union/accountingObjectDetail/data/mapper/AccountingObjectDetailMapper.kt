@@ -4,12 +4,14 @@ import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
 import com.example.union_sync_api.entity.LabelType
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectWriteOff
+import com.example.union_sync_api.entity.PropertyCountSyncEntity
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.data.mapper.toDomainStatus
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoBehavior
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoType
+import com.itrocket.union.accountingObjects.domain.entity.PropertyCount
 import com.itrocket.union.utils.getStringDateFromMillis
 
 
@@ -293,3 +295,6 @@ fun getStringBy(isTrue: Boolean?) =
         false -> R.string.common_no
         else -> null
     }
+
+fun PropertyCountSyncEntity.toPropertyCount() =
+    PropertyCount(positionsCount = positionsCount, allCount = allCount)

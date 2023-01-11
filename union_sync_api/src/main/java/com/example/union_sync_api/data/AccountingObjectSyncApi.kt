@@ -6,6 +6,7 @@ import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectWriteOff
+import com.example.union_sync_api.entity.PropertyCountSyncEntity
 import kotlinx.coroutines.flow.Flow
 
 interface AccountingObjectSyncApi {
@@ -65,4 +66,6 @@ interface AccountingObjectSyncApi {
     suspend fun updateAccountingObjectLabelType(accountingObject: LabelType)
 
     suspend fun updateAccountingObjectMarked(accountingObjectId: String, rfid: String)
+
+    suspend fun getPropertyCount(): PropertyCountSyncEntity
 }

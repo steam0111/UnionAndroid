@@ -25,16 +25,21 @@ interface AccountingObjectStore :
         object OnBackClicked : Intent()
         object OnSearchClicked : Intent()
         object OnLoadNext : Intent()
+        object OnInfoClicked : Intent()
         data class OnSearchTextChanged(val searchText: String) : Intent()
+        object DismissDialog : Intent()
     }
 
     data class State(
         val isLoading: Boolean = false,
+        val isInfoDialogVisible: Boolean = false,
         val accountingObjects: List<AccountingObjectDomain> = listOf(),
         val isShowSearch: Boolean = false,
         val searchText: String = "",
         val isListEndReached: Boolean = false,
-        val params: List<ParamDomain>
+        val params: List<ParamDomain>,
+        val positionsCount: Long = 0,
+        val allCount: Long = 0
     )
 
     sealed class Label {

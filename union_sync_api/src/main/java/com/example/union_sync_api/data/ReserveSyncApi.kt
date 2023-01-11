@@ -1,6 +1,7 @@
 package com.example.union_sync_api.data
 
 import com.example.union_sync_api.entity.LabelType
+import com.example.union_sync_api.entity.PropertyCountSyncEntity
 import com.example.union_sync_api.entity.ReserveDetailSyncEntity
 import com.example.union_sync_api.entity.ReserveShortSyncEntity
 import com.example.union_sync_api.entity.ReserveSyncEntity
@@ -43,4 +44,6 @@ interface ReserveSyncApi {
     suspend fun insertAll(reserves: List<ReserveSyncEntity>)
 
     suspend fun updateLabelType(labelType: LabelType)
+
+    suspend fun getPropertyCount(): PropertyCountSyncEntity
 }
