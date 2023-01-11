@@ -37,6 +37,7 @@ import com.example.union_sync_impl.dao.TransitDao
 import com.example.union_sync_impl.dao.TransitRemainsRecordDao
 import com.example.union_sync_impl.dao.AccountingObjectsVocabularyCharacteristicsDao
 import com.example.union_sync_impl.dao.EmployeeWorkPlaceDao
+import com.example.union_sync_impl.dao.InventoryNomenclatureRecordDao
 import com.example.union_sync_impl.dao.SimpleCharacteristicDao
 import com.example.union_sync_impl.dao.SyncDao
 import com.example.union_sync_impl.dao.TerminalInfoDao
@@ -61,6 +62,7 @@ import com.example.union_sync_impl.entity.EnumDb
 import com.example.union_sync_impl.entity.EquipmentTypesDb
 import com.example.union_sync_impl.entity.InventoryCheckerDb
 import com.example.union_sync_impl.entity.InventoryDb
+import com.example.union_sync_impl.entity.InventoryNomenclatureRecordDb
 import com.example.union_sync_impl.entity.InventoryRecordDb
 import com.example.union_sync_impl.entity.LabelTypeDb
 import com.example.union_sync_impl.entity.NetworkSyncDb
@@ -132,8 +134,9 @@ import com.example.union_sync_impl.utils.Converters
         LabelTypeDb::class,
         TerminalRemainsNumeratorDb::class,
         AccountingObjectUnionImageDb::class,
-        EmployeeWorkPlaceDb::class
-    ], version = 135
+        EmployeeWorkPlaceDb::class,
+        InventoryNomenclatureRecordDb::class
+    ], version = 136
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {
@@ -179,4 +182,5 @@ abstract class UnionDatabase : RoomDatabase() {
     abstract fun vocabularyCharacteristicValueDao(): VocabularyCharacteristicValueDao
     abstract fun employeeWorkPlaceDao(): EmployeeWorkPlaceDao
     abstract fun syncDao(): SyncDao
+    abstract fun inventoryNomenclatureRecordDao(): InventoryNomenclatureRecordDao
 }
