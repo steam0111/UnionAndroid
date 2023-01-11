@@ -63,6 +63,7 @@ import com.example.union_sync_impl.entity.EquipmentTypesDb
 import com.example.union_sync_impl.entity.InventoryCheckerDb
 import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.entity.InventoryNomenclatureRecordDb
+import com.example.union_sync_impl.entity.InventoryNomenclatureRecordUpdate
 import com.example.union_sync_impl.entity.InventoryRecordDb
 import com.example.union_sync_impl.entity.LabelTypeDb
 import com.example.union_sync_impl.entity.NetworkSyncDb
@@ -135,8 +136,9 @@ import com.example.union_sync_impl.utils.Converters
         TerminalRemainsNumeratorDb::class,
         AccountingObjectUnionImageDb::class,
         EmployeeWorkPlaceDb::class,
-        InventoryNomenclatureRecordDb::class
-    ], version = 136
+        InventoryNomenclatureRecordDb::class,
+        InventoryNomenclatureRecordUpdate::class
+    ], version = 137
 )
 @TypeConverters(Converters::class)
 abstract class UnionDatabase : RoomDatabase() {

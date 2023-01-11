@@ -7,6 +7,7 @@ import com.example.union_sync_api.entity.InventoryRecordSyncEntity
 import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
 import com.example.union_sync_impl.entity.InventoryNomenclatureRecordDb
+import com.example.union_sync_impl.entity.InventoryNomenclatureRecordUpdate
 import com.example.union_sync_impl.entity.InventoryRecordDb
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import com.example.union_sync_impl.entity.TransitAccountingObjectRecordDb
@@ -197,4 +198,20 @@ fun InventoryNomenclatureRecordDb.toSyncEntity() = InventoryNomenclatureRecordSy
     consignment = consignment,
     bookKeepingInvoice = bookKeepingInvoice,
     price = price,
+    cancel = cancel,
+    userUpdated = userUpdated
+)
+
+fun InventoryNomenclatureRecordSyncEntity.toUpdate() = InventoryNomenclatureRecordUpdate(
+    id = id,
+    inventoryId = inventoryId,
+    nomenclatureId = nomenclatureId,
+    updateDate = updateDate,
+    expectedCount = expectedCount,
+    actualCount = actualCount,
+    consignment = consignment,
+    bookKeepingInvoice = bookKeepingInvoice,
+    price = price,
+    cancel = cancel,
+    userUpdated = userUpdated
 )
