@@ -193,7 +193,7 @@
     <string name="accounting_object_detail_reading_mode">Режим считывания</string>
     <string name="accounting_object_detail_show_full_characteristics">Показать все характеристики</string>
     <string name="accounting_object_detail_main">Основные</string>
-    <string name="accounting_object_detail_write_epc_error">Не удалось записать метку</string>
+    <string name="accounting_object_detail_write_epc_error">Не удалось записать метку.</string>
     <string name="accounting_object_detail_write_epc_success">Метка успешно записана</string>
 
     <!-- Status -->
