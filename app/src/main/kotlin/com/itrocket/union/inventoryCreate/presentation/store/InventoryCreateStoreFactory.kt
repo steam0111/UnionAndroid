@@ -15,6 +15,7 @@ import com.itrocket.union.comment.presentation.store.CommentResult
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventory.domain.InventoryInteractor
+import com.itrocket.union.inventory.domain.entity.InventoryNomenclatureDomain
 import com.itrocket.union.inventory.presentation.store.InventoryResult
 import com.itrocket.union.inventoryChoose.domain.InventoryChooseActionType
 import com.itrocket.union.inventoryChoose.presentation.store.InventoryChooseResult
@@ -88,9 +89,10 @@ class InventoryCreateStoreFactory(
                 )
                 val isDynamicSaveInventory = moduleSettingsInteractor.getDynamicSaveInventory()
                 val accountingObjects = inventory.accountingObjects
-                val isExistNonMarkingAccountingObject = inventoryInteractor.isExistNonMarkingAccountingObjects(
-                    accountingObjects
-                )
+                val isExistNonMarkingAccountingObject =
+                    inventoryInteractor.isExistNonMarkingAccountingObjects(
+                        accountingObjects
+                    )
 
                 dispatch(Result.Inventory(inventory))
                 dispatch(Result.IsDynamicSaveInventory(isDynamicSaveInventory))
@@ -101,9 +103,10 @@ class InventoryCreateStoreFactory(
                 inventoryDynamicSaveManager.subscribeInventorySave()
             }
             searchManager.listenSearch { searchText ->
-                listenAccountingObjects(
+                listenInventoryObjects(
                     searchText = searchText,
                     accountingObjects = getState().inventoryDocument.accountingObjects,
+                    inventoryNomenclatures = getState().inventoryDocument.nomenclatureRecords,
                     getState = getState
                 )
             }
@@ -156,7 +159,8 @@ class InventoryCreateStoreFactory(
                             isShowSearch = getState().isShowSearch,
                             searchText = getState().searchText,
                             readingModeTab = getState().readingModeTab,
-                            getState = getState
+                            getState = getState,
+                            inventoryNomenclatures = getState().inventoryDocument.nomenclatureRecords
                         )
                     }
                 }
@@ -164,14 +168,15 @@ class InventoryCreateStoreFactory(
                 is InventoryCreateStore.Intent.OnNewAccountingObjectRfidHandled -> {
                     val inventoryStatus = getState().inventoryDocument.inventoryStatus
                     if (inventoryStatus != InventoryStatus.COMPLETED && getState().canUpdate) {
-                        handleNewAccountingObjectRfids(
+                        handleNewRfids(
                             accountingObjects = getState().inventoryDocument.accountingObjects,
-                            handledAccountingObjectIds = intent.handledAccountingObjectIds,
+                            handledRfids = intent.handledAccountingObjectIds,
                             inventoryStatus = inventoryStatus,
                             isAddNew = getState().isAddNew,
                             isShowSearch = getState().isShowSearch,
                             searchText = getState().searchText,
-                            getState = getState
+                            getState = getState,
+                            inventoryNomenclatures = getState().inventoryDocument.nomenclatureRecords
                         )
                     }
                 }
@@ -192,7 +197,8 @@ class InventoryCreateStoreFactory(
                     dispatch(Result.DialogType(AlertType.NONE))
                     saveInventory(
                         inventoryDocument = getState().inventoryDocument,
-                        accountingObjects = getState().inventoryDocument.accountingObjects
+                        accountingObjects = getState().inventoryDocument.accountingObjects,
+                        inventoryNomenclatures = getState().inventoryDocument.nomenclatureRecords
                     )
                 }
 
@@ -209,9 +215,10 @@ class InventoryCreateStoreFactory(
 
                 InventoryCreateStore.Intent.OnSearchClicked -> {
                     dispatch(Result.IsShowSearch(true))
-                    listenAccountingObjects(
+                    listenInventoryObjects(
                         searchText = "",
                         accountingObjects = getState().inventoryDocument.accountingObjects,
+                        inventoryNomenclatures = getState().inventoryDocument.nomenclatureRecords,
                         getState = getState
                     )
                 }
@@ -288,7 +295,8 @@ class InventoryCreateStoreFactory(
 
             tryDynamicSendInventorySave(
                 getState = getState,
-                accountingObjects = getState().inventoryDocument.accountingObjects
+                accountingObjects = getState().inventoryDocument.accountingObjects,
+                inventoryNomenclatures = getState().inventoryDocument.nomenclatureRecords
             )
         }
 
@@ -334,6 +342,7 @@ class InventoryCreateStoreFactory(
             tryDynamicSendInventorySave(
                 getState = getState,
                 accountingObjects = getState().inventoryDocument.accountingObjects,
+                inventoryNomenclatures = getState().inventoryDocument.nomenclatureRecords
             )
         }
 
@@ -362,6 +371,7 @@ class InventoryCreateStoreFactory(
                 tryDynamicSendInventorySave(
                     getState = getState,
                     accountingObjects = getState().inventoryDocument.accountingObjects,
+                    inventoryNomenclatures = getState().inventoryDocument.nomenclatureRecords
                 )
             } else {
                 dispatch(Result.DialogRemovedItemId(accountingObject.id))
@@ -377,11 +387,17 @@ class InventoryCreateStoreFactory(
 
         private fun tryDynamicSendInventorySave(
             getState: () -> InventoryCreateStore.State,
-            accountingObjects: List<AccountingObjectDomain>
+            accountingObjects: List<AccountingObjectDomain>,
+            inventoryNomenclatures: List<InventoryNomenclatureDomain>
         ) {
             if (getState().isDynamicSaveInventory) {
                 val inventory = getState().inventoryDocument
-                inventoryDynamicSaveManager.sendInventoryDomain(inventory.copy(accountingObjects = accountingObjects))
+                inventoryDynamicSaveManager.sendInventoryDomain(
+                    inventory.copy(
+                        accountingObjects = accountingObjects,
+                        nomenclatureRecords = inventoryNomenclatures
+                    )
+                )
             }
         }
 
@@ -414,7 +430,8 @@ class InventoryCreateStoreFactory(
                         isShowSearch = getState().isShowSearch,
                         searchText = getState().searchText,
                         readingModeTab = getState().readingModeTab,
-                        getState = getState
+                        getState = getState,
+                        inventoryNomenclatures = getState().inventoryDocument.nomenclatureRecords
                     )
                 }
             }
@@ -426,20 +443,25 @@ class InventoryCreateStoreFactory(
             dispatch(Result.IsCompleteLoading(true))
             dispatch(Result.DialogType(AlertType.LOADING))
             inventoryDynamicSaveManager.cancel()
-            val inventory = inventoryDomain.copy(
-                inventoryStatus = InventoryStatus.COMPLETED,
-                accountingObjects = inventoryDomain.accountingObjects
-            )
+
+            val inventory = inventoryDomain.copy(inventoryStatus = InventoryStatus.COMPLETED)
             dispatch(Result.Inventory(inventory))
             dispatch(Result.IsDynamicSaveInventory(false))
-            inventoryCreateInteractor.saveInventoryDocument(inventory, inventory.accountingObjects)
+
+            inventoryCreateInteractor.saveInventoryDocument(
+                inventoryCreate = inventory,
+                accountingObjects = inventory.accountingObjects,
+                inventoryNomenclatures = inventory.nomenclatureRecords
+            )
+
             dispatch(Result.IsCompleteLoading(false))
             dispatch(Result.DialogType(AlertType.NONE))
         }
 
-        private suspend fun handleNewAccountingObjectRfids(
+        private suspend fun handleNewRfids(
             accountingObjects: List<AccountingObjectDomain>,
-            handledAccountingObjectIds: List<String>,
+            inventoryNomenclatures: List<InventoryNomenclatureDomain>,
+            handledRfids: List<String>,
             inventoryStatus: InventoryStatus,
             isAddNew: Boolean,
             isShowSearch: Boolean,
@@ -449,15 +471,17 @@ class InventoryCreateStoreFactory(
             if (canEditInventory(getState())) {
                 dispatch(Result.Loading(true))
                 catchException {
-                    val scannedAccountingObjects =
-                        inventoryCreateInteractor.handleNewAccountingObjectRfids(
+                    val scannedInventoryObjects =
+                        inventoryCreateInteractor.handleNewRfids(
                             accountingObjects = accountingObjects,
-                            handledAccountingObjectIds = handledAccountingObjectIds,
+                            handledRfids = handledRfids,
                             inventoryStatus = inventoryStatus,
                             isAddNew = isAddNew,
+                            inventoryNomenclatures = inventoryNomenclatures
                         )
-                    changeAccountingObjects(scannedAccountingObjects.accountingObjects)
-                    if (scannedAccountingObjects.hasWrittenOffAccountingObjects) {
+                    changeAccountingObjects(scannedInventoryObjects.accountingObjects)
+                    changeInventoryNomenclatures(scannedInventoryObjects.inventoryNomenclatures)
+                    if (scannedInventoryObjects.hasWrittenOffAccountingObjects) {
                         publish(
                             InventoryCreateStore.Label.ShowToast(
                                 message = errorInteractor.getMessageByResId(
@@ -468,16 +492,18 @@ class InventoryCreateStoreFactory(
                         )
                     }
                     if (isShowSearch) {
-                        listenAccountingObjects(
+                        listenInventoryObjects(
                             searchText = searchText,
-                            accountingObjects = scannedAccountingObjects.accountingObjects,
+                            accountingObjects = scannedInventoryObjects.accountingObjects,
+                            inventoryNomenclatures = scannedInventoryObjects.inventoryNomenclatures,
                             getState = getState
                         )
                     }
                     updateAccountingObjectCounter(getState)
                     tryDynamicSendInventorySave(
                         getState = getState,
-                        accountingObjects = getState().inventoryDocument.accountingObjects
+                        accountingObjects = getState().inventoryDocument.accountingObjects,
+                        inventoryNomenclatures = getState().inventoryDocument.nomenclatureRecords
                     )
                 }
                 dispatch(Result.Loading(false))
@@ -486,6 +512,7 @@ class InventoryCreateStoreFactory(
 
         private suspend fun handleNewAccountingObjectBarcode(
             accountingObjects: List<AccountingObjectDomain>,
+            inventoryNomenclatures: List<InventoryNomenclatureDomain>,
             barcode: String,
             inventoryStatus: InventoryStatus,
             isAddNew: Boolean,
@@ -497,15 +524,16 @@ class InventoryCreateStoreFactory(
             if (canEditInventory(getState())) {
                 dispatch(Result.Loading(true))
                 catchException {
-                    val scannedAccountingObjects =
-                        inventoryCreateInteractor.handleNewAccountingObjectBarcode(
+                    val scannedInventoryObjects =
+                        inventoryCreateInteractor.handleNewBarcode(
                             accountingObjects = accountingObjects,
                             barcode = barcode,
                             inventoryStatus = inventoryStatus,
                             isAddNew = isAddNew,
-                            isSerialNumber = readingModeTab == ReadingModeTab.SN
+                            isSerialNumber = readingModeTab == ReadingModeTab.SN,
+                            inventoryNomenclatures = inventoryNomenclatures
                         )
-                    if (scannedAccountingObjects.hasWrittenOffAccountingObjects) {
+                    if (scannedInventoryObjects.hasWrittenOffAccountingObjects) {
                         publish(
                             InventoryCreateStore.Label.ShowToast(
                                 message = errorInteractor.getMessageByResId(
@@ -515,18 +543,21 @@ class InventoryCreateStoreFactory(
                             )
                         )
                     }
-                    changeAccountingObjects(scannedAccountingObjects.accountingObjects)
+                    changeAccountingObjects(scannedInventoryObjects.accountingObjects)
+                    changeInventoryNomenclatures(scannedInventoryObjects.inventoryNomenclatures)
                     if (isShowSearch) {
-                        listenAccountingObjects(
+                        listenInventoryObjects(
                             searchText = searchText,
-                            accountingObjects = scannedAccountingObjects.accountingObjects,
+                            accountingObjects = scannedInventoryObjects.accountingObjects,
+                            inventoryNomenclatures = scannedInventoryObjects.inventoryNomenclatures,
                             getState = getState
                         )
                     }
                     updateAccountingObjectCounter(getState)
                     tryDynamicSendInventorySave(
                         getState = getState,
-                        accountingObjects = getState().inventoryDocument.accountingObjects
+                        accountingObjects = getState().inventoryDocument.accountingObjects,
+                        inventoryNomenclatures = getState().inventoryDocument.nomenclatureRecords
                     )
                 }
                 dispatch(Result.Loading(false))
@@ -535,30 +566,33 @@ class InventoryCreateStoreFactory(
 
         private suspend fun saveInventory(
             inventoryDocument: InventoryCreateDomain,
+            inventoryNomenclatures: List<InventoryNomenclatureDomain>,
             accountingObjects: List<AccountingObjectDomain>
         ) {
             dispatch(Result.DialogType(AlertType.LOADING))
             catchException {
                 inventoryCreateInteractor.saveInventoryDocument(
-                    inventoryDocument,
-                    accountingObjects
+                    inventoryCreate = inventoryDocument,
+                    accountingObjects = accountingObjects,
+                    inventoryNomenclatures = inventoryNomenclatures
                 )
             }
             dispatch(Result.DialogType(AlertType.NONE))
         }
 
         private suspend fun drop(getState: () -> InventoryCreateStore.State) {
-            val newList = inventoryCreateInteractor.updateAccountingObjectListAfterDrop(
+            val accountingObjects = inventoryCreateInteractor.updateAccountingObjectListAfterDrop(
                 oldList = getState().inventoryDocument.accountingObjects
             )
-            changeAccountingObjects(newList)
+            changeAccountingObjects(accountingObjects)
             dispatch(Result.DialogType(AlertType.NONE))
             updateAccountingObjectCounter(getState)
         }
 
-        private suspend fun listenAccountingObjects(
+        private suspend fun listenInventoryObjects(
             searchText: String,
             accountingObjects: List<AccountingObjectDomain>,
+            inventoryNomenclatures: List<InventoryNomenclatureDomain>,
             getState: () -> InventoryCreateStore.State
         ) {
             dispatch(Result.Loading(true))
@@ -568,6 +602,15 @@ class InventoryCreateStoreFactory(
                         inventoryCreateInteractor.searchAccountingObjects(
                             searchText = searchText,
                             accountingObjects = accountingObjects,
+                        )
+                    )
+                )
+
+                dispatch(
+                    Result.SearchInventoryNomenclatures(
+                        inventoryCreateInteractor.searchInventoryNomenclatures(
+                            searchText = searchText,
+                            inventoryNomenclatures = inventoryNomenclatures
                         )
                     )
                 )
@@ -597,7 +640,10 @@ class InventoryCreateStoreFactory(
                     )
                 )
             )
+        }
 
+        private fun changeInventoryNomenclatures(inventoryNomenclatures: List<InventoryNomenclatureDomain>) {
+            dispatch(Result.InventoryNomenclatures(inventoryNomenclatures))
         }
 
         override fun handleError(throwable: Throwable) {
@@ -613,12 +659,17 @@ class InventoryCreateStoreFactory(
             Result()
 
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
+        data class InventoryNomenclatures(val inventoryNomenclatures: List<InventoryNomenclatureDomain>) :
+            Result()
 
         data class DialogType(val dialogType: AlertType) : Result()
         data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
         data class SearchText(val searchText: String) : Result()
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
         data class SearchAccountingObjects(val searchAccountingObjects: List<AccountingObjectDomain>) :
+            Result()
+
+        data class SearchInventoryNomenclatures(val searchInventoryNomenclatures: List<InventoryNomenclatureDomain>) :
             Result()
 
         data class DialogRemovedItemId(val accountingObjectId: String) : Result()
@@ -661,6 +712,12 @@ class InventoryCreateStoreFactory(
                 is Result.IsExistNonMarkingAccountingObjects -> copy(
                     isExistNonMarkingAccountingObject = result.isExistNonMarkingAccountingObject
                 )
+                is Result.InventoryNomenclatures -> copy(
+                    inventoryDocument = inventoryDocument.copy(
+                        nomenclatureRecords = result.inventoryNomenclatures
+                    )
+                )
+                is Result.SearchInventoryNomenclatures -> copy(searchInventoryNomenclatures = result.searchInventoryNomenclatures)
             }
     }
 }

@@ -18,6 +18,7 @@ import com.itrocket.union.comment.presentation.store.CommentArguments
 import com.itrocket.union.comment.presentation.store.CommentResult
 import com.itrocket.union.comment.presentation.view.CommentComposeFragment
 import com.itrocket.union.comment.presentation.view.CommentComposeFragment.Companion.COMMENT_ARGS
+import com.itrocket.union.inventory.domain.entity.InventoryNomenclatureDomain
 import com.itrocket.union.inventory.presentation.store.InventoryResult
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_CODE
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_LABEL
@@ -93,6 +94,7 @@ interface InventoryCreateStore :
         val isCompleteLoading: Boolean = false,
         val dialogRemovedItemId: String = "",
         val searchAccountingObjects: List<AccountingObjectDomain> = listOf(),
+        val searchInventoryNomenclatures: List<InventoryNomenclatureDomain> = listOf(),
         val accountingObjectCounter: AccountingObjectCounter = AccountingObjectCounter(),
         val isExistNonMarkingAccountingObject: Boolean = false
     )

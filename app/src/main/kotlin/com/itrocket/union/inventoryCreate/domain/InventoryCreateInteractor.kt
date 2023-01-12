@@ -1,11 +1,14 @@
 package com.itrocket.union.inventoryCreate.domain
 
 import com.itrocket.core.base.CoreDispatchers
+import com.itrocket.sgtin.SgtinFormatter
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.authMain.domain.AuthMainInteractor
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
+import com.itrocket.union.inventory.domain.InventoryInteractor
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
+import com.itrocket.union.inventory.domain.entity.InventoryNomenclatureDomain
 import com.itrocket.union.inventoryCreate.domain.entity.AccountingObjectCounter
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
@@ -14,6 +17,8 @@ import com.itrocket.union.inventoryCreate.domain.entity.toUpdateSyncEntity
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
+import com.itrocket.union.reserves.domain.ReservesInteractor
+import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 import kotlinx.coroutines.withContext
@@ -21,9 +26,12 @@ import timber.log.Timber
 
 class InventoryCreateInteractor(
     private val accountingObjectRepository: AccountingObjectRepository,
+    private val reservesInteractor: ReservesInteractor,
     private val inventoryRepository: InventoryRepository,
+    private val inventoryInteractor: InventoryInteractor,
     private val coreDispatchers: CoreDispatchers,
-    private val authMainInteractor: AuthMainInteractor
+    private val authMainInteractor: AuthMainInteractor,
+    private val sgtinFormatter: SgtinFormatter
 ) {
 
     @OptIn(ExperimentalTime::class)
@@ -43,7 +51,7 @@ class InventoryCreateInteractor(
             }
             Timber.d(
                 "Запрос на инвентарную ведомость выполнился за " +
-                    "result ${result.duration.inWholeMilliseconds}"
+                        "result ${result.duration.inWholeMilliseconds}"
             )
 
             return@withContext result.value
@@ -51,12 +59,14 @@ class InventoryCreateInteractor(
 
     suspend fun saveInventoryDocument(
         inventoryCreate: InventoryCreateDomain,
-        accountingObjects: List<AccountingObjectDomain>
+        accountingObjects: List<AccountingObjectDomain>,
+        inventoryNomenclatures: List<InventoryNomenclatureDomain>
     ) = withContext(coreDispatchers.io) {
         inventoryRepository.updateInventory(
             inventoryCreate.copy(
                 accountingObjects = accountingObjects,
-                userUpdated = authMainInteractor.getLogin()
+                userUpdated = authMainInteractor.getLogin(),
+                nomenclatureRecords = inventoryNomenclatures
             ).toUpdateSyncEntity()
         )
     }
@@ -103,19 +113,21 @@ class InventoryCreateInteractor(
         }
     }
 
-    suspend fun handleNewAccountingObjectRfids(
+    suspend fun handleNewRfids(
+        inventoryNomenclatures: List<InventoryNomenclatureDomain>,
         accountingObjects: List<AccountingObjectDomain>,
-        handledAccountingObjectIds: List<String>,
+        handledRfids: List<String>,
         inventoryStatus: InventoryStatus,
         isAddNew: Boolean,
     ): ScannedAccountingObjects {
         return withContext(coreDispatchers.io) {
             val newAccountingObjectRfids = mutableListOf<String>()
             val mutableAccountingObjects = accountingObjects.toMutableList()
+            val mutableReserves = mutableListOf<ReservesDomain>()
 
-            handledAccountingObjectIds.forEach { handledAccountingObjectId ->
+            handledRfids.forEach { handledRfid ->
                 val accountingObjectIndex = mutableAccountingObjects.indexOfFirst {
-                    it.rfidValue == handledAccountingObjectId
+                    it.rfidValue == handledRfid
                 }
                 val isStatusNew = if (accountingObjectIndex != NO_INDEX) {
                     mutableAccountingObjects[accountingObjectIndex].inventoryStatus == InventoryAccountingObjectStatus.NEW
@@ -129,22 +141,38 @@ class InventoryCreateInteractor(
                     )
 
                     accountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew -> newAccountingObjectRfids.add(
-                        handledAccountingObjectId
+                        handledRfid
                     )
                 }
+
+                val barcodeAndSerialNumber = sgtinFormatter.epcRfidToBarcode(handledRfid)
+                val scannedReserves = reservesInteractor.getReserves(
+                    searchText = "",
+                    params = listOf(),
+                    barcode = barcodeAndSerialNumber.barcode
+                )
+                mutableReserves.addAll(scannedReserves)
             }
+
+            val newInventoryNomenclatures = updateInventoryNomenclatures(
+                scannedReserves = mutableReserves,
+                inventoryNomenclatures = inventoryNomenclatures,
+                isAddNew = isAddNew
+            )
 
             val handledAccountingObjects =
                 getHandlesAccountingObjectByRfid(newAccountingObjectRfids)
             hasWrittenOffAccountingObjects(
                 newAccountingObjects = handledAccountingObjects,
-                existAccountingObjects = mutableAccountingObjects
+                existAccountingObjects = mutableAccountingObjects,
+                inventoryNomenclatures = newInventoryNomenclatures,
             )
         }
     }
 
-    suspend fun handleNewAccountingObjectBarcode(
+    suspend fun handleNewBarcode(
         accountingObjects: List<AccountingObjectDomain>,
+        inventoryNomenclatures: List<InventoryNomenclatureDomain>,
         barcode: String,
         inventoryStatus: InventoryStatus,
         isAddNew: Boolean,
@@ -183,22 +211,61 @@ class InventoryCreateInteractor(
                     }
                 }
             }
+
+            val scannedReserves = reservesInteractor.getReserves(
+                barcode = barcode,
+                params = listOf(),
+                searchText = ""
+            )
+
+            val inventoryNomenclaturesNew = updateInventoryNomenclatures(
+                inventoryNomenclatures = inventoryNomenclatures,
+                scannedReserves = scannedReserves,
+                isAddNew = isAddNew
+            )
+
             hasWrittenOffAccountingObjects(
                 newAccountingObjects = barcodeAccountingObjects,
-                existAccountingObjects = mutableAccountingObjects
+                existAccountingObjects = mutableAccountingObjects,
+                inventoryNomenclatures = inventoryNomenclaturesNew,
             )
+        }
+    }
+
+    private suspend fun updateInventoryNomenclatures(
+        scannedReserves: List<ReservesDomain>,
+        inventoryNomenclatures: List<InventoryNomenclatureDomain>,
+        isAddNew: Boolean
+    ): List<InventoryNomenclatureDomain> {
+        return withContext(coreDispatchers.io) {
+            val inventoryNomenclaturesMap = hashMapOf<String, InventoryNomenclatureDomain>()
+            inventoryNomenclatures.forEach {
+                val key = it.nomenclatureId + it.consignment + it.price + it.bookKeepingInvoice
+                inventoryNomenclaturesMap[key] = it
+            }
+
+            val newInventoryNomenclaturesMap =
+                inventoryInteractor.resolveReservesToInventoryNomenclatures(
+                    inventoryNomenclaturesMap = inventoryNomenclaturesMap,
+                    reserves = scannedReserves,
+                    isAddNew = isAddNew
+                )
+
+            newInventoryNomenclaturesMap.values.toList()
         }
     }
 
     private fun hasWrittenOffAccountingObjects(
         newAccountingObjects: List<AccountingObjectDomain>,
-        existAccountingObjects: List<AccountingObjectDomain>
+        existAccountingObjects: List<AccountingObjectDomain>,
+        inventoryNomenclatures: List<InventoryNomenclatureDomain>
     ): ScannedAccountingObjects {
         val filterWriteOffAccountingObjects =
             newAccountingObjects.filter { !it.isWrittenOff }
         return ScannedAccountingObjects(
             accountingObjects = filterWriteOffAccountingObjects + existAccountingObjects,
-            hasWrittenOffAccountingObjects = newAccountingObjects.size > filterWriteOffAccountingObjects.size
+            hasWrittenOffAccountingObjects = newAccountingObjects.size > filterWriteOffAccountingObjects.size,
+            inventoryNomenclatures = inventoryNomenclatures
         )
     }
 
@@ -253,8 +320,25 @@ class InventoryCreateInteractor(
                 val inventoryNumber = it.inventoryNumber.orEmpty().lowercase().replace(" ", "")
 
                 title.contains(other = searchTitle, ignoreCase = true)
-                    || inventoryNumber.contains(other = searchText, ignoreCase = true)
-                    || searchText.isEmpty()
+                        || inventoryNumber.contains(other = searchText, ignoreCase = true)
+                        || searchText.isEmpty()
+            }
+            resultList
+        }
+    }
+
+    suspend fun searchInventoryNomenclatures(
+        searchText: String,
+        inventoryNomenclatures: List<InventoryNomenclatureDomain>,
+    ): List<InventoryNomenclatureDomain> {
+        return withContext(coreDispatchers.io) {
+            val resultList = inventoryNomenclatures.filter {
+                val nomenclatureId = it.nomenclatureId.replace(" ", "")
+                val consignment = it.consignment?.replace(" ", "")
+
+                nomenclatureId.contains(other = searchText, ignoreCase = true) ||
+                        consignment?.contains(other = searchText, ignoreCase = true) == true ||
+                        searchText.isEmpty()
             }
             resultList
         }
@@ -266,7 +350,7 @@ class InventoryCreateInteractor(
         return AccountingObjectCounter(
             total = accountingObjects.filter {
                 it.inventoryStatus == InventoryAccountingObjectStatus.FOUND ||
-                    it.inventoryStatus == InventoryAccountingObjectStatus.NOT_FOUND
+                        it.inventoryStatus == InventoryAccountingObjectStatus.NOT_FOUND
             }.size,
             found = accountingObjects.filter {
                 it.inventoryStatus == InventoryAccountingObjectStatus.FOUND

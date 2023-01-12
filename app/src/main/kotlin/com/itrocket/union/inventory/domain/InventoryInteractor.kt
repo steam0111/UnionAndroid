@@ -16,6 +16,7 @@ import com.itrocket.union.manual.getFilterLocationIds
 import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.manual.getMolInDepartmentId
 import com.itrocket.union.reserves.domain.ReservesInteractor
+import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.structural.domain.dependencies.StructuralRepository
 import java.util.UUID
 import kotlinx.coroutines.withContext
@@ -34,31 +35,44 @@ class InventoryInteractor(
             searchText = ""
         )
 
-        val inventoryNomenclaturesMap = hashMapOf<String, InventoryNomenclatureDomain>()
-
-        reserves.forEach {
-            val key = it.nomenclatureId + it.consignment + it.unitPrice + it.bookKeepingInvoice
-            val existInventoryNomenclature = inventoryNomenclaturesMap[key]
-            if (existInventoryNomenclature != null) {
-                val expectedCount = (existInventoryNomenclature.expectedCount ?: 0) + 1
-                inventoryNomenclaturesMap[key] =
-                    existInventoryNomenclature.copy(expectedCount = expectedCount)
-            } else {
-                inventoryNomenclaturesMap[key] = InventoryNomenclatureDomain(
-                    id = UUID.randomUUID().toString(),
-                    nomenclatureId = it.nomenclatureId.orEmpty(),
-                    updateDate = System.currentTimeMillis(),
-                    expectedCount = 1,
-                    actualCount = 0,
-                    consignment = it.consignment,
-                    bookKeepingInvoice = it.bookKeepingInvoice,
-                    price = it.unitPrice,
-                    cancel = false,
-                )
-            }
-        }
+        val inventoryNomenclaturesMap = resolveReservesToInventoryNomenclatures(
+            inventoryNomenclaturesMap = hashMapOf(),
+            reserves = reserves,
+            isAddNew = true
+        )
 
         return inventoryNomenclaturesMap.values.toList()
+    }
+
+    suspend fun resolveReservesToInventoryNomenclatures(
+        inventoryNomenclaturesMap: HashMap<String, InventoryNomenclatureDomain>,
+        reserves: List<ReservesDomain>,
+        isAddNew: Boolean
+    ): HashMap<String, InventoryNomenclatureDomain> {
+        return withContext(coreDispatchers.io) {
+            reserves.forEach {
+                val key = it.nomenclatureId + it.consignment + it.unitPrice + it.bookKeepingInvoice
+                val existInventoryNomenclature = inventoryNomenclaturesMap[key]
+                if (existInventoryNomenclature != null) {
+                    val expectedCount = (existInventoryNomenclature.expectedCount ?: 0) + 1
+                    inventoryNomenclaturesMap[key] =
+                        existInventoryNomenclature.copy(expectedCount = expectedCount)
+                } else if (isAddNew) {
+                    inventoryNomenclaturesMap[key] = InventoryNomenclatureDomain(
+                        id = UUID.randomUUID().toString(),
+                        nomenclatureId = it.nomenclatureId.orEmpty(),
+                        updateDate = System.currentTimeMillis(),
+                        expectedCount = 1,
+                        actualCount = 0,
+                        consignment = it.consignment,
+                        bookKeepingInvoice = it.bookKeepingInvoice,
+                        price = it.unitPrice,
+                        cancel = false,
+                    )
+                }
+            }
+            inventoryNomenclaturesMap
+        }
     }
 
     suspend fun isExistNonMarkingAccountingObjects(accountingObjects: List<AccountingObjectDomain>): Boolean {
