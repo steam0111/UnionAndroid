@@ -62,7 +62,7 @@ class InventoryStoreFactory(
             context = coreDispatchers.ui
         ) {
 
-        private var accountingObjectsJob: Job? = null
+        private var inventoryObjectsJob: Job? = null
 
         override suspend fun executeAction(
             action: Unit,
@@ -171,6 +171,11 @@ class InventoryStoreFactory(
                     accountingObject = intent.accountingObject,
                     accountingObjects = getState().accountingObjectList
                 )
+                is InventoryStore.Intent.OnInventoryNomenclatureClicked -> publish(
+                    InventoryStore.Label.ShowNomenclatureDetail(
+                        intent.inventoryNomenclature.nomenclatureId
+                    )
+                )
             }
         }
 
@@ -251,6 +256,7 @@ class InventoryStoreFactory(
             val inventory = inventoryDomain.copy(
                 inventoryStatus = InventoryStatus.IN_PROGRESS,
                 accountingObjects = accountingObjects,
+                nomenclatureRecords = inventoryNomenclatures,
                 documentInfo = params
 
             )
@@ -294,8 +300,8 @@ class InventoryStoreFactory(
             params: List<ParamDomain> = listOf()
         ) {
             coroutineScope {
-                accountingObjectsJob?.cancel()
-                accountingObjectsJob = launch {
+                inventoryObjectsJob?.cancel()
+                inventoryObjectsJob = launch {
                     dispatch(Result.IsAccountingObjectsLoading(true))
                     try {
                         changeAccountingObjects(
@@ -372,7 +378,7 @@ class InventoryStoreFactory(
                     isExistNonMarkingAccountingObject = result.isExistNonMarkingAccountingObject
                 )
                 is Result.InventoryNomenclature -> copy(
-
+                    inventoryNomenclatures = result.inventoryNomenclatures
                 )
             }
     }
