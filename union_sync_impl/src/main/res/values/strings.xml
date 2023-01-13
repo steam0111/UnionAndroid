@@ -24,6 +24,7 @@
     <string name="inventory_checker_table_name">Таблица контроллеров инв. ведомостей</string>
     <string name="inventory_record_status_table_name">Таблица статусов объектов учета инв. ведомостей</string>
     <string name="inventory_record_table_name">Таблица объектов учета инв. ведомостей</string>
+    <string name="inventory_nomenclature_record_table_name">Таблица номенклатур инв. ведомостей</string>
     <string name="inventory_state_table_name">Таблица состояний инвентаризации</string>
     <string name="inventory_table_name">Таблица инв. ведомостей</string>
     <string name="inventory_type_table_name">Таблица типов инвентаризации</string>
