@@ -90,7 +90,7 @@ class InventoryStoreFactory(
             } else {
                 dispatch(Result.Params(selectParamsInteractor.getInitialDocumentParams(getState().params)))
             }
-            observeAccountingObjects(getState().params)
+            observeInventoryObjects(getState().params)
             dispatch(Result.DialogType(AlertType.NONE))
         }
 
@@ -106,7 +106,6 @@ class InventoryStoreFactory(
                 }
                 InventoryStore.Intent.OnCreateDocumentClicked -> createInventory(
                     isDynamicSaveInventory = getState().isDynamicSaveInventory,
-                    accountingObjects = getState().accountingObjectList,
                     params = getState().params
                 )
 
@@ -200,7 +199,7 @@ class InventoryStoreFactory(
         ) {
             dispatch(Result.Params(params))
             tryDynamicSendInventorySave(getState)
-            observeAccountingObjects(params.filterNotEmpty())
+            observeInventoryObjects(params.filterNotEmpty())
         }
 
         private fun tryDynamicSendInventorySave(
@@ -272,7 +271,6 @@ class InventoryStoreFactory(
 
         private suspend fun createInventory(
             isDynamicSaveInventory: Boolean,
-            accountingObjects: List<AccountingObjectDomain>,
             params: List<ParamDomain>
         ) {
             dispatch(Result.IsCreateInventoryLoading(true))
@@ -284,7 +282,6 @@ class InventoryStoreFactory(
                         isAccountingObjectLoad = false
                     )
                 dispatch(Result.InventoryCreate(inventoryCreate))
-                changeAccountingObjects(accountingObjects)
             }
             if (isDynamicSaveInventory) {
                 inventoryDynamicSaveManager.subscribeInventorySave()
@@ -293,7 +290,7 @@ class InventoryStoreFactory(
             dispatch(Result.IsCreateInventoryLoading(false))
         }
 
-        private suspend fun observeAccountingObjects(
+        private suspend fun observeInventoryObjects(
             params: List<ParamDomain> = listOf()
         ) {
             coroutineScope {
@@ -308,6 +305,9 @@ class InventoryStoreFactory(
                                 params = params,
                                 showUtilized = false
                             )
+                        )
+                        changeInventoryNomenclatures(
+                            inventoryInteractor.getInventoryNomenclatures(params)
                         )
                     } catch (t: Throwable) {
                         if (isActive) {
@@ -329,6 +329,10 @@ class InventoryStoreFactory(
                 )
             )
         }
+
+        private fun changeInventoryNomenclatures(inventoryNomenclatures: List<InventoryNomenclatureDomain>) {
+            dispatch(Result.InventoryNomenclature(inventoryNomenclatures))
+        }
     }
 
     private sealed class Result {
@@ -338,6 +342,9 @@ class InventoryStoreFactory(
         data class Params(val params: List<ParamDomain>) : Result()
         data class SelectPage(val page: Int) : Result()
         data class AccountingObjects(val accountingObjects: List<AccountingObjectDomain>) : Result()
+        data class InventoryNomenclature(val inventoryNomenclatures: List<InventoryNomenclatureDomain>) :
+            Result()
+
         data class CanCreateInventory(val canCreateInventory: Boolean) : Result()
         data class CanUpdateInventory(val canUpdateInventory: Boolean) : Result()
         data class InventoryCreate(val inventoryCreateDomain: InventoryCreateDomain) : Result()
@@ -363,6 +370,9 @@ class InventoryStoreFactory(
                 is Result.IsInWorkInventoryLoading -> copy(isInWorkInventoryLoading = result.isLoading)
                 is Result.IsExistNonMarkingAccountingObjects -> copy(
                     isExistNonMarkingAccountingObject = result.isExistNonMarkingAccountingObject
+                )
+                is Result.InventoryNomenclature -> copy(
+
                 )
             }
     }
