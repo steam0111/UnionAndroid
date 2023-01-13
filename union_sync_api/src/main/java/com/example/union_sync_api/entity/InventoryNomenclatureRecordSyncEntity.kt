@@ -13,5 +13,5 @@ data class InventoryNomenclatureRecordSyncEntity(
     val bookKeepingInvoice: BigDecimal?,
     val price: String?,
     val cancel: Boolean?,
-    val userUpdated: String?
+    val userUpdated: String? = null
 )

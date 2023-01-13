@@ -52,6 +52,8 @@ fun ReserveSyncEntity.map(): ReservesDomain {
         barcodeValue = barcodeValue,
         nomenclatureId = nomenclatureId,
         labelTypeId = labelTypeId,
-        consignment = consignment
+        consignment = consignment,
+        unitPrice = unitPrice,
+        bookKeepingInvoice = bookkeepingInvoice
     )
 }

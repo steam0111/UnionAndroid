@@ -136,7 +136,7 @@ import com.example.union_sync_impl.utils.Converters
         TerminalRemainsNumeratorDb::class,
         AccountingObjectUnionImageDb::class,
         EmployeeWorkPlaceDb::class,
-        InventoryNomenclatureRecordDb::class
+        InventoryNomenclatureRecordDb::class,
     ], version = 138
 )
 @TypeConverters(Converters::class)

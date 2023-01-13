@@ -16,5 +16,7 @@ data class ReservesDomain(
     val barcodeValue: String?,
     val nomenclatureId: String?,
     val labelTypeId: String?,
-    val consignment: String?
+    val consignment: String?,
+    val unitPrice: String?,
+    val bookKeepingInvoice: BigDecimal?
 ) : Parcelable

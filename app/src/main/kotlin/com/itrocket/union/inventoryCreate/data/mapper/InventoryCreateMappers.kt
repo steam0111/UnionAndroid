@@ -3,6 +3,7 @@ package com.itrocket.union.inventoryCreate.data.mapper
 import com.example.union_sync_api.entity.InventorySyncEntity
 import com.itrocket.union.accountingObjects.data.mapper.map
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
+import com.itrocket.union.inventory.data.mapper.map
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.location.data.mapper.toLocationDomain
 import com.itrocket.union.manual.LocationParamDomain
@@ -66,5 +67,6 @@ fun InventorySyncEntity.map(): InventoryCreateDomain =
         },
         inventoryStatus = InventoryStatus.valueOf(inventoryStatus),
         userInserted = userInserted,
-        userUpdated = userUpdated
+        userUpdated = userUpdated,
+        nomenclatureRecords = nomenclatureRecords.map()
     )

@@ -133,7 +133,9 @@ fun ReserveDetailSyncEntity.map(
         barcodeValue = reserveSyncEntity.barcodeValue,
         nomenclatureId = reserveSyncEntity.nomenclatureId,
         labelTypeId = reserveSyncEntity.labelTypeId,
-        consignment = reserveSyncEntity.consignment
+        consignment = reserveSyncEntity.consignment,
+        unitPrice = reserveSyncEntity.unitPrice,
+        bookKeepingInvoice = reserveSyncEntity.bookkeepingInvoice
     )
 }
 
