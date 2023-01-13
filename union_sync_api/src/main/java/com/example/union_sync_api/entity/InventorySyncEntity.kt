@@ -5,6 +5,7 @@ data class InventorySyncEntity(
     val creationDate: Long?,
     val structuralSyncEntities: List<StructuralSyncEntity>?,
     val accountingObjects: List<AccountingObjectSyncEntity>,
+    val nomenclatureRecords: List<InventoryNomenclatureRecordSyncEntity>,
     val mol: EmployeeSyncEntity?,
     val locationSyncEntities: List<LocationSyncEntity>?,
     val inventoryStatus: String,

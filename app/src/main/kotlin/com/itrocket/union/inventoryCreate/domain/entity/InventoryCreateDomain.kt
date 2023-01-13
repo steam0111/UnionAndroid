@@ -1,10 +1,13 @@
 package com.itrocket.union.inventoryCreate.domain.entity
 
 import android.os.Parcelable
+import com.example.union_sync_api.entity.InventoryNomenclatureRecordSyncEntity
 import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.toAccountingObjectIdSyncEntity
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
+import com.itrocket.union.inventory.domain.entity.InventoryNomenclatureDomain
+import com.itrocket.union.inventory.domain.entity.toSyncEntity
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getFilterInventoryBaseId
@@ -23,6 +26,7 @@ data class InventoryCreateDomain(
     val inventoryStatus: InventoryStatus,
     val documentInfo: List<ParamDomain>,
     val accountingObjects: List<AccountingObjectDomain>,
+    val nomenclatureRecords: List<InventoryNomenclatureDomain>,
     val userInserted: String?,
     val userUpdated: String?
 ) : Parcelable {
@@ -49,6 +53,6 @@ fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
         userInserted = userInserted,
         userUpdated = userUpdated,
         inventoryBaseId = documentInfo.getFilterInventoryBaseId(),
-        nomenclatureRecords = listOf() //TODO: Исправить в следующих подзадачах
+        nomenclatureRecords = nomenclatureRecords.map { it.toSyncEntity(id.orEmpty()) }
     )
 }

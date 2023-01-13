@@ -652,14 +652,23 @@ fun DocumentInfoItemPreview() {
 fun ReservesItemPreview() {
     ReservesItem(
         reserves = ReservesDomain(
-            id = "1", title = "Авторучка «Зебра TR22»", isBarcode = true, listInfo = listOf(
+            id = "1",
+            title = "Авторучка «Зебра TR22»",
+            isBarcode = true,
+            listInfo = listOf(
                 ObjectInfoDomain(
                     R.string.auth_main_title, "таылватвлыавыалвыоалвыа"
                 ), ObjectInfoDomain(
                     R.string.auth_main_title, "таылватвлыавыалвыоалвыа"
                 )
-            ), itemsCount = BigDecimal(1200L), barcodeValue = "", labelTypeId = ":", nomenclatureId = "",
-            consignment = ""
+            ),
+            itemsCount = BigDecimal(1200L),
+            barcodeValue = "",
+            labelTypeId = ":",
+            nomenclatureId = "",
+            consignment = "",
+            unitPrice = "",
+            bookKeepingInvoice = null,
         ), onReservesListener = {}, canDelete = true, isShowBottomLine = true
     )
 }
@@ -740,7 +749,8 @@ fun InventoryDocumentItemPreview() {
             accountingObjects = listOf(),
             inventoryStatus = InventoryStatus.CREATED,
             userInserted = "",
-            userUpdated = ""
+            userUpdated = "",
+            nomenclatureRecords = listOf()
         ), isShowStatus = true
     )
 }

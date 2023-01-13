@@ -275,7 +275,6 @@ class InventoryStoreFactory(
             catchException {
                 val inventoryCreate =
                     inventoryInteractor.createInventory(
-                        accountingObjects = listOf(),
                         params = params,
                         isAccountingObjectLoad = false
                     )

@@ -170,7 +170,9 @@ fun ReservesScreenPreview() {
                 barcodeValue = "",
                 labelTypeId = "",
                 nomenclatureId = "",
-                consignment = ""
+                consignment = "",
+                bookKeepingInvoice = null,
+                unitPrice = ""
             ),
             ReservesDomain(
                 id = "2",
@@ -191,7 +193,9 @@ fun ReservesScreenPreview() {
                 barcodeValue = "",
                 labelTypeId = "",
                 nomenclatureId = "",
-                consignment = ""
+                consignment = "",
+                bookKeepingInvoice = null,
+                unitPrice = ""
             ),
             ReservesDomain(
                 id = "3",
@@ -212,7 +216,9 @@ fun ReservesScreenPreview() {
                 barcodeValue = "",
                 labelTypeId = "",
                 nomenclatureId = "",
-                consignment = ""
+                consignment = "",
+                bookKeepingInvoice = null,
+                unitPrice = ""
             )
         ),
         params = listOf()

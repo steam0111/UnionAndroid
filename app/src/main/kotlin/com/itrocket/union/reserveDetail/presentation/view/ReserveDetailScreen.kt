@@ -238,7 +238,9 @@ fun ReserveDetailScreenPreview() {
             barcodeValue = null,
             nomenclatureId = "",
             labelTypeId = "",
-            consignment = ""
+            consignment = "",
+            unitPrice = "",
+            bookKeepingInvoice = null
         )
     ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {})
 }

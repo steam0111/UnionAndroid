@@ -165,7 +165,8 @@ fun InventoriesScreenPreview() {
                     accountingObjects = listOf(),
                     inventoryStatus = InventoryStatus.CREATED,
                     userInserted = "",
-                    userUpdated = ""
+                    userUpdated = "",
+                    nomenclatureRecords = listOf()
                 ),
                 InventoryCreateDomain(
                     id = "",
@@ -179,7 +180,8 @@ fun InventoriesScreenPreview() {
                     accountingObjects = listOf(),
                     inventoryStatus = InventoryStatus.CREATED,
                     userInserted = "",
-                    userUpdated = ""
+                    userUpdated = "",
+                    nomenclatureRecords = listOf()
                 ),
                 InventoryCreateDomain(
                     id = "",
@@ -193,7 +195,8 @@ fun InventoriesScreenPreview() {
                     accountingObjects = listOf(),
                     inventoryStatus = InventoryStatus.CREATED,
                     userInserted = "",
-                    userUpdated = ""
+                    userUpdated = "",
+                    nomenclatureRecords = listOf()
                 )
             )
         ),

@@ -86,6 +86,7 @@ fun InventoryDb.toInventorySyncEntity(
     mol: EmployeeSyncEntity?,
     locationSyncEntities: List<LocationSyncEntity>?,
     accountingObjects: List<AccountingObjectSyncEntity>,
+    nomenclatureRecords: List<InventoryNomenclatureRecordSyncEntity>,
     inventoryBaseSyncEntity: EnumSyncEntity?,
     balanceUnit: List<StructuralSyncEntity>,
     checkers: List<InventoryCheckerSyncEntity>
@@ -105,6 +106,7 @@ fun InventoryDb.toInventorySyncEntity(
         userUpdated = userUpdated,
         inventoryBaseSyncEntity = inventoryBaseSyncEntity,
         balanceUnit = balanceUnit,
-        checkers = checkers
+        checkers = checkers,
+        nomenclatureRecords = nomenclatureRecords
     )
 }

@@ -3,13 +3,11 @@ package com.itrocket.union.inventory.domain
 import com.example.union_sync_api.entity.InventoryCreateSyncEntity
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.accountingObjects.domain.entity.toAccountingObjectIdSyncEntity
 import com.itrocket.union.authMain.domain.AuthMainInteractor
-import com.itrocket.union.employeeDetail.domain.EmployeeDetailInteractor
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventory.domain.dependencies.InventoryRepository
+import com.itrocket.union.inventory.domain.entity.InventoryNomenclatureDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
-import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
@@ -17,24 +15,60 @@ import com.itrocket.union.manual.getFilterInventoryBaseId
 import com.itrocket.union.manual.getFilterLocationIds
 import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.manual.getMolInDepartmentId
+import com.itrocket.union.reserves.domain.ReservesInteractor
 import com.itrocket.union.structural.domain.dependencies.StructuralRepository
+import java.util.UUID
 import kotlinx.coroutines.withContext
 
 class InventoryInteractor(
     private val repository: InventoryRepository,
     private val coreDispatchers: CoreDispatchers,
     private val authMainInteractor: AuthMainInteractor,
+    private val reservesInteractor: ReservesInteractor,
     private val structuralRepository: StructuralRepository
 ) {
 
-    suspend fun isExistNonMarkingAccountingObjects(accountingObjects: List<AccountingObjectDomain>) : Boolean {
-        return withContext(coreDispatchers.io){
+    suspend fun getInventoryNomenclatures(params: List<ParamDomain>): List<InventoryNomenclatureDomain> {
+        val reserves = reservesInteractor.getReserves(
+            params = params,
+            searchText = ""
+        )
+
+        val inventoryNomenclaturesMap = hashMapOf<String, InventoryNomenclatureDomain>()
+
+        reserves.forEach {
+            // Ключ собирается из 4 полей, которые используются для группировки номенклатуры(карточка 227). Если номенклатура уже существует в коллекции - инкрементим expectedCount, если нет - добавляем ее с expectedCount=1 и actualCount = 0
+            val key = it.nomenclatureId + it.consignment + it.unitPrice + it.bookKeepingInvoice
+            val existInventoryNomenclature = inventoryNomenclaturesMap[key]
+            if (existInventoryNomenclature != null) {
+                val expectedCount = (existInventoryNomenclature.expectedCount ?: 0) + 1
+                inventoryNomenclaturesMap[key] =
+                    existInventoryNomenclature.copy(expectedCount = expectedCount)
+            } else {
+                inventoryNomenclaturesMap[key] = InventoryNomenclatureDomain(
+                    id = UUID.randomUUID().toString(),
+                    nomenclatureId = it.nomenclatureId.orEmpty(),
+                    updateDate = System.currentTimeMillis(),
+                    expectedCount = 1,
+                    actualCount = 0,
+                    consignment = it.consignment,
+                    bookKeepingInvoice = it.bookKeepingInvoice,
+                    price = it.unitPrice,
+                    cancel = false,
+                )
+            }
+        }
+
+        return inventoryNomenclaturesMap.values.toList()
+    }
+
+    suspend fun isExistNonMarkingAccountingObjects(accountingObjects: List<AccountingObjectDomain>): Boolean {
+        return withContext(coreDispatchers.io) {
             accountingObjects.find { !it.marked } != null
         }
     }
 
     suspend fun createInventory(
-        accountingObjects: List<AccountingObjectDomain>,
         params: List<ParamDomain>,
         isAccountingObjectLoad: Boolean
     ): InventoryCreateDomain = withContext(coreDispatchers.io) {
@@ -45,9 +79,6 @@ class InventoryInteractor(
             InventoryCreateSyncEntity(
                 structuralId = structuralId,
                 employeeId = molId,
-                accountingObjectsIds = accountingObjects.map {
-                    it.toAccountingObjectIdSyncEntity()
-                },
                 locationIds = locationIds,
                 inventoryStatus = InventoryStatus.CREATED.name,
                 userInserted = authMainInteractor.getLogin(),
