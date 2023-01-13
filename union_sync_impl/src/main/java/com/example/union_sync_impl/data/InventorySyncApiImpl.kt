@@ -9,12 +9,14 @@ import com.example.union_sync_api.entity.AccountingObjectInfoSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.EnumType
 import com.example.union_sync_api.entity.InventoryCreateSyncEntity
+import com.example.union_sync_api.entity.InventoryNomenclatureRecordSyncEntity
 import com.example.union_sync_api.entity.InventorySyncEntity
 import com.example.union_sync_api.entity.InventoryUpdateSyncEntity
 import com.example.union_sync_api.entity.LocationSyncEntity
 import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.InventoryDao
+import com.example.union_sync_impl.dao.InventoryNomenclatureRecordDao
 import com.example.union_sync_impl.dao.InventoryRecordDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
@@ -25,6 +27,7 @@ import com.example.union_sync_impl.data.mapper.toInventorySyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
 import com.example.union_sync_impl.data.mapper.toStructuralSyncEntity
 import com.example.union_sync_impl.data.mapper.toSyncEntity
+import com.example.union_sync_impl.data.mapper.toUpdate
 import com.example.union_sync_impl.entity.FullInventory
 import com.example.union_sync_impl.entity.InventoryDb
 import com.example.union_sync_impl.entity.InventoryRecordDb
@@ -41,6 +44,7 @@ class InventorySyncApiImpl(
     private val structuralSyncApi: StructuralSyncApi,
     private val accountingObjectDao: AccountingObjectDao,
     private val inventoryRecordDao: InventoryRecordDao,
+    private val inventoryNomenclatureRecordDao: InventoryNomenclatureRecordDao,
     private val locationSyncApi: LocationSyncApi,
     private val checkerSyncApi: InventoryCheckerSyncApi,
     private val enumsApi: EnumsSyncApi,
@@ -49,7 +53,7 @@ class InventorySyncApiImpl(
     override suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): String {
         val inventoryId = UUID.randomUUID().toString()
         inventoryDao.insert(inventoryCreateSyncEntity.toInventoryDb(inventoryId))
-        updateRecords(
+        updateAccountingObjectRecords(
             inventoryId = inventoryId,
             accountingObjectIds = inventoryCreateSyncEntity.accountingObjectsIds,
             userUpdated = inventoryCreateSyncEntity.userUpdated
@@ -218,15 +222,30 @@ class InventorySyncApiImpl(
         inventoryDao.update(inventoryUpdateSyncEntity.toInventoryDb())
 
         if (inventoryUpdateSyncEntity.inventoryStatus != INVENTORY_STATUS_CREATED) {
-            updateRecords(
+            updateAccountingObjectRecords(
                 inventoryId = inventoryUpdateSyncEntity.id,
                 accountingObjectIds = inventoryUpdateSyncEntity.accountingObjectsIds,
+                userUpdated = inventoryUpdateSyncEntity.userUpdated
+            )
+
+            updateNomenclatureRecords(
+                nomenclatureRecords = inventoryUpdateSyncEntity.nomenclatureRecords,
                 userUpdated = inventoryUpdateSyncEntity.userUpdated
             )
         }
     }
 
-    private suspend fun updateRecords(
+    private suspend fun updateNomenclatureRecords(
+        nomenclatureRecords: List<InventoryNomenclatureRecordSyncEntity>,
+        userUpdated: String?
+    ) {
+        val mappedNomenclatureRecords = nomenclatureRecords.map {
+            it.copy(updateDate = System.currentTimeMillis(), userUpdated = userUpdated).toUpdate()
+        }
+        inventoryNomenclatureRecordDao.updateAll(mappedNomenclatureRecords)
+    }
+
+    private suspend fun updateAccountingObjectRecords(
         accountingObjectIds: List<AccountingObjectInfoSyncEntity>,
         inventoryId: String,
         userUpdated: String?

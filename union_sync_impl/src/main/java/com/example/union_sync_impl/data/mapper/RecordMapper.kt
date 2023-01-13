@@ -2,9 +2,12 @@ package com.example.union_sync_impl.data.mapper
 
 import com.example.union_sync_api.entity.ActionRecordSyncEntity
 import com.example.union_sync_api.entity.ActionRemainsRecordSyncEntity
+import com.example.union_sync_api.entity.InventoryNomenclatureRecordSyncEntity
 import com.example.union_sync_api.entity.InventoryRecordSyncEntity
 import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
+import com.example.union_sync_impl.entity.InventoryNomenclatureRecordDb
+import com.example.union_sync_impl.entity.InventoryNomenclatureRecordUpdate
 import com.example.union_sync_impl.entity.InventoryRecordDb
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import com.example.union_sync_impl.entity.TransitAccountingObjectRecordDb
@@ -13,6 +16,7 @@ import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.ActionRecordDtoV2
 import org.openapitools.client.models.ActionRemainsRecordDtoV2
 import org.openapitools.client.models.EnumDtoV2
+import org.openapitools.client.models.InventoryNomenclatureRecordDtoV2
 import org.openapitools.client.models.InventoryRecordDtoV2
 import org.openapitools.client.models.TransitAccountingObjectRecordDtoV2
 import org.openapitools.client.models.TransitRemainsRecordDtoV2
@@ -151,3 +155,63 @@ fun TransitAccountingObjectRecordDb.toTransitAccountingObjectDb() =
         accountingObjectId = accountingObjectId,
         deleted = cancel ?: false
     )
+
+fun InventoryNomenclatureRecordDtoV2.toDb() = InventoryNomenclatureRecordDb(
+    id = id,
+    cancel = deleted,
+    inventoryId = inventoryId.orEmpty(),
+    nomenclatureId = nomenclatureId.orEmpty(),
+    expectedCount = expectedCount,
+    actualCount = actualCount,
+    consignment = consignment,
+    bookKeepingInvoice = bookKeepingInvoice,
+    price = price,
+    updateDate = getMillisDateFromServerFormat(dateUpdate),
+    insertDate = getMillisDateFromServerFormat(dateInsert),
+    userInserted = userInserted,
+    userUpdated = userUpdated,
+)
+
+fun InventoryNomenclatureRecordDb.toDto() = InventoryNomenclatureRecordDtoV2(
+    id = id,
+    deleted = cancel ?: false,
+    inventoryId = inventoryId,
+    nomenclatureId = nomenclatureId,
+    expectedCount = expectedCount,
+    actualCount = actualCount,
+    consignment = consignment,
+    bookKeepingInvoice = bookKeepingInvoice,
+    price = price,
+    dateUpdate = getStringDateFromMillis(updateDate),
+    dateInsert = getStringDateFromMillis(insertDate),
+    userInserted = userInserted,
+    userUpdated = userUpdated,
+)
+
+fun InventoryNomenclatureRecordDb.toSyncEntity() = InventoryNomenclatureRecordSyncEntity(
+    id = id,
+    inventoryId = inventoryId,
+    nomenclatureId = nomenclatureId,
+    updateDate = updateDate,
+    expectedCount = expectedCount,
+    actualCount = actualCount,
+    consignment = consignment,
+    bookKeepingInvoice = bookKeepingInvoice,
+    price = price,
+    cancel = cancel,
+    userUpdated = userUpdated
+)
+
+fun InventoryNomenclatureRecordSyncEntity.toUpdate() = InventoryNomenclatureRecordUpdate(
+    id = id,
+    inventoryId = inventoryId,
+    nomenclatureId = nomenclatureId,
+    updateDate = updateDate,
+    expectedCount = expectedCount,
+    actualCount = actualCount,
+    consignment = consignment,
+    bookKeepingInvoice = bookKeepingInvoice,
+    price = price,
+    cancel = cancel,
+    userUpdated = userUpdated
+)

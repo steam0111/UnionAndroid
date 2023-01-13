@@ -41,6 +41,7 @@ import com.example.union_sync_impl.dao.TransitDao
 import com.example.union_sync_impl.dao.TransitRemainsRecordDao
 import com.example.union_sync_impl.dao.AccountingObjectsVocabularyCharacteristicsDao
 import com.example.union_sync_impl.dao.EmployeeWorkPlaceDao
+import com.example.union_sync_impl.dao.InventoryNomenclatureRecordDao
 import com.example.union_sync_impl.dao.LabelTypeDao
 import com.example.union_sync_impl.dao.SimpleCharacteristicDao
 import com.example.union_sync_impl.dao.SyncDao
@@ -54,6 +55,7 @@ import com.example.union_sync_impl.dao.sqlAccountingObjectUnionImageQuery
 import com.example.union_sync_impl.dao.sqlActionRecordQuery
 import com.example.union_sync_impl.dao.sqlActionRemainsRecordQuery
 import com.example.union_sync_impl.dao.sqlDocumentsSimpledQuery
+import com.example.union_sync_impl.dao.sqlInventoryNomenclatureRecordQuery
 import com.example.union_sync_impl.dao.sqlInventoryRecordQuery
 import com.example.union_sync_impl.dao.sqlInventorySimpledQuery
 import com.example.union_sync_impl.dao.sqlRemoveDeletedItemsQuery
@@ -114,6 +116,7 @@ import org.openapitools.client.models.EnumDtoV2
 import org.openapitools.client.models.EquipmentTypeDtoV2
 import org.openapitools.client.models.InventoryCheckerDto
 import org.openapitools.client.models.InventoryDtoV2
+import org.openapitools.client.models.InventoryNomenclatureRecordDtoV2
 import org.openapitools.client.models.InventoryRecordDtoV2
 import org.openapitools.client.models.LabelTypeDtoV2
 import org.openapitools.client.models.LocationDtoV2
@@ -174,7 +177,8 @@ class SyncRepository(
     private val terminalRemainsNumeratorDao: TerminalRemainsNumeratorDao,
     private val accountingObjectUnionImageDao: AccountingObjectUnionImageDao,
     private val workPlaceDao: EmployeeWorkPlaceDao,
-    private val syncDao: SyncDao
+    private val syncDao: SyncDao,
+    private val inventoryNomenclatureRecordDao: InventoryNomenclatureRecordDao
 ) {
     suspend fun clearDataBeforeDownload() {
         inventoryDao.clearAll()
@@ -236,6 +240,13 @@ class SyncRepository(
             moshi,
             ::inventoryRecordDbSaver,
             getInventoryRecordDbCollector(),
+            syncDao
+        ),
+        InventoryNomenclatureRecordSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::inventoryNomenclatureRecordDbSaver,
+            getInventoryNomenclatureRecordDbCollector(),
             syncDao
         ),
         AccountingObjectUnionImageSyncEntity(
@@ -429,6 +440,13 @@ class SyncRepository(
             moshi,
             ::inventoryRecordDbSaver,
             getInventoryRecordDbCollector(),
+            syncDao
+        ),
+        InventoryNomenclatureRecordSyncEntity(
+            syncControllerApi,
+            moshi,
+            ::inventoryNomenclatureRecordDbSaver,
+            getInventoryNomenclatureRecordDbCollector(),
             syncDao
         ),
         InventoryCheckerSyncEntity(
@@ -745,6 +763,26 @@ class SyncRepository(
         }.filterNot { it.isEmpty() }
     }
 
+    private fun getInventoryNomenclatureRecordDbCollector(): Flow<List<InventoryNomenclatureRecordDtoV2>> {
+        return flow {
+            paginationEmitter(
+                getData = { limit, offset ->
+                    inventoryNomenclatureRecordDao.getAll(
+                        sqlInventoryNomenclatureRecordQuery(
+                            limit = limit,
+                            offset = offset,
+                            updateDate = getLastSyncTime(),
+                            isNonCancel = false,
+                        )
+                    )
+                },
+                localToNetworkMapper = { localObjects ->
+                    localObjects.map { it.toDto() }
+                }
+            )
+        }.filterNot { it.isEmpty() }
+    }
+
     private fun getAccountingObjectUnionImageDbCollector(): Flow<List<AccountingObjectUnionImageDtoV2>> {
         return flow {
             paginationEmitter(
@@ -1005,6 +1043,10 @@ class SyncRepository(
 
     private suspend fun inventoryRecordDbSaver(objects: List<InventoryRecordDtoV2>) {
         inventoryRecordDao.insertAll(objects.map { it.toInventoryRecordDb() })
+    }
+
+    private suspend fun inventoryNomenclatureRecordDbSaver(objects: List<InventoryNomenclatureRecordDtoV2>) {
+        inventoryNomenclatureRecordDao.insertAll(objects.map { it.toDb() })
     }
 
     private suspend fun accountingObjectUnionImageDbSaver(objects: List<AccountingObjectUnionImageDtoV2>) {

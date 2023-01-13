@@ -6,6 +6,7 @@ import com.example.union_sync_impl.dao.ActionRecordDao
 import com.example.union_sync_impl.dao.ActionRemainsRecordDao
 import com.example.union_sync_impl.dao.DocumentDao
 import com.example.union_sync_impl.dao.InventoryDao
+import com.example.union_sync_impl.dao.InventoryNomenclatureRecordDao
 import com.example.union_sync_impl.dao.InventoryRecordDao
 import com.example.union_sync_impl.dao.NetworkSyncDao
 import com.example.union_sync_impl.dao.ReserveDao
@@ -15,6 +16,7 @@ import com.example.union_sync_impl.dao.sqlAccountingObjectUnionImageQuery
 import com.example.union_sync_impl.dao.sqlActionRecordQuery
 import com.example.union_sync_impl.dao.sqlActionRemainsRecordQuery
 import com.example.union_sync_impl.dao.sqlDocumentsQuery
+import com.example.union_sync_impl.dao.sqlInventoryNomenclatureRecordQuery
 import com.example.union_sync_impl.dao.sqlInventoryQuery
 import com.example.union_sync_impl.dao.sqlInventoryRecordQuery
 import com.example.union_sync_impl.dao.sqlReserveQuery
@@ -36,6 +38,7 @@ class SyncInfoRepository(
     private val inventoryRecordDao: InventoryRecordDao,
     private val terminalRemainsNumeratorDao: TerminalRemainsNumeratorDao,
     private val accountingObjectUnionImageDao: AccountingObjectUnionImageDao,
+    private val inventoryNomenclatureRecordDao: InventoryNomenclatureRecordDao,
     private val coreDispatchers: CoreDispatchers
 ) {
 
@@ -105,6 +108,15 @@ class SyncInfoRepository(
                         )
                     )
                 }
+                val inventoryNomenclatureRecordCount = async {
+                    inventoryNomenclatureRecordDao.getCount(
+                        sqlInventoryNomenclatureRecordQuery(
+                            updateDate = getLastSyncTime(),
+                            isFilterCount = true,
+                            isNonCancel = false,
+                        )
+                    )
+                }
                 val terminalRemainsNumeratorCount = async {
                     terminalRemainsNumeratorDao.getCount(
                         sqlTerminalRemainsNumeratorQuery(
@@ -126,7 +138,8 @@ class SyncInfoRepository(
                 val allCount =
                     accountingObjectCount.await() + reserveCount.await() + inventoryCount.await() +
                             documentCount.await() + actionRecordCount.await() + actionRemainsRecordCount.await() +
-                            inventoryRecordCount.await() + terminalRemainsNumeratorCount.await() + accountingObjectUnionImageCount.await()
+                            inventoryRecordCount.await() + terminalRemainsNumeratorCount.await() + accountingObjectUnionImageCount.await() +
+                            inventoryNomenclatureRecordCount.await()
                 allCount
             }
         }

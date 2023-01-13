@@ -48,6 +48,7 @@ fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
         code = number,
         userInserted = userInserted,
         userUpdated = userUpdated,
-        inventoryBaseId = documentInfo.getFilterInventoryBaseId()
+        inventoryBaseId = documentInfo.getFilterInventoryBaseId(),
+        nomenclatureRecords = listOf() //TODO: Исправить в следующих подзадачах
     )
 }

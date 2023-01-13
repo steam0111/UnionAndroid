@@ -49,7 +49,8 @@ object SyncModule {
                 structuralSyncApi = get(),
                 checkerSyncApi = get(),
                 enumsApi = get(),
-                coreDispatchers = get()
+                coreDispatchers = get(),
+                inventoryNomenclatureRecordDao = get()
             )
         }
         factory<DocumentSyncApi> {
@@ -115,6 +116,9 @@ object SyncModule {
         }
         factory<InventoryRecordSyncApi> {
             InventoryRecordSyncApiImpl(inventoryRecordDao = get())
+        }
+        factory<InventoryNomenclatureRecordSyncApi> {
+            InventoryNomenclatureRecordSyncApiImpl(inventoryNomenclatureRecordDao = get())
         }
         factory<ActionRecordSyncApi> {
             ActionRecordSyncApiImpl(actionRecordDao = get())
@@ -191,11 +195,13 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
+                get(),
                 get()
             )
         }
         factory {
             SyncRepository(
+                get(),
                 get(),
                 get(),
                 get(),
@@ -363,6 +369,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().employeeWorkPlaceDao()
+        }
+        factory {
+            get<UnionDatabase>().inventoryNomenclatureRecordDao()
         }
         factory<ManageSyncDataApi> {
             ManageSyncDataImpl(
