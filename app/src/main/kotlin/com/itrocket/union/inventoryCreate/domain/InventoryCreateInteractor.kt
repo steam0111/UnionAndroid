@@ -19,6 +19,8 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.reserves.domain.ReservesInteractor
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 import kotlinx.coroutines.withContext
@@ -347,24 +349,50 @@ class InventoryCreateInteractor(
         }
     }
 
-    fun getAccountingObjectCount(
+    suspend fun getInventoryObjectCount(
         accountingObjects: List<AccountingObjectDomain>,
+        inventoryNomenclatures: List<InventoryNomenclatureDomain>
     ): AccountingObjectCounter {
-        return AccountingObjectCounter(
-            total = accountingObjects.filter {
+        return withContext(coreDispatchers.io) {
+            val totalAccountingObjects = accountingObjects.filter {
                 it.inventoryStatus == InventoryAccountingObjectStatus.FOUND ||
                         it.inventoryStatus == InventoryAccountingObjectStatus.NOT_FOUND
-            }.size,
-            found = accountingObjects.filter {
+            }.size
+            val totalNomenclatures = inventoryNomenclatures.sumOf { it.actualCount ?: 0 }
+
+            val foundAccountingObjects = accountingObjects.filter {
                 it.inventoryStatus == InventoryAccountingObjectStatus.FOUND
-            }.size,
-            notFound = accountingObjects.filter {
+            }.size
+            val foundNomenclatures =
+                inventoryNomenclatures.sumOf { min(it.actualCount ?: 0, it.expectedCount ?: 0) }
+
+            val notFoundAccountingObjects = accountingObjects.filter {
                 it.inventoryStatus == InventoryAccountingObjectStatus.NOT_FOUND
-            }.size,
-            new = accountingObjects.filter {
+            }.size
+            val notFoundNomenclatures = inventoryNomenclatures.sumOf {
+                max(
+                    (it.expectedCount ?: 0) - (it.actualCount ?: 0),
+                    0
+                )
+            }
+
+            val newAccountingObjects = accountingObjects.filter {
                 it.inventoryStatus == InventoryAccountingObjectStatus.NEW
             }.size
-        )
+            val newNomenclatures = inventoryNomenclatures.sumOf {
+                max(
+                    (it.actualCount ?: 0) - (it.expectedCount ?: 0),
+                    0
+                )
+            }
+
+            AccountingObjectCounter(
+                total = totalAccountingObjects + totalNomenclatures,
+                found = foundAccountingObjects + foundNomenclatures,
+                notFound = notFoundAccountingObjects + notFoundNomenclatures,
+                new = newAccountingObjects + newNomenclatures,
+            )
+        }
     }
 
     private suspend fun getHandlesAccountingObjectByRfid(rfids: List<String>): List<AccountingObjectDomain> {
@@ -425,7 +453,8 @@ class InventoryCreateInteractor(
         }
     }
 
-    fun addInventoryExistRfids(existRfids: List<String>, newRfids: List<String>) = (existRfids + newRfids).toHashSet().toList()
+    fun addInventoryExistRfids(existRfids: List<String>, newRfids: List<String>) =
+        (existRfids + newRfids).toHashSet().toList()
 
     companion object {
         private const val NO_INDEX = -1
