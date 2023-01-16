@@ -8,6 +8,7 @@ import com.itrocket.core.navigation.GoBackNavigationLabel
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailArguments
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.alertType.AlertType
+import com.itrocket.union.inventory.domain.entity.InventoryNomenclatureDomain
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_CODE
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_LABEL
 import com.itrocket.union.inventoryContainer.presentation.view.InventoryContainerComposeFragmentDirections
@@ -51,6 +52,7 @@ interface InventoryStore :
         val isInWorkInventoryLoading: Boolean = false,
         val selectedPage: Int = 0,
         val accountingObjectList: List<AccountingObjectDomain> = listOf(),
+        val inventoryNomenclatures: List<InventoryNomenclatureDomain> = listOf(),
         val params: List<ParamDomain> = listOf(
             StructuralParamDomain(manualType = ManualType.STRUCTURAL),
             StructuralParamDomain(manualType = ManualType.BALANCE_UNIT, clickable = false),

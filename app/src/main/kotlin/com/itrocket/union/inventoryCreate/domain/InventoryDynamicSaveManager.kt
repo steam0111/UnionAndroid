@@ -38,7 +38,11 @@ class InventoryDynamicSaveManager(private val inventoryCreateInteractor: Invento
                 .debounce(INVENTORY_COLLECT_DELAY)
                 .distinctUntilChanged()
                 .collect {
-                    inventoryCreateInteractor.saveInventoryDocument(it, it.accountingObjects)
+                    inventoryCreateInteractor.saveInventoryDocument(
+                        inventoryCreate = it,
+                        accountingObjects = it.accountingObjects,
+                        inventoryNomenclatures = it.nomenclatureRecords
+                    )
                 }
         }
     }

@@ -29,7 +29,7 @@ object InventoryCreateModule {
         }
 
         factory {
-            InventoryCreateInteractor(get(), get(), get(), get())
+            InventoryCreateInteractor(get(), get(), get(), get(), get(), get(), get())
         }
 
         factory {
