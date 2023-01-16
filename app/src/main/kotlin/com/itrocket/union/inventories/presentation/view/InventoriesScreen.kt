@@ -166,7 +166,8 @@ fun InventoriesScreenPreview() {
                     inventoryStatus = InventoryStatus.CREATED,
                     userInserted = "",
                     userUpdated = "",
-                    nomenclatureRecords = listOf()
+                    nomenclatureRecords = listOf(),
+                    rfids = listOf()
                 ),
                 InventoryCreateDomain(
                     id = "",
@@ -181,7 +182,8 @@ fun InventoriesScreenPreview() {
                     inventoryStatus = InventoryStatus.CREATED,
                     userInserted = "",
                     userUpdated = "",
-                    nomenclatureRecords = listOf()
+                    nomenclatureRecords = listOf(),
+                    rfids = listOf()
                 ),
                 InventoryCreateDomain(
                     id = "",
@@ -196,7 +198,8 @@ fun InventoriesScreenPreview() {
                     inventoryStatus = InventoryStatus.CREATED,
                     userInserted = "",
                     userUpdated = "",
-                    nomenclatureRecords = listOf()
+                    nomenclatureRecords = listOf(),
+                    rfids = listOf()
                 )
             )
         ),

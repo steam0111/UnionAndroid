@@ -89,7 +89,8 @@ fun InventoryDb.toInventorySyncEntity(
     nomenclatureRecords: List<InventoryNomenclatureRecordSyncEntity>,
     inventoryBaseSyncEntity: EnumSyncEntity?,
     balanceUnit: List<StructuralSyncEntity>,
-    checkers: List<InventoryCheckerSyncEntity>
+    checkers: List<InventoryCheckerSyncEntity>,
+    rfids: List<String>
 ): InventorySyncEntity {
     return InventorySyncEntity(
         id = id,
@@ -107,6 +108,7 @@ fun InventoryDb.toInventorySyncEntity(
         inventoryBaseSyncEntity = inventoryBaseSyncEntity,
         balanceUnit = balanceUnit,
         checkers = checkers,
-        nomenclatureRecords = nomenclatureRecords
+        nomenclatureRecords = nomenclatureRecords,
+        rfids = rfids
     )
 }

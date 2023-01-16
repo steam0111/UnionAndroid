@@ -522,7 +522,8 @@ fun InventoryCreateScreenPreview() {
                 inventoryStatus = InventoryStatus.CREATED,
                 userInserted = "",
                 userUpdated = "",
-                nomenclatureRecords = listOf()
+                nomenclatureRecords = listOf(),
+                rfids = listOf()
             ),
             readingModeTab = ReadingModeTab.RFID
         ),

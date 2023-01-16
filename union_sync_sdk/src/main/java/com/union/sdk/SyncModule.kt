@@ -50,7 +50,8 @@ object SyncModule {
                 checkerSyncApi = get(),
                 enumsApi = get(),
                 coreDispatchers = get(),
-                inventoryNomenclatureRecordDao = get()
+                inventoryNomenclatureRecordDao = get(),
+                inventoryNomenclatureRecordRfidDao = get()
             )
         }
         factory<DocumentSyncApi> {
@@ -372,6 +373,9 @@ object SyncModule {
         }
         factory {
             get<UnionDatabase>().inventoryNomenclatureRecordDao()
+        }
+        factory {
+            get<UnionDatabase>().inventoryNomenclatureRecordRfidDao()
         }
         factory<ManageSyncDataApi> {
             ManageSyncDataImpl(

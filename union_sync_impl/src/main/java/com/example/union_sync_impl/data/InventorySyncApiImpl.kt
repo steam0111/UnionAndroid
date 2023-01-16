@@ -1,5 +1,6 @@
 package com.example.union_sync_impl.data
 
+import android.util.Log
 import com.example.union_sync_api.data.EnumsSyncApi
 import com.example.union_sync_api.data.InventoryCheckerSyncApi
 import com.example.union_sync_api.data.InventorySyncApi
@@ -17,6 +18,7 @@ import com.example.union_sync_api.entity.StructuralSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.InventoryDao
 import com.example.union_sync_impl.dao.InventoryNomenclatureRecordDao
+import com.example.union_sync_impl.dao.InventoryNomenclatureRecordRfidDao
 import com.example.union_sync_impl.dao.InventoryRecordDao
 import com.example.union_sync_impl.dao.LocationDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
@@ -31,6 +33,7 @@ import com.example.union_sync_impl.data.mapper.toSyncEntity
 import com.example.union_sync_impl.data.mapper.toUpdate
 import com.example.union_sync_impl.entity.FullInventory
 import com.example.union_sync_impl.entity.InventoryDb
+import com.example.union_sync_impl.entity.InventoryNomenclatureRecordRfidDb
 import com.example.union_sync_impl.entity.InventoryRecordDb
 import com.itrocket.core.base.CoreDispatchers
 import java.util.*
@@ -49,7 +52,8 @@ class InventorySyncApiImpl(
     private val locationSyncApi: LocationSyncApi,
     private val checkerSyncApi: InventoryCheckerSyncApi,
     private val enumsApi: EnumsSyncApi,
-    private val coreDispatchers: CoreDispatchers
+    private val coreDispatchers: CoreDispatchers,
+    private val inventoryNomenclatureRecordRfidDao: InventoryNomenclatureRecordRfidDao
 ) : InventorySyncApi {
     override suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): String {
         val inventoryId = UUID.randomUUID().toString()
@@ -94,7 +98,8 @@ class InventorySyncApiImpl(
                 inventoryBaseSyncEntity = inventoryBase,
                 balanceUnit = balanceUnitFullPath.orEmpty(),
                 checkers = checkerSyncApi.getCheckers(it.inventoryDb.id),
-                nomenclatureRecords = listOf()
+                nomenclatureRecords = listOf(),
+                rfids = listOf()
             )
         }
     }
@@ -186,6 +191,9 @@ class InventorySyncApiImpl(
             checkerSyncApi.getCheckers(fullInventory.inventoryDb.id)
         }
 
+        val rfids = async(coreDispatchers.io) {
+            inventoryNomenclatureRecordRfidDao.getById(inventoryId = id)?.rfids.orEmpty()
+        }
         val (structurals, balanceUnitFullPath) = structuralsAndBalanceUnitFullPath.await()
 
         fullInventory.inventoryDb.toInventorySyncEntity(
@@ -196,7 +204,8 @@ class InventorySyncApiImpl(
             inventoryBaseSyncEntity = inventoryBaseDeferred.await(),
             balanceUnit = balanceUnitFullPath,
             checkers = checkersDeferred.await(),
-            nomenclatureRecords = inventoryNomenclatureRecords.await()
+            nomenclatureRecords = inventoryNomenclatureRecords.await(),
+            rfids = rfids.await()
         )
     }
 
@@ -242,7 +251,21 @@ class InventorySyncApiImpl(
                 nomenclatureRecords = inventoryUpdateSyncEntity.nomenclatureRecords,
                 userUpdated = inventoryUpdateSyncEntity.userUpdated
             )
+
+            updateInventoryScannedRfids(
+                rfids = inventoryUpdateSyncEntity.rfids,
+                inventoryId = inventoryUpdateSyncEntity.id
+            )
         }
+    }
+
+    private suspend fun updateInventoryScannedRfids(rfids: List<String>, inventoryId: String) {
+        inventoryNomenclatureRecordRfidDao.insert(
+            InventoryNomenclatureRecordRfidDb(
+                inventoryId = inventoryId,
+                rfids = rfids
+            )
+        )
     }
 
     private suspend fun updateNomenclatureRecords(

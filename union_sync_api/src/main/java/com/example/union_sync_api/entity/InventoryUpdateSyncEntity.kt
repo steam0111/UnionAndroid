@@ -13,5 +13,6 @@ data class InventoryUpdateSyncEntity(
     val name: String? = null,
     val userInserted: String?,
     val userUpdated: String?,
-    val inventoryBaseId: String?
+    val inventoryBaseId: String?,
+    val rfids: List<String>
 )
