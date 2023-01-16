@@ -28,7 +28,8 @@ class ReservesInteractor(
         params: List<ParamDomain>,
         selectedReservesIds: List<String> = listOf(),
         offset: Long? = null,
-        limit: Long? = null
+        limit: Long? = null,
+        barcode: String? = null,
     ): List<ReservesDomain> =
         withContext(coreDispatchers.io) {
             val lastLocationId = params.getFilterLocationLastId()
@@ -50,7 +51,8 @@ class ReservesInteractor(
                 structuralIds = filterStructuralIds,
                 offset = offset,
                 limit = limit,
-                hideZeroReserves = params.getFilterHideZeroReserves()
+                hideZeroReserves = params.getFilterHideZeroReserves(),
+                barcode = barcode,
             ).filter {
                 !selectedReservesIds.contains(it.id)
             }

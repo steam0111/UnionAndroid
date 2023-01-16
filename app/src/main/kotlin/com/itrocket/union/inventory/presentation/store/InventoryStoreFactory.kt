@@ -14,6 +14,7 @@ import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.filter.domain.FilterInteractor
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
 import com.itrocket.union.inventory.domain.InventoryInteractor
+import com.itrocket.union.inventory.domain.entity.InventoryNomenclatureDomain
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
 import com.itrocket.union.inventoryCreate.domain.InventoryDynamicSaveManager
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
@@ -140,7 +141,8 @@ class InventoryStoreFactory(
                     inWorkInventory(
                         inventoryDomain = requireNotNull(getState().inventoryCreateDomain),
                         accountingObjects = getState().accountingObjectList,
-                        params = getState().params
+                        params = getState().params,
+                        inventoryNomenclatures = getState().inventoryNomenclatures
                     )
                     dispatch(Result.DialogType(AlertType.NONE))
                 }
@@ -231,8 +233,9 @@ class InventoryStoreFactory(
             dispatch(Result.IsAccountingObjectsLoading(true))
             catchException {
                 inventoryCreateInteractor.saveInventoryDocument(
-                    inventoryDocument.copy(documentInfo = params),
-                    listOf()
+                    inventoryCreate = inventoryDocument.copy(documentInfo = params),
+                    accountingObjects = listOf(),
+                    inventoryNomenclatures = listOf()
                 )
             }
             dispatch(Result.IsAccountingObjectsLoading(false))
@@ -241,6 +244,7 @@ class InventoryStoreFactory(
         private suspend fun inWorkInventory(
             inventoryDomain: InventoryCreateDomain,
             accountingObjects: List<AccountingObjectDomain>,
+            inventoryNomenclatures: List<InventoryNomenclatureDomain>,
             params: List<ParamDomain>
         ) {
             dispatch(Result.IsInWorkInventoryLoading(true))
@@ -253,7 +257,8 @@ class InventoryStoreFactory(
             )
             inventoryCreateInteractor.saveInventoryDocument(
                 inventoryCreate = inventory,
-                accountingObjects = accountingObjects
+                accountingObjects = accountingObjects,
+                inventoryNomenclatures = inventoryNomenclatures
             )
             inventoryDynamicSaveManager.cancel()
             dispatch(Result.DialogType(AlertType.NONE))
