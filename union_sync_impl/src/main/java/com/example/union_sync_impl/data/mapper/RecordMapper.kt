@@ -188,7 +188,7 @@ fun InventoryNomenclatureRecordDb.toDto() = InventoryNomenclatureRecordDtoV2(
     userUpdated = userUpdated,
 )
 
-fun InventoryNomenclatureRecordDb.toSyncEntity() = InventoryNomenclatureRecordSyncEntity(
+fun InventoryNomenclatureRecordDb.toSyncEntity(nomenclatureName: String) = InventoryNomenclatureRecordSyncEntity(
     id = id,
     inventoryId = inventoryId,
     nomenclatureId = nomenclatureId,
@@ -200,6 +200,7 @@ fun InventoryNomenclatureRecordDb.toSyncEntity() = InventoryNomenclatureRecordSy
     price = price,
     cancel = cancel,
     userUpdated = userUpdated,
+    nomenclatureName = nomenclatureName
 )
 
 fun InventoryNomenclatureRecordSyncEntity.toUpdate() = InventoryNomenclatureRecordUpdate(

@@ -52,7 +52,7 @@ interface InventoryStore :
     }
 
     data class State(
-        val isAccountingObjectsLoading: Boolean = false,
+        val isInventoryObjectsLoading: Boolean = false,
         val isCreateInventoryLoading: Boolean = false,
         val isInWorkInventoryLoading: Boolean = false,
         val selectedPage: Int = 0,

@@ -108,6 +108,9 @@ class InventoryComposeFragment :
                 },
                 onDropConfirmedClickListener = {
                     accept(InventoryStore.Intent.OnDropConfirmed)
+                },
+                onInventoryNomenclatureClickListener = {
+                    accept(InventoryStore.Intent.OnInventoryNomenclatureClicked(it))
                 }
             )
         }

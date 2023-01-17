@@ -45,6 +45,7 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
+import com.itrocket.union.inventory.domain.entity.InventoryNomenclatureDomain
 import com.itrocket.union.inventory.presentation.store.InventoryStore
 import com.itrocket.union.inventoryCreate.presentation.view.AttentionNotMarking
 import com.itrocket.union.manual.ManualType
@@ -57,6 +58,7 @@ import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ButtonBottomBar
 import com.itrocket.union.ui.ConfirmAlertDialog
 import com.itrocket.union.ui.DoubleTabRow
+import com.itrocket.union.ui.InventoryNomenclatureItem
 import com.itrocket.union.ui.LoadingDialog
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.SelectedBaseField
@@ -65,7 +67,6 @@ import com.itrocket.union.ui.UnselectedBaseField
 import com.itrocket.union.ui.graphite2
 import com.itrocket.utils.getTargetPage
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -86,6 +87,7 @@ fun InventoryScreen(
     onInWorkConfirmClickListener: () -> Unit,
     onInWorkDismissClickListener: () -> Unit,
     onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit,
+    onInventoryNomenclatureClickListener: (InventoryNomenclatureDomain) -> Unit,
     onExitConfirmClickListener: () -> Unit,
     onAlertDismissClickListener: () -> Unit,
     onDropConfirmedClickListener: () -> Unit
@@ -116,7 +118,7 @@ fun InventoryScreen(
                             inventoryStatus = state.inventoryCreateDomain.inventoryStatus,
                             canUpdate = state.canUpdateInventory,
                             isDynamicSaveInventory = state.isDynamicSaveInventory,
-                            isAccountingObjectLoading = state.isAccountingObjectsLoading,
+                            isAccountingObjectLoading = state.isInventoryObjectsLoading,
                         )
                     }
                     state.canCreateInventory -> {
@@ -141,7 +143,8 @@ fun InventoryScreen(
                     state = state,
                     isInventoryChangePermitted = isInventoryChangePermitted,
                     onAccountingObjectClickListener = onAccountingObjectClickListener,
-                    isExistNonMarkingAccountingObject = state.isExistNonMarkingAccountingObject
+                    isExistNonMarkingAccountingObject = state.isExistNonMarkingAccountingObject,
+                    onInventoryNomenclatureClickListener = onInventoryNomenclatureClickListener
                 )
             },
             modifier = Modifier.padding(
@@ -204,6 +207,7 @@ private fun Content(
     onParamClickListener: (ParamDomain) -> Unit,
     onParamCrossClickListener: (ParamDomain) -> Unit,
     onAccountingObjectClickListener: (AccountingObjectDomain) -> Unit,
+    onInventoryNomenclatureClickListener: (InventoryNomenclatureDomain) -> Unit,
     coroutineScope: CoroutineScope,
     selectedPage: Int,
     pagerState: PagerState,
@@ -228,9 +232,20 @@ private fun Content(
             title = stringResource(R.string.inventory_accounting_object),
             screen = {
                 AccountingObjectScreen(
-                    isLoading = state.isAccountingObjectsLoading,
+                    isLoading = state.isInventoryObjectsLoading,
                     accountingObjectList = state.accountingObjectList,
                     onAccountingObjectClickListener = onAccountingObjectClickListener,
+                    paddingValues = paddingValues
+                )
+            }
+        ),
+        BaseTab(
+            title = stringResource(id = R.string.inventory_reserves),
+            screen = {
+                InventoryNomenclatureScreen(
+                    isLoading = state.isInventoryObjectsLoading,
+                    inventoryNomenclatures = state.inventoryNomenclatures,
+                    onInventoryNomenclatureClickListener = onInventoryNomenclatureClickListener,
                     paddingValues = paddingValues
                 )
             }
@@ -347,6 +362,46 @@ private fun AccountingObjectScreen(
                     isShowBottomLine = isShowBottomLine,
                     status = item.status?.type,
                     showNonMarkingAttention = true
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun InventoryNomenclatureScreen(
+    isLoading: Boolean,
+    inventoryNomenclatures: List<InventoryNomenclatureDomain>,
+    onInventoryNomenclatureClickListener: (InventoryNomenclatureDomain) -> Unit,
+    paddingValues: PaddingValues
+) {
+    if (isLoading) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(id = R.string.inventory_reserves_wait),
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            CircularProgressIndicator()
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            itemsIndexed(inventoryNomenclatures, key = { index, item ->
+                item.id
+            }) { index, item ->
+                val isShowBottomLine = inventoryNomenclatures.lastIndex != index
+                InventoryNomenclatureItem(
+                    inventoryNomenclatureDomain = item,
+                    onClick = onInventoryNomenclatureClickListener,
+                    isShowBottomLine = isShowBottomLine,
                 )
             }
         }
@@ -542,6 +597,7 @@ fun InventoryScreenPreview() {
             inventoryCreateDomain = null
         ),
         AppInsets(topInset = previewTopInsetDp),
+        {},
         {},
         {},
         {},

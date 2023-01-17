@@ -275,7 +275,8 @@
     <!-- Inventory -->
     <string name="inventory_ao_title">Инвентаризация «ОУ»</string>
     <string name="inventory_params">Парам.</string>
-    <string name="inventory_accounting_object">Инвент. «ОУ»</string>
+    <string name="inventory_accounting_object">ОУ</string>
+    <string name="inventory_reserves">Запасы</string>
     <string name="inventory_created">Создана</string>
     <string name="inventory_in_work">В работе</string>
     <string name="inventory_done">Завершена</string>
@@ -283,12 +284,15 @@
     <string name="inventory_in_work_dialog">Вы хотите взять инв. ведомость в работу?</string>
     <string name="inventory_complete_dialog">После завершения ведомости будет заблокирована возможность ее дальнейшего выполнения или изменения. Вы уверены?</string>
     <string name="inventory_ao_wait">Формирование списка ОУ \nтребует немного времени.\nПожалуйста подождите…</string>
+    <string name="inventory_reserves_wait">Формирование списка Запасов \nтребует немного времени.\nПожалуйста подождите…</string>
     <string name="inventory_in_work_loading">Идет взятие инв. ведомости в работу. \nПожалуйста подождите…</string>
     <string name="inventory_create_loading">Идет создание инв. ведомости.\nПожалуйста подождите…</string>
     <string name="inventory_confirm_loading">Идет завершение инв. ведомости. \nПожалуйста подождите…</string>
     <string name="inventory_save_loading">Идет сохранение инв. ведомости. \nПожалуйста подождите…</string>
     <string name="inventory_exit_confirm">Вы точно хотите выйти?</string>
     <string name="inventory_drop_confirm">Все результаты инвентаризации будут сброшены. Точно ходите продолжить?</string>
+    <string name="inventory_nomenclature_price">Цена</string>
+    <string name="inventory_nomenclature_bookInvoice">Счет БУ</string>
 
     <!-- InventoryCreate -->
     <string name="inventory_create_hide_found_ao">Скрывать найденные ОУ</string>

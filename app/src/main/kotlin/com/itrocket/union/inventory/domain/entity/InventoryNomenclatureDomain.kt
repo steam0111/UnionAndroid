@@ -9,6 +9,7 @@ import kotlinx.parcelize.Parcelize
 data class InventoryNomenclatureDomain(
     val id: String,
     val nomenclatureId: String,
+    val nomenclatureName: String,
     val updateDate: Long?,
     val expectedCount: Long?,
     val actualCount: Long?,
@@ -30,4 +31,5 @@ fun InventoryNomenclatureDomain.toSyncEntity(inventoryId: String) =
         bookKeepingInvoice = bookKeepingInvoice,
         price = price,
         cancel = cancel,
+        nomenclatureName = nomenclatureName
     )

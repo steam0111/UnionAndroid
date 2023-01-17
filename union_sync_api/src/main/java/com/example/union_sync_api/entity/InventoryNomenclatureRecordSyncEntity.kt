@@ -5,6 +5,7 @@ import java.math.BigDecimal
 data class InventoryNomenclatureRecordSyncEntity(
     val id: String,
     val inventoryId: String,
+    val nomenclatureName: String,
     val nomenclatureId: String,
     val updateDate: Long?,
     val expectedCount: Long?,

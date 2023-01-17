@@ -15,6 +15,8 @@ import com.itrocket.union.manual.getFilterInventoryBaseId
 import com.itrocket.union.manual.getFilterLocationIds
 import com.itrocket.union.manual.getFilterStructuralLastId
 import com.itrocket.union.manual.getMolInDepartmentId
+import com.itrocket.union.nomenclature.domain.NomenclatureInteractor
+import com.itrocket.union.nomenclatureDetail.domain.NomenclatureDetailInteractor
 import com.itrocket.union.reserves.domain.ReservesInteractor
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.structural.domain.dependencies.StructuralRepository
@@ -26,6 +28,7 @@ class InventoryInteractor(
     private val coreDispatchers: CoreDispatchers,
     private val authMainInteractor: AuthMainInteractor,
     private val reservesInteractor: ReservesInteractor,
+    private val nomenclatureDetailInteractor: NomenclatureDetailInteractor,
     private val structuralRepository: StructuralRepository
 ) {
 
@@ -57,10 +60,12 @@ class InventoryInteractor(
                     val expectedCount = (existInventoryNomenclature.expectedCount ?: 0) + 1
                     inventoryNomenclaturesMap[key] =
                         existInventoryNomenclature.copy(expectedCount = expectedCount)
-                } else if (isAddNew) {
+                } else if (isAddNew && it.nomenclatureId != null) {
+                    val nomenclatureName =
+                        nomenclatureDetailInteractor.getNomenclatureDetail(it.nomenclatureId).name
                     inventoryNomenclaturesMap[key] = InventoryNomenclatureDomain(
                         id = UUID.randomUUID().toString(),
-                        nomenclatureId = it.nomenclatureId.orEmpty(),
+                        nomenclatureId = it.nomenclatureId,
                         updateDate = System.currentTimeMillis(),
                         expectedCount = 1,
                         actualCount = 0,
@@ -68,6 +73,7 @@ class InventoryInteractor(
                         bookKeepingInvoice = it.bookKeepingInvoice,
                         price = it.unitPrice,
                         cancel = false,
+                        nomenclatureName = nomenclatureName
                     )
                 }
             }

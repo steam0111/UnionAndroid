@@ -363,7 +363,7 @@ class InventoryStoreFactory(
     private object ReducerImpl : Reducer<InventoryStore.State, Result> {
         override fun InventoryStore.State.reduce(result: Result) =
             when (result) {
-                is Result.IsAccountingObjectsLoading -> copy(isAccountingObjectsLoading = result.isLoading)
+                is Result.IsAccountingObjectsLoading -> copy(isInventoryObjectsLoading = result.isLoading)
                 is Result.Params -> copy(params = result.params)
                 is Result.SelectPage -> copy(selectedPage = result.page)
                 is Result.AccountingObjects -> copy(accountingObjectList = result.accountingObjects)

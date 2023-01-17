@@ -54,6 +54,7 @@ import com.itrocket.union.documents.presentation.view.DocumentView
 import com.itrocket.union.employees.domain.entity.EmployeeDomain
 import com.itrocket.union.identify.domain.NomenclatureReserveDomain
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
+import com.itrocket.union.inventory.domain.entity.InventoryNomenclatureDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
@@ -332,6 +333,79 @@ fun InventoryDocumentItem(
             color = AppTheme.colors.secondaryColor
         )
         Spacer(modifier = Modifier.height(12.dp))
+    }
+}
+
+@Composable
+fun InventoryNomenclatureItem(
+    inventoryNomenclatureDomain: InventoryNomenclatureDomain,
+    onClick: (InventoryNomenclatureDomain) -> Unit,
+    isShowFullCount: Boolean = false,
+    isShowBottomLine: Boolean
+) {
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomStart) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(white)
+                .clickable(onClick = { onClick(inventoryNomenclatureDomain) })
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+        ) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.fillMaxWidth(0.7f)) {
+                    HeaderText(
+                        text = inventoryNomenclatureDomain.nomenclatureName,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(
+                            R.string.common_two_dots,
+                            stringResource(id = R.string.consignment_title),
+                            inventoryNomenclatureDomain.consignment.orEmpty()
+                        ), style = AppTheme.typography.subtitle1
+                    )
+                    Text(
+                        text = stringResource(
+                            R.string.common_two_dots,
+                            stringResource(R.string.inventory_nomenclature_price),
+                            inventoryNomenclatureDomain.price.orEmpty()
+                        ), style = AppTheme.typography.subtitle1
+                    )
+                    Text(
+                        text = stringResource(
+                            R.string.common_two_dots,
+                            stringResource(R.string.inventory_nomenclature_bookInvoice),
+                            inventoryNomenclatureDomain.bookKeepingInvoice.toString()
+                        ), style = AppTheme.typography.subtitle1
+                    )
+                }
+                Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
+                    Text(
+                        text = inventoryNomenclatureDomain.expectedCount.toString(),
+                        style = AppTheme.typography.subtitle2
+                    )
+                    if (isShowFullCount) {
+                        val difference = (inventoryNomenclatureDomain.actualCount
+                            ?: 0) - (inventoryNomenclatureDomain.expectedCount ?: 0)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = inventoryNomenclatureDomain.actualCount.toString(),
+                            style = AppTheme.typography.subtitle2
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = difference.toString(),
+                            style = AppTheme.typography.subtitle2,
+                            color = orange
+                        )
+                    }
+                }
+            }
+        }
+        if (isShowBottomLine) {
+            BottomLine()
+        }
     }
 }
 
@@ -818,6 +892,27 @@ fun EmployeeItemPreview() {
             patronymic = "Бин",
             post = "bb",
         ), onEmployeeClickListener = {}, isShowBottomLine = true
+    )
+}
+
+@Preview
+@Composable
+private fun InventoryNomenclatureItemPreview() {
+    InventoryNomenclatureItem(
+        inventoryNomenclatureDomain = InventoryNomenclatureDomain(
+            id = "1",
+            nomenclatureId = "1",
+            nomenclatureName = "Title1",
+            updateDate = 0L,
+            expectedCount = 4321,
+            actualCount = 1234,
+            consignment = "Consigment1",
+            bookKeepingInvoice = BigDecimal(1233231),
+            price = "123213",
+            cancel = false,
+        ),
+        onClick = {},
+        isShowBottomLine = true
     )
 }
 

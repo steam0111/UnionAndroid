@@ -51,7 +51,8 @@ object SyncModule {
                 enumsApi = get(),
                 coreDispatchers = get(),
                 inventoryNomenclatureRecordDao = get(),
-                inventoryNomenclatureRecordRfidDao = get()
+                inventoryNomenclatureRecordRfidDao = get(),
+                nomenclatureDao = get()
             )
         }
         factory<DocumentSyncApi> {
@@ -119,7 +120,10 @@ object SyncModule {
             InventoryRecordSyncApiImpl(inventoryRecordDao = get())
         }
         factory<InventoryNomenclatureRecordSyncApi> {
-            InventoryNomenclatureRecordSyncApiImpl(inventoryNomenclatureRecordDao = get())
+            InventoryNomenclatureRecordSyncApiImpl(
+                inventoryNomenclatureRecordDao = get(),
+                nomenclatureDao = get()
+            )
         }
         factory<ActionRecordSyncApi> {
             ActionRecordSyncApiImpl(actionRecordDao = get())

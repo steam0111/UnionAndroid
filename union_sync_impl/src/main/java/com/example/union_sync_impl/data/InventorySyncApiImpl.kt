@@ -21,6 +21,7 @@ import com.example.union_sync_impl.dao.InventoryNomenclatureRecordDao
 import com.example.union_sync_impl.dao.InventoryNomenclatureRecordRfidDao
 import com.example.union_sync_impl.dao.InventoryRecordDao
 import com.example.union_sync_impl.dao.LocationDao
+import com.example.union_sync_impl.dao.NomenclatureDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.dao.sqlInventoryNomenclatureRecordQuery
 import com.example.union_sync_impl.dao.sqlInventoryQuery
@@ -53,6 +54,7 @@ class InventorySyncApiImpl(
     private val checkerSyncApi: InventoryCheckerSyncApi,
     private val enumsApi: EnumsSyncApi,
     private val coreDispatchers: CoreDispatchers,
+    private val nomenclatureDao: NomenclatureDao,
     private val inventoryNomenclatureRecordRfidDao: InventoryNomenclatureRecordRfidDao
 ) : InventorySyncApi {
     override suspend fun createInventory(inventoryCreateSyncEntity: InventoryCreateSyncEntity): String {
@@ -173,7 +175,10 @@ class InventorySyncApiImpl(
                     sqlInventoryNomenclatureRecordQuery(
                         inventoryId = fullInventory.inventoryDb.id
                     )
-                ).map { it.toSyncEntity() }
+                ).map {
+                    val nomenclatureName = nomenclatureDao.getById(it.nomenclatureId).nomenclatureDb.name
+                    it.toSyncEntity(nomenclatureName)
+                }
             } else {
                 listOf()
             }
