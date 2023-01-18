@@ -13,6 +13,11 @@ fun InventoryCreateStore.State.toInventoryCreateUiState(): InventoryCreateUiStat
         else -> inventoryDocument.accountingObjects
     }
 
+    val inventoryNomenclatures = when {
+        isShowSearch -> searchInventoryNomenclatures
+        else -> inventoryDocument.nomenclatureRecords
+    }
+
     val canChangeInventory =
         inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED && canUpdate
     val completeEnabled = canUpdate && !isLoading && !isCompleteLoading
@@ -45,6 +50,8 @@ fun InventoryCreateStore.State.toInventoryCreateUiState(): InventoryCreateUiStat
         showComplete = showComplete,
         accountingObjectCounter = inventoryObjectCounter,
         loadingTitleId = loadingTitleId,
+        inventoryNomenclatures = inventoryNomenclatures,
+        selectedPage = selectedPage,
         isExistNonMarkingAccountingObject = isExistNonMarkingAccountingObject
     )
 }

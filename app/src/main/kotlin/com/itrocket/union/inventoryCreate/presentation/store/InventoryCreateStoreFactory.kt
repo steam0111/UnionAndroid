@@ -21,6 +21,7 @@ import com.itrocket.union.inventoryChoose.domain.InventoryChooseActionType
 import com.itrocket.union.inventoryChoose.presentation.store.InventoryChooseResult
 import com.itrocket.union.inventoryCreate.domain.InventoryCreateInteractor
 import com.itrocket.union.inventoryCreate.domain.InventoryDynamicSaveManager
+import com.itrocket.union.inventoryCreate.domain.InventoryPage
 import com.itrocket.union.inventoryCreate.domain.entity.AccountingObjectCounter
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
@@ -30,6 +31,7 @@ import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.readingMode.presentation.view.toReadingMode
 import com.itrocket.union.search.SearchManager
+import com.itrocket.union.selectCount.presentation.store.SelectCountResult
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
@@ -281,7 +283,51 @@ class InventoryCreateStoreFactory(
                 is InventoryCreateStore.Intent.OnInventoryNomenclatureClicked -> onInventoryNomenclatureClicked(
                     intent.inventoryNomenclature
                 )
+                is InventoryCreateStore.Intent.OnPageChanged -> onPageChanged(intent.page)
+                is InventoryCreateStore.Intent.OnInventoryNomenclatureCountChanged -> onInventoryNomenclatureCountChanged(
+                    result = intent.result,
+                    getState = getState
+                )
             }
+        }
+
+        private suspend fun onInventoryNomenclatureCountChanged(
+            result: SelectCountResult,
+            getState: () -> InventoryCreateStore.State
+        ) {
+            dispatch(
+                Result.InventoryNomenclatures(
+                    inventoryCreateInteractor.changeInventoryNomenclatureCount(
+                        id = result.id,
+                        count = result.count,
+                        inventoryNomenclatures = getState().inventoryDocument.nomenclatureRecords
+                    )
+                )
+            )
+
+            if (getState().isShowSearch) {
+                dispatch(
+                    Result.SearchInventoryNomenclatures(
+                        inventoryCreateInteractor.changeInventoryNomenclatureCount(
+                            id = result.id,
+                            count = result.count,
+                            inventoryNomenclatures = getState().searchInventoryNomenclatures
+                        )
+                    )
+                )
+            }
+            updateInventoryCounter(getState)
+            tryDynamicSendInventorySave(
+                getState = getState,
+                accountingObjects = getState().inventoryDocument.accountingObjects,
+                inventoryNomenclatures = getState().inventoryDocument.nomenclatureRecords
+            )
+        }
+
+        private fun onPageChanged(page: Int) {
+            val inventoryPage =
+                InventoryPage.values().find { it.page == page } ?: InventoryPage.ACCOUNTING_OBJECT
+            dispatch(Result.Page(inventoryPage))
         }
 
         private fun onInventoryNomenclatureClicked(inventoryNomenclature: InventoryNomenclatureDomain) {
@@ -706,6 +752,7 @@ class InventoryCreateStoreFactory(
             Result()
 
         data class NomenclatureExistRfids(val nomenclatureExistRfids: List<String>) : Result()
+        data class Page(val inventoryPage: InventoryPage) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryCreateStore.State, Result> {
@@ -746,6 +793,7 @@ class InventoryCreateStoreFactory(
                         rfids = result.nomenclatureExistRfids
                     )
                 )
+                is Result.Page -> copy(selectedPage = result.inventoryPage)
             }
     }
 }

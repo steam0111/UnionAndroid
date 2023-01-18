@@ -28,12 +28,14 @@ import com.itrocket.union.inventoryChoose.presentation.store.InventoryChooseResu
 import com.itrocket.union.inventoryChoose.presentation.view.InventoryChooseComposeFragment
 import com.itrocket.union.inventoryChoose.presentation.view.InventoryChooseComposeFragment.Companion.INVENTORY_CHOOSE_ARGUMENT
 import com.itrocket.union.inventoryContainer.presentation.view.InventoryContainerComposeFragmentDirections
+import com.itrocket.union.inventoryCreate.domain.InventoryPage
 import com.itrocket.union.inventoryCreate.domain.entity.AccountingObjectCounter
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.selectCount.presentation.store.SelectCountArguments
+import com.itrocket.union.selectCount.presentation.store.SelectCountResult
 import com.itrocket.union.selectCount.presentation.view.SelectCountComposeFragment
 import java.math.BigDecimal
 
@@ -72,12 +74,16 @@ interface InventoryCreateStore :
         data class OnAccountingObjectLongClicked(val accountingObject: AccountingObjectDomain) :
             Intent()
 
+        data class OnPageChanged(val page: Int) : Intent()
+
         data class OnStatusClicked(val accountingObject: AccountingObjectDomain) : Intent()
         data class OnSearchTextChanged(val searchText: String) : Intent()
         data class OnReadingModeTabChanged(val readingModeTab: ReadingModeTab) : Intent()
         data class OnManualInput(val readingModeResult: ReadingModeResult) : Intent()
         data class OnAccountingObjectChanged(val accountingObject: AccountingObjectDomain) :
             Intent()
+
+        data class OnInventoryNomenclatureCountChanged(val result: SelectCountResult) : Intent()
 
         data class OnErrorHandled(val throwable: Throwable) : Intent()
 
@@ -104,7 +110,8 @@ interface InventoryCreateStore :
         val searchInventoryNomenclatures: List<InventoryNomenclatureDomain> = listOf(),
         val inventoryObjectCounter: AccountingObjectCounter = AccountingObjectCounter(),
         val isExistNonMarkingAccountingObject: Boolean = false,
-        val nomenclatureExistRfids: List<String> = listOf()
+        val nomenclatureExistRfids: List<String> = listOf(),
+        val selectedPage: InventoryPage = InventoryPage.ACCOUNTING_OBJECT
     )
 
     sealed class Label {
