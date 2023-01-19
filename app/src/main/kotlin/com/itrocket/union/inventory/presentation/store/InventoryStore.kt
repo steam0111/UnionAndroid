@@ -17,6 +17,7 @@ import com.itrocket.union.manual.LocationParamDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
+import com.itrocket.union.nomenclatureDetail.presentation.store.NomenclatureDetailArguments
 import com.itrocket.union.selectParams.presentation.store.SelectParamsArguments
 
 interface InventoryStore :
@@ -38,8 +39,12 @@ interface InventoryStore :
         data class OnAccountingObjectClicked(val accountingObject: AccountingObjectDomain) :
             Intent()
 
+        data class OnInventoryNomenclatureClicked(val inventoryNomenclature: InventoryNomenclatureDomain) :
+            Intent()
+
         data class OnAccountingObjectChanged(val accountingObject: AccountingObjectDomain) :
             Intent()
+
         data class OnSelectPage(val selectedPage: Int) : Intent()
         data class OnParamClicked(val param: ParamDomain) : Intent()
         data class OnParamCrossClicked(val param: ParamDomain) : Intent()
@@ -102,6 +107,14 @@ interface InventoryStore :
             override val directions: NavDirections
                 get() = InventoryContainerComposeFragmentDirections.toAccountingObjectsDetails(
                     AccountingObjectDetailArguments(accountingObject)
+                )
+        }
+
+        data class ShowNomenclatureDetail(val nomenclatureId: String) :
+            Label(), ForwardNavigationLabel {
+            override val directions: NavDirections
+                get() = InventoryContainerComposeFragmentDirections.toNomenclatureDetail(
+                    NomenclatureDetailArguments(nomenclatureId)
                 )
         }
 
