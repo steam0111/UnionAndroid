@@ -375,6 +375,10 @@
             android:id="@+id/to_accountingObjectsDetails"
             app:destination="@id/accountingObjectsDetails" />
 
+        <action
+            android:id="@+id/to_nomenclatureDetail"
+            app:destination="@id/nomenclatureDetail" />
+
         <argument
             android:name="InventoryContainerArguments"
             app:argType="com.itrocket.union.inventoryContainer.presentation.store.InventoryContainerArguments" />
