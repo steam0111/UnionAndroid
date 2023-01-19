@@ -28,7 +28,8 @@ data class InventoryCreateDomain(
     val accountingObjects: List<AccountingObjectDomain>,
     val nomenclatureRecords: List<InventoryNomenclatureDomain>,
     val userInserted: String?,
-    val userUpdated: String?
+    val userUpdated: String?,
+    val rfids: List<String>
 ) : Parcelable {
 
     fun getTextDate() = getStringDateFromMillis(creationDate)
@@ -53,6 +54,7 @@ fun InventoryCreateDomain.toUpdateSyncEntity(): InventoryUpdateSyncEntity {
         userInserted = userInserted,
         userUpdated = userUpdated,
         inventoryBaseId = documentInfo.getFilterInventoryBaseId(),
-        nomenclatureRecords = nomenclatureRecords.map { it.toSyncEntity(id.orEmpty()) }
+        nomenclatureRecords = nomenclatureRecords.map { it.toSyncEntity(id.orEmpty()) },
+        rfids = rfids
     )
 }

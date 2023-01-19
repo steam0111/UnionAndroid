@@ -1,5 +1,6 @@
 package com.itrocket.union.inventoryCreate.presentation.store
 
+import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -93,7 +94,6 @@ class InventoryCreateStoreFactory(
                     inventoryInteractor.isExistNonMarkingAccountingObjects(
                         accountingObjects
                     )
-
                 dispatch(Result.Inventory(inventory))
                 dispatch(Result.IsDynamicSaveInventory(isDynamicSaveInventory))
                 dispatch(Result.IsExistNonMarkingAccountingObjects(isExistNonMarkingAccountingObject))
@@ -477,10 +477,19 @@ class InventoryCreateStoreFactory(
                             handledRfids = handledRfids,
                             inventoryStatus = inventoryStatus,
                             isAddNew = isAddNew,
-                            inventoryNomenclatures = inventoryNomenclatures
+                            inventoryNomenclatures = inventoryNomenclatures,
+                            nomenclatureExistRfids = getState().nomenclatureExistRfids
                         )
                     changeAccountingObjects(scannedInventoryObjects.accountingObjects)
                     changeInventoryNomenclatures(scannedInventoryObjects.inventoryNomenclatures)
+                    dispatch(
+                        Result.NomenclatureExistRfids(
+                            inventoryCreateInteractor.addInventoryExistRfids(
+                                existRfids = getState().nomenclatureExistRfids,
+                                newRfids = handledRfids
+                            )
+                        )
+                    )
                     if (scannedInventoryObjects.hasWrittenOffAccountingObjects) {
                         publish(
                             InventoryCreateStore.Label.ShowToast(
@@ -683,6 +692,8 @@ class InventoryCreateStoreFactory(
         data class IsCompleteLoading(val isLoading: Boolean) : Result()
         data class IsExistNonMarkingAccountingObjects(val isExistNonMarkingAccountingObject: Boolean) :
             Result()
+
+        data class NomenclatureExistRfids(val nomenclatureExistRfids: List<String>) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryCreateStore.State, Result> {
@@ -718,6 +729,11 @@ class InventoryCreateStoreFactory(
                     )
                 )
                 is Result.SearchInventoryNomenclatures -> copy(searchInventoryNomenclatures = result.searchInventoryNomenclatures)
+                is Result.NomenclatureExistRfids -> copy(
+                    inventoryDocument = inventoryDocument.copy(
+                        rfids = result.nomenclatureExistRfids
+                    )
+                )
             }
     }
 }

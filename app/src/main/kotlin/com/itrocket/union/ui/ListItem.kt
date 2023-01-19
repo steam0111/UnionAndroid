@@ -750,7 +750,8 @@ fun InventoryDocumentItemPreview() {
             inventoryStatus = InventoryStatus.CREATED,
             userInserted = "",
             userUpdated = "",
-            nomenclatureRecords = listOf()
+            nomenclatureRecords = listOf(),
+            rfids = listOf()
         ), isShowStatus = true
     )
 }

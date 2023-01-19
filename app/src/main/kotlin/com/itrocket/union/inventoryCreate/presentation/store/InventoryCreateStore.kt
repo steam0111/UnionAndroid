@@ -96,7 +96,8 @@ interface InventoryCreateStore :
         val searchAccountingObjects: List<AccountingObjectDomain> = listOf(),
         val searchInventoryNomenclatures: List<InventoryNomenclatureDomain> = listOf(),
         val accountingObjectCounter: AccountingObjectCounter = AccountingObjectCounter(),
-        val isExistNonMarkingAccountingObject: Boolean = false
+        val isExistNonMarkingAccountingObject: Boolean = false,
+        val nomenclatureExistRfids: List<String> = listOf()
     )
 
     sealed class Label {
