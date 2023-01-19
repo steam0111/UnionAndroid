@@ -26,6 +26,7 @@ import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
 import com.example.union_sync_impl.dao.sqlInventoryNomenclatureRecordQuery
 import com.example.union_sync_impl.dao.sqlInventoryQuery
 import com.example.union_sync_impl.dao.sqlInventoryRecordQuery
+import com.example.union_sync_impl.data.mapper.toDb
 import com.example.union_sync_impl.data.mapper.toInventoryDb
 import com.example.union_sync_impl.data.mapper.toInventorySyncEntity
 import com.example.union_sync_impl.data.mapper.toLocationSyncEntity
@@ -278,9 +279,9 @@ class InventorySyncApiImpl(
         userUpdated: String?
     ) {
         val mappedNomenclatureRecords = nomenclatureRecords.map {
-            it.copy(updateDate = System.currentTimeMillis(), userUpdated = userUpdated).toUpdate()
+            it.copy(updateDate = System.currentTimeMillis(), userUpdated = userUpdated).toDb()
         }
-        inventoryNomenclatureRecordDao.updateAll(mappedNomenclatureRecords)
+        inventoryNomenclatureRecordDao.insertAll(mappedNomenclatureRecords)
     }
 
     private suspend fun updateAccountingObjectRecords(

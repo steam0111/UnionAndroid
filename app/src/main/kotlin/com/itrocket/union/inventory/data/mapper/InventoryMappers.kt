@@ -17,7 +17,9 @@ fun List<InventoryNomenclatureRecordSyncEntity>.map(): List<InventoryNomenclatur
         bookKeepingInvoice = it.bookKeepingInvoice,
         price = it.price,
         cancel = it.cancel,
-        nomenclatureName = it.nomenclatureName
+        nomenclatureName = it.nomenclatureName,
+        userInserted = it.userInserted,
+        insertDate = it.insertDate
     )
 }
 

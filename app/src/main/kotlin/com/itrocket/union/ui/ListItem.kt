@@ -914,6 +914,8 @@ private fun InventoryNomenclatureItemPreview() {
             bookKeepingInvoice = BigDecimal(1233231),
             price = "123213",
             cancel = false,
+            insertDate = null,
+            userInserted = null
         ),
         onClick = {},
         isShowBottomLine = true
