@@ -15,5 +15,5 @@ data class InventoryNomenclatureRecordUpdate(
     val consignment: String?,
     val bookKeepingInvoice: BigDecimal?,
     val price: String?,
-    val cancel: Boolean?
+    val cancel: Boolean?,
 )

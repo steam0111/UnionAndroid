@@ -199,7 +199,7 @@ fun InventoryNomenclatureRecordDb.toSyncEntity() = InventoryNomenclatureRecordSy
     bookKeepingInvoice = bookKeepingInvoice,
     price = price,
     cancel = cancel,
-    userUpdated = userUpdated
+    userUpdated = userUpdated,
 )
 
 fun InventoryNomenclatureRecordSyncEntity.toUpdate() = InventoryNomenclatureRecordUpdate(
@@ -213,5 +213,5 @@ fun InventoryNomenclatureRecordSyncEntity.toUpdate() = InventoryNomenclatureReco
     bookKeepingInvoice = bookKeepingInvoice,
     price = price,
     cancel = cancel,
-    userUpdated = userUpdated
+    userUpdated = userUpdated,
 )

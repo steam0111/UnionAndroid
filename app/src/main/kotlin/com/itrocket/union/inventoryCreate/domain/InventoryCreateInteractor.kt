@@ -119,6 +119,7 @@ class InventoryCreateInteractor(
         handledRfids: List<String>,
         inventoryStatus: InventoryStatus,
         isAddNew: Boolean,
+        nomenclatureExistRfids: List<String>
     ): ScannedAccountingObjects {
         return withContext(coreDispatchers.io) {
             val newAccountingObjectRfids = mutableListOf<String>()
@@ -143,6 +144,16 @@ class InventoryCreateInteractor(
                     accountingObjectIndex == NO_INDEX && inventoryStatus != InventoryStatus.COMPLETED && isAddNew -> newAccountingObjectRfids.add(
                         handledRfid
                     )
+                }
+
+                if (!nomenclatureExistRfids.contains(handledRfid)) {
+                    val barcodeAndSerialNumber = sgtinFormatter.epcRfidToBarcode(handledRfid)
+                    val scannedReserves = reservesInteractor.getReserves(
+                        searchText = "",
+                        params = listOf(),
+                        barcode = barcodeAndSerialNumber.barcode
+                    )
+                    mutableReserves.addAll(scannedReserves)
                 }
 
                 val barcodeAndSerialNumber = sgtinFormatter.epcRfidToBarcode(handledRfid)
@@ -421,6 +432,8 @@ class InventoryCreateInteractor(
             }
         }
     }
+
+    fun addInventoryExistRfids(existRfids: List<String>, newRfids: List<String>) = (existRfids + newRfids).toHashSet().toList()
 
     companion object {
         private const val NO_INDEX = -1

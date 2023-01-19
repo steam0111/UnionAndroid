@@ -68,5 +68,6 @@ fun InventorySyncEntity.map(): InventoryCreateDomain =
         inventoryStatus = InventoryStatus.valueOf(inventoryStatus),
         userInserted = userInserted,
         userUpdated = userUpdated,
-        nomenclatureRecords = nomenclatureRecords.map()
+        nomenclatureRecords = nomenclatureRecords.map(),
+        rfids = rfids
     )
