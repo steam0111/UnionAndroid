@@ -99,7 +99,8 @@ fun InventoryCreateScreen(
             bottomBar = {
                 ReadingModeBottomBar(
                     readingModeTab = state.readingModeTab,
-                    onReadingModeClickListener = onReadingClickListener
+                    onReadingModeClickListener = onReadingClickListener,
+                    rfidLevel = state.readerPower
                 )
             },
             content = {
@@ -444,7 +445,10 @@ fun AttentionNotMarking() {
     ) {
         Image(painter = painterResource(R.drawable.ic_attention_circle), contentDescription = null)
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = stringResource(R.string.inventory_create_non_marking_attention), style = AppTheme.typography.caption)
+        Text(
+            text = stringResource(R.string.inventory_create_non_marking_attention),
+            style = AppTheme.typography.caption
+        )
     }
 }
 

@@ -161,18 +161,26 @@ fun StepBottomBar(
 }
 
 @Composable
-fun ReadingModeBottomBar(readingModeTab: ReadingModeTab, onReadingModeClickListener: () -> Unit) {
-    Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.BottomEnd) {
-        ReadingModeButton(readingModeTab = readingModeTab, onClick = onReadingModeClickListener)
+fun ReadingModeBottomBar(
+    readingModeTab: ReadingModeTab,
+    onReadingModeClickListener: () -> Unit,
+    rfidLevel: Int?
+) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp), contentAlignment = Alignment.BottomEnd) {
+        ReadingModeButton(
+            readingModeTab = readingModeTab,
+            onClick = onReadingModeClickListener,
+            rfidLevel
+        )
     }
 }
 
 @Composable
 @Preview
-private fun ReadingModeBottomBarPreview(){
-    ReadingModeBottomBar(readingModeTab = ReadingModeTab.RFID) {
-
-    }
+private fun ReadingModeBottomBarPreview() {
+    ReadingModeBottomBar(readingModeTab = ReadingModeTab.RFID, {}, 5)
 }
 
 @Composable

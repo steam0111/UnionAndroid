@@ -9,7 +9,6 @@ import com.itrocket.core.base.BaseExecutor
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.sgtin.IncorrectBarcodeException
 import com.itrocket.union.R
-import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailStore
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
@@ -69,6 +68,8 @@ class ReserveDetailStoreFactory(
                 dispatch(Result.ShowButtons(true))
                 dispatch(Result.Loading(false))
             }
+
+            moduleSettingsInteractor.getReaderPowerFlow { dispatch(Result.ReaderPower(it)) }
         }
 
         override suspend fun executeIntent(
@@ -79,20 +80,25 @@ class ReserveDetailStoreFactory(
                 ReserveDetailStore.Intent.OnBackClicked -> publish(
                     ReserveDetailStore.Label.GoBack
                 )
+
                 ReserveDetailStore.Intent.OnReadingModeClicked -> {
                     publish(ReserveDetailStore.Label.ShowReadingMode(getState().readingMode))
                 }
+
                 ReserveDetailStore.Intent.OnDocumentAddClicked -> {
                     //no-op
                 }
+
                 ReserveDetailStore.Intent.OnDocumentSearchClicked -> {
                     //no-op
                 }
+
                 is ReserveDetailStore.Intent.OnReadingModeTabChanged -> dispatch(
                     Result.ReadingMode(
                         intent.readingModeTab
                     )
                 )
+
                 ReserveDetailStore.Intent.OnMarkingClicked -> onMarkingClicked(getState = getState)
                 ReserveDetailStore.Intent.OnTriggerPressed -> onTriggerPressed(getState = getState)
                 ReserveDetailStore.Intent.OnTriggerReleased -> onTriggerRelease()
@@ -226,6 +232,8 @@ class ReserveDetailStoreFactory(
         data class RfidError(val rfidError: String) : Result()
         data class TerminalRemainsNumerator(val terminalRemainsNumerator: TerminalRemainsNumeratorDomain?) :
             Result()
+
+        data class ReaderPower(val readerPower: Int?) : Result()
     }
 
     private object ReducerImpl : Reducer<ReserveDetailStore.State, Result> {
@@ -240,6 +248,7 @@ class ReserveDetailStoreFactory(
                 is Result.Rfid -> copy(rfid = result.rfid)
                 is Result.RfidError -> copy(rfidError = result.rfidError)
                 is Result.TerminalRemainsNumerator -> copy(terminalRemainsNumerator = result.terminalRemainsNumerator)
+                is Result.ReaderPower -> copy(readerPower = result.readerPower)
             }
     }
 }

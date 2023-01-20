@@ -96,7 +96,8 @@ fun IdentifyScreen(
             bottomBar = {
                 BottomBar(
                     readingModeTab = state.readingModeTab,
-                    onReadingModeClickListener = onReadingModeClickListener
+                    onReadingModeClickListener = onReadingModeClickListener,
+                    rfidLevel = state.readerPower
                 )
             },
             content = {
@@ -323,11 +324,13 @@ private fun EmptyListStub(paddingValues: PaddingValues) {
 @Composable
 private fun BottomBar(
     readingModeTab: ReadingModeTab,
-    onReadingModeClickListener: () -> Unit
+    onReadingModeClickListener: () -> Unit,
+    rfidLevel: Int?
 ) {
     ReadingModeBottomBar(
         readingModeTab = readingModeTab,
-        onReadingModeClickListener = onReadingModeClickListener
+        onReadingModeClickListener = onReadingModeClickListener,
+        rfidLevel = rfidLevel
     )
 }
 

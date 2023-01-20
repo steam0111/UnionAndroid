@@ -41,6 +41,7 @@ class DataCollectStoreFactory(
             getState: () -> DataCollectStore.State
         ) {
             moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = true)
+            moduleSettingsInteractor.getReaderPowerFlow { dispatch(Result.ReaderPower(it)) }
         }
 
         override suspend fun executeIntent(
@@ -52,9 +53,11 @@ class DataCollectStoreFactory(
                 DataCollectStore.Intent.OnDropClicked -> {
                     dispatch(Result.ScanningObjects(listOf()))
                 }
+
                 DataCollectStore.Intent.OnReadingModeClicked -> {
                     publish(DataCollectStore.Label.ShowReadingMode)
                 }
+
                 is DataCollectStore.Intent.OnNewAccountingObjectRfidHandled -> {
                     val newScanningList: List<String> = dataCollectInteractor.rfidsToNewList(
                         intent.rfids,
@@ -62,6 +65,7 @@ class DataCollectStoreFactory(
                     )
                     dispatch(Result.ScanningObjects(newScanningList))
                 }
+
                 is DataCollectStore.Intent.OnNewAccountingObjectBarcodeHandled -> {
                     val newScanningList: List<String> = dataCollectInteractor.barcodeToNewList(
                         intent.barcode,
@@ -69,6 +73,7 @@ class DataCollectStoreFactory(
                     )
                     dispatch(Result.ScanningObjects(newScanningList))
                 }
+
                 is DataCollectStore.Intent.OnErrorHandled -> handleError(intent.throwable)
                 is DataCollectStore.Intent.OnReadingModeTabChanged -> dispatch(
                     Result.ReadingMode(intent.readingModeTab)
@@ -87,6 +92,7 @@ class DataCollectStoreFactory(
         ) : Result()
 
         data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
+        data class ReaderPower(val readerPower: Int?) : Result()
     }
 
     private object ReducerImpl : Reducer<DataCollectStore.State, Result> {
@@ -94,6 +100,7 @@ class DataCollectStoreFactory(
             when (result) {
                 is Result.ScanningObjects -> copy(scanningObjects = result.scanningObjects)
                 is Result.ReadingMode -> copy(readingModeTab = result.readingModeTab)
+                is Result.ReaderPower -> copy(readerPower = result.readerPower)
             }
     }
 }

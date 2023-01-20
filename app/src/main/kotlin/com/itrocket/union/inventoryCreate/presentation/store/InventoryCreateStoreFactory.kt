@@ -1,6 +1,5 @@
 package com.itrocket.union.inventoryCreate.presentation.store
 
-import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -97,6 +96,10 @@ class InventoryCreateStoreFactory(
                 dispatch(Result.Inventory(inventory))
                 dispatch(Result.IsDynamicSaveInventory(isDynamicSaveInventory))
                 dispatch(Result.IsExistNonMarkingAccountingObjects(isExistNonMarkingAccountingObject))
+                moduleSettingsInteractor.getReaderPowerFlow {
+                    dispatch(Result.ReaderPower(it))
+                    dispatch(Result.Loading(false))
+                }
             }
             dispatch(Result.Loading(false))
             if (getState().isDynamicSaveInventory && getState().inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED) {
@@ -694,6 +697,7 @@ class InventoryCreateStoreFactory(
             Result()
 
         data class NomenclatureExistRfids(val nomenclatureExistRfids: List<String>) : Result()
+        data class ReaderPower(val readerPower: Int?) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryCreateStore.State, Result> {
@@ -734,6 +738,7 @@ class InventoryCreateStoreFactory(
                         rfids = result.nomenclatureExistRfids
                     )
                 )
+                is Result.ReaderPower -> copy(readerPower = result.readerPower)
             }
     }
 }

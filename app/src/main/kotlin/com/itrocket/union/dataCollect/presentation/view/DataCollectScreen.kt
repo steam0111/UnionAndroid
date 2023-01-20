@@ -61,7 +61,8 @@ fun DataCollectScreen(
             bottomBar = {
                 ReadingModeBottomBar(
                     readingModeTab = state.readingModeTab,
-                    onReadingModeClickListener = onReadingModeClickListener
+                    onReadingModeClickListener = onReadingModeClickListener,
+                    rfidLevel = state.readerPower
                 )
             },
             content = {

@@ -19,6 +19,7 @@ import com.itrocket.union.image.domain.ImageInteractor
 import com.itrocket.union.imageViewer.domain.ImageViewerInteractor
 import com.itrocket.union.labelType.domain.LabelTypeInteractor
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
+import com.itrocket.union.readerPower.domain.ReaderPowerInteractor
 import com.itrocket.union.readingMode.domain.ReadingModeInteractor
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -42,7 +43,8 @@ class AccountingObjectDetailStoreFactory(
     private val imageViewerInteractor: ImageViewerInteractor,
     private val imageInteractor: ImageInteractor,
     private val readingModeInteractor: ReadingModeInteractor,
-    private val labelTypeInteractor: LabelTypeInteractor
+    private val labelTypeInteractor: LabelTypeInteractor,
+    private val readerPowerInteractor: ReaderPowerInteractor
 ) {
     fun create(): AccountingObjectDetailStore = object : AccountingObjectDetailStore,
         Store<AccountingObjectDetailStore.Intent, AccountingObjectDetailStore.State, AccountingObjectDetailStore.Label> by storeFactory.create(
@@ -83,6 +85,9 @@ class AccountingObjectDetailStoreFactory(
                 launch {
                     listenAccountingObjectImages()
                 }
+                launch {
+                    moduleSettingsInteractor.getReaderPowerFlow { dispatch(Result.ReaderPower(it)) }
+                }
             }
         }
 
@@ -99,35 +104,45 @@ class AccountingObjectDetailStoreFactory(
                 AccountingObjectDetailStore.Intent.OnBackClicked -> publish(
                     AccountingObjectDetailStore.Label.GoBack(AccountingObjectDetailResult(getState().accountingObjectDomain))
                 )
+
                 AccountingObjectDetailStore.Intent.OnReadingModeClicked -> {
                     publish(AccountingObjectDetailStore.Label.ShowReadingMode(getState().readingMode))
                 }
+
                 AccountingObjectDetailStore.Intent.OnDocumentAddClicked -> {
                     //no-op
                 }
+
                 AccountingObjectDetailStore.Intent.OnDocumentSearchClicked -> {
                     //no-op
                 }
+
                 is AccountingObjectDetailStore.Intent.OnPageSelected -> dispatch(
                     Result.NewPage(intent.selectedPage)
                 )
+
                 is AccountingObjectDetailStore.Intent.OnScanHandled -> onScanHandled(
                     getState = getState, scanData = intent.scanData
                 )
+
                 is AccountingObjectDetailStore.Intent.OnReadingModeTabChanged -> dispatch(
                     Result.ReadingMode(
                         intent.readingModeTab
                     )
                 )
+
                 AccountingObjectDetailStore.Intent.OnMarkingClosed -> publish(
                     AccountingObjectDetailStore.Label.ChangeSubscribeScanData(true)
                 )
+
                 is AccountingObjectDetailStore.Intent.OnManualInput -> onManualInput(
                     readingModeResult = intent.readingModeResult, getState = getState
                 )
+
                 AccountingObjectDetailStore.Intent.OnGenerateRfidClicked -> interactor.generateRfid(
                     getState().accountingObjectDomain
                 )
+
                 AccountingObjectDetailStore.Intent.OnWriteEpcClicked -> onWriteEpcClicked()
                 AccountingObjectDetailStore.Intent.OnDismissed -> onDismissed()
                 AccountingObjectDetailStore.Intent.OnTriggerPressed -> onTriggerPressed(getState)
@@ -135,29 +150,36 @@ class AccountingObjectDetailStoreFactory(
                 is AccountingObjectDetailStore.Intent.OnWriteEpcError -> onWriteEpcError(
                     intent.error
                 )
+
                 is AccountingObjectDetailStore.Intent.OnWriteEpcHandled -> onWriteEpcHandled(
                     getState().accountingObjectDomain.id, intent.rfid
                 )
+
                 AccountingObjectDetailStore.Intent.OnWriteOffClicked -> onWriteOffClicked(getState().accountingObjectDomain)
                 AccountingObjectDetailStore.Intent.OnRemoveBarcodeClicked -> onRemoveBarcodeClicked(
                     getState().accountingObjectDomain
                 )
+
                 AccountingObjectDetailStore.Intent.OnRemoveRfidClicked -> onRemoveRfidClicked(
                     getState().accountingObjectDomain
                 )
+
                 AccountingObjectDetailStore.Intent.OnAddImageClicked -> onAddImageClicked()
                 is AccountingObjectDetailStore.Intent.OnImageClicked -> onImageClicked(
                     imageDomain = intent.imageDomain,
                     images = getState().images,
                     accountingObjectId = getState().accountingObjectDomain.id
                 )
+
                 is AccountingObjectDetailStore.Intent.OnImageTaken -> onImageTaken(
                     success = intent.success, uri = intent.uri, getState = getState
                 )
+
                 AccountingObjectDetailStore.Intent.OnLabelTypeEditClicked -> onLabelTypeEditClicked()
                 is AccountingObjectDetailStore.Intent.OnLabelTypeSelected -> onLabelTypeSelected(
                     getState = getState, labelTypeId = intent.labelTypeId
                 )
+
                 is AccountingObjectDetailStore.Intent.OnTakeFromCameraClicked -> onTakeFromCamera()
                 is AccountingObjectDetailStore.Intent.OnTakeFromFilesClicked -> onTakeFromFiles()
             }
@@ -290,6 +312,7 @@ class AccountingObjectDetailStoreFactory(
                         getState().accountingObjectDomain.rfidValue.orEmpty()
                     )
                 }
+
                 serviceEntryManager.currentMode == ReadingMode.RFID -> serviceEntryManager.epcInventory()
                 else -> serviceEntryManager.startBarcodeScan()
             }
@@ -368,6 +391,7 @@ class AccountingObjectDetailStoreFactory(
         data class DialogType(val dialogType: AlertType) : Result()
         data class ImageUri(val imageUri: Uri) : Result()
         data class Images(val images: List<ImageDomain>) : Result()
+        data class ReaderPower(val readerPower: Int?) : Result()
     }
 
     private object ReducerImpl : Reducer<AccountingObjectDetailStore.State, Result> {
@@ -382,6 +406,8 @@ class AccountingObjectDetailStoreFactory(
             is Result.ImageUri -> copy(imageUri = result.imageUri)
             is Result.Images -> copy(images = result.images)
             is Result.ImageLoading -> copy(isImageLoading = result.isLoading)
+            is Result.ReaderPower -> copy(readerPower = result.readerPower)
+
         }
     }
 }
