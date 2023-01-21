@@ -7,11 +7,9 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.google.android.material.snackbar.Snackbar
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
-import com.itrocket.union.R
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailResult
 import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailComposeFragment
 import com.itrocket.union.comment.presentation.store.CommentResult
@@ -28,7 +26,6 @@ import com.itrocket.union.utils.flow.window
 import com.itrocket.union.utils.fragment.ChildBackPressedHandler
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -210,7 +207,7 @@ class InventoryCreateComposeFragment :
                         .collect {
                             withContext(Dispatchers.Main) {
                                 accept(
-                                    InventoryCreateStore.Intent.OnNewAccountingObjectBarcodeHandled(
+                                    InventoryCreateStore.Intent.OnNewBarcodeHandled(
                                         it.data
                                     )
                                 )
@@ -229,7 +226,7 @@ class InventoryCreateComposeFragment :
                         .collect { rfids ->
                             withContext(Dispatchers.Main) {
                                 accept(
-                                    InventoryCreateStore.Intent.OnNewAccountingObjectRfidHandled(
+                                    InventoryCreateStore.Intent.OnNewRfidHandled(
                                         rfids
                                     )
                                 )

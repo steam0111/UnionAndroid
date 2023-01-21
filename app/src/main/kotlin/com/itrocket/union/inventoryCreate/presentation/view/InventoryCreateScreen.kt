@@ -244,10 +244,10 @@ private fun Content(
 
 @Composable
 fun CountBar(
-    allAccountingObjects: Int,
-    findAccountingObjects: Int,
-    notFindAccountingObjects: Int,
-    newAccountingObjects: Int
+    allAccountingObjects: Long,
+    findAccountingObjects: Long,
+    notFindAccountingObjects: Long,
+    newAccountingObjects: Long
 ) {
     Row(
         modifier = Modifier

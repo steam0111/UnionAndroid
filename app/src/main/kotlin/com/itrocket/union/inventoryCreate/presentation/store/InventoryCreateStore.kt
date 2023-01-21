@@ -18,6 +18,7 @@ import com.itrocket.union.comment.presentation.store.CommentArguments
 import com.itrocket.union.comment.presentation.store.CommentResult
 import com.itrocket.union.comment.presentation.view.CommentComposeFragment
 import com.itrocket.union.comment.presentation.view.CommentComposeFragment.Companion.COMMENT_ARGS
+import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
 import com.itrocket.union.inventory.domain.entity.InventoryNomenclatureDomain
 import com.itrocket.union.inventory.presentation.store.InventoryResult
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_CODE
@@ -32,6 +33,9 @@ import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
+import com.itrocket.union.selectCount.presentation.store.SelectCountArguments
+import com.itrocket.union.selectCount.presentation.view.SelectCountComposeFragment
+import java.math.BigDecimal
 
 interface InventoryCreateStore :
     Store<InventoryCreateStore.Intent, InventoryCreateStore.State, InventoryCreateStore.Label> {
@@ -40,10 +44,13 @@ interface InventoryCreateStore :
         data class OnAccountingObjectClicked(val accountingObject: AccountingObjectDomain) :
             Intent()
 
-        data class OnNewAccountingObjectRfidHandled(val handledAccountingObjectIds: List<String>) :
+        data class OnInventoryNomenclatureClicked(val inventoryNomenclature: InventoryNomenclatureDomain) :
             Intent()
 
-        data class OnNewAccountingObjectBarcodeHandled(val barcode: String) :
+        data class OnNewRfidHandled(val handledRfids: List<String>) :
+            Intent()
+
+        data class OnNewBarcodeHandled(val barcode: String) :
             Intent()
 
         object OnBackClicked : Intent()
@@ -95,7 +102,7 @@ interface InventoryCreateStore :
         val dialogRemovedItemId: String = "",
         val searchAccountingObjects: List<AccountingObjectDomain> = listOf(),
         val searchInventoryNomenclatures: List<InventoryNomenclatureDomain> = listOf(),
-        val accountingObjectCounter: AccountingObjectCounter = AccountingObjectCounter(),
+        val inventoryObjectCounter: AccountingObjectCounter = AccountingObjectCounter(),
         val isExistNonMarkingAccountingObject: Boolean = false,
         val nomenclatureExistRfids: List<String> = listOf()
     )
@@ -159,6 +166,21 @@ interface InventoryCreateStore :
 
             override val fragment: Fragment
                 get() = ReadingModeComposeFragment()
+        }
+
+        data class ShowSelectCount(val id: String, val count: BigDecimal) : Label(),
+            ShowBottomSheetNavigationLabel {
+            override val arguments: Bundle
+                get() = bundleOf(
+                    SelectCountComposeFragment.SELECT_COUNT_ARG to SelectCountArguments(
+                        id = id,
+                        count = count
+                    )
+                )
+            override val containerId: Int = R.id.mainActivityNavHostFragment
+            override val fragment: Fragment
+                get() = SelectCountComposeFragment()
+
         }
     }
 }
