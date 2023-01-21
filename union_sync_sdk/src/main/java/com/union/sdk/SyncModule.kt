@@ -245,7 +245,7 @@ object SyncModule {
                 get(),
                 get(),
                 get(),
-                get(),
+                get()
             )
         }
         factory {

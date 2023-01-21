@@ -1,6 +1,5 @@
 package com.itrocket.union.inventoryCreate.presentation.store
 
-import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -148,7 +147,7 @@ class InventoryCreateStoreFactory(
                 }
 
                 InventoryCreateStore.Intent.OnSaveClicked -> dispatch(Result.DialogType(AlertType.SAVE))
-                is InventoryCreateStore.Intent.OnNewAccountingObjectBarcodeHandled -> {
+                is InventoryCreateStore.Intent.OnNewBarcodeHandled -> {
                     val inventoryStatus = getState().inventoryDocument.inventoryStatus
                     if (inventoryStatus != InventoryStatus.COMPLETED && getState().canUpdate) {
                         handleNewAccountingObjectBarcode(
@@ -165,12 +164,12 @@ class InventoryCreateStoreFactory(
                     }
                 }
 
-                is InventoryCreateStore.Intent.OnNewAccountingObjectRfidHandled -> {
+                is InventoryCreateStore.Intent.OnNewRfidHandled -> {
                     val inventoryStatus = getState().inventoryDocument.inventoryStatus
                     if (inventoryStatus != InventoryStatus.COMPLETED && getState().canUpdate) {
                         handleNewRfids(
                             accountingObjects = getState().inventoryDocument.accountingObjects,
-                            handledRfids = intent.handledAccountingObjectIds,
+                            handledRfids = intent.handledRfids,
                             inventoryStatus = inventoryStatus,
                             isAddNew = getState().isAddNew,
                             isShowSearch = getState().isShowSearch,
@@ -279,7 +278,19 @@ class InventoryCreateStoreFactory(
                 is InventoryCreateStore.Intent.OnAlertDismissed -> dispatch(
                     Result.DialogType(AlertType.NONE)
                 )
+                is InventoryCreateStore.Intent.OnInventoryNomenclatureClicked -> onInventoryNomenclatureClicked(
+                    intent.inventoryNomenclature
+                )
             }
+        }
+
+        private fun onInventoryNomenclatureClicked(inventoryNomenclature: InventoryNomenclatureDomain) {
+            publish(
+                InventoryCreateStore.Label.ShowSelectCount(
+                    id = inventoryNomenclature.id,
+                    count = (inventoryNomenclature.actualCount ?: 0).toBigDecimal()
+                )
+            )
         }
 
         private suspend fun onCommentResultHandled(
@@ -338,7 +349,7 @@ class InventoryCreateStoreFactory(
             changeAccountingObjects(inventoryAccountingObjects)
 
             dispatch(Result.DialogRemovedItemId(""))
-            updateAccountingObjectCounter(getState)
+            updateInventoryCounter(getState)
             tryDynamicSendInventorySave(
                 getState = getState,
                 accountingObjects = getState().inventoryDocument.accountingObjects,
@@ -367,7 +378,7 @@ class InventoryCreateStoreFactory(
                         )
                     )
                 }
-                updateAccountingObjectCounter(getState)
+                updateInventoryCounter(getState)
                 tryDynamicSendInventorySave(
                     getState = getState,
                     accountingObjects = getState().inventoryDocument.accountingObjects,
@@ -508,7 +519,7 @@ class InventoryCreateStoreFactory(
                             getState = getState
                         )
                     }
-                    updateAccountingObjectCounter(getState)
+                    updateInventoryCounter(getState)
                     tryDynamicSendInventorySave(
                         getState = getState,
                         accountingObjects = getState().inventoryDocument.accountingObjects,
@@ -562,7 +573,7 @@ class InventoryCreateStoreFactory(
                             getState = getState
                         )
                     }
-                    updateAccountingObjectCounter(getState)
+                    updateInventoryCounter(getState)
                     tryDynamicSendInventorySave(
                         getState = getState,
                         accountingObjects = getState().inventoryDocument.accountingObjects,
@@ -595,7 +606,7 @@ class InventoryCreateStoreFactory(
             )
             changeAccountingObjects(accountingObjects)
             dispatch(Result.DialogType(AlertType.NONE))
-            updateAccountingObjectCounter(getState)
+            updateInventoryCounter(getState)
         }
 
         private suspend fun listenInventoryObjects(
@@ -624,17 +635,18 @@ class InventoryCreateStoreFactory(
                     )
                 )
             }
-            updateAccountingObjectCounter(getState)
+            updateInventoryCounter(getState)
             dispatch(Result.Loading(false))
         }
 
-        private fun updateAccountingObjectCounter(getState: () -> InventoryCreateStore.State) {
+        private suspend fun updateInventoryCounter(getState: () -> InventoryCreateStore.State) {
             val accountingObjects = getState().inventoryDocument.accountingObjects
-
+            val inventoryNomenclatures = getState().inventoryDocument.nomenclatureRecords
             dispatch(
-                Result.CountOfAccountingObjects(
-                    accountingObjectCounter = inventoryCreateInteractor.getAccountingObjectCount(
-                        accountingObjects
+                Result.CountOfInventoryObjects(
+                    inventoryObjectCounter = inventoryCreateInteractor.getInventoryObjectCount(
+                        accountingObjects = accountingObjects,
+                        inventoryNomenclatures = inventoryNomenclatures
                     )
                 )
             )
@@ -685,8 +697,8 @@ class InventoryCreateStoreFactory(
         data class IsDynamicSaveInventory(val isDynamicSaveInventory: Boolean) : Result()
         data class CanUpdate(val canUpdate: Boolean) : Result()
         data class CanComplete(val canComplete: Boolean) : Result()
-        data class CountOfAccountingObjects(
-            val accountingObjectCounter: AccountingObjectCounter
+        data class CountOfInventoryObjects(
+            val inventoryObjectCounter: AccountingObjectCounter
         ) : Result()
 
         data class IsCompleteLoading(val isLoading: Boolean) : Result()
@@ -715,7 +727,7 @@ class InventoryCreateStoreFactory(
                 is Result.SearchAccountingObjects -> copy(searchAccountingObjects = result.searchAccountingObjects)
                 is Result.CanUpdate -> copy(canUpdate = result.canUpdate)
                 is Result.IsDynamicSaveInventory -> copy(isDynamicSaveInventory = result.isDynamicSaveInventory)
-                is Result.CountOfAccountingObjects -> copy(accountingObjectCounter = result.accountingObjectCounter)
+                is Result.CountOfInventoryObjects -> copy(inventoryObjectCounter = result.inventoryObjectCounter)
                 is Result.DialogType -> copy(dialogType = result.dialogType)
                 is Result.DialogRemovedItemId -> copy(dialogRemovedItemId = result.accountingObjectId)
                 is Result.CanComplete -> copy(canComplete = result.canComplete)
