@@ -4,7 +4,7 @@ minSdk = "21"
 targetSdk = "30"
 java = "11"
 
-versionCode = "37"
+versionCode = "39"
 
 kotlin = "1.6.10"
 agp = "7.3.0"
@@ -44,8 +44,8 @@ utils = "1.0.4"
 
 database = "2.4.2"
 
-scannerclient = "1.0.9"
-scannerclient_impl = "1.1.2"
+scannerclient = "1.0.13"
+scannerclient_impl = "1.1.8"
 
 junit = "4.13.2"
 

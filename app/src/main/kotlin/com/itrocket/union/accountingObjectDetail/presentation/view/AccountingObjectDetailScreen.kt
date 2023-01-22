@@ -342,16 +342,6 @@ private fun ListInfo(
                     item {
                         Spacer(modifier = Modifier.height(12.dp))
                         BaseButton(
-                            text = stringResource(R.string.common_generate_rfid),
-                            onClick = onGenerateRfidClickListener,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                        )
-                    }
-                    item {
-                        Spacer(modifier = Modifier.height(12.dp))
-                        BaseButton(
                             text = stringResource(R.string.common_write_epc),
                             onClick = onWriteEpcTagClickListener,
                             modifier = Modifier

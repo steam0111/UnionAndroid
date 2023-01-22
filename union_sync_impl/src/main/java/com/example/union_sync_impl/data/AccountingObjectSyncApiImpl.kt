@@ -13,6 +13,7 @@ import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectWriteOff
 import com.example.union_sync_api.entity.EnumType
+import com.example.union_sync_api.entity.PropertyCountSyncEntity
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectDetailQuery
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
@@ -255,5 +256,10 @@ class AccountingObjectSyncApiImpl(
                 rfidValue = rfid
             )
         )
+    }
+
+    override suspend fun getPropertyCount(): PropertyCountSyncEntity {
+        val propertyCount = accountingObjectsDao.getPropertyCount()
+        return PropertyCountSyncEntity(propertyCount.positionsCount, propertyCount.allCount)
     }
 }

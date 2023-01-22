@@ -60,6 +60,7 @@
     <string name="common_barcode_error">Штрих-код не найден</string>
     <string name="common_sn_error">Серийный номер не найден</string>
     <string name="common_exist_error">Этот объект уже добавлен</string>
+    <string name="common_close">Закрыть</string>
 
     <string name="common_server_validate_error">Введен неправильный сервер или порт</string>
     <!-- Splash -->
@@ -193,7 +194,7 @@
     <string name="accounting_object_detail_reading_mode">Режим считывания</string>
     <string name="accounting_object_detail_show_full_characteristics">Показать все характеристики</string>
     <string name="accounting_object_detail_main">Основные</string>
-    <string name="accounting_object_detail_write_epc_error">Не удалось записать метку</string>
+    <string name="accounting_object_detail_write_epc_error">Не удалось записать метку.</string>
     <string name="accounting_object_detail_write_epc_success">Метка успешно записана</string>
 
     <!-- Status -->
@@ -487,4 +488,5 @@
 
     <string name="imported">"Загружено: %1$s/%2$s"</string>
     <string name="exported">"Выгружено: %1$s/%2$s"</string>
+    <string name="property_info_text">Количество позиций: %1$s \nСуммарное количество: %2$s</string>
 </resources>

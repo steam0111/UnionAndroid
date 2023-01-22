@@ -1,9 +1,5 @@
 package com.itrocket.union.scanner
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import ru.interid.scannerclient_impl.platform.entry.ServiceEntry
 import ru.interid.scannerclient_impl.platform.entry.ServiceResponseFlowProvider
@@ -22,6 +18,7 @@ import ru.interid.scannerclient_impl.platform.entry.usecase.StopBarcodeScan
 import ru.interid.scannerclient_impl.platform.entry.usecase.StopRfidScan
 import ru.interid.scannerclient_impl.platform.entry.usecase.WriteEpcTag
 import ru.interid.scannerclient_impl.platform.entry.usecase.WriteEpcTagByEpcKey
+import ru.interid.scannerclient_impl.platform.entry.usecase.WriteEpcTagWithRetry
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 import ru.interid.scannerclient_impl.screen.settings.data.PreferenceScannerSettingsDataStore
 import ru.interid.scannerclient_impl.screen.settings.data.ScannerSettingsDataSource
@@ -55,6 +52,11 @@ object ScannerModule {
             ServiceEntryManager(serviceUseCases = get())
         }
         factory {
+            WriteEpcTagWithRetry(
+                serviceEntry = get()
+            )
+        }
+        factory {
             ServiceUseCases(
                 serviceResponseFlowProvider = get(),
                 startBarcodeScan = get(),
@@ -76,7 +78,8 @@ object ScannerModule {
                 saveKeyCode = get(),
                 stopRfidScan = get(),
                 writeEpcTag = get(),
-                writeEpcTagByEpcKey = get()
+                writeEpcTagByEpcKey = get(),
+                writeEpcTagWithRetry = get()
             )
         }
         factory {

@@ -62,11 +62,12 @@ fun BaseToolbar(
             .padding(vertical = 18.dp, horizontal = 16.dp)
     ) {
         if (startImageId != null) {
-            val iconColor = if (AppTheme.colors.mainColor == AppTheme.colors.appBarBackgroundColor) {
-                AppTheme.colors.appBarTextColor
-            } else {
-                AppTheme.colors.mainColor
-            }
+            val iconColor =
+                if (AppTheme.colors.mainColor == AppTheme.colors.appBarBackgroundColor) {
+                    AppTheme.colors.appBarTextColor
+                } else {
+                    AppTheme.colors.mainColor
+                }
             Image(
                 painter = painterResource(startImageId),
                 contentDescription = null,
@@ -100,6 +101,7 @@ fun SearchToolbar(
     onBackClickListener: () -> Unit,
     onSearchClickListener: (() -> Unit),
     onFilterClickListener: (() -> Unit)? = null,
+    onInfoClickListener: (() -> Unit)? = null,
     onSearchTextChanged: ((String) -> Unit),
     searchText: String,
     isShowSearch: Boolean,
@@ -199,6 +201,17 @@ fun SearchToolbar(
                     modifier = Modifier.weight(8f)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
+                if (onInfoClickListener != null) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_attention_circle),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(iconColor),
+                        modifier = Modifier
+                            .weight(1f, false)
+                            .clickableUnbounded(onClick = onInfoClickListener)
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                }
                 Image(
                     painter = painterResource(R.drawable.ic_search_white),
                     contentDescription = null,

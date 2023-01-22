@@ -122,6 +122,21 @@ class AccountingObjectStoreFactory(
                         offset = it
                     )
                 }
+
+                AccountingObjectStore.Intent.OnInfoClicked -> {
+                    val propertyCount = accountingObjectInteractor.getPropertyCount()
+                    dispatch(
+                        Result.PropertyCount(
+                            positionsCount = propertyCount.positionsCount,
+                            allCount = propertyCount.allCount
+                        )
+                    )
+                    dispatch(Result.IsPropertyDialogVisible(true))
+                }
+
+                AccountingObjectStore.Intent.DismissDialog -> {
+                    dispatch(Result.IsPropertyDialogVisible(false))
+                }
             }
         }
 
@@ -181,6 +196,8 @@ class AccountingObjectStoreFactory(
         data class SearchText(val searchText: String) : Result()
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
         data class IsListEndReached(val isListEndReached: Boolean) : Result()
+        data class IsPropertyDialogVisible(val isVisible: Boolean) : Result()
+        data class PropertyCount(val positionsCount: Long, val allCount: Long) : Result()
     }
 
     private object ReducerImpl : Reducer<AccountingObjectStore.State, Result> {
@@ -192,6 +209,11 @@ class AccountingObjectStoreFactory(
                 is Result.IsShowSearch -> copy(isShowSearch = result.isShowSearch)
                 is Result.SearchText -> copy(searchText = result.searchText)
                 is Result.IsListEndReached -> copy(isListEndReached = result.isListEndReached)
+                is Result.IsPropertyDialogVisible -> copy(isInfoDialogVisible = result.isVisible)
+                is Result.PropertyCount -> copy(
+                    positionsCount = result.positionsCount,
+                    allCount = result.allCount
+                )
             }
     }
 }

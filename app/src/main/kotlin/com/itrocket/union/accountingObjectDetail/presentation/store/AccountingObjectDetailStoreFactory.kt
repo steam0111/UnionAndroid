@@ -44,18 +44,16 @@ class AccountingObjectDetailStoreFactory(
     private val readingModeInteractor: ReadingModeInteractor,
     private val labelTypeInteractor: LabelTypeInteractor
 ) {
-    fun create(): AccountingObjectDetailStore =
-        object : AccountingObjectDetailStore,
-            Store<AccountingObjectDetailStore.Intent, AccountingObjectDetailStore.State, AccountingObjectDetailStore.Label> by storeFactory.create(
-                name = "AccountingObjectDetailStore",
-                initialState = AccountingObjectDetailStore.State(
-                    accountingObjectDomain = accountingObjectDetailArguments.argument,
-                    isLoading = true
-                ),
-                bootstrapper = SimpleBootstrapper(Unit),
-                executorFactory = ::createExecutor,
-                reducer = ReducerImpl
-            ) {}
+    fun create(): AccountingObjectDetailStore = object : AccountingObjectDetailStore,
+        Store<AccountingObjectDetailStore.Intent, AccountingObjectDetailStore.State, AccountingObjectDetailStore.Label> by storeFactory.create(
+            name = "AccountingObjectDetailStore",
+            initialState = AccountingObjectDetailStore.State(
+                accountingObjectDomain = accountingObjectDetailArguments.argument, isLoading = true
+            ),
+            bootstrapper = SimpleBootstrapper(Unit),
+            executorFactory = ::createExecutor,
+            reducer = ReducerImpl
+        ) {}
 
     private fun createExecutor(): Executor<AccountingObjectDetailStore.Intent, Unit, AccountingObjectDetailStore.State, Result, AccountingObjectDetailStore.Label> =
         AccountingObjectDetailExecutor()
@@ -65,8 +63,7 @@ class AccountingObjectDetailStoreFactory(
             context = coreDispatchers.ui
         ) {
         override suspend fun executeAction(
-            action: Unit,
-            getState: () -> AccountingObjectDetailStore.State
+            action: Unit, getState: () -> AccountingObjectDetailStore.State
         ) {
 
             coroutineScope {
@@ -115,8 +112,7 @@ class AccountingObjectDetailStoreFactory(
                     Result.NewPage(intent.selectedPage)
                 )
                 is AccountingObjectDetailStore.Intent.OnScanHandled -> onScanHandled(
-                    getState = getState,
-                    scanData = intent.scanData
+                    getState = getState, scanData = intent.scanData
                 )
                 is AccountingObjectDetailStore.Intent.OnReadingModeTabChanged -> dispatch(
                     Result.ReadingMode(
@@ -127,8 +123,7 @@ class AccountingObjectDetailStoreFactory(
                     AccountingObjectDetailStore.Label.ChangeSubscribeScanData(true)
                 )
                 is AccountingObjectDetailStore.Intent.OnManualInput -> onManualInput(
-                    readingModeResult = intent.readingModeResult,
-                    getState = getState
+                    readingModeResult = intent.readingModeResult, getState = getState
                 )
                 AccountingObjectDetailStore.Intent.OnGenerateRfidClicked -> interactor.generateRfid(
                     getState().accountingObjectDomain
@@ -137,10 +132,11 @@ class AccountingObjectDetailStoreFactory(
                 AccountingObjectDetailStore.Intent.OnDismissed -> onDismissed()
                 AccountingObjectDetailStore.Intent.OnTriggerPressed -> onTriggerPressed(getState)
                 AccountingObjectDetailStore.Intent.OnTriggerReleased -> onTriggerRelease()
-                is AccountingObjectDetailStore.Intent.OnWriteEpcError -> onWriteEpcError()
+                is AccountingObjectDetailStore.Intent.OnWriteEpcError -> onWriteEpcError(
+                    intent.error
+                )
                 is AccountingObjectDetailStore.Intent.OnWriteEpcHandled -> onWriteEpcHandled(
-                    getState().accountingObjectDomain.id,
-                    intent.rfid
+                    getState().accountingObjectDomain.id, intent.rfid
                 )
                 AccountingObjectDetailStore.Intent.OnWriteOffClicked -> onWriteOffClicked(getState().accountingObjectDomain)
                 AccountingObjectDetailStore.Intent.OnRemoveBarcodeClicked -> onRemoveBarcodeClicked(
@@ -156,14 +152,11 @@ class AccountingObjectDetailStoreFactory(
                     accountingObjectId = getState().accountingObjectDomain.id
                 )
                 is AccountingObjectDetailStore.Intent.OnImageTaken -> onImageTaken(
-                    success = intent.success,
-                    uri = intent.uri,
-                    getState = getState
+                    success = intent.success, uri = intent.uri, getState = getState
                 )
                 AccountingObjectDetailStore.Intent.OnLabelTypeEditClicked -> onLabelTypeEditClicked()
                 is AccountingObjectDetailStore.Intent.OnLabelTypeSelected -> onLabelTypeSelected(
-                    getState = getState,
-                    labelTypeId = intent.labelTypeId
+                    getState = getState, labelTypeId = intent.labelTypeId
                 )
                 is AccountingObjectDetailStore.Intent.OnTakeFromCameraClicked -> onTakeFromCamera()
                 is AccountingObjectDetailStore.Intent.OnTakeFromFilesClicked -> onTakeFromFiles()
@@ -187,8 +180,7 @@ class AccountingObjectDetailStoreFactory(
         }
 
         private suspend fun onLabelTypeSelected(
-            getState: () -> AccountingObjectDetailStore.State,
-            labelTypeId: String
+            getState: () -> AccountingObjectDetailStore.State, labelTypeId: String
         ) {
             interactor.updateLabelType(
                 accountingObjectDomain = getState().accountingObjectDomain,
@@ -207,9 +199,7 @@ class AccountingObjectDetailStoreFactory(
         }
 
         private suspend fun onImageTaken(
-            success: Boolean,
-            uri: Uri?,
-            getState: () -> AccountingObjectDetailStore.State
+            success: Boolean, uri: Uri?, getState: () -> AccountingObjectDetailStore.State
         ) {
             val imageUri = uri ?: getState().imageUri
             dispatch(Result.ImageLoading(true))
@@ -233,9 +223,7 @@ class AccountingObjectDetailStoreFactory(
         }
 
         private fun onImageClicked(
-            images: List<ImageDomain>,
-            imageDomain: ImageDomain,
-            accountingObjectId: String
+            images: List<ImageDomain>, imageDomain: ImageDomain, accountingObjectId: String
         ) {
             publish(
                 AccountingObjectDetailStore.Label.ShowImageViewer(
@@ -269,8 +257,18 @@ class AccountingObjectDetailStoreFactory(
             dispatch(Result.RfidError(""))
         }
 
-        private fun onWriteEpcError() {
-            dispatch(Result.RfidError(errorInteractor.getMessageByResId(R.string.accounting_object_detail_write_epc_error)))
+        private fun onWriteEpcError(error: String) {
+            val errorMessage = if (error.isNotBlank()) {
+                "\n${error}"
+            } else {
+                ""
+            }
+
+            dispatch(
+                Result.RfidError(
+                    errorInteractor.getMessageByResId(R.string.accounting_object_detail_write_epc_error) + errorMessage
+                )
+            )
         }
 
         private suspend fun onWriteEpcHandled(accountingObjectId: String, rfid: String) {
@@ -306,16 +304,14 @@ class AccountingObjectDetailStoreFactory(
         }
 
         private fun onManualInput(
-            readingModeResult: ReadingModeResult,
-            getState: () -> AccountingObjectDetailStore.State
+            readingModeResult: ReadingModeResult, getState: () -> AccountingObjectDetailStore.State
         ) {
             dispatch(Result.ReadingMode(readingModeResult.readingModeTab))
             onScanHandled(getState = getState, scanData = readingModeResult.scanData)
         }
 
         private fun onScanHandled(
-            getState: () -> AccountingObjectDetailStore.State,
-            scanData: String
+            getState: () -> AccountingObjectDetailStore.State, scanData: String
         ) {
             val canChangeScanData =
                 getState().canUpdate && getState().dialogType != AlertType.WRITE_EPC
@@ -375,18 +371,17 @@ class AccountingObjectDetailStoreFactory(
     }
 
     private object ReducerImpl : Reducer<AccountingObjectDetailStore.State, Result> {
-        override fun AccountingObjectDetailStore.State.reduce(result: Result) =
-            when (result) {
-                is Result.Loading -> copy(isLoading = result.isLoading)
-                is Result.NewPage -> copy(selectedPage = result.page)
-                is Result.AccountingObject -> copy(accountingObjectDomain = result.obj)
-                is Result.ReadingMode -> copy(readingMode = result.readingModeTab)
-                is Result.CanUpdate -> copy(canUpdate = result.canUpdate)
-                is Result.DialogType -> copy(dialogType = result.dialogType)
-                is Result.RfidError -> copy(rfidError = result.rfidError)
-                is Result.ImageUri -> copy(imageUri = result.imageUri)
-                is Result.Images -> copy(images = result.images)
-                is Result.ImageLoading -> copy(isImageLoading = result.isLoading)
-            }
+        override fun AccountingObjectDetailStore.State.reduce(result: Result) = when (result) {
+            is Result.Loading -> copy(isLoading = result.isLoading)
+            is Result.NewPage -> copy(selectedPage = result.page)
+            is Result.AccountingObject -> copy(accountingObjectDomain = result.obj)
+            is Result.ReadingMode -> copy(readingMode = result.readingModeTab)
+            is Result.CanUpdate -> copy(canUpdate = result.canUpdate)
+            is Result.DialogType -> copy(dialogType = result.dialogType)
+            is Result.RfidError -> copy(rfidError = result.rfidError)
+            is Result.ImageUri -> copy(imageUri = result.imageUri)
+            is Result.Images -> copy(images = result.images)
+            is Result.ImageLoading -> copy(isImageLoading = result.isLoading)
+        }
     }
 }

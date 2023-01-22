@@ -157,6 +157,14 @@ class InventoryCreateInteractor(
                     )
                     mutableReserves.addAll(scannedReserves)
                 }
+
+                val barcodeAndSerialNumber = sgtinFormatter.epcRfidToBarcode(handledRfid)
+                val scannedReserves = reservesInteractor.getReserves(
+                    searchText = "",
+                    params = listOf(),
+                    barcode = barcodeAndSerialNumber.barcode
+                )
+                mutableReserves.addAll(scannedReserves)
             }
 
             val newInventoryNomenclatures = updateInventoryNomenclatures(

@@ -31,6 +31,7 @@ import com.itrocket.union.reserves.presentation.store.ReservesStore
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.ReservesItem
 import com.itrocket.union.ui.SearchToolbar
+import com.itrocket.union.ui.listAction.PropertyInfoAlertDialog
 import com.itrocket.utils.paging.subscribePagingListIndex
 import java.math.BigDecimal
 
@@ -43,7 +44,9 @@ fun ReservesScreen(
     onFilterClickListener: () -> Unit,
     onReservesListener: (ReservesDomain) -> Unit,
     onSearchTextChanged: (String) -> Unit,
-    onLoadNext: () -> Unit
+    onLoadNext: () -> Unit,
+    onInfoClicked: () -> Unit,
+    onDialogDismiss: () -> Unit
 ) {
     AppTheme {
         Column(
@@ -59,7 +62,8 @@ fun ReservesScreen(
                 onSearchTextChanged = onSearchTextChanged,
                 isShowSearch = state.isShowSearch,
                 searchText = state.searchText,
-                isFilterApplied = state.params.isFilterApplied()
+                isFilterApplied = state.params.isFilterApplied(),
+                onInfoClickListener = onInfoClicked
             )
             ReservesList(
                 reserves = state.reserves,
@@ -70,6 +74,16 @@ fun ReservesScreen(
                 onLoadNext = onLoadNext,
                 isLoading = state.isLoading,
                 isEndReached = state.isListEndReached
+            )
+        }
+        if (state.isInfoDialogVisible) {
+            PropertyInfoAlertDialog(
+                onDismiss = onDialogDismiss,
+                text = stringResource(
+                    id = R.string.property_info_text,
+                    state.positionsCount,
+                    state.allCount
+                )
             )
         }
     }
@@ -208,5 +222,5 @@ fun ReservesScreenPreview() {
             )
         ),
         params = listOf()
-    ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {})
+    ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {}, {})
 }

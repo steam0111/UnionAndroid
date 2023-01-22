@@ -8,6 +8,7 @@ import androidx.room.RawQuery
 import androidx.room.Update
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.union_sync_impl.entity.FullReserve
+import com.example.union_sync_impl.entity.PropertyCountEntity
 import com.example.union_sync_impl.entity.ReserveDb
 import com.example.union_sync_impl.entity.ReserveLabelTypeUpdate
 import com.example.union_sync_impl.entity.ReserveUpdate
@@ -91,4 +92,7 @@ interface ReserveDao {
 
     @Update(entity = ReserveDb::class)
     suspend fun update(ReserveDb: ReserveLabelTypeUpdate)
+
+    @Query("SELECT COUNT(*) as positionsCount, SUM(count) as allCount FROM reserves")
+    suspend fun getPropertyCount(): PropertyCountEntity
 }

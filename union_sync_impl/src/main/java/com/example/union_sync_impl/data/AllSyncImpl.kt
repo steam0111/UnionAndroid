@@ -59,6 +59,8 @@ class AllSyncImpl(
         )
 
         val duration = measureTime {
+            Timber.tag(SYNC_TAG).d("start sync")
+
             val syncInfo = syncControllerApi.apiSyncPost(
                 StarSyncRequestV2(
                     dateTimeFrom = dateTime,
