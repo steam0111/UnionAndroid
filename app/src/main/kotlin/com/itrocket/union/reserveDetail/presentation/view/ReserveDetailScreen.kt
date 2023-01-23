@@ -71,7 +71,8 @@ fun ReserveDetailScreen(
             bottomBar = {
                 BottomBar(
                     onReadingModeClickListener = onReadingModeClickListener,
-                    readingModeTab = state.readingMode
+                    readingModeTab = state.readingMode,
+                    readerPower = state.readerPower
                 )
             },
             modifier = Modifier.padding(
@@ -150,11 +151,13 @@ private fun Toolbar(
 @Composable
 private fun BottomBar(
     readingModeTab: ReadingModeTab,
-    onReadingModeClickListener: () -> Unit
+    onReadingModeClickListener: () -> Unit,
+    readerPower: Int?
 ) {
     ReadingModeBottomBar(
         readingModeTab = readingModeTab,
-        onReadingModeClickListener = onReadingModeClickListener
+        onReadingModeClickListener = onReadingModeClickListener,
+        rfidLevel = readerPower
     )
 }
 

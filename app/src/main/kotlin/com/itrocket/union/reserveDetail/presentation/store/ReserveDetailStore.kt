@@ -48,7 +48,8 @@ interface ReserveDetailStore :
         val rfid: String? = null,
         val dialogType: AlertType = AlertType.NONE,
         val rfidError: String = "",
-        val terminalRemainsNumerator: TerminalRemainsNumeratorDomain? = null
+        val terminalRemainsNumerator: TerminalRemainsNumeratorDomain? = null,
+        val readerPower: Int? = null
     )
 
     sealed class Label {

@@ -277,7 +277,7 @@ fun OutlinedImageButton(
 }
 
 @Composable
-fun ReadingModeButton(readingModeTab: ReadingModeTab, onClick: () -> Unit) {
+fun ReadingModeButton(readingModeTab: ReadingModeTab, onClick: () -> Unit, rfidLevel: Int?) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -300,7 +300,8 @@ fun ReadingModeButton(readingModeTab: ReadingModeTab, onClick: () -> Unit) {
         Image(painter = painterResource(R.drawable.ic_reading), contentDescription = null)
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = stringResource(readingModeTab.textId),
+            text = rfidLevel?.let { "${stringResource(readingModeTab.textId)} $it" }
+                ?: stringResource(readingModeTab.textId),
             style = AppTheme.typography.body2,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
@@ -315,9 +316,7 @@ fun ReadingModeButton(readingModeTab: ReadingModeTab, onClick: () -> Unit) {
 @Composable
 @Preview
 fun ReadingModeButtonPreview() {
-    ReadingModeButton(readingModeTab = ReadingModeTab.RFID) {
-
-    }
+    ReadingModeButton(readingModeTab = ReadingModeTab.RFID, {}, 5)
 }
 
 @Composable

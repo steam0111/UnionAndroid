@@ -73,6 +73,7 @@ interface AccountingObjectDetailStore :
         val rfidError: String = "",
         val imageUri: Uri? = null,
         val images: List<ImageDomain> = listOf(),
+        val readerPower: Int? = null
     )
 
     sealed class Label {

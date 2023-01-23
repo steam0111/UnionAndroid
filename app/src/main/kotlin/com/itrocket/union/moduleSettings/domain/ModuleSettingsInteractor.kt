@@ -38,6 +38,14 @@ class ModuleSettingsInteractor(
         (repository.getReaderPower().firstOrNull() ?: 0) / READER_POWER_FACTOR
     }
 
+    suspend fun getReaderPowerFlow(onNewValue: (Int) -> Unit) = withContext(coreDispatchers.io) {
+        repository.getReaderPower().collect {
+            withContext(coreDispatchers.ui) {
+                onNewValue((it ?: 0) / READER_POWER_FACTOR)
+            }
+        }
+    }
+
     suspend fun applyChanges(
         defaultService: String,
         keyCode: Int,

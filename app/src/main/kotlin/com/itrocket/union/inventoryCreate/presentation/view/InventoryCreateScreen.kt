@@ -115,7 +115,8 @@ fun InventoryCreateScreen(
             bottomBar = {
                 ReadingModeBottomBar(
                     readingModeTab = state.readingModeTab,
-                    onReadingModeClickListener = onReadingClickListener
+                    onReadingModeClickListener = onReadingClickListener,
+                    rfidLevel = state.readerPower
                 )
             },
             content = {

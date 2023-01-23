@@ -32,7 +32,8 @@ interface DataCollectStore :
         val scanningObjects: List<String> = listOf(),
         val selectedPage: Int = 0,
         val count: Int = 0,
-        val readingModeTab: ReadingModeTab = ReadingModeTab.RFID
+        val readingModeTab: ReadingModeTab = ReadingModeTab.RFID,
+        val readerPower: Int? = null
     )
 
     sealed class Label {

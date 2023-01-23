@@ -151,7 +151,8 @@ fun AccountingObjectDetailScreen(
             bottomBar = {
                 BottomBar(
                     onReadingModeClickListener = onReadingModeClickListener,
-                    readingModeTab = state.readingMode
+                    readingModeTab = state.readingMode,
+                    rfidLevel = state.readerPower
                 )
             },
             modifier = Modifier.padding(
@@ -173,7 +174,7 @@ fun AccountingObjectDetailScreen(
                 val title = state.rfidError.ifEmpty {
                     stringResource(R.string.common_write_epc_dialog_title)
                 }
-                val textColor = if(state.rfidError.isEmpty()) black else red5
+                val textColor = if (state.rfidError.isEmpty()) black else red5
                 InfoDialog(
                     title = title,
                     textColor = textColor,
@@ -423,7 +424,7 @@ private fun Toolbar(
             .padding(horizontal = 16.dp)
     ) {
         Image(
-            painter = painterResource(R.drawable.ic_cross),
+            painter = painterResource(R.drawable.ic_arrow_back),
             contentDescription = null,
             modifier = Modifier.clickableUnbounded(
                 onClick = onBackClickListener
@@ -449,11 +450,13 @@ private fun Toolbar(
 @Composable
 private fun BottomBar(
     readingModeTab: ReadingModeTab,
-    onReadingModeClickListener: () -> Unit
+    onReadingModeClickListener: () -> Unit,
+    rfidLevel: Int?
 ) {
     ReadingModeBottomBar(
         readingModeTab = readingModeTab,
-        onReadingModeClickListener = onReadingModeClickListener
+        onReadingModeClickListener = onReadingModeClickListener,
+        rfidLevel = rfidLevel
     )
 }
 

@@ -111,7 +111,8 @@ interface InventoryCreateStore :
         val inventoryObjectCounter: AccountingObjectCounter = AccountingObjectCounter(),
         val isExistNonMarkingAccountingObject: Boolean = false,
         val nomenclatureExistRfids: List<String> = listOf(),
-        val selectedPage: InventoryPage = InventoryPage.ACCOUNTING_OBJECT
+        val selectedPage: InventoryPage = InventoryPage.ACCOUNTING_OBJECT,
+        val readerPower: Int? = null
     )
 
     sealed class Label {

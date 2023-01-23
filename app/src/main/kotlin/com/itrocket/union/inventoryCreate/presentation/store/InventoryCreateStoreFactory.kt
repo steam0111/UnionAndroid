@@ -98,6 +98,10 @@ class InventoryCreateStoreFactory(
                 dispatch(Result.Inventory(inventory))
                 dispatch(Result.IsDynamicSaveInventory(isDynamicSaveInventory))
                 dispatch(Result.IsExistNonMarkingAccountingObjects(isExistNonMarkingAccountingObject))
+                moduleSettingsInteractor.getReaderPowerFlow {
+                    dispatch(Result.ReaderPower(it))
+                    dispatch(Result.Loading(false))
+                }
             }
             dispatch(Result.Loading(false))
             if (getState().isDynamicSaveInventory && getState().inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED) {
@@ -753,6 +757,7 @@ class InventoryCreateStoreFactory(
 
         data class NomenclatureExistRfids(val nomenclatureExistRfids: List<String>) : Result()
         data class Page(val inventoryPage: InventoryPage) : Result()
+        data class ReaderPower(val readerPower: Int?) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryCreateStore.State, Result> {
@@ -794,6 +799,7 @@ class InventoryCreateStoreFactory(
                     )
                 )
                 is Result.Page -> copy(selectedPage = result.inventoryPage)
+                is Result.ReaderPower -> copy(readerPower = result.readerPower)
             }
     }
 }

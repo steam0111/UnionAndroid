@@ -65,6 +65,8 @@ class IdentifyStoreFactory(
                     )
                 )
             )
+
+            moduleSettingsInteractor.getReaderPowerFlow { dispatch(Result.ReaderPower(it)) }
             dispatch(Result.ReadingMode(moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = true)))
         }
 
@@ -77,22 +79,27 @@ class IdentifyStoreFactory(
                 IdentifyStore.Intent.OnDropClicked -> {
                     dispatch(Result.AccountingObjects(listOf()))
                 }
+
                 IdentifyStore.Intent.OnReadingModeClicked -> {
                     publish(IdentifyStore.Label.ShowReadingMode)
                 }
+
                 is IdentifyStore.Intent.OnItemClicked -> {
                     publish(IdentifyStore.Label.ShowActions(intent.accountingObject))
                 }
+
                 is IdentifyStore.Intent.OnNewRfidHandled -> handleRfid(
                     rfids = intent.rfids,
                     getState = getState
                 )
+
                 is IdentifyStore.Intent.OnNewBarcodeHandled -> {
                     handleBarcode(
                         barcode = intent.barcode,
                         getState = getState
                     )
                 }
+
                 is IdentifyStore.Intent.OnAccountingObjectSelected -> {
                     dispatch(
                         Result.AccountingObjects(
@@ -103,33 +110,40 @@ class IdentifyStoreFactory(
                         )
                     )
                 }
+
                 is IdentifyStore.Intent.OnAccountingObjectActionsResultHandled -> {
                     onAccountingObjectActionsResultHandled(
                         result = intent.result,
                         accountingObjects = getState().accountingObjects
                     )
                 }
+
                 is IdentifyStore.Intent.OnReadingModeTabChanged -> dispatch(
                     Result.ReadingMode(
                         intent.readingModeTab
                     )
                 )
+
                 is IdentifyStore.Intent.OnManualInput -> onManualInput(
                     readingModeResult = intent.readingModeResult,
                     getState = getState
                 )
+
                 IdentifyStore.Intent.OnPlusClicked -> onPlusClicked()
                 IdentifyStore.Intent.OnListActionDialogDismissed -> onListActionDialogDismissed()
                 is IdentifyStore.Intent.OnListActionDialogClicked -> when (intent.dialogActionType) {
                     DialogActionType.WRITE_OFF -> onWriteOffClicked(accountingObjects = getState().accountingObjects)
                 }
+
                 is IdentifyStore.Intent.OnAccountingObjectClosed -> onAccountingObjectClosed(
                     getState = getState
                 )
+
                 is IdentifyStore.Intent.OnErrorHandled -> handleError(intent.throwable)
                 is IdentifyStore.Intent.OnNomenclatureReserveClicked -> onNomenclatureReserveClicked(
                     intent.nomenclatureReserveDomain
                 )
+
                 is IdentifyStore.Intent.OnSelectPage -> dispatch(Result.Page(intent.selectedPage))
             }
         }
@@ -148,6 +162,7 @@ class IdentifyStoreFactory(
                         result.accountingObject
                     )
                 )
+
                 ActionsWithIdentifyObjects.DELETE_FROM_LIST -> dispatch(
                     Result.AccountingObjects(
                         identifyInteractor.removeAccountingObject(
@@ -194,6 +209,7 @@ class IdentifyStoreFactory(
                 ReadingModeTab.RFID -> {
                     //no-op
                 }
+
                 ReadingModeTab.BARCODE, ReadingModeTab.SN -> {
                     handleBarcode(
                         barcode = readingModeResult.scanData,
@@ -217,6 +233,7 @@ class IdentifyStoreFactory(
                             )
                         dispatch(Result.AccountingObjects(newAccountingObjects))
                     }
+
                     NOMENCLATURE_RESERVE_PAGE -> {
                         val oldRfids = getState().nomenclatureRfids
                         val nomenclatureReservesRfid =
@@ -247,6 +264,7 @@ class IdentifyStoreFactory(
                             )
                         dispatch(Result.AccountingObjects(newAccountingObjects))
                     }
+
                     NOMENCLATURE_RESERVE_PAGE -> {
                         val newNomenclatureReserves =
                             identifyInteractor.handleNewNomenclatureReserveBarcode(
@@ -276,6 +294,7 @@ class IdentifyStoreFactory(
 
         data class LoadingDialogActionType(val dialogActionType: DialogActionType?) : Result()
         data class NomenclatureRfids(val rfids: List<String>) : Result()
+        data class ReaderPower(val readerPower: Int?) : Result()
     }
 
     private object ReducerImpl : Reducer<IdentifyStore.State, Result> {
@@ -290,6 +309,7 @@ class IdentifyStoreFactory(
                 is Result.CanUpdateAccountingObjects -> copy(canUpdateAccountingObjects = result.canUpdateAccountingObjects)
                 is Result.Page -> copy(selectedPage = result.page)
                 is Result.NomenclatureRfids -> copy(nomenclatureRfids = result.rfids)
+                is Result.ReaderPower -> copy(readerPower = result.readerPower)
             }
     }
 }

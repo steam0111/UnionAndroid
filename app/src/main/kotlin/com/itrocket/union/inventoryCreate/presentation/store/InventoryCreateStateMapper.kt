@@ -52,6 +52,7 @@ fun InventoryCreateStore.State.toInventoryCreateUiState(): InventoryCreateUiStat
         loadingTitleId = loadingTitleId,
         inventoryNomenclatures = inventoryNomenclatures,
         selectedPage = selectedPage,
-        isExistNonMarkingAccountingObject = isExistNonMarkingAccountingObject
+        isExistNonMarkingAccountingObject = isExistNonMarkingAccountingObject,
+        readerPower = readerPower
     )
 }
