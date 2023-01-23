@@ -4,6 +4,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,10 +19,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -29,14 +32,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import com.itrocket.core.base.AppInsets
 import com.itrocket.core.utils.previewTopInsetDp
+import com.itrocket.ui.BaseTab
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.inventories.domain.entity.InventoryStatus
+import com.itrocket.union.inventory.domain.entity.InventoryNomenclatureDomain
+import com.itrocket.union.inventoryCreate.domain.InventoryPage
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
@@ -47,15 +56,20 @@ import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseButton
 import com.itrocket.union.ui.BaseCheckbox
 import com.itrocket.union.ui.ConfirmAlertDialog
+import com.itrocket.union.ui.DoubleTabRow
 import com.itrocket.union.ui.InventoryDocumentItem
+import com.itrocket.union.ui.InventoryNomenclatureItem
 import com.itrocket.union.ui.LoadingDialog
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.SearchToolbar
+import com.itrocket.union.ui.TabRowIndicator
 import com.itrocket.union.ui.black_50
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.lightYellow
 import com.itrocket.union.ui.white
+import com.itrocket.utils.getTargetPage
+import kotlinx.coroutines.launch
 
 @Composable
 fun InventoryCreateScreen(
@@ -81,7 +95,9 @@ fun InventoryCreateScreen(
     onAccountingObjectLongClickListener: (AccountingObjectDomain) -> Unit,
     onExitConfirmClickListener: () -> Unit,
     onAlertDismissClickListener: () -> Unit,
-    onDropConfirmClick: () -> Unit
+    onDropConfirmClick: () -> Unit,
+    onTabClickListener: (Int) -> Unit,
+    onInventoryNomenclatureClicked: (InventoryNomenclatureDomain) -> Unit
 ) {
     AppTheme {
         Scaffold(
@@ -112,7 +128,9 @@ fun InventoryCreateScreen(
                     onFinishClickListener = onFinishClickListener,
                     onSaveClickListener = onSaveClickListener,
                     onStatusClickListener = onStatusClickListener,
-                    onAccountingObjectLongClickListener = onAccountingObjectLongClickListener
+                    onAccountingObjectLongClickListener = onAccountingObjectLongClickListener,
+                    onTabClickListener = onTabClickListener,
+                    onInventoryNomenclatureClicked = onInventoryNomenclatureClicked
                 )
             },
             modifier = Modifier.padding(
@@ -171,7 +189,9 @@ private fun Content(
     onFinishClickListener: () -> Unit,
     onSaveClickListener: () -> Unit,
     onStatusClickListener: (AccountingObjectDomain) -> Unit,
-    onAccountingObjectLongClickListener: (AccountingObjectDomain) -> Unit
+    onAccountingObjectLongClickListener: (AccountingObjectDomain) -> Unit,
+    onTabClickListener: (Int) -> Unit,
+    onInventoryNomenclatureClicked: (InventoryNomenclatureDomain) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(
@@ -192,6 +212,10 @@ private fun Content(
                         )
                     }
                     InventoryDocumentItem(item = state.inventoryDocument, isShowStatus = false)
+                    InventoryObjectSwitcher(
+                        onTabClickListener = onTabClickListener,
+                        selectedPage = state.selectedPage.page
+                    )
                     MediumSpacer()
                     CountBar(
                         allAccountingObjects = state.accountingObjectCounter.total,
@@ -209,20 +233,39 @@ private fun Content(
                     )
                     MediumSpacer()
                 }
-                itemsIndexed(items = state.accountingObjects, key = { index, item ->
-                    item.id
-                }) { index, item ->
-                    val isShowBottomLine = state.accountingObjects.lastIndex != index
-                    AccountingObjectItem(
-                        accountingObject = item,
-                        onAccountingObjectListener = onAccountingObjectClickListener,
-                        onStatusClickListener = { onStatusClickListener(item) },
-                        isShowBottomLine = isShowBottomLine,
-                        status = item.inventoryStatus,
-                        isEnabled = state.canChangeInventory,
-                        onAccountingObjectLongClickListener = onAccountingObjectLongClickListener,
-                        showNonMarkingAttention = true
-                    )
+                if (state.selectedPage == InventoryPage.ACCOUNTING_OBJECT) {
+                    itemsIndexed(
+                        items = state.accountingObjects,
+                        key = { index, item ->
+                            item.id
+                        }) { index, item ->
+                        val isShowBottomLine = state.accountingObjects.lastIndex != index
+                        AccountingObjectItem(
+                            accountingObject = item,
+                            onAccountingObjectListener = onAccountingObjectClickListener,
+                            onStatusClickListener = { onStatusClickListener(item) },
+                            isShowBottomLine = isShowBottomLine,
+                            status = item.inventoryStatus,
+                            isEnabled = state.canChangeInventory,
+                            onAccountingObjectLongClickListener = onAccountingObjectLongClickListener,
+                            showNonMarkingAttention = true
+                        )
+                    }
+                } else {
+                    itemsIndexed(
+                        items = state.inventoryNomenclatures,
+                        key = { index, item ->
+                            item.id
+                        }) { index, item ->
+                        val isShowBottomLine = state.inventoryNomenclatures.lastIndex != index
+                        InventoryNomenclatureItem(
+                            inventoryNomenclatureDomain = item,
+                            onClick = onInventoryNomenclatureClicked,
+                            isShowBottomLine = isShowBottomLine,
+                            isShowFullCount = true,
+                            isEnabled = state.canChangeInventory,
+                        )
+                    }
                 }
                 item {
                     Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
@@ -239,6 +282,42 @@ private fun Content(
                 CircularProgressIndicator()
             }
         }
+    }
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+private fun InventoryObjectSwitcher(onTabClickListener: (Int) -> Unit, selectedPage: Int) {
+    val pagerState = rememberPagerState()
+    val coroutineScope = rememberCoroutineScope()
+
+    val tabs = listOf(
+        BaseTab(title = stringResource(R.string.documents_main_assets), screen = {}),
+        BaseTab(title = stringResource(R.string.main_reserves), screen = {})
+    )
+
+    DoubleTabRow(
+        modifier = Modifier
+            .padding(16.dp)
+            .border(
+                width = 1.dp,
+                color = graphite2,
+                shape = RoundedCornerShape(8.dp)
+            ),
+        selectedPage = selectedPage,
+        targetPage = pagerState.getTargetPage(),
+        tabs = tabs,
+        onTabClickListener = {
+            onTabClickListener(it)
+            coroutineScope.launch {
+                pagerState.animateScrollToPage(it)
+            }
+        },
+        tabIndicator = {
+            TabRowIndicator(tabPositions = it, pagerState = pagerState)
+        }
+    )
+    HorizontalPager(count = tabs.size, state = pagerState) {
     }
 }
 
@@ -444,7 +523,10 @@ fun AttentionNotMarking() {
     ) {
         Image(painter = painterResource(R.drawable.ic_attention_circle), contentDescription = null)
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = stringResource(R.string.inventory_create_non_marking_attention), style = AppTheme.typography.caption)
+        Text(
+            text = stringResource(R.string.inventory_create_non_marking_attention),
+            style = AppTheme.typography.caption
+        )
     }
 }
 
@@ -528,6 +610,8 @@ fun InventoryCreateScreenPreview() {
             readingModeTab = ReadingModeTab.RFID
         ),
         AppInsets(previewTopInsetDp),
+        {},
+        {},
         {},
         {},
         {},

@@ -7,7 +7,6 @@ import com.example.union_sync_api.entity.InventoryRecordSyncEntity
 import com.example.union_sync_impl.entity.ActionRecordDb
 import com.example.union_sync_impl.entity.ActionRemainsRecordDb
 import com.example.union_sync_impl.entity.InventoryNomenclatureRecordDb
-import com.example.union_sync_impl.entity.InventoryNomenclatureRecordUpdate
 import com.example.union_sync_impl.entity.InventoryRecordDb
 import com.example.union_sync_impl.utils.getMillisDateFromServerFormat
 import com.example.union_sync_impl.entity.TransitAccountingObjectRecordDb
@@ -15,7 +14,6 @@ import com.example.union_sync_impl.entity.TransitRemainsRecordDb
 import com.example.union_sync_impl.utils.getStringDateFromMillis
 import org.openapitools.client.models.ActionRecordDtoV2
 import org.openapitools.client.models.ActionRemainsRecordDtoV2
-import org.openapitools.client.models.EnumDtoV2
 import org.openapitools.client.models.InventoryNomenclatureRecordDtoV2
 import org.openapitools.client.models.InventoryRecordDtoV2
 import org.openapitools.client.models.TransitAccountingObjectRecordDtoV2
@@ -200,10 +198,12 @@ fun InventoryNomenclatureRecordDb.toSyncEntity(nomenclatureName: String) = Inven
     price = price,
     cancel = cancel,
     userUpdated = userUpdated,
-    nomenclatureName = nomenclatureName
+    nomenclatureName = nomenclatureName,
+    insertDate = insertDate,
+    userInserted = userInserted
 )
 
-fun InventoryNomenclatureRecordSyncEntity.toUpdate() = InventoryNomenclatureRecordUpdate(
+fun InventoryNomenclatureRecordSyncEntity.toDb() = InventoryNomenclatureRecordDb(
     id = id,
     inventoryId = inventoryId,
     nomenclatureId = nomenclatureId,
@@ -215,4 +215,6 @@ fun InventoryNomenclatureRecordSyncEntity.toUpdate() = InventoryNomenclatureReco
     price = price,
     cancel = cancel,
     userUpdated = userUpdated,
+    insertDate = insertDate ?: System.currentTimeMillis(),
+    userInserted = userInserted ?: userUpdated,
 )

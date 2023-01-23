@@ -22,6 +22,8 @@ import com.itrocket.union.inventoryCreate.presentation.store.toInventoryCreateUi
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
+import com.itrocket.union.selectCount.presentation.store.SelectCountResult
+import com.itrocket.union.selectCount.presentation.view.SelectCountComposeFragment
 import com.itrocket.union.utils.flow.window
 import com.itrocket.union.utils.fragment.ChildBackPressedHandler
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -110,6 +112,17 @@ class InventoryCreateComposeFragment :
                     }
                 }
             ),
+            FragmentResult(
+                resultCode = SelectCountComposeFragment.SELECT_COUNT_RESULT_CODE,
+                resultLabel = SelectCountComposeFragment.SELECT_COUNT_RESULT_LABEL,
+                resultAction = {
+                    (it as SelectCountResult?)?.let {
+                        accept(
+                            InventoryCreateStore.Intent.OnInventoryNomenclatureCountChanged(it)
+                        )
+                    }
+                }
+            ),
         )
 
     private val serviceEntryManager: ServiceEntryManager by inject()
@@ -190,6 +203,12 @@ class InventoryCreateComposeFragment :
                 },
                 onDropConfirmClick = {
                     accept(InventoryCreateStore.Intent.OnDropConfirmed)
+                },
+                onTabClickListener = {
+                    accept(InventoryCreateStore.Intent.OnPageChanged(it))
+                },
+                onInventoryNomenclatureClicked ={
+                    accept(InventoryCreateStore.Intent.OnInventoryNomenclatureClicked(it))
                 }
             )
         }

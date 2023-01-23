@@ -73,7 +73,9 @@ class InventoryInteractor(
                         bookKeepingInvoice = it.bookKeepingInvoice,
                         price = it.unitPrice,
                         cancel = false,
-                        nomenclatureName = nomenclatureName
+                        nomenclatureName = nomenclatureName,
+                        insertDate = null,
+                        userInserted = null
                     )
                 }
             }

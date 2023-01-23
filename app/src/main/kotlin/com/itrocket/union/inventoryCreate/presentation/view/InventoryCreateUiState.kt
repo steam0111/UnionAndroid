@@ -4,6 +4,8 @@ import androidx.annotation.StringRes
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.alertType.AlertType
+import com.itrocket.union.inventory.domain.entity.InventoryNomenclatureDomain
+import com.itrocket.union.inventoryCreate.domain.InventoryPage
 import com.itrocket.union.inventoryCreate.domain.entity.AccountingObjectCounter
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -28,6 +30,8 @@ data class InventoryCreateUiState(
     val showComplete: Boolean = false,
     val isExistNonMarkingAccountingObject: Boolean = false,
     val accountingObjects: List<AccountingObjectDomain> = listOf(),
+    val inventoryNomenclatures: List<InventoryNomenclatureDomain> = listOf(),
     val accountingObjectCounter: AccountingObjectCounter = AccountingObjectCounter(),
+    val selectedPage: InventoryPage = InventoryPage.ACCOUNTING_OBJECT,
     @StringRes val loadingTitleId: Int = R.string.inventory_save_loading
 )

@@ -19,6 +19,7 @@ import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
 import com.itrocket.union.reserves.domain.ReservesInteractor
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
+import java.math.BigDecimal
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.time.ExperimentalTime
@@ -463,6 +464,21 @@ class InventoryCreateInteractor(
 
     fun addInventoryExistRfids(existRfids: List<String>, newRfids: List<String>) =
         (existRfids + newRfids).toHashSet().toList()
+
+    suspend fun changeInventoryNomenclatureCount(
+        id: String,
+        count: BigDecimal,
+        inventoryNomenclatures: List<InventoryNomenclatureDomain>
+    ): List<InventoryNomenclatureDomain> {
+        return withContext(coreDispatchers.io) {
+            val mutableList = inventoryNomenclatures.toMutableList()
+            val index = mutableList.indexOfFirst { it.id == id }
+            if (index >= 0) {
+                mutableList[index] = mutableList[index].copy(actualCount = count.toLong())
+            }
+            mutableList
+        }
+    }
 
     companion object {
         private const val NO_INDEX = -1

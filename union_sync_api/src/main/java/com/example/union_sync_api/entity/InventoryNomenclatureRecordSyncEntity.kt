@@ -15,4 +15,6 @@ data class InventoryNomenclatureRecordSyncEntity(
     val price: String?,
     val cancel: Boolean?,
     val userUpdated: String? = null,
+    val insertDate: Long?,
+    val userInserted: String?
 )

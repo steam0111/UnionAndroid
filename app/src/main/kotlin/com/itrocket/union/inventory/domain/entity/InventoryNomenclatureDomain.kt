@@ -11,6 +11,8 @@ data class InventoryNomenclatureDomain(
     val nomenclatureId: String,
     val nomenclatureName: String,
     val updateDate: Long?,
+    val insertDate: Long?,
+    val userInserted: String?,
     val expectedCount: Long?,
     val actualCount: Long?,
     val consignment: String?,
@@ -31,5 +33,7 @@ fun InventoryNomenclatureDomain.toSyncEntity(inventoryId: String) =
         bookKeepingInvoice = bookKeepingInvoice,
         price = price,
         cancel = cancel,
-        nomenclatureName = nomenclatureName
+        nomenclatureName = nomenclatureName,
+        insertDate = insertDate,
+        userInserted = userInserted,
     )

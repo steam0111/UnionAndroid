@@ -341,17 +341,20 @@ fun InventoryNomenclatureItem(
     inventoryNomenclatureDomain: InventoryNomenclatureDomain,
     onClick: (InventoryNomenclatureDomain) -> Unit,
     isShowFullCount: Boolean = false,
-    isShowBottomLine: Boolean
+    isShowBottomLine: Boolean,
+    isEnabled: Boolean = true
 ) {
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomStart) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(white)
-                .clickable(onClick = { onClick(inventoryNomenclatureDomain) })
+                .clickable(onClick = { onClick(inventoryNomenclatureDomain) }, enabled = isEnabled)
                 .padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
             Row(modifier = Modifier.fillMaxWidth()) {
+                val defaultValue = stringResource(R.string.value_not_defined)
+
                 Column(modifier = Modifier.fillMaxWidth(0.7f)) {
                     HeaderText(
                         text = inventoryNomenclatureDomain.nomenclatureName,
@@ -362,21 +365,22 @@ fun InventoryNomenclatureItem(
                         text = stringResource(
                             R.string.common_two_dots,
                             stringResource(id = R.string.consignment_title),
-                            inventoryNomenclatureDomain.consignment.orEmpty()
+                            inventoryNomenclatureDomain.consignment ?: defaultValue,
                         ), style = AppTheme.typography.subtitle1
                     )
                     Text(
                         text = stringResource(
                             R.string.common_two_dots,
                             stringResource(R.string.inventory_nomenclature_price),
-                            inventoryNomenclatureDomain.price.orEmpty()
+                            inventoryNomenclatureDomain.price ?: defaultValue,
                         ), style = AppTheme.typography.subtitle1
                     )
                     Text(
                         text = stringResource(
                             R.string.common_two_dots,
                             stringResource(R.string.inventory_nomenclature_bookInvoice),
-                            inventoryNomenclatureDomain.bookKeepingInvoice.toString()
+                            if (inventoryNomenclatureDomain.bookKeepingInvoice == null) defaultValue
+                            else inventoryNomenclatureDomain.bookKeepingInvoice.toString()
                         ), style = AppTheme.typography.subtitle1
                     )
                 }
@@ -910,6 +914,8 @@ private fun InventoryNomenclatureItemPreview() {
             bookKeepingInvoice = BigDecimal(1233231),
             price = "123213",
             cancel = false,
+            insertDate = null,
+            userInserted = null
         ),
         onClick = {},
         isShowBottomLine = true
