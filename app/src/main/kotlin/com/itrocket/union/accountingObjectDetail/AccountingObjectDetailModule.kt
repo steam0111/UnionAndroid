@@ -8,7 +8,6 @@ import com.itrocket.union.accountingObjectDetail.domain.dependencies.AccountingO
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailStore
 import com.itrocket.union.accountingObjectDetail.presentation.store.AccountingObjectDetailStoreFactory
 import com.itrocket.union.accountingObjectDetail.presentation.view.AccountingObjectDetailComposeFragmentArgs
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
@@ -38,7 +37,6 @@ object AccountingObjectDetailModule {
                 get(),
                 get(),
                 args.accountingObjectDetailArguments,
-                get(),
                 get(),
                 get(),
                 get(),

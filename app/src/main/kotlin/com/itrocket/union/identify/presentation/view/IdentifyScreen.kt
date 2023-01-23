@@ -2,16 +2,13 @@ package com.itrocket.union.identify.presentation.view
 
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -46,6 +43,9 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.identify.domain.NomenclatureReserveDomain
 import com.itrocket.union.identify.presentation.store.IdentifyStore
+import com.itrocket.union.readerView.ReaderBottomBarModule
+import com.itrocket.union.readerView.presentation.store.ReaderBottomBarViewModel
+import com.itrocket.union.readerView.presentation.view.ReaderBottomBar
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.AccountingObjectItem
 import com.itrocket.union.ui.AppTheme
@@ -53,21 +53,21 @@ import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.DoubleTabRow
 import com.itrocket.union.ui.MediumSpacer
 import com.itrocket.union.ui.NomenclatureReserveItem
-import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.TabRowIndicator
 import com.itrocket.union.ui.graphite2
 import com.itrocket.union.ui.graphite4
 import com.itrocket.union.ui.listAction.DialogActionType
 import com.itrocket.union.ui.listAction.ListActionDialog
-import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
 import com.itrocket.utils.getTargetPage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun IdentifyScreen(
+    readerViewViewModel: ReaderBottomBarViewModel,
     state: IdentifyStore.State,
     appInsets: AppInsets,
     onReadingModeClickListener: () -> Unit,
@@ -94,10 +94,10 @@ fun IdentifyScreen(
                 )
             },
             bottomBar = {
-                BottomBar(
-                    readingModeTab = state.readingModeTab,
+                ReaderBottomBar(
+                    selectedReadingMode = state.readingModeTab,
                     onReadingModeClickListener = onReadingModeClickListener,
-                    rfidLevel = state.readerPower
+                    viewModel = readerViewViewModel,
                 )
             },
             content = {
@@ -321,23 +321,11 @@ private fun EmptyListStub(paddingValues: PaddingValues) {
     }
 }
 
-@Composable
-private fun BottomBar(
-    readingModeTab: ReadingModeTab,
-    onReadingModeClickListener: () -> Unit,
-    rfidLevel: Int?
-) {
-    ReadingModeBottomBar(
-        readingModeTab = readingModeTab,
-        onReadingModeClickListener = onReadingModeClickListener,
-        rfidLevel = rfidLevel
-    )
-}
-
 @Preview
 @Composable
 fun IdentifyScreenPreview() {
     IdentifyScreen(
+        readerViewViewModel = getViewModel(ReaderBottomBarModule.READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER),
         state = IdentifyStore.State(
             accountingObjects = listOf(
                 AccountingObjectDomain(

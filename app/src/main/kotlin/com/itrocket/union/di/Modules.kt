@@ -44,6 +44,7 @@ import com.itrocket.union.nomenclatureGroupDetail.NomenclatureGroupDetailModule
 import com.itrocket.union.producer.ProducerModule
 import com.itrocket.union.producerDetail.ProducerDetailModule
 import com.itrocket.union.readerPower.ReaderPowerModule
+import com.itrocket.union.readerView.ReaderBottomBarModule
 import com.itrocket.union.readingMode.ReadingModeModule
 import com.itrocket.union.reserveDetail.ReserveDetailModule
 import com.itrocket.union.reserves.ReservesModule
@@ -77,6 +78,7 @@ object Modules {
         ReservesModule.module,
         ServerConnectModule.module,
         AccountingObjectDetailModule.module,
+        ReaderBottomBarModule.module,
         AccountingObjectModule.module,
         AuthContainerModule.module,
         AuthMainModule.module,

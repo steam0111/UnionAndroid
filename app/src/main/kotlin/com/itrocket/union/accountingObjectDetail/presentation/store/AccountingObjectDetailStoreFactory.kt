@@ -19,7 +19,6 @@ import com.itrocket.union.image.domain.ImageInteractor
 import com.itrocket.union.imageViewer.domain.ImageViewerInteractor
 import com.itrocket.union.labelType.domain.LabelTypeInteractor
 import com.itrocket.union.moduleSettings.domain.ModuleSettingsInteractor
-import com.itrocket.union.readerPower.domain.ReaderPowerInteractor
 import com.itrocket.union.readingMode.domain.ReadingModeInteractor
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -43,8 +42,7 @@ class AccountingObjectDetailStoreFactory(
     private val imageViewerInteractor: ImageViewerInteractor,
     private val imageInteractor: ImageInteractor,
     private val readingModeInteractor: ReadingModeInteractor,
-    private val labelTypeInteractor: LabelTypeInteractor,
-    private val readerPowerInteractor: ReaderPowerInteractor
+    private val labelTypeInteractor: LabelTypeInteractor
 ) {
     fun create(): AccountingObjectDetailStore = object : AccountingObjectDetailStore,
         Store<AccountingObjectDetailStore.Intent, AccountingObjectDetailStore.State, AccountingObjectDetailStore.Label> by storeFactory.create(
@@ -84,9 +82,6 @@ class AccountingObjectDetailStoreFactory(
                 }
                 launch {
                     listenAccountingObjectImages()
-                }
-                launch {
-                    moduleSettingsInteractor.getReaderPowerFlow { dispatch(Result.ReaderPower(it)) }
                 }
             }
         }
@@ -391,7 +386,6 @@ class AccountingObjectDetailStoreFactory(
         data class DialogType(val dialogType: AlertType) : Result()
         data class ImageUri(val imageUri: Uri) : Result()
         data class Images(val images: List<ImageDomain>) : Result()
-        data class ReaderPower(val readerPower: Int?) : Result()
     }
 
     private object ReducerImpl : Reducer<AccountingObjectDetailStore.State, Result> {
@@ -406,8 +400,6 @@ class AccountingObjectDetailStoreFactory(
             is Result.ImageUri -> copy(imageUri = result.imageUri)
             is Result.Images -> copy(images = result.images)
             is Result.ImageLoading -> copy(isImageLoading = result.isLoading)
-            is Result.ReaderPower -> copy(readerPower = result.readerPower)
-
         }
     }
 }

@@ -31,7 +31,9 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoBehavior
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.alertType.AlertType
-import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
+import com.itrocket.union.readerView.ReaderBottomBarModule
+import com.itrocket.union.readerView.presentation.store.ReaderBottomBarViewModel
+import com.itrocket.union.readerView.presentation.view.ReaderBottomBar
 import com.itrocket.union.reserveDetail.presentation.store.ReserveDetailStore
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.ui.AppTheme
@@ -40,15 +42,16 @@ import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.ExpandedInfoField
 import com.itrocket.union.ui.InfoDialog
 import com.itrocket.union.ui.LoadingContent
-import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.black
 import com.itrocket.union.ui.red5
 import com.itrocket.union.utils.ifBlankOrNull
 import com.itrocket.utils.clickableUnbounded
+import org.koin.androidx.compose.getViewModel
 import java.math.BigDecimal
 
 @Composable
 fun ReserveDetailScreen(
+    readerViewViewModel: ReaderBottomBarViewModel,
     state: ReserveDetailStore.State,
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
@@ -69,10 +72,10 @@ fun ReserveDetailScreen(
                 )
             },
             bottomBar = {
-                BottomBar(
+                ReaderBottomBar(
+                    selectedReadingMode = state.readingMode,
                     onReadingModeClickListener = onReadingModeClickListener,
-                    readingModeTab = state.readingMode,
-                    readerPower = state.readerPower
+                    viewModel = readerViewViewModel,
                 )
             },
             modifier = Modifier.padding(
@@ -149,19 +152,6 @@ private fun Toolbar(
 }
 
 @Composable
-private fun BottomBar(
-    readingModeTab: ReadingModeTab,
-    onReadingModeClickListener: () -> Unit,
-    readerPower: Int?
-) {
-    ReadingModeBottomBar(
-        readingModeTab = readingModeTab,
-        onReadingModeClickListener = onReadingModeClickListener,
-        rfidLevel = readerPower
-    )
-}
-
-@Composable
 private fun ListInfo(
     listInfo: List<ObjectInfoDomain>,
     showButtons: Boolean,
@@ -225,25 +215,27 @@ private fun ListInfo(
 @Preview(name = "планшет", showSystemUi = true, device = Devices.PIXEL_C)
 @Composable
 fun ReserveDetailScreenPreview() {
-    ReserveDetailScreen(ReserveDetailStore.State(
-        reserve = ReservesDomain(
-            id = "1", title = "Авторучка «Зебра TR22»", isBarcode = true, listInfo =
-            listOf(
-                ObjectInfoDomain(
-                    R.string.auth_main_title,
-                    "таылватвлыавыалвыоалвыа"
-                ),
-                ObjectInfoDomain(
-                    R.string.auth_main_title,
-                    "таылватвлыавыалвыоалвыа"
-                )
-            ), itemsCount = BigDecimal(1200L),
-            barcodeValue = null,
-            nomenclatureId = "",
-            labelTypeId = "",
-            consignment = "",
-            unitPrice = "",
-            bookKeepingInvoice = null
-        )
-    ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {})
+    ReserveDetailScreen(
+        readerViewViewModel = getViewModel(ReaderBottomBarModule.READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER),
+        ReserveDetailStore.State(
+            reserve = ReservesDomain(
+                id = "1", title = "Авторучка «Зебра TR22»", isBarcode = true, listInfo =
+                listOf(
+                    ObjectInfoDomain(
+                        R.string.auth_main_title,
+                        "таылватвлыавыалвыоалвыа"
+                    ),
+                    ObjectInfoDomain(
+                        R.string.auth_main_title,
+                        "таылватвлыавыалвыоалвыа"
+                    )
+                ), itemsCount = BigDecimal(1200L),
+                barcodeValue = null,
+                nomenclatureId = "",
+                labelTypeId = "",
+                consignment = "",
+                unitPrice = "",
+                bookKeepingInvoice = null
+            )
+        ), AppInsets(topInset = previewTopInsetDp), {}, {}, {}, {}, {}, {}, {})
 }

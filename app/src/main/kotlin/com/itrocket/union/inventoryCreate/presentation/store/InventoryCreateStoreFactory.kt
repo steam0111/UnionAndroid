@@ -98,10 +98,6 @@ class InventoryCreateStoreFactory(
                 dispatch(Result.Inventory(inventory))
                 dispatch(Result.IsDynamicSaveInventory(isDynamicSaveInventory))
                 dispatch(Result.IsExistNonMarkingAccountingObjects(isExistNonMarkingAccountingObject))
-                moduleSettingsInteractor.getReaderPowerFlow {
-                    dispatch(Result.ReaderPower(it))
-                    dispatch(Result.Loading(false))
-                }
             }
             dispatch(Result.Loading(false))
             if (getState().isDynamicSaveInventory && getState().inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED) {
@@ -284,9 +280,11 @@ class InventoryCreateStoreFactory(
                 is InventoryCreateStore.Intent.OnAlertDismissed -> dispatch(
                     Result.DialogType(AlertType.NONE)
                 )
+
                 is InventoryCreateStore.Intent.OnInventoryNomenclatureClicked -> onInventoryNomenclatureClicked(
                     intent.inventoryNomenclature
                 )
+
                 is InventoryCreateStore.Intent.OnPageChanged -> onPageChanged(intent.page)
                 is InventoryCreateStore.Intent.OnInventoryNomenclatureCountChanged -> onInventoryNomenclatureCountChanged(
                     result = intent.result,
@@ -757,7 +755,6 @@ class InventoryCreateStoreFactory(
 
         data class NomenclatureExistRfids(val nomenclatureExistRfids: List<String>) : Result()
         data class Page(val inventoryPage: InventoryPage) : Result()
-        data class ReaderPower(val readerPower: Int?) : Result()
     }
 
     private object ReducerImpl : Reducer<InventoryCreateStore.State, Result> {
@@ -787,19 +784,21 @@ class InventoryCreateStoreFactory(
                 is Result.IsExistNonMarkingAccountingObjects -> copy(
                     isExistNonMarkingAccountingObject = result.isExistNonMarkingAccountingObject
                 )
+
                 is Result.InventoryNomenclatures -> copy(
                     inventoryDocument = inventoryDocument.copy(
                         nomenclatureRecords = result.inventoryNomenclatures
                     )
                 )
+
                 is Result.SearchInventoryNomenclatures -> copy(searchInventoryNomenclatures = result.searchInventoryNomenclatures)
                 is Result.NomenclatureExistRfids -> copy(
                     inventoryDocument = inventoryDocument.copy(
                         rfids = result.nomenclatureExistRfids
                     )
                 )
+
                 is Result.Page -> copy(selectedPage = result.inventoryPage)
-                is Result.ReaderPower -> copy(readerPower = result.readerPower)
             }
     }
 }

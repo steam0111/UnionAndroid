@@ -41,7 +41,6 @@ class DataCollectStoreFactory(
             getState: () -> DataCollectStore.State
         ) {
             moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = true)
-            moduleSettingsInteractor.getReaderPowerFlow { dispatch(Result.ReaderPower(it)) }
         }
 
         override suspend fun executeIntent(
@@ -92,7 +91,6 @@ class DataCollectStoreFactory(
         ) : Result()
 
         data class ReadingMode(val readingModeTab: ReadingModeTab) : Result()
-        data class ReaderPower(val readerPower: Int?) : Result()
     }
 
     private object ReducerImpl : Reducer<DataCollectStore.State, Result> {
@@ -100,7 +98,6 @@ class DataCollectStoreFactory(
             when (result) {
                 is Result.ScanningObjects -> copy(scanningObjects = result.scanningObjects)
                 is Result.ReadingMode -> copy(readingModeTab = result.readingModeTab)
-                is Result.ReaderPower -> copy(readerPower = result.readerPower)
             }
     }
 }

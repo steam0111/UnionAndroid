@@ -18,7 +18,6 @@ import com.itrocket.union.comment.presentation.store.CommentArguments
 import com.itrocket.union.comment.presentation.store.CommentResult
 import com.itrocket.union.comment.presentation.view.CommentComposeFragment
 import com.itrocket.union.comment.presentation.view.CommentComposeFragment.Companion.COMMENT_ARGS
-import com.itrocket.union.documentCreate.presentation.store.DocumentCreateStore
 import com.itrocket.union.inventory.domain.entity.InventoryNomenclatureDomain
 import com.itrocket.union.inventory.presentation.store.InventoryResult
 import com.itrocket.union.inventory.presentation.view.InventoryComposeFragment.Companion.INVENTORY_RESULT_CODE
@@ -111,8 +110,7 @@ interface InventoryCreateStore :
         val inventoryObjectCounter: AccountingObjectCounter = AccountingObjectCounter(),
         val isExistNonMarkingAccountingObject: Boolean = false,
         val nomenclatureExistRfids: List<String> = listOf(),
-        val selectedPage: InventoryPage = InventoryPage.ACCOUNTING_OBJECT,
-        val readerPower: Int? = null
+        val selectedPage: InventoryPage = InventoryPage.ACCOUNTING_OBJECT
     )
 
     sealed class Label {

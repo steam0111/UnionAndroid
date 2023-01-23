@@ -66,7 +66,6 @@ class IdentifyStoreFactory(
                 )
             )
 
-            moduleSettingsInteractor.getReaderPowerFlow { dispatch(Result.ReaderPower(it)) }
             dispatch(Result.ReadingMode(moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = true)))
         }
 
@@ -294,7 +293,6 @@ class IdentifyStoreFactory(
 
         data class LoadingDialogActionType(val dialogActionType: DialogActionType?) : Result()
         data class NomenclatureRfids(val rfids: List<String>) : Result()
-        data class ReaderPower(val readerPower: Int?) : Result()
     }
 
     private object ReducerImpl : Reducer<IdentifyStore.State, Result> {
@@ -309,7 +307,6 @@ class IdentifyStoreFactory(
                 is Result.CanUpdateAccountingObjects -> copy(canUpdateAccountingObjects = result.canUpdateAccountingObjects)
                 is Result.Page -> copy(selectedPage = result.page)
                 is Result.NomenclatureRfids -> copy(nomenclatureRfids = result.rfids)
-                is Result.ReaderPower -> copy(readerPower = result.readerPower)
             }
     }
 }

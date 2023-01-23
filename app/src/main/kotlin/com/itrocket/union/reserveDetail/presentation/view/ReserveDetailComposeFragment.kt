@@ -12,6 +12,8 @@ import com.itrocket.core.base.BaseComposeFragment
 import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.labelType.presentation.store.LabelTypeResult
 import com.itrocket.union.labelType.presentation.view.LabelTypeComposeFragment
+import com.itrocket.union.readerView.ReaderBottomBarModule.READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER
+import com.itrocket.union.readerView.presentation.store.ReaderBottomBarViewModel
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.reserveDetail.ReserveDetailModule.RESERVEDETAIL_VIEW_MODEL_QUALIFIER
@@ -21,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
@@ -29,6 +32,10 @@ class ReserveDetailComposeFragment :
         RESERVEDETAIL_VIEW_MODEL_QUALIFIER
     ) {
     override val navArgs by navArgs<ReserveDetailComposeFragmentArgs>()
+
+    private val readerViewViewModel by viewModel<ReaderBottomBarViewModel>(
+        qualifier = READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER
+    )
 
     private val serviceEntryManager: ServiceEntryManager by inject()
 
@@ -72,6 +79,7 @@ class ReserveDetailComposeFragment :
     ) {
         composeView.setContent {
             ReserveDetailScreen(
+                readerViewViewModel = readerViewViewModel,
                 state = state,
                 appInsets = appInsets,
                 onBackClickListener = {
@@ -137,6 +145,7 @@ class ReserveDetailComposeFragment :
                     TriggerEvent.Pressed -> {
                         accept(ReserveDetailStore.Intent.OnTriggerPressed)
                     }
+
                     TriggerEvent.Released -> {
                         accept(ReserveDetailStore.Intent.OnTriggerReleased)
                     }

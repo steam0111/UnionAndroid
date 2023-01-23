@@ -23,7 +23,6 @@ import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataCompose
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment.Companion.CHANGE_SCAN_DATA_ARGS
 import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.imageViewer.presentation.store.ImageViewerArguments
-import com.itrocket.union.labelType.domain.entity.LabelTypeDomain
 import com.itrocket.union.labelType.presentation.store.LabelTypeArguments
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
@@ -72,8 +71,7 @@ interface AccountingObjectDetailStore :
         val dialogType: AlertType = AlertType.NONE,
         val rfidError: String = "",
         val imageUri: Uri? = null,
-        val images: List<ImageDomain> = listOf(),
-        val readerPower: Int? = null
+        val images: List<ImageDomain> = listOf()
     )
 
     sealed class Label {

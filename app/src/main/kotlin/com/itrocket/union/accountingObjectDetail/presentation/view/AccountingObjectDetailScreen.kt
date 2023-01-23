@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -53,17 +52,21 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
-import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
+import com.itrocket.union.readerView.ReaderBottomBarModule
+import com.itrocket.union.readerView.presentation.store.ReaderBottomBarViewModel
+import com.itrocket.union.readerView.presentation.view.ReaderBottomBar
 import com.itrocket.union.ui.*
 import com.itrocket.union.ui.image.GridImages
 import com.itrocket.union.utils.ifBlankOrNull
 import com.itrocket.utils.clickableUnbounded
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun AccountingObjectDetailScreen(
+    readerViewViewModel: ReaderBottomBarViewModel,
     state: AccountingObjectDetailStore.State,
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
@@ -149,10 +152,10 @@ fun AccountingObjectDetailScreen(
                 )
             },
             bottomBar = {
-                BottomBar(
+                ReaderBottomBar(
+                    selectedReadingMode = state.readingMode,
                     onReadingModeClickListener = onReadingModeClickListener,
-                    readingModeTab = state.readingMode,
-                    rfidLevel = state.readerPower
+                    viewModel = readerViewViewModel,
                 )
             },
             modifier = Modifier.padding(
@@ -448,19 +451,6 @@ private fun Toolbar(
 }
 
 @Composable
-private fun BottomBar(
-    readingModeTab: ReadingModeTab,
-    onReadingModeClickListener: () -> Unit,
-    rfidLevel: Int?
-) {
-    ReadingModeBottomBar(
-        readingModeTab = readingModeTab,
-        onReadingModeClickListener = onReadingModeClickListener,
-        rfidLevel = rfidLevel
-    )
-}
-
-@Composable
 fun ChooseAddPhotoSource(
     onDismiss: () -> Unit,
     onTakeFromCameraClickListener: () -> Unit,
@@ -521,6 +511,7 @@ fun ChooseAddPhotoSource(
 @Composable
 fun AccountingObjectDetailScreenPreview() {
     AccountingObjectDetailScreen(
+        readerViewViewModel = getViewModel(ReaderBottomBarModule.READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER),
         AccountingObjectDetailStore.State(
             accountingObjectDomain = AccountingObjectDomain(
                 id = "123",

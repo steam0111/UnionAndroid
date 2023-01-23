@@ -33,6 +33,5 @@ data class InventoryCreateUiState(
     val inventoryNomenclatures: List<InventoryNomenclatureDomain> = listOf(),
     val accountingObjectCounter: AccountingObjectCounter = AccountingObjectCounter(),
     val selectedPage: InventoryPage = InventoryPage.ACCOUNTING_OBJECT,
-    @StringRes val loadingTitleId: Int = R.string.inventory_save_loading,
-    val readerPower: Int? = null
+    @StringRes val loadingTitleId: Int = R.string.inventory_save_loading
 )

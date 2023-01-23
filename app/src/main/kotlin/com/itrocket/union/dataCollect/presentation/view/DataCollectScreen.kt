@@ -29,19 +29,23 @@ import com.google.accompanist.pager.rememberPagerState
 import com.itrocket.core.base.AppInsets
 import com.itrocket.union.R
 import com.itrocket.union.dataCollect.presentation.store.DataCollectStore
+import com.itrocket.union.readerView.ReaderBottomBarModule
+import com.itrocket.union.readerView.presentation.store.ReaderBottomBarViewModel
+import com.itrocket.union.readerView.presentation.view.ReaderBottomBar
 import com.itrocket.union.ui.AppTheme
 import com.itrocket.union.ui.BaseToolbar
 import com.itrocket.union.ui.BottomLine
-import com.itrocket.union.ui.ReadingModeBottomBar
 import com.itrocket.union.ui.ScanningObjectItem
 import com.itrocket.union.ui.graphite4
 import com.itrocket.union.ui.white
 import com.itrocket.utils.clickableUnbounded
 import kotlinx.coroutines.CoroutineScope
+import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun DataCollectScreen(
+    readerViewViewModel: ReaderBottomBarViewModel,
     state: DataCollectStore.State,
     appInsets: AppInsets,
     onReadingModeClickListener: () -> Unit,
@@ -59,10 +63,10 @@ fun DataCollectScreen(
                 )
             },
             bottomBar = {
-                ReadingModeBottomBar(
-                    readingModeTab = state.readingModeTab,
+                ReaderBottomBar(
+                    selectedReadingMode = state.readingModeTab,
                     onReadingModeClickListener = onReadingModeClickListener,
-                    rfidLevel = state.readerPower
+                    viewModel = readerViewViewModel,
                 )
             },
             content = {
@@ -177,6 +181,7 @@ private fun ObjectListEmpty(paddingValues: PaddingValues) {
 @Composable
 fun DataCollectScreenPreview() {
     DataCollectScreen(
+        readerViewViewModel = getViewModel(ReaderBottomBarModule.READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER),
         state = DataCollectStore.State(
             scanningObjects = listOf(
                 "Barcode : 001364796215",

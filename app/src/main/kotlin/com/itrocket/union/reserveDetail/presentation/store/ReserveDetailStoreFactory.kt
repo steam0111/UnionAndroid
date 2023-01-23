@@ -68,8 +68,6 @@ class ReserveDetailStoreFactory(
                 dispatch(Result.ShowButtons(true))
                 dispatch(Result.Loading(false))
             }
-
-            moduleSettingsInteractor.getReaderPowerFlow { dispatch(Result.ReaderPower(it)) }
         }
 
         override suspend fun executeIntent(
@@ -232,8 +230,6 @@ class ReserveDetailStoreFactory(
         data class RfidError(val rfidError: String) : Result()
         data class TerminalRemainsNumerator(val terminalRemainsNumerator: TerminalRemainsNumeratorDomain?) :
             Result()
-
-        data class ReaderPower(val readerPower: Int?) : Result()
     }
 
     private object ReducerImpl : Reducer<ReserveDetailStore.State, Result> {
@@ -248,7 +244,6 @@ class ReserveDetailStoreFactory(
                 is Result.Rfid -> copy(rfid = result.rfid)
                 is Result.RfidError -> copy(rfidError = result.rfidError)
                 is Result.TerminalRemainsNumerator -> copy(terminalRemainsNumerator = result.terminalRemainsNumerator)
-                is Result.ReaderPower -> copy(readerPower = result.readerPower)
             }
     }
 }

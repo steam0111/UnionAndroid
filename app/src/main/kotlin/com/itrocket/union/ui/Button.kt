@@ -300,8 +300,11 @@ fun ReadingModeButton(readingModeTab: ReadingModeTab, onClick: () -> Unit, rfidL
         Image(painter = painterResource(R.drawable.ic_reading), contentDescription = null)
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = rfidLevel?.let { "${stringResource(readingModeTab.textId)} $it" }
-                ?: stringResource(readingModeTab.textId),
+            text = if (readingModeTab == ReadingModeTab.RFID && rfidLevel != null) {
+                "${stringResource(readingModeTab.textId)} $rfidLevel"
+            } else {
+                stringResource(readingModeTab.textId)
+            },
             style = AppTheme.typography.body2,
             fontWeight = FontWeight.Bold,
             modifier = Modifier

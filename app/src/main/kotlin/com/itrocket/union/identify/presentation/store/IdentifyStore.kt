@@ -74,8 +74,7 @@ interface IdentifyStore : Store<IdentifyStore.Intent, IdentifyStore.State, Ident
                 actionTextId = R.string.common_write_off
             )
         ),
-        val nomenclatureRfids: List<String> = listOf(),
-        val readerPower: Int? = null
+        val nomenclatureRfids: List<String> = listOf()
     )
 
     sealed class Label {
