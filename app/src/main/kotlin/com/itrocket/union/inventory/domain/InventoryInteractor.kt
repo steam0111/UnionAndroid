@@ -20,6 +20,7 @@ import com.itrocket.union.nomenclatureDetail.domain.NomenclatureDetailInteractor
 import com.itrocket.union.reserves.domain.ReservesInteractor
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
 import com.itrocket.union.structural.domain.dependencies.StructuralRepository
+import java.math.BigDecimal
 import java.util.UUID
 import kotlinx.coroutines.withContext
 
@@ -57,17 +58,17 @@ class InventoryInteractor(
                 val key = it.nomenclatureId + it.consignment + it.unitPrice + it.bookKeepingInvoice
                 val existInventoryNomenclature = inventoryNomenclaturesMap[key]
                 if (existInventoryNomenclature != null) {
-                    val expectedCount = (existInventoryNomenclature.expectedCount ?: 0) + 1
+                    val expectedCount = (existInventoryNomenclature.expectedCount ?: 0) + it.itemsCount.toLong()
                     inventoryNomenclaturesMap[key] =
                         existInventoryNomenclature.copy(expectedCount = expectedCount)
-                } else if (isAddNew && it.nomenclatureId != null) {
+                } else if (isAddNew && it.nomenclatureId != null && it.itemsCount > BigDecimal(0)) {
                     val nomenclatureName =
                         nomenclatureDetailInteractor.getNomenclatureDetail(it.nomenclatureId).name
                     inventoryNomenclaturesMap[key] = InventoryNomenclatureDomain(
                         id = UUID.randomUUID().toString(),
                         nomenclatureId = it.nomenclatureId,
                         updateDate = System.currentTimeMillis(),
-                        expectedCount = 1,
+                        expectedCount = it.itemsCount.toLong(),
                         actualCount = 0,
                         consignment = it.consignment,
                         bookKeepingInvoice = it.bookKeepingInvoice,
