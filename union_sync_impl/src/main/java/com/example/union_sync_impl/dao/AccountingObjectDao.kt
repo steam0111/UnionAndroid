@@ -14,7 +14,6 @@ import com.example.union_sync_impl.entity.AccountingObjectScanningUpdate
 import com.example.union_sync_impl.entity.AccountingObjectUpdate
 import com.example.union_sync_impl.entity.AccountingObjectWriteOffUpdate
 import com.example.union_sync_impl.entity.FullAccountingObject
-import com.example.union_sync_impl.entity.PropertyCountEntity
 import kotlinx.coroutines.flow.Flow
 
 
@@ -171,6 +170,6 @@ interface AccountingObjectDao {
     @Update(entity = AccountingObjectDb::class)
     suspend fun update(accountingObjectUpdate: AccountingObjectMarkedUpdate)
 
-    @Query("SELECT COUNT(*) as positionsCount, SUM(count) as allCount FROM accounting_objects")
-    suspend fun getPropertyCount(): PropertyCountEntity
+    @Query("SELECT COUNT(*) FROM accounting_objects")
+    suspend fun getPropertyCount(): Long
 }

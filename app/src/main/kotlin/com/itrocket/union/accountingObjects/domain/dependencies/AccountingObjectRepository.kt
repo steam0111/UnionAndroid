@@ -3,7 +3,6 @@ package com.itrocket.union.accountingObjects.domain.dependencies
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.accountingObjects.domain.entity.PropertyCount
 import com.itrocket.union.manual.ParamDomain
 
 interface AccountingObjectRepository {
@@ -41,5 +40,5 @@ interface AccountingObjectRepository {
 
     suspend fun writeOffAccountingObjects(accountingObjects: List<AccountingObjectDomain>)
 
-    suspend fun getPropertyCount(): PropertyCount
+    suspend fun getPropertyCount(): Long
 }

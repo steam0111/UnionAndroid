@@ -82,9 +82,8 @@ fun AccountingObjectScreen(
             PropertyInfoAlertDialog(
                 onDismiss = onDialogDismiss,
                 text = stringResource(
-                    id = R.string.property_info_text,
-                    state.positionsCount,
-                    state.allCount
+                    id = R.string.property_info_text_position_count,
+                    state.positionsCount
                 )
             )
         }

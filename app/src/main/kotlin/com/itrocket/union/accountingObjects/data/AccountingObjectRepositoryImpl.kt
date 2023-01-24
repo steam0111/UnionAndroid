@@ -7,13 +7,10 @@ import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
 import com.example.union_sync_api.entity.EnumType
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjectDetail.data.mapper.toAccountingObjectWriteOff
-import com.itrocket.union.accountingObjectDetail.data.mapper.toPropertyCount
 import com.itrocket.union.accountingObjects.data.mapper.map
-import com.itrocket.union.accountingObjects.data.mapper.toDomainStatus
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectStatus
-import com.itrocket.union.accountingObjects.domain.entity.PropertyCount
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.getEquipmentTypeId
@@ -130,7 +127,7 @@ class AccountingObjectRepositoryImpl(
         }
     }
 
-    override suspend fun getPropertyCount(): PropertyCount {
-        return syncApi.getPropertyCount().toPropertyCount()
+    override suspend fun getPropertyCount(): Long {
+        return syncApi.getPropertyCount()
     }
 }

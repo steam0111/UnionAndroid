@@ -38,8 +38,7 @@ interface AccountingObjectStore :
         val searchText: String = "",
         val isListEndReached: Boolean = false,
         val params: List<ParamDomain>,
-        val positionsCount: Long = 0,
-        val allCount: Long = 0
+        val positionsCount: Long = 0
     )
 
     sealed class Label {

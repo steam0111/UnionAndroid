@@ -1,6 +1,5 @@
 package com.itrocket.union.accountingObjects.presentation.store
 
-import android.widget.Toast
 import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -11,13 +10,10 @@ import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.AccountingObjectInteractor
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectStatus
-import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.error.ErrorInteractor
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.search.SearchManager
-import com.itrocket.union.utils.ifBlankOrNull
 import com.itrocket.utils.paging.Paginator
 
 class AccountingObjectStoreFactory(
@@ -95,10 +91,12 @@ class AccountingObjectStoreFactory(
                 AccountingObjectStore.Intent.OnBackClicked -> onBackClicked(
                     getState().isShowSearch
                 )
+
                 AccountingObjectStore.Intent.OnSearchClicked -> dispatch(Result.IsShowSearch(true))
                 AccountingObjectStore.Intent.OnFilterClicked -> {
                     publish(AccountingObjectStore.Label.ShowFilter(getState().params))
                 }
+
                 is AccountingObjectStore.Intent.OnFilterResult -> {
                     dispatch(Result.Params(intent.params))
                     reset()
@@ -110,11 +108,13 @@ class AccountingObjectStoreFactory(
                         )
                     }
                 }
+
                 is AccountingObjectStore.Intent.OnItemClicked -> onItemClick(intent.item)
                 is AccountingObjectStore.Intent.OnSearchTextChanged -> {
                     dispatch(Result.SearchText(intent.searchText))
                     searchManager.emit(intent.searchText)
                 }
+
                 AccountingObjectStore.Intent.OnLoadNext -> paginator.onLoadNext {
                     getAccountingObjects(
                         params = getState().params,
@@ -124,12 +124,8 @@ class AccountingObjectStoreFactory(
                 }
 
                 AccountingObjectStore.Intent.OnInfoClicked -> {
-                    val propertyCount = accountingObjectInteractor.getPropertyCount()
                     dispatch(
-                        Result.PropertyCount(
-                            positionsCount = propertyCount.positionsCount,
-                            allCount = propertyCount.allCount
-                        )
+                        Result.PropertyCount(positionsCount = accountingObjectInteractor.getPropertyCount())
                     )
                     dispatch(Result.IsPropertyDialogVisible(true))
                 }
@@ -197,7 +193,7 @@ class AccountingObjectStoreFactory(
         data class IsShowSearch(val isShowSearch: Boolean) : Result()
         data class IsListEndReached(val isListEndReached: Boolean) : Result()
         data class IsPropertyDialogVisible(val isVisible: Boolean) : Result()
-        data class PropertyCount(val positionsCount: Long, val allCount: Long) : Result()
+        data class PropertyCount(val positionsCount: Long) : Result()
     }
 
     private object ReducerImpl : Reducer<AccountingObjectStore.State, Result> {
@@ -210,10 +206,7 @@ class AccountingObjectStoreFactory(
                 is Result.SearchText -> copy(searchText = result.searchText)
                 is Result.IsListEndReached -> copy(isListEndReached = result.isListEndReached)
                 is Result.IsPropertyDialogVisible -> copy(isInfoDialogVisible = result.isVisible)
-                is Result.PropertyCount -> copy(
-                    positionsCount = result.positionsCount,
-                    allCount = result.allCount
-                )
+                is Result.PropertyCount -> copy(positionsCount = result.positionsCount)
             }
     }
 }

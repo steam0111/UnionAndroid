@@ -3,7 +3,6 @@ package com.itrocket.union.accountingObjects.domain
 import com.itrocket.core.base.CoreDispatchers
 import com.itrocket.union.accountingObjects.domain.dependencies.AccountingObjectRepository
 import com.itrocket.union.accountingObjects.domain.entity.AccountingObjectDomain
-import com.itrocket.union.accountingObjects.domain.entity.PropertyCount
 import com.itrocket.union.location.domain.dependencies.LocationRepository
 import com.itrocket.union.manual.CheckBoxParamDomain
 import com.itrocket.union.manual.LocationParamDomain
@@ -126,7 +125,7 @@ class AccountingObjectInteractor(
         }
     }
 
-    suspend fun getPropertyCount(): PropertyCount = withContext(coreDispatchers.io) {
+    suspend fun getPropertyCount(): Long = withContext(coreDispatchers.io) {
         repository.getPropertyCount()
     }
 }

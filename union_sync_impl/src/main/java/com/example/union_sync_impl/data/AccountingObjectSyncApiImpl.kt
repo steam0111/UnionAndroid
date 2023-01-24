@@ -1,19 +1,18 @@
 package com.example.union_sync_impl.data
 
 import com.example.union_sync_api.data.AccountingObjectAdditionalFieldsSyncApi
-import com.example.union_sync_api.data.AccountingObjectsCharacteristicSyncApi
 import com.example.union_sync_api.data.AccountingObjectSyncApi
+import com.example.union_sync_api.data.AccountingObjectsCharacteristicSyncApi
 import com.example.union_sync_api.data.EnumsSyncApi
 import com.example.union_sync_api.data.LocationSyncApi
 import com.example.union_sync_api.data.StructuralSyncApi
 import com.example.union_sync_api.entity.AccountingObjectDetailSyncEntity
-import com.example.union_sync_api.entity.LabelType
 import com.example.union_sync_api.entity.AccountingObjectScanningData
 import com.example.union_sync_api.entity.AccountingObjectSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectUpdateSyncEntity
 import com.example.union_sync_api.entity.AccountingObjectWriteOff
 import com.example.union_sync_api.entity.EnumType
-import com.example.union_sync_api.entity.PropertyCountSyncEntity
+import com.example.union_sync_api.entity.LabelType
 import com.example.union_sync_impl.dao.AccountingObjectDao
 import com.example.union_sync_impl.dao.sqlAccountingObjectDetailQuery
 import com.example.union_sync_impl.dao.sqlAccountingObjectQuery
@@ -258,8 +257,7 @@ class AccountingObjectSyncApiImpl(
         )
     }
 
-    override suspend fun getPropertyCount(): PropertyCountSyncEntity {
-        val propertyCount = accountingObjectsDao.getPropertyCount()
-        return PropertyCountSyncEntity(propertyCount.positionsCount, propertyCount.allCount)
+    override suspend fun getPropertyCount(): Long {
+        return accountingObjectsDao.getPropertyCount()
     }
 }
