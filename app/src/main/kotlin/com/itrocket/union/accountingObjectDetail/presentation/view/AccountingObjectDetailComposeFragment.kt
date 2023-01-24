@@ -16,8 +16,6 @@ import com.itrocket.union.changeScanData.presentation.store.ChangeScanDataResult
 import com.itrocket.union.changeScanData.presentation.view.ChangeScanDataComposeFragment
 import com.itrocket.union.labelType.presentation.store.LabelTypeResult
 import com.itrocket.union.labelType.presentation.view.LabelTypeComposeFragment
-import com.itrocket.union.readerView.ReaderBottomBarModule.READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER
-import com.itrocket.union.readerView.presentation.store.ReaderBottomBarViewModel
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -26,7 +24,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
@@ -53,10 +50,6 @@ class AccountingObjectDetailComposeFragment :
                 AccountingObjectDetailStore.Intent.OnImageTaken(success = true, uri = uri)
             )
         }
-
-    private val readerViewViewModel by viewModel<ReaderBottomBarViewModel>(
-        qualifier = READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER
-    )
 
     override val onBackPressedCallback: OnBackPressedCallback =
         object : OnBackPressedCallback(true) {
@@ -118,7 +111,6 @@ class AccountingObjectDetailComposeFragment :
     ) {
         composeView.setContent {
             AccountingObjectDetailScreen(
-                readerViewViewModel = readerViewViewModel,
                 state = state,
                 appInsets = appInsets,
                 onBackClickListener = {

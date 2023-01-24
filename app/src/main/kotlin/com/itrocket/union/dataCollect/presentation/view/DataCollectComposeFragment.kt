@@ -12,8 +12,6 @@ import com.itrocket.core.navigation.FragmentResult
 import com.itrocket.union.dataCollect.DataCollectModule.DATA_COLLECT_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.dataCollect.presentation.store.DataCollectStore
 import com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateComposeFragment
-import com.itrocket.union.readerView.ReaderBottomBarModule.READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER
-import com.itrocket.union.readerView.presentation.store.ReaderBottomBarViewModel
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.utils.flow.window
@@ -23,7 +21,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
@@ -34,10 +31,6 @@ class DataCollectComposeFragment :
         DATA_COLLECT_VIEW_MODEL_QUALIFIER
     ) {
     private val serviceEntryManager: ServiceEntryManager by inject()
-
-    private val readerViewViewModel by viewModel<ReaderBottomBarViewModel>(
-        qualifier = READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER
-    )
 
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
@@ -135,7 +128,6 @@ class DataCollectComposeFragment :
     ) {
         composeView.setContent {
             DataCollectScreen(
-                readerViewViewModel = readerViewViewModel,
                 state = state,
                 appInsets = appInsets,
                 onReadingModeClickListener = { accept(DataCollectStore.Intent.OnReadingModeClicked) },

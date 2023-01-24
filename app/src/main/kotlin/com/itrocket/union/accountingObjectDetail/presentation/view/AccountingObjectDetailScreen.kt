@@ -52,8 +52,6 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.image.domain.ImageDomain
 import com.itrocket.union.inventoryCreate.domain.entity.InventoryAccountingObjectStatus
-import com.itrocket.union.readerView.ReaderBottomBarModule
-import com.itrocket.union.readerView.presentation.store.ReaderBottomBarViewModel
 import com.itrocket.union.readerView.presentation.view.ReaderBottomBar
 import com.itrocket.union.ui.*
 import com.itrocket.union.ui.image.GridImages
@@ -61,12 +59,10 @@ import com.itrocket.union.utils.ifBlankOrNull
 import com.itrocket.utils.clickableUnbounded
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun AccountingObjectDetailScreen(
-    readerViewViewModel: ReaderBottomBarViewModel,
     state: AccountingObjectDetailStore.State,
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
@@ -155,7 +151,6 @@ fun AccountingObjectDetailScreen(
                 ReaderBottomBar(
                     selectedReadingMode = state.readingMode,
                     onReadingModeClickListener = onReadingModeClickListener,
-                    viewModel = readerViewViewModel,
                 )
             },
             modifier = Modifier.padding(
@@ -511,7 +506,6 @@ fun ChooseAddPhotoSource(
 @Composable
 fun AccountingObjectDetailScreenPreview() {
     AccountingObjectDetailScreen(
-        readerViewViewModel = getViewModel(ReaderBottomBarModule.READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER),
         AccountingObjectDetailStore.State(
             accountingObjectDomain = AccountingObjectDomain(
                 id = "123",

@@ -8,14 +8,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.itrocket.union.readerView.ReaderBottomBarModule.READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.readerView.presentation.store.ReaderBottomBarStore
 import com.itrocket.union.readerView.presentation.store.ReaderBottomBarViewModel
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.ReadingModeButton
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ReaderBottomBar(
-    viewModel: ReaderBottomBarViewModel,
+    viewModel: ReaderBottomBarViewModel = koinViewModel(
+        qualifier = READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER
+    ),
     selectedReadingMode: ReadingModeTab,
     onReadingModeClickListener: () -> Unit
 ) {

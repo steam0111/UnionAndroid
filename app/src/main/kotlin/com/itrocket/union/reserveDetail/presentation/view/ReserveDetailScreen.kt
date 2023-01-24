@@ -31,8 +31,6 @@ import com.itrocket.union.R
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoBehavior
 import com.itrocket.union.accountingObjects.domain.entity.ObjectInfoDomain
 import com.itrocket.union.alertType.AlertType
-import com.itrocket.union.readerView.ReaderBottomBarModule
-import com.itrocket.union.readerView.presentation.store.ReaderBottomBarViewModel
 import com.itrocket.union.readerView.presentation.view.ReaderBottomBar
 import com.itrocket.union.reserveDetail.presentation.store.ReserveDetailStore
 import com.itrocket.union.reserves.domain.entity.ReservesDomain
@@ -46,12 +44,10 @@ import com.itrocket.union.ui.black
 import com.itrocket.union.ui.red5
 import com.itrocket.union.utils.ifBlankOrNull
 import com.itrocket.utils.clickableUnbounded
-import org.koin.androidx.compose.getViewModel
 import java.math.BigDecimal
 
 @Composable
 fun ReserveDetailScreen(
-    readerViewViewModel: ReaderBottomBarViewModel,
     state: ReserveDetailStore.State,
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
@@ -75,7 +71,6 @@ fun ReserveDetailScreen(
                 ReaderBottomBar(
                     selectedReadingMode = state.readingMode,
                     onReadingModeClickListener = onReadingModeClickListener,
-                    viewModel = readerViewViewModel,
                 )
             },
             modifier = Modifier.padding(
@@ -216,7 +211,6 @@ private fun ListInfo(
 @Composable
 fun ReserveDetailScreenPreview() {
     ReserveDetailScreen(
-        readerViewViewModel = getViewModel(ReaderBottomBarModule.READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER),
         ReserveDetailStore.State(
             reserve = ReservesDomain(
                 id = "1", title = "Авторучка «Зебра TR22»", isBarcode = true, listInfo =

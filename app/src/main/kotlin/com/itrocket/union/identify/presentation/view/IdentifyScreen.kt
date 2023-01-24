@@ -43,8 +43,6 @@ import com.itrocket.union.accountingObjects.domain.entity.ObjectStatus
 import com.itrocket.union.alertType.AlertType
 import com.itrocket.union.identify.domain.NomenclatureReserveDomain
 import com.itrocket.union.identify.presentation.store.IdentifyStore
-import com.itrocket.union.readerView.ReaderBottomBarModule
-import com.itrocket.union.readerView.presentation.store.ReaderBottomBarViewModel
 import com.itrocket.union.readerView.presentation.view.ReaderBottomBar
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.AccountingObjectItem
@@ -62,12 +60,10 @@ import com.itrocket.utils.clickableUnbounded
 import com.itrocket.utils.getTargetPage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun IdentifyScreen(
-    readerViewViewModel: ReaderBottomBarViewModel,
     state: IdentifyStore.State,
     appInsets: AppInsets,
     onReadingModeClickListener: () -> Unit,
@@ -97,7 +93,6 @@ fun IdentifyScreen(
                 ReaderBottomBar(
                     selectedReadingMode = state.readingModeTab,
                     onReadingModeClickListener = onReadingModeClickListener,
-                    viewModel = readerViewViewModel,
                 )
             },
             content = {
@@ -325,7 +320,6 @@ private fun EmptyListStub(paddingValues: PaddingValues) {
 @Composable
 fun IdentifyScreenPreview() {
     IdentifyScreen(
-        readerViewViewModel = getViewModel(ReaderBottomBarModule.READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER),
         state = IdentifyStore.State(
             accountingObjects = listOf(
                 AccountingObjectDomain(

@@ -19,8 +19,6 @@ import com.itrocket.union.inventoryChoose.presentation.view.InventoryChooseCompo
 import com.itrocket.union.inventoryCreate.InventoryCreateModule.INVENTORYCREATE_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.inventoryCreate.presentation.store.InventoryCreateStore
 import com.itrocket.union.inventoryCreate.presentation.store.toInventoryCreateUiState
-import com.itrocket.union.readerView.ReaderBottomBarModule.READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER
-import com.itrocket.union.readerView.presentation.store.ReaderBottomBarViewModel
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -34,7 +32,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
@@ -43,10 +40,6 @@ class InventoryCreateComposeFragment :
     BaseComposeFragment<InventoryCreateStore.Intent, InventoryCreateStore.State, InventoryCreateStore.Label>(
         INVENTORYCREATE_VIEW_MODEL_QUALIFIER
     ) {
-
-    private val readerViewViewModel by viewModel<ReaderBottomBarViewModel>(
-        qualifier = READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER
-    )
 
     override val onBackPressedCallback: OnBackPressedCallback
         get() = object : OnBackPressedCallback(true) {
@@ -146,7 +139,6 @@ class InventoryCreateComposeFragment :
     ) {
         composeView.setContent {
             InventoryCreateScreen(
-                readerViewViewModel = readerViewViewModel,
                 state = state.toInventoryCreateUiState(),
                 appInsets = appInsets,
                 onBackClickListener = {

@@ -50,8 +50,6 @@ import com.itrocket.union.inventoryCreate.domain.entity.InventoryCreateDomain
 import com.itrocket.union.manual.ManualType
 import com.itrocket.union.manual.ParamDomain
 import com.itrocket.union.manual.StructuralParamDomain
-import com.itrocket.union.readerView.ReaderBottomBarModule
-import com.itrocket.union.readerView.presentation.store.ReaderBottomBarViewModel
 import com.itrocket.union.readerView.presentation.view.ReaderBottomBar
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
 import com.itrocket.union.ui.AccountingObjectItem
@@ -72,11 +70,9 @@ import com.itrocket.union.ui.lightYellow
 import com.itrocket.union.ui.white
 import com.itrocket.utils.getTargetPage
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun InventoryCreateScreen(
-    readerViewViewModel: ReaderBottomBarViewModel,
     state: InventoryCreateUiState,
     appInsets: AppInsets,
     onBackClickListener: () -> Unit,
@@ -120,7 +116,6 @@ fun InventoryCreateScreen(
                 ReaderBottomBar(
                     selectedReadingMode = state.readingModeTab,
                     onReadingModeClickListener = onReadingClickListener,
-                    viewModel = readerViewViewModel,
                 )
             },
             content = {
@@ -551,7 +546,6 @@ fun AttentionNotMarking() {
 @Composable
 fun InventoryCreateScreenPreview() {
     InventoryCreateScreen(
-        readerViewViewModel = getViewModel(ReaderBottomBarModule.READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER),
         InventoryCreateUiState(
             inventoryDocument = InventoryCreateDomain(
                 id = "",

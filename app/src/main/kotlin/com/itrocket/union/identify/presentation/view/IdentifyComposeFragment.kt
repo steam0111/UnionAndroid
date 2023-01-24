@@ -17,8 +17,6 @@ import com.itrocket.union.accountingObjects.presentation.view.AccountingObjectCo
 import com.itrocket.union.identify.IdentifyModule.IDENTIFY_VIEW_MODEL_QUALIFIER
 import com.itrocket.union.identify.presentation.store.IdentifyStore
 import com.itrocket.union.inventoryCreate.presentation.view.InventoryCreateComposeFragment
-import com.itrocket.union.readerView.ReaderBottomBarModule.READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER
-import com.itrocket.union.readerView.presentation.store.ReaderBottomBarViewModel
 import com.itrocket.union.readingMode.presentation.store.ReadingModeResult
 import com.itrocket.union.readingMode.presentation.view.ReadingModeComposeFragment
 import com.itrocket.union.readingMode.presentation.view.ReadingModeTab
@@ -32,7 +30,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.interid.scannerclient_impl.platform.entry.ReadingMode
 import ru.interid.scannerclient_impl.platform.entry.TriggerEvent
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
@@ -42,10 +39,6 @@ class IdentifyComposeFragment :
         IDENTIFY_VIEW_MODEL_QUALIFIER
     ) {
     override val navArgs by navArgs<IdentifyComposeFragmentArgs>()
-
-    private val readerViewViewModel by viewModel<ReaderBottomBarViewModel>(
-        qualifier = READER_BOTTOM_BAR_VIEW_MODEL_QUALIFIER
-    )
 
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
@@ -188,7 +181,6 @@ class IdentifyComposeFragment :
     ) {
         composeView.setContent {
             IdentifyScreen(
-                readerViewViewModel = readerViewViewModel,
                 state = state,
                 appInsets = appInsets,
                 onReadingModeClickListener = {
