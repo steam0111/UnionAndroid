@@ -128,7 +128,6 @@ class InventoryCreateInteractor(
             val newAccountingObjectRfids = mutableListOf<String>()
             val mutableAccountingObjects = accountingObjects.toMutableList()
             val mutableReserves = mutableListOf<ReservesDomain>()
-
             handledRfids.forEach { handledRfid ->
                 val accountingObjectIndex = mutableAccountingObjects.indexOfFirst {
                     it.rfidValue == handledRfid
@@ -158,14 +157,6 @@ class InventoryCreateInteractor(
                     )
                     mutableReserves.addAll(scannedReserves)
                 }
-
-                val barcodeAndSerialNumber = sgtinFormatter.epcRfidToBarcode(handledRfid)
-                val scannedReserves = reservesInteractor.getReserves(
-                    searchText = "",
-                    params = listOf(),
-                    barcode = barcodeAndSerialNumber.barcode
-                )
-                mutableReserves.addAll(scannedReserves)
             }
 
             val newInventoryNomenclatures = updateInventoryNomenclatures(

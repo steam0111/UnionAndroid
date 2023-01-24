@@ -34,6 +34,8 @@ import com.itrocket.union.search.SearchManager
 import com.itrocket.union.selectCount.presentation.store.SelectCountResult
 import com.itrocket.union.unionPermissions.domain.UnionPermissionsInteractor
 import com.itrocket.union.unionPermissions.domain.entity.UnionPermission
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import ru.interid.scannerclient_impl.screen.ServiceEntryManager
 
 class InventoryCreateStoreFactory(
@@ -74,46 +76,66 @@ class InventoryCreateStoreFactory(
             action: Unit,
             getState: () -> InventoryCreateStore.State
         ) {
-            dispatch(Result.Loading(true))
-            dispatch(Result.ReadingMode(moduleSettingsInteractor.getDefaultReadingMode(isForceUpdate = true)))
-            dispatch(Result.CanUpdate(unionPermissionsInteractor.canUpdate(UnionPermission.INVENTORY)))
-            dispatch(
-                Result.CanComplete(
-                    unionPermissionsInteractor.canCompleteInventory(
-                        UnionPermission.INVENTORY
-                    )
-                )
-            )
-            catchException {
-                val inventory = inventoryCreateInteractor.getInventoryById(
-                    id = inventoryCreateArguments.inventoryDocument.id.orEmpty(),
-                    isAccountingObjectLoad = true
-                )
-                val isDynamicSaveInventory = moduleSettingsInteractor.getDynamicSaveInventory()
-                val accountingObjects = inventory.accountingObjects
-                val isExistNonMarkingAccountingObject =
-                    inventoryInteractor.isExistNonMarkingAccountingObjects(
-                        accountingObjects
-                    )
-                dispatch(Result.Inventory(inventory))
-                dispatch(Result.IsDynamicSaveInventory(isDynamicSaveInventory))
-                dispatch(Result.IsExistNonMarkingAccountingObjects(isExistNonMarkingAccountingObject))
-                moduleSettingsInteractor.getReaderPowerFlow {
-                    dispatch(Result.ReaderPower(it))
-                    dispatch(Result.Loading(false))
+            coroutineScope {
+                catchException {
+                    launch {
+                        dispatch(Result.Loading(true))
+                        dispatch(
+                            Result.ReadingMode(
+                                moduleSettingsInteractor.getDefaultReadingMode(
+                                    isForceUpdate = true
+                                )
+                            )
+                        )
+                        dispatch(Result.CanUpdate(unionPermissionsInteractor.canUpdate(UnionPermission.INVENTORY)))
+                        dispatch(
+                            Result.CanComplete(
+                                unionPermissionsInteractor.canCompleteInventory(
+                                    UnionPermission.INVENTORY
+                                )
+                            )
+                        )
+
+                        val inventory = inventoryCreateInteractor.getInventoryById(
+                            id = inventoryCreateArguments.inventoryDocument.id.orEmpty(),
+                            isAccountingObjectLoad = true
+                        )
+                        val isDynamicSaveInventory =
+                            moduleSettingsInteractor.getDynamicSaveInventory()
+                        val accountingObjects = inventory.accountingObjects
+                        val isExistNonMarkingAccountingObject =
+                            inventoryInteractor.isExistNonMarkingAccountingObjects(
+                                accountingObjects
+                            )
+                        dispatch(Result.Inventory(inventory))
+                        dispatch(Result.IsDynamicSaveInventory(isDynamicSaveInventory))
+                        dispatch(
+                            Result.IsExistNonMarkingAccountingObjects(
+                                isExistNonMarkingAccountingObject
+                            )
+                        )
+                        updateInventoryCounter(getState)
+                        dispatch(Result.Loading(false))
+                        if (getState().isDynamicSaveInventory && getState().inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED) {
+                            inventoryDynamicSaveManager.subscribeInventorySave()
+                        }
+                    }
+                    launch {
+                        moduleSettingsInteractor.getReaderPowerFlow {
+                            dispatch(Result.ReaderPower(it))
+                        }
+                    }
+                    launch {
+                        searchManager.listenSearch { searchText ->
+                            listenInventoryObjects(
+                                searchText = searchText,
+                                accountingObjects = getState().inventoryDocument.accountingObjects,
+                                inventoryNomenclatures = getState().inventoryDocument.nomenclatureRecords,
+                                getState = getState
+                            )
+                        }
+                    }
                 }
-            }
-            dispatch(Result.Loading(false))
-            if (getState().isDynamicSaveInventory && getState().inventoryDocument.inventoryStatus != InventoryStatus.COMPLETED) {
-                inventoryDynamicSaveManager.subscribeInventorySave()
-            }
-            searchManager.listenSearch { searchText ->
-                listenInventoryObjects(
-                    searchText = searchText,
-                    accountingObjects = getState().inventoryDocument.accountingObjects,
-                    inventoryNomenclatures = getState().inventoryDocument.nomenclatureRecords,
-                    getState = getState
-                )
             }
         }
 
@@ -531,6 +553,15 @@ class InventoryCreateStoreFactory(
         ) {
             if (canEditInventory(getState())) {
                 dispatch(Result.Loading(true))
+                val nomenclatureExistRfids = getState().inventoryDocument.rfids
+                dispatch(
+                    Result.NomenclatureExistRfids(
+                        inventoryCreateInteractor.addInventoryExistRfids(
+                            existRfids = nomenclatureExistRfids,
+                            newRfids = handledRfids
+                        )
+                    )
+                )
                 catchException {
                     val scannedInventoryObjects =
                         inventoryCreateInteractor.handleNewRfids(
@@ -539,18 +570,10 @@ class InventoryCreateStoreFactory(
                             inventoryStatus = inventoryStatus,
                             isAddNew = isAddNew,
                             inventoryNomenclatures = inventoryNomenclatures,
-                            nomenclatureExistRfids = getState().nomenclatureExistRfids
+                            nomenclatureExistRfids = nomenclatureExistRfids
                         )
                     changeAccountingObjects(scannedInventoryObjects.accountingObjects)
                     changeInventoryNomenclatures(scannedInventoryObjects.inventoryNomenclatures)
-                    dispatch(
-                        Result.NomenclatureExistRfids(
-                            inventoryCreateInteractor.addInventoryExistRfids(
-                                existRfids = getState().nomenclatureExistRfids,
-                                newRfids = handledRfids
-                            )
-                        )
-                    )
                     if (scannedInventoryObjects.hasWrittenOffAccountingObjects) {
                         publish(
                             InventoryCreateStore.Label.ShowToast(

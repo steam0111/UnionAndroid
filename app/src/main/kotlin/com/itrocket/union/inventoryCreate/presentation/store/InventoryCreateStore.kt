@@ -110,7 +110,6 @@ interface InventoryCreateStore :
         val searchInventoryNomenclatures: List<InventoryNomenclatureDomain> = listOf(),
         val inventoryObjectCounter: AccountingObjectCounter = AccountingObjectCounter(),
         val isExistNonMarkingAccountingObject: Boolean = false,
-        val nomenclatureExistRfids: List<String> = listOf(),
         val selectedPage: InventoryPage = InventoryPage.ACCOUNTING_OBJECT,
         val readerPower: Int? = null
     )
