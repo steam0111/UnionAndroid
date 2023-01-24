@@ -123,6 +123,7 @@ class InventoryComposeFragment :
             is InventoryStore.Label.ShowCreateInventory -> (parentFragment as? InventoryCreateClickHandler)?.onInventoryCreateClicked(
                 label.inventoryCreate
             )
+            else -> {}
         }
 
     }

@@ -121,6 +121,7 @@ fun ModuleSettingsScreen(
                 confirmTextRes = R.string.common_yes,
                 dismissTextRes = R.string.common_no
             )
+            else -> {}
         }
     }
 }

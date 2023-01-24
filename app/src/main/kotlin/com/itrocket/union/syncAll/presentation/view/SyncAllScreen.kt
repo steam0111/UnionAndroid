@@ -276,6 +276,7 @@ private fun SyncEvent(syncEvent: SyncEvent) {
                     eventText.append("\nВремя выполнения ${hours}h ${minutes}m ${seconds}s $millis")
                 }
             }
+            else -> {}
         }
 
         Text(

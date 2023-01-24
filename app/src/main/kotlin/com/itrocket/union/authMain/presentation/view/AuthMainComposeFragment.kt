@@ -46,6 +46,7 @@ class AuthMainComposeFragment :
         super.handleLabel(label)
         when (label) {
             is AuthMainStore.Label.Error -> showError(label.message)
+            else -> {}
         }
     }
 

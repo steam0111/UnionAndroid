@@ -44,7 +44,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = libs.versions.java.get()
-        useIR = true
     }
     buildFeatures {
         compose = true

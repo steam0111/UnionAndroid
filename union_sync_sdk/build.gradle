@@ -28,7 +28,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = libs.versions.java.get()
-        useIR = true
     }
 }
 

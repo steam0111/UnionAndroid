@@ -194,6 +194,7 @@ fun DocumentCreateBaseScreen(
             confirmButtonText = stringResource(R.string.common_ok),
             onDismiss = onDismissConfirmDialog
         )
+        else -> {}
     }
 }
 

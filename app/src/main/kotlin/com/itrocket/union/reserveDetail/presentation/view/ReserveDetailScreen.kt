@@ -114,6 +114,7 @@ fun ReserveDetailScreen(
                     onDismiss = onWriteEpcDismiss
                 )
             }
+            else -> {}
         }
     }
 }

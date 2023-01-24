@@ -282,6 +282,7 @@ class InventoryCreateComposeFragment :
         super.handleLabel(label)
         when (label) {
             is InventoryCreateStore.Label.GoBack -> (parentFragment as? ChildBackPressedHandler)?.onChildBackPressed()
+            else -> {}
         }
 
     }

@@ -187,6 +187,7 @@ fun AccountingObjectDetailScreen(
                 onTakeFromCameraClickListener = onTakeFromCameraClickListener,
                 onTakeFromFilesClickListener = onTakeFromFilesClickListener
             )
+            else -> {}
         }
     }
 }

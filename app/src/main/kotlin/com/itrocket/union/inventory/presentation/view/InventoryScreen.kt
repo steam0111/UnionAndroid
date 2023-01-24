@@ -189,6 +189,7 @@ fun InventoryScreen(
                     )
                 )
             }
+            else -> {}
         }
     }
 
@@ -466,6 +467,7 @@ private fun InventoryBottomBar(
                     text = stringResource(R.string.common_in_work),
                 )
             }
+            else -> {}
         }
     }
 }

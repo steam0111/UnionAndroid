@@ -99,6 +99,7 @@ class ServerConnectComposeFragment :
             is ServerConnectStore.Label.OpenAppDataFile -> {
                 openFileContract?.launch("application/*")
             }
+            else -> {}
         }
     }
 }

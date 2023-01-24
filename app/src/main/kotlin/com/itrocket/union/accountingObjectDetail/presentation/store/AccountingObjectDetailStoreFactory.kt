@@ -182,6 +182,7 @@ class AccountingObjectDetailStoreFactory(
 
                 is AccountingObjectDetailStore.Intent.OnTakeFromCameraClicked -> onTakeFromCamera()
                 is AccountingObjectDetailStore.Intent.OnTakeFromFilesClicked -> onTakeFromFiles()
+                is AccountingObjectDetailStore.Intent.OnImagesChanged -> {}
             }
         }
 

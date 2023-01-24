@@ -84,6 +84,7 @@ fun ServerConnectScreen(
                     }
                 }
             )
+            else -> {}
         }
     }
 }

@@ -57,6 +57,7 @@ class AuthUserComposeFragment :
             is AuthUserStore.Label.ParentLoading -> (parentFragment as? AuthContainer)?.isLoading(
                 label.isLoading
             )
+            else -> {}
         }
     }
 

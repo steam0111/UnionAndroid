@@ -176,6 +176,7 @@ fun InventoryCreateScreen(
                     textRes = R.string.inventory_drop_confirm
                 )
             }
+            else -> {}
         }
     }
 }

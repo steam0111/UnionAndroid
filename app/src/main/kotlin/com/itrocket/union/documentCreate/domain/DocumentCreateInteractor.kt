@@ -290,6 +290,7 @@ class DocumentCreateInteractor(
                     clearParamToInitialState(mutableParams, ManualType.STRUCTURAL_TO)
                 }
             }
+            else -> {}
         }
         updateBalanceUnits(mutableParams)
         return mutableParams.values.toList()
