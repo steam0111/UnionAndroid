@@ -489,4 +489,5 @@
     <string name="imported">"Загружено: %1$s/%2$s"</string>
     <string name="exported">"Выгружено: %1$s/%2$s"</string>
     <string name="property_info_text">Количество позиций: %1$s \nСуммарное количество: %2$s</string>
+    <string name="ao_write_off_confirm_dialog_title">Подтвердите списание</string>
 </resources>

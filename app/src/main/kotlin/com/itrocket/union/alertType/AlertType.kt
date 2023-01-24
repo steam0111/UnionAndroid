@@ -19,5 +19,6 @@ enum class AlertType {
     DROP,
     MANDATORY_FIELDS,
     APP_DATA_FILE,
-    ADD_IMAGE
+    ADD_IMAGE,
+    AO_WRITE_OFF_CONFIRM
 }

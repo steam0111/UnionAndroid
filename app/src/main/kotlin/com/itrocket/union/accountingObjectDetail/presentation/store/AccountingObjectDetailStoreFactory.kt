@@ -150,7 +150,15 @@ class AccountingObjectDetailStoreFactory(
                     getState().accountingObjectDomain.id, intent.rfid
                 )
 
-                AccountingObjectDetailStore.Intent.OnWriteOffClicked -> onWriteOffClicked(getState().accountingObjectDomain)
+                AccountingObjectDetailStore.Intent.OnWriteOffClicked -> {
+                    dispatch(Result.DialogType(AlertType.AO_WRITE_OFF_CONFIRM))
+                }
+
+                AccountingObjectDetailStore.Intent.OnWriteOffConfirmClicked -> {
+                    dispatch(Result.DialogType(AlertType.NONE))
+                    onWriteOffClicked(getState().accountingObjectDomain)
+                }
+
                 AccountingObjectDetailStore.Intent.OnRemoveBarcodeClicked -> onRemoveBarcodeClicked(
                     getState().accountingObjectDomain
                 )

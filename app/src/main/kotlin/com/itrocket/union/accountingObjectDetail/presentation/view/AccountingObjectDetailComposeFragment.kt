@@ -163,6 +163,9 @@ class AccountingObjectDetailComposeFragment :
                 },
                 onDialogDismiss = {
                     accept(AccountingObjectDetailStore.Intent.OnDismissed)
+                },
+                onWriteOffConfirmClickListener = {
+                    accept(AccountingObjectDetailStore.Intent.OnWriteOffConfirmClicked)
                 }
             )
         }

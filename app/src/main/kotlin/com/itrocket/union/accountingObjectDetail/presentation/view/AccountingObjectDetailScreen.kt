@@ -81,7 +81,8 @@ fun AccountingObjectDetailScreen(
     onLabelTypeEditClickListener: () -> Unit,
     onTakeFromCameraClickListener: () -> Unit,
     onTakeFromFilesClickListener: () -> Unit,
-    onDialogDismiss: () -> Unit
+    onDialogDismiss: () -> Unit,
+    onWriteOffConfirmClickListener: () -> Unit
 ) {
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
@@ -185,6 +186,16 @@ fun AccountingObjectDetailScreen(
                 onTakeFromCameraClickListener = onTakeFromCameraClickListener,
                 onTakeFromFilesClickListener = onTakeFromFilesClickListener
             )
+
+            AlertType.AO_WRITE_OFF_CONFIRM -> {
+                ConfirmAlertDialog(
+                    onDismiss = onDialogDismiss,
+                    onConfirmClick = onWriteOffConfirmClickListener,
+                    textRes = R.string.ao_write_off_confirm_dialog_title,
+                    confirmTextRes = R.string.common_yes,
+                    dismissTextRes = R.string.common_no
+                )
+            }
         }
     }
 }
@@ -535,6 +546,7 @@ fun AccountingObjectDetailScreenPreview() {
             ),
         ),
         AppInsets(topInset = previewTopInsetDp),
+        {},
         {},
         {},
         {},

@@ -42,6 +42,7 @@ interface AccountingObjectDetailStore :
         object OnWriteEpcClicked : Intent()
         object OnDismissed : Intent()
         object OnWriteOffClicked : Intent()
+        object OnWriteOffConfirmClicked : Intent()
         object OnTriggerPressed : Intent()
         object OnTriggerReleased : Intent()
         object OnRemoveBarcodeClicked : Intent()
@@ -71,7 +72,7 @@ interface AccountingObjectDetailStore :
         val dialogType: AlertType = AlertType.NONE,
         val rfidError: String = "",
         val imageUri: Uri? = null,
-        val images: List<ImageDomain> = listOf()
+        val images: List<ImageDomain> = listOf(),
     )
 
     sealed class Label {
